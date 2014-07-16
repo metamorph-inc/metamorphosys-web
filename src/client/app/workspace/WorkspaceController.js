@@ -133,6 +133,15 @@ define([], function () {
             return hasFile ? "bg-success dragover" : "bg-danger dragover";
         };
 
+        self.$scope.getTypeIcon = function (type) {
+            var typeToIcon = {
+                acm: 'fa fa-puzzle-piece component-icon',
+                adm: 'fa fa-cubes',
+                atm: 'glyphicon glyphicon-saved'
+            };
+            return typeToIcon[type];
+        };
+
         this.initOnFileSelect();
 
         // initialization of methods
@@ -245,14 +254,13 @@ define([], function () {
         }
 
         self.$scope.onDroppedFiles = function (files) {
-            var i,
+            var j,
                 validExtensions = {
                     adm: true,
                     atm: true,
                     zip: true
                 },
                 counter,
-                artie,
                 addFile,
                 updateCounter;
 
@@ -286,7 +294,7 @@ define([], function () {
                     updateCounter();
                 }
             };
-            for (i = 0; i < files.length; i += 1) {
+            for (j = 0; j < files.length; j += 1) {
                 addFile(files[i]);
             }
         };
@@ -474,21 +482,46 @@ define([], function () {
                 duplicateWorkspaceFunction;
 
             createWorkspaceFunction = function (newWorkspace) {
-                var newId = self.smartClient.client.createChild({
-                    parentId: ROOT_ID,
-                    baseId: self.smartClient.metaNodes.WorkSpace.getId()
-                }, '[WebCyPhy] - New workspace was created.'),
-                    key;
+                var newId,
+                    j,
+                    key,
+                    fileInfo,
+                    acmArtie,
+                    acms = {},
+                    adms = [],
+                    atms = [];
+                // Create new workspace node and name it appropriately.
+                newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
+                    '[WebCyPhy] - New workspace was created.');
                 self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
                 if (newWorkspace.description) {
                     self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
                 }
-//                for (key in newWorkspace.addedFiles) {
-//                    if (newWorkspace.addedFiles.hasOwnProperty(key)) {
-//                        self.importFromFile(newId, newWorkspace.addedFiles[key].hash, newWorkspace.addedFiles[key].type);
-//                    }
-//                }
-                self.cleanNewWorkspace();
+                // Import the files dropped by the user.
+                for (key in newWorkspace.addedFiles) {
+                    if (newWorkspace.addedFiles.hasOwnProperty(key)) {
+                        fileInfo = newWorkspace.addedFiles[key];
+                        if (fileInfo.type === 'acm') {
+                            acms[fileInfo.name] = fileInfo.hash;
+                        } else if (fileInfo.type === 'adm') {
+                            adms.push(fileInfo.hash);
+                        } else if (fileInfo.type === 'atm') {
+                            atms.push(fileInfo.hash);
+                        }
+                    }
+                }
+                acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
+                acmArtie.addMetadataHashes(acms, function (err, hashes) {
+                    // TODO: error-handling
+                    acmArtie.save(function (err, artieHash) {
+                        // TODO: error-handling
+                        self.importFromFile(newId, artieHash, 'acm', function (result) {
+                            console.log(result);
+                            // TODO: Import adms and atms
+                            self.cleanNewWorkspace();
+                        });
+                    });
+                });
             };
 
             deleteWorkspaceFunction = function (id) {
@@ -649,6 +682,7 @@ define([], function () {
         self.$scope.newWorkspace.addedFiles = {};
         self.update();
     };
+
     // Helper methods
     WorkspaceController.prototype.getFileExtension = function (filename) {
         var a = filename.split(".");
@@ -658,13 +692,20 @@ define([], function () {
         return a.pop().toLowerCase();
     };
 
-    WorkspaceController.prototype.importFromFile = function (workspaceId, hash, importType) {
+    WorkspaceController.prototype.importFromFile = function (workspaceId, hash, importType, callback) {
         var self = this,
             folder,
             acceptedTypes = {
                 acm: true,
                 adm: true,
                 atm: true
+            },
+            done = callback || function (result) {
+                if (result.error) {
+                    console.error(result.error);
+                } else {
+                    console.info(result);
+                }
             };
 
         if (!acceptedTypes[importType]) {
@@ -678,30 +719,18 @@ define([], function () {
         folder = self.getFolder(workspaceId, importType, true);
         if (importType === 'acm') {
             self.smartClient.runPlugin('AcmImporter', {activeNode: folder.getId(), pluginConfig: {'UploadedFile': hash}}, function (result) {
-                if (result.error) {
-                    console.error(result.error);
-                    return;
-                }
-                console.info(result);
+                done(result);
             });
         } else if (importType === 'adm') {
             self.smartClient.runPlugin('AdmImporter', {activeNode: folder.getId(), pluginConfig: {'admFile': hash}}, function (result) {
-                if (result.error) {
-                    console.error(result.error);
-                    return;
-                }
-                console.info(result);
+                done(result);
             });
         } else if (importType === 'atm') {
             self.smartClient.runPlugin('AtmImporter', {activeNode: folder.getId(), pluginConfig: {'atmFile': hash}}, function (result) {
-                if (result.error) {
-                    console.error(result.error);
-                    return;
-                }
-                console.info(result);
+                done(result);
             });
         } else {
-            console.error('Unknown argument importType=' + importType);
+            done({error: 'Unknown argument importType=' + importType});
         }
     };
 
