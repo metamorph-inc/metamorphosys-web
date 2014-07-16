@@ -169,14 +169,14 @@ require(
 
             require.config({
                 paths: {
-                    'angular': 'extlib/src/client/lib/angular',
-                    'angular-route': 'extlib/src/client/lib/angular-route.min',
-                    'angular-route-styles': 'extlib/src/client/lib/route-styles',
-                    'ui-bootstrap': 'extlib/src/client/lib/ui-bootstrap-tpls-0.11.0.min',
-                    'moment': 'extlib/src/client/lib/moment.min',
-                    'angular-moment-js': 'extlib/src/client/lib/angular-momentjs',
-                    'angular-file-upload-shim': 'extlib/src/client/lib/angular-file-upload-shim.min',
-                    'angular-file-upload': 'extlib/src/client/lib/angular-file-upload'
+                    'angular': CONFIG.paths['CyPhyApp'] + '/lib/angular',
+                    'angular-route': CONFIG.paths['CyPhyApp'] + '/lib/angular-route.min',
+                    'angular-route-styles': CONFIG.paths['CyPhyApp'] + '/lib/route-styles',
+                    'ui-bootstrap': CONFIG.paths['CyPhyApp'] + '/lib/ui-bootstrap-tpls-0.11.0.min',
+                    'moment': CONFIG.paths['CyPhyApp'] + '/lib/moment.min',
+                    'angular-moment-js': CONFIG.paths['CyPhyApp'] + '/lib/angular-momentjs',
+                    'angular-file-upload-shim': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload-shim.min',
+                    'angular-file-upload': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload'
                 }
             });
 
