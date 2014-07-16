@@ -200,8 +200,7 @@ define([
                 //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
                 //        ((new Date().getTime() - timeStamp) / 1000).toString());
                 if (self.acmCounter > 0) {
-                    self.createMessage(projectNode, 'Work-space did not have all ACMs used by the design.' +
-                        'Import these or run this Plugin with the "Use dummy-shell ACMs" option set to true.');
+                    self.createMessage(projectNode, 'Work-space did not have all ACMs used by the design.');
                     self.logMissingACMsToResult();
                     return callback(null, self.result);
                 }

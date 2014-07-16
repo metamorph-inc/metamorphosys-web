@@ -486,11 +486,13 @@ define([], function () {
                 var newId,
                     key,
                     fileInfo,
+                    j,
                     acmArtie,
                     acms = {},
                     adms = [],
                     atms = [],
-                    afterAcmImport;
+                    afterAcmImport,
+                    alertMessages = [];
                 // Create new workspace node and name it appropriately.
                 newWorkspace.status = 'Importing files, please wait...';
                 newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
@@ -514,11 +516,33 @@ define([], function () {
                         }
                     }
                 }
+
                 afterAcmImport = function () {
                     self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
+                        var k,
+                            result;
                         console.log(admResults);
+                        for (k = 0; k < admResults.length; k += 1) {
+                            result = admResults[k];
+                            if (result.success === false) {
+                                for (j = 0; j < result.messages.length; j += 1) {
+                                    alertMessages.push(result.messages[j].message);
+                                }
+                            }
+                        }
                         self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
                             console.log(atmResults);
+                            for (k = 0; k < atmResults.length; k += 1) {
+                                result = atmResults[k];
+                                if (result.success === false) {
+                                    for (j = 0; j < result.messages.length; j += 1) {
+                                        alertMessages.push(result.messages[j].message);
+                                    }
+                                }
+                            }
+                            if (alertMessages.length > 0) {
+                                alert(alertMessages.join('\n'));
+                            }
                             self.cleanNewWorkspace(true);
                         });
                     });
@@ -531,6 +555,11 @@ define([], function () {
                             // TODO: error-handling
                             self.importFromFile(newId, artieHash, 'acm', function (result) {
                                 console.log(result);
+                                if (result.success === false) {
+                                    for (j = 0; j < result.messages.length; j += 1) {
+                                        alertMessages.push(result.messages[j].message);
+                                    }
+                                }
                                 afterAcmImport();
                             });
                         });
@@ -708,20 +737,20 @@ define([], function () {
         var self = this,
             counter = hashes.length,
             results = [],
-            i,
             counterCallback = function (result) {
                 counter -= 1;
                 results.push(result);
                 if (counter <= 0) {
                     callback(results);
+                } else {
+                    self.importFromFile(workspaceId, hashes[counter - 1], importType, counterCallback);
                 }
             };
+
         if (hashes.length === 0) {
             callback(results);
-            return;
-        }
-        for (i = 0; i < hashes.length; i += 1) {
-            self.importFromFile(workspaceId, hashes[i], importType, counterCallback);
+        } else {
+            self.importFromFile(workspaceId, hashes[counter - 1], importType, counterCallback);
         }
     };
 
