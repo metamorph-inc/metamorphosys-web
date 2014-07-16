@@ -113,7 +113,7 @@ define(['js/client',
                             }
 
                             console.info(projectName + ' project was imported.');
-                            self.openProject(self.client, callback, true);
+                            self.openProject(projectName, branchName, projectJSON, callback, true);
                         });
                     } else {
                         console.info(projectName + ' project template was not defined. Creating an empty project.');
@@ -124,7 +124,7 @@ define(['js/client',
                             }
 
                             console.info(projectName + ' empty project was created.');
-                            self.openProject(self.client, callback, true);
+                            self.openProject(projectName, branchName, null, callback, true);
                         });
                     }
                 }
