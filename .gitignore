@@ -11,4 +11,6 @@ executor-temp
 jobList.nedb
 
 # cyphy project temp files and directories
+mongodatabase
+!mongodatabase/Readme.md
 
