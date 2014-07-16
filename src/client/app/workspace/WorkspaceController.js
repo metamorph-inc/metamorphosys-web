@@ -285,7 +285,8 @@ define([], function () {
                         name: file.name,
                         type: fileExtension,
                         size: self.humanFileSize(file.size, true),
-                        url: ''
+                        url: '',
+                        error: ''
                     };
                     updateCounter();
                 } else {
@@ -457,7 +458,8 @@ define([], function () {
                             name: file.name,
                             type: fileExtension,
                             size: self.humanFileSize(file.size, true),
-                            url: self.smartClient.blobClient.getDownloadURL(hash)
+                            url: self.smartClient.blobClient.getDownloadURL(hash),
+                            error: ''
                         };
                         updateCounter();
                     });
@@ -523,24 +525,27 @@ define([], function () {
                             result;
                         console.log(admResults);
                         for (k = 0; k < admResults.length; k += 1) {
-                            result = admResults[k];
+                            result = admResults[k].result;
                             if (result.success === false) {
                                 for (j = 0; j < result.messages.length; j += 1) {
                                     alertMessages.push(result.messages[j].message);
                                 }
+                                newWorkspace.addedFiles[admResults[k].hash].error = ' ERROR : AdmImporter failed on this file!';
                             }
                         }
                         self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
                             console.log(atmResults);
                             for (k = 0; k < atmResults.length; k += 1) {
-                                result = atmResults[k];
+                                result = atmResults[k].result;
                                 if (result.success === false) {
                                     for (j = 0; j < result.messages.length; j += 1) {
                                         alertMessages.push(result.messages[j].message);
                                     }
+                                    newWorkspace.addedFiles[atmResults[k].hash].error = ' ERROR : AtmImporter failed on this file!';
                                 }
                             }
                             if (alertMessages.length > 0) {
+                                self.update();
                                 alert(alertMessages.join('\n'));
                             }
                             self.cleanNewWorkspace(true);
@@ -553,7 +558,7 @@ define([], function () {
                         // TODO: error-handling
                         acmArtie.save(function (err, artieHash) {
                             // TODO: error-handling
-                            self.importFromFile(newId, artieHash, 'acm', function (result) {
+                            self.importFromFile(newId, artieHash, 'acm', function (hash, result) {
                                 console.log(result);
                                 if (result.success === false) {
                                     for (j = 0; j < result.messages.length; j += 1) {
@@ -737,9 +742,9 @@ define([], function () {
         var self = this,
             counter = hashes.length,
             results = [],
-            counterCallback = function (result) {
+            counterCallback = function (hash, result) {
                 counter -= 1;
-                results.push(result);
+                results.push({hash: hash, result: result});
                 if (counter <= 0) {
                     callback(results);
                 } else {
@@ -770,9 +775,9 @@ define([], function () {
                 adm: true,
                 atm: true
             },
-            done = callback || function (result) {
+            done = callback || function (fileHash, result) {
                 if (result.error) {
-                    console.error(result.error);
+                    console.error(result);
                 } else {
                     console.info(result);
                 }
@@ -789,18 +794,18 @@ define([], function () {
         folder = self.getFolder(workspaceId, importType, true);
         if (importType === 'acm') {
             self.smartClient.runPlugin('AcmImporter', {activeNode: folder.getId(), pluginConfig: {'UploadedFile': hash}}, function (result) {
-                done(result);
+                done(hash, result);
             });
         } else if (importType === 'adm') {
             self.smartClient.runPlugin('AdmImporter', {activeNode: folder.getId(), pluginConfig: {'admFile': hash}}, function (result) {
-                done(result);
+                done(hash, result);
             });
         } else if (importType === 'atm') {
             self.smartClient.runPlugin('AtmImporter', {activeNode: folder.getId(), pluginConfig: {'atmFile': hash}}, function (result) {
-                done(result);
+                done(hash, result);
             });
         } else {
-            done({error: 'Unknown argument importType=' + importType});
+            done(hash, {error: 'Unknown argument importType=' + importType});
         }
     };
 

@@ -34,7 +34,7 @@
                                                     <i class="text-danger glyphicon glyphicon-remove"></i>
                                                 </div>
                                                 <!--<button class="btn btn-xs btn-danger" data-ng-click="deleteFile(file)">Remove</button>-->
-                                                <i ng-class="getTypeIcon(file.type)"></i><a href="{{file.url}}">{{file.name}}</a>({{file.size}})
+                                                <i ng-class="getTypeIcon(file.type)"></i><a href="{{file.url}}">{{file.name}}</a>({{file.size}}){{file.error}}
 
                                             </li>
                                         </ul>
