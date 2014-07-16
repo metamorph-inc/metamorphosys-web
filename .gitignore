@@ -1,0 +1,14 @@
+.idea
+
+node_modules
+
+# webgme temp files and directories
+server.log
+blob-local-storage
+
+# domain-tools project temp files and directories
+executor-temp
+jobList.nedb
+
+# cyphy project temp files and directories
+
