@@ -52,6 +52,12 @@ form .row {
   .file-list .file-list-item {
     display: block;
     padding: 0.3ex 0ex; }
+    .file-list .file-list-item a {
+      padding: 0ex 0.5ex; }
+    .file-list .file-list-item .fa.fa-cubes {
+      font-size: 91%; }
+    .file-list .file-list-item .glyphicon.glyphicon-saved {
+      font-size: 120%; }
 
 .list-group-item:hover .workspace-control-buttons {
   display: block; }

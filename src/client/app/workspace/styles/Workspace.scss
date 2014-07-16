@@ -73,6 +73,17 @@ form .row {
   .file-list-item {
     display: block;
     padding: 0.3ex 0ex;
+
+    a {
+      padding: 0ex 0.5ex;
+    }
+
+    .fa.fa-cubes {
+      font-size: 91%;
+    }
+    .glyphicon.glyphicon-saved {
+      font-size: 120%;
+    }
   }
 }
 

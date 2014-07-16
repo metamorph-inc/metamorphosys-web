@@ -62,12 +62,7 @@ define([], function () {
         };
 
         // New workspace
-        self.$scope.newWorkspace = {};
-        self.$scope.newWorkspace.name = '';
-        self.$scope.newWorkspace.description = '';
-        self.$scope.newWorkspace.expanded = false;
-        self.$scope.newWorkspace.hasFiles = false;
-        self.$scope.newWorkspace.addedFiles = {};
+        self.cleanNewWorkspace(false);
 
         self.$scope.onDroppedFiles = function (files) {
             throw 'onDroppedFiles function has to be overwritten. ' + files;
@@ -286,7 +281,7 @@ define([], function () {
                         hash: hash,
                         name: file.name,
                         type: fileExtension,
-                        size: file.size,
+                        size: self.humanFileSize(file.size, true),
                         url: ''
                     };
                     updateCounter();
@@ -455,7 +450,7 @@ define([], function () {
                             hash: hash,
                             name: file.name,
                             type: fileExtension,
-                            size: file.size,
+                            size: self.humanFileSize(file.size, true),
                             url: self.smartClient.blobClient.getDownloadURL(hash)
                         };
                         updateCounter();
@@ -483,7 +478,6 @@ define([], function () {
 
             createWorkspaceFunction = function (newWorkspace) {
                 var newId,
-                    j,
                     key,
                     fileInfo,
                     acmArtie,
@@ -491,6 +485,7 @@ define([], function () {
                     adms = [],
                     atms = [];
                 // Create new workspace node and name it appropriately.
+                newWorkspace.status = 'Importing files, please wait...';
                 newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
                     '[WebCyPhy] - New workspace was created.');
                 self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
@@ -517,8 +512,13 @@ define([], function () {
                         // TODO: error-handling
                         self.importFromFile(newId, artieHash, 'acm', function (result) {
                             console.log(result);
-                            // TODO: Import adms and atms
-                            self.cleanNewWorkspace();
+                            self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
+                                console.log(admResults);
+                                self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
+                                    console.log(atmResults);
+                                    self.cleanNewWorkspace(true);
+                                });
+                            });
                         });
                     });
                 });
@@ -672,18 +672,43 @@ define([], function () {
         });
     };
 
-    WorkspaceController.prototype.cleanNewWorkspace = function () {
+    WorkspaceController.prototype.cleanNewWorkspace = function (doUpdate) {
         var self = this;
-        self.$scope.newWorkspace = {};
-        self.$scope.newWorkspace.name = '';
-        self.$scope.newWorkspace.description = '';
-        self.$scope.newWorkspace.expanded = false;
-        self.$scope.newWorkspace.hasFiles = false;
-        self.$scope.newWorkspace.addedFiles = {};
-        self.update();
+        self.$scope.newWorkspace = {
+            status: '',
+            name: '',
+            description: '',
+            expanded: false,
+            hasFiles: false,
+            addedFiles: {}
+        };
+        if (doUpdate) {
+            self.update();
+        }
     };
 
     // Helper methods
+    WorkspaceController.prototype.importMultipleFromFiles = function (workspaceId, hashes, importType, callback) {
+        var self = this,
+            counter = hashes.length,
+            results = [],
+            i,
+            counterCallback = function (result) {
+                counter -= 1;
+                results.push(result);
+                if (counter <= 0) {
+                    callback(results);
+                }
+            };
+        if (hashes.length === 0) {
+            callback(results);
+            return;
+        }
+        for (i = 0; i < hashes.length; i += 1) {
+            self.importFromFile(workspaceId, hashes[i], importType, counterCallback);
+        }
+    };
+
     WorkspaceController.prototype.getFileExtension = function (filename) {
         var a = filename.split(".");
         if (a.length === 1 || (a[0] === "" && a.length === 2)) {
@@ -781,6 +806,24 @@ define([], function () {
                     '[WebCyPhy] - New ' + metaType[folderType] + ' was renamed: ' + name);
             return self.smartClient.client.getNode(nodeId);
         }
+    };
+
+    WorkspaceController.prototype.humanFileSize = function (bytes, si) {
+        var thresh = si ? 1000 : 1024;
+        if (bytes < thresh) {
+            return bytes + ' B';
+        }
+
+        var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+
+        var u = -1;
+
+        do {
+            bytes = bytes / thresh;
+            u += 1;
+        } while(bytes >= thresh);
+
+        return bytes.toFixed(1) + ' ' + units[u];
     };
 
     return WorkspaceController;
