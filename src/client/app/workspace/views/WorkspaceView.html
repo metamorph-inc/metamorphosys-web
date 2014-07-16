@@ -30,7 +30,9 @@
                                         <h4>Added files <small>Drag and drop files here</small></h4>
                                         <ul class="file-list">
                                             <li class="file-list-item" data-ng-repeat="file in newWorkspace.addedFiles | orderObjectBy:'type'">
-                                                <div class="btn btn-xs" data-ng-click="deleteFile(file)"><i class="text-danger glyphicon glyphicon-remove"></i></div>
+                                                <div class="btn btn-xs" data-ng-click="deleteFile(file)">
+                                                    <i class="text-danger glyphicon glyphicon-remove"></i>
+                                                </div>
                                                 <!--<button class="btn btn-xs btn-danger" data-ng-click="deleteFile(file)">Remove</button>-->
                                                 <i ng-class="getTypeIcon(file.type)"></i><a href="{{file.url}}">{{file.name}}</a>({{file.size}})
 

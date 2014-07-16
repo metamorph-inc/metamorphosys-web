@@ -58,6 +58,8 @@ form .row {
       font-size: 91%; }
     .file-list .file-list-item .glyphicon.glyphicon-saved {
       font-size: 120%; }
+    .file-list .file-list-item .glyphicon.glyphicon-file {
+      font-size: 117%; }
 
 .list-group-item:hover .workspace-control-buttons {
   display: block; }

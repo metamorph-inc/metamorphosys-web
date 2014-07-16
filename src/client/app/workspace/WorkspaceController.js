@@ -134,7 +134,10 @@ define([], function () {
                 adm: 'fa fa-cubes',
                 atm: 'glyphicon glyphicon-saved'
             };
-            return typeToIcon[type];
+            if (typeToIcon[type]) {
+                return typeToIcon[type];
+            }
+            return 'glyphicon glyphicon-file';
         };
 
         this.initOnFileSelect();
@@ -416,7 +419,10 @@ define([], function () {
                 validExtensions = {
                     adm: true,
                     atm: true,
-                    zip: true
+                    zip: true,
+                    txt: true,
+                    md: true,
+                    markdown: true
                 },
                 counter,
                 artie,
@@ -483,7 +489,8 @@ define([], function () {
                     acmArtie,
                     acms = {},
                     adms = [],
-                    atms = [];
+                    atms = [],
+                    afterAcmImport;
                 // Create new workspace node and name it appropriately.
                 newWorkspace.status = 'Importing files, please wait...';
                 newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
@@ -502,26 +509,35 @@ define([], function () {
                             adms.push(fileInfo.hash);
                         } else if (fileInfo.type === 'atm') {
                             atms.push(fileInfo.hash);
+                        } else {
+                            self.smartClient.client.setAttributes(newId, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' + newWorkspace.name + ' workspace ReadMe was updated.');
                         }
                     }
                 }
-                acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
-                acmArtie.addMetadataHashes(acms, function (err, hashes) {
-                    // TODO: error-handling
-                    acmArtie.save(function (err, artieHash) {
+                afterAcmImport = function () {
+                    self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
+                        console.log(admResults);
+                        self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
+                            console.log(atmResults);
+                            self.cleanNewWorkspace(true);
+                        });
+                    });
+                };
+                if (Object.keys(acms).length > 0) {
+                    acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
+                    acmArtie.addMetadataHashes(acms, function (err, hashes) {
                         // TODO: error-handling
-                        self.importFromFile(newId, artieHash, 'acm', function (result) {
-                            console.log(result);
-                            self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
-                                console.log(admResults);
-                                self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
-                                    console.log(atmResults);
-                                    self.cleanNewWorkspace(true);
-                                });
+                        acmArtie.save(function (err, artieHash) {
+                            // TODO: error-handling
+                            self.importFromFile(newId, artieHash, 'acm', function (result) {
+                                console.log(result);
+                                afterAcmImport();
                             });
                         });
                     });
-                });
+                } else {
+                    afterAcmImport();
+                }
             };
 
             deleteWorkspaceFunction = function (id) {
