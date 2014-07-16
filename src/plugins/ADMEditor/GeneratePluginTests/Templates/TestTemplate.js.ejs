@@ -1,0 +1,40 @@
+<%
+var test, i, resultStr;
+%>
+
+
+if (typeof window === 'undefined') {
+
+    // server-side setup
+    var webgme = require('webgme');
+    var webgmeConfig = require('../../../config.json');
+    webGMEGlobal.setConfig(webgmeConfig);
+
+    var chai = require('chai');
+}
+
+describe('<%=name%>', function () {
+    'use strict';
+    <%for (i = 0; i < tests.length; i += 1) {
+        test = tests[i];
+        resultStr = test.success ? 'succeed' : 'fail';
+%>
+    it('<%=test.plugin%> should <%=resultStr%> on <%=test.name%>', function (done) {
+        var projectName = 'ADMEditor',
+            pluginName = '<%=test.plugin%>',
+            testPoint = '<%=test.testPoint%>',
+            expectedSuccess = <%=test.success%>,
+            assetHash = '<%=test.asset%>';
+
+        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+            projectName: projectName,
+            pluginName: pluginName,
+            activeNode: testPoint
+        }, function (err, result) {
+            chai.expect(err).to.equal(null);
+            chai.expect(result.getSuccess()).to.equal(expectedSuccess);
+            done();
+        });
+    });
+<%}%>
+});

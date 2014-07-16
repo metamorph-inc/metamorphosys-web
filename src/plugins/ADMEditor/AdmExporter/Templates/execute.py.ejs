@@ -1,0 +1,161 @@
+import os
+import sys
+import shutil
+import zipfile
+import logging
+import subprocess
+import win32com.client
+
+## Setup a logger
+# Create logger with 'spam_application'.
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+# Create file handler which logs even debug messages.
+if not os.path.isdir('log'):
+    os.mkdir('log')
+
+fh = logging.FileHandler(os.path.join('log', 'execute.log'))
+fh.setLevel(logging.DEBUG)
+
+# Create console handler with a higher log level.
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+
+# Create formatter and add it to the handlers.
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+# Add the handlers to the logger.
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+
+## Obtain the root directory for the META-tools.
+# Get the running meta-python path.
+sys_pieces = sys.executable.split(os.path.sep)
+# Drop the 'bin/Python27/Scripts/python.exe' part.
+sys_pieces = sys_pieces[:-4]
+# Make sure to get the slashes after e.g. "C:".
+if sys_pieces[0].endswith(':'):
+    sys_pieces[0] = sys_pieces[0] + os.path.sep
+# Join the pieces.
+META_DIR = os.path.join(*sys_pieces)
+
+# Disable early binding: full of race conditions writing the cache files,
+# and changes the semantics since inheritance isn't handled correctly
+import win32com.client.gencache
+_savedGetClassForCLSID = win32com.client.gencache.GetClassForCLSID
+win32com.client.gencache.GetClassForCLSID = lambda x: None
+
+
+def parse_xme_and_save_to_mga(file_name='empty.xme'):
+    """
+    Imports the xme project and saves it to a mga-file with the same name.
+    (Will overwrite any existing mga with same path.)
+
+    returns : mga_path : path to newly created mga
+    """
+    mga_file = file_name[:-3] + 'mga'
+    mga_path = os.path.abspath(mga_file)
+    logger.debug("About to parse .xme, mga will be saved to " + mga_path)
+    parser = win32com.client.Dispatch('Mga.MgaParser')
+    (paradigm, paradigm_v, paradigm_guid, basename, version) = parser.GetXMLInfo(file_name)
+    logger.debug('Xme info :')
+    logger.debug('  paradigm     : {0}'.format(paradigm))
+    logger.debug('  paradigm_v   : {0}'.format(paradigm_v))
+    logger.debug('  paradigm_guid: {0}'.format(paradigm_guid))
+    logger.debug('  basename     : {0}'.format(basename))
+    logger.debug('  version      : {0}'.format(version))
+    if paradigm != 'CyPhyML':
+        raise IOError("Given xme file must be using CyPhyML as paradigm, not {0}".format(paradigm))
+
+    project = win32com.client.Dispatch('Mga.MgaProject')
+    project.Create('MGA={0}'.format(mga_path), paradigm)
+    try:
+        parser.ParseProject(project, file_name)
+        project.Save()
+        logging.debug("Mga saved to " + mga_file)
+    finally:
+        project.Close(True)
+
+    return mga_path
+
+
+def extract_components(src_path='ACMs', dst_path='components_extracted'):
+    if os.path.isdir(dst_path):
+        logging.debug('Found dir :{0} - removing and making new...'.format(dst_path))
+        shutil.rmtree(dst_path)
+        os.mkdir(dst_path)
+    files = os.listdir(src_path)
+    logging.debug('Components found in directory : {0}'.format(files))
+    for f_name in files:
+        if f_name.endswith('.zip'):
+            zippy = zipfile.ZipFile(os.path.join(src_path, f_name))
+            zippy.extractall(os.path.join(dst_path, f_name.rstrip('.zip')))
+
+
+def import_components(mga_path='empty.mga', dir_path='components_extracted'):
+    exec_name = 'CyPhyComponentImporterCL.exe'
+    exec_path = os.path.join(META_DIR, 'bin', 'CyPhyComponentImporterCL.exe')
+    if not os.path.isfile(exec_path):
+        logging.debug('Did not find {0} in bin directory.'.format(exec_name))
+        logging.debug('Assuming developer machine, looking in src directory...'.format(exec_name))
+        exec_path = os.path.join(META_DIR, 'src', 'CyPhyComponentImporterCL', 'bin', 'Release', exec_name)
+        if not os.path.isfile(exec_path):
+            raise IOError('Did not find {0}'.format(exec_path))
+
+    command = '{0} -r "{1}" "{2}"'.format(exec_path, dir_path, mga_path)
+    logger.debug('About to import components using command:')
+    logger.debug(command)
+    subprocess.call(command)
+
+
+def import_design(adm_file, mga_path='empty.mga'):
+    project_conn_str = 'MGA={0}'.format(mga_path)
+    project = win32com.client.Dispatch('Mga.MgaProject')
+    project.Open(project_conn_str)
+    is_in_transaction = False
+    try:
+        interpreter = win32com.client.Dispatch('MGA.Interpreter.CyPhyDesignImporter')
+        interpreter.Initialize(project)
+        logger.debug('About to begin transaction..')
+        project.BeginTransactionInNewTerr()
+        logger.info('Transaction began.')
+        is_in_transaction = True
+        logger.debug('Invoking CyPhyDesignImporter.ImportDesign..')
+        design_mga = interpreter.ImportDesign(project, adm_file)
+        logger.info('Import design finished, returned:')
+        logger.info('   Name : {0}'.format(design_mga.Name))
+        logger.info('   Path : {0}'.format(design_mga.AbsPath))
+        logger.info('   GUID : {0}'.format(design_mga.GetGuidDisp()))
+        logger.debug('About to commit transaction..')
+        project.CommitTransaction()
+        logger.info('Transaction committed.')
+        is_in_transaction = False
+    finally:
+        if is_in_transaction:
+            logger.debug('About to abort transaction..')
+            project.AbortTransaction()
+            logger.info('Transaction aborted.')
+            project.Close(True)
+        else:
+            logger.debug('About to save project..')
+            project.Close(False)
+            logger.debug('Project saved.')
+
+if __name__ == '__main__':
+    try:
+        adm_path = [f for f in os.listdir('.') if f.endswith('.adm')][0]
+    except IndexError:
+        logger.error('Could not find an adm file at {0}'.format(os.getcwd()))
+        sys.exit(1)
+    extract_components()
+    logger.info('Components extracted...')
+    mga_file = parse_xme_and_save_to_mga()
+    logger.info('Mga created...')
+    import_components()
+    logger.info('Components imported...')
+    import_design(adm_path)
+    logger.info('Design imported...')

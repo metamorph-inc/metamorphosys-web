@@ -1,0 +1,123 @@
+<!-- Workspace view module-->
+<div class="workspace-view">
+    <!-- Create a new workspace-->
+    <div id="create-new-workspace" class="row">
+            <div class="col-md-10 col-lg-10 col-sm-10">
+                <accordion close-others="oneAtATime">
+                    <accordion-group is-open="newWorkspace.expanded">
+                        <accordion-heading>
+                            <i class="glyphicon"
+                               ng-class="{'glyphicon-chevron-up': newWorkspace.expanded, 'glyphicon-plus': !newWorkspace.expanded}"></i> Create
+                            new workspace
+                        </accordion-heading>
+                        <div class="workspace-metadata-editor">
+                            <form class="drop-box" ng-file-drop="onDroppedFiles($files)" ng-file-drag-over-class="dragOverClass($event)">
+                                <!--<div data-ng-include="'app/workspace/views/WorkspaceEditFields.html'"></div>-->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" data-ng-model="newWorkspace.name"
+                                               placeholder="New workspace name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <textarea class="form-control edit-workspace-description" rows="5" data-ng-model="newWorkspace.description"
+                                                  placeholder="Description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h4>Added files <small>Drag and drop files here</small></h4>
+                                        <ul class="file-list">
+                                            <li class="file-list-item" data-ng-repeat="file in newWorkspace.addedFiles | orderObjectBy:'type'">
+                                                <button class="btn btn-xs btn-danger" data-ng-click="deleteFile(file)">Remove</button> - {{file.type}} --- <a href="{{file.url}}">{{file.name}}</a> --- {{file.size}}
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row form-footer">
+                                    <div class="col-md-8">
+                                        <button class="btn btn-default btn-submit btn-success"
+                                                data-ng-click="createWorkspace(newWorkspace)">Create
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+    </div>
+
+
+    <!-- Show list of workspaces -->
+    <div class="row">
+        <div class="col-md-10 col-lg-10 col-sm-10">
+            <!-- FIXME: what is the proper class instead of panel-group; we need spacing between the search and items -->
+            <div class="panel-group">
+                <div class="input-group">
+                    <input class="form-control" ng-model="search.$" placeholder="Type here to search">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 col-lg-10 col-sm-10">
+
+            <!--<pagination total-items="1000" ng-change="pager.pageChanged()" ng-model="pager.currentPage" max-size="pager.maxSize" class="pagination-sm" boundary-links="true" items-per-page="7" rotate="false" num-pages="numPages"></pagination>-->
+
+            <ul class="list-group" data-ng-repeat="workspace in workspaces | orderObjectBy: 'name' | filter:search">
+
+                <!-- One workspace item -->
+                <li class="list-group-item" data-id="{{ workspace.id }}" ng-file-drop="onFileSelect(workspace.id, $files)" ng-file-drag-over-class="dragOverClass($event)">
+
+                    <!-- TODO: remove this block, this was the original example -->
+                    <!--<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"-->
+                         <!--ng-show="dropSupported">drop files here</div>-->
+                    <!--<div ng-file-drop-available="dropSupported=true"-->
+                         <!--ng-show="!dropSupported">HTML5 Drop File is not supported!</div>-->
+                    <!--<button ng-click="upload.abort()">Cancel Upload</button>-->
+
+
+                    <!-- Header -->
+                    <a class="workspace-name" href="#/workspaceDetails/{{ workspace.id }}" tooltip="Open this workspace" tooltip-placement="right">{{ workspace.name }}</a>
+
+                    <div class="workspace-control-buttons">
+                        <div class="btn-group" dropdown is-open="status.isopen">
+                            <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                <li><a href="{{ workspace.url }}"><i class="glyphicon glyphicon-edit"></i> Open in editor</a></li>
+                                <li><a data-ng-click="duplicateWorkspace(workspace.id)"><i class="fa fa-copy copy-icon"></i> Duplicate</a></li>
+                                <li><a data-ng-click="editWorkspace(workspace.id)"><i class="glyphicon glyphicon-pencil"></i> Edit</a></li>
+                                <li class="divider"></li>
+                                <li><a data-ng-click="deleteWorkspace(workspace.id)"><i
+                                        class="glyphicon glyphicon-remove"></i> Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="workspace-description">{{ workspace.description }}</div>
+
+                    <!-- Footer -->
+                    <div class="last-updated-time">Updated  <span am-time-ago="workspace.lastUpdated.time"></span> by <a href="">{{workspace.lastUpdated.user }}</a></div>
+                    <div class="workspace-stats">
+                        <ul class="list-group">
+                            <li class="list-group-item pull-left" tooltip="Components" tooltip-placement="bottom"><i class="fa fa-puzzle-piece component-icon"></i><span class="count">{{ workspace.components.count }}</span></li>
+                            <li class="list-group-item pull-left" tooltip="Design spaces" tooltip-placement="bottom"><i class="fa fa-cubes"></i><span class="count">{{ workspace.designs.count }}</span></li>
+                            <li class="list-group-item pull-left" tooltip="Test benches" tooltip-placement="bottom"><i class="glyphicon glyphicon-saved"></i><span class="count">{{ workspace.testBenches.count }}</span></li>
+                            <li class="list-group-item pull-left" tooltip="Requirements" tooltip-placement="bottom"><i class="fa fa-bar-chart-o"></i><span class="count">{{ workspace.requirements.count }}</span></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+</div>

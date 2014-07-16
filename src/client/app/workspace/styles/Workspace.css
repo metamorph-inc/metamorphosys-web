@@ -1,0 +1,99 @@
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer; }
+
+.workspace-view {
+  margin: 1em;
+  padding: 1em;
+  min-width: 600px; }
+
+form .row {
+  margin-bottom: 1.5ex; }
+
+.edit-workspace-description {
+  resize: vertical;
+  height: 5em;
+  max-height: 20em; }
+
+.last-updated-time {
+  font-size: 80%;
+  color: #999; }
+
+.workspace-name {
+  font-size: 140%;
+  font-weight: bold; }
+
+.workspace-control-buttons {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: none; }
+
+.list-group-item {
+  padding: 2ex 1em; }
+  .list-group-item.dragover {
+    border: 1px dashed #666; }
+    .list-group-item.dragover.bg-success {
+      background-color: #dff0d8; }
+    .list-group-item.dragover.bg-danger {
+      background-color: #f2dede; }
+
+.drop-box {
+  padding: 2ex 1em;
+  border: 3px solid transparent; }
+  .drop-box.dragover {
+    border: 3px dashed #666; }
+    .drop-box.dragover.bg-success {
+      background-color: #dff0d8; }
+    .drop-box.dragover.bg-danger {
+      background-color: #f2dede; }
+
+.file-list {
+  padding: 0ex; }
+  .file-list .file-list-item {
+    display: block;
+    padding: 0.3ex 0ex; }
+
+.list-group-item:hover .workspace-control-buttons {
+  display: block; }
+
+.workspace-control-buttons .dropdown-toggle {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  border-top: 0;
+  border-right: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0; }
+.workspace-control-buttons a {
+  cursor: pointer; }
+
+.btn-group.open .dropdown-toggle {
+  box-shadow: none;
+  border-color: #ddd; }
+
+.workspace-stats {
+  position: absolute;
+  bottom: 0;
+  right: 1em;
+  font-size: 95%; }
+  .workspace-stats li.list-group-item {
+    border: none;
+    background-color: transparent;
+    opacity: .62;
+    padding: 1ex; }
+  .workspace-stats .count {
+    margin-left: 0.5ex; }
+
+.fa {
+  font-size: 126%; }
+  .fa.copy-icon {
+    font-size: 100%; }
+
+.workspace-description {
+  margin: 1.5ex 0;
+  color: #666; }
+
+.form-footer {
+  margin-top: 1.5em; }
+
+.workspace-metadata-editor {
+  padding-top: 1ex; }

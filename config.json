@@ -1,0 +1,42 @@
+{
+    "port": 8855,
+
+    "mongoip": "127.0.0.1",
+
+    "mongodatabase": "CyPhy",
+
+    "debug": false,
+
+    "decoratorpaths": ["./src/decorators"],
+
+    "visualizerDescriptors": ["./Visualizers.json"],
+
+    "pluginBasePaths": [
+        "./node_modules/webgme-domain-tools/src/plugins/META",
+        "./node_modules/webgme-domain-tools/src/plugins/Examples",
+        "./src/plugins/ADMEditor"
+    ],
+
+    "rextrast": {
+        "executor": "./node_modules/webgme-domain-tools/src/rest/executor/Executor",
+        "desert": "./src/rest/desert/Desert"
+    },
+
+    "paths": {
+        "ejs": "./node_modules/webgme-domain-tools/support/ejs/ejs.min",
+        "xmljsonconverter": "./node_modules/webgme-domain-tools/lib/xmljsonconverter",
+        "sax": "./node_modules/webgme-domain-tools/support/sax/sax",
+        "panels": "./node_modules/webgme-domain-tools/src/panels",
+        "widgets": "./node_modules/webgme-domain-tools/src/widgets",
+        "panels/ProjectAnalyzer": "./src/panels/ProjectAnalyzer",
+        "widgets/ProjectAnalyzer": "./src/widgets/ProjectAnalyzer",
+        "executor": "./node_modules/webgme-domain-tools/src/rest/executor",
+        "desert": "./src/rest/desert",
+        "CyPhyApp" : "./src/client",
+        "CyPhyMETA" : "./meta"
+    },
+
+    "test_paths": {
+        "mocks": "./node_modules/webgme-domain-tools/src/mocks"
+    }
+}
