@@ -69,7 +69,6 @@ define(['plugin/PluginConfig',
     * @returns {object} The version of the plugin.
     * @public
     */
-    // A debug option returning the ACM in json format might be good for more complex models.
     AcmImporter.prototype.getConfigStructure = function () {
         return [
             {

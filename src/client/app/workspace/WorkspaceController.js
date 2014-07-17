@@ -595,7 +595,7 @@ define([], function () {
                 }
 
                 // requirement
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Requirement')) {
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
                     if (events[j].etype === 'load') {
                         workspace.requirements.count += 1;
                     } else if (events[j].etype === 'unload') {

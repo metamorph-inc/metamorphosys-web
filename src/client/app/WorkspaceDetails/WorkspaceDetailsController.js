@@ -180,7 +180,7 @@ define([], function () {
                                             }
                                         }
 
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Requirement')) {
+                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
                                             if (events[j].etype === 'load') {
                                                 self.addRequirement(events[j].eid);
 
