@@ -1,4 +1,4 @@
-/*globals define, console*/
+/*globals define, console, window*/
 
 /**
  * @author lattmann / https://github.com/lattmann

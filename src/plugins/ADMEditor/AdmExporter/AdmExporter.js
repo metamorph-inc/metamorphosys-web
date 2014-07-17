@@ -783,7 +783,7 @@ define([
             }
         };
 
-        containerData = self.getContainerData(rootNode);
+        containerData = self.getContainerData(rootNode, true);
         self.admData.RootContainer = containerData;
         self.visitAllChildrenRec(rootNode, counter, containerData, counterCallback);
     };
@@ -823,24 +823,29 @@ define([
         });
     };
 
-    AdmExporter.prototype.getContainerData = function (node) {
+    AdmExporter.prototype.getContainerData = function (node, isRoot) {
         var self = this,
-            pos = self.core.getRegistry(node, 'position');
-        return {
-            "@xmlns:q1": "avm",
-            "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
-            "@Name": self.core.getAttribute(node, 'name'),
-            "@xmlns": "",
-            "@XPosition": Math.floor(pos.x),
-            "@YPosition": Math.floor(pos.y),
-            "Container": [],
-            "Property": [],
-            "ComponentInstance": [],
-            "Port": [],
-            "Connector": [],
-            "JoinData": [],
-            "Formula": []
-        };
+            pos = self.core.getRegistry(node, 'position'),
+            containerData = {
+                "@xmlns:q1": "avm",
+                "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
+                "@Name": self.core.getAttribute(node, 'name'),
+                "@xmlns": "",
+                "@XPosition": Math.floor(pos.x),
+                "@YPosition": Math.floor(pos.y),
+                "Container": [],
+                "Property": [],
+                "ComponentInstance": [],
+                "Port": [],
+                "Connector": [],
+                "JoinData": [],
+                "Formula": []
+            };
+        if (isRoot) {
+            delete containerData["@XPosition"];
+            delete containerData["@YPosition"];
+        }
+        return containerData;
     };
 
     AdmExporter.prototype.appendWhiteSpacedString = function (toBeAppended, appendix) {

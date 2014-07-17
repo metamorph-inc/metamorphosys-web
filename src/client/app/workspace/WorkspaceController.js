@@ -1,4 +1,4 @@
-/*globals define, console*/
+/*globals define, console, alert, window*/
 
 /**
  * @author lattmann / https://github.com/lattmann
@@ -301,11 +301,6 @@ define([], function () {
                 addFile(files[i]);
             }
         };
-        // test UI responsiveness
-//        setInterval(function () {
-//            self.$scope.workspaces['/2'].lastUpdated.time = (new Date()).toISOString();
-//            self.update();
-//        }, 100);
     };
 
     WorkspaceController.prototype.initOnFileSelect = function () {
@@ -411,7 +406,6 @@ define([], function () {
             }
         }
     };
-
 
     WorkspaceController.prototype.initWithSmartClient = function () {
         var self = this,
@@ -633,11 +627,17 @@ define([], function () {
         }
     };
 
-    // Functions for creating functions depending on the Root-node being loaded.
+    // Functions for creating functions that depend on the Root-node being loaded.
     WorkspaceController.prototype.initExportWorkspaceClient = function () {
         var self = this;
         return function (id) {
-            alert('Will export ' + id);
+            self.smartClient.runPlugin('ExportWorkspace', {activeNode: id, pluginConfig: {}}, function (result) {
+                if (result.success === false) {
+                    alert('Failed exporting workspace!');
+                    return;
+                }
+                window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
+            });
         };
     };
 
