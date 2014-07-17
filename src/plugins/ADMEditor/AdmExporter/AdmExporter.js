@@ -825,14 +825,12 @@ define([
 
     AdmExporter.prototype.getContainerData = function (node, isRoot) {
         var self = this,
-            pos = self.core.getRegistry(node, 'position'),
+            pos,
             containerData = {
                 "@xmlns:q1": "avm",
                 "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
                 "@Name": self.core.getAttribute(node, 'name'),
                 "@xmlns": "",
-                "@XPosition": Math.floor(pos.x),
-                "@YPosition": Math.floor(pos.y),
                 "Container": [],
                 "Property": [],
                 "ComponentInstance": [],
@@ -841,10 +839,13 @@ define([
                 "JoinData": [],
                 "Formula": []
             };
-        if (isRoot) {
-            delete containerData["@XPosition"];
-            delete containerData["@YPosition"];
+
+        if (!isRoot) {
+            pos = self.core.getRegistry(node, 'position');
+            containerData["@XPosition"] = Math.floor(pos.x);
+            containerData["@YPosition"] = Math.floor(pos.y);
         }
+
         return containerData;
     };
 
