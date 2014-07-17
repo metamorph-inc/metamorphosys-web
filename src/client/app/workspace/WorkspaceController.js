@@ -88,6 +88,10 @@ define([], function () {
             throw 'duplicateWorkspace function has to be overwritten. ' + id;
         };
 
+        self.$scope.exportWorkspace = function (id) {
+            throw 'exportWorkspace function has to be overwritten. ' + id;
+        };
+
         self.$scope.editWorkspace = function (id) {
             var workspace = self.$scope.workspaces[id],
                 modalInstance = self.$modal.open({
@@ -398,7 +402,7 @@ define([], function () {
 
         if (workspace.description !== description) {
             if (this.smartClient) {
-                message = '[WebCyPhy] - Change description for ' +  workspace.name + ': ' + workspace.description + ' -> ' + description;
+                message = '[WebCyPhy] - Change description for ' + workspace.name + ': ' + workspace.description + ' -> ' + description;
                 this.smartClient.client.setAttributes(id, 'INFO', description, message);
             } else {
                 workspace.description = description;
@@ -472,6 +476,7 @@ define([], function () {
             }
         };
 
+
         self.territories = {};
 
         territoryPattern[ROOT_ID] = {children: 1};
@@ -479,131 +484,23 @@ define([], function () {
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
-                nodeObj,
-                createWorkspaceFunction,
-                deleteWorkspaceFunction,
-                duplicateWorkspaceFunction;
-
-            createWorkspaceFunction = function (newWorkspace) {
-                var newId,
-                    key,
-                    fileInfo,
-                    j,
-                    acmArtie,
-                    acms = {},
-                    adms = [],
-                    atms = [],
-                    afterAcmImport,
-                    alertMessages = [];
-                // Create new workspace node and name it appropriately.
-                newWorkspace.status = 'Importing files, please wait...';
-                newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
-                    '[WebCyPhy] - New workspace was created.');
-                self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
-                if (newWorkspace.description) {
-                    self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
-                }
-                // Import the files dropped by the user.
-                for (key in newWorkspace.addedFiles) {
-                    if (newWorkspace.addedFiles.hasOwnProperty(key)) {
-                        fileInfo = newWorkspace.addedFiles[key];
-                        if (fileInfo.type === 'acm') {
-                            acms[fileInfo.name] = fileInfo.hash;
-                        } else if (fileInfo.type === 'adm') {
-                            adms.push(fileInfo.hash);
-                        } else if (fileInfo.type === 'atm') {
-                            atms.push(fileInfo.hash);
-                        } else {
-                            self.smartClient.client.setAttributes(newId, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' + newWorkspace.name + ' workspace ReadMe was updated.');
-                        }
-                    }
-                }
-
-                afterAcmImport = function () {
-                    self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
-                        var k,
-                            result;
-                        console.log(admResults);
-                        for (k = 0; k < admResults.length; k += 1) {
-                            result = admResults[k].result;
-                            if (result.success === false) {
-                                for (j = 0; j < result.messages.length; j += 1) {
-                                    alertMessages.push(result.messages[j].message);
-                                }
-                                newWorkspace.addedFiles[admResults[k].hash].error = ' ERROR : AdmImporter failed on this file!';
-                            }
-                        }
-                        self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
-                            console.log(atmResults);
-                            for (k = 0; k < atmResults.length; k += 1) {
-                                result = atmResults[k].result;
-                                if (result.success === false) {
-                                    for (j = 0; j < result.messages.length; j += 1) {
-                                        alertMessages.push(result.messages[j].message);
-                                    }
-                                    newWorkspace.addedFiles[atmResults[k].hash].error = ' ERROR : AtmImporter failed on this file!';
-                                }
-                            }
-                            if (alertMessages.length > 0) {
-                                self.update();
-                                alert(alertMessages.join('\n'));
-                            }
-                            self.cleanNewWorkspace(true);
-                        });
-                    });
-                };
-                if (Object.keys(acms).length > 0) {
-                    acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
-                    acmArtie.addMetadataHashes(acms, function (err, hashes) {
-                        // TODO: error-handling
-                        acmArtie.save(function (err, artieHash) {
-                            // TODO: error-handling
-                            self.importFromFile(newId, artieHash, 'acm', function (hash, result) {
-                                console.log(result);
-                                if (result.success === false) {
-                                    for (j = 0; j < result.messages.length; j += 1) {
-                                        alertMessages.push(result.messages[j].message);
-                                    }
-                                }
-                                afterAcmImport();
-                            });
-                        });
-                    });
-                } else {
-                    afterAcmImport();
-                }
-            };
-
-            deleteWorkspaceFunction = function (id) {
-                var nodeToDelete = self.smartClient.client.getNode(id);
-                self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + nodeToDelete.getAttribute('name') + ' was deleted.');
-            };
-
-            duplicateWorkspaceFunction = function (id) {
-                //self.$scope.createWorkspace(self.$scope.workspaces[id]);
-                var params = {"parentId": ROOT_ID};
-                params[id] = {};
-                self.smartClient.client.copyMoreNodes(params, '[WebCyPhy] - Duplicate workspace ' + self.$scope.workspaces[id].name);
-                self.update();
-                self.$scope.editWorkspace(id);
-            };
+                nodeObj;
 
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
 
                 if (event.eid === ROOT_ID && event.etype === 'load') {
-                    self.$scope.createWorkspace = createWorkspaceFunction;
-                    self.$scope.deleteWorkspace = deleteWorkspaceFunction;
-                    self.$scope.duplicateWorkspace = duplicateWorkspaceFunction;
+                    self.$scope.createWorkspace = self.initCreateWorkspaceClient(ROOT_ID);
+                    self.$scope.deleteWorkspace = self.initDeleteWorkspaceClient();
+                    self.$scope.duplicateWorkspace = self.initDuplicateWorkspaceClient(ROOT_ID);
+                    self.$scope.exportWorkspace = self.initExportWorkspaceClient();
                 }
 
                 if (self.smartClient.isMetaTypeOf(nodeObj, 'WorkSpace')) {
                     if (nodeObj.getId() !== self.smartClient.metaNodes.WorkSpace.getId()) {
                         if (event.etype === 'load' || event.etype === 'update') {
-
                             self.addWorkspaceWatch(nodeObj);
-
                         }
                     }
                 }
@@ -612,7 +509,6 @@ define([], function () {
                     self.smartClient.removeUI(self.territories[event.eid]);
                     delete self.$scope.workspaces[event.eid];
                 }
-
             }
 
             if (Object.keys(self.$scope.workspaces).length === 0) {
@@ -735,6 +631,126 @@ define([], function () {
         if (doUpdate) {
             self.update();
         }
+    };
+
+    // Functions for creating functions depending on the Root-node being loaded.
+    WorkspaceController.prototype.initExportWorkspaceClient = function () {
+        var self = this;
+        return function (id) {
+            alert('Will export ' + id);
+        };
+    };
+
+    WorkspaceController.prototype.initDeleteWorkspaceClient = function () {
+        var self = this;
+        return function (id) {
+            var nodeToDelete = self.smartClient.client.getNode(id);
+            self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + nodeToDelete.getAttribute('name') + ' was deleted.');
+        };
+    };
+
+    WorkspaceController.prototype.initDuplicateWorkspaceClient = function (ROOT_ID) {
+        var self = this;
+        return function (id) {
+            var params = {"parentId": ROOT_ID};
+            params[id] = {};
+            self.smartClient.client.copyMoreNodes(params, '[WebCyPhy] - Duplicate workspace ' + self.$scope.workspaces[id].name);
+            self.update();
+            self.$scope.editWorkspace(id);
+        };
+    };
+
+    WorkspaceController.prototype.initCreateWorkspaceClient = function (ROOT_ID) {
+        var self = this;
+        return function (newWorkspace) {
+            var newId,
+                key,
+                fileInfo,
+                j,
+                acmArtie,
+                acms = {},
+                adms = [],
+                atms = [],
+                afterAcmImport,
+                alertMessages = [];
+            // Create new workspace node and name it appropriately.
+            newWorkspace.status = 'Importing files, please wait...';
+            newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
+                '[WebCyPhy] - New workspace was created.');
+            self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
+            if (newWorkspace.description) {
+                self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
+            }
+            // Import the files dropped by the user.
+            for (key in newWorkspace.addedFiles) {
+                if (newWorkspace.addedFiles.hasOwnProperty(key)) {
+                    fileInfo = newWorkspace.addedFiles[key];
+                    if (fileInfo.type === 'acm') {
+                        acms[fileInfo.name] = fileInfo.hash;
+                    } else if (fileInfo.type === 'adm') {
+                        adms.push(fileInfo.hash);
+                    } else if (fileInfo.type === 'atm') {
+                        atms.push(fileInfo.hash);
+                    } else {
+                        self.smartClient.client.setAttributes(newId, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' + newWorkspace.name + ' workspace ReadMe was updated.');
+                    }
+                }
+            }
+
+            afterAcmImport = function () {
+                self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
+                    var k,
+                        result;
+                    console.log(admResults);
+                    for (k = 0; k < admResults.length; k += 1) {
+                        result = admResults[k].result;
+                        if (result.success === false) {
+                            for (j = 0; j < result.messages.length; j += 1) {
+                                alertMessages.push(result.messages[j].message);
+                            }
+                            newWorkspace.addedFiles[admResults[k].hash].error = ' ERROR : AdmImporter failed on this file!';
+                        }
+                    }
+                    self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
+                        console.log(atmResults);
+                        for (k = 0; k < atmResults.length; k += 1) {
+                            result = atmResults[k].result;
+                            if (result.success === false) {
+                                for (j = 0; j < result.messages.length; j += 1) {
+                                    alertMessages.push(result.messages[j].message);
+                                }
+                                newWorkspace.addedFiles[atmResults[k].hash].error = ' ERROR : AtmImporter failed on this file!';
+                            }
+                        }
+                        if (alertMessages.length > 0) {
+                            self.update();
+                            alert(alertMessages.join('\n'));
+                        }
+                        self.cleanNewWorkspace(true);
+                    });
+                });
+            };
+            if (Object.keys(acms).length > 0) {
+                acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
+                acmArtie.addMetadataHashes(acms, function (err, hashes) {
+                    // TODO: error-handling
+                    acmArtie.save(function (err, artieHash) {
+                        // TODO: error-handling
+                        self.importFromFile(newId, artieHash, 'acm', function (hash, result) {
+                            console.log(result);
+                            if (result.success === false) {
+                                for (j = 0; j < result.messages.length; j += 1) {
+                                    alertMessages.push(result.messages[j].message);
+                                }
+                            }
+                            afterAcmImport();
+                        });
+                    });
+                });
+            } else {
+                afterAcmImport();
+            }
+        };
     };
 
     // Helper methods
