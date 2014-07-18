@@ -16,6 +16,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         // Call base class' constructor.
         PluginBase.call(this);
         this.meta = null;
+        this.metricMap = {};
     };
 
     // Prototypal inheritance from PluginBase.
