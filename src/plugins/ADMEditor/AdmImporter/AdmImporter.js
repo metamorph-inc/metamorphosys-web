@@ -182,7 +182,7 @@ define([
                     arrayElements: arrayElementsInXml
                 }),
                 admFolder = self.activeNode,
-                projectNode;
+                workspaceNode;
 
             self.admData = xml2json.convertFromBuffer(xmlArrayBuffer);
             if (self.admData instanceof Error) {
@@ -191,16 +191,16 @@ define([
             }
 
             self.admData = self.admData['Design'];
-            projectNode = self.getProjectNode(admFolder);
+            workspaceNode = self.getWorkspaceNode(admFolder);
             //timeStamp = new Date().getTime();
-            self.exploreACMs(projectNode, false, function (err) {
+            self.exploreACMs(workspaceNode, false, function (err) {
                 if (err) {
                     return callback(err, self.result);
                 }
                 //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
                 //        ((new Date().getTime() - timeStamp) / 1000).toString());
                 if (self.acmCounter > 0) {
-                    self.createMessage(projectNode, 'Work-space did not have all ACMs used by the design.');
+                    self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.');
                     self.logMissingACMsToResult();
                     return callback(null, self.result);
                 }
@@ -266,7 +266,7 @@ define([
     };
 
 //<editor-fold desc="============================ Gathering of ACM Info ===========================">
-    AdmImporter.prototype.getProjectNode = function (node) {
+    AdmImporter.prototype.getWorkspaceNode = function (node) {
         var self = this;
         while (node) {
             if (self.isMetaTypeOf(node, self.meta.WorkSpace)) {
@@ -423,14 +423,6 @@ define([
 //<editor-fold desc="=========================== Creation of ADM objects ==========================">
     AdmImporter.prototype.createAdmDesign = function (admFolder) {
         var self = this;
-//            admDesign;
-//        admDesign = self.core.createNode({parent: admFolder, base: self.meta.AVMDesignModel});
-//        self.core.setAttribute(admDesign, 'name', self.admData['@Name']);
-//        self.core.setAttribute(admDesign, 'DesignID', self.admData['@DesignID']);
-//        //TODO: There are two in the adm-file, which should be used? Both?
-//        self.core.setAttribute(admDesign, 'SchemaVersion', self.admData['@xmlns:xsd']);
-//
-//        self.logger.info('Created AVMDesignModel : ' + self.admData['@Name']);
         return self.createContainer(self.admData.RootContainer, admFolder, 0);
     };
 

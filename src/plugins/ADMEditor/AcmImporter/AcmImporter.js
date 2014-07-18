@@ -136,7 +136,7 @@ define(['plugin/PluginConfig',
 
         acmFolderNode = self.activeNode;
 
-        self.projectNode = self.getProjectNode(acmFolderNode);
+        self.projectNode = self.getWorkspaceNode(acmFolderNode);
         self.deleteExisting = currentConfig.DeleteExisting;
 
         var findComponentsCallback = function () {
@@ -198,7 +198,7 @@ define(['plugin/PluginConfig',
         self.findComponentsRecursive(self.projectNode, findComponentsCallback);
     };
 
-    AcmImporter.prototype.getProjectNode = function (node) {
+    AcmImporter.prototype.getWorkspaceNode = function (node) {
         var self = this;
         while (node) {
             if (self.isMetaTypeOf(node, self.metaTypes.WorkSpace)) {

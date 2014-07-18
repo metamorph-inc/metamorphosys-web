@@ -16,6 +16,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
         // Call base class' constructor.
         PluginBase.call(this);
         this.meta = null;
+        this.acceptErrors = false;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -50,6 +51,26 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
     };
 
     /**
+     * Gets the configuration structure for the RequirementExporter.
+     * The ConfigurationStructure defines the configuration for the plugin
+     * and will be used to populate the GUI when invoking the plugin from webGME.
+     * @returns {object} The version of the plugin.
+     * @public
+     */
+    RequirementExporter.prototype.getConfigStructure = function () {
+        return [
+            {
+                'name': 'partial',
+                'displayName': 'Export partial',
+                'description': 'If requirement are not pointing to metrics - a partial json is still generated.',
+                'value': true,
+                'valueType': 'boolean',
+                'readOnly': false
+            }
+        ];
+    };
+
+    /**
     * Main function for the plugin to execute. This will perform the execution.
     * Notes:
     * - Always log with the provided logger.[error,warning,info,debug].
@@ -59,10 +80,11 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
     * @param {function(string, plugin.PluginResult)} callback - the result callback
     */
     RequirementExporter.prototype.main = function (callback) {
-        var self = this;
+        var self = this,
+            config = self.getCurrentConfig();
         self.meta = MetaTypes;
         self.updateMETA(self.meta);
-
+        self.acceptErrors = config.partial;
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.');
@@ -76,7 +98,14 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
 
         // TODO: ADD error handling.
         self.visitAllChildrenFromRequirementCategory(self.activeNode, function (err, rootCategory) {
-            var artie = self.blobClient.createArtifact('requirement');
+            var artie;
+            if (err) {
+                self.logger.error('visitAllChildrenFromRequirementCategory had errors, err: ' + err);
+                if (self.acceptErrors === false) {
+                    return callback(null, self.result);
+                }
+            }
+            artie = self.blobClient.createArtifact('requirement');
             artie.addFile('requirements.json', JSON.stringify(rootCategory, null, 4), function (err, hash) {
                 artie.save(function (err, artieHash) {
                     self.result.addArtifact(artieHash);
@@ -106,8 +135,26 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
             req.threshold = self.core.getAttribute(node, 'threshold');
             req.KPP = self.core.getAttribute(node, 'KPP');
             req.function = self.core.getAttribute(node, 'function');
+            req.unit = '';
             reqCategory.children.push(req);
-            callback(null);
+            if (self.core.hasPointer(node, 'Metric')) {
+                self.core.loadPointer(node, 'Metric', function (err, metricNode) {
+                    var tbNode;
+                    if (err) {
+                        self.logger.error('Could not load Metric pointer, err: ' + err);
+                        return callback('Could not load Metric pointer, err: ' + err);
+                    }
+                    tbNode = self.core.getParent(metricNode);
+                    req.metricName = self.core.getAttribute(metricNode, 'name');
+                    req.testBench = self.core.getAttribute(tbNode, 'name');
+                    callback(null);
+                });
+            } else {
+                self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!');
+                req.metricName = 'UNDEFINED';
+                req.testBench = 'UNDEFINED';
+                callback('Missing metrics!');
+            }
         } else if (nodeType === 'RequirementCategory') {
             req.category = true;
             req.children = [];
@@ -160,8 +207,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
                 counter.visits -= 1;
                 atModelNodeCallback = function (childNode) {
                     return function (err, reqCategory) {
-                        if (err) {
-                            callback(err);
+                        if (err && self.acceptErrors === false) {
+                            return callback(err);
                         }
                         if (reqCategory) {
                             self.visitAllChildrenRec(childNode, reqCategory, counter, callback);

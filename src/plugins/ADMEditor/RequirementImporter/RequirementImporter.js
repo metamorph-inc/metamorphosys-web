@@ -101,7 +101,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
 
         self.blobClient.getObject(config.requirement, function (err, requirementBuffer) {
             var reqStr,
-                reqJson;
+                reqJson,
+                wsNode;
             if (err) {
                 self.createMessage(null, 'Could not obtain file from blob.');
                 return callback(null, self.result);
@@ -114,10 +115,19 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 self.createMessage(null, 'Could not parse given file as json, err: ' + exc.message);
                 return callback(null, self.result);
             }
-            self.buildRequirementRec(reqJson, self.activeNode, 0);
-            self.result.setSuccess(true);
-            self.save('added obj', function (err) {
-                callback(null, self.result);
+            wsNode = self.getWorkspaceNode(self.activeNode);
+            self.gatherMetrics(wsNode, function (err) {
+                if (err) {
+                    self.createMessage(wsNode, 'Something went wrong exploring the test-benches/metrics.');
+                    self.result.setSuccess(false);
+                    return callback(null, self.result);
+                }
+                self.logger.info(self.metricMap);
+                self.buildRequirementRec(reqJson, self.activeNode, 0);
+                self.result.setSuccess(true);
+                self.save('Imported requirements', function (err) {
+                    callback(null, self.result);
+                });
             });
         });
     };
@@ -125,6 +135,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
     RequirementImporter.prototype.buildRequirementRec = function (req, parent, siblingNbr) {
         var self = this,
             node,
+            metricNode,
             isCategory,
             i;
         if (req.hasOwnProperty('children')) {
@@ -143,6 +154,12 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
             }
             if (req.hasOwnProperty('function')) {
                 self.core.setAttribute(node, 'function', req.function);
+            }
+            metricNode = self.metricMap[req.metricName + '-in-' + req.testBench];
+            if (metricNode) {
+                self.core.setPointer(node, 'Metric', metricNode);
+            } else {
+                self.createMessage(node, 'Requirement named "' + req.name + '" did not have a matching metric and test-bench.');
             }
         }
         // Common attributes
@@ -166,6 +183,90 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 self.buildRequirementRec(req.children[i], node, i);
             }
         }
+    };
+
+    RequirementImporter.prototype.gatherMetrics = function (wsNode, callback) {
+        var self = this;
+        self.core.loadChildren(wsNode, function (err, children) {
+            var counter,
+                i,
+                counterCallback,
+                error = '';
+
+            if (err) {
+                return callback('Could not load children for project, err: ' + err, self.result);
+            }
+            if (children.length === 0) {
+                return callback(null);
+            }
+            // Define a counter and callback for the recursion.
+            counter = {visits: children.length};
+            counterCallback = function (err) {
+                error = err ? error += err : error;
+                counter.visits -= 1;
+                if (counter.visits === 0) {
+                    callback(error);
+                }
+            };
+            // Iterate over children and invoke recursion on ACMFolders.
+            for (i = 0; i < children.length; i += 1) {
+                if (self.isMetaTypeOf(children[i], self.meta.ATMFolder)) {
+                    self.visitTestBenchesRec(children[i], counter, null, counterCallback);
+                } else {
+                    counterCallback(null);
+                }
+            }
+        });
+    };
+
+    RequirementImporter.prototype.visitTestBenchesRec = function (node, counter, tbName, callback) {
+        var self = this,
+            name = self.core.getAttribute(node, 'name'),
+            childName;
+
+//        if (self.acmCounter <= 0) {
+//            callback(null);
+//        }
+        self.core.loadChildren(node, function (err, children) {
+            var i,
+                childMetaType;
+            if (err) {
+                return callback(' loadChildren failed for ' + name + ' with error : ' + err);
+            }
+            counter.visits += children.length;
+
+            if (children.length === 0) {
+                // The only chance for callback to be called.
+                callback(null);
+            } else {
+                // The node needs to be accounted for.
+                counter.visits -= 1;
+            }
+            for (i = 0; i < children.length; i += 1) {
+                childMetaType = self.core.getAttribute(self.getMetaType(children[i]), 'name');
+                childName = self.core.getAttribute(children[i], 'name');
+                if (childMetaType === 'ATMFolder' || childMetaType === 'AVMTestBenchModel') {
+                    self.visitTestBenchesRec(children[i], counter, childName, callback);
+                } else if (childMetaType === 'Metric') {
+                    self.metricMap[childName + '-in-' + tbName] = children[i];
+                    callback(null);
+                } else {
+                    callback(null);
+                }
+            }
+        });
+    };
+
+    RequirementImporter.prototype.getWorkspaceNode = function (node) {
+        var self = this;
+        while (node) {
+            if (self.isMetaTypeOf(node, self.meta.WorkSpace)) {
+                self.logger.debug('Found WorkSpace-Node : ' + self.core.getAttribute(node, 'name'));
+                return node;
+            }
+            node = self.core.getParent(node);
+        }
+        self.logger.error('Could not find WorkSpace!!');
     };
 
     return RequirementImporter;
