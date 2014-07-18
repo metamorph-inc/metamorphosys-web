@@ -136,7 +136,8 @@ define([], function () {
             var typeToIcon = {
                 acm: 'fa fa-puzzle-piece component-icon',
                 adm: 'fa fa-cubes',
-                atm: 'glyphicon glyphicon-saved'
+                atm: 'glyphicon glyphicon-saved',
+                requirement: 'fa fa-bar-chart-o'
             };
             if (typeToIcon[type]) {
                 return typeToIcon[type];
@@ -260,7 +261,11 @@ define([], function () {
                 validExtensions = {
                     adm: true,
                     atm: true,
-                    zip: true
+                    zip: true,
+                    txt: true,
+                    md: true,
+                    markdown: true,
+                    json: true
                 },
                 counter,
                 addFile,
@@ -284,6 +289,7 @@ define([], function () {
                     hash = self.chance.hash();
                 if (validExtensions[fileExtension]) {
                     fileExtension = fileExtension === 'zip' ? 'acm' : fileExtension;
+                    fileExtension = fileExtension === 'json' ? 'requirement' : fileExtension;
                     self.$scope.newWorkspace.addedFiles[hash] = {
                         hash: hash,
                         name: file.name,
@@ -421,7 +427,8 @@ define([], function () {
                     zip: true,
                     txt: true,
                     md: true,
-                    markdown: true
+                    markdown: true,
+                    json: true
                 },
                 counter,
                 artie,
@@ -451,6 +458,7 @@ define([], function () {
                             return;
                         }
                         fileExtension = fileExtension === 'zip' ? 'acm' : fileExtension;
+                        fileExtension = fileExtension === 'json' ? 'requirement' : fileExtension;
                         self.$scope.newWorkspace.addedFiles[hash] = {
                             hash: hash,
                             name: file.name,
@@ -671,6 +679,7 @@ define([], function () {
                 acms = {},
                 adms = [],
                 atms = [],
+                requirements = [],
                 afterAcmImport,
                 alertMessages = [];
             // Create new workspace node and name it appropriately.
@@ -691,6 +700,8 @@ define([], function () {
                         adms.push(fileInfo.hash);
                     } else if (fileInfo.type === 'atm') {
                         atms.push(fileInfo.hash);
+                    } else if (fileInfo.type === 'requirement') {
+                        requirements.push(fileInfo.hash);
                     } else {
                         self.smartClient.client.setAttributes(newId, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' + newWorkspace.name + ' workspace ReadMe was updated.');
                     }
@@ -722,11 +733,23 @@ define([], function () {
                                 newWorkspace.addedFiles[atmResults[k].hash].error = ' ERROR : AtmImporter failed on this file!';
                             }
                         }
-                        if (alertMessages.length > 0) {
-                            self.update();
-                            alert(alertMessages.join('\n'));
-                        }
-                        self.cleanNewWorkspace(true);
+                        self.importMultipleFromFiles(newId, requirements, 'requirement', function (atmResults) {
+                            console.log(atmResults);
+                            for (k = 0; k < atmResults.length; k += 1) {
+                                result = atmResults[k].result;
+                                if (result.success === false) {
+                                    for (j = 0; j < result.messages.length; j += 1) {
+                                        alertMessages.push(result.messages[j].message);
+                                    }
+                                    newWorkspace.addedFiles[atmResults[k].hash].error = ' ERROR : RequirementImporter failed on this file!';
+                                }
+                            }
+                            if (alertMessages.length > 0) {
+                                self.update();
+                                alert(alertMessages.join('\n'));
+                            }
+                            self.cleanNewWorkspace(true);
+                        });
                     });
                 });
             };
@@ -789,7 +812,8 @@ define([], function () {
             acceptedTypes = {
                 acm: true,
                 adm: true,
-                atm: true
+                atm: true,
+                requirement: true
             },
             done = callback || function (fileHash, result) {
                 if (result.error) {
@@ -800,7 +824,7 @@ define([], function () {
             };
 
         if (!acceptedTypes[importType]) {
-            throw 'importType of importFromFile must be either acm, adm or atm. Provided was : ' + importType;
+            throw 'importType of importFromFile must be either acm, adm, atm or requirement. Provided was : ' + importType;
         }
 
         if (!self.smartClient) {
@@ -820,6 +844,10 @@ define([], function () {
             self.smartClient.runPlugin('AtmImporter', {activeNode: folder.getId(), pluginConfig: {'atmFile': hash}}, function (result) {
                 done(hash, result);
             });
+        } else if (importType === 'requirement') {
+            self.smartClient.runPlugin('RequirementImporter', {activeNode: folder.getId(), pluginConfig: {'requirement': hash}}, function (result) {
+                done(hash, result);
+            });
         } else {
             done(hash, {error: 'Unknown argument importType=' + importType});
         }
@@ -836,12 +864,14 @@ define([], function () {
             folderName = {
                 acm: 'Components',
                 adm: 'Designs',
-                atm: 'Test Benches'
+                atm: 'Test Benches',
+                requirement: 'Requirements'
             },
             metaType = {
                 acm: 'ACMFolder',
                 adm: 'ADMFolder',
-                atm: 'ATMFolder'
+                atm: 'ATMFolder',
+                requirement: 'RequirementsFolder'
             };
 
         if (!self.smartClient) {
@@ -857,7 +887,7 @@ define([], function () {
         for (i = 0; i < childrenIds.length; i += 1) {
             nodeChild = self.smartClient.client.getNode(childrenIds[i]);
             if (nodeChild.getAttribute('name') === folderName[folderType] &&
-                self.smartClient.isMetaTypeOf(nodeChild, metaType[folderType])) {
+                    self.smartClient.isMetaTypeOf(nodeChild, metaType[folderType])) {
                 return nodeChild;
             }
         }
@@ -875,19 +905,21 @@ define([], function () {
     };
 
     WorkspaceController.prototype.humanFileSize = function (bytes, si) {
-        var thresh = si ? 1000 : 1024;
+        var thresh = si ? 1000 : 1024,
+            units,
+            u;
         if (bytes < thresh) {
             return bytes + ' B';
         }
 
-        var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-
-        var u = -1;
+        units = si ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] :
+                ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        u = -1;
 
         do {
             bytes = bytes / thresh;
             u += 1;
-        } while(bytes >= thresh);
+        } while (bytes >= thresh);
 
         return bytes.toFixed(1) + ' ' + units[u];
     };

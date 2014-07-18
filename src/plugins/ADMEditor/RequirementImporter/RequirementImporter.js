@@ -17,6 +17,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         PluginBase.call(this);
         this.meta = null;
         this.metricMap = {};
+        this.missingMetrics = false;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -122,9 +123,12 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                     self.result.setSuccess(false);
                     return callback(null, self.result);
                 }
-                self.logger.info(self.metricMap);
                 self.buildRequirementRec(reqJson, self.activeNode, 0);
                 self.result.setSuccess(true);
+                if (self.missingMetrics) {
+                    self.createMessage(wsNode, 'Some metrics did not exist in project - requirements still imported.');
+                    self.result.setSuccess(false);
+                }
                 self.save('Imported requirements', function (err) {
                     callback(null, self.result);
                 });
@@ -160,6 +164,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 self.core.setPointer(node, 'Metric', metricNode);
             } else {
                 self.createMessage(node, 'Requirement named "' + req.name + '" did not have a matching metric and test-bench.');
+                self.missingMetrics = true;
             }
         }
         // Common attributes
