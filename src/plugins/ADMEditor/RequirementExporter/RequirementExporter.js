@@ -15,7 +15,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
     var RequirementExporter = function () {
         // Call base class' constructor.
         PluginBase.call(this);
-        this.metaTypes = MetaTypes;
+        this.meta = null;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -46,7 +46,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
     * @public
     */
     RequirementExporter.prototype.getDescription = function () {
-        return "Exports a requirement to a json representation.";
+        return "Exports a set of requirements to a json representation.";
     };
 
     /**
@@ -60,13 +60,121 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
     */
     RequirementExporter.prototype.main = function (callback) {
         var self = this;
-        self.updateMETA(self.metaTypes);
+        self.meta = MetaTypes;
+        self.updateMETA(self.meta);
 
-        self.logger.error('Plugin is not implemented yet!');
+        if (!self.activeNode) {
+            self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
+                'and trying again will solve it most of times.');
+            return callback('Active node is not present!', self.result);
+        }
 
-        self.result.setSuccess(false);
-        callback(null, self.result);
+        if (self.isMetaTypeOf(self.activeNode, self.META.RequirementCategory) === false) {
+            self.createMessage(null, 'This plugin must be called from a WorkSpace.');
+            return callback(null, self.result);
+        }
 
+        // TODO: ADD error handling.
+        self.visitAllChildrenFromRequirementCategory(self.activeNode, function (err, rootCategory) {
+            var artie = self.blobClient.createArtifact('requirement');
+            artie.addFile('requirements.json', JSON.stringify(rootCategory, null, 4), function (err, hash) {
+                artie.save(function (err, artieHash) {
+                    self.result.addArtifact(artieHash);
+                    self.result.setSuccess(true);
+                    callback(null, self.result);
+                });
+            });
+        });
+    };
+
+    RequirementExporter.prototype.atModelNode = function (node, reqCategory, callback) {
+        var self = this,
+            nodeType = self.core.getAttribute(self.getMetaType(node), 'name'),
+            nodeName = self.core.getAttribute(node, 'name'),
+            req = {
+                name: nodeName,
+                weight: self.core.getAttribute(node, 'weight'),
+                weightNeg: self.core.getAttribute(node, 'weightNeg'),
+                Priority: self.core.getAttribute(node, 'Priority'),
+                description: self.core.getAttribute(node, 'description')
+            };
+
+        self.logger.info('At node "' + nodeName + '" of type "' + nodeType + '".');
+
+        if (nodeType === 'Requirement') {
+            req.objective = self.core.getAttribute(node, 'objective');
+            req.threshold = self.core.getAttribute(node, 'threshold');
+            req.KPP = self.core.getAttribute(node, 'KPP');
+            req.function = self.core.getAttribute(node, 'function');
+            reqCategory.children.push(req);
+            callback(null);
+        } else if (nodeType === 'RequirementCategory') {
+            req.category = true;
+            req.children = [];
+            reqCategory.children.push(req);
+            callback(null, req);
+        } else {
+            callback('Encountered unexpected object at node "' + nodeName + '" of type "' + nodeType + '".');
+        }
+    };
+
+    RequirementExporter.prototype.visitAllChildrenFromRequirementCategory = function (reqNode, callback) {
+        var self = this,
+            error = '',
+            counter,
+            counterCallback,
+            rootCategory = {
+                name: self.core.getAttribute(reqNode, 'name'),
+                weight: self.core.getAttribute(reqNode, 'weight'),
+                weightNeg: self.core.getAttribute(reqNode, 'weightNeg'),
+                Priority: self.core.getAttribute(reqNode, 'Priority'),
+                description: self.core.getAttribute(reqNode, 'description'),
+                category: true,
+                children: []
+            };
+
+        counter = {visits: 1};
+        counterCallback = function (err) {
+            error = err ? error + err : error;
+            counter.visits -= 1;
+            if (counter.visits === 0) {
+                callback(error, rootCategory);
+            }
+        };
+
+        self.visitAllChildrenRec(reqNode, rootCategory, counter, counterCallback);
+    };
+
+    RequirementExporter.prototype.visitAllChildrenRec = function (node, reqCategory, counter, callback) {
+        var self = this;
+        self.core.loadChildren(node, function (err, children) {
+            var i,
+                atModelNodeCallback;
+            if (err) {
+                return callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+            }
+            counter.visits += children.length;
+            if (children.length === 0) {
+                callback(null);
+            } else {
+                counter.visits -= 1;
+                atModelNodeCallback = function (childNode) {
+                    return function (err, reqCategory) {
+                        if (err) {
+                            callback(err);
+                        }
+                        if (reqCategory) {
+                            self.visitAllChildrenRec(childNode, reqCategory, counter, callback);
+                        } else {
+                            callback(null);
+                        }
+                    };
+                };
+                for (i = 0; i < children.length; i += 1) {
+                    self.atModelNode(children[i], reqCategory, atModelNodeCallback(children[i]));
+                }
+            }
+        });
     };
 
     return RequirementExporter;

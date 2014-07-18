@@ -81,7 +81,6 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            reqJson,
             config;
 
         if (!self.activeNode) {
