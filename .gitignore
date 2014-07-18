@@ -9,6 +9,7 @@ blob-local-storage
 # domain-tools project temp files and directories
 executor-temp
 jobList.nedb
+workerList.nedb
 
 # cyphy project temp files and directories
 mongodatabase
