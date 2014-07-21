@@ -21,12 +21,7 @@
             <a data-ng-show="component.acm" href="{{ component.acm }}"><i class="glyphicon glyphicon-download-alt" tooltip="Download ACM" tooltip-placement="bottom"></i></a>
 
             <div>{{ component.description }}</div>
-            <ul class="domain-models" data-ng-repeat="domain in component.domains">
-                <li>
-                    <div>{{domain.type}} model: {{ domain.id }}</div>
-                </li>
-            </ul>
-
+            <span class="domain-models label {{getDomainIcon(domain.type)}}" data-ng-repeat="domain in component.domains">{{domain.type}}</span>
             <div>Updated <span am-time-ago="component.date"></span></div>
         </li>
     </ul>

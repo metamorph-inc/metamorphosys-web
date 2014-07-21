@@ -1,7 +1,8 @@
 /*globals define, console, alert, window*/
 
 /**
- * @author lattmann / https://github.com/lattmann
+ * @author lattmann / https://github.com/lattmannd
+ * @author pmeijer / https://github.com/pmeijer
  */
 
 define([], function () {

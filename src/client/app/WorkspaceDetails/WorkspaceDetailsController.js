@@ -51,7 +51,18 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
-
+        self.$scope.getDomainIcon = function (domain) {
+            var labelMap = {
+                Modelica: 'label-primary',
+                CAD: 'label-success',
+                Manufacturing: 'label-warning',
+                Cyber: 'label-info'
+            };
+            if (labelMap[domain]) {
+                return labelMap[domain];
+            }
+            return 'label-default';
+        };
 
         // initialization of methods
         if (self.smartClient) {
