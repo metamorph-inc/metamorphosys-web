@@ -1,2 +1,14 @@
 .domain-models {
   border-radius: 1.25em; }
+
+.designs {
+  float: left;
+  width: 30%; }
+
+.components {
+  float: left;
+  width: 30%; }
+
+.test-benches {
+  float: left;
+  width: 30%; }
