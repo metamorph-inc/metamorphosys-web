@@ -39,9 +39,9 @@ form .row {
 
 .drop-box {
   padding: 2ex 1em;
-  border: 3px solid transparent; }
+  border: 1px solid transparent; }
   .drop-box.dragover {
-    border: 3px dashed #666; }
+    border: 1px dashed #666; }
     .drop-box.dragover.bg-success {
       background-color: #dff0d8; }
     .drop-box.dragover.bg-danger {

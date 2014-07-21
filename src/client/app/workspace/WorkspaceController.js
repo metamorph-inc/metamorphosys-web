@@ -429,68 +429,6 @@ define([], function () {
             territoryPattern = {},
             territoryId;
 
-        self.$scope.onDroppedFiles = function (files) {
-            var i,
-                validExtensions = {
-                    adm: true,
-                    atm: true,
-                    zip: true,
-                    txt: true,
-                    md: true,
-                    markdown: true,
-                    json: true
-                },
-                counter,
-                artie,
-                addFile,
-                updateCounter;
-
-            if (files.length === 0) {
-                self.growl.warning('Drag and drop only supported for files.');
-                self.update();
-                return;
-            }
-
-            counter = files.length;
-            artie = self.smartClient.blobClient.createArtifact('droppedFiles');
-            updateCounter = function () {
-                counter -= 1;
-                if (counter <= 0) {
-                    self.$scope.newWorkspace.hasFiles = Object.keys(self.$scope.newWorkspace.addedFiles).length > 0;
-                    self.update();
-                }
-            };
-            addFile = function (file) {
-                var fileExtension = self.getFileExtension(file.name);
-                if (validExtensions[fileExtension]) {
-                    artie.addFileAsSoftLink(file.name, file, function (err, hash) {
-                        if (err) {
-                            console.error('Could not add file "' + file.name + '" to blob, err: ' + err);
-                            updateCounter();
-                            return;
-                        }
-                        fileExtension = fileExtension === 'zip' ? 'acm' : fileExtension;
-                        fileExtension = fileExtension === 'json' ? 'requirement' : fileExtension;
-                        self.$scope.newWorkspace.addedFiles[hash] = {
-                            hash: hash,
-                            name: file.name,
-                            type: fileExtension,
-                            size: self.humanFileSize(file.size, true),
-                            url: self.smartClient.blobClient.getDownloadURL(hash),
-                            error: ''
-                        };
-                        updateCounter();
-                    });
-                } else {
-                    updateCounter();
-                }
-            };
-            for (i = 0; i < files.length; i += 1) {
-                addFile(files[i]);
-            }
-        };
-
-
         self.territories = {};
 
         territoryPattern[ROOT_ID] = {children: 1};
@@ -509,6 +447,7 @@ define([], function () {
                     self.$scope.deleteWorkspace = self.initDeleteWorkspaceClient();
                     self.$scope.duplicateWorkspace = self.initDuplicateWorkspaceClient(ROOT_ID);
                     self.$scope.exportWorkspace = self.initExportWorkspaceClient();
+                    self.$scope.onDroppedFiles = self.initOnDroppedFilesClient();
                 }
 
                 if (self.smartClient.isMetaTypeOf(nodeObj, 'WorkSpace')) {
@@ -632,21 +571,6 @@ define([], function () {
         });
     };
 
-    WorkspaceController.prototype.cleanNewWorkspace = function (doUpdate) {
-        var self = this;
-        self.$scope.newWorkspace = {
-            status: '',
-            name: '',
-            description: '',
-            expanded: false,
-            hasFiles: false,
-            addedFiles: {}
-        };
-        if (doUpdate) {
-            self.update();
-        }
-    };
-
     // Functions for creating functions that depend on the Root-node being loaded.
     WorkspaceController.prototype.initExportWorkspaceClient = function () {
         var self = this;
@@ -692,137 +616,244 @@ define([], function () {
     WorkspaceController.prototype.initCreateWorkspaceClient = function (ROOT_ID) {
         var self = this;
         return function (newWorkspace) {
-            var newId,
-                key,
-                fileInfo,
-                acmArtie,
-                acms = {},
-                adms = [],
-                atms = [],
-                requirements = [],
-                afterAcmImport,
-                totalSuccess = true,
-                hasFiles = Object.keys(newWorkspace.addedFiles).length > 0;
+            var hasFiles = Object.keys(newWorkspace.addedFiles).length > 0,
+                newId;
             // Create new workspace node and name it appropriately.
-            //newWorkspace.status = hasFiles ? 'Importing files, please wait...' : '';
             newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
                 '[WebCyPhy] - New workspace was created.');
             self.growl.info('Workspace ' + newWorkspace.name + ' created.');
             if (hasFiles) {
-                self.growl.info('Importing files, please wait...');
+                self.growl.info('Importing files to new workspace, please wait...');
             }
             self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
             if (newWorkspace.description) {
                 self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
             }
-            // Import the files dropped by the user.
-            for (key in newWorkspace.addedFiles) {
-                if (newWorkspace.addedFiles.hasOwnProperty(key)) {
-                    fileInfo = newWorkspace.addedFiles[key];
-                    if (fileInfo.type === 'acm') {
-                        acms[fileInfo.name] = fileInfo.hash;
-                    } else if (fileInfo.type === 'adm') {
-                        adms.push(fileInfo.hash);
-                    } else if (fileInfo.type === 'atm') {
-                        atms.push(fileInfo.hash);
-                    } else if (fileInfo.type === 'requirement') {
-                        requirements.push(fileInfo.hash);
-                    } else {
-                        self.smartClient.client.setAttributes(newId, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' + newWorkspace.name + ' workspace ReadMe was updated.');
-                    }
+            newWorkspace.id = newId;
+            self.importFilesToWorkspace(newWorkspace, function (success) {
+                if (success) {
+                    self.growl.success('All files successfully imported into new workspace!', {ttl: 25000});
+                } else {
+                    self.growl.error('There were errors during importation of files into new workspace.');
                 }
+                self.cleanNewWorkspace(true);
+            });
+        };
+    };
+
+    WorkspaceController.prototype.initOnDroppedFilesClient = function () {
+        var self = this;
+
+        return function (workspace, files) {
+            var i,
+                validExtensions = {
+                    adm: true,
+                    atm: true,
+                    zip: true,
+                    txt: true,
+                    md: true,
+                    markdown: true,
+                    json: true
+                },
+                counter,
+                artie,
+                addFile,
+                isNewWorkspace = typeof workspace !== 'string',
+                wsNode,
+                wsName,
+                hasFiles,
+                updateCounter;
+
+            if (files.length === 0) {
+                self.growl.warning('Drag and drop only supported with files.');
+                self.update();
+                return;
             }
 
-            afterAcmImport = function () {
-                self.importMultipleFromFiles(newId, adms, 'adm', function (admResults) {
-                    var k,
-                        result,
-                        filename,
-                        fileUrl;
-                    console.log(admResults);
-                    for (k = 0; k < admResults.length; k += 1) {
-                        result = admResults[k].result;
-                        fileUrl = self.smartClient.blobClient.getDownloadURL(admResults[k].hash);
-                        filename = newWorkspace.addedFiles[admResults[k].hash].name;
-                        if (result.success === false) {
-                            totalSuccess = false;
-                            self.growl.error('AdmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                        } else {
-                            self.growl.success('AdmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                        }
-                        self.showPluginMessages(result.messages);
+            if (!isNewWorkspace) {
+                wsNode = self.smartClient.client.getNode(workspace);
+                wsName = wsNode.getAttribute('name');
+                workspace = {
+                    id: workspace,
+                    name: wsName,
+                    addedFiles: {}
+                };
+            }
+            counter = files.length;
+            artie = self.smartClient.blobClient.createArtifact('droppedFiles');
+            updateCounter = function () {
+                counter -= 1;
+                if (counter <= 0) {
+                    if (isNewWorkspace) {
                         self.update();
-                    }
-                    self.importMultipleFromFiles(newId, atms, 'atm', function (atmResults) {
-                        console.log(atmResults);
-                        for (k = 0; k < atmResults.length; k += 1) {
-                            result = atmResults[k].result;
-                            fileUrl = self.smartClient.blobClient.getDownloadURL(atmResults[k].hash);
-                            filename = newWorkspace.addedFiles[atmResults[k].hash].name;
-                            if (result.success === false) {
-                                totalSuccess = false;
-                                self.growl.error('AtmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                            } else {
-                                self.growl.success('AtmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                            }
-                            self.showPluginMessages(result.messages);
-                            self.update();
-                        }
-                        self.importMultipleFromFiles(newId, requirements, 'requirement', function (reqResults) {
-                            console.log(reqResults);
-                            for (k = 0; k < reqResults.length; k += 1) {
-                                result = reqResults[k].result;
-                                fileUrl = self.smartClient.blobClient.getDownloadURL(reqResults[k].hash);
-                                filename = newWorkspace.addedFiles[reqResults[k].hash].name;
-                                if (result.success === false) {
-                                    totalSuccess = false;
-                                    self.growl.error('RequirementImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+                    } else {
+                        if (hasFiles) {
+                            self.growl.info('Importing files to ' + wsName + ', please wait...');
+                            self.importFilesToWorkspace(workspace, function (success) {
+                                if (success) {
+                                    self.growl.success('All files successfully imported into ' + wsName + '.',
+                                        {ttl: 25000});
                                 } else {
-                                    self.growl.success('RequirementImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+                                    self.growl.error('There were errors during importation of files into ' + wsName + '.');
                                 }
-                                self.showPluginMessages(result.messages);
-                                self.update();
-                            }
-                            if (totalSuccess) {
-                                self.growl.success('All files successfully imported into new workspace!', {ttl: 25000});
-                            } else {
-                                self.growl.error('There were errors during importation of files into new workspace.');
-                            }
-                            self.update();
-                            self.cleanNewWorkspace(true);
-                        });
-                    });
-                });
+                            });
+                        }
+                    }
+                }
             };
-            if (Object.keys(acms).length > 0) {
-                acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
-                acmArtie.addMetadataHashes(acms, function (err, hashes) {
-                    // TODO: error-handling
-                    acmArtie.save(function (err, artieHash) {
-                        // TODO: error-handling
-                        self.importFromFile(newId, artieHash, 'acm', function (hash, result) {
-                            var fileUrl = self.smartClient.blobClient.getDownloadURL(result.hash),
-                                filename = 'Uploaded_artifacts.zip';
-                            console.log(result);
-                            if (result.success === false) {
-                                totalSuccess = false;
-                                self.growl.error('AcmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                            } else {
-                                self.growl.success('AcmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                            }
-                            self.showPluginMessages(result.messages);
-                            self.update();
-                            afterAcmImport();
-                        });
+            addFile = function (file) {
+                var fileExtension = self.getFileExtension(file.name);
+                if (validExtensions[fileExtension]) {
+                    artie.addFileAsSoftLink(file.name, file, function (err, hash) {
+                        if (err) {
+                            console.error('Could not add file "' + file.name + '" to blob, err: ' + err);
+                            updateCounter();
+                            return;
+                        }
+                        hasFiles = true;
+                        fileExtension = fileExtension === 'zip' ? 'acm' : fileExtension;
+                        fileExtension = fileExtension === 'json' ? 'requirement' : fileExtension;
+                        workspace.addedFiles[hash] = {
+                            hash: hash,
+                            name: file.name,
+                            type: fileExtension,
+                            size: self.humanFileSize(file.size, true),
+                            url: self.smartClient.blobClient.getDownloadURL(hash),
+                            error: ''
+                        };
+                        updateCounter();
                     });
-                });
-            } else {
-                afterAcmImport();
+                } else {
+                    self.growl.warning('File ' + file.name + ' is not a supported file type.');
+                    updateCounter();
+                }
+            };
+            for (i = 0; i < files.length; i += 1) {
+                addFile(files[i]);
             }
         };
     };
 
     // Helper methods
+    /**
+     * @param workspaceInfo {object} - info about receiving workspace.
+     * @param workspaceInfo.name {string} - name of receiving workspace.
+     * @param workspaceInfo.id {string} - id of receiving workspace.
+     * @param workspaceInfo.addedFiles {object} - files to be added to the receiving workspace.
+     * @param callback {function(boolean)} - returns with the total success.
+     */
+    WorkspaceController.prototype.importFilesToWorkspace = function (workspaceInfo, callback) {
+        var self = this,
+            key,
+            fileInfo,
+            acmArtie,
+            acms = {},
+            adms = [],
+            atms = [],
+            requirements = [],
+            afterAcmImport,
+            totalSuccess = true;
+        // Import the files dropped by the user.
+        for (key in workspaceInfo.addedFiles) {
+            if (workspaceInfo.addedFiles.hasOwnProperty(key)) {
+                fileInfo = workspaceInfo.addedFiles[key];
+                if (fileInfo.type === 'acm') {
+                    acms[fileInfo.name] = fileInfo.hash;
+                } else if (fileInfo.type === 'adm') {
+                    adms.push(fileInfo.hash);
+                } else if (fileInfo.type === 'atm') {
+                    atms.push(fileInfo.hash);
+                } else if (fileInfo.type === 'requirement') {
+                    requirements.push(fileInfo.hash);
+                } else {
+                    self.smartClient.client.setAttributes(workspaceInfo.id, 'ReadMe', fileInfo.hash, '[WebCyPhy] - ' +
+                        workspaceInfo.name + ' workspace ReadMe was updated.');
+                }
+            }
+        }
+
+        afterAcmImport = function () {
+            self.importMultipleFromFiles(workspaceInfo.id, adms, 'adm', function (admResults) {
+                var k,
+                    result,
+                    filename,
+                    fileUrl;
+                console.log(admResults);
+                for (k = 0; k < admResults.length; k += 1) {
+                    result = admResults[k].result;
+                    fileUrl = self.smartClient.blobClient.getDownloadURL(admResults[k].hash);
+                    filename = workspaceInfo.addedFiles[admResults[k].hash].name;
+                    if (result.success === false) {
+                        totalSuccess = false;
+                        self.growl.error('AdmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+                    } else {
+                        self.growl.success('AdmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+                    }
+                    self.showPluginMessages(result.messages);
+                    self.update();
+                }
+                self.importMultipleFromFiles(workspaceInfo.id, atms, 'atm', function (atmResults) {
+                    console.log(atmResults);
+                    for (k = 0; k < atmResults.length; k += 1) {
+                        result = atmResults[k].result;
+                        fileUrl = self.smartClient.blobClient.getDownloadURL(atmResults[k].hash);
+                        filename = workspaceInfo.addedFiles[atmResults[k].hash].name;
+                        if (result.success === false) {
+                            totalSuccess = false;
+                            self.growl.error('AtmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+                        } else {
+                            self.growl.success('AtmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+                        }
+                        self.showPluginMessages(result.messages);
+                        self.update();
+                    }
+                    self.importMultipleFromFiles(workspaceInfo.id, requirements, 'requirement', function (reqResults) {
+                        console.log(reqResults);
+                        for (k = 0; k < reqResults.length; k += 1) {
+                            result = reqResults[k].result;
+                            fileUrl = self.smartClient.blobClient.getDownloadURL(reqResults[k].hash);
+                            filename = workspaceInfo.addedFiles[reqResults[k].hash].name;
+                            if (result.success === false) {
+                                totalSuccess = false;
+                                self.growl.error('RequirementImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+                            } else {
+                                self.growl.success('RequirementImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+                            }
+                            self.showPluginMessages(result.messages);
+                            self.update();
+                        }
+                        callback(totalSuccess);
+                    });
+                });
+            });
+        };
+        if (Object.keys(acms).length > 0) {
+            acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
+            acmArtie.addMetadataHashes(acms, function (err, hashes) {
+                // TODO: error-handling
+                acmArtie.save(function (err, artieHash) {
+                    // TODO: error-handling
+                    self.importFromFile(workspaceInfo.id, artieHash, 'acm', function (hash, result) {
+                        var fileUrl = self.smartClient.blobClient.getDownloadURL(result.hash),
+                            filename = 'Uploaded_artifacts.zip';
+                        console.log(result);
+                        if (result.success === false) {
+                            totalSuccess = false;
+                            self.growl.error('AcmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+                        } else {
+                            self.growl.success('AcmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+                        }
+                        self.showPluginMessages(result.messages);
+                        self.update();
+                        afterAcmImport();
+                    });
+                });
+            });
+        } else {
+            afterAcmImport();
+        }
+    };
+
     WorkspaceController.prototype.importMultipleFromFiles = function (workspaceId, hashes, importType, callback) {
         var self = this,
             counter = hashes.length,
@@ -988,6 +1019,20 @@ define([], function () {
             } else {
                 self.growl.info(nodeUrl + msg.message);
             }
+        }
+    };
+
+    WorkspaceController.prototype.cleanNewWorkspace = function (doUpdate) {
+        var self = this;
+        self.$scope.newWorkspace = {
+            status: '',
+            name: '',
+            description: '',
+            expanded: false,
+            addedFiles: {}
+        };
+        if (doUpdate) {
+            self.update();
         }
     };
 

@@ -11,7 +11,7 @@
                             new workspace
                         </accordion-heading>
                         <div class="workspace-metadata-editor">
-                            <form class="drop-box" ng-file-drop="onDroppedFiles($files)" ng-file-drag-over-class="dragOverClass($event)">
+                            <form class="drop-box" ng-file-drop="onDroppedFiles(newWorkspace, $files)" ng-file-drag-over-class="dragOverClass($event)">
                                 <!--<div data-ng-include="'app/workspace/views/WorkspaceEditFields.html'"></div>-->
                                 <div class="row">
                                     <div class="col-md-6">
@@ -76,7 +76,7 @@
             <ul class="list-group" data-ng-repeat="workspace in workspaces | orderObjectBy: 'name' | filter:search">
 
                 <!-- One workspace item -->
-                <li class="list-group-item" data-id="{{ workspace.id }}" ng-file-drop="onFileSelect(workspace.id, $files)" ng-file-drag-over-class="dragOverClass($event)">
+                <li class="list-group-item" data-id="{{ workspace.id }}" ng-file-drop="onDroppedFiles(workspace.id, $files)" ng-file-drag-over-class="dragOverClass($event)">
 
                     <!-- TODO: remove this block, this was the original example -->
                     <!--<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"-->
