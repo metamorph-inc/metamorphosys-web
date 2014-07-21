@@ -143,18 +143,18 @@ define(['plugin/PluginConfig',
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
         self.multiRun = self.isMetaTypeOf(self.activeNode, self.META.ATMFolder);
         self.exportAtm = currentConfig.atmExport;
         self.runExecution = currentConfig.run;
         if ((self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) || self.multiRun) === false) {
-            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel or an ATMFolder.');
+            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel or an ATMFolder.', 'error');
             return callback(null, self.result);
         }
         if (self.multiRun && self.exportAtm) {
-            self.createMessage(null, 'Exportation of atms is not supported on ATMFolders.');
+            self.createMessage(null, 'Exportation of atms is not supported on ATMFolders.', 'error');
             return callback(null, self.result);
         }
         self.updateMETA(self.meta);
@@ -167,11 +167,11 @@ define(['plugin/PluginConfig',
                     j;
                 if (err) {
                     self.logger.error(err);
-                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-benches.');
+                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-benches.', 'error');
                     return callback(null, self.result);
                 }
                 if (testBenchInfos.length === 0) {
-                    self.createMessage(self.activeNode, 'No test-benches found in folder.');
+                    self.createMessage(self.activeNode, 'No test-benches found in folder.', 'error');
                     return callback(null, self.result);
                 }
                 // Check if any test-benches share IDs.
@@ -179,8 +179,8 @@ define(['plugin/PluginConfig',
                     tbID = testBenchInfos[j].path;
                     if (tbIDs.hasOwnProperty(tbID)) {
                         self.createMessage(testBenchInfos[j].node, 'Test-bench IDs shared amongst test-benches. For ' +
-                            ' multi-run the ID of each test-bench must be unique.');
-                        self.createMessage(tbIDs[tbID], 'Test-bench has duplicate ID.');
+                            ' multi-run the ID of each test-bench must be unique.', 'error');
+                        self.createMessage(tbIDs[tbID], 'Test-bench has duplicate ID.', 'error');
                         duplicateIDs = true;
                     } else {
                         tbIDs[tbID] = testBenchInfos[j].node;
@@ -198,7 +198,7 @@ define(['plugin/PluginConfig',
                         counterCallback;
                     if (err) {
                         self.logger.error(err);
-                        self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.');
+                        self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
                         return callback(null, self.result);
                     }
                     self.logger.info('Done with calling AdmExporter - ADM and ACMs gathered.');
@@ -262,7 +262,7 @@ define(['plugin/PluginConfig',
                     jsonToXml = new Converter.Json2xml();
                 if (err) {
                     self.logger.error('getTestBenchInfo returned with error: ' + err.toString());
-                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-bench.');
+                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-bench.', 'error');
                     return callback(null, self.result);
                 }
                 if (self.exportAtm) {
@@ -289,7 +289,7 @@ define(['plugin/PluginConfig',
                     self.getAdmAndAcms(self.referencedDesign, [testBenchInfo], function (err) {
                         if (err) {
                             self.logger.error(err);
-                            self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.');
+                            self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
                             return callback(null, self.result);
                         }
                         self.generateExecutionFiles(testBenchInfo, function (err, artifact) {
@@ -355,7 +355,7 @@ define(['plugin/PluginConfig',
                             return callback(error, tbInfos);
                         });
                     } else {
-                        self.createMessage(folderNode, 'No TopLevelSystemUnderTest reference set for folder.');
+                        self.createMessage(folderNode, 'No TopLevelSystemUnderTest reference set for folder.', 'error');
                         return callback('Found no reference to TLSUT.');
                     }
                 }
@@ -387,13 +387,13 @@ define(['plugin/PluginConfig',
         testBenchInfo.node = testBenchNode;
         if (!testBenchInfo.path && !self.exportAtm) {
             self.createMessage(testBenchNode, 'There is no "ID" provided for the test-bench. It must be a path' +
-                ' in the project-tree of the xme in asset "TestBenchFiles", e.g. /TestBenches/Dynamics/MyTestBench');
+                ' in the project-tree of the xme in asset "TestBenchFiles", e.g. /TestBenches/Dynamics/MyTestBench', 'error');
             return callback('TestBench ID not provided.');
         }
         self.logger.info('Getting data for test-bench "' + testBenchInfo.name + '".');
         self.getTlsutInterface(testBenchNode, function (err, tlsut) {
             if (err) {
-                self.createMessage(testBenchNode, 'Could not obtain Top Level System Under test interface.');
+                self.createMessage(testBenchNode, 'Could not obtain Top Level System Under test interface.', 'error');
                 return callback('Something went wrong when getting tlsut interface err: ' + err);
             }
             testBenchInfo.tlsut = tlsut;
@@ -429,7 +429,7 @@ define(['plugin/PluginConfig',
                         callback(null, testBenchInfo);
                     });
                 } else {
-                    self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench or its folder.');
+                    self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench or its folder.', 'error');
                     return callback('Found no reference to TLSUT.');
                 }
             }
@@ -485,7 +485,7 @@ define(['plugin/PluginConfig',
             };
 
             if (children.length === 0) {
-                self.createMessage(testBenchNode, 'Test-bench "' + name + '" was empty!');
+                self.createMessage(testBenchNode, 'Test-bench "' + name + '" was empty!', 'error');
                 counterCallback('Test-bench "' + name + '" was empty!');
             }
 
@@ -493,7 +493,7 @@ define(['plugin/PluginConfig',
                 metaTypeName = self.core.getAttribute(self.getMetaType(children[i]), 'name');
                 if (metaTypeName === 'Container') {
                     if (tlsutData) {
-                        self.createMessage(testBenchNode, 'There was more than one TLSUT in test-bench "' + name + '".');
+                        self.createMessage(testBenchNode, 'There was more than one TLSUT in test-bench "' + name + '".', 'error');
                         counterCallback('There was more than one TLSUT in test-bench "' + name + '".');
                     } else {
                         self.exploreTlsut(children[i], function (err, retrievedData) {
@@ -606,7 +606,7 @@ define(['plugin/PluginConfig',
             };
 
             if (children.length === 0) {
-                self.createMessage(wfNode, 'No task defined in Workflow!');
+                self.createMessage(wfNode, 'No task defined in Workflow!', 'error');
                 callback('No task defined in workflow');
             }
 
@@ -646,8 +646,8 @@ define(['plugin/PluginConfig',
                 return callback(err);
             }
             if (result !== true) {
-                self.createMessage(designNode, 'Design not matching all TopLevelSystemUnderTests!');
-                return callback('Design not matching all TopLevelSystemUnderTests!');
+                self.createMessage(designNode, 'Design did not match all TopLevelSystemUnderTests!', 'error');
+                return callback('Design did not match all TopLevelSystemUnderTests!');
             }
             self.initializeAdmExporter();
             self.admExporter.exploreDesign(designNode, true, function (err) {
@@ -722,14 +722,14 @@ define(['plugin/PluginConfig',
                         if (mergedProperties.hasOwnProperty(innerKey) && mergedProperties[innerKey] !== true) {
                             //isValid = false;
                             self.createMessage(mergedProperties[innerKey], 'Design does not have property "' + innerKey
-                                + '". Property checks are currently ignored.');
+                                + '". Property checks are currently ignored.', 'warning');
                         }
                     }
                     for (innerKey in mergedConnectors) {
                         if (mergedConnectors.hasOwnProperty(innerKey) && mergedConnectors[innerKey] !== true) {
                             isValid = false;
                             self.createMessage(mergedConnectors[innerKey], 'Design does not have connector "' +
-                                innerKey + '".');
+                                innerKey + '".', 'error');
                         }
                     }
                     callback(error, isValid);
@@ -856,7 +856,7 @@ define(['plugin/PluginConfig',
                     }
                     if (metadata.content.hasOwnProperty('_FAILED.txt')) {
                         self.createMessage(testBenchInfo.node, 'Execution had errors - download execution_results for "' +
-                            testBenchInfo.name + '" and read _FAILED.txt');
+                            testBenchInfo.name + '" and read _FAILED.txt', 'error');
                         return callback(null, false);
                     }
                     self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes[testBenchInfo.name + '_dashboard']);
@@ -1129,7 +1129,7 @@ define(['plugin/PluginConfig',
                 self.metaResults.Results.push(result);
             } else {
                 self.createMessage(self.activeNode, 'Design names are not equal amongst test-benches. "' + designName +
-                    '" did not exist in all dashboard folders.');
+                    '" did not exist in all dashboard folders.', 'warning');
             }
             callback(null);
         });

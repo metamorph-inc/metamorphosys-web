@@ -241,7 +241,9 @@ require(
                             WebGMEApp.controller('WorkspaceController', WorkspaceController);
                             WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
                             WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
-
+                            WebGMEApp.config(['growlProvider', function(growlProvider) {
+                                growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
+                            }]);
                             WebGMEApp.config(['$routeProvider',
                                 function ($routeProvider) {
                                     $routeProvider.

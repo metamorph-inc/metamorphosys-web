@@ -120,7 +120,7 @@ define(['plugin/PluginConfig',
             componentsPerRow = 6;
 
         if (!self.activeNode) {
-            self.createMessage(null, 'Active node not found! Try selecting another model and re-opening the desired model');
+            self.createMessage(null, 'Active node not found! Try selecting another model and re-opening the desired model', 'error');
             return mainCallback('Active node not found!', self.result);
         }
 
@@ -129,7 +129,7 @@ define(['plugin/PluginConfig',
         if (!self.isMetaTypeOf(self.activeNode, MetaTypes.ACMFolder)) {
             var msg = "AcmImporter must be called from an ACMFolder!";
             self.logger.error(msg);
-            self.createMessage(self.activeNode, msg);
+            self.createMessage(self.activeNode, msg, 'error');
             self.result.setSuccess(false);
             return mainCallback(null, self.result);
         }
@@ -142,7 +142,7 @@ define(['plugin/PluginConfig',
         var findComponentsCallback = function () {
             var loadChildrenCallback = function (err, children) {
                 if (err) {
-                    self.createMessage(acmFolderNode, 'Could not load children of ' + self.core.getName(acmFolderNode));
+                    self.createMessage(acmFolderNode, 'Could not load children of ' + self.core.getName(acmFolderNode), 'error');
                     self.logger.error('Could not load children of ' + self.core.getName(acmFolderNode) + ', err: ' + err);
                     self.result.setSuccess(false);
                     return mainCallback(err, self.result);
@@ -178,7 +178,7 @@ define(['plugin/PluginConfig',
                             return mainCallback(err, self.result);
                         }
 
-                        self.createMessage(acmFolderNode, numCreated + ' ACMs created out of ' + numUploaded + ' uploaded.');
+                        self.createMessage(acmFolderNode, numCreated + ' ACMs created out of ' + numUploaded + ' uploaded.', 'info');
 
                         if (self.cleanImport === true) {
                             self.result.setSuccess(true);
@@ -273,11 +273,11 @@ define(['plugin/PluginConfig',
                 self.core.deleteNode(existingAcmNodeWithSameId);
                 msg = "Deleted existing AVMComponent with ID '" + id + "'";
                 self.logger.warning(msg);
-                self.createMessage(existingAcmParentFolder, msg);
+                self.createMessage(existingAcmParentFolder, msg, 'debug');
             } else {
                 msg = "Found existing AVMComponent with ID '" + id + "'";
                 self.logger.warning(msg);
-                self.createMessage(existingAcmNodeWithSameId, msg)
+                self.createMessage(existingAcmNodeWithSameId, msg, 'warning')
             }
         }
 
@@ -635,7 +635,8 @@ define(['plugin/PluginConfig',
                     contentType = metadata['contentType'],
                     single = false,
                     multi = false,
-                    hashToAcmJsonMap = {};
+                    hashToAcmJsonMap = {},
+                    blobGetObjectCallback;
 
                 if (contentType === 'complex') {
                     multi = true;
@@ -643,12 +644,12 @@ define(['plugin/PluginConfig',
                     single = true;
                 } else {
                     var msg = 'Uploaded file "' + contentName + '" was not valid.';
-                    self.createMessage(self.activeNode, msg);
+                    self.createMessage(self.activeNode, msg, 'error');
                     self.logger.error(msg);
                     return getAcmCallback(msg);
                 }
 
-                var blobGetObjectCallback = function (getObjectErr, uploadedObjContent) {
+                blobGetObjectCallback = function (getObjectErr, uploadedObjContent) {
                     if (getObjectErr) {
                         return getAcmCallback(getObjectErr);
                     }
@@ -706,36 +707,37 @@ define(['plugin/PluginConfig',
         var self = this,
             converterResult,
             acmName = acmZipName.split('.')[0],
-            acmXml = acmZip.file(/\.acm/);
+            acmXml = acmZip.file(/\.acm/),
+            msg;
 
         if (acmXml.length === 1) {
             converterResult = self.convertXmlString2Json(acmXml[0].asText());
 
             if (converterResult instanceof Error) {
-                var msg = '.acm file in "' + acmZipName + '" is not a valid xml.'
+                msg = '.acm file in "' + acmZipName + '" is not a valid xml.'
                 self.logger.error(msg);
-                self.createMessage(null, msg);
+                self.createMessage(null, msg, 'error');
                 self.cleanImport = false;
                 return null;
             } else {
                 return converterResult;
             }
         } else if (acmXml.length === 0) {
-            var msg = 'No .acm file found inside ' + acmZipName + '.';
+            msg = 'No .acm file found inside ' + acmZipName + '.';
             self.logger.error(msg);
-            self.createMessage(null, msg);
+            self.createMessage(null, msg, 'error');
             self.cleanImport = false;
             return null;
         } else {
-            var msg = 'Found multiple .acm files in ' + acmZipName + '. Only one was expected.';
+            msg = 'Found multiple .acm files in ' + acmZipName + '. Only one was expected.';
             self.logger.error(msg);
-            self.createMessage(null, msg);
+            self.createMessage(null, msg, 'error');
             converterResult = self.convertXmlString2Json(acmXml[0].asText());
 
             if (converterResult instanceof Error) {
-                var msg = '.acm file in ' + acmZipName + ' is not a valid xml.'
+                msg = '.acm file in ' + acmZipName + ' is not a valid xml.'
                 self.logger.error(msg);
-                self.createMessage(null, msg);
+                self.createMessage(null, msg, 'error');
                 self.cleanImport = false;
                 return null;
             } else {

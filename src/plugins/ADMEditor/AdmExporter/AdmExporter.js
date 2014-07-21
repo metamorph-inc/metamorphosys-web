@@ -110,11 +110,11 @@ define([
             createArtifacts;
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
         if (self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
-            self.createMessage(null, 'This plugin must be called from a Container.');
+            self.createMessage(null, 'This plugin must be called from a Container.', 'error');
             return callback(null, self.result);
         }
         self.meta = MetaTypes;
@@ -125,8 +125,8 @@ define([
                     self.result.setSuccess(false);
                     return callback('Could not save artifact : err' + err.toString(), self.result);
                 }
-                self.createMessage(null, 'ExecTime [s] total :: ' +
-                    ((new Date().getTime() - timeStart) / 1000).toString());
+//                self.createMessage(null, 'ExecTime [s] total :: ' +
+//                    ((new Date().getTime() - timeStart) / 1000).toString());
                 self.result.addArtifact(hash);
                 self.result.setSuccess(true);
                 callback(null, self.result);
@@ -497,7 +497,7 @@ define([
                 callback(null, id);
             });
         } else {
-            self.createMessage(connectionNode, 'Connection with no src/dst exists in design.');
+            self.createMessage(connectionNode, 'Connection with no src/dst exists in design.', 'error');
             callback('A connectorComposition with only one direction pointer exists in model.');
         }
     };
@@ -622,11 +622,11 @@ define([
                         'err: ' + err.toString());
                 }
                 if (valueFlows.length > 1) {
-                    self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value');
+                    self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
                     return callback(null);
                 }
                 if (!self.core.hasPointer(valueFlows[0], 'src')) {
-                    self.createMessage(valueFlows[0], 'ValueFlow Connection with no src exists in design.');
+                    self.createMessage(valueFlows[0], 'ValueFlow Connection with no src exists in design.', 'error');
                     return callback('A valueFlow with only one direction pointer exists in model.');
                 }
                 self.core.loadPointer(valueFlows[0], 'src', function (err, valueSourceNode) {

@@ -123,7 +123,7 @@ define(['plugin/PluginConfig',
                         return callback(err, self.result);
                     }
 
-                    self.createMessage(null, 'ExecTime [s] total :: ' + ((new Date().getTime() - timeStart) / 1000).toString());
+                    //self.createMessage(null, 'ExecTime [s] total :: ' + ((new Date().getTime() - timeStart) / 1000).toString());
                     self.result.setSuccess(true);
                     callback(null, self.result);
                 });
@@ -131,16 +131,16 @@ define(['plugin/PluginConfig',
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.ATMFolder) === false) {
-            self.createMessage(null, 'This plugin must be called from an ATMFolder.');
+            self.createMessage(null, 'This plugin must be called from an ATMFolder.', 'error');
             return callback(null, self.result);
         }
         if (!config.atmFile) {
-            self.createMessage(null, 'No adm file provided');
+            self.createMessage(null, 'No adm file provided', 'error');
             return callback(null, self.result);
         }
         self.updateMETA(self.meta);
@@ -152,12 +152,12 @@ define(['plugin/PluginConfig',
                 });
             if (err) {
                 self.logger.error('Retrieving atmFile failed with err:' + err.toString());
-                self.createMessage(null, 'Could not retrieve content of atm-file.');
+                self.createMessage(null, 'Could not retrieve content of atm-file.', 'error');
                 return callback('Retrieving atmFile failed with err:' + err.toString(), self.result);
             }
             self.atmData = xmlToJson.convertFromBuffer(xmlArrayBuffer);
             if (self.atmData instanceof Error) {
-                self.createMessage(null, 'Given atm not valid xml: ' + self.atmData.message);
+                self.createMessage(null, 'Given atm not valid xml: ' + self.atmData.message, 'error');
                 return callback(null, self.result);
             }
 
@@ -182,14 +182,14 @@ define(['plugin/PluginConfig',
             self.createTLSUT(testBench, testBenchData.TopLevelSystemUnderTest);
         } else {
             self.logger.error('There was no TopLevelSystemUnderTest defined!');
-            self.createMessage(testBench, 'There was no TopLevelSystemUnderTest defined!');
+            self.createMessage(testBench, 'There was no TopLevelSystemUnderTest defined!', 'error');
         }
 
         if (testBenchData.Workflow && testBenchData.Workflow['@Name']) {
             self.createWorkflow(testBench, testBenchData.Workflow);
         } else {
             self.logger.warning('There was no workflow defined!');
-            self.createMessage(testBench, 'There was no Workflow defined!');
+            self.createMessage(testBench, 'There was no Workflow defined!', 'warning');
         }
 
         if (testBenchData.TestComponent) {
@@ -309,7 +309,7 @@ define(['plugin/PluginConfig',
             }
         } else {
             self.logger.warning('No Tasks in work-flow!');
-            self.createMessage(workflow, 'There were no tasks defined in the workflow.');
+            self.createMessage(workflow, 'There were no tasks defined in the workflow.', 'warning');
         }
     };
 

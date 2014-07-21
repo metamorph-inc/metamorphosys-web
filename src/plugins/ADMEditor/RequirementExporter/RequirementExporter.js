@@ -87,12 +87,12 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
         self.acceptErrors = config.partial;
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.RequirementCategory) === false) {
-            self.createMessage(null, 'This plugin must be called from a WorkSpace.');
+            self.createMessage(null, 'This plugin must be called from a RequirementCategory.', 'error');
             return callback(null, self.result);
         }
 
@@ -150,7 +150,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
                     callback(null);
                 });
             } else {
-                self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!');
+                self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!', 'warning');
                 req.metricName = 'UNDEFINED';
                 req.testBench = 'UNDEFINED';
                 callback('Missing metrics!');

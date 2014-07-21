@@ -87,12 +87,12 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.RequirementsFolder) === false) {
-            self.createMessage(null, 'This plugin must be called from a WorkSpace.');
+            self.createMessage(null, 'This plugin must be called from a RequirementsFolder.', 'error');
             return callback(null, self.result);
         }
 
@@ -105,7 +105,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 reqJson,
                 wsNode;
             if (err) {
-                self.createMessage(null, 'Could not obtain file from blob.');
+                self.createMessage(null, 'Could not obtain file from blob.', 'error');
                 return callback(null, self.result);
             }
             reqStr = String.fromCharCode.apply(null, new Uint8Array(requirementBuffer));
@@ -113,20 +113,20 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 reqJson = JSON.parse(reqStr);
             } catch (exc) {
                 self.logger.error('Could not parse given file as json, err: ' + exc.message);
-                self.createMessage(null, 'Could not parse given file as json, err: ' + exc.message);
+                self.createMessage(null, 'Could not parse given file as json, err: ' + exc.message, 'error');
                 return callback(null, self.result);
             }
             wsNode = self.getWorkspaceNode(self.activeNode);
             self.gatherMetrics(wsNode, function (err) {
                 if (err) {
-                    self.createMessage(wsNode, 'Something went wrong exploring the test-benches/metrics.');
+                    self.createMessage(wsNode, 'Something went wrong exploring the test-benches/metrics.', 'error');
                     self.result.setSuccess(false);
                     return callback(null, self.result);
                 }
                 self.buildRequirementRec(reqJson, self.activeNode, 0);
                 self.result.setSuccess(true);
                 if (self.missingMetrics) {
-                    self.createMessage(wsNode, 'Some metrics did not exist in project - requirements still imported.');
+                    self.createMessage(wsNode, 'Some metrics did not exist in project - requirements still imported.', 'warning');
                     self.result.setSuccess(false);
                 }
                 self.save('Imported requirements', function (err) {
@@ -163,7 +163,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
             if (metricNode) {
                 self.core.setPointer(node, 'Metric', metricNode);
             } else {
-                self.createMessage(node, 'Requirement named "' + req.name + '" did not have a matching metric and test-bench.');
+                self.createMessage(node, 'Requirement named "' + req.name + '" did not have a matching metric and test-bench.', 'warning');
                 self.missingMetrics = true;
             }
         }

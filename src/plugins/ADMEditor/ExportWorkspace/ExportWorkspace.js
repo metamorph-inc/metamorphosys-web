@@ -87,11 +87,11 @@ define(['plugin/PluginConfig',
         var self = this;
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
         if (self.isMetaTypeOf(self.activeNode, self.META.WorkSpace) === false) {
-            self.createMessage(null, 'This plugin must be called from a WorkSpace.');
+            self.createMessage(null, 'This plugin must be called from a WorkSpace.', 'error');
             return callback(null, self.result);
         }
 
@@ -107,7 +107,7 @@ define(['plugin/PluginConfig',
             self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
                 if (err) {
                     self.result.setSuccess(false);
-                    self.createMessage(null, 'Could not add workspace.xme to artifact.');
+                    self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
                     return callback(null, self.result);
                 }
                 self.artifact.save(function (err, hash) {

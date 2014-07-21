@@ -149,10 +149,10 @@ define([
 
                         if (self.currentSuccess === false) {
                             self.createMessage(null, 'There were issues in the matched ACMs. Incomplete model still ' +
-                                'imported - make sure to address the reported issues.');
+                                'imported - make sure to address the reported issues.', 'warning');
                         }
-                        self.createMessage(null, 'ExecTime [s] total :: ' +
-                            ((new Date().getTime() - timeStart) / 1000).toString());
+//                        self.createMessage(null, 'ExecTime [s] total :: ' +
+//                            ((new Date().getTime() - timeStart) / 1000).toString());
                         self.result.setSuccess(self.currentSuccess);
                         callback(null, self.result);
                     });
@@ -161,16 +161,16 @@ define([
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.');
+                'and trying again will solve it most of times.', 'error');
             return callback('Active node is not present!', self.result);
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.ADMFolder) === false) {
-            self.createMessage(null, 'This plugin must be called from an ADMFolder.');
+            self.createMessage(null, 'This plugin must be called from an ADMFolder.', 'error');
             return callback(null, self.result);
         }
         if (!config.admFile) {
-            self.createMessage(null, 'No adm file provided');
+            self.createMessage(null, 'No adm file provided', 'error');
             return callback(null, self.result);
         }
         self.updateMETA(self.meta);
@@ -186,7 +186,7 @@ define([
 
             self.admData = xml2json.convertFromBuffer(xmlArrayBuffer);
             if (self.admData instanceof Error) {
-                self.createMessage(null, 'Given adm not valid xml: ' + self.admData.message);
+                self.createMessage(null, 'Given adm not valid xml: ' + self.admData.message, 'error');
                 return callback(null, self.result);
             }
 
@@ -200,7 +200,7 @@ define([
                 //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
                 //        ((new Date().getTime() - timeStamp) / 1000).toString());
                 if (self.acmCounter > 0) {
-                    self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.');
+                    self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.', 'error');
                     self.logMissingACMsToResult();
                     return callback(null, self.result);
                 }
@@ -415,7 +415,7 @@ define([
             info = self.componentID2PrintInfo[missingIDs[i]];
             self.createMessage(null, 'ACM "' + info.name + '", in ADM "' + info.parentName + '" did not have a ' +
                 'matching ACM with ID "' + missingIDs[i] + '". (The component ocurres ' + info.count.toString() +
-                ' times in the ADM.)');
+                ' times in the ADM.)', 'error');
         }
     };
 //</editor-fold>
@@ -615,7 +615,7 @@ define([
                         self.core.setAttribute(domainConnector, 'Class', connectorData.Role[i]['@Class']);
                     } else {
                         self.createMessage(domainConnector, 'Domain connector was of xsi:type Connector but did not ' +
-                            'have a Class defined. Unknown Type: ' + JSON.stringify(connectorData.Role[i], null, 2));
+                            'have a Class defined. Unknown Type: ' + JSON.stringify(connectorData.Role[i], null, 2), 'error');
                     }
                 } else if (self.endsWith(typeName, 'Axis')) {
                     self.core.setAttribute(domainConnector, 'Type', 'CadAxis');
@@ -627,7 +627,7 @@ define([
                     self.core.setAttribute(domainConnector, 'Type', 'CadPoint');
                 } else {
                     self.createMessage(domainConnector, 'Unknown Type for domain connector : ' +
-                        JSON.stringify(connectorData.Role[i], null, 2));
+                        JSON.stringify(connectorData.Role[i], null, 2), 'error');
                 }
             }
         }
@@ -920,7 +920,7 @@ define([
                 errMsg += ' The dstNode does not exist!';
             }
             self.currentSuccess = false;
-            self.createMessage(dstNode || srcNode || null, errMsg);
+            self.createMessage(dstNode || srcNode || null, errMsg, 'error');
             return null;
         }
         srcParent = self.core.getParent(srcNode);
