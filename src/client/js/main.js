@@ -27,7 +27,7 @@ require.config({
 
     paths: {
 
-        "domReady":	'lib/require/require-domready/domReady',
+        "domReady": 'lib/require/require-domready/domReady',
 
         //jQuery and stuff
         "jquery": 'lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
@@ -102,7 +102,9 @@ require.config({
         'angular-route-styles': ['angular'],
         'ui-bootstrap': ['angular'],
         'angular-moment-js': ['angular'],
-        'angular-file-upload': ['angular']
+        'angular-file-upload': ['angular'],
+        'angular-animate': ['angular'],
+        'angular-growl': ['angular', 'angular-animate']
     }
 });
 
@@ -170,13 +172,15 @@ require(
             require.config({
                 paths: {
                     'angular': CONFIG.paths['CyPhyApp'] + '/lib/angular',
+                    'angular-animate': CONFIG.paths['CyPhyApp'] + '/lib/angular-animate.min',
                     'angular-route': CONFIG.paths['CyPhyApp'] + '/lib/angular-route.min',
                     'angular-route-styles': CONFIG.paths['CyPhyApp'] + '/lib/route-styles',
                     'ui-bootstrap': CONFIG.paths['CyPhyApp'] + '/lib/ui-bootstrap-tpls-0.11.0.min',
                     'moment': CONFIG.paths['CyPhyApp'] + '/lib/moment.min',
                     'angular-moment-js': CONFIG.paths['CyPhyApp'] + '/lib/angular-momentjs',
                     'angular-file-upload-shim': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload-shim.min',
-                    'angular-file-upload': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload'
+                    'angular-file-upload': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload',
+                    'angular-growl': CONFIG.paths['CyPhyApp'] + '/lib/angular-growl.min'
                 }
             });
 
@@ -191,12 +195,14 @@ require(
                     'CyPhyApp/js/SmartClient',
                     'angular-file-upload-shim',
                     'angular-file-upload',
-                    'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css'],
+                    'angular-growl',
+                    'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
+                    'css!CyPhyApp/lib/angular-growl.min.css'],
                 function(ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient) {
                     // download angular and all plugins
                     // create app
 
-                    var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap', 'angularFileUpload']);
+                    var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate']);
                     WebGMEGlobal.WebGMEApp = WebGMEApp;
 
                     var smartClient = new SmartClient(CONFIG);

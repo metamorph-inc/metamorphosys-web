@@ -7,7 +7,7 @@
 define([], function () {
     "use strict";
 
-    var WorkspaceController = function ($scope, $moment, $modal, $upload, smartClient, Chance) {
+    var WorkspaceController = function ($scope, $moment, $modal, $upload, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
@@ -15,6 +15,7 @@ define([], function () {
         self.$modal = $modal;
         self.$moment = $moment;
         self.$upload = $upload;
+        self.growl = growl;
 
         // chance is only for testing purposes
         self.chance = Chance ? new Chance() : null;
@@ -166,6 +167,12 @@ define([], function () {
         self.$scope.createWorkspace = function (workspace) {
             var id = '/' + self.idCounter,
                 today;
+
+            // sample to use growl
+            self.growl.success('createWorkspace ' + new Date());
+            self.growl.warning('createWorkspace ' + new Date());
+            self.growl.info('createWorkspace ' + new Date());
+            self.growl.error('createWorkspace ' + new Date());
 
             today = new Date();
 
