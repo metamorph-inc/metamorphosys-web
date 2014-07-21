@@ -266,7 +266,7 @@ define([], function () {
             self.$scope.createWorkspace();
         }
 
-        self.$scope.onDroppedFiles = function (files) {
+        self.$scope.onDroppedFiles = function (workspace, files) {
             var j,
                 validExtensions = {
                     adm: true,
@@ -279,8 +279,13 @@ define([], function () {
                 },
                 counter,
                 addFile,
-                updateCounter;
+                updateCounter,
+                isNewWorkspace = typeof workspace !== 'string';
 
+            if (!isNewWorkspace) {
+                self.growl.warning('This displays messages here');
+                return;
+            }
             if (files.length === 0) {
                 return;
             }
@@ -290,7 +295,6 @@ define([], function () {
             updateCounter = function () {
                 counter -= 1;
                 if (counter <= 0) {
-                    self.$scope.newWorkspace.hasFiles = Object.keys(self.$scope.newWorkspace.addedFiles).length > 0;
                     self.update();
                 }
             };
@@ -427,10 +431,23 @@ define([], function () {
         var self = this,
             ROOT_ID = '',
             territoryPattern = {},
-            territoryId;
+            territoryId,
+            clientMessage,
+            k;
 
+        for (k = 0; k < self.smartClient.initialMessages.length; k += 1) {
+            clientMessage = self.smartClient.initialMessages[k];
+            if (clientMessage.severity === 'info') {
+                self.growl.success(clientMessage.message);
+            } else if (clientMessage.severity === 'debug') {
+                self.growl.info(clientMessage.message);
+            } else if (clientMessage.severity === 'warning') {
+                self.growl.warning(clientMessage.message);
+            } else if (clientMessage.severity === 'error') {
+                self.growl.error(clientMessage.message);
+            }
+        }
         self.territories = {};
-
         territoryPattern[ROOT_ID] = {children: 1};
 
         territoryId = self.smartClient.client.addUI(null, function (events) {

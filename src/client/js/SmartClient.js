@@ -28,7 +28,7 @@ define(['js/client',
         this.pendingMetaNodes = [];
 
         this.initialized = false;
-
+        this.initialMessages = [];
         this.uiTerritories = {};
 
         this.desertFrontEnd = new DesertFrontEnd({client: this.client, meta: this.metaNodes});
@@ -81,7 +81,7 @@ define(['js/client',
 
                 if (projectList.hasOwnProperty(projectName)) {
                     console.info(projectName + ' project already exists.');
-
+                    self.initialMessages.push({message: projectName + ' project exists.', severity: 'debug'});
                     self.client.selectProjectAsync(projectName, function (err) {
                         if (err) {
                             callback(err);
@@ -100,7 +100,7 @@ define(['js/client',
                 } else {
 
                     if (stopOnFailure) {
-                        callback(projectName + ' project does not exist or was failed to import.');
+                        callback(projectName + ' project does not exist or failed to be imported.');
                         return;
                     }
 
@@ -108,15 +108,20 @@ define(['js/client',
                         self.client.createProjectFromFileAsync(projectName, JSON.parse(projectJSON), function (err) {
                             if (err) {
                                 console.error(projectName + ' project import failed.');
+                                self.initialMessages.push({message: projectName + ' project import failed.',
+                                    severity: 'error'});
                                 callback(err);
                                 return;
                             }
 
                             console.info(projectName + ' project was imported.');
+                            self.initialMessages.push({message: projectName + ' project was imported.', severity: 'info'});
                             self.openProject(projectName, branchName, projectJSON, callback, true);
                         });
                     } else {
                         console.info(projectName + ' project template was not defined. Creating an empty project.');
+                        self.initialMessages.push({message: projectName + ' project template was not defined. Creating an empty project.',
+                            severity: 'warning'});
                         self.client.createProject(projectName, function (err) {
                             if (err) {
                                 callback(err);
