@@ -651,12 +651,17 @@ define([], function () {
     WorkspaceController.prototype.initExportWorkspaceClient = function () {
         var self = this;
         return function (id) {
+            var workspaceName = self.$scope.workspaces[id].name;
             self.smartClient.runPlugin('ExportWorkspace', {activeNode: id, pluginConfig: {}}, function (result) {
-                if (result.success === false) {
-                    alert('Failed exporting workspace!');
-                    return;
+                var fileUrl = self.smartClient.blobClient.getDownloadURL(result.artifacts[0]);
+                if (result.success) {
+                    self.growl.success('All objects successfully exported for workspace <a href="' + fileUrl +
+                        '">' + workspaceName + '</a>.', {ttl: -1});
+                } else {
+                    self.growl.error('There were errors exporting the workspace ' + workspaceName + '.');
                 }
-                window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
+                self.showPluginMessages(result.messages);
+                self.update();
             });
         };
     };
@@ -968,17 +973,20 @@ define([], function () {
     WorkspaceController.prototype.showPluginMessages = function (messages) {
         var self = this,
             msg,
+            nodeUrl,
             i;
         for (i = 0; i < messages.length; i += 1) {
             msg = messages[i];
+            nodeUrl = '/?project=ADMEditor&activeObject=' + msg.activeNode.id;
+            nodeUrl = '<a href="' + nodeUrl + '" target="_blank">' + msg.activeNode.name + '</a> - ';
             if (msg.severity === 'info') {
-                self.growl.info(msg.message);
+                self.growl.info(nodeUrl + msg.message);
             } else if (msg.severity === 'warning') {
-                self.growl.warning(msg.message);
+                self.growl.warning(nodeUrl + msg.message);
             } else if (msg.severity === 'error') {
-                self.growl.error(msg.message);
+                self.growl.error(nodeUrl + msg.message);
             } else {
-                self.growl.info(msg.message);
+                self.growl.info(nodeUrl + msg.message);
             }
         }
     };
