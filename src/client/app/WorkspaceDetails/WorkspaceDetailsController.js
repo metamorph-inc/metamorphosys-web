@@ -264,6 +264,13 @@ define([], function () {
                     id: domainModelId,
                     type: 'Modelica'
                 };
+                if (Math.random() > 0.5) {
+                    domainModelId = self.getRandomId();
+                    component.domains[domainModelId] = {
+                        id: domainModelId,
+                        type: 'Modelica'
+                    };
+                }
             }
             if (Math.random() > 0.25) {
                 domainModelId = self.getRandomId();
@@ -271,6 +278,13 @@ define([], function () {
                     id: domainModelId,
                     type: 'CAD'
                 };
+                if (Math.random() > 0.5) {
+                    domainModelId = self.getRandomId();
+                    component.domains[domainModelId] = {
+                        id: domainModelId,
+                        type: 'CAD'
+                    };
+                }
             }
             if (Math.random() > 0.25) {
                 domainModelId = self.getRandomId();
@@ -285,6 +299,13 @@ define([], function () {
                     id: domainModelId,
                     type: 'Cyber'
                 };
+                if (Math.random() > 0.75) {
+                    domainModelId = self.getRandomId();
+                    component.domains[domainModelId] = {
+                        id: domainModelId,
+                        type: 'Cyber'
+                    };
+                }
             }
         }
 
