@@ -23,6 +23,10 @@
                 <div>{{ component.description }}</div>
                 <span class="domain-models label {{getDomainIcon(domain.type)}}" data-ng-repeat="domain in component.domains | orderObjectBy:'type'">{{domain.type}}</span>
                 <div>Updated <span am-time-ago="component.date"></span></div>
+                <h5><strong>In Designs</strong></h5>
+                <ul>
+                    <li data-ng-repeat="design in component.inDesigns">{{designs[design.designId].name}} :: {{design}}</li>
+                </ul>
             </li>
         </ul>
     </div>
@@ -43,6 +47,10 @@
                 </div>
 
                 <div>Updated <span am-time-ago="design.date"></span></div>
+                <h5><strong>Components</strong></h5>
+                <ul>
+                    <li data-ng-repeat="component in design.components">{{components[component.componentId].name}} :: {{component}}</li>
+                </ul>
             </li>
         </ul>
     </div>

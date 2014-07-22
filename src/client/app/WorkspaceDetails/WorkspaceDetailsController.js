@@ -15,7 +15,12 @@ define([], function () {
         self.$routeParams = $routeParams;
         self.smartClient = smartClient;
 
+        // For test-data
         self.chance = Chance ? new Chance() : null;
+        self.nbrOfComponets = 15;
+        self.nbrOfDesigns = 3;
+        self.nbrOfTestBenches = 2;
+
         self.$scope.exportDesign = function (id) {
             // FIXME: this should probably not be here.
             self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
@@ -77,10 +82,7 @@ define([], function () {
     WorkspaceDetailsController.prototype.initTestData = function () {
         var self = this,
             i,
-            id,
-            nbrOfComponets = 15,
-            nbrOfDesigns = 3,
-            nbrOfTestBenches = 2;
+            id;
 
         self.$scope.name = self.chance.word();
         self.$scope.description = self.chance.sentence();
@@ -90,16 +92,16 @@ define([], function () {
             hash: self.chance.hash(),
             message: 'something happened'
         };
-        for (i = 0; i < nbrOfComponets; i += 1) {
+        for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
             self.addComponent(id);
         }
-        for (i = 0; i < nbrOfDesigns; i += 1) {
-            id = '/' + (i + nbrOfComponets);
+        for (i = 0; i < self.nbrOfDesigns; i += 1) {
+            id = '/' + (i + self.nbrOfComponets);
             self.addDesign(id);
         }
-        for (i = 0; i < nbrOfTestBenches; i += 1) {
-            id = '/' + (i + nbrOfComponets + nbrOfDesigns);
+        for (i = 0; i < self.nbrOfTestBenches; i += 1) {
+            id = '/' + (i + self.nbrOfComponets + self.nbrOfDesigns);
             self.addTestBench(id);
         }
         self.addRequirement(self.getRandomId());
@@ -255,6 +257,7 @@ define([], function () {
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
+                inDesigns: {},
                 domains: {},
                 acm: '#' // TODO: we need a random valid url here and sometimes null or empty string
             };
@@ -367,6 +370,8 @@ define([], function () {
         var self = this,
             all,
             design,
+            i,
+            componentId,
             nodeObj;
 
         if (self.smartClient) {
@@ -393,8 +398,22 @@ define([], function () {
                     All: all,
                     None: self.chance.integer({min: all, max: all * 10})
                 },
+                components: {},
                 results: self.chance.hash()
             };
+            for (i = 0; i < self.chance.integer({min: 1, max: 10}); i += 1) {
+                componentId = '/' + self.chance.integer({min: 0, max: self.nbrOfComponets - 1});
+                if (design.components[componentId]) {
+                    design.components[componentId].cnt += 1;
+                } else {
+                    design.components[componentId] = {
+                        componentId: componentId,
+                        designId: id,
+                        cnt: 1
+                    };
+                    self.$scope.components[componentId].inDesigns[id] = design.components[componentId];
+                }
+            }
         }
 
         if (design) {
