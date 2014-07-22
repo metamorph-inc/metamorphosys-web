@@ -47,10 +47,19 @@
                 </div>
 
                 <div>Updated <span am-time-ago="design.date"></span></div>
-                <h5><strong>Components</strong></h5>
-                <ul>
-                    <li data-ng-repeat="component in design.components">{{components[component.componentId].name}} :: {{component}}</li>
-                </ul>
+                <div class="design-components">
+                    <h5><strong>Components</strong></h5>
+                    <ul>
+                        <li data-ng-repeat="component in design.components">{{components[component.componentId].name}} :: {{component}}</li>
+                    </ul>
+                </div>
+                <div class="design-interfaces">
+                    <h5><strong>Interfaces</strong></h5>
+                    <ul>
+                        <li data-ng-repeat="conn in design.interfaces.connectors">{{conn.name}}</li>
+                        <li data-ng-repeat="prop in design.interfaces.properties">{{prop.name}}</li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
@@ -65,29 +74,40 @@
                 <div>{{ testBench.description }}</div>
 
                 <div>Updated <span am-time-ago="testBench.date"></span></div>
-                <ul class="tlsuts" data-ng-repeat="tlsut in testBench.tlsuts.avaliable">
-                    <li>
-                        <div>{{tlsut.name}}: {{tlsut.id}}</div>
-                    </li>
-                </ul>
-                <div data-ng-show="designs[testBench.tlsuts.selected]"> Selected : {{designs[testBench.tlsuts.selected].name}}</div>
-                <div data-ng-hide="designs[testBench.tlsuts.selected]"> Selected : NONE </div>
+                <div class="tlsut">
+                    <h5><strong>Top Level System Under Test</strong></h5>
+                    <ul>
+                        <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
+                        <li data-ng-repeat="prop in testBench.tlsut.properties">{{prop.name}}</li>
+                    </ul>
+                </div>
+                <div class="tb-designs">
+                    <h5><strong>Designs</strong></h5>
+                    <ul>
+                        <li data-ng-repeat="design in testBench.designs.avaliable">{{designs[design.id].name}}</li>
+                    </ul>
+                    <div data-ng-show="designs[testBench.designs.selected]"> Selected : {{designs[testBench.designs.selected].name}}
+                        <span data-ng-show="testBench.designs.avaliable[testBench.designs.selected]"> - Matches </span>
+                        <span data-ng-hide="testBench.designs.avaliable[testBench.designs.selected]"> - Does not match!</span>
+                    </div>
+                    <div data-ng-hide="designs[testBench.designs.selected]"> Selected : NONE </div>
+                </div>
             </li>
         </ul>
     </div>
 
-    <div class="test-benches">
-        <h4>Requirements</h4>
+    <!--<div class="requirements">-->
+        <!--<h4>Requirements</h4>-->
 
-        <ul class="list-group" data-ng-repeat="requirement in requirements | orderObjectBy: 'name'">
-            <li class="list-group-item" data-id="{{ requirement.id }}">
-                <!-- Header -->
-                <a class="requirement-name" href="">{{ requirement.name }}</a>
-                <div>{{ requirement.description }}</div>
+        <!--<ul class="list-group" data-ng-repeat="requirement in requirements | orderObjectBy: 'name'">-->
+            <!--<li class="list-group-item" data-id="{{ requirement.id }}">-->
+                <!--&lt;!&ndash; Header &ndash;&gt;-->
+                <!--<a class="requirement-name" href="">{{ requirement.name }}</a>-->
+                <!--<div>{{ requirement.description }}</div>-->
 
-                <div>Updated <span am-time-ago="requirement.date"></span></div>
-                <div>{{requirement.data}}</div>
-            </li>
-        </ul>
-    </div>
+                <!--<div>Updated <span am-time-ago="requirement.date"></span></div>-->
+                <!--<div>{{requirement.data}}</div>-->
+            <!--</li>-->
+        <!--</ul>-->
+    <!--</div>-->
 </div>

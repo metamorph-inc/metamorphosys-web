@@ -19,7 +19,7 @@ define([], function () {
         self.chance = Chance ? new Chance() : null;
         self.nbrOfComponets = 15;
         self.nbrOfDesigns = 3;
-        self.nbrOfTestBenches = 2;
+        self.nbrOfTestBenches = 10;
 
         self.$scope.exportDesign = function (id) {
             // FIXME: this should probably not be here.
@@ -92,6 +92,15 @@ define([], function () {
             hash: self.chance.hash(),
             message: 'something happened'
         };
+
+        // Initialize functions
+        self.$scope.getDesignInterfaces = self.initGetDesignInterfaces();
+        self.$scope.getDesignComponents = self.initGetDesignComponents();
+        self.$scope.getDesignSize = self.initGetDesignSize();
+        self.$scope.getTLSUT = self.initGetTLSUT();
+        self.$scope.getMatchingDesigns = self.initGetMatchingDesigns();
+
+        // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
             self.addComponent(id);
@@ -99,10 +108,15 @@ define([], function () {
         for (i = 0; i < self.nbrOfDesigns; i += 1) {
             id = '/' + (i + self.nbrOfComponets);
             self.addDesign(id);
+            self.$scope.getDesignComponents(id);
+            self.$scope.getDesignInterfaces(id);
+            self.$scope.getDesignSize(id);
         }
         for (i = 0; i < self.nbrOfTestBenches; i += 1) {
             id = '/' + (i + self.nbrOfComponets + self.nbrOfDesigns);
             self.addTestBench(id);
+            self.$scope.getTLSUT(id);
+            self.$scope.getMatchingDesigns(id);
         }
         self.addRequirement(self.getRandomId());
     };
@@ -208,7 +222,7 @@ define([], function () {
                                             self.removeDesign(events[j].eid);
                                             self.removeTestBench(events[j].eid);
                                             self.removeDomainModel(events[j].eid);
-                                            self.removeRequirement(events[j].eid);
+//                                            self.removeRequirement(events[j].eid);
                                         }
                                     }
                                 });
@@ -368,10 +382,7 @@ define([], function () {
     // Designs
     WorkspaceDetailsController.prototype.addDesign = function (id) {
         var self = this,
-            all,
             design,
-            i,
-            componentId,
             nodeObj;
 
         if (self.smartClient) {
@@ -383,37 +394,35 @@ define([], function () {
                     id: nodeObj.getId(),
                     name: nodeObj.getAttribute('name'),
                     description: nodeObj.getAttribute('INFO'),
-                    date: new Date()
+                    date: new Date(),
+                    size: {
+                        all: -1,
+                        none: -1
+                    },
+                    components: {},
+                    interfaces: {
+                        properties: {},
+                        connectors: {}
+                    }
                 };
 
             }
         } else {
-            all = self.chance.integer({min: 1, max: 10000});
             design = {
                 id: id,
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
                 size: {
-                    All: all,
-                    None: self.chance.integer({min: all, max: all * 10})
+                    all: -1,
+                    none: -1
                 },
                 components: {},
-                results: self.chance.hash()
-            };
-            for (i = 0; i < self.chance.integer({min: 1, max: 10}); i += 1) {
-                componentId = '/' + self.chance.integer({min: 0, max: self.nbrOfComponets - 1});
-                if (design.components[componentId]) {
-                    design.components[componentId].cnt += 1;
-                } else {
-                    design.components[componentId] = {
-                        componentId: componentId,
-                        designId: id,
-                        cnt: 1
-                    };
-                    self.$scope.components[componentId].inDesigns[id] = design.components[componentId];
+                interfaces: {
+                    properties: {},
+                    connectors: {}
                 }
-            }
+            };
         }
 
         if (design) {
@@ -445,8 +454,9 @@ define([], function () {
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
-                tlsuts: {
-                    avaliable: self.$scope.designs,
+                tlsut: {},
+                designs: {
+                    avaliable: {},
                     selected: tlsut
                 }
             };
@@ -456,11 +466,18 @@ define([], function () {
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
-                tlsuts: {
-                    avaliable: self.$scope.designs,
-                    selected: '/1'
+                tlsut: {},
+                designs: {
+                    avaliable: {},
+                    selected: '/' + self.chance.integer({
+                        min: self.nbrOfComponets,
+                        max: self.nbrOfComponets + self.nbrOfDesigns - 1
+                    })
                 }
             };
+            if (Math.random() > 0.8) {
+                testBench.designs.selected = null;
+            }
         }
 
         if (testBench) {
@@ -518,6 +535,197 @@ define([], function () {
         }
 
         this.update();
+    };
+
+    // Function initializers.
+    WorkspaceDetailsController.prototype.initGetTLSUT = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var tlsut = self.$scope.testBenches[id].tlsut,
+                    i;
+                tlsut.properties = {};
+                tlsut.connectors = {};
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    tlsut.properties['prop_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'prop_' + i
+                    };
+                }
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    tlsut.connectors['conn_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'conn_' + i
+                    };
+                }
+                return tlsut;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initGetDesignInterfaces = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var interfaces = self.$scope.designs[id].interfaces,
+                    i;
+                interfaces.properties = {};
+                interfaces.connectors = {};
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    interfaces.properties['prop_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'prop_' + i
+                    };
+                }
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    interfaces.connectors['conn_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'conn_' + i
+                    };
+                }
+                return interfaces;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initGetDesignComponents = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var designComponents = self.$scope.designs[id].components,
+                    i,
+                    component,
+                    componentId;
+                for (i = 0; i < self.chance.integer({min: 1, max: 10}); i += 1) {
+                    componentId = '/' + self.chance.integer({min: 0, max: self.nbrOfComponets - 1});
+                    component = designComponents[componentId];
+                    if (component) {
+                        component.cnt += 1;
+                    } else {
+                        component = {
+                            componentId: componentId,
+                            designId: id,
+                            cnt: 1
+                        };
+                        designComponents[componentId] = component;
+                        self.$scope.components[componentId].inDesigns[id] = component;
+                    }
+                }
+                return designComponents;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initGetDesignSize = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var size = self.$scope.designs[id].size,
+                    all = self.chance.integer({min: 1, max: 10000});
+
+                size.all = all;
+                size.none = self.chance.integer({min: all, max: all * 10});
+
+                return size;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initGetMatchingDesigns = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var tbDesigns = self.$scope.testBenches[id].designs,
+                    designId,
+                    tlsut = self.$scope.testBenches[id].tlsut,
+                    designInterface;
+
+                for (designId in self.$scope.designs) {
+                    if (self.$scope.designs.hasOwnProperty(designId)) {
+                        designInterface = self.$scope.designs[designId].interfaces;
+                        if (self.compareInterfaces(tlsut, designInterface)) {
+                            tbDesigns.avaliable[designId] = {id: designId};
+                        }
+                    }
+                }
+                return tbDesigns.avaliable;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
+    WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
+        var name,
+            tProp,
+            dProp,
+            tConn,
+            dConn,
+            match = false;
+
+        for (name in tlsut.properties) {
+            if (tlsut.properties.hasOwnProperty(name)) {
+                match = false;
+                if (designInterface.properties[name]) {
+                    // It only checks the name right now.
+                    tProp = tlsut.properties[name];
+                    dProp = designInterface.properties[name];
+                    // Here it can be elaborated.
+                    if (tProp.name === dProp.name) {
+                        match = true;
+                    }
+                }
+                if (match === false) {
+                    break;
+                }
+            }
+        }
+        if (match === false) {
+            return false;
+        }
+
+        for (name in tlsut.connectors) {
+            if (tlsut.connectors.hasOwnProperty(name)) {
+                match = false;
+                if (designInterface.connectors[name]) {
+                    // It only checks the name right now.
+                    tConn = tlsut.connectors[name];
+                    dConn = designInterface.connectors[name];
+                    // Here it can be elaborated.
+                    if (tConn.name === dConn.name) {
+                        match = true;
+                    }
+                }
+                if (match === false) {
+                    break;
+                }
+            }
+        }
+
+        return match;
     };
 
     return WorkspaceDetailsController;
