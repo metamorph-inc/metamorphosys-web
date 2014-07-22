@@ -7,40 +7,21 @@
 define([], function () {
     "use strict";
 
-    var WorkspaceDetailsController = function ($scope, $moment, $routeParams, smartClient, Chance) {
+    var WorkspaceDetailsController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
         self.smartClient = smartClient;
+        self.growl = growl;
 
         // For test-data
         self.chance = Chance ? new Chance() : null;
         self.nbrOfComponets = 15;
         self.nbrOfDesigns = 3;
         self.nbrOfTestBenches = 10;
-
-        self.$scope.exportDesign = function (id) {
-            // FIXME: this should probably not be here.
-            self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
-                if (result.error) {
-                    console.error(result.error);
-                    return;
-                }
-                // FIXME: is this the right approach?
-                if (result.artifacts[0]) {
-                    window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
-                }
-            });
-        };
         self.initialize();
-    };
-
-    WorkspaceDetailsController.prototype.update = function () {
-        if (!this.$scope.$$phase) {
-            this.$scope.$apply();
-        }
     };
 
     WorkspaceDetailsController.prototype.initialize = function () {
@@ -69,7 +50,6 @@ define([], function () {
             return 'label-default';
         };
 
-        // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
             self.initWithSmartClient();
@@ -94,16 +74,18 @@ define([], function () {
         };
 
         // Initialize functions
+        self.$scope.getComponentInterfaces = self.initGetComponentInterfaces();
         self.$scope.getDesignInterfaces = self.initGetDesignInterfaces();
         self.$scope.getDesignComponents = self.initGetDesignComponents();
         self.$scope.getDesignSize = self.initGetDesignSize();
         self.$scope.getTLSUT = self.initGetTLSUT();
         self.$scope.getMatchingDesigns = self.initGetMatchingDesigns();
-
+        self.$scope.exportDesign = self.initExportDesign();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
             self.addComponent(id);
+            self.$scope.getComponentInterfaces(id);
         }
         for (i = 0; i < self.nbrOfDesigns; i += 1) {
             id = '/' + (i + self.nbrOfComponets);
@@ -137,9 +119,7 @@ define([], function () {
             territoryId;
 
         self.territories = {};
-
         territoryPattern[self.$scope.id] = {children: 0};
-
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
@@ -153,7 +133,7 @@ define([], function () {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
-
+                        self.$scope.exportDesign = self.initExportDesign();
                         if (self.territories.hasOwnProperty(nodeObj.getId())) {
 
                         } else {
@@ -237,7 +217,6 @@ define([], function () {
         });
 
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
-
     };
 
     // Components
@@ -259,7 +238,10 @@ define([], function () {
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
-                domains: {}
+                inDesigns: {},
+                domains: {},
+                acm: '',
+                interfaces: {}
             };
 
             if (nodeObj.getAttribute('Resource')) {
@@ -273,7 +255,8 @@ define([], function () {
                 date: self.chance.date(),
                 inDesigns: {},
                 domains: {},
-                acm: '#' // TODO: we need a random valid url here and sometimes null or empty string
+                acm: '',
+                interfaces: {}
             };
             if (Math.random() > 0.25) {
                 domainModelId = self.getRandomId();
@@ -538,6 +521,36 @@ define([], function () {
     };
 
     // Function initializers.
+    WorkspaceDetailsController.prototype.initGetComponentInterfaces = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                var interfaces = self.$scope.components[id].interfaces,
+                    i;
+                interfaces.properties = {};
+                interfaces.connectors = {};
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    interfaces.properties['prop_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'prop_' + i
+                    };
+                }
+                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    interfaces.connectors['conn_' + i] = {
+                        id: '/' + self.chance.integer(100),
+                        name: 'conn_' + i
+                    };
+                }
+                return interfaces;
+            };
+        }
+
+        return function (id) {
+            console.log.error('TODO: Implement this..');
+            return {};
+        };
+    };
+
     WorkspaceDetailsController.prototype.initGetTLSUT = function () {
         var self = this;
         if (!self.smartClient) {
@@ -678,6 +691,53 @@ define([], function () {
         };
     };
 
+    WorkspaceDetailsController.prototype.initExportDesign = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                self.growl.warning('This would be an error message or a success message with a link to the adm-package.');
+            };
+        }
+
+        return function (id) {
+            var name = self.$scope.designs[id].name;
+            self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
+                self.showPluginMessages(result.messages);
+                if (result.success === false) {
+                    self.growl.error('Could not export ' + name + ' as an adm!');
+                    return;
+                }
+
+                if (result.artifacts[0]) {
+                    self.growl.success('<a href="' + self.smartClient.blobClient.getDownloadURL(result.artifacts[0]) + '">' +
+                        name + '.adm</a> successfully exported.', {ttl: -1});
+                }
+            });
+        };
+    };
+
+    // Helper functions
+    WorkspaceDetailsController.prototype.showPluginMessages = function (messages) {
+        var self = this,
+            msg,
+            nodeUrl,
+            i;
+        for (i = 0; i < messages.length; i += 1) {
+            msg = messages[i];
+            nodeUrl = '/?project=ADMEditor&activeObject=' + msg.activeNode.id;
+            nodeUrl = '<a href="' + nodeUrl + '" target="_blank">' + msg.activeNode.name + '</a> - ';
+            if (msg.severity === 'info') {
+                self.growl.info(nodeUrl + msg.message);
+            } else if (msg.severity === 'warning') {
+                self.growl.warning(nodeUrl + msg.message);
+            } else if (msg.severity === 'error') {
+                self.growl.error(nodeUrl + msg.message);
+            } else {
+                self.growl.info(nodeUrl + msg.message);
+            }
+        }
+    };
+
     WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
         var name,
             tProp,
@@ -726,6 +786,12 @@ define([], function () {
         }
 
         return match;
+    };
+
+    WorkspaceDetailsController.prototype.update = function () {
+        if (!this.$scope.$$phase) {
+            this.$scope.$apply();
+        }
     };
 
     return WorkspaceDetailsController;
