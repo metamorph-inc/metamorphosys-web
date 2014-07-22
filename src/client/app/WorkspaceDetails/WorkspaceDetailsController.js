@@ -103,16 +103,6 @@ define([], function () {
         self.addRequirement(self.getRandomId());
     };
 
-    WorkspaceDetailsController.prototype.getRandomId = function () {
-        var len = Math.floor((Math.random() * 2) + 3),
-            i,
-            id = '';
-        for (i = 0; i < len; i += 1) {
-            id += '/' + Math.floor((Math.random() * 10000) + 1).toString();
-        }
-        return id;
-    };
-
     WorkspaceDetailsController.prototype.initWithSmartClient = function () {
         var self = this,
             territoryPattern = {},
@@ -134,78 +124,16 @@ define([], function () {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.exportDesign = self.initExportDesign();
+                        self.$scope.getTLSUT = self.initGetTLSUT();
                         if (self.territories.hasOwnProperty(nodeObj.getId())) {
 
                         } else {
                             self.territories[nodeObj.getId()] = self.smartClient.addUI(
                                 nodeObj.getId(),
-                                ['ACMFolder', 'ADMFolder', 'Container', 'ATMFolder',
-                                    'AVMComponentModel', 'DomainModel', 'RequirementsFolder'], function (events) {
-                                    var j;
-
-                                    for (j = 0; j < events.length; j += 1) {
-                                        //console.log(events[j]);
-
-                                        // component
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                                            if (events[j].etype === 'load') {
-                                                self.addComponent(events[j].eid);
-
-                                            } else if (events[j].etype === 'update') {
-                                                self.addComponent(events[j].eid);
-
-                                            }
-                                        }
-
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                                            if (events[j].etype === 'load') {
-                                                self.addDesign(events[j].eid);
-
-                                            } else if (events[j].etype === 'update') {
-                                                self.addDesign(events[j].eid);
-
-                                            }
-                                        }
-
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
-                                            if (events[j].etype === 'load') {
-                                                self.addTestBench(events[j].eid);
-
-                                            } else if (events[j].etype === 'update') {
-                                                self.addTestBench(events[j].eid);
-
-                                            }
-                                        }
-
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
-                                            if (events[j].etype === 'load') {
-                                                self.addDomainModel(events[j].eid);
-
-                                            } else if (events[j].etype === 'update') {
-                                                self.addDomainModel(events[j].eid);
-
-                                            }
-                                        }
-
-                                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
-                                            if (events[j].etype === 'load') {
-                                                self.addRequirement(events[j].eid);
-
-                                            } else if (events[j].etype === 'update') {
-                                                self.addRequirement(events[j].eid);
-
-                                            }
-                                        }
-
-                                        if (events[j].etype === 'unload') {
-                                            self.removeComponent(events[j].eid);
-                                            self.removeDesign(events[j].eid);
-                                            self.removeTestBench(events[j].eid);
-                                            self.removeDomainModel(events[j].eid);
-//                                            self.removeRequirement(events[j].eid);
-                                        }
-                                    }
-                                });
+                                ['ACMFolder', 'ADMFolder', 'Container', 'ATMFolder', 'Connector', 'Property',
+                                    'AVMComponentModel', 'DomainModel', 'RequirementsFolder'],
+                                self.getWorkspaceEventCallback()
+                            );
                         }
                     } else if (event.etype === 'unload') {
                         console.error('TODO: not implemented yet.');
@@ -217,6 +145,73 @@ define([], function () {
         });
 
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
+    };
+
+    WorkspaceDetailsController.prototype.getWorkspaceEventCallback = function () {
+        var self = this;
+        return function (events) {
+            var j;
+
+            for (j = 0; j < events.length; j += 1) {
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
+                    if (events[j].etype === 'load') {
+                        self.addComponent(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addComponent(events[j].eid);
+                    } else if (events[j].etype === 'unload') {
+                        self.removeComponent(events[j].eid);
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
+                    if (events[j].etype === 'load') {
+                        self.addDesign(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addDesign(events[j].eid);
+                    } else if (events[j].etype === 'unload') {
+                        self.removeDesign(events[j].eid);
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
+                    if (events[j].etype === 'load') {
+                        self.addTestBench(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addTestBench(events[j].eid);
+                    } else if (events[j].etype === 'unload') {
+                        self.removeTestBench(events[j].eid);
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
+                    if (events[j].etype === 'load') {
+                        self.addRequirement(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addRequirement(events[j].eid);
+                    } else if (events[j].etype === 'unload') {
+                        self.removeRequirement(events[j].eid);
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
+                    if (events[j].etype === 'load') {
+                        self.addDomainModel(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addDomainModel(events[j].eid);
+                    } else if (events[j].etype === 'unload') {
+                        self.removeDomainModel(events[j].eid);
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                    if (events[j].etype === 'load') {
+                        self.addConnector(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.addConnector(events[j].eid);
+                    }
+                }
+            }
+        };
     };
 
     // Components
@@ -241,7 +236,10 @@ define([], function () {
                 inDesigns: {},
                 domains: {},
                 acm: '',
-                interfaces: {}
+                interfaces: {
+                    properties: {},
+                    connectors: {}
+                }
             };
 
             if (nodeObj.getAttribute('Resource')) {
@@ -366,12 +364,13 @@ define([], function () {
     WorkspaceDetailsController.prototype.addDesign = function (id) {
         var self = this,
             design,
+            parentId,
             nodeObj;
 
         if (self.smartClient) {
             nodeObj = self.smartClient.client.getNode(id);
-
-            if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'ADMFolder')) {
+            parentId = nodeObj.getParentId();
+            if (self.smartClient.isMetaTypeOf(parentId, 'ADMFolder')) {
                 // root container
                 design = {
                     id: nodeObj.getId(),
@@ -388,7 +387,8 @@ define([], function () {
                         connectors: {}
                     }
                 };
-
+            } else if (self.$scope.testBenches[parentId]) {
+                self.$scope.getTLSUT(parentId);
             }
         } else {
             design = {
@@ -422,6 +422,66 @@ define([], function () {
         this.update();
     };
 
+    WorkspaceDetailsController.prototype.addConnector = function (id) {
+        var self = this,
+            parentNode,
+            nodeObj,
+            parentId,
+            name;
+
+        nodeObj = self.smartClient.client.getNode(id);
+        name = nodeObj.getAttribute('name');
+        parentId = nodeObj.getParentId();
+        parentNode = self.smartClient.client.getNode(parentId);
+
+        if (self.smartClient.isMetaTypeOf(parentId, 'AVMComponentModel')) {
+            if (self.$scope.components[parentId]) {
+                self.$scope.components[parentId].interfaces.connectors[name] = {
+                    name: name,
+                    id: id
+                };
+            }
+            self.update();
+        } else if (self.$scope.testBenches[parentNode.getParentId()]) {
+            // This is a Top Level System Under Test
+            // FIXME: This is never triggered
+            self.$scope.testBenches[parentNode.getParentId()].tlsut.connectors[name] = {
+                name: name,
+                id: id
+            };
+            self.update();
+        }
+    };
+
+    WorkspaceDetailsController.prototype.addProperty = function (id) {
+        var self = this,
+            parentNode,
+            nodeObj,
+            parentId,
+            name;
+
+        nodeObj = self.smartClient.client.getNode(id);
+        name = nodeObj.getAttribute('name');
+        parentId = nodeObj.getParentId();
+        parentNode = self.smartClient.client.getNode(parentId);
+
+        if (self.smartClient.isMetaTypeOf(parentId, 'AVMComponentModel')) {
+            if (self.$scope.components[parentId]) {
+                self.$scope.components[parentId].interfaces.properties[name] = {
+                    name: name,
+                    id: id
+                };
+            }
+            self.update();
+        } else if (self.$scope.testBenches[parentNode.getParentId()]) {
+            // This is a Top Level System Under Test
+            self.$scope.testBenches[parentNode.getParentId()].tlsut.properties[name] = {
+                name: name,
+                id: id
+            };
+            self.update();
+        }
+    };
     // TestBenches
     WorkspaceDetailsController.prototype.addTestBench = function (id) {
         var self = this,
@@ -437,7 +497,7 @@ define([], function () {
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
-                tlsut: {},
+                tlsut: null,
                 designs: {
                     avaliable: {},
                     selected: tlsut
@@ -512,7 +572,7 @@ define([], function () {
         }
     };
 
-    WorkspaceDetailsController.prototype.removeTestBench = function (id) {
+    WorkspaceDetailsController.prototype.removeRequirement = function (id) {
         if (this.$scope.requirements.hasOwnProperty(id)) {
             delete this.$scope.requirements[id];
         }
@@ -526,18 +586,20 @@ define([], function () {
         if (!self.smartClient) {
             return function (id) {
                 var interfaces = self.$scope.components[id].interfaces,
-                    i;
+                    i,
+                    newId;
                 interfaces.properties = {};
                 interfaces.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    newId = self.getRandomId();
                     interfaces.properties['prop_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     interfaces.connectors['conn_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'conn_' + i
                     };
                 }
@@ -556,18 +618,21 @@ define([], function () {
         if (!self.smartClient) {
             return function (id) {
                 var tlsut = self.$scope.testBenches[id].tlsut,
-                    i;
+                    i,
+                    newId;
                 tlsut.properties = {};
                 tlsut.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    newId = self.getRandomId();
                     tlsut.properties['prop_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    newId = self.getRandomId();
                     tlsut.connectors['conn_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'conn_' + i
                     };
                 }
@@ -576,7 +641,15 @@ define([], function () {
         }
 
         return function (id) {
-            console.log.error('TODO: Implement this..');
+            var tlsut = self.$scope.testBenches[id].tlsut;
+            if (tlsut) {
+                // It could still be incomplete at this stage..
+                return tlsut;
+            }
+            self.$scope.testBenches[id].tlsut = {
+                properties: {},
+                connectors: {}
+            };
             return {};
         };
     };
@@ -586,18 +659,20 @@ define([], function () {
         if (!self.smartClient) {
             return function (id) {
                 var interfaces = self.$scope.designs[id].interfaces,
-                    i;
+                    i,
+                    newId;
                 interfaces.properties = {};
                 interfaces.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
+                    newId = self.getRandomId();
                     interfaces.properties['prop_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     interfaces.connectors['conn_' + i] = {
-                        id: '/' + self.chance.integer(100),
+                        id: newId,
                         name: 'conn_' + i
                     };
                 }
@@ -792,6 +867,16 @@ define([], function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
+    };
+
+    WorkspaceDetailsController.prototype.getRandomId = function () {
+        var len = Math.floor((Math.random() * 2) + 3),
+            i,
+            id = '';
+        for (i = 0; i < len; i += 1) {
+            id += '/' + Math.floor((Math.random() * 10000) + 1).toString();
+        }
+        return id;
     };
 
     return WorkspaceDetailsController;
