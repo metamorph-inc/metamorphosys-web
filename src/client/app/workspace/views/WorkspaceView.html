@@ -1,5 +1,5 @@
 <!-- Workspace view module-->
-<div class="workspace-view">
+<article class="workspace">
     <!-- Create a new workspace-->
     <div id="create-new-workspace" class="row">
             <div class="col-md-10 col-lg-10 col-sm-10">
@@ -73,10 +73,11 @@
 
             <!--<pagination total-items="1000" ng-change="pager.pageChanged()" ng-model="pager.currentPage" max-size="pager.maxSize" class="pagination-sm" boundary-links="true" items-per-page="7" rotate="false" num-pages="numPages"></pagination>-->
 
-            <ul class="list-group" data-ng-repeat="workspace in workspaces | orderObjectBy: 'name' | filter:search">
+            <ul class="list-group" >
 
                 <!-- One workspace item -->
-                <li class="list-group-item" data-id="{{ workspace.id }}" ng-file-drop="onDroppedFiles(workspace.id, $files)" ng-file-drag-over-class="dragOverClass($event)">
+                <li data-ng-repeat="workspace in workspaces | orderObjectBy: 'name' | filter:search"
+                        class="list-group-item" data-id="{{ workspace.id }}" ng-file-drop="onDroppedFiles(workspace.id, $files)" ng-file-drag-over-class="dragOverClass($event)">
 
                     <!-- TODO: remove this block, this was the original example -->
                     <!--<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class-name-or-function"-->
@@ -86,10 +87,11 @@
                     <!--<button ng-click="upload.abort()">Cancel Upload</button>-->
 
 
-                    <!-- Header -->
-                    <a class="workspace-name" href="#/workspaceDetails/{{ workspace.id }}" tooltip="Open this workspace" tooltip-placement="right">{{ workspace.name }}</a>
+                    <header>
+                        <h4><a class="workspace-name" href="#/workspaceDetails/{{ workspace.id }}" tooltip="Open this workspace" tooltip-placement="right">{{ workspace.name }}</a></h4>
+                    </header>
 
-                    <div class="workspace-control-buttons">
+                    <div class="control-buttons">
                         <div class="btn-group" dropdown is-open="status.isopen">
                             <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
                                 <span class="caret"></span>
@@ -107,22 +109,23 @@
                     </div>
 
                     <!-- Description -->
-                    <div class="workspace-description">{{ workspace.description }}</div>
+                    <div class="details">{{ workspace.description }}</div>
 
-                    <!-- Footer -->
-                    <div class="last-updated-time">Updated  <span am-time-ago="workspace.lastUpdated.time"></span> by <a href="">{{workspace.lastUpdated.user }}</a></div>
-                    <div class="workspace-stats">
-                        <ul class="list-group">
-                            <li class="list-group-item pull-left" tooltip="Components" tooltip-placement="bottom"><i class="fa fa-puzzle-piece component-icon"></i><span class="count">{{ workspace.components.count }}</span></li>
-                            <li class="list-group-item pull-left" tooltip="Design spaces" tooltip-placement="bottom"><i class="fa fa-cubes"></i><span class="count">{{ workspace.designs.count }}</span></li>
-                            <li class="list-group-item pull-left" tooltip="Test benches" tooltip-placement="bottom"><i class="glyphicon glyphicon-saved"></i><span class="count">{{ workspace.testBenches.count }}</span></li>
-                            <li class="list-group-item pull-left" tooltip="Requirements" tooltip-placement="bottom"><i class="fa fa-bar-chart-o"></i><span class="count">{{ workspace.requirements.count }}</span></li>
-                        </ul>
-                    </div>
+                    <footer>
+                        <time class="last-updated-time">Updated  <span am-time-ago="workspace.lastUpdated.time"></span> by <a href="">{{workspace.lastUpdated.user }}</a></time>
+                        <div class="stats">
+                            <ul class="list-group">
+                                <li class="list-group-item pull-left" tooltip="Components" tooltip-placement="bottom"><i class="fa fa-puzzle-piece component-icon"></i><span class="count">{{ workspace.components.count }}</span></li>
+                                <li class="list-group-item pull-left" tooltip="Design spaces" tooltip-placement="bottom"><i class="fa fa-cubes"></i><span class="count">{{ workspace.designs.count }}</span></li>
+                                <li class="list-group-item pull-left" tooltip="Test benches" tooltip-placement="bottom"><i class="glyphicon glyphicon-saved"></i><span class="count">{{ workspace.testBenches.count }}</span></li>
+                                <li class="list-group-item pull-left" tooltip="Requirements" tooltip-placement="bottom"><i class="fa fa-bar-chart-o"></i><span class="count">{{ workspace.requirements.count }}</span></li>
+                            </ul>
+                        </div>
+                    </footer>
                 </li>
             </ul>
 
 
         </div>
     </div>
-</div>
+</article>

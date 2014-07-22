@@ -1,113 +1,206 @@
-<div class="workspace-details">
+<article class="workspace-details">
 
-    <div>ID: {{ id }}</div>
+<header>
+    <h1 class="workspace-name">{{ name }}</h1>
+    <span class="id">ID: {{ id }}</span>
 
-    <div>TODO: Show details about this object!</div>
+    <div class="workspace-description">{{ description }}</div>
+</header>
 
-    <div>Name: {{ name }}</div>
 
-    <div>{{ description }}</div>
+<div class="row">
+    <section class="components col-lg-4 col-sm-6">
+        <h3>Components</h3>
 
-    <div class="components">
-        <h4>Components</h4>
-
-        <ul class="list-group" data-ng-repeat="component in components | orderObjectBy: 'name'">
+        <ul class="list-group">
             <!-- One workspace item -->
-            <li class="list-group-item" data-id="{{ component.id }}">
+            <li class="list-group-item" data-id="{{ component.id }}"
+                data-ng-repeat="component in components | orderObjectBy: 'name'">
 
-                <!-- Header -->
-                <a class="component-name" href="">{{ component.name }}</a>
+                <header>
+                    <h4><a class="component-name" href="">{{ component.name }}</a></h4>
+                </header>
 
-                <a data-ng-show="component.acm" href="{{ component.acm }}"><i class="glyphicon glyphicon-download-alt" tooltip="Download ACM" tooltip-placement="bottom"></i></a>
-
-                <div>{{ component.description }}</div>
-                <span class="domain-models label {{getDomainIcon(domain.type)}}" data-ng-repeat="domain in component.domains | orderObjectBy:'type'">{{domain.type}}</span>
-                <div>Updated <span am-time-ago="component.date"></span></div>
-                <h5><strong>In Designs</strong></h5>
-                <ul>
-                    <li data-ng-repeat="design in component.inDesigns">{{designs[design.designId].name}} :: {{design}}</li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-
-    <div class="designs">
-        <h4>Designs</h4>
-
-        <ul class="list-group" data-ng-repeat="design in designs | orderObjectBy: 'name'">
-            <!-- One workspace item -->
-            <li class="list-group-item" data-id="{{ design.id }}">
-                <!-- Header -->
-                <a class="design-name" href="#/designSpace/{{ design.id }}" tooltip="View Design Space" tooltip-placement="bottom">{{ design.name }}</a>
-                <button ng-click="exportDesign(design.id)">Export ADM</button>
-                <div>{{ design.description }}</div>
-
-                <div data-ng-repeat="(key, value) in design.size">
-                    <div>{{ key }} : {{ value }}</div>
-                </div>
-
-                <div>Updated <span am-time-ago="design.date"></span></div>
-                <div class="design-components">
-                    <h5><strong>Components</strong></h5>
-                    <ul>
-                        <li data-ng-repeat="component in design.components">{{components[component.componentId].name}} :: {{component}}</li>
-                    </ul>
-                </div>
-                <div class="design-interfaces">
-                    <h5><strong>Interfaces</strong></h5>
-                    <ul>
-                        <li data-ng-repeat="conn in design.interfaces.connectors">{{conn.name}}</li>
-                        <li data-ng-repeat="prop in design.interfaces.properties">{{prop.name}}</li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-    </div>
-
-    <div class="test-benches">
-        <h4>Test benches</h4>
-
-        <ul class="list-group" data-ng-repeat="testBench in testBenches | orderObjectBy: 'name'">
-            <li class="list-group-item" data-id="{{ testBench.id }}">
-                <!-- Header -->
-                <a class="testbench-name" href="">{{ testBench.name }}</a>
-                <div>{{ testBench.description }}</div>
-
-                <div>Updated <span am-time-ago="testBench.date"></span></div>
-                <div class="tlsut">
-                    <h5><strong>Top Level System Under Test</strong></h5>
-                    <ul>
-                        <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
-                        <li data-ng-repeat="prop in testBench.tlsut.properties">{{prop.name}}</li>
-                    </ul>
-                </div>
-                <div class="tb-designs">
-                    <h5><strong>Designs</strong></h5>
-                    <ul>
-                        <li data-ng-repeat="design in testBench.designs.avaliable">{{designs[design.id].name}}</li>
-                    </ul>
-                    <div data-ng-show="designs[testBench.designs.selected]"> Selected : {{designs[testBench.designs.selected].name}}
-                        <span data-ng-show="testBench.designs.avaliable[testBench.designs.selected]"> - Matches </span>
-                        <span data-ng-hide="testBench.designs.avaliable[testBench.designs.selected]"> - Does not match!</span>
+                <div class="control-buttons">
+                    <div class="btn-group" dropdown is-open="status.isopen">
+                        <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li data-ng-if="component.acm"><a href="{{ component.acm }}"><i
+                                    class="glyphicon glyphicon-share-alt"></i> Export ACM</a></li>
+                        </ul>
                     </div>
-                    <div data-ng-hide="designs[testBench.designs.selected]"> Selected : NONE </div>
                 </div>
+
+                <accordion>
+                    <accordion-group>
+                        <accordion-heading>
+                            <i class="glyphicon"
+                               ng-class="{'glyphicon-chevron-up': newWorkspace.expanded, 'glyphicon-plus': !newWorkspace.expanded}"></i>
+                            Details
+                        </accordion-heading>
+                        <div class="details">
+
+                            <div class="description">{{ component.description }}</div>
+                            <h5><strong>In Designs</strong></h5>
+                            <ul>
+                                <li data-ng-repeat="design in component.inDesigns">{{designs[design.designId].name}} ::
+                                    {{design}}
+                                </li>
+                            </ul>
+
+
+                        </div>
+                    </accordion-group>
+                </accordion>
+
+                <footer>
+
+                    <time class="last-updated-time">Updated <span am-time-ago="component.date"></span></time>
+
+                    <div class="stats">
+                        <ul class="list-group">
+                            <li class="list-group-item pull-left"
+                                data-ng-repeat="domain in component.domains | orderObjectBy:'type'">
+                                <span class="domain-models label {{getDomainIcon(domain.type)}}">{{domain.type}}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </footer>
+
             </li>
         </ul>
-    </div>
+    </section>
+
+    <section class="designs col-lg-4 col-sm-6">
+        <h3>Designs</h3>
+
+        <ul class="list-group">
+
+            <li class="list-group-item" data-id="{{ design.id }}"
+                data-ng-repeat="design in designs | orderObjectBy: 'name'">
+
+                <header>
+                    <h4><a class="design-name" href="#/designSpace/{{ design.id }}" tooltip="View Design Space"
+                           tooltip-placement="bottom">{{ design.name }}</a></h4>
+                </header>
+
+                <div class="control-buttons">
+                    <div class="btn-group" dropdown is-open="status.isopen">
+                        <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="#" ng-click="exportDesign(design.id)"><i
+                                    class="glyphicon glyphicon-share-alt"></i> Export ADM</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="details">
+                    <div class="description">{{ design.description }}</div>
+
+                    <div class="design-components">
+                        <h5><strong>Components</strong></h5>
+                        <ul>
+                            <li data-ng-repeat="component in design.components">
+                                {{components[component.componentId].name}}
+                                :: {{component}}
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div class="design-interfaces">
+                        <h5><strong>Interfaces</strong></h5>
+                        <ul>
+                            <li data-ng-repeat="conn in design.interfaces.connectors">{{conn.name}}</li>
+                            <li data-ng-repeat="prop in design.interfaces.properties">{{prop.name}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <footer>
+
+                    <time class="last-updated-time">Updated <span am-time-ago="design.date"></span></time>
+
+
+                    <div class="stats">
+                        <ul class="list-group">
+                            <li class="list-group-item pull-left"
+                                data-ng-repeat="(key, value) in design.size">
+                                <span class="label white-bg">{{ key }}: </span> <span class="badge">{{ value }}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </footer>
+
+            </li>
+        </ul>
+    </section>
+
+    <section class="test-benches col-lg-4 col-sm-6">
+        <h3>Test benches</h3>
+
+        <ul class="list-group">
+            <li class="list-group-item" data-id="{{ testBench.id }}"
+                data-ng-repeat="testBench in testBenches | orderObjectBy: 'name'">
+
+                <header>
+                    <h4><a class="testbench-name" href="">{{ testBench.name }}</a></h4>
+                </header>
+
+                <div class="details">
+
+                    <div class="description">{{ testBench.description }}</div>
+
+
+                    <div class="tlsut">
+                        <h5><strong>Top Level System Under Test</strong></h5>
+                        <ul>
+                            <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
+                            <li data-ng-repeat="prop in testBench.tlsut.properties">{{prop.name}}</li>
+                        </ul>
+                    </div>
+                    <div class="tb-designs">
+                        <h5><strong>Designs</strong></h5>
+                        <ul>
+                            <li data-ng-repeat="design in testBench.designs.avaliable">{{designs[design.id].name}}</li>
+                        </ul>
+                        <div data-ng-show="designs[testBench.designs.selected]"> Selected :
+                            {{designs[testBench.designs.selected].name}}
+                            <span data-ng-show="testBench.designs.avaliable[testBench.designs.selected]"> - Matches </span>
+                            <span data-ng-hide="testBench.designs.avaliable[testBench.designs.selected]"> - Does not match!</span>
+                        </div>
+                        <div data-ng-hide="designs[testBench.designs.selected]"> Selected : NONE</div>
+                    </div>
+
+                </div>
+
+                <footer>
+                    <time class="last-updated-time">Updated <span am-time-ago="testBench.date"></span></time>
+                </footer>
+
+            </li>
+        </ul>
+    </section>
 
     <!--<div class="requirements">-->
-        <!--<h4>Requirements</h4>-->
+    <!--<h4>Requirements</h4>-->
 
-        <!--<ul class="list-group" data-ng-repeat="requirement in requirements | orderObjectBy: 'name'">-->
-            <!--<li class="list-group-item" data-id="{{ requirement.id }}">-->
-                <!--&lt;!&ndash; Header &ndash;&gt;-->
-                <!--<a class="requirement-name" href="">{{ requirement.name }}</a>-->
-                <!--<div>{{ requirement.description }}</div>-->
+    <!--<ul class="list-group" data-ng-repeat="requirement in requirements | orderObjectBy: 'name'">-->
+    <!--<li class="list-group-item" data-id="{{ requirement.id }}">-->
+    <!--&lt;!&ndash; Header &ndash;&gt;-->
+    <!--<a class="requirement-name" href="">{{ requirement.name }}</a>-->
+    <!--<div>{{ requirement.description }}</div>-->
 
-                <!--<div>Updated <span am-time-ago="requirement.date"></span></div>-->
-                <!--<div>{{requirement.data}}</div>-->
-            <!--</li>-->
-        <!--</ul>-->
+    <!--<div>Updated <span am-time-ago="requirement.date"></span></div>-->
+    <!--<div>{{requirement.data}}</div>-->
+    <!--</li>-->
+    <!--</ul>-->
     <!--</div>-->
 </div>
+</article>

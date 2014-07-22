@@ -1,14 +1,50 @@
-.domain-models {
-  border-radius: 1.25em; }
-
-.designs {
-  float: left;
-  width: 30%; }
-
-.components {
-  float: left;
-  width: 30%; }
-
-.test-benches {
-  float: left;
-  width: 30%; }
+article.workspace-details {
+  margin: 1em;
+  padding: 0 1em 1em; }
+  article.workspace-details .domain-models {
+    border-radius: 1.25em; }
+  article.workspace-details form .row {
+    margin-bottom: 1.5ex; }
+  article.workspace-details .export-button {
+    display: none;
+    font-size: 75%; }
+  article.workspace-details li:hover .export-button {
+    display: block; }
+  article.workspace-details .control-buttons {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: none; }
+  article.workspace-details .list-group-item:hover .control-buttons {
+    display: block; }
+  article.workspace-details .last-updated-time {
+    font-size: 80%;
+    color: #999; }
+  article.workspace-details .control-buttons .dropdown-toggle {
+    border-color: #ddd;
+    border-top: 0;
+    border-right: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0; }
+  article.workspace-details .control-buttons a {
+    cursor: pointer; }
+  article.workspace-details .control-buttons .btn-group.open .dropdown-toggle {
+    box-shadow: none;
+    border-color: #ddd; }
+  article.workspace-details .stats {
+    position: absolute;
+    bottom: 0;
+    right: 0.4ex;
+    font-size: 95%; }
+    article.workspace-details .stats li.list-group-item {
+      border: none;
+      background-color: transparent;
+      opacity: .92;
+      padding: 1ex .2ex; }
+    article.workspace-details .stats .count {
+      margin-left: 0.5ex; }
+  article.workspace-details .details {
+    margin: 1.5ex 0;
+    color: #666; }
+  article.workspace-details .label.white-bg {
+    color: #333; }
