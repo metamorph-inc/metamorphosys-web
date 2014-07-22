@@ -639,23 +639,30 @@ define([], function () {
             // Create new workspace node and name it appropriately.
             newId = self.smartClient.client.createChild({parentId: ROOT_ID, baseId: self.smartClient.metaNodes.WorkSpace.getId()},
                 '[WebCyPhy] - New workspace was created.');
-            self.growl.info('Workspace ' + newWorkspace.name + ' created.');
-            if (hasFiles) {
-                self.growl.info('Importing files to new workspace, please wait...');
+            if (!newWorkspace.name) {
+                self.growl.warning('No name given for workspace, assigning "NewWorkspace"...');
+                newWorkspace.name = 'NewWorkspace';
             }
+            self.growl.info('Workspace node "' + newWorkspace.name + '" created.');
             self.smartClient.client.setAttributes(newId, 'name', newWorkspace.name, '[WebCyPhy] - New workspace was named: ' + newWorkspace.name);
             if (newWorkspace.description) {
                 self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
             }
             newWorkspace.id = newId;
-            self.importFilesToWorkspace(newWorkspace, function (success) {
-                if (success) {
-                    self.growl.success('All files successfully imported into new workspace!', {ttl: 25000});
-                } else {
-                    self.growl.error('There were errors during importation of files into new workspace.');
-                }
+            if (hasFiles === false) {
+                self.growl.success('Workspace "' + newWorkspace.name + '" successfully created.');
                 self.cleanNewWorkspace(true);
-            });
+            } else {
+                self.growl.info('Importing files to new workspace, please wait...');
+                self.importFilesToWorkspace(newWorkspace, function (success) {
+                    if (success) {
+                        self.growl.success('All files successfully imported into new workspace!', {ttl: 25000});
+                    } else {
+                        self.growl.error('There were errors during importation of files into new workspace.');
+                    }
+                    self.cleanNewWorkspace(true);
+                });
+            }
         };
     };
 

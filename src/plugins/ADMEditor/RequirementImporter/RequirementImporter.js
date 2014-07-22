@@ -18,6 +18,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         this.meta = null;
         this.metricMap = {};
         this.missingMetrics = false;
+        this.acceptErrors = false;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -67,6 +68,14 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 "value": "",
                 "valueType": "asset",
                 "readOnly": false
+            },
+            {
+                'name': 'partial',
+                'displayName': 'Import partial',
+                'description': 'If the workspace is missing metrics - requirements w/o assigned metrics will be created.',
+                'value': true,
+                'valueType': 'boolean',
+                'readOnly': false
             }
         ];
     };
@@ -99,7 +108,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         self.meta = MetaTypes;
         self.updateMETA(self.meta);
         config = self.getCurrentConfig();
-
+        self.acceptErrors = config.partial;
         self.blobClient.getObject(config.requirement, function (err, requirementBuffer) {
             var reqStr,
                 reqJson,
@@ -125,13 +134,17 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 }
                 self.buildRequirementRec(reqJson, self.activeNode, 0);
                 self.result.setSuccess(true);
-                if (self.missingMetrics) {
+                if (self.missingMetrics && self.acceptErrors) {
                     self.createMessage(wsNode, 'Some metrics did not exist in project - requirements still imported.', 'warning');
-                    self.result.setSuccess(false);
-                }
-                self.save('Imported requirements', function (err) {
+                    self.result.setSuccess(true);
+                    self.save('Imported requirements', function (err) {
+                        callback(null, self.result);
+                    });
+                } else if (self.missingMetrics) {
+                    self.createMessage(wsNode, 'Some metrics in the requirements did not exist in project!', 'error');
+                    self.result.setSuccess(true);
                     callback(null, self.result);
-                });
+                }
             });
         });
     };
@@ -163,7 +176,13 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
             if (metricNode) {
                 self.core.setPointer(node, 'Metric', metricNode);
             } else {
-                self.createMessage(node, 'Requirement named "' + req.name + '" did not have a matching metric and test-bench.', 'warning');
+                if (self.acceptErrors) {
+                    self.createMessage(node, 'Requirement named "' + req.name +
+                        '" did not have a matching metric and test-bench.', 'warning');
+                } else {
+                    self.createMessage(node, 'Requirement named "' + req.name +
+                        '" did not have a matching metric and test-bench.', 'error');
+                }
                 self.missingMetrics = true;
             }
         }

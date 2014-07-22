@@ -150,7 +150,11 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
                     callback(null);
                 });
             } else {
-                self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!', 'warning');
+                if (self.acceptErrors) {
+                    self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!', 'warning');
+                } else {
+                    self.createMessage(node, 'Requirement "' + nodeName + '" did not have a Metric assigned!', 'error');
+                }
                 req.metricName = 'UNDEFINED';
                 req.testBench = 'UNDEFINED';
                 callback('Missing metrics!');
