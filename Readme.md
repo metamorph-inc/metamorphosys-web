@@ -1,10 +1,15 @@
 # Getting started #
 
 1. Install [nodejs](http://nodejs.org/download/)
-2. Install [mongodb](http://www.mongodb.org/downloads) if you use a local database
+2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database
 3. Using command line install dependencies: `npm install`
+4. Navigate to the your local WebGME directory, and run 'launch_database.cmd' (or edit the config.json file and specify an existing database ip)
+5. Run 'launch_app.cmd' (or run the application using `node app.js` or `npm start` from the command line)
+6. Open a web browser and visit [localhost:8855](http://localhost:8855) using Chrome or Safari
+
+<!---
 4. Run the application by `node app.js` or `npm start`
-5. Open a web browser and visit [localhost:8855](http://localhost:8855) using Chrome or Safari
+-->
 
 # Notes #
 
