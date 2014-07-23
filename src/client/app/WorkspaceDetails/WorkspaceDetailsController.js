@@ -125,7 +125,8 @@ define([], function () {
                         if (self.territories.hasOwnProperty(event.eid)) {
                             self.smartClient.removeUI(self.territories[event.eid]);
                         }
-                        self.growl.warning('Workspace was deleted!');
+                        self.growl.warning('Workspace "' + self.$scope.name + '" was deleted!');
+                        window.location.href = '#workspace';
                     }
                 }
             }

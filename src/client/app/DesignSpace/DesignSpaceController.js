@@ -7,13 +7,14 @@
 define([], function () {
     "use strict";
 
-    var DesignSpaceController = function ($scope, $moment, $routeParams, smartClient, Chance) {
+    var DesignSpaceController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
         self.smartClient = smartClient;
+        self.growl = growl;
 
         self.chance = Chance ? new Chance() : null;
         self.$scope.exportDesign = function (id) {
@@ -101,7 +102,7 @@ define([], function () {
             var i,
                 event,
                 nodeObj;
-
+            //self.growl.info('events.length : ' + events.length);
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
@@ -145,6 +146,8 @@ define([], function () {
                     } else if (event.etype === 'unload') {
                         console.error('TODO: not implemented yet.');
                     }
+                } else {
+                    self.growl.error('Object with different id than root-container raised event.');
                 }
 
                 self.update();
