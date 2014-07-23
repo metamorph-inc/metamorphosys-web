@@ -1,7 +1,7 @@
 article.workspace {
   margin: 1em;
   padding: 1em;
-  min-width: 600px; }
+  min-width: 500px; }
   article.workspace .nav, article.workspace .pagination, article.workspace .carousel, article.workspace .panel-title a {
     cursor: pointer; }
   article.workspace form .row {
