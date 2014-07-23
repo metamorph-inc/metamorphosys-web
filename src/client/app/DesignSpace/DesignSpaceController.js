@@ -115,7 +115,7 @@ define([], function () {
                         if (self.territories.hasOwnProperty(nodeObj.getId())) {
 
                         } else {
-                            self.territories[nodeObj.getId()] = self.smartClient.addUI(nodeObj.getId(), ['Container', 'AVMComponentModel'], function (events) {
+                            self.territories[nodeObj.getId()] = self.smartClient.addUI(nodeObj.getId(), ['Container'], function (events) {
                                 var j;
 
                                 for (j = 0; j < events.length; j += 1) {
@@ -141,6 +141,7 @@ define([], function () {
                                         self.removeContainer(events[j].eid);
                                     }
                                 }
+                                self.update();
                             });
                         }
                     } else if (event.etype === 'unload') {
@@ -203,7 +204,7 @@ define([], function () {
 
         if (container) {
             self.$scope.containers[id] = container;
-            this.update();
+            //this.update();
         }
     };
 
@@ -226,7 +227,7 @@ define([], function () {
             if (self.$scope.containers[parentId]) {
                 self.$scope.containers[parentId].componentsCount += 1;
             }
-            this.update();
+            //this.update();
         }
     };
 

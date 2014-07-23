@@ -344,7 +344,7 @@ define([], function () {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     componentId = nodeObj.getAttribute('ID');
                     if (events[j].etype === 'load') {
-                        self.growl.warning('load ' + events[j].eid);
+                        //self.growl.warning('load ' + events[j].eid);
                         if (design.components[componentId]) {
                             design.components[componentId].cnt += 1;
                         } else {
@@ -355,7 +355,7 @@ define([], function () {
                             };
                         }
                     } else if (events[j].etype === 'unload') {
-                        self.growl.warning('unload ' + events[j].eid);
+                        //self.growl.warning('unload ' + events[j].eid);
                         if (design.components[componentId]) {
                             if (design.components[componentId].cnt === 1) {
                                 delete design.components[componentId];
@@ -364,7 +364,7 @@ define([], function () {
                             }
                         }
                     } else if (events[j].etype === 'update') {
-                        self.growl.warning('update ' + events[j].eid);
+                        //self.growl.warning('update ' + events[j].eid);
                         // TODO: The only update that matters is the change of component ID.
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
