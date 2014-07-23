@@ -2,6 +2,7 @@
 
 /**
  * @author lattmann / https://github.com/lattmann
+ * @author pmeijer / https://github.com/pmeijer
  */
 
 define([], function () {
@@ -62,31 +63,19 @@ define([], function () {
         };
 
         // Initialize functions
-        self.$scope.getComponentInterfaces = self.initGetComponentInterfaces();
-        self.$scope.getDesignInterfaces = self.initGetDesignInterfaces();
-        self.$scope.getDesignComponents = self.initGetDesignComponents();
-        self.$scope.getDesignSize = self.initGetDesignSize();
-        self.$scope.getTLSUT = self.initGetTLSUT();
-        self.$scope.getMatchingDesigns = self.initGetMatchingDesigns();
         self.$scope.exportDesign = self.initExportDesign();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
             self.addComponent(id);
-            self.$scope.getComponentInterfaces(id);
         }
         for (i = 0; i < self.nbrOfDesigns; i += 1) {
             id = '/' + (i + self.nbrOfComponets);
             self.addDesign(id);
-            self.$scope.getDesignComponents(id);
-            self.$scope.getDesignInterfaces(id);
-            self.$scope.getDesignSize(id);
         }
         for (i = 0; i < self.nbrOfTestBenches; i += 1) {
             id = '/' + (i + self.nbrOfComponets + self.nbrOfDesigns);
             self.addTestBench(id);
-            self.$scope.getTLSUT(id);
-            self.$scope.getMatchingDesigns(id);
         }
         self.addRequirement(self.getRandomId());
     };
@@ -336,19 +325,57 @@ define([], function () {
             self.smartClient.removeUI(self.territories[id]);
         }
 
-        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
+        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
             var design = self.$scope.designs[id],
-                nodeObj;
+                nodeObj,
+                componentId;
             if (!design) {
                 return;
             }
             if (!design.interfaces) {
                 design.interfaces = { properties: {}, connectors: {} };
             }
+            if (!design.components) {
+                design.components = {};
+            }
             for (j = 0; j < events.length; j += 1) {
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    componentId = nodeObj.getAttribute('ID');
+                    if (events[j].etype === 'load') {
+                        self.growl.warning('load ' + events[j].eid);
+                        if (design.components[componentId]) {
+                            design.components[componentId].cnt += 1;
+                        } else {
+                            design.components[componentId] = {
+                                componentId: componentId,
+                                designId: id,
+                                cnt: 1
+                            };
+                        }
+                    } else if (events[j].etype === 'unload') {
+                        self.growl.warning('unload ' + events[j].eid);
+                        if (design.components[componentId]) {
+                            if (design.components[componentId].cnt === 1) {
+                                delete design.components[componentId];
+                            } else {
+                                design.components[componentId].cnt -= 1;
+                            }
+                        }
+                    } else if (events[j].etype === 'update') {
+                        self.growl.warning('update ' + events[j].eid);
+                        // TODO: The only update that matters is the change of component ID.
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (nodeObj.getParentId() !== id) {
+                        break;
+                    }
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         design.interfaces.connectors[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
@@ -365,6 +392,9 @@ define([], function () {
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (nodeObj.getParentId() !== id) {
+                        break;
+                    }
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         design.interfaces.properties[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
@@ -393,6 +423,7 @@ define([], function () {
             nodeObj = self.smartClient.client.getNode(id);
             component = {
                 id: nodeObj.getId(),
+                avmId: nodeObj.getAttribute('ID'),
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
@@ -409,6 +440,7 @@ define([], function () {
         } else {
             component = {
                 id: id,
+                avmId: 'ec9f0fd9-4dab-42ac-bd19-0ec9bf06ed92',
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
@@ -416,7 +448,10 @@ define([], function () {
                 domains: {},
                 domainsInfo: null,
                 acm: '',
-                interfaces: {}
+                interfaces: {
+                    connectors: {},
+                    properties: {}
+                }
             };
             if (Math.random() > 0.25) {
                 domainModelId = self.getRandomId();
@@ -468,6 +503,7 @@ define([], function () {
                 }
             }
             component.domainsInfo = self.getDomainsInfo(component.domains);
+            component.interfaces = self.getInterfacesForTestData(4);
         }
 
         if (component) {
@@ -475,44 +511,6 @@ define([], function () {
             this.update();
         }
 
-    };
-
-    WorkspaceDetailsController.prototype.addDomainModel = function (id) {
-        var self = this,
-            component,
-            parentId,
-            domainType,
-            nodeObj;
-
-        nodeObj = self.smartClient.client.getNode(id);
-        parentId = nodeObj.getParentId();
-        component = self.$scope.components[parentId];
-        if (component) {
-            domainType = nodeObj.getAttribute('Type');
-            component.domains[id] = {
-                id: id,
-                type: domainType
-            };
-            this.update();
-        } else {
-            // console.warn('Domain-model did not have component (it is probably in a design). Component ID: ' + parentId);
-        }
-    };
-
-    WorkspaceDetailsController.prototype.removeDomainModel = function (id) {
-        var self = this,
-            nodeObj,
-            component,
-            parentId;
-
-        nodeObj = self.smartClient.client.getNode(id);
-        parentId = nodeObj.getParentId();
-        component = self.$scope.components[parentId];
-        if (component && component.domains.hasOwnProperty(id)) {
-            delete component.domains[id];
-        }
-
-        this.update();
     };
 
     WorkspaceDetailsController.prototype.removeComponent = function (id) {
@@ -527,7 +525,7 @@ define([], function () {
     WorkspaceDetailsController.prototype.addDesign = function (id) {
         var self = this,
             design,
-            parentId,
+            all,
             nodeObj;
 
         if (self.smartClient) {
@@ -541,7 +539,7 @@ define([], function () {
                     all: -1,
                     none: -1
                 },
-                components: {},
+                components: null,
                 interfaces: null
             };
         } else {
@@ -554,11 +552,24 @@ define([], function () {
                     all: -1,
                     none: -1
                 },
-                components: {},
+                components: {
+                    '022166ef-9056-456a-b543-6f9b3c11a64c': {
+                        componentId: '022166ef-9056-456a-b543-6f9b3c11a64c',
+                        designId: id,
+                        cnt: 1
+                    }
+                },
                 interfaces: {
                     properties: {},
                     connectors: {}
                 }
+            };
+            design.interfaces = self.getInterfacesForTestData(4);
+            design.components = self.getDesignComponentsForTestData(id);
+            all = self.chance.integer({min: 1, max: 10000});
+            design.size = {
+                all: all,
+                none: self.chance.integer({min: all, max: all * 10})
             };
         }
 
@@ -576,66 +587,6 @@ define([], function () {
         this.update();
     };
 
-    WorkspaceDetailsController.prototype.addConnector = function (id) {
-        var self = this,
-            parentNode,
-            nodeObj,
-            parentId,
-            name;
-
-        nodeObj = self.smartClient.client.getNode(id);
-        name = nodeObj.getAttribute('name');
-        parentId = nodeObj.getParentId();
-        parentNode = self.smartClient.client.getNode(parentId);
-
-        if (self.smartClient.isMetaTypeOf(parentId, 'AVMComponentModel')) {
-            if (self.$scope.components[parentId]) {
-                self.$scope.components[parentId].interfaces.connectors[name] = {
-                    name: name,
-                    id: id
-                };
-            }
-            self.update();
-        } else if (self.$scope.testBenches[parentNode.getParentId()]) {
-            // This is a Top Level System Under Test
-            // FIXME: This is never triggered
-            self.$scope.testBenches[parentNode.getParentId()].tlsut.connectors[name] = {
-                name: name,
-                id: id
-            };
-            self.update();
-        }
-    };
-
-    WorkspaceDetailsController.prototype.addProperty = function (id) {
-        var self = this,
-            parentNode,
-            nodeObj,
-            parentId,
-            name;
-
-        nodeObj = self.smartClient.client.getNode(id);
-        name = nodeObj.getAttribute('name');
-        parentId = nodeObj.getParentId();
-        parentNode = self.smartClient.client.getNode(parentId);
-
-        if (self.smartClient.isMetaTypeOf(parentId, 'AVMComponentModel')) {
-            if (self.$scope.components[parentId]) {
-                self.$scope.components[parentId].interfaces.properties[name] = {
-                    name: name,
-                    id: id
-                };
-            }
-            self.update();
-        } else if (self.$scope.testBenches[parentNode.getParentId()]) {
-            // This is a Top Level System Under Test
-            self.$scope.testBenches[parentNode.getParentId()].tlsut.properties[name] = {
-                name: name,
-                id: id
-            };
-            self.update();
-        }
-    };
     // TestBenches
     WorkspaceDetailsController.prototype.addTestBench = function (id) {
         var self = this,
@@ -663,7 +614,10 @@ define([], function () {
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
-                tlsut: {},
+                tlsut: {
+                    connectors: {},
+                    properties: {}
+                },
                 designs: {
                     avaliable: {},
                     selected: '/' + self.chance.integer({
@@ -675,6 +629,7 @@ define([], function () {
             if (Math.random() > 0.8) {
                 testBench.designs.selected = null;
             }
+            testBench.tlsut = self.getInterfacesForTestData(3);
         }
 
         if (testBench) {
@@ -735,152 +690,6 @@ define([], function () {
     };
 
     // Function initializers.
-    WorkspaceDetailsController.prototype.initGetComponentInterfaces = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var interfaces = self.$scope.components[id].interfaces,
-                    i,
-                    newId;
-                interfaces.properties = {};
-                interfaces.connectors = {};
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    interfaces.properties[newId] = {
-                        id: newId,
-                        name: 'prop_' + i
-                    };
-                }
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    interfaces.connectors[newId] = {
-                        id: newId,
-                        name: 'conn_' + i
-                    };
-                }
-                return interfaces;
-            };
-        }
-
-        return function (id) {
-            console.log.error('TODO: Implement this..');
-            return {};
-        };
-    };
-
-    WorkspaceDetailsController.prototype.initGetTLSUT = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var tlsut = self.$scope.testBenches[id].tlsut,
-                    i,
-                    newId;
-                tlsut.properties = {};
-                tlsut.connectors = {};
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    tlsut.properties[newId] = {
-                        id: newId,
-                        name: 'prop_' + i
-                    };
-                }
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    tlsut.connectors[newId] = {
-                        id: newId,
-                        name: 'conn_' + i
-                    };
-                }
-                return tlsut;
-            };
-        }
-    };
-
-    WorkspaceDetailsController.prototype.initGetDesignInterfaces = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var interfaces = self.$scope.designs[id].interfaces,
-                    i,
-                    newId;
-                interfaces.properties = {};
-                interfaces.connectors = {};
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    interfaces.properties[newId] = {
-                        id: newId,
-                        name: 'prop_' + i
-                    };
-                }
-                for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    newId = self.getRandomId();
-                    interfaces.connectors[newId] = {
-                        id: newId,
-                        name: 'conn_' + i
-                    };
-                }
-                return interfaces;
-            };
-        }
-
-        return function (id) {
-            console.log.error('TODO: Implement this..');
-            return {};
-        };
-    };
-
-    WorkspaceDetailsController.prototype.initGetDesignComponents = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var designComponents = self.$scope.designs[id].components,
-                    i,
-                    component,
-                    componentId;
-                for (i = 0; i < self.chance.integer({min: 1, max: 10}); i += 1) {
-                    componentId = '/' + self.chance.integer({min: 0, max: self.nbrOfComponets - 1});
-                    component = designComponents[componentId];
-                    if (component) {
-                        component.cnt += 1;
-                    } else {
-                        component = {
-                            componentId: componentId,
-                            designId: id,
-                            cnt: 1
-                        };
-                        designComponents[componentId] = component;
-                        self.$scope.components[componentId].inDesigns[id] = component;
-                    }
-                }
-                return designComponents;
-            };
-        }
-
-        return function (id) {
-            console.log.error('TODO: Implement this..');
-            return {};
-        };
-    };
-
-    WorkspaceDetailsController.prototype.initGetDesignSize = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var size = self.$scope.designs[id].size,
-                    all = self.chance.integer({min: 1, max: 10000});
-
-                size.all = all;
-                size.none = self.chance.integer({min: all, max: all * 10});
-
-                return size;
-            };
-        }
-
-        return function (id) {
-            console.log.error('TODO: Implement this..');
-            return {};
-        };
-    };
 
     WorkspaceDetailsController.prototype.initGetMatchingDesigns = function () {
         var self = this;
@@ -1049,6 +858,7 @@ define([], function () {
         }
     };
 
+    // TestData helper functions
     WorkspaceDetailsController.prototype.getRandomId = function () {
         var len = Math.floor((Math.random() * 2) + 3),
             i,
@@ -1057,6 +867,65 @@ define([], function () {
             id += '/' + Math.floor((Math.random() * 10000) + 1).toString();
         }
         return id;
+    };
+
+    WorkspaceDetailsController.prototype.getInterfacesForTestData = function (maxNbr) {
+        var self = this,
+            interfaces = {
+                connectors: {},
+                properties: {}
+            },
+            i,
+            newId;
+        for (i = 0; i < self.chance.integer({min: 1, max: maxNbr}); i += 1) {
+            newId = self.getRandomId();
+            interfaces.properties[newId] = {
+                id: newId,
+                name: 'prop_' + i
+            };
+        }
+        for (i = 0; i < self.chance.integer({min: 1, max: maxNbr}); i += 1) {
+            newId = self.getRandomId();
+            interfaces.connectors[newId] = {
+                id: newId,
+                name: 'conn_' + i
+            };
+        }
+        return interfaces;
+    };
+
+    WorkspaceDetailsController.prototype.getDesignComponentsForTestData = function (id) {
+        var self = this,
+            designComponents = {},
+            i,
+            component,
+            componentId,
+            componentIds = ['ec9f0fd9-4dab-42ac-bd19-0ec9bf06ed92',
+                '022166ef-9056-456a-b543-6f9b3c11a64c',
+                '7e162776-8d74-4ed1-a067-da4ce07afe46',
+                '1c8326bb-94db-4445-80b5-23d837e71c6f',
+                'cb5c8b8d-7903-4da9-906f-ecf9bd8d282b',
+                '4e5dadee-2b2c-4c21-9670-f08cbf687d3c',
+                '93067716-7f7e-45ef-89c2-adc053d28c2a',
+                '99b0d8a3-7102-4ce0-9f6a-7b474b184484',
+                '1cc42070-79f4-469d-82c0-9120e056e038',
+                '567e280a-ad0a-4fa1-b222-bb21217cf567'];
+        for (i = 0; i < self.chance.integer({min: 1, max: 10}); i += 1) {
+            componentId = componentIds[self.chance.integer({min: 0, max: componentIds.length - 1})];
+            component = designComponents[componentId];
+            if (component) {
+                component.cnt += 1;
+            } else {
+                component = {
+                    componentId: componentId,
+                    designId: id,
+                    cnt: 1
+                };
+
+                designComponents[componentId] = component;
+            }
+        }
+        return designComponents;
     };
 
     return WorkspaceDetailsController;
