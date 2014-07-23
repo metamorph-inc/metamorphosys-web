@@ -373,39 +373,37 @@ define([], function () {
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() !== id) {
-                        break;
-                    }
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        design.interfaces.connectors[events[j].eid] = {
-                            name: nodeObj.getAttribute('name'),
-                            id: events[j].eid
-                        };
-                    } else if (events[j].etype === 'unload') {
-                        if (design.interfaces.connectors.hasOwnProperty(events[j].eid)) {
-                            delete design.interfaces.connectors[events[j].eid];
+                    if (nodeObj.getParentId() === id) {
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            design.interfaces.connectors[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else if (events[j].etype === 'unload') {
+                            if (design.interfaces.connectors.hasOwnProperty(events[j].eid)) {
+                                delete design.interfaces.connectors[events[j].eid];
+                            }
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
                         }
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
                 }
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() !== id) {
-                        break;
-                    }
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        design.interfaces.properties[events[j].eid] = {
-                            name: nodeObj.getAttribute('name'),
-                            id: events[j].eid
-                        };
-                    } else if (events[j].etype === 'unload') {
-                        if (design.interfaces.properties.hasOwnProperty(events[j].eid)) {
-                            delete design.interfaces.properties[events[j].eid];
+                    if (nodeObj.getParentId() === id) {
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            design.interfaces.properties[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else if (events[j].etype === 'unload') {
+                            if (design.interfaces.properties.hasOwnProperty(events[j].eid)) {
+                                delete design.interfaces.properties[events[j].eid];
+                            }
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
                         }
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
                 }
             }
