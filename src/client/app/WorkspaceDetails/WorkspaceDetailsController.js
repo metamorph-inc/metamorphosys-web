@@ -37,17 +37,35 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
-        self.$scope.getDomainIcon = function (domain) {
-            var labelMap = {
-                Modelica: 'label-primary',
-                CAD: 'label-success',
-                Manufacturing: 'label-warning',
-                Cyber: 'label-info'
-            };
-            if (labelMap[domain]) {
-                return labelMap[domain];
+
+        self.$scope.getDomainsInfo = function (domains) {
+            var key,
+                dType,
+                domainsInfo = {},
+                labelMap = {
+                    Modelica: 'label-primary',
+                    CAD: 'label-success',
+                    Manufacturing: 'label-warning',
+                    Cyber: 'label-info'
+                },
+                icon;
+
+            for (key in domains) {
+                if (domains.hasOwnProperty(key)) {
+                    dType = domains[key].type;
+                    if (domainsInfo[dType]) {
+                        domainsInfo[dType].cnt += 1;
+                    } else {
+                        icon = labelMap[dType] || 'label-default';
+                        domainsInfo[dType] = {
+                            cnt: 1,
+                            type: dType,
+                            icon: icon
+                        };
+                    }
+                }
             }
-            return 'label-default';
+            return domainsInfo;
         };
 
         if (self.smartClient) {

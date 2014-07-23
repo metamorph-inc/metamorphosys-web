@@ -66,10 +66,9 @@
                     <time class="last-updated-time">Updated <span am-time-ago="component.date"></span></time>
 
                     <div class="stats">
-                        <ul class="list-group">
-                            <li class="list-group-item pull-left"
-                                data-ng-repeat="domain in component.domains | orderObjectBy:'type'">
-                                <span class="domain-models label {{getDomainIcon(domain.type)}}">{{domain.type}}</span>
+                        <ul class="list-group" ng-init="domains= getDomainsInfo(component.domains)">
+                            <li class="list-group-item pull-left" data-ng-repeat="di in domains | orderObjectBy:'type'">
+                                <span class="domain-models label {{di.icon}}">{{di.type}} {{di.cnt}}</span>
                             </li>
                         </ul>
                     </div>
