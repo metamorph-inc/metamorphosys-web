@@ -125,18 +125,20 @@ define([], function () {
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.exportDesign = self.initExportDesign();
                         self.$scope.getTLSUT = self.initGetTLSUT();
-                        if (self.territories.hasOwnProperty(nodeObj.getId())) {
+                        if (self.territories.hasOwnProperty(event.eid)) {
 
                         } else {
-                            self.territories[nodeObj.getId()] = self.smartClient.addUI(
-                                nodeObj.getId(),
-                                ['ACMFolder', 'ADMFolder', 'Container', 'ATMFolder', 'Connector', 'Property',
-                                    'AVMComponentModel', 'DomainModel', 'RequirementsFolder'],
+                            self.territories[event.eid] = self.smartClient.addUI(
+                                event.eid,
+                                ['ACMFolder', 'ADMFolder', 'ATMFolder', 'RequirementsFolder'],
                                 self.getWorkspaceEventCallback()
                             );
                         }
                     } else if (event.etype === 'unload') {
-                        console.error('TODO: not implemented yet.');
+                        if (self.territories.hasOwnProperty(event.eid)) {
+                            self.smartClient.removeUI(self.territories[event.eid]);
+                        }
+                        self.growl.warning('Workspace was deleted!');
                     }
                 }
 
@@ -154,80 +156,249 @@ define([], function () {
 
             for (j = 0; j < events.length; j += 1) {
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                    if (events[j].etype === 'load') {
-                        self.addComponent(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addComponent(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addComponentWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         self.removeComponent(events[j].eid);
                     }
                 }
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                    if (events[j].etype === 'load') {
-                        self.addDesign(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addDesign(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addDesignWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         self.removeDesign(events[j].eid);
                     }
                 }
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
-                    if (events[j].etype === 'load') {
-                        self.addTestBench(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addTestBench(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addTestBenchWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         self.removeTestBench(events[j].eid);
                     }
                 }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
-                    if (events[j].etype === 'load') {
-                        self.addRequirement(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addRequirement(events[j].eid);
-                    } else if (events[j].etype === 'unload') {
-                        self.removeRequirement(events[j].eid);
-                    }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
-                    if (events[j].etype === 'load') {
-                        self.addDomainModel(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addDomainModel(events[j].eid);
-                    } else if (events[j].etype === 'unload') {
-                        self.removeDomainModel(events[j].eid);
-                    }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    if (events[j].etype === 'load') {
-                        self.addConnector(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.addConnector(events[j].eid);
-                    }
-                }
+//
+//                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
+//                    if (events[j].etype === 'load') {
+//                        self.addRequirement(events[j].eid);
+//                    } else if (events[j].etype === 'update') {
+//                        self.addRequirement(events[j].eid);
+//                    } else if (events[j].etype === 'unload') {
+//                        self.removeRequirement(events[j].eid);
+//                    }
+//                }
             }
         };
     };
 
+    WorkspaceDetailsController.prototype.addComponentWatcher = function (id) {
+        var self = this,
+            j;
+
+        self.addComponent(id);
+
+        if (self.territories.hasOwnProperty(id)) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+
+        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
+            var component = self.$scope.components[id],
+                nodeObj;
+            if (!component) {
+                return;
+            }
+            if (!component.interfaces) {
+                component.interfaces = { properties: {}, connectors: {} };
+            }
+            for (j = 0; j < events.length; j += 1) {
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        component.interfaces.connectors[events[j].eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid
+                        };
+                    } else if (events[j].etype === 'unload') {
+                        if (component.interfaces.connectors.hasOwnProperty(events[j].eid)) {
+                            delete component.interfaces.connectors[events[j].eid];
+                        }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        component.interfaces.properties[events[j].eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid
+                        };
+                    } else if (events[j].etype === 'unload') {
+                        if (component.interfaces.properties.hasOwnProperty(events[j].eid)) {
+                            delete component.interfaces.properties[events[j].eid];
+                        }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        component.domains[events[j].eid] = {
+                            id: events[j].eid,
+                            type: nodeObj.getAttribute('Type')
+                        };
+                    } else if (events[j].etype === 'unload') {
+                        if (component.domains[events[j].eid]) {
+                            delete component.domains[events[j].eid];
+                        }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+            }
+            self.update();
+        });
+    };
+
+    WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
+        var self = this,
+            j;
+
+        self.addTestBench(id);
+
+        if (self.territories.hasOwnProperty(id)) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+
+        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
+            var testBench = self.$scope.testBenches[id],
+                nodeObj;
+            if (!testBench) {
+                return;
+            }
+            if (!testBench.tlsut) {
+                testBench.tlsut = { properties: {}, connectors: {} };
+            }
+            for (j = 0; j < events.length; j += 1) {
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            testBench.tlsut.connectors[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else if (events[j].etype === 'unload') {
+                            if (testBench.tlsut.connectors.hasOwnProperty(events[j].eid)) {
+                                delete testBench.tlsut.connectors[events[j].eid];
+                            }
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
+                        }
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            testBench.tlsut.properties[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else if (events[j].etype === 'unload') {
+                            if (testBench.tlsut.properties.hasOwnProperty(events[j].eid)) {
+                                delete testBench.tlsut.properties[events[j].eid];
+                            }
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
+                        }
+                    }
+                }
+            }
+            self.update();
+        });
+    };
+
+    WorkspaceDetailsController.prototype.addDesignWatcher = function (id) {
+        var self = this,
+            j;
+        // This only watches the interfaces
+        self.addDesign(id);
+
+        if (self.territories.hasOwnProperty(id)) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+
+        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
+            var design = self.$scope.designs[id],
+                nodeObj;
+            if (!design) {
+                return;
+            }
+            if (!design.interfaces) {
+                design.interfaces = { properties: {}, connectors: {} };
+            }
+            for (j = 0; j < events.length; j += 1) {
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        design.interfaces.connectors[events[j].eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid
+                        };
+                    } else if (events[j].etype === 'unload') {
+                        if (design.interfaces.connectors.hasOwnProperty(events[j].eid)) {
+                            delete design.interfaces.connectors[events[j].eid];
+                        }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+
+                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        design.interfaces.properties[events[j].eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid
+                        };
+                    } else if (events[j].etype === 'unload') {
+                        if (design.interfaces.properties.hasOwnProperty(events[j].eid)) {
+                            delete design.interfaces.properties[events[j].eid];
+                        }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+            }
+            self.update();
+        });
+    };
     // Components
     WorkspaceDetailsController.prototype.addComponent = function (id) {
         var self = this,
             component,
-            parentId,
             domainModelId,
             nodeObj;
 
         if (self.smartClient) {
             nodeObj = self.smartClient.client.getNode(id);
-            parentId = nodeObj.getParentId();
-            if (self.smartClient.isMetaTypeOf(parentId, 'ACMFolder') === false) {
-                return;
-            }
             component = {
                 id: nodeObj.getId(),
                 name: nodeObj.getAttribute('name'),
@@ -236,10 +407,7 @@ define([], function () {
                 inDesigns: {},
                 domains: {},
                 acm: '',
-                interfaces: {
-                    properties: {},
-                    connectors: {}
-                }
+                interfaces: null
             };
 
             if (nodeObj.getAttribute('Resource')) {
@@ -369,27 +537,18 @@ define([], function () {
 
         if (self.smartClient) {
             nodeObj = self.smartClient.client.getNode(id);
-            parentId = nodeObj.getParentId();
-            if (self.smartClient.isMetaTypeOf(parentId, 'ADMFolder')) {
-                // root container
-                design = {
-                    id: nodeObj.getId(),
-                    name: nodeObj.getAttribute('name'),
-                    description: nodeObj.getAttribute('INFO'),
-                    date: new Date(),
-                    size: {
-                        all: -1,
-                        none: -1
-                    },
-                    components: {},
-                    interfaces: {
-                        properties: {},
-                        connectors: {}
-                    }
-                };
-            } else if (self.$scope.testBenches[parentId]) {
-                self.$scope.getTLSUT(parentId);
-            }
+            design = {
+                id: nodeObj.getId(),
+                name: nodeObj.getAttribute('name'),
+                description: nodeObj.getAttribute('INFO'),
+                date: new Date(),
+                size: {
+                    all: -1,
+                    none: -1
+                },
+                components: {},
+                interfaces: null
+            };
         } else {
             design = {
                 id: id,
@@ -820,7 +979,7 @@ define([], function () {
             tConn,
             dConn,
             match = false;
-
+        // FIXME: Currently set for test-data only.
         for (name in tlsut.properties) {
             if (tlsut.properties.hasOwnProperty(name)) {
                 match = false;
