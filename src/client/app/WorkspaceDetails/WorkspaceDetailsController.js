@@ -38,36 +38,6 @@ define([], function () {
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
 
-        self.$scope.getDomainsInfo = function (domains) {
-            var key,
-                dType,
-                domainsInfo = {},
-                labelMap = {
-                    Modelica: 'label-primary',
-                    CAD: 'label-success',
-                    Manufacturing: 'label-warning',
-                    Cyber: 'label-info'
-                },
-                icon;
-
-            for (key in domains) {
-                if (domains.hasOwnProperty(key)) {
-                    dType = domains[key].type;
-                    if (domainsInfo[dType]) {
-                        domainsInfo[dType].cnt += 1;
-                    } else {
-                        icon = labelMap[dType] || 'label-default';
-                        domainsInfo[dType] = {
-                            cnt: 1,
-                            type: dType,
-                            icon: icon
-                        };
-                    }
-                }
-            }
-            return domainsInfo;
-        };
-
         if (self.smartClient) {
             // if smartClient exists
             self.initWithSmartClient();
@@ -142,7 +112,6 @@ define([], function () {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.exportDesign = self.initExportDesign();
-                        self.$scope.getTLSUT = self.initGetTLSUT();
                         if (self.territories.hasOwnProperty(event.eid)) {
 
                         } else {
@@ -159,9 +128,8 @@ define([], function () {
                         self.growl.warning('Workspace was deleted!');
                     }
                 }
-
-                self.update();
             }
+            self.update();
         });
 
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
@@ -231,7 +199,8 @@ define([], function () {
 
         self.territories[id] = self.smartClient.addUI(id, [], function (events) {
             var component = self.$scope.components[id],
-                nodeObj;
+                nodeObj,
+                updateDomains = false;
             if (!component) {
                 return;
             }
@@ -273,6 +242,7 @@ define([], function () {
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    updateDomains = true;
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         component.domains[events[j].eid] = {
                             id: events[j].eid,
@@ -286,6 +256,9 @@ define([], function () {
                         throw 'Unexpected event type' + events[j].etype;
                     }
                 }
+            }
+            if (updateDomains) {
+                component.domainsInfo = self.getDomainsInfo(component.domains);
             }
             self.update();
         });
@@ -424,6 +397,7 @@ define([], function () {
                 date: new Date(),
                 inDesigns: {},
                 domains: {},
+                domainsInfo: null,
                 acm: '',
                 interfaces: null
             };
@@ -439,6 +413,7 @@ define([], function () {
                 date: self.chance.date(),
                 inDesigns: {},
                 domains: {},
+                domainsInfo: null,
                 acm: '',
                 interfaces: {}
             };
@@ -491,6 +466,7 @@ define([], function () {
                     };
                 }
             }
+            component.domainsInfo = self.getDomainsInfo(component.domains);
         }
 
         if (component) {
@@ -769,13 +745,14 @@ define([], function () {
                 interfaces.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     newId = self.getRandomId();
-                    interfaces.properties['prop_' + i] = {
+                    interfaces.properties[newId] = {
                         id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    interfaces.connectors['conn_' + i] = {
+                    newId = self.getRandomId();
+                    interfaces.connectors[newId] = {
                         id: newId,
                         name: 'conn_' + i
                     };
@@ -801,14 +778,14 @@ define([], function () {
                 tlsut.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     newId = self.getRandomId();
-                    tlsut.properties['prop_' + i] = {
+                    tlsut.properties[newId] = {
                         id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     newId = self.getRandomId();
-                    tlsut.connectors['conn_' + i] = {
+                    tlsut.connectors[newId] = {
                         id: newId,
                         name: 'conn_' + i
                     };
@@ -816,19 +793,6 @@ define([], function () {
                 return tlsut;
             };
         }
-
-        return function (id) {
-            var tlsut = self.$scope.testBenches[id].tlsut;
-            if (tlsut) {
-                // It could still be incomplete at this stage..
-                return tlsut;
-            }
-            self.$scope.testBenches[id].tlsut = {
-                properties: {},
-                connectors: {}
-            };
-            return {};
-        };
     };
 
     WorkspaceDetailsController.prototype.initGetDesignInterfaces = function () {
@@ -842,13 +806,14 @@ define([], function () {
                 interfaces.connectors = {};
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
                     newId = self.getRandomId();
-                    interfaces.properties['prop_' + i] = {
+                    interfaces.properties[newId] = {
                         id: newId,
                         name: 'prop_' + i
                     };
                 }
                 for (i = 0; i < self.chance.integer({min: 1, max: 4}); i += 1) {
-                    interfaces.connectors['conn_' + i] = {
+                    newId = self.getRandomId();
+                    interfaces.connectors[newId] = {
                         id: newId,
                         name: 'conn_' + i
                     };
@@ -991,23 +956,26 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
-        var name,
+        var tId,
+            dId,
             tProp,
             dProp,
             tConn,
             dConn,
-            match = false;
-        // FIXME: Currently set for test-data only.
-        for (name in tlsut.properties) {
-            if (tlsut.properties.hasOwnProperty(name)) {
+            match = true;
+
+        for (tId in tlsut.properties) {
+            if (tlsut.properties.hasOwnProperty(tId)) {
+                tProp = tlsut.properties[tId];
                 match = false;
-                if (designInterface.properties[name]) {
-                    // It only checks the name right now.
-                    tProp = tlsut.properties[name];
-                    dProp = designInterface.properties[name];
-                    // Here it can be elaborated.
-                    if (tProp.name === dProp.name) {
-                        match = true;
+                for (dId in designInterface.properties) {
+                    if (designInterface.properties.hasOwnProperty(dId)) {
+                        dProp = designInterface.properties[dId];
+                        // It only checks the name right now.
+                        if (tProp.name === dProp.name) {
+                            match = true;
+                            break;
+                        }
                     }
                 }
                 if (match === false) {
@@ -1015,20 +983,23 @@ define([], function () {
                 }
             }
         }
+
         if (match === false) {
             return false;
         }
 
-        for (name in tlsut.connectors) {
-            if (tlsut.connectors.hasOwnProperty(name)) {
+        for (tId in tlsut.connectors) {
+            if (tlsut.connectors.hasOwnProperty(tId)) {
+                tConn = tlsut.connectors[tId];
                 match = false;
-                if (designInterface.connectors[name]) {
-                    // It only checks the name right now.
-                    tConn = tlsut.connectors[name];
-                    dConn = designInterface.connectors[name];
-                    // Here it can be elaborated.
-                    if (tConn.name === dConn.name) {
-                        match = true;
+                for (dId in designInterface.connectors) {
+                    if (designInterface.connectors.hasOwnProperty(dId)) {
+                        dConn = designInterface.connectors[dId];
+                        // It only checks the name right now.
+                        if (tConn.name === dConn.name) {
+                            match = true;
+                            break;
+                        }
                     }
                 }
                 if (match === false) {
@@ -1038,6 +1009,37 @@ define([], function () {
         }
 
         return match;
+    };
+
+    WorkspaceDetailsController.prototype.getDomainsInfo = function (domains) {
+        var key,
+            dType,
+            domainsInfo = {},
+            labelMap = {
+                Modelica: 'label-primary',
+                CAD: 'label-success',
+                Manufacturing: 'label-warning',
+                Cyber: 'label-info'
+            },
+            icon;
+
+        for (key in domains) {
+            if (domains.hasOwnProperty(key)) {
+                dType = domains[key].type;
+                if (domainsInfo[dType]) {
+                    domainsInfo[dType].cnt += 1;
+                } else {
+                    icon = labelMap[dType] || 'label-default';
+                    domainsInfo[dType] = {
+                        cnt: 1,
+                        type: dType,
+                        icon: icon
+                    };
+                }
+            }
+        }
+
+        return domainsInfo;
     };
 
     WorkspaceDetailsController.prototype.update = function () {
