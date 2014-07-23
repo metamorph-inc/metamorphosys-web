@@ -1,10 +1,11 @@
-"use strict";
+/*globals require, $, console, angular*/
 
 /**
  * @author rkereskenyi / https://github.com/rkereskenyi
  * @author nabana / https://github.com/nabana
  * @author lattmann / https://github.com/lattmann
  */
+
 
 var DEBUG = false,
     _jqueryVersion = '2.1.0',
@@ -16,7 +17,7 @@ var WebGMEGlobal = { 'version': 'x',    //will be set from Node's package.json
 
 // configure require path and modules
 require.config({
-    baseUrl: "/",
+    baseUrl: '/',
 
     map: {
         '*': {
@@ -25,51 +26,64 @@ require.config({
         }
     },
 
+
     paths: {
 
-        "domReady": 'lib/require/require-domready/domReady',
+        'domReady': 'lib/require/require-domready/domReady',
 
         //jQuery and stuff
-        "jquery": 'lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
-        "jquery-ui": 'lib/jquery/jquery-ui-' + _jqueryUIVersion + ( DEBUG ? '.min' : '' ),
-        "jquery-ui-iPad": 'lib/jquery/jquery.ui.ipad',
-        "jquery-WebGME": 'js/jquery.WebGME',
-        "jquery-dataTables": 'lib/jquery/jquery.dataTables.min',
-        "jquery-dataTables-bootstrapped": 'lib/jquery/jquery.dataTables.bootstrapped',
-        "jquery-spectrum": 'lib/jquery/jquery.spectrum',
+        'jquery': 'lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
+        'jquery-ui': 'lib/jquery/jquery-ui-' + _jqueryUIVersion + ( DEBUG ? '.min' : '' ),
+        'jquery-ui-iPad': 'lib/jquery/jquery.ui.ipad',
+        'jquery-WebGME': 'js/jquery.WebGME',
+        'jquery-dataTables': 'lib/jquery/jquery.dataTables.min',
+        'jquery-dataTables-bootstrapped': 'lib/jquery/jquery.dataTables.bootstrapped',
+        'jquery-spectrum': 'lib/jquery/jquery.spectrum',
 
         //Bootsrap stuff
-        "bootstrap": 'lib/bootstrap/' + _bootsrapVersion + '/js/bootstrap' + ( DEBUG ? '.min' : '' ),
+        'bootstrap': 'lib/bootstrap/' + _bootsrapVersion + '/js/bootstrap' + ( DEBUG ? '.min' : '' ),
 
         //Other modules
-        "underscore": 'lib/underscore/underscore-min',
-        "backbone": 'lib/backbone/backbone.min',
-        "d3": 'lib/d3/d3.v3.min',
-        "jscolor": 'lib/jscolor/jscolor',
+        'underscore': 'lib/underscore/underscore-min',
+        'backbone': 'lib/backbone/backbone.min',
+        'd3': 'lib/d3/d3.v3.min',
+        'jscolor': 'lib/jscolor/jscolor',
 
         //RaphaelJS family
-        "eve": 'lib/raphael/eve',   //needed because of raphael.core.js uses require with 'eve'
-        "raphaeljs": 'lib/raphael/raphael.amd',
-        "raphael_core": 'lib/raphael/raphael.core',
-        "raphael_svg": 'lib/raphael/raphael.svg_fixed',
-        "raphael_vml": 'lib/raphael/raphael.vml',
+        'eve': 'lib/raphael/eve',   //needed because of raphael.core.js uses require with 'eve'
+        'raphaeljs': 'lib/raphael/raphael.amd',
+        'raphael_core': 'lib/raphael/raphael.core',
+        'raphael_svg': 'lib/raphael/raphael.svg_fixed',
+        'raphael_vml': 'lib/raphael/raphael.vml',
 
         //WebGME custom modules
-        "logManager": 'common/LogManager',
-        "eventDispatcher": 'common/EventDispatcher',
-        "notificationManager": 'js/NotificationManager',
-        "clientUtil": 'js/util',
-        "loaderCircles": "js/Loader/LoaderCircles",
-        "loaderProgressBar": "js/Loader/LoaderProgressBar",
+        'logManager': 'common/LogManager',
+        'eventDispatcher': 'common/EventDispatcher',
+        'notificationManager': 'js/NotificationManager',
+        'clientUtil': 'js/util',
+        'loaderCircles': 'js/Loader/LoaderCircles',
+        'loaderProgressBar': 'js/Loader/LoaderProgressBar',
 
-        "codemirror": 'lib/codemirror/codemirror.amd',
-        "jquery-csszoom": 'lib/jquery/jquery.csszoom',
+        'codemirror': 'lib/codemirror/codemirror.amd',
+        'jquery-csszoom': 'lib/jquery/jquery.csszoom',
 
-        "jszip": 'lib/jszip/jszip',
+        'jszip': 'lib/jszip/jszip',
 
-        "moment": 'lib/moment/moment.min'
+        'moment': 'lib/moment/moment.min',
+
+        // Angular and modules
+        'angular': 'lib/angular/angular-1.2.19/angular' + ( DEBUG ? '.min' : '' ),
+        'angular-route': 'lib/angular/angular-1.2.19/angular-route' + ( DEBUG ? '.min' : '' ),
+        'angular-route-styles': 'lib/angular/angular-route-styles/route-styles',
+        'angular-ui-bootstrap': 'lib/angular/ui-bootstrap/ui-bootstrap-tpls-0.11.0.min'
     },
+
     shim: {
+
+        'angular-route': ['angular'],
+        'angular-route-styles': ['angular'],
+        'angular-ui-bootstrap': ['angular'],
+
         'jquery-ui': ['jquery'],
         'jquery-ui-iPad': ['jquery','jquery-ui'],
 
@@ -98,9 +112,6 @@ require.config({
 
          // Extra shims for angular
         'angular': ['moment', 'angular-file-upload-shim'],
-        'angular-route': ['angular'],
-        'angular-route-styles': ['angular'],
-        'ui-bootstrap': ['angular'],
         'angular-moment-js': ['angular'],
         'angular-file-upload': ['angular'],
         'angular-animate': ['angular'],
@@ -171,11 +182,7 @@ require(
 
             require.config({
                 paths: {
-                    'angular': CONFIG.paths['CyPhyApp'] + '/lib/angular',
-                    'angular-animate': CONFIG.paths['CyPhyApp'] + '/lib/angular-animate.min',
-                    'angular-route': CONFIG.paths['CyPhyApp'] + '/lib/angular-route.min',
-                    'angular-route-styles': CONFIG.paths['CyPhyApp'] + '/lib/route-styles',
-                    'ui-bootstrap': CONFIG.paths['CyPhyApp'] + '/lib/ui-bootstrap-tpls-0.11.0.min',
+                    'angular-animate': 'lib/angular/angular-1.2.19/angular-animate' + ( DEBUG ? '.min' : '' ),
                     'moment': CONFIG.paths['CyPhyApp'] + '/lib/moment.min',
                     'angular-moment-js': CONFIG.paths['CyPhyApp'] + '/lib/angular-momentjs',
                     'angular-file-upload-shim': CONFIG.paths['CyPhyApp'] + '/lib/angular-file-upload-shim.min',
@@ -188,7 +195,7 @@ require(
             require(['angular',
                     'angular-route',
                     'angular-route-styles',
-                    'ui-bootstrap',
+                    'angular-ui-bootstrap',
                     'moment',
                     'angular-moment-js',
                     'text!CyPhyMETA/ADMEditor_metaOnly.json',
