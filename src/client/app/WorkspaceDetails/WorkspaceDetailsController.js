@@ -38,7 +38,7 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
-
+        self.compares = 0;
         if (self.smartClient) {
             // if smartClient exists
             self.initWithSmartClient();
@@ -64,6 +64,7 @@ define([], function () {
 
         // Initialize functions
         self.$scope.exportDesign = self.initExportDesign();
+        self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
@@ -76,6 +77,7 @@ define([], function () {
         for (i = 0; i < self.nbrOfTestBenches; i += 1) {
             id = '/' + (i + self.nbrOfComponets + self.nbrOfDesigns);
             self.addTestBench(id);
+            self.matchDesignsAndTestBenches(id);
         }
         self.addRequirement(self.getRandomId());
     };
@@ -101,6 +103,7 @@ define([], function () {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.exportDesign = self.initExportDesign();
+                        self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
                         if (self.territories.hasOwnProperty(event.eid)) {
 
                         } else {
@@ -270,13 +273,16 @@ define([], function () {
             if (!testBench) {
                 return;
             }
-            if (!testBench.tlsut) {
-                testBench.tlsut = { properties: {}, connectors: {} };
-            }
             for (j = 0; j < events.length; j += 1) {
 
+                nodeObj = self.smartClient.client.getNode(events[j].eid);
+                if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                    // Top Level System Under Test has been loaded with children.
+                    if (!testBench.tlsut) {
+                        testBench.tlsut = { properties: {}, connectors: {} };
+                    }
+                }
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
                         if (events[j].etype === 'load' || events[j].etype === 'update') {
                             testBench.tlsut.connectors[events[j].eid] = {
@@ -294,8 +300,10 @@ define([], function () {
                 }
 
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                        if (!testBench.tlsut) {
+                            testBench.tlsut = { properties: {}, connectors: {} };
+                        }
                         if (events[j].etype === 'load' || events[j].etype === 'update') {
                             testBench.tlsut.properties[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
@@ -310,6 +318,9 @@ define([], function () {
                         }
                     }
                 }
+            }
+            if (testBench.tlsut) {
+                self.matchDesignsAndTestBenches(id);
             }
             self.update();
         });
@@ -328,6 +339,7 @@ define([], function () {
         self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
             var design = self.$scope.designs[id],
                 nodeObj,
+                checkInterfaces = false,
                 componentId;
             if (!design) {
                 return;
@@ -374,6 +386,7 @@ define([], function () {
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (nodeObj.getParentId() === id) {
+                        checkInterfaces = true;
                         if (events[j].etype === 'load' || events[j].etype === 'update') {
                             design.interfaces.connectors[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
@@ -392,6 +405,7 @@ define([], function () {
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (nodeObj.getParentId() === id) {
+                        checkInterfaces = true;
                         if (events[j].etype === 'load' || events[j].etype === 'update') {
                             design.interfaces.properties[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
@@ -406,6 +420,9 @@ define([], function () {
                         }
                     }
                 }
+            }
+            if (checkInterfaces) {
+                self.matchDesignsAndTestBenches(id);
             }
             self.update();
         });
@@ -711,8 +728,39 @@ define([], function () {
         }
 
         return function (id) {
-            console.log.error('TODO: Implement this..');
-            return {};
+            var testBench,
+                design,
+                designId,
+                testBenchId;
+            if (self.$scope.testBenches[id]) {
+                testBench = self.$scope.testBenches[id];
+                for (designId in self.$scope.designs) {
+                    if (self.$scope.designs.hasOwnProperty(designId)) {
+                        design = self.$scope.designs[designId];
+                        if (design.interfaces) {
+                            if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
+                                testBench.designs.avaliable[designId] = {id: designId};
+                            }
+                        } else {
+                            //console.info('Design: ' + design.name + ' does not have interfaces yet.');
+                        }
+                    }
+                }
+            } else if (self.$scope.designs[id]) {
+                design = self.$scope.designs[id];
+                for (testBenchId in self.$scope.testBenches) {
+                    if (self.$scope.testBenches.hasOwnProperty(testBenchId)) {
+                        testBench = self.$scope.testBenches[testBenchId];
+                        if (testBench.tlsut) {
+                            if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
+                                testBench.designs.avaliable[id] = {id: id};
+                            }
+                        } else {
+                            //console.info('testBench: ' + testBench.name + ' does not have tlsut yet.');
+                        }
+                    }
+                }
+            }
         };
     };
 
@@ -772,6 +820,8 @@ define([], function () {
             dConn,
             match = true;
 
+        this.compares += 1;
+        console.log('Number of compares : ' + this.compares);
         for (tId in tlsut.properties) {
             if (tlsut.properties.hasOwnProperty(tId)) {
                 tProp = tlsut.properties[tId];
