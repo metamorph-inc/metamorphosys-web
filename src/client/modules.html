@@ -6,12 +6,11 @@
 
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
+    <!--<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
 
     <script src="./lib/moment.min.js" type="text/javascript"></script>
-    <script src="./lib/angular-file-upload-shim.min.js" type="text/javascript"></script>
+    <!--<script src="./lib/angular-file-upload-shim.min.js" type="text/javascript"></script>-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js" type="text/javascript"></script>
@@ -23,23 +22,62 @@
 
     <link rel="stylesheet" href="./lib/font-awesome/css/font-awesome.min.css">
 
-    <script src="./lib/route-styles.js" type="text/javascript"></script>
-    <script src="./lib/ui-bootstrap-tpls-0.11.0.min.js" type="text/javascript"></script>
+    <!--<script src="./lib/route-styles.js" type="text/javascript"></script>-->
+    <!--<script src="./lib/ui-bootstrap-tpls-0.11.0.min.js" type="text/javascript"></script>-->
 
-    <script src="./lib/angular-file-upload.js" type="text/javascript"></script>
+    <!--<script src="./lib/angular-file-upload.js" type="text/javascript"></script>-->
 
     <link rel="stylesheet" href="./lib/angular-growl.min.css">
-    <script src="./lib/angular-growl.min.js" type="text/javascript"></script>
+    <!--<script src="./lib/angular-growl.min.js" type="text/javascript"></script>-->
 
 
     <script type="text/javascript">
+        var DEBUG = true,
+            _jqueryVersion = '2.1.0',
+            _jqueryUIVersion = '1.10.4',
+            _bootsrapVersion = '3.1.1';
 
+        require.config({
+            baseUrl: "../../",
+
+            map: {
+                '*': {
+                    'css': 'node_modules/webgme/client/lib/require/require-css/css',
+                    'text': 'node_modules/webgme/client/lib/require/require-text/text'
+                }
+            },
+
+            paths: {
+                'jquery': 'node_modules/webgme/client/lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
+                'bootstrap': 'node_modules/webgme/client/lib/bootstrap/' + _bootsrapVersion + '/js/bootstrap' + ( DEBUG ? '.min' : '' ),
+                'angular': 'node_modules/webgme/client/lib/angular/angular-1.2.19/angular' + ( DEBUG ? '.min' : '' ),
+                'angular-ui-bootstrap': 'node_modules/webgme/client/lib/angular/ui-bootstrap/ui-bootstrap-tpls-0.11.0.min',
+                'angular-route-styles': 'node_modules/webgme/client/lib/angular/angular-route-styles/route-styles',
+            },
+
+            shim: {
+                'angular-ui-bootstrap': ['angular', 'bootstrap'],
+
+                'bootstrap': [
+                    'jquery',
+                            'css!node_modules/webgme/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap.min.css',
+                            'css!node_modules/webgme/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap-theme.min.css'
+                ]
+            },
+
+            waitSeconds: 15
+        });
         // download modules and controllers for testing
         require([
-            'app/workspace/WorkspaceController',
-            'app/workspaceDetails/WorkspaceDetailsController',
-            'app/DesignSpace/DesignSpaceController',
-            'lib/chance.min'], function(WorkspaceController, WorkspaceDetailsController, DesignSpaceController, Chance) {
+            'angular-route-styles',
+            'angular-ui-bootstrap',
+            'src/client/lib/angular-growl.min',
+            'src/client/lib/angular-file-upload',
+            'src/client/lib/angular-file-upload-shim.min',
+            'src/client/app/workspace/WorkspaceController',
+            'src/client/app/workspaceDetails/WorkspaceDetailsController',
+            'src/client/app/DesignSpace/DesignSpaceController',
+            'src/client/lib/chance.min'], function(ngRouteStyles, ngBootstrap, ngGrowl, ngFileUpload, ngFileUploadShim, WorkspaceController, WorkspaceDetailsController, DesignSpaceController, Chance) {
 
             "use strict";
             var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate']);
