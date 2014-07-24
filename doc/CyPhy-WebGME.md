@@ -7,7 +7,7 @@
 ### NodeJS ###
 Download nodejs from http://nodejs.org/download/. If you have 64-bit version of windows select the 64-bit version. During installation 
 make sure that all options are selected. (The provided batch-files assumes that node and npm are avaliable.)
-![NodeJS](images/NodeOptions.png "NodeJS")
+![NodeJS](images/NodeOptions.PNG "NodeJS")
 
 ### MongoDB ###
 Download mongodb from http://www.mongodb.org/downloads. If you have 64-bit version of windows select the 64-bit version. The provided 
