@@ -614,7 +614,7 @@ define([], function () {
             var nodeToDelete = self.smartClient.client.getNode(id),
                 name = nodeToDelete.getAttribute('name');
             self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + name + ' was deleted.');
-            self.growl.success('Workspace ' + name + ' deleted.');
+            self.growl.info('Workspace ' + name + ' deleted.');
         };
     };
 

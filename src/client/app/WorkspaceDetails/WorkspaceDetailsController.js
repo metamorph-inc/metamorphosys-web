@@ -41,15 +41,6 @@ define([], function () {
         self.$scope.getUrl = function (objId) {
             return '/?project=ADMEditor&activeObject=' + objId;
         };
-        self.$scope.deleteObject = function (id) {
-            if (self.$scope.components[id]) {
-                self.removeComponent(id);
-            } else if (self.$scope.designs[id]) {
-                self.removeDesign(id);
-            } else if (self.$scope.testBenches[id]) {
-                self.removeTestBench(id);
-            }
-        };
 
         self.compares = 0;
         if (self.smartClient) {
@@ -78,6 +69,7 @@ define([], function () {
         // Initialize functions
         self.$scope.exportDesign = self.initExportDesign();
         self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
+        self.$scope.deleteObject = self.initDeleteObject();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
@@ -116,6 +108,7 @@ define([], function () {
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.exportDesign = self.initExportDesign();
                         self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
+                        self.$scope.deleteObject = self.initDeleteObject();
                         if (self.territories.hasOwnProperty(event.eid)) {
 
                         } else {
@@ -146,29 +139,29 @@ define([], function () {
             var j;
 
             for (j = 0; j < events.length; j += 1) {
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        self.addComponentWatcher(events[j].eid);
-                    } else if (events[j].etype === 'unload') {
+                if (events[j].etype === 'unload') {
+                    if (self.$scope.components[events[j].eid]) {
                         self.removeComponent(events[j].eid);
-                    }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        self.addDesignWatcher(events[j].eid);
-                    } else if (events[j].etype === 'unload') {
+                    } else if (self.$scope.designs[events[j].eid]) {
                         self.removeDesign(events[j].eid);
-                    }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        self.addTestBenchWatcher(events[j].eid);
-                    } else if (events[j].etype === 'unload') {
+                    } else if (self.$scope.testBenches[events[j].eid]) {
                         self.removeTestBench(events[j].eid);
                     }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addComponentWatcher(events[j].eid);
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addDesignWatcher(events[j].eid);
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        self.addTestBenchWatcher(events[j].eid);
+                    }
                 }
+
+
 //
 //                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
 //                    if (events[j].etype === 'load') {
@@ -532,15 +525,18 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeComponent = function (id) {
-        var self = this;
+        var self = this,
+            name;
         if (self.territories[id]) {
             self.smartClient.removeUI(self.territories[id]);
         }
         if (self.$scope.components[id]) {
+            name = self.$scope.components[id].name;
             delete self.$scope.components[id];
+            self.growl.info('Component "' + name + '" was removed from work-space.');
         }
 
-        this.update();
+        self.update();
     };
 
     // Designs
@@ -602,12 +598,15 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeDesign = function (id) {
-        var self = this;
+        var self = this,
+            name;
         if (self.territories[id]) {
             self.smartClient.removeUI(self.territories[id]);
         }
         if (self.$scope.designs[id]) {
+            name = self.$scope.designs[id].name;
             delete self.$scope.designs[id];
+            self.growl.info('Design "' + name + '" was removed from work-space.');
         }
 
         this.update();
@@ -665,12 +664,15 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeTestBench = function (id) {
-        var self = this;
+        var self = this,
+            name;
         if (self.territories[id]) {
             self.smartClient.removeUI(self.territories[id]);
         }
         if (self.$scope.testBenches[id]) {
+            name = self.$scope.testBenches[id].name;
             delete self.$scope.testBenches[id];
+            self.growl.info('Test-bench "' + name + '" was removed from work-space.');
         }
 
         this.update();
@@ -801,6 +803,29 @@ define([], function () {
                         name + '.adm</a> successfully exported.', {ttl: -1});
                 }
             });
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initDeleteObject = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                if (self.$scope.components[id]) {
+                    self.removeComponent(id);
+                } else if (self.$scope.designs[id]) {
+                    self.removeDesign(id);
+                } else if (self.$scope.testBenches[id]) {
+                    self.removeTestBench(id);
+                }
+            };
+        }
+        return function (id) {
+            var toBeDeleted = self.$scope.components[id] || self.$scope.designs[id] || self.$scope.testBenches[id];
+            if (toBeDeleted) {
+                self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + toBeDeleted.name + ' was deleted.');
+            } else {
+                console.warn('Nothing to delete');
+            }
         };
     };
 
