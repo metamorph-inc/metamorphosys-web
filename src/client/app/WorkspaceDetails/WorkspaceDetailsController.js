@@ -197,39 +197,36 @@ define([], function () {
                 component.interfaces = { properties: {}, connectors: {} };
             }
             for (j = 0; j < events.length; j += 1) {
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                if (events[j].etype === 'unload') {
+                    if (component.interfaces.connectors[events[j].eid]) {
+                        delete component.interfaces.connectors[events[j].eid];
+                    } else if (component.interfaces.properties[events[j].eid]) {
+                        delete component.interfaces.properties[events[j].eid];
+                    } else if (component.domains[events[j].eid]) {
+                        delete component.domains[events[j].eid];
+                        updateDomains = true;
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         component.interfaces.connectors[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
                             id: events[j].eid
                         };
-                    } else if (events[j].etype === 'unload') {
-                        if (component.interfaces.connectors.hasOwnProperty(events[j].eid)) {
-                            delete component.interfaces.connectors[events[j].eid];
-                        }
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
                     }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         component.interfaces.properties[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
                             id: events[j].eid
                         };
-                    } else if (events[j].etype === 'unload') {
-                        if (component.interfaces.properties.hasOwnProperty(events[j].eid)) {
-                            delete component.interfaces.properties[events[j].eid];
-                        }
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
                     }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     updateDomains = true;
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
@@ -237,10 +234,6 @@ define([], function () {
                             id: events[j].eid,
                             type: nodeObj.getAttribute('Type')
                         };
-                    } else if (events[j].etype === 'unload') {
-                        if (component.domains[events[j].eid]) {
-                            delete component.domains[events[j].eid];
-                        }
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
                     }
@@ -265,57 +258,55 @@ define([], function () {
 
         self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
             var testBench = self.$scope.testBenches[id],
-                nodeObj;
+                nodeObj,
+                checkInterfaces = false;
             if (!testBench) {
                 return;
             }
             for (j = 0; j < events.length; j += 1) {
-
-                nodeObj = self.smartClient.client.getNode(events[j].eid);
-                if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
-                    // Top Level System Under Test has been loaded with children.
-                    if (!testBench.tlsut) {
-                        testBench.tlsut = { properties: {}, connectors: {} };
-                    }
-                }
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-                            testBench.tlsut.connectors[events[j].eid] = {
-                                name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
-                            };
-                        } else if (events[j].etype === 'unload') {
-                            if (testBench.tlsut.connectors.hasOwnProperty(events[j].eid)) {
-                                delete testBench.tlsut.connectors[events[j].eid];
-                            }
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
+                if (events[j].etype === 'unload') {
+                    if (testBench.tlsut) {
+                        if (testBench.tlsut.connectors[events[j].eid]) {
+                            checkInterfaces = true;
+                            delete testBench.tlsut.connectors[events[j].eid];
+                        } else if (testBench.tlsut.properties[events[j].eid]) {
+                            checkInterfaces = true;
+                            delete testBench.tlsut.properties[events[j].eid];
                         }
                     }
-                }
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                } else {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                        // Top Level System Under Test has been loaded with children.
                         if (!testBench.tlsut) {
+                            checkInterfaces = true;
                             testBench.tlsut = { properties: {}, connectors: {} };
                         }
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-                            testBench.tlsut.properties[events[j].eid] = {
-                                name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
-                            };
-                        } else if (events[j].etype === 'unload') {
-                            if (testBench.tlsut.properties.hasOwnProperty(events[j].eid)) {
-                                delete testBench.tlsut.properties[events[j].eid];
+                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                            if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                                if (events[j].etype === 'load' || events[j].etype === 'update') {
+                                    testBench.tlsut.connectors[events[j].eid] = {
+                                        name: nodeObj.getAttribute('name'),
+                                        id: events[j].eid
+                                    };
+                                } else {
+                                    throw 'Unexpected event type' + events[j].etype;
+                                }
                             }
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
+                        } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                            if (events[j].etype === 'load' || events[j].etype === 'update') {
+                                testBench.tlsut.properties[events[j].eid] = {
+                                    name: nodeObj.getAttribute('name'),
+                                    id: events[j].eid
+                                };
+                            } else {
+                                throw 'Unexpected event type' + events[j].etype;
+                            }
                         }
                     }
                 }
             }
-            if (testBench.tlsut) {
+            if (checkInterfaces) {
                 self.matchDesignsAndTestBenches(id);
             }
             self.update();
@@ -342,13 +333,57 @@ define([], function () {
             }
             if (!design.interfaces) {
                 design.interfaces = { properties: {}, connectors: {} };
+                checkInterfaces = true;
             }
             if (!design.components) {
                 design.components = {};
             }
             for (j = 0; j < events.length; j += 1) {
-
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
+                if (events[j].etype === 'unload') {
+                    if (design.interfaces.connectors[events[j].eid]) {
+                        delete design.interfaces.connectors[events[j].eid];
+                        checkInterfaces = true;
+                    } else if (design.interfaces.properties[events[j].eid]) {
+                        delete design.interfaces.properties[events[j].eid];
+                        checkInterfaces = true;
+                    }
+                    // TODO: Unloading of components.
+//                    else if (events[j].etype === 'unload') {
+//                        //self.growl.warning('unload ' + events[j].eid);
+//                        if (design.components[componentId]) {
+//                            if (design.components[componentId].cnt === 1) {
+//                                delete design.components[componentId];
+//                            } else {
+//                                design.components[componentId].cnt -= 1;
+//                            }
+//                        }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (nodeObj.getParentId() === id) {
+                        checkInterfaces = true;
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            design.interfaces.connectors[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
+                        }
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (nodeObj.getParentId() === id) {
+                        checkInterfaces = true;
+                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            design.interfaces.properties[events[j].eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: events[j].eid
+                            };
+                        } else {
+                            throw 'Unexpected event type' + events[j].etype;
+                        }
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     componentId = nodeObj.getAttribute('ID');
                     if (events[j].etype === 'load') {
@@ -362,15 +397,6 @@ define([], function () {
                                 cnt: 1
                             };
                         }
-                    } else if (events[j].etype === 'unload') {
-                        //self.growl.warning('unload ' + events[j].eid);
-                        if (design.components[componentId]) {
-                            if (design.components[componentId].cnt === 1) {
-                                delete design.components[componentId];
-                            } else {
-                                design.components[componentId].cnt -= 1;
-                            }
-                        }
                     } else if (events[j].etype === 'update') {
                         //self.growl.warning('update ' + events[j].eid);
                         // TODO: The only update that matters is the change of component ID.
@@ -379,43 +405,7 @@ define([], function () {
                     }
                 }
 
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() === id) {
-                        checkInterfaces = true;
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-                            design.interfaces.connectors[events[j].eid] = {
-                                name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
-                            };
-                        } else if (events[j].etype === 'unload') {
-                            if (design.interfaces.connectors.hasOwnProperty(events[j].eid)) {
-                                delete design.interfaces.connectors[events[j].eid];
-                            }
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
-                        }
-                    }
-                }
 
-                if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() === id) {
-                        checkInterfaces = true;
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-                            design.interfaces.properties[events[j].eid] = {
-                                name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
-                            };
-                        } else if (events[j].etype === 'unload') {
-                            if (design.interfaces.properties.hasOwnProperty(events[j].eid)) {
-                                delete design.interfaces.properties[events[j].eid];
-                            }
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
-                        }
-                    }
-                }
             }
             if (checkInterfaces) {
                 self.matchDesignsAndTestBenches(id);
