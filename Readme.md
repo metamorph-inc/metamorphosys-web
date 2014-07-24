@@ -1,15 +1,16 @@
-# Getting started #
+# WebGME-CyPhy #
+
+[WebGME](https://github.com/webgme/webgme) is a collaborative meta-modeling environment which allows multiple users to simulataneously create and edit models within a single project. It stores the model objects in a Mongo database. WebCyPhy utilizes WebGME, and uses a meta-model similar to that used in the [META toolchain](http://www.isis.vanderbilt.edu/sites/default/files/u352/META_poster_48x36_Clean.pdf) developed by ISIS at Vanderbilt University.
+
+# Starting from Scratch #
 
 1. Install [nodejs](http://nodejs.org/download/)
-2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database
-3. Using command line install dependencies: `npm install`
-4. Navigate to the your local webgme-cyphy directory, and run 'launch_database.cmd' (or edit the config.json file and specify an existing mongoip address - default is 127.0.0.1)
-5. Run 'launch_app.cmd' (or run the application using `node app.js` or `npm start` from the command line)
-6. Open a web browser and visit [localhost:8855](http://localhost:8855) using Chrome or Safari
-
-<!---
-4. Run the application by `node app.js` or `npm start`
--->
+2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database (recommended for initial use)
+3. Clone this webgme-cyphy repository, and change to that directory
+4. Install dependencies from command line: `npm install`
+5. In a separate process, run `launch_database.cmd` to start a Mongo database (or edit the config.json file to point to an existing mongoip - default is 127.0.0.1)
+6. Run `launch_app.cmd` to start a webgme server (or run the application using `node app.js` or `npm start` from command line)
+7. Open a web browser and visit [localhost:8855](http://localhost:8855) (Developers test using Chrome and Safari)
 
 # Notes #
 
