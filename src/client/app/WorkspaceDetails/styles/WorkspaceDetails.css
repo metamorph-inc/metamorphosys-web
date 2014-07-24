@@ -49,3 +49,11 @@ article.workspace-details {
     color: #666; }
   article.workspace-details .label.white-bg {
     color: #333; }
+  article.workspace-details .details-accordion .panel-heading {
+    border: none;
+    background-image: none;
+    padding: 0.5ex;
+    background-color: transparent; }
+  article.workspace-details .details-accordion .panel-title {
+    cursor: pointer;
+    font-size: 85%; }

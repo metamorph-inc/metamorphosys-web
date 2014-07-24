@@ -93,6 +93,24 @@ article.workspace-details {
     color: #333;
   }
 
+  .details-accordion {
+
+    .panel {
+    }
+
+    .panel-heading {
+      border: none;
+      background-image: none;
+      padding: 0.5ex;
+      background-color: transparent;
+    }
+
+    .panel-title {
+      cursor: pointer;
+      font-size: 85%;
+    }
+
+  }
 
 }
 
