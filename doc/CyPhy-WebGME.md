@@ -14,7 +14,7 @@ Download mongodb from http://www.mongodb.org/downloads. If you have 64-bit versi
 batch-files assumes it is installed at `C:\Program Files\MongoDB 2.6 Standard`. (Choosing typical installation and on the 64-bit version 
 will put it there.)
 
-![MongoDB](images/MongoDB.png "MongoDB")
+![MongoDB](images/MongoDB.PNG "MongoDB")
 
 ## Installation ##
 Make any necessary modifications to `install_script.cmd` and run it. It will log the progress in `install.log`.
@@ -26,37 +26,37 @@ and visit localhost:8855.
 # Starting a new ADMEditor Project #
 Visit localhost:8855 and click the folder in the left most corner of the tool-bar.
 
-![Open a project](images/CreateProject.png "Open/Create a project")
+![Open a project](images/CreateProject.PNG "Open/Create a project")
 
 In the first dialog select `Create from file...`. Name the new project ADMEditor (case sensitive!) and click `Import file...`. Navigate to the meta-folder and select `ADMEditor_metaOnly.json` which 
 contains the META-model for the ADMEditor-Language and an empty project structure.
 
-![Import file](images/CreateProject2.png "Import file")
+![Import file](images/CreateProject2.PNG "Import file")
 
 The root-node should show up and if you expand it and click on the ADMEditorModelingLanguage will show up on the canvas. This shows 
 which objects are avaliable in this language.
 
-![META-model](images/CreateProject3.png "META-model")
+![META-model](images/CreateProject3.PNG "META-model")
 
 # Working with an ADMEditor Project #
 In the Projects/NewProject create a new ACMFolder, ADMFolder and ATMFolder.
 
 ## Working with ACMs ##
-![ACMFolder](images/ADMEditor2.png "ACMFolder")
+![ACMFolder](images/ADMEditor2.PNG "ACMFolder")
 
 Open up the Folder and click the play-button drop down menu in the tool-bar. This will display the plugins (interpreters) that exist for 
 the ADMEditor project. Run the AcmImporter.
 
-![ACMImporter](images/ACMImporter.png "ACMImporter")
+![ACMImporter](images/ACMImporter.PNG "ACMImporter")
 
 In the dialog drag and drop the ACMs from `/samples/RollingWheel` as shown in the figure.
 
-![ACMs](images/ACMImporter2.png "ACMs")
+![ACMs](images/ACMImporter2.PNG "ACMs")
 
 ## Working with ADMs ##
 Open the ADMFolder and run the AdmImporter. Either drag and drop or browse for the `/samples/RollingWheel/Wheel.adm` file and run 
 the importer.
-![ADMImporter](images/ADMImporter.png "ADMImporter")
+![ADMImporter](images/AdmImporter.PNG "ADMImporter")
 
 You now have a design that you can edit inside WebGME. As long as you keep the interfaces in the root container intact you will be 
 able to execute it from a test-bench too. Apart from that, you can add new components, add/modify parameters, create subsystems etc.
