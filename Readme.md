@@ -10,7 +10,17 @@
 4. Install dependencies from command line: `npm install`
 5. In a separate process, run `launch_database.cmd` to start a Mongo database (or edit the config.json file to point to an existing mongoip - default is 127.0.0.1)
 6. Run `launch_app.cmd` to start a webgme server (or run the application using `node app.js` or `npm start` from command line)
-7. Open a web browser and visit [localhost:8855](http://localhost:8855) (Developers test using Chrome and Safari)
+
+## 2 ways to start using WebCyPhy ##
+### Option A ###
+__This interface is under development__. Visit [localhost:8855/extlib/src/client/](http://localhost:8855/extlib/src/client/) to open the domain-specific WebCyPhy UI. This option will automatically import the meta model as you visit the page and creates the 'ADMEditor project' 
+
+### Option B ###
+Visit [localhost:8855](http://localhost:8855) to open the WebGME editor
+- Click on the first icon in the toolbar `Projects`
+- Create new project from file
+- Name the project `ADMEditor`
+- Select the `meta/ADMEditor_metaOnly.json` file - you can browse and select the file or drag-and-drop it to the dialogue box
 
 # Notes #
 
@@ -18,12 +28,9 @@
 - The default database is `CyPhy` instead of `multi` (default webgme database)
 - On Windows `"C:\Program Files\MongoDB 2.6 Standard\bin\mongod" --dbpath mongodatabase`
 
-## App ##
-- Run `node app.js`
-
 ### Option A ###
-Visit [http://localhost:8855/extlib/src/client/](http://localhost:8855/extlib/src/client/) to open CyPhy UI. __This site is still under  development__
-- as you visit the page the meta model is automatically imported for you and `ADMEditor` project is created.
+Visit [http://localhost:8855/extlib/src/client/](http://localhost:8855/extlib/src/client/) to open CyPhy UI. __This site is still under development__
+- as you visit the page the meta model is automatically imported for you and the `ADMEditor` project is created.
 
 ### Option B ###
 Visit [localhost:8855](http://localhost:8855) to open the WebGME editor
