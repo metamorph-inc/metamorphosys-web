@@ -16,7 +16,7 @@ define([], function () {
         self.$routeParams = $routeParams;
         self.smartClient = smartClient;
         self.growl = growl;
-
+        self.territories = {};
         // For test-data
         self.chance = Chance ? new Chance() : null;
         self.nbrOfComponets = 15;
@@ -38,6 +38,19 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
+        self.$scope.getUrl = function (objId) {
+            return '/?project=ADMEditor&activeObject=' + objId;
+        };
+        self.$scope.deleteObject = function (id) {
+            if (self.$scope.components[id]) {
+                self.removeComponent(id);
+            } else if (self.$scope.designs[id]) {
+                self.removeDesign(id);
+            } else if (self.$scope.testBenches[id]) {
+                self.removeTestBench(id);
+            }
+        };
+
         self.compares = 0;
         if (self.smartClient) {
             // if smartClient exists
@@ -87,7 +100,6 @@ define([], function () {
             territoryPattern = {},
             territoryId;
 
-        self.territories = {};
         territoryPattern[self.$scope.id] = {children: 0};
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
@@ -138,9 +150,6 @@ define([], function () {
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         self.addComponentWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
-                        }
                         self.removeComponent(events[j].eid);
                     }
                 }
@@ -149,9 +158,6 @@ define([], function () {
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         self.addDesignWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
-                        }
                         self.removeDesign(events[j].eid);
                     }
                 }
@@ -160,9 +166,6 @@ define([], function () {
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         self.addTestBenchWatcher(events[j].eid);
                     } else if (events[j].etype === 'unload') {
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
-                        }
                         self.removeTestBench(events[j].eid);
                     }
                 }
@@ -529,8 +532,12 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeComponent = function (id) {
-        if (this.$scope.components.hasOwnProperty(id)) {
-            delete this.$scope.components[id];
+        var self = this;
+        if (self.territories[id]) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+        if (self.$scope.components[id]) {
+            delete self.$scope.components[id];
         }
 
         this.update();
@@ -595,8 +602,12 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeDesign = function (id) {
-        if (this.$scope.designs.hasOwnProperty(id)) {
-            delete this.$scope.designs[id];
+        var self = this;
+        if (self.territories[id]) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+        if (self.$scope.designs[id]) {
+            delete self.$scope.designs[id];
         }
 
         this.update();
@@ -654,8 +665,12 @@ define([], function () {
     };
 
     WorkspaceDetailsController.prototype.removeTestBench = function (id) {
-        if (this.$scope.testBenches.hasOwnProperty(id)) {
-            delete this.$scope.testBenches[id];
+        var self = this;
+        if (self.territories[id]) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+        if (self.$scope.testBenches[id]) {
+            delete self.$scope.testBenches[id];
         }
 
         this.update();

@@ -27,8 +27,13 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li data-ng-if="component.acm"><a href="{{ component.acm }}"><i
-                                    class="glyphicon glyphicon-share-alt"></i> Export ACM</a></li>
+                            <li><a href="{{ getUrl(component.id) }}" target="_blank">
+                                <i class="glyphicon glyphicon-edit"></i> Open in editor</a></li>
+                            <li data-ng-if="component.acm"><a href="{{ component.acm }}">
+                                <i class="glyphicon glyphicon-share-alt"></i> Export ACM</a></li>
+                            <li class="divider"></li>
+                            <li><a data-ng-click="deleteObject(component.id)">
+                                <i class="glyphicon glyphicon-remove"></i> Delete</a></li>
                         </ul>
                     </div>
                 </div>
@@ -98,8 +103,13 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li><a href="#" ng-click="exportDesign(design.id)"><i
-                                    class="glyphicon glyphicon-share-alt"></i> Export ADM</a></li>
+                            <li><a href="{{ getUrl(design.id) }}" target="_blank">
+                                <i class="glyphicon glyphicon-edit"></i> Open in editor</a></li>
+                            <li><a ng-click="exportDesign(design.id)">
+                                <i class="glyphicon glyphicon-share-alt"></i> Export ADM</a></li>
+                            <li class="divider"></li>
+                            <li><a data-ng-click="deleteObject(design.id)">
+                                <i class="glyphicon glyphicon-remove"></i> Delete</a></li>
                         </ul>
                     </div>
                 </div>
@@ -157,6 +167,21 @@
                 <header>
                     <h4><a class="testbench-name" href="">{{ testBench.name }}</a></h4>
                 </header>
+
+                <div class="control-buttons">
+                    <div class="btn-group" dropdown is-open="status.isopen">
+                        <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="{{ getUrl(testBench.id) }}" target="_blank">
+                                <i class="glyphicon glyphicon-edit"></i> Open in editor</a></li>
+                            <li class="divider"></li>
+                            <li><a data-ng-click="deleteObject(testBench.id)">
+                                <i class="glyphicon glyphicon-remove"></i> Delete</a></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="details">
 

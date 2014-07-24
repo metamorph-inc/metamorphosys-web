@@ -441,7 +441,7 @@ define([], function () {
             if (clientMessage.severity === 'info') {
                 self.growl.success(clientMessage.message);
             } else if (clientMessage.severity === 'debug') {
-                self.growl.info(clientMessage.message);
+                self.growl.info(clientMessage.message, {ttl: 1000});
             } else if (clientMessage.severity === 'warning') {
                 self.growl.warning(clientMessage.message);
             } else if (clientMessage.severity === 'error') {
