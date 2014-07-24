@@ -30,7 +30,7 @@ Visit [localhost:8855](http://localhost:8855) to open the default WebGME editor
 
 
 ## Utils ##
-- Adding a full directory to the local blob:  While models/objects are stored in the Mongo database, resource files are stored on the server in a 'blob.' When importing a project, it is sometimes necessary to upload several files, and using `node add_dir_to_blob.js samples\RollingWheel` is the way to achieve this.
+- Adding a full directory to the local blob:  While models/objects are stored in the Mongo database,their associated resource files are stored on the WebGME server in the 'blob.' When importing a project, it is sometimes necessary to upload multiple resource files for each object in the project, and using `node add_dir_to_blob.js samples\RollingWheel` is the way to achieve this.
 
 
  
