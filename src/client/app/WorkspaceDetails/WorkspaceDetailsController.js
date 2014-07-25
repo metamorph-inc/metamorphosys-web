@@ -70,6 +70,8 @@ define([], function () {
         self.$scope.exportDesign = self.initExportDesign();
         self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
         self.$scope.deleteObject = self.initDeleteObject();
+        self.$scope.executeTestBench = self.initExecuteTestBench();
+        self.$scope.updateTLSUT = self.initUpdateTLSUT();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
@@ -110,6 +112,8 @@ define([], function () {
                             self.$scope.exportDesign = self.initExportDesign();
                             self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
                             self.$scope.deleteObject = self.initDeleteObject();
+                            self.$scope.executeTestBench = self.initExecuteTestBench();
+                            self.$scope.updateTLSUT = self.initUpdateTLSUT();
                         }
                         if (self.territories.hasOwnProperty(event.eid)) {
                             // Workspace has a watcher..
@@ -619,7 +623,7 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.updateDesign = function (id) {
         var self = this,
-            design = self.$scope.components[id],
+            design = self.$scope.designs[id],
             nodeObj;
         if (design) {
             nodeObj = self.smartClient.client.getNode(id);
@@ -722,14 +726,14 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.updateTestBench = function (id) {
         var self = this,
-            testBench = self.$scope.components[id],
+            testBench = self.$scope.testBenches[id],
             nodeObj;
         if (testBench) {
             nodeObj = self.smartClient.client.getNode(id);
             testBench.name = nodeObj.getAttribute('name');
             testBench.description = nodeObj.getAttribute('INFO');
             //testBench.date = new Date();
-            testBench.tlsut = nodeObj.getPointer('TopLevelSystemUnderTest').to;
+            testBench.designs.selected = nodeObj.getPointer('TopLevelSystemUnderTest').to;
             self.update();
         } else {
             console.error('Trying to update non-existing test-bench.');
@@ -897,6 +901,50 @@ define([], function () {
             } else {
                 console.warn('Nothing to delete');
             }
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initUpdateTLSUT = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (tbId, designId) {
+                self.$scope.testBenches[tbId].designs.selected = designId;
+                self.update();
+            };
+        }
+        return function (tbId, designId) {
+            var tbName = self.$scope.testBenches[tbId].name,
+                dName = self.$scope.designs[designId].name;
+            self.$scope.testBenches[tbId].designs.selected = designId;
+            self.smartClient.client.makePointer(tbId, 'TopLevelSystemUnderTest', designId,
+                    '[WebCyPhy] - Pointer from ' + tbName + ' was set to ' + dName + '.');
+//            self.growl.info('Starting execution of ' + self.$scope.testBenches[id].name);
+//            self.smartClient.runPlugin('TestBenchRunner', { activeNode: id, pluginConfig: {'admFile': hash}}, function (result) {
+//                if (result.success === false) {
+//                    self.growl.error('Execution failed!');
+//                    self.showPluginMessages(result.messages);
+//                }
+//                self.showPluginMessages(result.messages);
+//            });
+        };
+    };
+
+    WorkspaceDetailsController.prototype.initExecuteTestBench = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                self.growl.warning('Would call test-bench executor.');
+            };
+        }
+        return function (id) {
+            self.growl.info('Starting execution of ' + self.$scope.testBenches[id].name);
+            self.smartClient.runPlugin('TestBenchRunner', { activeNode: id, pluginConfig: {'run': false}}, function (result) {
+                if (result.success === false) {
+                    self.growl.error('Execution failed!');
+                    self.showPluginMessages(result.messages);
+                }
+                self.showPluginMessages(result.messages);
+            });
         };
     };
 

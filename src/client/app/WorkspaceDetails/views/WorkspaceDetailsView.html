@@ -189,6 +189,8 @@
                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                         <li><a href="{{ getUrl(testBench.id) }}" target="_blank">
                             <i class="glyphicon glyphicon-edit"></i> Open in editor</a></li>
+                        <li><a ng-click="executeTestBench(testBench.id)">
+                            <i class="glyphicon glyphicon-play"></i> Execute Test-Bench</a></li>
                         <li class="divider"></li>
                         <li><a data-ng-click="deleteObject(testBench.id)">
                             <i class="glyphicon glyphicon-remove"></i> Delete</a></li>
@@ -208,7 +210,7 @@
 
 
                         <div class="tlsut">
-                            <h5><strong>Top Level System Under Test</strong></h5>
+                            <h5><strong>TLSUT Interfaces</strong></h5>
                             <ul>
                                 <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
                                 <li data-ng-repeat="prop in testBench.tlsut.properties"><i>{{prop.name}}</i></li>
@@ -217,7 +219,9 @@
                         <div class="tb-designs">
                             <h5><strong>Matching Designs</strong></h5>
                             <ul>
-                                <li data-ng-repeat="design in testBench.designs.avaliable">{{designs[design.id].name}}
+                                <li data-ng-repeat="design in testBench.designs.avaliable">
+                                    <a ng-click="updateTLSUT(testBench.id, design.id)" tooltip="Set as Top Level System Under Test"
+                                       tooltip-placement="right"> {{designs[design.id].name}}</a>
                                 </li>
                             </ul>
                             <div data-ng-show="designs[testBench.designs.selected]"> Selected :
