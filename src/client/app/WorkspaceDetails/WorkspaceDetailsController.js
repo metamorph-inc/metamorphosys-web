@@ -958,18 +958,16 @@ define([], function () {
                 var i,
                     artifactsHtml = '';
                 console.log(result);
-                for (i = 0; i < result.artifacts.length; i += 1) {
-                    artifactsHtml += ' <a href="' + self.smartClient.blobClient.getDownloadURL(result.artifacts[i]) +
-                        '"> artifact#' + i + '</a>';
-                }
-                if (result.success === false) {
-                    self.growl.error('Execution failed - ' + artifactsHtml);
+                self.getPluginArtifactsHtml(result.artifacts, function (artifactsHtml) {
+                    if (result.success === false) {
+                        self.growl.error('Execution failed.' + artifactsHtml);
+                        self.showPluginMessages(result.messages);
+                        return;
+                    }
                     self.showPluginMessages(result.messages);
-                    return;
-                }
-                self.showPluginMessages(result.messages);
 
-                self.growl.success('Execution succeeded -' + artifactsHtml, {ttl: -1});
+                    self.growl.success('Execution succeeded.' + artifactsHtml, {ttl: -1});
+                });
             });
         };
     };
@@ -1001,6 +999,34 @@ define([], function () {
         }
     };
 
+    WorkspaceDetailsController.prototype.getPluginArtifactsHtml = function (artieHashes, callback) {
+        var self = this,
+            i,
+            counter = artieHashes.length,
+            artifactsHtml = '',
+            getCounterCallback = function (hash) {
+                return function (err, artifact) {
+                    counter -= 1;
+                    if (err) {
+                        console.error(err);
+                        if (counter <= 0) {
+                            callback(artifactsHtml);
+                        }
+                    }
+                    artifactsHtml += '<br> <a href="' + self.smartClient.blobClient.getDownloadURL(hash) +'">'
+                        + artifact.name + '</a>';
+                    if (counter <= 0) {
+                        callback(artifactsHtml);
+                    }
+                }
+            };
+        if (counter === 0) {
+            callback('');
+        }
+        for (i = 0; i < artieHashes.length; i += 1) {
+            self.smartClient.blobClient.getArtifact(artieHashes[i], getCounterCallback(artieHashes[i]));
+        }
+    };
     WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
         var tId,
             dId,
