@@ -147,7 +147,7 @@ define([], function () {
             return 'glyphicon glyphicon-file';
         };
 
-        this.initOnFileSelect();
+        //this.initOnFileSelect();
 
         // initialization of methods
         if (self.smartClient) {
@@ -324,77 +324,77 @@ define([], function () {
         };
     };
 
-    WorkspaceController.prototype.initOnFileSelect = function () {
-        var self = this;
-
-        this.$scope.onFileSelect = function (id, $files) {
-            var i,
-                file,
-                acmImporter,
-                admImporter,
-                atmImporter,
-                artifactName,
-                extension,
-                remainingFiles,
-                artifact,
-                done;
-
-            done = function (hash) {
-                if (acmImporter) {
-                    self.importFromFile(id, hash, 'acm');
-                }
-                if (admImporter) {
-                    self.importFromFile(id, hash, 'adm');
-                }
-                if (atmImporter) {
-                    self.importFromFile(id, hash, 'atm');
-                }
-            };
-
-            artifactName = 'Uploaded_artifacts.zip';
-
-            if ($files.length > 1) {
-                acmImporter = true;
-
-            } else if ($files.length === 1) {
-                extension = $files[0].name.split('.').pop().toLowerCase();
-                if (extension === 'adm') {
-                    admImporter = true;
-                } else if (extension === 'atm') {
-                    atmImporter = true;
-                }
-            }
-
-            artifact = self.smartClient.blobClient.createArtifact(artifactName);
-
-            remainingFiles = $files.length;
-
-            for (i = 0; i < $files.length; i += 1) {
-                file = $files[i];
-
-                artifact.addFileAsSoftLink(file.name, file, function (err, hash) {
-                    remainingFiles -= 1;
-
-                    if (err) {
-                        //TODO: something went wrong, tell the user????
-                    } else {
-                        // successfully uploaded
-                    }
-
-                    if (remainingFiles === 0) {
-                        if ($files.length > 1) {
-                            artifact.save(function (err, artifactHash) {
-                                done(artifactHash);
-                            });
-
-                        } else {
-                            done(hash);
-                        }
-                    }
-                });
-            }
-        };
-    };
+//    WorkspaceController.prototype.initOnFileSelect = function () {
+//        var self = this;
+//
+//        this.$scope.onFileSelect = function (id, $files) {
+//            var i,
+//                file,
+//                acmImporter,
+//                admImporter,
+//                atmImporter,
+//                artifactName,
+//                extension,
+//                remainingFiles,
+//                artifact,
+//                done;
+//
+//            done = function (hash) {
+//                if (acmImporter) {
+//                    self.importFromFile(id, hash, 'acm');
+//                }
+//                if (admImporter) {
+//                    self.importFromFile(id, hash, 'adm');
+//                }
+//                if (atmImporter) {
+//                    self.importFromFile(id, hash, 'atm');
+//                }
+//            };
+//
+//            artifactName = 'Uploaded_artifacts.zip';
+//
+//            if ($files.length > 1) {
+//                acmImporter = true;
+//
+//            } else if ($files.length === 1) {
+//                extension = $files[0].name.split('.').pop().toLowerCase();
+//                if (extension === 'adm') {
+//                    admImporter = true;
+//                } else if (extension === 'atm') {
+//                    atmImporter = true;
+//                }
+//            }
+//
+//            artifact = self.smartClient.blobClient.createArtifact(artifactName);
+//
+//            remainingFiles = $files.length;
+//
+//            for (i = 0; i < $files.length; i += 1) {
+//                file = $files[i];
+//
+//                artifact.addFileAsSoftLink(file.name, file, function (err, hash) {
+//                    remainingFiles -= 1;
+//
+//                    if (err) {
+//                        //TODO: something went wrong, tell the user????
+//                    } else {
+//                        // successfully uploaded
+//                    }
+//
+//                    if (remainingFiles === 0) {
+//                        if ($files.length > 1) {
+//                            artifact.save(function (err, artifactHash) {
+//                                done(artifactHash);
+//                            });
+//
+//                        } else {
+//                            done(hash);
+//                        }
+//                    }
+//                });
+//            }
+//        };
+//    };
 
     WorkspaceController.prototype.updateName = function (id, name) {
         var message,
@@ -648,6 +648,7 @@ define([], function () {
             if (newWorkspace.description) {
                 self.smartClient.client.setAttributes(newId, 'INFO', newWorkspace.description, '[WebCyPhy] - ' + newWorkspace.name + ' workspace description was updated.');
             }
+            self.update();
             newWorkspace.id = newId;
             if (hasFiles === false) {
                 self.growl.success('Workspace "' + newWorkspace.name + '" successfully created.');
@@ -772,7 +773,8 @@ define([], function () {
             key,
             fileInfo,
             acmArtie,
-            acms = {},
+//            acms = {},
+            acms = [],
             adms = [],
             atms = [],
             requirements = [],
@@ -783,7 +785,8 @@ define([], function () {
             if (workspaceInfo.addedFiles.hasOwnProperty(key)) {
                 fileInfo = workspaceInfo.addedFiles[key];
                 if (fileInfo.type === 'acm') {
-                    acms[fileInfo.name] = fileInfo.hash;
+                    acms.push(fileInfo.hash);
+//                    acms[fileInfo.name] = fileInfo.hash;
                 } else if (fileInfo.type === 'adm') {
                     adms.push(fileInfo.hash);
                 } else if (fileInfo.type === 'atm') {
@@ -797,106 +800,86 @@ define([], function () {
             }
         }
 
-        afterAcmImport = function () {
-            self.importMultipleFromFiles(workspaceInfo.id, adms, 'adm', function (admResults) {
-                var k,
-                    result,
-                    filename,
-                    fileUrl;
-                console.log(admResults);
-                for (k = 0; k < admResults.length; k += 1) {
-                    result = admResults[k].result;
-                    fileUrl = self.smartClient.blobClient.getDownloadURL(admResults[k].hash);
-                    filename = workspaceInfo.addedFiles[admResults[k].hash].name;
-                    if (result.success === false) {
-                        totalSuccess = false;
-                        self.growl.error('AdmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                    } else {
-                        self.growl.success('AdmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                    }
-                    self.showPluginMessages(result.messages);
-                    self.update();
-                }
-                self.importMultipleFromFiles(workspaceInfo.id, atms, 'atm', function (atmResults) {
-                    console.log(atmResults);
-                    for (k = 0; k < atmResults.length; k += 1) {
-                        result = atmResults[k].result;
-                        fileUrl = self.smartClient.blobClient.getDownloadURL(atmResults[k].hash);
-                        filename = workspaceInfo.addedFiles[atmResults[k].hash].name;
-                        if (result.success === false) {
-                            totalSuccess = false;
-                            self.growl.error('AtmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                        } else {
-                            self.growl.success('AtmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                        }
-                        self.showPluginMessages(result.messages);
-                        self.update();
-                    }
-                    self.importMultipleFromFiles(workspaceInfo.id, requirements, 'requirement', function (reqResults) {
-                        console.log(reqResults);
-                        for (k = 0; k < reqResults.length; k += 1) {
-                            result = reqResults[k].result;
-                            fileUrl = self.smartClient.blobClient.getDownloadURL(reqResults[k].hash);
-                            filename = workspaceInfo.addedFiles[reqResults[k].hash].name;
-                            if (result.success === false) {
-                                totalSuccess = false;
-                                self.growl.error('RequirementImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                            } else {
-                                self.growl.success('RequirementImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                            }
-                            self.showPluginMessages(result.messages);
-                            self.update();
-                        }
+//        afterAcmImport = function () {
+        self.importMultipleFromFiles(workspaceInfo, acms, 'acm', function (acmResults) {
+            totalSuccess = totalSuccess && acmResults;
+            self.importMultipleFromFiles(workspaceInfo, adms, 'adm', function (admResults) {
+                totalSuccess = totalSuccess && admResults;
+                self.importMultipleFromFiles(workspaceInfo, atms, 'atm', function (atmResults) {
+                    totalSuccess = totalSuccess && atmResults;
+                    self.importMultipleFromFiles(workspaceInfo, requirements, 'requirement', function (reqResults) {
+                        totalSuccess = totalSuccess && reqResults;
                         callback(totalSuccess);
                     });
                 });
             });
-        };
-        if (Object.keys(acms).length > 0) {
-            acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
-            acmArtie.addMetadataHashes(acms, function (err, hashes) {
-                // TODO: error-handling
-                acmArtie.save(function (err, artieHash) {
-                    // TODO: error-handling
-                    self.importFromFile(workspaceInfo.id, artieHash, 'acm', function (hash, result) {
-                        var fileUrl = self.smartClient.blobClient.getDownloadURL(result.hash),
-                            filename = 'Uploaded_artifacts.zip';
-                        console.log(result);
-                        if (result.success === false) {
-                            totalSuccess = false;
-                            self.growl.error('AcmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
-                        } else {
-                            self.growl.success('AcmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
-                        }
-                        self.showPluginMessages(result.messages);
-                        self.update();
-                        afterAcmImport();
-                    });
-                });
-            });
-        } else {
-            afterAcmImport();
-        }
+        });
+//        };
+//        if (Object.keys(acms).length > 0) {
+//            acmArtie = self.smartClient.blobClient.createArtifact('Uploaded_artifacts.zip');
+//            acmArtie.addMetadataHashes(acms, function (err, hashes) {
+//                // TODO: error-handling
+//                acmArtie.save(function (err, artieHash) {
+//                    // TODO: error-handling
+//                    self.importFromFile(workspaceInfo.id, artieHash, 'acm', function (hash, result) {
+//                        var fileUrl = self.smartClient.blobClient.getDownloadURL(result.hash),
+//                            filename = 'Uploaded_artifacts.zip';
+//                        console.log(result);
+//                        if (result.success === false) {
+//                            totalSuccess = false;
+//                            self.growl.error('AcmImporter failed on <a href="' + fileUrl + '">' + filename + '</a>');
+//                        } else {
+//                            self.growl.success('AcmImporter succeeded on <a href="' + fileUrl + '">' + filename + '</a>');
+//                        }
+//                        self.showPluginMessages(result.messages);
+//                        self.update();
+//                        afterAcmImport();
+//                    });
+//                });
+//            });
+//        } else {
+//            afterAcmImport();
+//        }
     };
 
-    WorkspaceController.prototype.importMultipleFromFiles = function (workspaceId, hashes, importType, callback) {
+    WorkspaceController.prototype.importMultipleFromFiles = function (workspaceInfo, hashes, importType, callback) {
         var self = this,
-            counter = hashes.length,
-            results = [],
+            importerNameMap = {
+                acm: 'AcmImporter',
+                adm: 'AdmImporter',
+                atm: 'AtmImporter',
+                requirement: 'RequirementImporter'
+            },
+            c = hashes.length,
+            n = hashes.length,
+            totalSuccess = true,
             counterCallback = function (hash, result) {
-                counter -= 1;
-                results.push({hash: hash, result: result});
-                if (counter <= 0) {
-                    callback(results);
+                var filename,
+                    fileUrl;
+                c -= 1;
+                console.log(result);
+                fileUrl = self.smartClient.blobClient.getDownloadURL(hash);
+                filename = workspaceInfo.addedFiles[hash].name;
+                if (result.success === false) {
+                    totalSuccess = false;
+                    self.growl.error(importerNameMap[importType] + ' failed on <a href="' + fileUrl + '">' +
+                        filename + '</a>. [' + (n - c) + '/' + n + ']');
                 } else {
-                    self.importFromFile(workspaceId, hashes[counter - 1], importType, counterCallback);
+                    self.growl.success(importerNameMap[importType] + ' succeeded on <a href="' + fileUrl + '">' +
+                        filename + '</a>. [' + (n - c) + '/' + n + ']');
+                }
+                self.showPluginMessages(result.messages);
+                if (c <= 0) {
+                    callback(totalSuccess);
+                } else {
+                    self.importFromFile(workspaceInfo.id, hashes[c - 1], importType, counterCallback);
                 }
             };
-
-        if (hashes.length === 0) {
-            callback(results);
+        if (n === 0) {
+            callback(totalSuccess);
         } else {
-            self.importFromFile(workspaceId, hashes[counter - 1], importType, counterCallback);
+            self.growl.info('Calling ' + importerNameMap[importType] + ' ' + n + ' times..');
+            self.importFromFile(workspaceInfo.id, hashes[c - 1], importType, counterCallback);
         }
     };
 
@@ -935,18 +918,22 @@ define([], function () {
 
         folder = self.getFolder(workspaceId, importType, true);
         if (importType === 'acm') {
+            //self.growl.info('Running AcmImporter...');
             self.smartClient.runPlugin('AcmImporter', {activeNode: folder.getId(), pluginConfig: {'UploadedFile': hash}}, function (result) {
                 done(hash, result);
             });
         } else if (importType === 'adm') {
+            //self.growl.info('Running AdmImporter...');
             self.smartClient.runPlugin('AdmImporter', {activeNode: folder.getId(), pluginConfig: {'admFile': hash}}, function (result) {
                 done(hash, result);
             });
         } else if (importType === 'atm') {
+            //self.growl.info('Running AtmImporter...');
             self.smartClient.runPlugin('AtmImporter', {activeNode: folder.getId(), pluginConfig: {'atmFile': hash}}, function (result) {
                 done(hash, result);
             });
         } else if (importType === 'requirement') {
+            //self.growl.info('Running RequirementImporter...');
             self.smartClient.runPlugin('RequirementImporter', {activeNode: folder.getId(), pluginConfig: {'requirement': hash}}, function (result) {
                 done(hash, result);
             });
@@ -1030,6 +1017,7 @@ define([], function () {
         var self = this,
             msg,
             nodeUrl,
+            maxMessages = 10,
             i;
         for (i = 0; i < messages.length; i += 1) {
             msg = messages[i];
@@ -1043,6 +1031,10 @@ define([], function () {
                 self.growl.error(nodeUrl + msg.message);
             } else {
                 self.growl.info(nodeUrl + msg.message);
+            }
+            if (i > maxMessages - 1) {
+                self.growl.info("More than 10 messages from one plugin, won't growl any more..", {ttl: -1});
+                return;
             }
         }
     };
