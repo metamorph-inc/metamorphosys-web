@@ -5,7 +5,7 @@ article.workspace-details {
   min-width: 500px;
 
   .domain-models {
-    border-radius: 1.25em;
+    //border-radius: 1.25em;
   }
 
 
@@ -70,7 +70,7 @@ article.workspace-details {
     bottom: 0;
     right: 0.4ex;
 
-    font-size: 95%;
+    font-size: 88%;
 
     li.list-group-item {
       border: none;
@@ -110,6 +110,73 @@ article.workspace-details {
       font-size: 85%;
     }
 
+  }
+
+
+  .cyphy-tag {
+
+    display: block;
+    font-weight: 500;
+    font-size: 75%;
+
+    padding: 0.6ex;
+
+    border-radius: 0ex;
+
+    &.dark-blue {
+      color: #FFF;
+      background-color: #407DD9;
+
+      &:hover {
+        background-color: #0052CC;
+      }
+    }
+
+    &.green {
+      color: #FFF;
+      background-color: #40B240;
+
+      &:hover {
+        background-color: #009800;
+      }
+    }
+
+    &.orange {
+      color: #000;
+      background-color: #F08B58;
+
+      &:hover {
+        background-color: #EB6420;
+      }
+    }
+
+    &.yellow {
+      color: #000;
+      background-color: #FCD743;
+
+      &:hover {
+        background-color: #FBCA04;
+      }
+    }
+
+
+    &.purple {
+      color: #FFF;
+      background-color: #7E52ED;
+
+      &:hover {
+        background-color: #5319E7;
+      }
+    }
+
+    &.gray {
+      color: #000;
+      background-color: #E5E5E5;
+
+      &:hover {
+        background-color: #B7B7B7;
+      }
+    }
   }
 
 }

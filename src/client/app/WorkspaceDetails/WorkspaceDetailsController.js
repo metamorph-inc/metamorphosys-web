@@ -992,10 +992,10 @@ define([], function () {
             dType,
             domainsInfo = {},
             labelMap = {
-                Modelica: 'label-primary',
-                CAD: 'label-success',
-                Manufacturing: 'label-warning',
-                Cyber: 'label-info'
+                Modelica: 'cyphy-tag dark-blue', //'label-primary',
+                CAD: 'cyphy-tag green', //'label-success',
+                Manufacturing: 'cyphy-tag yellow', //'label-warning',
+                Cyber: 'cyphy-tag purple' //'label-info'
             },
             icon;
 

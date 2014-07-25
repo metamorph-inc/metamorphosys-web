@@ -74,7 +74,7 @@
                     <ul class="list-group">
                         <li class="list-group-item pull-left"
                             data-ng-repeat="di in component.domainsInfo | orderObjectBy:'type'">
-                            <span class="domain-models label {{di.icon}}">{{di.type}} {{di.cnt}}</span>
+                            <span class="domain-models {{di.icon}}">{{di.type}} {{di.cnt}}</span>
                         </li>
                     </ul>
                 </div>

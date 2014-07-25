@@ -2,8 +2,6 @@ article.workspace-details {
   margin: 1em;
   padding: 0 1em 1em;
   min-width: 500px; }
-  article.workspace-details .domain-models {
-    border-radius: 1.25em; }
   article.workspace-details form .row {
     margin-bottom: 1.5ex; }
   article.workspace-details .export-button {
@@ -36,7 +34,7 @@ article.workspace-details {
     position: absolute;
     bottom: 0;
     right: 0.4ex;
-    font-size: 95%; }
+    font-size: 88%; }
     article.workspace-details .stats li.list-group-item {
       border: none;
       background-color: transparent;
@@ -57,3 +55,39 @@ article.workspace-details {
   article.workspace-details .details-accordion .panel-title {
     cursor: pointer;
     font-size: 85%; }
+  article.workspace-details .cyphy-tag {
+    display: block;
+    font-weight: 500;
+    font-size: 75%;
+    padding: 0.6ex;
+    border-radius: 0ex; }
+    article.workspace-details .cyphy-tag.dark-blue {
+      color: #FFF;
+      background-color: #407DD9; }
+      article.workspace-details .cyphy-tag.dark-blue:hover {
+        background-color: #0052CC; }
+    article.workspace-details .cyphy-tag.green {
+      color: #FFF;
+      background-color: #40B240; }
+      article.workspace-details .cyphy-tag.green:hover {
+        background-color: #009800; }
+    article.workspace-details .cyphy-tag.orange {
+      color: #000;
+      background-color: #F08B58; }
+      article.workspace-details .cyphy-tag.orange:hover {
+        background-color: #EB6420; }
+    article.workspace-details .cyphy-tag.yellow {
+      color: #000;
+      background-color: #FCD743; }
+      article.workspace-details .cyphy-tag.yellow:hover {
+        background-color: #FBCA04; }
+    article.workspace-details .cyphy-tag.purple {
+      color: #FFF;
+      background-color: #7E52ED; }
+      article.workspace-details .cyphy-tag.purple:hover {
+        background-color: #5319E7; }
+    article.workspace-details .cyphy-tag.gray {
+      color: #000;
+      background-color: #E5E5E5; }
+      article.workspace-details .cyphy-tag.gray:hover {
+        background-color: #B7B7B7; }
