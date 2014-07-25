@@ -24,21 +24,24 @@ From [localhost:8855](http://localhost:8855), click the folder icon in the left 
 
 ![Open a project](images/CreateProject.PNG "Open/Create a project")
 
-In the first dialog select `Create from file...`. Name the new project `ADMEditor` (case sensitive!) and click `Import file...`. and select `webgme-cyphy\meta\ADMEditor_metaOnly.json` which contains the META-model for the ADMEditor-Language and an empty project structure.
+In the first dialog select `Create from file...`. Name the new project `ADMEditor` (case sensitive!) and click `Import file...`. and select `webgme-cyphy\meta\ADMEditor_metaOnly.json` which contains the META-model for the ADMEditor-Language.
 
 ![Import file](images/CreateProject1.PNG "Import file")
 
-The root-node should show up and if you expand it and click on the ADMEditorModelingLanguage will show up on the canvas. This contains the object types which are available in this language.
+The root-node (named ADMEditor) should show up and if you expand it and double-click on the ADMEditorModelingLanguage will show up on the canvas. This contains the object types which are available in this language.
 
 ![META-model](images/CreateProject3.PNG "META-model")
 
 # Working with an ADMEditor Project #
-In the Projects/NewProject create a new ACMFolder, ADMFolder and ATMFolder.
+
+## Create a Workspace ##
+
+Double-click on the ADMEditor (root) object to open it, and click and drag a Workspace object onto the canvas from the part browser on the left-hand side. In the Workspace, create a new ACMFolder, ADMFolder and ATMFolder using the same click and drag method.
 
 ## Working with ACMs ##
 ![ACMFolder](images/ADMEditor2.PNG "ACMFolder")
 
-Open up the Folder and click the play-button drop down menu in the tool-bar. This will display the plugins (interpreters) that exist for the ADMEditor project. Run the AcmImporter.
+Open the Folder and click the play-button drop down menu in the tool-bar. This will display the plugins (interpreters) that exist for the ADMEditor project. Run the AcmImporter.
 
 ![ACMImporter](images/ACMImporter.PNG "ACMImporter")
 
