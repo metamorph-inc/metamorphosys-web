@@ -20,18 +20,17 @@ will put it there.)
 Make any necessary modifications to `install_script.cmd` and run it. It will log the progress in `install.log`.
 
 ## Serving a WebGME application ##
-Start the data-base by running `launch_database.cmd` (the install script will also leave the data-base running). Proceed with running `launch_app.cmd`. While serving, leave both applications running 
-and visit localhost:8855.
+Start the data-base by running `launch_database.cmd` (`install_script.cmd` will also leave the data-base running). Proceed with running `launch_app.cmd`. While serving, leave both applications running and visit localhost:8855 in a browser.
 
 # Starting a new ADMEditor Project #
-Visit localhost:8855 and click the folder in the left most corner of the tool-bar.
+Visit [localhost:8855](localhost:8855) and click the folder in the left most corner of the tool-bar.
 
 ![Open a project](images/CreateProject.PNG "Open/Create a project")
 
-In the first dialog select `Create from file...`. Name the new project ADMEditor (case sensitive!) and click `Import file...`. Navigate to the meta-folder and select `ADMEditor_metaOnly.json` which 
+In the first dialog select `Create from file...`. Name the new project `ADMEditor` (case sensitive!) and click `Import file...`. Navigate to the meta-folder (webgme-cyphy/meta/) and select `ADMEditor_metaOnly.json` which 
 contains the META-model for the ADMEditor-Language and an empty project structure.
 
-![Import file](images/CreateProject2.PNG "Import file")
+![Import file](images/CreateProject1.PNG "Import file")
 
 The root-node should show up and if you expand it and click on the ADMEditorModelingLanguage will show up on the canvas. This shows which objects are avaliable in this language.
 
