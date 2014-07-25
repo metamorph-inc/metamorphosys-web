@@ -17,10 +17,10 @@ Download mongodb from http://www.mongodb.org/downloads. If you have 64-bit versi
 Make any necessary modifications to `install_script.cmd` and run it. It will log the progress in `install.log`.
 
 ## Serving a WebGME application ##
-Start the data-base by running `launch_database.cmd` (`install_script.cmd` will also leave the data-base running). Proceed with running `launch_app.cmd`. While serving, leave both applications running and visit [localhost:8855](localhost:8855) in a browser.
+Start the data-base by running `launch_database.cmd` (`install_script.cmd` will also leave the data-base running). Proceed with running `launch_app.cmd`. While serving, leave both applications running and visit [localhost:8855](http://localhost:8855) in a browser.
 
 # Starting a new ADMEditor Project #
-From [localhost:8855](localhost:8855), click the folder icon in the left most corner of the tool-bar.
+From [localhost:8855](http://localhost:8855), click the folder icon in the left most corner of the tool-bar.
 
 ![Open a project](images/CreateProject.PNG "Open/Create a project")
 
