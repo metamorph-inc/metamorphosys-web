@@ -58,7 +58,7 @@
                             <h5><strong>Interfaces</strong></h5>
                             <ul>
                                 <li data-ng-repeat="conn in component.interfaces.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in component.interfaces.properties">{{prop.name}}</li>
+                                <li data-ng-repeat="prop in component.interfaces.properties"><i>{{prop.name}}</i></li>
                             </ul>
                         </div>
 
@@ -141,7 +141,7 @@
                             <h5><strong>Interfaces</strong></h5>
                             <ul>
                                 <li data-ng-repeat="conn in design.interfaces.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in design.interfaces.properties">{{prop.name}}</li>
+                                <li data-ng-repeat="prop in design.interfaces.properties"><i>{{prop.name}}</i></li>
                             </ul>
                         </div>
 
@@ -211,7 +211,7 @@
                             <h5><strong>Top Level System Under Test</strong></h5>
                             <ul>
                                 <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in testBench.tlsut.properties">{{prop.name}}</li>
+                                <li data-ng-repeat="prop in testBench.tlsut.properties"><i>{{prop.name}}</i></li>
                             </ul>
                         </div>
                         <div class="tb-designs">
