@@ -2,7 +2,7 @@
 
 <header>
     <h1 class="workspace-name">{{ name }}</h1>
-    <span class="id">ID: {{ id }}</span>
+    <!--<span class="id">ID: {{ id }}</span>-->
 
     <div class="workspace-description">{{ description }}</div>
 </header>
@@ -215,7 +215,7 @@
                             </ul>
                         </div>
                         <div class="tb-designs">
-                            <h5><strong>Designs</strong></h5>
+                            <h5><strong>Matching Designs</strong></h5>
                             <ul>
                                 <li data-ng-repeat="design in testBench.designs.avaliable">{{designs[design.id].name}}
                                 </li>

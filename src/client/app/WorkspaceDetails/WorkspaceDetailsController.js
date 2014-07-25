@@ -106,11 +106,13 @@ define([], function () {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
-                        self.$scope.exportDesign = self.initExportDesign();
-                        self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
-                        self.$scope.deleteObject = self.initDeleteObject();
+                        if (event.etype === 'load') {
+                            self.$scope.exportDesign = self.initExportDesign();
+                            self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
+                            self.$scope.deleteObject = self.initDeleteObject();
+                        }
                         if (self.territories.hasOwnProperty(event.eid)) {
-
+                            // Workspace has a watcher..
                         } else {
                             self.territories[event.eid] = self.smartClient.addUI(
                                 event.eid,
@@ -148,19 +150,30 @@ define([], function () {
                         self.removeTestBench(events[j].eid);
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                    if (events[j].etype === 'load') {
                         self.addComponentWatcher(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.updateComponent(events[j].eid);
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                    if (events[j].etype === 'load') {
                         self.addDesignWatcher(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.updateDesign(events[j].eid);
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                    if (events[j].etype === 'load') {
                         self.addTestBenchWatcher(events[j].eid);
+                    } else if (events[j].etype === 'update') {
+                        self.updateTestBench(events[j].eid);
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
                     }
                 }
-
 
 //
 //                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
@@ -267,11 +280,11 @@ define([], function () {
                 if (events[j].etype === 'unload') {
                     if (testBench.tlsut) {
                         if (testBench.tlsut.connectors[events[j].eid]) {
-                            checkInterfaces = true;
                             delete testBench.tlsut.connectors[events[j].eid];
-                        } else if (testBench.tlsut.properties[events[j].eid]) {
                             checkInterfaces = true;
+                        } else if (testBench.tlsut.properties[events[j].eid]) {
                             delete testBench.tlsut.properties[events[j].eid];
+                            checkInterfaces = true;
                         }
                     }
                 } else {
@@ -279,8 +292,8 @@ define([], function () {
                     if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
                         // Top Level System Under Test has been loaded with children.
                         if (!testBench.tlsut) {
-                            checkInterfaces = true;
                             testBench.tlsut = { properties: {}, connectors: {} };
+                            checkInterfaces = true;
                         }
                         if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                             if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
@@ -289,6 +302,7 @@ define([], function () {
                                         name: nodeObj.getAttribute('name'),
                                         id: events[j].eid
                                     };
+                                    checkInterfaces = true;
                                 } else {
                                     throw 'Unexpected event type' + events[j].etype;
                                 }
@@ -299,6 +313,7 @@ define([], function () {
                                     name: nodeObj.getAttribute('name'),
                                     id: events[j].eid
                                 };
+                                checkInterfaces = true;
                             } else {
                                 throw 'Unexpected event type' + events[j].etype;
                             }
@@ -514,6 +529,24 @@ define([], function () {
 
     };
 
+    WorkspaceDetailsController.prototype.updateComponent = function (id) {
+        var self = this,
+            component = self.$scope.components[id],
+            nodeObj;
+        if (component) {
+            nodeObj = self.smartClient.client.getNode(id);
+            component.avmId = nodeObj.getAttribute('ID');
+            component.name = nodeObj.getAttribute('name');
+            component.description = nodeObj.getAttribute('INFO');
+            //component.date = new Date();
+            if (nodeObj.getAttribute('Resource')) {
+                component.acm = self.smartClient.blobClient.getDownloadURL(nodeObj.getAttribute('Resource'));
+            }
+        } else {
+            //console.warn('Trying to update non-existing component.');
+        }
+    };
+
     WorkspaceDetailsController.prototype.removeComponent = function (id) {
         var self = this,
             name;
@@ -524,9 +557,8 @@ define([], function () {
             name = self.$scope.components[id].name;
             delete self.$scope.components[id];
             self.growl.info('Component "' + name + '" was removed from work-space.');
+            self.update();
         }
-
-        self.update();
     };
 
     // Designs
@@ -587,19 +619,42 @@ define([], function () {
         }
     };
 
+    WorkspaceDetailsController.prototype.updateDesign = function (id) {
+        var self = this,
+            design = self.$scope.components[id],
+            nodeObj;
+        if (design) {
+            nodeObj = self.smartClient.client.getNode(id);
+            design.name = nodeObj.getAttribute('name');
+            design.description = nodeObj.getAttribute('INFO');
+            //design.date = new Date();
+            self.update();
+        } else {
+            console.error('Trying to update non-existing design.');
+        }
+    };
+
     WorkspaceDetailsController.prototype.removeDesign = function (id) {
         var self = this,
-            name;
+            name,
+            tbId;
         if (self.territories[id]) {
             self.smartClient.removeUI(self.territories[id]);
         }
         if (self.$scope.designs[id]) {
             name = self.$scope.designs[id].name;
             delete self.$scope.designs[id];
+            // Clean-up in matching test-benches.
+            for (var tbId in self.$scope.testBenches) {
+                if (self.$scope.testBenches.hasOwnProperty(tbId)){
+                    if (self.$scope.testBenches[tbId].designs.avaliable[id]) {
+                        delete self.$scope.testBenches[tbId].designs.avaliable[id];
+                    }
+                }
+            }
             self.growl.info('Design "' + name + '" was removed from work-space.');
+            self.update();
         }
-
-        this.update();
     };
 
     // TestBenches
@@ -663,9 +718,24 @@ define([], function () {
             name = self.$scope.testBenches[id].name;
             delete self.$scope.testBenches[id];
             self.growl.info('Test-bench "' + name + '" was removed from work-space.');
+            self.update();
         }
+    };
 
-        this.update();
+    WorkspaceDetailsController.prototype.updateTestBench = function (id) {
+        var self = this,
+            testBench = self.$scope.components[id],
+            nodeObj;
+        if (testBench) {
+            nodeObj = self.smartClient.client.getNode(id);
+            testBench.name = nodeObj.getAttribute('name');
+            testBench.description = nodeObj.getAttribute('INFO');
+            //testBench.date = new Date();
+            testBench.tlsut = nodeObj.getPointer('TopLevelSystemUnderTest').to;
+            self.update();
+        } else {
+            console.error('Trying to update non-existing test-bench.');
+        }
     };
 
     // Requirements
@@ -712,7 +782,6 @@ define([], function () {
     };
 
     // Function initializers.
-
     WorkspaceDetailsController.prototype.initGetMatchingDesigns = function () {
         var self = this;
         if (!self.smartClient) {
@@ -747,6 +816,8 @@ define([], function () {
                         if (design.interfaces) {
                             if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
                                 testBench.designs.avaliable[designId] = {id: designId};
+                            } else if (testBench.designs.avaliable[designId]) {
+                                delete testBench.designs.avaliable[designId];
                             }
                         } else {
                             //console.info('Design: ' + design.name + ' does not have interfaces yet.');
@@ -761,6 +832,8 @@ define([], function () {
                         if (testBench.tlsut) {
                             if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
                                 testBench.designs.avaliable[id] = {id: id};
+                            } else if (testBench.designs.avaliable[id]) {
+                                delete testBench.designs.avaliable[id];
                             }
                         } else {
                             //console.info('testBench: ' + testBench.name + ' does not have tlsut yet.');
@@ -810,9 +883,19 @@ define([], function () {
             };
         }
         return function (id) {
-            var toBeDeleted = self.$scope.components[id] || self.$scope.designs[id] || self.$scope.testBenches[id];
-            if (toBeDeleted) {
-                self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + toBeDeleted.name + ' was deleted.');
+            var name;
+            if (self.$scope.components[id]) {
+                name = self.$scope.components[id].name;
+                self.removeComponent(id);
+            } else if (self.$scope.designs[id]) {
+                name = self.$scope.designs[id].name;
+                self.removeDesign(id);
+            } else if (self.$scope.testBenches[id]) {
+                name = self.$scope.testBenches[id].name;
+                self.removeTestBench(id);
+            }
+            if (name) {
+                self.smartClient.client.delMoreNodes([id], '[WebCyPhy] - ' + name + ' was deleted.');
             } else {
                 console.warn('Nothing to delete');
             }
@@ -824,6 +907,7 @@ define([], function () {
         var self = this,
             msg,
             nodeUrl,
+            maxMessages = 10,
             i;
         for (i = 0; i < messages.length; i += 1) {
             msg = messages[i];
@@ -837,6 +921,10 @@ define([], function () {
                 self.growl.error(nodeUrl + msg.message);
             } else {
                 self.growl.info(nodeUrl + msg.message);
+            }
+            if (i > maxMessages - 1) {
+                self.growl.info("More than 10 messages from one plugin, won't growl any more..", {ttl: -1});
+                return;
             }
         }
     };
