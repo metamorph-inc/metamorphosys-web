@@ -8,7 +8,7 @@
     "license": "MIT",
     "dependencies": {
         "webgme": "https://github.com/webgme/webgme/tarball/master",
-        "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/68475eae9cbfcf7aff58bdfd0ead2988c4fe4e9f",
+        "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/ae47c0c70a9eabfd181ecedd5f88e3b9945f1b05",
         "requirejs": "=2.1.11",
         "unzip": "=0.1.8",
         "minimatch": "=0.3.0",
