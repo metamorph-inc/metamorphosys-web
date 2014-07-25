@@ -11,6 +11,8 @@
 5. In a separate process, run `launch_database.cmd` to start a Mongo database (or edit the config.json file to point to an existing mongoip - default is 127.0.0.1)
 6. Run `launch_app.cmd` to start a webgme server (or run the application using `node app.js` or `npm start` from command line)
 
+For more details, consult the [documentation](https://github.com/webgme/webgme-cyphy/blob/master/doc/CyPhy-WebGME.md).
+
 ## 2 ways to visualize models using WebCyPhy ##
 ### Option A ###
 __This interface is under development__. Visit [localhost:8855/extlib/src/client/](http://localhost:8855/extlib/src/client/) to open the domain-specific WebCyPhy UI. This option will automatically import the meta model as you visit the page and creates the 'ADMEditor project' 
