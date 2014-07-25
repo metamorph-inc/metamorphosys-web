@@ -430,6 +430,7 @@ define([], function () {
             self.update();
         });
     };
+
     // Components
     WorkspaceDetailsController.prototype.addComponent = function (id) {
         var self = this,
@@ -678,8 +679,18 @@ define([], function () {
                 designs: {
                     avaliable: {},
                     selected: tlsut
-                }
+                },
+                results: nodeObj.getAttribute('Results'),
+                resultsUrl: null,
+                testBenchFiles: nodeObj.getAttribute('TestBenchFiles'),
+                testBenchFilesUrl: null
             };
+            if (testBench.results) {
+                testBench.resultsUrl = self.smartClient.blobClient.getDownloadURL(testBench.results);
+            }
+            if (testBench.testBenchFiles) {
+                testBench.testBenchFilesUrl = self.smartClient.blobClient.getDownloadURL(testBench.testBenchFiles);
+            }
         } else {
             testBench = {
                 id: id,
@@ -734,6 +745,11 @@ define([], function () {
             testBench.description = nodeObj.getAttribute('INFO');
             //testBench.date = new Date();
             testBench.designs.selected = nodeObj.getPointer('TopLevelSystemUnderTest').to;
+            testBench.results = nodeObj.getAttribute('Results');
+            testBench.resultsUrl = testBench.results ?
+                self.smartClient.blobClient.getDownloadURL(testBench.results) : null;
+            testBench.testBenchFilesUrl = testBench.testBenchFiles ?
+                self.smartClient.blobClient.getDownloadURL(testBench.testBenchFiles) : null;
             self.update();
         } else {
             console.error('Trying to update non-existing test-bench.');
@@ -938,12 +954,22 @@ define([], function () {
         }
         return function (id) {
             self.growl.info('Starting execution of ' + self.$scope.testBenches[id].name);
-            self.smartClient.runPlugin('TestBenchRunner', { activeNode: id, pluginConfig: {'run': false}}, function (result) {
+            self.smartClient.runPlugin('TestBenchRunner', { activeNode: id, pluginConfig: {'run': true}}, function (result) {
+                var i,
+                    artifactsHtml = '';
+                console.log(result);
+                for (i = 0; i < result.artifacts.length; i += 1) {
+                    artifactsHtml += ' <a href="' + self.smartClient.blobClient.getDownloadURL(result.artifacts[i]) +
+                        '"> artifact#' + i + '</a>';
+                }
                 if (result.success === false) {
-                    self.growl.error('Execution failed!');
+                    self.growl.error('Execution failed - ' + artifactsHtml);
                     self.showPluginMessages(result.messages);
+                    return;
                 }
                 self.showPluginMessages(result.messages);
+
+                self.growl.success('Execution succeeded -' + artifactsHtml, {ttl: -1});
             });
         };
     };
