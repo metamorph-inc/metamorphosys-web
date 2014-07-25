@@ -36,28 +36,31 @@ The root-node (named ADMEditor) should show up and if you expand it and double-c
 
 ## Create a Workspace ##
 
-Double-click on the ADMEditor (root) object to open it, and click and drag a Workspace object onto the canvas from the part browser on the left-hand side. In the Workspace, create a new ACMFolder, ADMFolder and ATMFolder using the same click and drag method.
+Double-click on the ADMEditor (root) object to open it, and click and drag a Workspace object onto the canvas from the part browser on the left-hand side. Open the Workspace, create a new ACMFolder, ADMFolder and ATMFolder using the same click and drag method.
+
+![Workspace](images/CreateWorkspace.PNG "Workspace")
+
+![Folders](images/ADMEditor2.PNG "Folders")
 
 ## Working with ACMs ##
-![ACMFolder](images/ADMEditor2.PNG "ACMFolder")
 
-Open the Folder and click the play-button drop down menu in the tool-bar. This will display the plugins (interpreters) that exist for the ADMEditor project. Run the AcmImporter.
+Open the ACMFolder and click the play-button drop down menu in the tool-bar. This will display the plugins (interpreters) that exist for the ADMEditor project. Run the AcmImporter. 
+
+![RunPlugin](images/RunPlugin.PNG "RunPlugin")
+
+Multi-select and drag and drop the ACM packages files from `\samples\RollingWheel\Components` as shown in the figure.
 
 ![ACMImporter](images/ACMImporter.PNG "ACMImporter")
 
-In the dialog drag and drop the ACMs from `/samples/RollingWheel` as shown in the figure.
-
-![ACMs](images/ACMImporter2.PNG "ACMs")
-
 ## Working with ADMs ##
-Open the ADMFolder and run the AdmImporter. Either drag and drop or browse for the `/samples/RollingWheel/Wheel.adm` file and run the importer.
+Open the ADMFolder and run the AdmImporter. Either drag and drop or browse for the `\samples\RollingWheel\Wheel.adm` file and run the importer.
 
 ![ADMImporter](images/AdmImporter.PNG "ADMImporter")
 
-You now have a design that you can edit inside WebGME. As long as you keep the interfaces in the root container intact you will be able to execute it from a test-bench too. Apart from that, you can add new components, add/modify parameters, create subsystems etc.
+You now have a design that you can edit inside WebGME. As long as you preserve the interfaces in the top-level container you will be able to execute it from a test-bench. Apart from that, you can add new components, add/modify parameters, create subsystems etc.
 
 ## Working with ATMs ##
-Create a new AVMTestBenchModel inside the folder. Open it up and set the `ID` to `/TestBenches/SinusInput` and choose a name. Drag and drop the `/samples/RollingWheel/tbAsset.zip` on the the attribute `TestBenchFiles`. Currently there is no editing support for test-benches inside WebGME. Instead you need to provide the test-bench as an xme together with the related files (e.g. post-processing scripts). You can unzip `tbAsset.zip` manually to get an idea of how it looks.
+Create a new AVMTestBenchModel inside the folder. Open it up and set the `ID` to `/TestBenches/SinusInput` and choose a name. Drag and drop the `/samples/RollingWheel/tbAsset.zip` on the the attribute `TestBenchFiles`. Currently there is no support for editing test-benches inside WebGME. Instead you need to provide the test-bench as an xme together with the related files (e.g., post-processing scripts). You can unzip `tbAsset.zip` manually to get an idea of how it looks.
 
 ![Test-bench files](images/TestBench1.png "TestBenchFiles")
 
