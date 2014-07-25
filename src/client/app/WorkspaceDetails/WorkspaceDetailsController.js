@@ -296,16 +296,14 @@ define([], function () {
                             checkInterfaces = true;
                         }
                         if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                            if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
-                                if (events[j].etype === 'load' || events[j].etype === 'update') {
-                                    testBench.tlsut.connectors[events[j].eid] = {
-                                        name: nodeObj.getAttribute('name'),
-                                        id: events[j].eid
-                                    };
-                                    checkInterfaces = true;
-                                } else {
-                                    throw 'Unexpected event type' + events[j].etype;
-                                }
+                            if (events[j].etype === 'load' || events[j].etype === 'update') {
+                                testBench.tlsut.connectors[events[j].eid] = {
+                                    name: nodeObj.getAttribute('name'),
+                                    id: events[j].eid
+                                };
+                                checkInterfaces = true;
+                            } else {
+                                throw 'Unexpected event type' + events[j].etype;
                             }
                         } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                             if (events[j].etype === 'load' || events[j].etype === 'update') {
