@@ -177,9 +177,9 @@ define(['plugin/PluginConfig',
                         if (err) {
                             return mainCallback(err, self.result);
                         }
-
-                        self.createMessage(acmFolderNode, numCreated + ' ACMs created out of ' + numUploaded + ' uploaded.', 'info');
-
+                        if (numUploaded > 1) {
+                            self.createMessage(acmFolderNode, numCreated + ' ACMs created out of ' + numUploaded + ' uploaded.', 'info');
+                        }
                         if (self.cleanImport === true) {
                             self.result.setSuccess(true);
                         } else {
