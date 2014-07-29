@@ -1,11 +1,11 @@
 echo off
 where node
 if %ERRORLEVEL% == 0 (
-    update_libraries.cmd
+    node app.js
     if %ERRORLEVEL% == 0 (
-        node app.js
+        echo Application was stopped.
     ) else (
-        echo ERROR: Failed to update libraries!
+        echo ERROR: Please try to ypdate the libraries by running update_libraries.cmd first.
         pause
     )
 ) else (
