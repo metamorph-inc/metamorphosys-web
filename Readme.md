@@ -8,6 +8,7 @@
 2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database (recommended for initial use)
 3. Clone this webgme-cyphy repository, and change to that directory
 4. Install dependencies from command line: `npm install`
+ - Dependencies are listed in package.json
 5. In a separate process, run `launch_database.cmd` to start a Mongo database (or edit the config.json file to point to an existing mongoip - default is 127.0.0.1)
 6. Run `launch_app.cmd` to start a webgme server (or run the application using `node app.js` or `npm start` from command line)
 
