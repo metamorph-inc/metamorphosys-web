@@ -1,18 +1,30 @@
 echo off
-echo Updating WebGME libraries: > install.log
-date /t >> install.log
-echo %TIME% >> install.log
-where npm >> install.log
-where node >> install.log
+echo Updating WebGME libraries: 
+date /t 
+echo %TIME% 
+where npm 
+where node 
 if %ERRORLEVEL% == 0 (
-    echo #### npm install #### >> install.log
-	npm install >> install.log
+    echo #### npm install #### 
+	npm install 
     if %ERRORLEVEL% == 0 (
-        echo #### npm install webgme #### >> install.log
-        npm install webgme >> install.log
+        echo #### npm install webgme #### 
+        npm install webgme 
         if %ERRORLEVEL% == 0 (
-            echo #### npm install webgme-domain-tools #### >> install.log
-            npm install webgme-domain-tools >> install.log
+            echo #### npm install webgme-domain-tools #### 
+            npm install webgme-domain-tools 
+            if %ERRORLEVEL% == 0 (
+                echo #### npm install webgme-cyphy #### 
+                npm install webgme-cyphy 
+                if %ERRORLEVEL% == 0 (
+                    echo update_libraries complete!
+                ) else (
+                    echo ERROR: Failed to update libraries!
+                )
+            ) else (
+                echo ERROR: npm install webgme-domain-tools failed!
+                pause
+            )           
         ) else (
             echo ERROR: npm install webgme failed!
             pause
@@ -22,7 +34,6 @@ if %ERRORLEVEL% == 0 (
         pause
     )
 ) else (
-    echo ERROR: npm and/or node is not in path! Make sure to install node and select the npm option. >> install.log
-	echo ERROR: npm and/or node is not in path! Make sure to install node and select the npm option.
+    echo ERROR: npm and/or node is not in path! Make sure to install node and select the npm option. 
 	pause
 )
