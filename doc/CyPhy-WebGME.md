@@ -18,7 +18,8 @@ Make any necessary modifications to `install_script.cmd` and run it. It will log
 
 ## Serving a WebGME application ##
  - Start the data-base by running `launch_database.cmd`. 
- - Proceed with running `launch_app.cmd`. 
+ - Proceed with running `launch_app.cmd`.
+
 While serving, leave both applications running and visit [localhost:8855](http://localhost:8855) in a browser.
 
 # Starting a new ADMEditor Project #
