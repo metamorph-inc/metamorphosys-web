@@ -4,6 +4,7 @@ node_modules
 
 # webgme temp files and directories
 server.log
+app.log
 blob-local-storage
 
 # domain-tools project temp files and directories
