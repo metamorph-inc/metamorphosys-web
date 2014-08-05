@@ -8,7 +8,7 @@ define(['js/client',
     'core/core',
     'plugin/PluginManagerBase',
     'plugin/PluginResult',
-    './DesertFrontEnd'], function (Client, BlobClient, ExecutorClient, Core, PluginManagerBase, PluginResult, DesertFrontEnd) {
+    'serverinfo/ServerInfoClient'], function (Client, BlobClient, ExecutorClient, Core, PluginManagerBase, PluginResult, ServerInfoClient) {
     "use strict";
 
     var SmartClient = function (config) {
@@ -18,6 +18,7 @@ define(['js/client',
         this.client = new Client(this.config);
         this.blobClient = new BlobClient();
         this.executorClient = new ExecutorClient();
+        this.serverInfoClient = new ServerInfoClient();
 
         this.ROOT_ID = '';
 
@@ -31,7 +32,7 @@ define(['js/client',
         this.initialMessages = [];
         this.uiTerritories = {};
 
-        this.desertFrontEnd = new DesertFrontEnd({client: this.client, meta: this.metaNodes});
+        //this.desertFrontEnd = new DesertFrontEnd({client: this.client, meta: this.metaNodes});
 
         this._savedConfigs = {};
     };

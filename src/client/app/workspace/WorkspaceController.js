@@ -17,7 +17,6 @@ define([], function () {
         self.$moment = $moment;
         self.$upload = $upload;
         self.growl = growl;
-
         // chance is only for testing purposes
         self.chance = Chance ? new Chance() : null;
 
@@ -164,6 +163,12 @@ define([], function () {
             i;
 
         self.idCounter = 0;
+
+        self.$scope.serverInfo = {
+            version: '0.1.0',
+            osName: 'Windows_NT',
+            node: 'v0.10.28'
+        };
 
         self.$scope.createWorkspace = function (workspace) {
             var id = '/' + self.idCounter,
@@ -324,78 +329,6 @@ define([], function () {
         };
     };
 
-//    WorkspaceController.prototype.initOnFileSelect = function () {
-//        var self = this;
-//
-//        this.$scope.onFileSelect = function (id, $files) {
-//            var i,
-//                file,
-//                acmImporter,
-//                admImporter,
-//                atmImporter,
-//                artifactName,
-//                extension,
-//                remainingFiles,
-//                artifact,
-//                done;
-//
-//            done = function (hash) {
-//                if (acmImporter) {
-//                    self.importFromFile(id, hash, 'acm');
-//                }
-//                if (admImporter) {
-//                    self.importFromFile(id, hash, 'adm');
-//                }
-//                if (atmImporter) {
-//                    self.importFromFile(id, hash, 'atm');
-//                }
-//            };
-//
-//            artifactName = 'Uploaded_artifacts.zip';
-//
-//            if ($files.length > 1) {
-//                acmImporter = true;
-//
-//            } else if ($files.length === 1) {
-//                extension = $files[0].name.split('.').pop().toLowerCase();
-//                if (extension === 'adm') {
-//                    admImporter = true;
-//                } else if (extension === 'atm') {
-//                    atmImporter = true;
-//                }
-//            }
-//
-//            artifact = self.smartClient.blobClient.createArtifact(artifactName);
-//
-//            remainingFiles = $files.length;
-//
-//            for (i = 0; i < $files.length; i += 1) {
-//                file = $files[i];
-//
-//                artifact.addFileAsSoftLink(file.name, file, function (err, hash) {
-//                    remainingFiles -= 1;
-//
-//                    if (err) {
-//                        //TODO: something went wrong, tell the user????
-//                    } else {
-//                        // successfully uploaded
-//                    }
-//
-//                    if (remainingFiles === 0) {
-//                        if ($files.length > 1) {
-//                            artifact.save(function (err, artifactHash) {
-//                                done(artifactHash);
-//                            });
-//
-//                        } else {
-//                            done(hash);
-//                        }
-//                    }
-//                });
-//            }
-//        };
-//    };
-
     WorkspaceController.prototype.updateName = function (id, name) {
         var message,
             workspace = this.$scope.workspaces[id];
@@ -435,6 +368,10 @@ define([], function () {
             territoryId,
             clientMessage,
             k;
+
+        self.getServerInfo(function (info) {
+            self.$scope.serverInfo = info;
+        });
 
         for (k = 0; k < self.smartClient.initialMessages.length; k += 1) {
             clientMessage = self.smartClient.initialMessages[k];
@@ -1051,6 +988,37 @@ define([], function () {
         if (doUpdate) {
             self.update();
         }
+    };
+
+    WorkspaceController.prototype.getServerInfo = function (callback) {
+        var self = this,
+            info = {};
+        self.smartClient.serverInfoClient.os(function (err, res) {
+            if (err) {
+                info.osName = 'N/A';
+                self.logger.error('Could not obtain os-info.');
+            } else {
+                info.osName = res.type;
+            }
+
+            self.smartClient.serverInfoClient.npm(function (err, res) {
+                if (err) {
+                    info.version = 'N/A';
+                    self.logger.error('Could not obtain webgme-cyphy version info.');
+                } else {
+                    info.version = res.version;
+                }
+                self.smartClient.serverInfoClient.node(function (err, res) {
+                    if (err) {
+                        info.node = 'N/A';
+                        self.logger.error('Could not obtain node version.');
+                    } else {
+                        info.node = res.version;
+                    }
+                    callback(info);
+                });
+            });
+        });
     };
 
     return WorkspaceController;

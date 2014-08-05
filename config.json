@@ -20,7 +20,7 @@
     "rextrast": {
         "executor": "./node_modules/webgme-domain-tools/src/rest/executor/Executor",
         "desert": "./src/rest/desert/Desert",
-        "serverinfo": "./src/rest/serverInfo/serverInfo"
+        "serverinfo": "./src/rest/serverInfo/ServerInfo"
     },
 
     "paths": {
@@ -33,7 +33,7 @@
         "widgets/ProjectAnalyzer": "./src/widgets/ProjectAnalyzer",
         "executor": "./node_modules/webgme-domain-tools/src/rest/executor",
         "desert": "./src/rest/desert",
-        "serverInfo": "./src/rest/serverInfo",
+        "serverinfo": "./src/rest/serverInfo",
         "CyPhyApp" : "./src/client",
         "CyPhyMETA" : "./meta"
     },
