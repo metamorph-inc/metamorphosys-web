@@ -229,6 +229,7 @@ define([], function () {
                         component.interfaces.connectors[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
                             id: events[j].eid
+                            // TODO: add type information
                         };
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
@@ -239,6 +240,7 @@ define([], function () {
                         component.interfaces.properties[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
                             id: events[j].eid
+                            // TODO: add type information
                         };
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
@@ -304,6 +306,7 @@ define([], function () {
                                 testBench.tlsut.connectors[events[j].eid] = {
                                     name: nodeObj.getAttribute('name'),
                                     id: events[j].eid
+                                    // TODO: add type information
                                 };
                                 checkInterfaces = true;
                             } else {
@@ -314,6 +317,7 @@ define([], function () {
                                 testBench.tlsut.properties[events[j].eid] = {
                                     name: nodeObj.getAttribute('name'),
                                     id: events[j].eid
+                                    // TODO: add type information
                                 };
                                 checkInterfaces = true;
                             } else {
@@ -382,6 +386,7 @@ define([], function () {
                             design.interfaces.connectors[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
                                 id: events[j].eid
+                                // TODO: add type information
                             };
                         } else {
                             throw 'Unexpected event type' + events[j].etype;
@@ -1046,6 +1051,7 @@ define([], function () {
                     if (designInterface.properties.hasOwnProperty(dId)) {
                         dProp = designInterface.properties[dId];
                         // It only checks the name right now.
+                        // TODO: add type check
                         if (tProp.name === dProp.name) {
                             match = true;
                             break;
@@ -1070,6 +1076,7 @@ define([], function () {
                     if (designInterface.connectors.hasOwnProperty(dId)) {
                         dConn = designInterface.connectors[dId];
                         // It only checks the name right now.
+                        // TODO: add type check
                         if (tConn.name === dConn.name) {
                             match = true;
                             break;
@@ -1146,6 +1153,7 @@ define([], function () {
             interfaces.properties[newId] = {
                 id: newId,
                 name: 'prop_' + i
+                // TODO: add type information
             };
         }
         for (i = 0; i < self.chance.integer({min: 1, max: maxNbr}); i += 1) {
@@ -1153,6 +1161,7 @@ define([], function () {
             interfaces.connectors[newId] = {
                 id: newId,
                 name: 'conn_' + i
+                // TODO: add type information
             };
         }
         return interfaces;

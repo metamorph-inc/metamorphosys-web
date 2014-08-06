@@ -55,6 +55,10 @@ article.workspace-details {
   article.workspace-details .details-accordion .panel-title {
     cursor: pointer;
     font-size: 85%; }
+  article.workspace-details ul.interface-list {
+    padding: 1ex; }
+    article.workspace-details ul.interface-list li {
+      display: block; }
   article.workspace-details .cyphy-tag {
     display: inline-block;
     font-weight: 500;

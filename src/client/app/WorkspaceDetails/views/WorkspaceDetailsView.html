@@ -9,7 +9,7 @@
 
 
 <div class="row">
-<section class="components col-lg-4 col-sm-6 col-xs-12">
+<section class="components col-lg-4 col-md-6 col-sm-12 col-xs-12">
     <h3>Components</h3>
 
     <ul class="list-group">
@@ -56,9 +56,9 @@
                         </ul>
                         <div class="component-interfaces">
                             <h5><strong>Interfaces</strong></h5>
-                            <ul>
-                                <li data-ng-repeat="conn in component.interfaces.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in component.interfaces.properties"><i>{{prop.name}}</i></li>
+                            <ul class="interface-list">
+                                <li data-ng-repeat="conn in component.interfaces.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in component.interfaces.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
                             </ul>
                         </div>
 
@@ -85,7 +85,7 @@
     </ul>
 </section>
 
-<section class="designs col-lg-4 col-sm-6 col-xs-12">
+<section class="designs col-lg-4 col-md-6 col-sm-12 col-xs-12">
     <h3>Designs</h3>
 
     <ul class="list-group">
@@ -139,9 +139,9 @@
 
                         <div class="design-interfaces">
                             <h5><strong>Interfaces</strong></h5>
-                            <ul>
-                                <li data-ng-repeat="conn in design.interfaces.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in design.interfaces.properties"><i>{{prop.name}}</i></li>
+                            <ul class="interface-list">
+                                <li data-ng-repeat="conn in design.interfaces.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in design.interfaces.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
                             </ul>
                         </div>
 
@@ -170,7 +170,7 @@
     </ul>
 </section>
 
-<section class="test-benches col-lg-4 col-sm-6 col-xs-12">
+<section class="test-benches col-lg-4 col-md-6 col-sm-12 col-xs-12">
     <h3>Test benches</h3>
 
     <ul class="list-group">
@@ -211,9 +211,9 @@
 
                         <div class="tlsut">
                             <h5><strong>TLSUT Interfaces</strong></h5>
-                            <ul>
-                                <li data-ng-repeat="conn in testBench.tlsut.connectors">{{conn.name}}</li>
-                                <li data-ng-repeat="prop in testBench.tlsut.properties"><i>{{prop.name}}</i></li>
+                            <ul class="interface-list">
+                                <li data-ng-repeat="conn in testBench.tlsut.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in testBench.tlsut.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
                             </ul>
                         </div>
                         <div class="tb-designs">
