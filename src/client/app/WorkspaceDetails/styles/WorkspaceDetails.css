@@ -56,7 +56,7 @@ article.workspace-details {
     cursor: pointer;
     font-size: 85%; }
   article.workspace-details .cyphy-tag {
-    display: block;
+    display: inline-block;
     font-weight: 500;
     font-size: 75%;
     padding: 0.6ex;
