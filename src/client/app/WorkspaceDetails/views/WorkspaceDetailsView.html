@@ -57,8 +57,10 @@
                         <div class="component-interfaces">
                             <h5><strong>Interfaces</strong></h5>
                             <ul class="interface-list">
-                                <li data-ng-repeat="conn in component.interfaces.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                                <li data-ng-repeat="prop in component.interfaces.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
+                                <li data-ng-repeat="conn in component.interfaces.connectors">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in component.interfaces.properties">
+                                    <i class="cyphy-tag gray">Property</i> {{prop.name}} ({{prop.dataType}})</li>
                             </ul>
                         </div>
 
@@ -140,8 +142,10 @@
                         <div class="design-interfaces">
                             <h5><strong>Interfaces</strong></h5>
                             <ul class="interface-list">
-                                <li data-ng-repeat="conn in design.interfaces.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                                <li data-ng-repeat="prop in design.interfaces.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
+                                <li data-ng-repeat="conn in design.interfaces.connectors">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in design.interfaces.properties">
+                                    <i class="cyphy-tag gray">Property</i> {{prop.name}} ({{prop.dataType}})</li>
                             </ul>
                         </div>
 
@@ -212,8 +216,10 @@
                         <div class="tlsut">
                             <h5><strong>TLSUT Interfaces</strong></h5>
                             <ul class="interface-list">
-                                <li data-ng-repeat="conn in testBench.tlsut.connectors"><i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                                <li data-ng-repeat="prop in testBench.tlsut.properties"><i class="cyphy-tag gray">Property</i> {{prop.name}}</li>
+                                <li data-ng-repeat="conn in testBench.tlsut.connectors">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
+                                <li data-ng-repeat="prop in testBench.tlsut.properties">
+                                    <i class="cyphy-tag gray">Property</i> {{prop.name}} ({{prop.dataType}})</li>
                             </ul>
                         </div>
                         <div class="tb-designs">

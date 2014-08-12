@@ -239,8 +239,9 @@ define([], function () {
                     if (events[j].etype === 'load' || events[j].etype === 'update') {
                         component.interfaces.properties[events[j].eid] = {
                             name: nodeObj.getAttribute('name'),
-                            id: events[j].eid
-                            // TODO: add type information
+                            id: events[j].eid,
+                            dataType: nodeObj.getAttribute('DataType'),
+                            valueType: nodeObj.getAttribute('ValueType')
                         };
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
@@ -316,8 +317,9 @@ define([], function () {
                             if (events[j].etype === 'load' || events[j].etype === 'update') {
                                 testBench.tlsut.properties[events[j].eid] = {
                                     name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid
-                                    // TODO: add type information
+                                    id: events[j].eid,
+                                    dataType: nodeObj.getAttribute('DataType'),
+                                    valueType: nodeObj.getAttribute('ValueType')
                                 };
                                 checkInterfaces = true;
                             } else {
@@ -399,7 +401,9 @@ define([], function () {
                         if (events[j].etype === 'load' || events[j].etype === 'update') {
                             design.interfaces.properties[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
+                                id: events[j].eid,
+                                dataType: nodeObj.getAttribute('DataType'),
+                                valueType: nodeObj.getAttribute('ValueType')
                             };
                         } else {
                             throw 'Unexpected event type' + events[j].etype;
@@ -1152,8 +1156,9 @@ define([], function () {
             newId = self.getRandomId();
             interfaces.properties[newId] = {
                 id: newId,
-                name: 'prop_' + i
-                // TODO: add type information
+                name: 'prop_' + i,
+                dataType: 'Real',
+                valueType: 'Fixed'
             };
         }
         for (i = 0; i < self.chance.integer({min: 1, max: maxNbr}); i += 1) {
