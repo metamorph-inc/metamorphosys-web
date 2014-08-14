@@ -238,11 +238,22 @@
                             <div data-ng-hide="designs[testBench.designs.selected]"> Selected : NONE</div>
                         </div>
                         <div class="tb-asset">
-                            <h5><strong>Test Bench Files</strong></h5>
+                            <header>
+                                <h5><strong>Test Bench Files</strong></h5>
+                            </header>
                             <span data-ng-show="testBench.testBenchFiles"><a href="{{testBench.testBenchFilesUrl}}">Download</a> </span>
                             <span data-ng-hide="testBench.testBenchFiles">Not provided!</span>
                         </div>
-
+                        <div class="results">
+                            <header>
+                                <h5><strong>Results</strong></h5>
+                            </header>
+                            <span data-ng-show="testBench.results">
+                                <a href="{{testBench.resultsUrl}}">Download </a>
+                                <button data-ng-click="openDashboard(testBench.id)">Open Dashboard</button>
+                            </span>
+                            <span data-ng-hide="testBench.results">No results avaliable.</span>
+                        </div>
                     </div>
 
                 </accordion-group>
@@ -251,9 +262,6 @@
 
             <footer>
                 <time class="last-updated-time">Updated <span am-time-ago="testBench.date"></span></time>
-                <div class="stats">
-                    <span data-ng-show="testBench.results"><a href="{{testBench.resultsUrl}}">Dashboard</a> </span>
-                </div>
             </footer>
 
         </li>

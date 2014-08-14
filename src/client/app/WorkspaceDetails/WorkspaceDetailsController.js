@@ -72,6 +72,7 @@ define([], function () {
         self.$scope.deleteObject = self.initDeleteObject();
         self.$scope.executeTestBench = self.initExecuteTestBench();
         self.$scope.updateTLSUT = self.initUpdateTLSUT();
+        self.$scope.openDashboard = self.initOpenDashboard();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
@@ -114,6 +115,7 @@ define([], function () {
                             self.$scope.deleteObject = self.initDeleteObject();
                             self.$scope.executeTestBench = self.initExecuteTestBench();
                             self.$scope.updateTLSUT = self.initUpdateTLSUT();
+                            self.$scope.openDashboard = self.initOpenDashboard();
                         }
                         if (self.territories.hasOwnProperty(event.eid)) {
                             // Workspace has a watcher..
@@ -943,14 +945,6 @@ define([], function () {
             self.$scope.testBenches[tbId].designs.selected = designId;
             self.smartClient.client.makePointer(tbId, 'TopLevelSystemUnderTest', designId,
                     '[WebCyPhy] - Pointer from ' + tbName + ' was set to ' + dName + '.');
-//            self.growl.info('Starting execution of ' + self.$scope.testBenches[id].name);
-//            self.smartClient.runPlugin('TestBenchRunner', { activeNode: id, pluginConfig: {'admFile': hash}}, function (result) {
-//                if (result.success === false) {
-//                    self.growl.error('Execution failed!');
-//                    self.showPluginMessages(result.messages);
-//                }
-//                self.showPluginMessages(result.messages);
-//            });
         };
     };
 
@@ -980,6 +974,47 @@ define([], function () {
             });
         };
     };
+
+    WorkspaceDetailsController.prototype.initOpenDashboard = function () {
+        var self = this;
+        if (!self.smartClient) {
+            return function (id) {
+                self.growl.warning('Would open Dashboard in new tab.');
+            };
+        }
+
+        return function (id) {
+            var testBench = self.$scope.testBenches[id],
+                hash;
+            if (!testBench) {
+                self.logger.error('Test-bench with id ' + id + ' does not exist!');
+                return;
+            }
+            hash = testBench.results;
+            if (hash) {
+                self.smartClient.blobClient.getMetadata(hash, function (err, metadata) {
+                    var indexHTML = 'index.html',
+                        link;
+                    if (err) {
+                        self.growl.error('Could not obtain dashboard artifact.');
+                        return;
+                    }
+
+                    if (metadata.content.hasOwnProperty(indexHTML)) {
+                        link = self.smartClient.blobClient.getViewURL(hash, indexHTML);
+
+                        // URL EXAMPLES
+                        // http://localhost:8855/rest/blob/view/bc5d7d6c887c8b4531d32e86de7bc021e5c0e65e/index.html
+                        // http://localhost:8855/rest/blob/metadata/bc5d7d6c887c8b4531d32e86de7bc021e5c0e65e
+                    window.open(link, '_blank');
+                    } else {
+                        self.growl.error('Package does not contain index.html file - execution probably failed.');
+                    }
+                });
+            }
+        };
+    };
+
 
     // Helper functions
     WorkspaceDetailsController.prototype.showPluginMessages = function (messages) {
@@ -1036,6 +1071,7 @@ define([], function () {
             self.smartClient.blobClient.getArtifact(artieHashes[i], getCounterCallback(artieHashes[i]));
         }
     };
+
     WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
         var tId,
             dId,
