@@ -121,7 +121,8 @@ define(['plugin/PluginConfig',
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node not found! Try selecting another model and re-opening the desired model', 'error');
-            return mainCallback('Active node not found!', self.result);
+            mainCallback('Active node not found!', self.result);
+            return;
         }
 
         self.updateMETA(self.metaTypes);
@@ -131,7 +132,8 @@ define(['plugin/PluginConfig',
             self.logger.error(msg);
             self.createMessage(self.activeNode, msg, 'error');
             self.result.setSuccess(false);
-            return mainCallback(null, self.result);
+            mainCallback(null, self.result);
+            return;
         }
 
         acmFolderNode = self.activeNode;
@@ -145,14 +147,16 @@ define(['plugin/PluginConfig',
                     self.createMessage(acmFolderNode, 'Could not load children of ' + self.core.getName(acmFolderNode), 'error');
                     self.logger.error('Could not load children of ' + self.core.getName(acmFolderNode) + ', err: ' + err);
                     self.result.setSuccess(false);
-                    return mainCallback(err, self.result);
+                    mainCallback(err, self.result);
+                    return;
                 }
 
                 numExisting = children.length;
 
                 var getAcmDescriptionCallback = function (err, hash2acmJsonMap) {
                     if (err) {
-                        return mainCallback(err, self.result);
+                        mainCallback(err, self.result);
+                        return;
                     }
 
                     numUploaded = Object.keys(hash2acmJsonMap).length;
@@ -175,7 +179,8 @@ define(['plugin/PluginConfig',
 
                     self.save('added obj', function (err) {
                         if (err) {
-                            return mainCallback(err, self.result);
+                            mainCallback(err, self.result);
+                            return;
                         }
                         if (numUploaded > 1) {
                             self.createMessage(acmFolderNode, numCreated + ' ACMs created out of ' + numUploaded + ' uploaded.', 'info');
@@ -224,7 +229,7 @@ define(['plugin/PluginConfig',
                 self.recursionCounter -= 1;
 
                 if (self.recursionCounter === 0) {
-                    return callback();
+                    callback();
                 }
             };
 
@@ -243,7 +248,7 @@ define(['plugin/PluginConfig',
             self.recursionCounter -= 1;
 
             if (self.recursionCounter === 0) {
-                return callback();
+                callback();
             }
         }
     };
@@ -627,7 +632,8 @@ define(['plugin/PluginConfig',
         var self = this,
             blobGetMetadataCallback = function (getMetadataErr, metadata) {
                 if (getMetadataErr) {
-                    return getAcmCallback(getMetadataErr);
+                    getAcmCallback(getMetadataErr);
+                    return;
                 }
 
                 var content = metadata['content'],
@@ -646,12 +652,14 @@ define(['plugin/PluginConfig',
                     var msg = 'Uploaded file "' + contentName + '" was not valid.';
                     self.createMessage(self.activeNode, msg, 'error');
                     self.logger.error(msg);
-                    return getAcmCallback(msg);
+                    getAcmCallback(msg);
+                    return;
                 }
 
                 blobGetObjectCallback = function (getObjectErr, uploadedObjContent) {
                     if (getObjectErr) {
-                        return getAcmCallback(getObjectErr);
+                        getAcmCallback(getObjectErr);
+                        return;
                     }
 
                     var zipFile = new JSZip(uploadedObjContent),

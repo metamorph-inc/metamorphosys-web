@@ -133,7 +133,8 @@ define([
             debug = false,
             finnishPlugin = function (err) {
                 if (err) {
-                    return callback(err, self.result);
+                    callback(err, self.result);
+                    return;
                 }
 
                 if (debug) {
@@ -142,7 +143,8 @@ define([
                     //timeStamp = new Date().getTime();
                     self.save('added obj', function (err) {
                         if (err) {
-                            return callback(err, self.result);
+                            callback(err, self.result);
+                            return;
                         }
                         //self.createMessage(null, 'ExecTime [s] save :: ' +
                         //    ((new Date().getTime() - timeStamp) / 1000).toString());
@@ -162,16 +164,19 @@ define([
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.ADMFolder) === false) {
             self.createMessage(null, 'This plugin must be called from an ADMFolder.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         if (!config.admFile) {
             self.createMessage(null, 'No adm file provided', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         self.updateMETA(self.meta);
         //self.copies = config.copies;
@@ -187,7 +192,8 @@ define([
             self.admData = xml2json.convertFromBuffer(xmlArrayBuffer);
             if (self.admData instanceof Error) {
                 self.createMessage(null, 'Given adm not valid xml: ' + self.admData.message, 'error');
-                return callback(null, self.result);
+                callback(null, self.result);
+                return;
             }
 
             self.admData = self.admData['Design'];
@@ -195,14 +201,16 @@ define([
             //timeStamp = new Date().getTime();
             self.exploreACMs(workspaceNode, false, function (err) {
                 if (err) {
-                    return callback(err, self.result);
+                    callback(err, self.result);
+                    return;
                 }
                 //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
                 //        ((new Date().getTime() - timeStamp) / 1000).toString());
                 if (self.acmCounter > 0) {
                     self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.', 'error');
                     self.logMissingACMsToResult();
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 //timeStamp = new Date().getTime();
                 self.createAdmDesign(admFolder);
@@ -251,12 +259,14 @@ define([
         artie.addFiles(debugFiles, function (err, hashes) {
             if (err) {
                 self.result.setSuccess(false);
-                return callback('Could not add debug files : err' + err.toString(), self.result);
+                callback('Could not add debug files : err' + err.toString(), self.result);
+                return;
             }
             artie.save(function (err, hash) {
                 if (err) {
                     self.result.setSuccess(false);
-                    return callback('Could not save artifact : err' + err.toString(), self.result);
+                    callback('Could not save artifact : err' + err.toString(), self.result);
+                    return;
                 }
                 self.result.setSuccess(true);
                 self.result.addArtifact(hash);
@@ -281,7 +291,8 @@ define([
     AdmImporter.prototype.exploreACMs = function (node, dummyACMs, callback) {
         var self = this;
         if (dummyACMs) {
-            return callback(null);
+            callback(null);
+            return;
         }
         self.initializeComponentMap(self.admData.RootContainer);
         self.logger.info('Number of unqiue ACMs (acmCounter) is ' + self.acmCounter.toString());
@@ -792,7 +803,8 @@ define([
             };
 
         if (counter === 0) {
-            return callback(null);
+            callback(null);
+            return;
         }
         for (i = 0; i < self.componentInstances.length; i += 1) {
             self.core.loadChildren(self.componentInstances[i].node, afterLoadChildren(self.componentInstances[i]));

@@ -111,11 +111,13 @@ define([
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
         if (self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
             self.createMessage(null, 'This plugin must be called from a Container.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         self.meta = MetaTypes;
         self.updateMETA(self.meta);
@@ -123,7 +125,8 @@ define([
             artifact.save(function (err, hash) {
                 if (err) {
                     self.result.setSuccess(false);
-                    return callback('Could not save artifact : err' + err.toString(), self.result);
+                    callback('Could not save artifact : err' + err.toString(), self.result);
+                    return;
                 }
 //                self.createMessage(null, 'ExecTime [s] total :: ' +
 //                    ((new Date().getTime() - timeStart) / 1000).toString());
@@ -137,7 +140,8 @@ define([
             var artifact,
                 admXmlStr;
             if (err) {
-                return callback(err, self.result);
+                callback(err, self.result);
+                return;
             }
             artifact = self.blobClient.createArtifact('design');
             admXmlStr = jsonToXml.convertToString({Design: self.admData});
@@ -145,14 +149,16 @@ define([
             artifact.addFile(self.admData['@Name'] + '.adm', admXmlStr, function (err, hash) {
                 if (err) {
                     self.result.setSuccess(false);
-                    return callback('Could not add adm file : err' + err.toString(), self.result);
+                    callback('Could not add adm file : err' + err.toString(), self.result);
+                    return;
                 }
                 self.logger.info('ADM hash: ' + hash);
                 if (self.includeAcms) {
                     artifact.addObjectHashes(self.acmFiles, function (err, hashes) {
                         if (err) {
                             self.result.setSuccess(false);
-                            return callback('Could not add acm files : err' + err.toString(), self.result);
+                            callback('Could not add acm files : err' + err.toString(), self.result);
+                            return;
                         }
                         self.logger.info('ACM hashes: ' + hashes.toString());
                         artifact.addFiles({
@@ -166,7 +172,8 @@ define([
                             }, null, 4)
                         }, function (err, hashes) {
                             if (err) {
-                                return callback('Could not script files : err' + err.toString(), self.result);
+                                callback('Could not script files : err' + err.toString(), self.result);
+                                return;
                             }
                             self.logger.info('Script hashes: ' + hashes.toString());
                             finishAndSaveArtifact(artifact);
@@ -249,7 +256,8 @@ define([
                 }
             } else {
                 self.logger.error('ACM was not specified for ' + nodeName);
-                return callback('ACM was not specified for ' + nodeName);
+                callback('ACM was not specified for ' + nodeName);
+                return;
             }
         }
         self.core.loadChildren(node, function (err, children) {
@@ -258,7 +266,8 @@ define([
                 counter,
                 counterCallback;
             if (err) {
-                return callback('loadChildren failed for ' + nodeName + ' :' + err.toString());
+                callback('loadChildren failed for ' + nodeName + ' :' + err.toString());
+                return;
             }
 
             counterCallback = function (err) {
@@ -270,7 +279,8 @@ define([
             };
 
             if (children.length === 0) {
-                return counterCallback(null);
+                counterCallback(null);
+                return;
             }
 
             counter = children.length;
@@ -328,12 +338,14 @@ define([
 
         self.addDomainConnectors(node, data, function (err) {
             if (err) {
-                return callback(err);
+                callback(err);
+                return;
             }
             if (collectionNames.indexOf('src') > -1) {
                 self.getConnectorCompositionID(node, 'src', function (err, dstId) {
                     if (err) {
-                        return counterCallback(err);
+                        counterCallback(err);
+                        return;
                     }
                     data['@ConnectorComposition'] = self.appendWhiteSpacedString(data['@ConnectorComposition'], dstId);
                     counterCallback(null);
@@ -344,7 +356,8 @@ define([
             if (collectionNames.indexOf('dst') > -1) {
                 self.getConnectorCompositionID(node, 'dst', function (err, srcId) {
                     if (err) {
-                        return counterCallback(err);
+                        counterCallback(err);
+                        return;
                     }
                     data['@ConnectorComposition'] = self.appendWhiteSpacedString(data['@ConnectorComposition'], srcId);
                     counterCallback(null);
@@ -362,7 +375,8 @@ define([
 
         if (domainConnectors === undefined) {
             // This a connector within an ACM..
-            return callback(null);
+            callback(null);
+            return;
         }
 
         nodeName = self.core.getAttribute(connectorNode, 'name');
@@ -371,7 +385,8 @@ define([
                 typeName,
                 domainNodeName;
             if (err) {
-                return callback('loadChildren failed for connector ' + nodeName + ' :' + err.toString());
+                callback('loadChildren failed for connector ' + nodeName + ' :' + err.toString());
+                return;
             }
             for (i = 0; i < children.length; i += 1) {
                 typeName = self.core.getAttribute(children[i], 'Type');
@@ -450,7 +465,8 @@ define([
                 error = '',
                 connectedIDs = '';
             if (err) {
-                return callback(err);
+                callback(err);
+                return;
             }
             counterCallback = function (err, connectedID) {
                 if (err) {
@@ -465,7 +481,8 @@ define([
             };
             counter = connections.length;
             if (connections.length === 0) {
-                return counterCallback(null, '');
+                counterCallback(null, '');
+                return;
             }
             for (i = 0; i < connections.length; i += 1) {
                 self.getConnectedPortID(connections[i], pointerName, counterCallback);
@@ -483,7 +500,8 @@ define([
                     parent,
                     parentMetaType;
                 if (err) {
-                    return callback(err);
+                    callback(err);
+                    return;
                 }
                 if (self.nodeIsWithinDesign(connectedPort)) {
                     parent = self.core.getParent(connectedPort);
@@ -618,24 +636,28 @@ define([
         } else {
             self.core.loadCollection(node, 'dst', function (err, valueFlows) {
                 if (err) {
-                    return callback('Could not load collection for ' + self.core.getAttribute(node, 'name') +
+                    callback('Could not load collection for ' + self.core.getAttribute(node, 'name') +
                         'err: ' + err.toString());
+                    return;
                 }
                 if (valueFlows.length > 1) {
                     self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
-                    return callback(null);
+                    callback(null);
+                    return;
                 }
                 if (!self.core.hasPointer(valueFlows[0], 'src')) {
                     self.createMessage(valueFlows[0], 'ValueFlow Connection with no src exists in design.', 'error');
-                    return callback('A valueFlow with only one direction pointer exists in model.');
+                    callback('A valueFlow with only one direction pointer exists in model.');
+                    return;
                 }
                 self.core.loadPointer(valueFlows[0], 'src', function (err, valueSourceNode) {
                     var vsId,
                         vsParent,
                         parentMetaType;
                     if (err) {
-                        return callback('Could not load src pointer for ' + self.core.getAttribute(valueFlows[0], 'name')
+                        callback('Could not load src pointer for ' + self.core.getAttribute(valueFlows[0], 'name')
                             + 'err: ' + err.toString());
+                        return;
                     }
                     if (self.nodeIsWithinDesign(valueSourceNode)) {
                         vsParent = self.core.getParent(valueSourceNode);
@@ -716,7 +738,8 @@ define([
                     operands = [],
                     counterCallback;
                 if (err) {
-                    return callback('Could not load collection for ' + formulaName + 'err: ' + err.toString());
+                    callback('Could not load collection for ' + formulaName + 'err: ' + err.toString());
+                    return;
                 }
                 counter = valueFlows.length;
                 counterCallback = function (valueFlow) {
@@ -794,7 +817,8 @@ define([
             var i,
                 atModelNodeCallback;
             if (err) {
-                return callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                return;
             }
             counter.visits += children.length;
             if (children.length === 0) {
@@ -806,6 +830,7 @@ define([
                         var subContainerData;
                         if (err) {
                             callback(err);
+                            return;
                         }
                         if (self.isMetaTypeOf(childNode, self.meta.Container)) {
                             subContainerData = self.getContainerData(childNode);
