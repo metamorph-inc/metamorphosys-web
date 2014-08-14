@@ -144,18 +144,21 @@ define(['plugin/PluginConfig',
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
         self.multiRun = self.isMetaTypeOf(self.activeNode, self.META.ATMFolder);
         self.exportAtm = currentConfig.atmExport;
         self.runExecution = currentConfig.run;
         if ((self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) || self.multiRun) === false) {
             self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel or an ATMFolder.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         if (self.multiRun && self.exportAtm) {
             self.createMessage(null, 'Exportation of atms is not supported on ATMFolders.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         self.updateMETA(self.meta);
 
@@ -168,11 +171,13 @@ define(['plugin/PluginConfig',
                 if (err) {
                     self.logger.error(err);
                     self.createMessage(self.activeNode, 'Something went wrong when exploring the test-benches.', 'error');
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 if (testBenchInfos.length === 0) {
                     self.createMessage(self.activeNode, 'No test-benches found in folder.', 'error');
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 // Check if any test-benches share IDs.
                 for (j = 0; j < testBenchInfos.length; j += 1) {
@@ -187,7 +192,8 @@ define(['plugin/PluginConfig',
                     }
                 }
                 if (duplicateIDs) {
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 self.logger.info('Got testBenchInfo about to explore referenced design..');
                 self.getAdmAndAcms(self.referencedDesign, testBenchInfos, function (err) {
@@ -199,7 +205,8 @@ define(['plugin/PluginConfig',
                     if (err) {
                         self.logger.error(err);
                         self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
-                        return callback(null, self.result);
+                        callback(null, self.result);
+                        return;
                     }
                     self.logger.info('Done with calling AdmExporter - ADM and ACMs gathered.');
                     counterCallback = function (testBenchInfo) {
@@ -263,22 +270,26 @@ define(['plugin/PluginConfig',
                 if (err) {
                     self.logger.error('getTestBenchInfo returned with error: ' + err.toString());
                     self.createMessage(self.activeNode, 'Something went wrong when exploring the test-bench.', 'error');
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 if (self.exportAtm) {
                     if (err) {
-                        return callback(err, self.result);
+                        callback(err, self.result);
+                        return;
                     }
                     artifact = self.blobClient.createArtifact('testBench');
                     atmXmlStr = jsonToXml.convertToString({TestBench: self.atms[0]});
                     artifact.addFile(self.atms[0]['@Name'] + '.atm', atmXmlStr, function (err, hash) {
                         if (err) {
-                            return callback('Could not add adm file : err' + err.toString(), self.result);
+                            callback('Could not add adm file : err' + err.toString(), self.result);
+                            return;
                         }
                         self.logger.info('Added atm files to artifact, it has hash: ' + hash);
                         artifact.save(function (err, hash) {
                             if (err) {
-                                return callback('Could not save atm artifact : err' + err.toString(), self.result);
+                                callback('Could not save atm artifact : err' + err.toString(), self.result);
+                                return;
                             }
                             self.result.addArtifact(hash);
                             self.result.setSuccess(true);
@@ -290,15 +301,18 @@ define(['plugin/PluginConfig',
                         if (err) {
                             self.logger.error(err);
                             self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
-                            return callback(null, self.result);
+                            callback(null, self.result);
+                            return;
                         }
                         self.generateExecutionFiles(testBenchInfo, function (err, artifact) {
                             if (err) {
-                                return callback('Could generateExecutionFiles : err' + err.toString(), self.result);
+                                callback('Could generateExecutionFiles : err' + err.toString(), self.result);
+                                return;
                             }
                             artifact.save(function (err, hash) {
                                 if (err) {
-                                    return callback('Could not save artifact : err' + err.toString(), self.result);
+                                    callback('Could not save artifact : err' + err.toString(), self.result);
+                                    return;
                                 }
                                 self.result.addArtifact(hash);
                                 if (self.runExecution) {
@@ -330,7 +344,8 @@ define(['plugin/PluginConfig',
                 counterCallback,
                 tbInfos = [];
             if (err) {
-                return callback('loadChildren failed for folder with err:' + err.toString());
+                callback('loadChildren failed for folder with err:' + err.toString());
+                return;
             }
             counter = children.length;
             counterCallback = function (err, tbInfo) {
@@ -348,15 +363,18 @@ define(['plugin/PluginConfig',
                         self.core.loadPointer(folderNode, 'TopLevelSystemUnderTest', function (err, design) {
                             if (err) {
                                 self.logger.error('loading TLSUT failed with err: ' + err.toString());
-                                return callback(err);
+                                callback(err);
+                                return;
                             }
                             self.referencedDesign = design;
                             self.logger.info('Found common referenced design from ATMFolder.');
-                            return callback(error, tbInfos);
+                            callback(error, tbInfos);
+                            return;
                         });
                     } else {
                         self.createMessage(folderNode, 'No TopLevelSystemUnderTest reference set for folder.', 'error');
-                        return callback('Found no reference to TLSUT.');
+                        callback('Found no reference to TLSUT.');
+                        return;
                     }
                 }
             };
@@ -388,19 +406,22 @@ define(['plugin/PluginConfig',
         if (!testBenchInfo.path && !self.exportAtm) {
             self.createMessage(testBenchNode, 'There is no "ID" provided for the test-bench. It must be a path' +
                 ' in the project-tree of the xme in asset "TestBenchFiles", e.g. /TestBenches/Dynamics/MyTestBench', 'error');
-            return callback('TestBench ID not provided.');
+            callback('TestBench ID not provided.');
+            return;
         }
         self.logger.info('Getting data for test-bench "' + testBenchInfo.name + '".');
         self.getTlsutInterface(testBenchNode, function (err, tlsut) {
             if (err) {
                 self.createMessage(testBenchNode, 'Could not obtain Top Level System Under test interface.', 'error');
-                return callback('Something went wrong when getting tlsut interface err: ' + err);
+                callback('Something went wrong when getting tlsut interface err: ' + err);
+                return;
             }
             testBenchInfo.tlsut = tlsut;
 
             if (self.multiRun) {
                 self.logger.info('Multi run - will look for container reference in ATMFolder');
-                return callback(null, testBenchInfo);
+                callback(null, testBenchInfo);
+                return;
             }
 
             // For single test-benches check the reference for the test-bench and its parent folder.
@@ -409,7 +430,8 @@ define(['plugin/PluginConfig',
                 self.core.loadPointer(testBenchNode, 'TopLevelSystemUnderTest', function (err, design) {
                     if (err) {
                         self.logger.error('loading TLSUT failed with err: ' + err.toString());
-                        return callback(err);
+                        callback(err);
+                        return;
                     }
                     self.referencedDesign = design;
                     callback(null, testBenchInfo);
@@ -423,14 +445,16 @@ define(['plugin/PluginConfig',
                     self.core.loadPointer(folderNode, 'TopLevelSystemUnderTest', function (err, design) {
                         if (err) {
                             self.logger.error('loading TLSUT failed with err: ' + err.toString());
-                            return callback(err);
+                            callback(err);
+                            return;
                         }
                         self.referencedDesign = design;
                         callback(null, testBenchInfo);
                     });
                 } else {
                     self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench or its folder.', 'error');
-                    return callback('Found no reference to TLSUT.');
+                    callback('Found no reference to TLSUT.');
+                    return;
                 }
             }
         });
@@ -469,7 +493,8 @@ define(['plugin/PluginConfig',
                 counterCallback,
                 tlsutData;
             if (err) {
-                return callback('loadChildren failed for test-bench "' + name + '" with err:' + err.toString());
+                callback('loadChildren failed for test-bench "' + name + '" with err:' + err.toString());
+                return;
             }
             counter = children.length;
             counterCallback = function (err) {
@@ -527,7 +552,8 @@ define(['plugin/PluginConfig',
                     connectors: {}
                 };
             if (err) {
-                return callback('loadChildren failed for tlsut with err:' + err.toString());
+                callback('loadChildren failed for tlsut with err:' + err.toString());
+                return;
             }
             counter = children.length;
             counterCallback = function (err) {
@@ -583,7 +609,8 @@ define(['plugin/PluginConfig',
                 metaTypeName,
                 taskData;
             if (err) {
-                return callback('loadChildren failed for work-flow with err: ' + err.toString());
+                callback('loadChildren failed for work-flow with err: ' + err.toString());
+                return;
             }
             counter = children.length;
             addTask = function (taskNode) {
@@ -643,16 +670,19 @@ define(['plugin/PluginConfig',
         var self = this;
         self.checkDesignAgainstTLSUTs(designNode, testBenchInfos, function (err, result) {
             if (err) {
-                return callback(err);
+                callback(err);
+                return;
             }
             if (result !== true) {
                 self.createMessage(designNode, 'Design did not match all TopLevelSystemUnderTests!', 'error');
-                return callback('Design did not match all TopLevelSystemUnderTests!');
+                callback('Design did not match all TopLevelSystemUnderTests!');
+                return;
             }
             self.initializeAdmExporter();
             self.admExporter.exploreDesign(designNode, true, function (err) {
                 if (err) {
-                    return callback('AdmExporter.exploreDesign failed with error: ' + err);
+                    callback('AdmExporter.exploreDesign failed with error: ' + err);
+                    return;
                 }
                 self.admData = self.admExporter.admData;
                 self.designAcmFiles = self.admExporter.acmFiles;
@@ -707,7 +737,8 @@ define(['plugin/PluginConfig',
                 childName,
                 counterCallback;
             if (err) {
-                return callback('loadChildren failed for tlsut with err:' + err.toString());
+                callback('loadChildren failed for tlsut with err:' + err.toString());
+                return;
             }
             counter = children.length;
             counterCallback = function (err) {
@@ -810,15 +841,18 @@ define(['plugin/PluginConfig',
         artifact = self.blobClient.createArtifact(testBenchInfo.name);
         artifact.addMetadataHash('tbAsset.zip', testBenchInfo.testBenchFilesHash, function (err, hash) {
             if (err) {
-                return callback('Could not add tbAsset.zip from test-bench : err' + err.toString());
+                callback('Could not add tbAsset.zip from test-bench : err' + err.toString());
+                return;
             }
             artifact.addObjectHashes(self.designAcmFiles, function (err, hashes) {
                 if (err) {
-                    return callback('Could not add acm files : err' + err.toString());
+                    callback('Could not add acm files : err' + err.toString());
+                    return;
                 }
                 artifact.addFiles(filesToAdd, function (err, hashes) {
                     if (err) {
-                        return callback('Could not add script files : err' + err.toString());
+                        callback('Could not add script files : err' + err.toString());
+                        return;
                     }
                     callback(null, artifact);
                 });
@@ -837,7 +871,8 @@ define(['plugin/PluginConfig',
             var intervalID,
                 atSucceedJob;
             if (err) {
-                return callback('Creating job failed for "' + testBenchInfo.name + '", err: '  + err.toString(), false);
+                callback('Creating job failed for "' + testBenchInfo.name + '", err: '  + err.toString(), false);
+                return;
             }
             self.logger.info('Initial job-info:' + JSON.stringify(jobInfo, null, 4));
 
@@ -852,17 +887,20 @@ define(['plugin/PluginConfig',
                 }
                 self.blobClient.getMetadata(jInfo.resultHashes[testBenchInfo.name + '_logs'], function (err, metadata) {
                     if (err) {
-                        return callback('Could not get metadata for result. Err: ' + err, false);
+                        callback('Could not get metadata for result. Err: ' + err, false);
+                        return;
                     }
                     if (metadata.content.hasOwnProperty('_FAILED.txt')) {
                         self.createMessage(testBenchInfo.node, 'Execution had errors - download execution_results for "' +
                             testBenchInfo.name + '" and read _FAILED.txt', 'error');
-                        return callback(null, false);
+                        callback(null, false);
+                        return;
                     }
                     self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes[testBenchInfo.name + '_dashboard']);
                     self.dashboardResults.push(jInfo.resultHashes[testBenchInfo.name + '_dashboard']);
                     self.logger.info('No _FAILED.txt generated for test-bench "' + testBenchInfo.name + '".');
-                    return callback(null, true);
+                    callback(null, true);
+                    return;
                 });
             };
 
@@ -896,7 +934,8 @@ define(['plugin/PluginConfig',
             mergedArtifact;
         if (!(self.multiRun && self.runExecution && self.dashboardResults.length > 0)) {
             self.logger.info('No dashboards to merge.');
-            return callback(null);
+            callback(null);
+            return;
         }
 
         mergedArtifact = self.blobClient.createArtifact('mergedDashboards');
@@ -904,12 +943,14 @@ define(['plugin/PluginConfig',
         self.dashboardResults.shift();
         self.blobClient.getMetadata(masterDashHash, function (err, metaData) {
             if (err) {
-                return callback('Could not get metadata for masterDashHash. Err: ' + err);
+                callback('Could not get metadata for masterDashHash. Err: ' + err);
+                return;
             }
             self.getProjectManifestAndMetaResults(metaData, function (err, projectManifest, metaResults) {
                 var exclude = {};
                 if (err) {
-                    return callback(err);
+                    callback(err);
+                    return;
                 }
                 self.projectManifest = projectManifest;
                 self.metaResults = metaResults;
@@ -917,18 +958,21 @@ define(['plugin/PluginConfig',
                 exclude['results/results.metaresults.json'] = true;
                 self.addMetaDatasToArtifact(metaData.content, mergedArtifact, exclude, function (err, tbManifests) {
                     if (err) {
-                        return callback(err);
+                        callback(err);
+                        return;
                     }
                     self.getDesignCfgToDesignId(tbManifests, function (err, cfgToDesignId) {
                         if (err) {
-                            return callback(err);
+                            callback(err);
+                            return;
                         }
                         self.logger.info(JSON.stringify(cfgToDesignId, null, 2));
                         self.designNameToDesignId = cfgToDesignId;
                         self.addSlavesDashFiles(mergedArtifact, function (err) {
                             var filesToAdd;
                             if (err) {
-                                return callback(err);
+                                callback(err);
+                                return;
                             }
                             filesToAdd = {
                                 'manifest.project.json': JSON.stringify(self.projectManifest, null, 4),
@@ -936,11 +980,13 @@ define(['plugin/PluginConfig',
                             };
                             mergedArtifact.addFiles(filesToAdd, function (err, hashes) {
                                 if (err) {
-                                    return callback(err);
+                                    callback(err);
+                                    return;
                                 }
                                 mergedArtifact.save(function (err, artieHash) {
                                     if (err) {
-                                        return callback(err);
+                                        callback(err);
+                                        return;
                                     }
                                     self.result.addArtifact(artieHash);
                                     self.core.setAttribute(self.activeNode, 'Results', artieHash);
@@ -962,7 +1008,8 @@ define(['plugin/PluginConfig',
         self.blobClient.getObject(contentHash, function (err, content) {
             var jsonString;
             if (err) {
-                return callback('Could not get content, err :' + err.toString());
+                callback('Could not get content, err :' + err.toString());
+                return
             }
             jsonString = String.fromCharCode.apply(null, new Uint8Array(content));
             self.logger.info(jsonString);
@@ -977,11 +1024,13 @@ define(['plugin/PluginConfig',
 
         self.getJSObjFromMetaData(metaData.content[manifestName], function (err, projectManifest) {
             if (err) {
-                return callback(err);
+                callback(err);
+                return
             }
             self.getJSObjFromMetaData(metaData.content[metaResName], function (err, metaResults) {
                 if (err) {
-                    return callback(err);
+                    callback(err);
+                    return
                 }
                 callback(null, projectManifest, metaResults);
             });
@@ -1008,7 +1057,8 @@ define(['plugin/PluginConfig',
 
         artifact.addMetadataHashes(metaDataToAdd, function (err, hashes) {
             if (err) {
-                return callback('Could not add metaDatas to artifact, err:' + err);
+                callback('Could not add metaDatas to artifact, err:' + err);
+                return;
             }
             callback(null, testBenchManifests);
         });
@@ -1063,7 +1113,8 @@ define(['plugin/PluginConfig',
         var self = this;
         self.blobClient.getMetadata(dashHash, function (err, slaveDashMetaData) {
             if (err) {
-                return callback('Could not get metadata for masterDashHash. Err: ' + err);
+                callback('Could not get metadata for masterDashHash. Err: ' + err);
+                return;
             }
             self.getProjectManifestAndMetaResults(slaveDashMetaData, function (err, projectManifest, metaResults) {
                 var testBenchPath,
@@ -1074,7 +1125,8 @@ define(['plugin/PluginConfig',
                     error = '',
                     counter;
                 if (err) {
-                    return callback(err);
+                    callback(err);
+                    return;
                 }
                 // Add info from project-manifest
                 testBenchPath = projectManifest.Project.TestBenches[0];
@@ -1089,11 +1141,13 @@ define(['plugin/PluginConfig',
                     if (counter <= 0) {
                         artifact.addMetadataHashes(metaDataToAdd, function (err, hashes) {
                             if (err) {
-                                return callback('Could not add metaDatas of slave to artifact, err:' + err);
+                                callback('Could not add metaDatas of slave to artifact, err:' + err);
+                                return;
                             }
                             artifact.addFiles(filesToAdd, function (err, hashes) {
                                 if (err) {
-                                    return callback('Could not add files of slave to artifact, err:' + err);
+                                    callback('Could not add files of slave to artifact, err:' + err);
+                                    return;
                                 }
                                 callback(null);
                             });
@@ -1119,7 +1173,8 @@ define(['plugin/PluginConfig',
         self.getJSObjFromMetaData(metaData.content[tbManifestPath], function (err, tbManifest) {
             var designName;
             if (err) {
-                return callback('Could not get test-bench object, err: ' + err);
+                callback('Could not get test-bench object, err: ' + err);
+                return;
             }
             designName = tbManifest.DesignName;
             if (self.designNameToDesignId.hasOwnProperty(designName)) {

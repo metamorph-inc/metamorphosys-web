@@ -88,11 +88,13 @@ define(['plugin/PluginConfig',
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
         if (self.isMetaTypeOf(self.activeNode, self.META.WorkSpace) === false) {
             self.createMessage(null, 'This plugin must be called from a WorkSpace.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
 
         self.meta = MetaTypes;
@@ -102,18 +104,21 @@ define(['plugin/PluginConfig',
             if (err) {
                 self.result.setSuccess(false);
                 self.logger.error(err);
-                return callback(null, self.result);
+                callback(null, self.result);
+                return;
             }
             self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
                 if (err) {
                     self.result.setSuccess(false);
                     self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 self.artifact.save(function (err, hash) {
                     if (err) {
                         self.result.setSuccess(false);
-                        return callback(err, self.result);
+                        callback(err, self.result);
+                        return;
                     }
                     self.result.addArtifact(hash);
                     self.result.setSuccess(true);
@@ -132,7 +137,8 @@ define(['plugin/PluginConfig',
         if (acmHash) {
             self.artifact.addObjectHash(filename, acmHash, function (err, hash) {
                 if (err) {
-                    return callback(err);
+                    callback(err);
+                    return;
                 }
                 callback(null);
             });
@@ -150,7 +156,8 @@ define(['plugin/PluginConfig',
                 filename,
                 admString;
             if (err) {
-                return callback('AdmExporter.exploreDesign failed with error: ' + err);
+                callback('AdmExporter.exploreDesign failed with error: ' + err);
+                return;
             }
             designName = self.admExporter.admData['@Name'];
             filename = 'adms/' + designName + '.adm';
@@ -161,10 +168,7 @@ define(['plugin/PluginConfig',
             }
             self.addedAdms[filename] = true;
             self.artifact.addFile(filename, admString, function (err, hash) {
-                if (err) {
-                    return callback(err);
-                }
-                callback(null);
+                callback(err);
             });
         });
     };
@@ -220,7 +224,8 @@ define(['plugin/PluginConfig',
             var i,
                 atModelNodeCallback;
             if (err) {
-                return callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                return;
             }
             counter.visits += children.length;
             if (children.length === 0) {

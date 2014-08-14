@@ -97,12 +97,14 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.RequirementsFolder) === false) {
             self.createMessage(null, 'This plugin must be called from a RequirementsFolder.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
 
         self.meta = MetaTypes;
@@ -115,7 +117,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 wsNode;
             if (err) {
                 self.createMessage(null, 'Could not obtain file from blob.', 'error');
-                return callback(null, self.result);
+                callback(null, self.result);
+                return;
             }
             reqStr = String.fromCharCode.apply(null, new Uint8Array(requirementBuffer));
             try {
@@ -123,14 +126,16 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
             } catch (exc) {
                 self.logger.error('Could not parse given file as json, err: ' + exc.message);
                 self.createMessage(null, 'Could not parse given file as json, err: ' + exc.message, 'error');
-                return callback(null, self.result);
+                callback(null, self.result);
+                return;
             }
             wsNode = self.getWorkspaceNode(self.activeNode);
             self.gatherMetrics(wsNode, function (err) {
                 if (err) {
                     self.createMessage(wsNode, 'Something went wrong exploring the test-benches/metrics.', 'error');
                     self.result.setSuccess(false);
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
                 self.buildRequirementRec(reqJson, self.activeNode, 0);
                 self.result.setSuccess(true);
@@ -218,10 +223,12 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
                 error = '';
 
             if (err) {
-                return callback('Could not load children for project, err: ' + err, self.result);
+                callback('Could not load children for project, err: ' + err, self.result);
+                return;
             }
             if (children.length === 0) {
-                return callback(null);
+                callback(null);
+                return;
             }
             // Define a counter and callback for the recursion.
             counter = {visits: children.length};
@@ -255,7 +262,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporter/
             var i,
                 childMetaType;
             if (err) {
-                return callback(' loadChildren failed for ' + name + ' with error : ' + err);
+                callback(' loadChildren failed for ' + name + ' with error : ' + err);
+                return;
             }
             counter.visits += children.length;
 

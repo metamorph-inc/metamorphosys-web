@@ -115,12 +115,14 @@ define(['plugin/PluginConfig',
 
             finnishPlugin = function (err) {
                 if (err) {
-                    return callback(err, self.result);
+                    callback(err, self.result);
+                    return;
                 }
 
                 self.save('Imported TestBench from ATM.', function (err) {
                     if (err) {
-                        return callback(err, self.result);
+                        callback(err, self.result);
+                        return;
                     }
 
                     //self.createMessage(null, 'ExecTime [s] total :: ' + ((new Date().getTime() - timeStart) / 1000).toString());
@@ -132,16 +134,19 @@ define(['plugin/PluginConfig',
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.ATMFolder) === false) {
             self.createMessage(null, 'This plugin must be called from an ATMFolder.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         if (!config.atmFile) {
             self.createMessage(null, 'No adm file provided', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
         self.updateMETA(self.meta);
 
@@ -153,12 +158,14 @@ define(['plugin/PluginConfig',
             if (err) {
                 self.logger.error('Retrieving atmFile failed with err:' + err.toString());
                 self.createMessage(null, 'Could not retrieve content of atm-file.', 'error');
-                return callback('Retrieving atmFile failed with err:' + err.toString(), self.result);
+                callback('Retrieving atmFile failed with err:' + err.toString(), self.result);
+                return;
             }
             self.atmData = xmlToJson.convertFromBuffer(xmlArrayBuffer);
             if (self.atmData instanceof Error) {
                 self.createMessage(null, 'Given atm not valid xml: ' + self.atmData.message, 'error');
-                return callback(null, self.result);
+                callback(null, self.result);
+                return;
             }
 
             self.logger.debug(JSON.stringify(self.atmData, null, 4));

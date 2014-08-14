@@ -104,7 +104,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTests/
                 testFilePath;
             if (err) {
                 self.createMessage(self.rootNode, 'Visiting nodes failed, err: ' + err.toString());
-                return callback(err, self.result);
+                callback(err, self.result);
+                return;
             }
 
             for (i = 0; i < self.tests.length; i += 1) {
@@ -119,13 +120,15 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTests/
             artie.addFiles(filesToAdd, function (err, hashes) {
                 if (err) {
                     self.createMessage(self.rootNode, 'Could not add files to artifact, err: ' + err.toString());
-                    return callback(err, self.result);
+                    callback(err, self.result);
+                    return;
                 }
                 self.logger.info('Added files : ' + hashes.toString());
                 artie.save(function (err, hash) {
                     if (err) {
                         self.createMessage(self.rootNode, 'Could not save artifact, err: ' + err.toString());
-                        return callback(err, self.result);
+                        callback(err, self.result);
+                        return;
                     }
                     self.createMessage(null, 'Added ' + self.tests.length.toString() + ' tests.');
                     self.result.addArtifact(hash);
@@ -148,7 +151,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTests/
                     msg += 'Proceeding but test will be skipped!';
                     self.logger.error(msg);
                     self.createMessage(node, msg);
-                    return callback(null);
+                    callback(null);
+                    return;
                 }
                 pluginNames = self.core.getAttribute(node, 'plugins').split(' ');
                 for (i = 0; i < pluginNames.length; i += 1) {
@@ -201,7 +205,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTests/
             var i,
                 childMetaTypeName;
             if (err) {
-                return callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                return;
             }
             counter.visits += children.length;
             if (children.length === 0) {

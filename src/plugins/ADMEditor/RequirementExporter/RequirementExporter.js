@@ -88,12 +88,14 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
                 'and trying again will solve it most of times.', 'error');
-            return callback('Active node is not present!', self.result);
+            callback('Active node is not present!', self.result);
+            return;
         }
 
         if (self.isMetaTypeOf(self.activeNode, self.META.RequirementCategory) === false) {
             self.createMessage(null, 'This plugin must be called from a RequirementCategory.', 'error');
-            return callback(null, self.result);
+            callback(null, self.result);
+            return;
         }
 
         // TODO: ADD error handling.
@@ -102,7 +104,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
             if (err) {
                 self.logger.error('visitAllChildrenFromRequirementCategory had errors, err: ' + err);
                 if (self.acceptErrors === false) {
-                    return callback(null, self.result);
+                    callback(null, self.result);
+                    return;
                 }
             }
             artie = self.blobClient.createArtifact('requirement');
@@ -142,7 +145,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
                     var tbNode;
                     if (err) {
                         self.logger.error('Could not load Metric pointer, err: ' + err);
-                        return callback('Could not load Metric pointer, err: ' + err);
+                        callback('Could not load Metric pointer, err: ' + err);
+                        return;
                     }
                     tbNode = self.core.getParent(metricNode);
                     req.metricName = self.core.getAttribute(metricNode, 'name');
@@ -202,7 +206,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
             var i,
                 atModelNodeCallback;
             if (err) {
-                return callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
+                return;
             }
             counter.visits += children.length;
             if (children.length === 0) {
@@ -212,7 +217,8 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporter/
                 atModelNodeCallback = function (childNode) {
                     return function (err, reqCategory) {
                         if (err && self.acceptErrors === false) {
-                            return callback(err);
+                            callback(err);
+                            return;
                         }
                         if (reqCategory) {
                             self.visitAllChildrenRec(childNode, reqCategory, counter, callback);
