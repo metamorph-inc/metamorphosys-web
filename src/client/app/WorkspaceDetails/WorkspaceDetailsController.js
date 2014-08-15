@@ -208,6 +208,7 @@ define([], function () {
         self.territories[id] = self.smartClient.addUI(id, [], function (events) {
             var component = self.$scope.components[id],
                 nodeObj,
+                newConnector,
                 updateDomains = false;
             if (!component) {
                 return;
@@ -227,12 +228,21 @@ define([], function () {
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        component.interfaces.connectors[events[j].eid] = {
+                    if (events[j].etype === 'load') {
+                        newConnector = {
                             name: nodeObj.getAttribute('name'),
-                            id: events[j].eid
-                            // TODO: add type information
+                            id: events[j].eid,
+                            domainPorts: {}
                         };
+
+                        component.interfaces.connectors[events[j].eid] = newConnector;
+                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
+                            [],
+                            self.getConnectorEventCallback(component, newConnector));
+                    } else if (events[j].etype === 'update') {
+                        if (component.interfaces.connectors[events[j].eid]) {
+                            component.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
+                        }
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
                     }
@@ -268,76 +278,6 @@ define([], function () {
         });
     };
 
-    WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
-        var self = this,
-            j;
-
-        self.addTestBench(id);
-
-        if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id]);
-        }
-
-        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
-            var testBench = self.$scope.testBenches[id],
-                nodeObj,
-                checkInterfaces = false;
-            if (!testBench) {
-                return;
-            }
-            for (j = 0; j < events.length; j += 1) {
-                if (events[j].etype === 'unload') {
-                    if (testBench.tlsut) {
-                        if (testBench.tlsut.connectors[events[j].eid]) {
-                            delete testBench.tlsut.connectors[events[j].eid];
-                            checkInterfaces = true;
-                        } else if (testBench.tlsut.properties[events[j].eid]) {
-                            delete testBench.tlsut.properties[events[j].eid];
-                            checkInterfaces = true;
-                        }
-                    }
-                } else {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
-                        // Top Level System Under Test has been loaded with children.
-                        if (!testBench.tlsut) {
-                            testBench.tlsut = { properties: {}, connectors: {} };
-                            checkInterfaces = true;
-                        }
-                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                            if (events[j].etype === 'load' || events[j].etype === 'update') {
-                                testBench.tlsut.connectors[events[j].eid] = {
-                                    name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid
-                                    // TODO: add type information
-                                };
-                                checkInterfaces = true;
-                            } else {
-                                throw 'Unexpected event type' + events[j].etype;
-                            }
-                        } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                            if (events[j].etype === 'load' || events[j].etype === 'update') {
-                                testBench.tlsut.properties[events[j].eid] = {
-                                    name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid,
-                                    dataType: nodeObj.getAttribute('DataType'),
-                                    valueType: nodeObj.getAttribute('ValueType')
-                                };
-                                checkInterfaces = true;
-                            } else {
-                                throw 'Unexpected event type' + events[j].etype;
-                            }
-                        }
-                    }
-                }
-            }
-            if (checkInterfaces) {
-                self.matchDesignsAndTestBenches(id);
-            }
-            self.update();
-        });
-    };
-
     WorkspaceDetailsController.prototype.addDesignWatcher = function (id) {
         var self = this,
             j;
@@ -348,9 +288,10 @@ define([], function () {
             self.smartClient.removeUI(self.territories[id]);
         }
 
-        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
+        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
             var design = self.$scope.designs[id],
                 nodeObj,
+                newConnector,
                 checkInterfaces = false,
                 componentId;
             if (!design) {
@@ -384,18 +325,37 @@ define([], function () {
 //                        }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() === id) {
-                        checkInterfaces = true;
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-                            design.interfaces.connectors[events[j].eid] = {
-                                name: nodeObj.getAttribute('name'),
-                                id: events[j].eid
-                                // TODO: add type information
-                            };
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
+                    if (events[j].etype === 'load') {
+                        newConnector = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid,
+                            domainPorts: {}
+                        };
+
+                        design.interfaces.connectors[events[j].eid] = newConnector;
+                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
+                            [],
+                            self.getConnectorEventCallback(design, newConnector));
+                    } else if (events[j].etype === 'update') {
+                        if (design.interfaces.connectors[events[j].eid]) {
+                            design.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
                         }
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
                     }
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+//                    if (nodeObj.getParentId() === id) {
+//                        checkInterfaces = true;
+//                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+//                            design.interfaces.connectors[events[j].eid] = {
+//                                name: nodeObj.getAttribute('name'),
+//                                id: events[j].eid,
+//                                ports: []
+//                            };
+//                        } else {
+//                            throw 'Unexpected event type' + events[j].etype;
+//                        }
+//                    }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (nodeObj.getParentId() === id) {
@@ -411,26 +371,26 @@ define([], function () {
                             throw 'Unexpected event type' + events[j].etype;
                         }
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    componentId = nodeObj.getAttribute('ID');
-                    if (events[j].etype === 'load') {
-                        //self.growl.warning('load ' + events[j].eid);
-                        if (design.components[componentId]) {
-                            design.components[componentId].cnt += 1;
-                        } else {
-                            design.components[componentId] = {
-                                componentId: componentId,
-                                designId: id,
-                                cnt: 1
-                            };
-                        }
-                    } else if (events[j].etype === 'update') {
-                        //self.growl.warning('update ' + events[j].eid);
-                        // TODO: The only update that matters is the change of component ID.
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
-                    }
+//                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
+//                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+//                    componentId = nodeObj.getAttribute('ID');
+//                    if (events[j].etype === 'load') {
+//                        //self.growl.warning('load ' + events[j].eid);
+//                        if (design.components[componentId]) {
+//                            design.components[componentId].cnt += 1;
+//                        } else {
+//                            design.components[componentId] = {
+//                                componentId: componentId,
+//                                designId: id,
+//                                cnt: 1
+//                            };
+//                        }
+//                    } else if (events[j].etype === 'update') {
+//                        //self.growl.warning('update ' + events[j].eid);
+//                        // TODO: The only update that matters is the change of component ID.
+//                    } else {
+//                        throw 'Unexpected event type' + events[j].etype;
+//                    }
                 }
 
 
@@ -440,6 +400,131 @@ define([], function () {
             }
             self.update();
         });
+    };
+
+    WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
+        var self = this,
+            j;
+
+        self.addTestBench(id);
+
+        if (self.territories.hasOwnProperty(id)) {
+            self.smartClient.removeUI(self.territories[id]);
+        }
+
+        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
+            var testBench = self.$scope.testBenches[id],
+                nodeObj,
+                newConnector,
+                checkInterfaces = false;
+            if (!testBench) {
+                return;
+            }
+            for (j = 0; j < events.length; j += 1) {
+                if (events[j].etype === 'unload') {
+                    if (testBench.tlsut) {
+                        if (testBench.tlsut.connectors[events[j].eid]) {
+                            delete testBench.tlsut.connectors[events[j].eid];
+                            checkInterfaces = true;
+                        } else if (testBench.tlsut.properties[events[j].eid]) {
+                            delete testBench.tlsut.properties[events[j].eid];
+                            checkInterfaces = true;
+                        }
+                    }
+                    if (self.territories.hasOwnProperty(events[j].eid)) {
+                        self.smartClient.removeUI(self.territories[events[j].eid]);
+                    }
+                } else {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
+                        // Top Level System Under Test has been loaded with children.
+                        if (!testBench.tlsut) {
+                            testBench.tlsut = { properties: {}, connectors: {} };
+                            checkInterfaces = true;
+                        }
+                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
+                            if (events[j].etype === 'load') {
+                                newConnector = {
+                                    name: nodeObj.getAttribute('name'),
+                                    id: events[j].eid,
+                                    domainPorts: {}
+                                };
+
+                                testBench.tlsut.connectors[events[j].eid] = newConnector;
+                                self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
+                                    [],
+                                    self.getConnectorEventCallback(testBench, newConnector));
+                            } else if (events[j].etype === 'update') {
+                                if (testBench.tlsut.connectors[events[j].eid]) {
+                                    testBench.tlsut.connectors[events[j].eid].name = nodeObj.getAttribute('name');
+                                }
+                            } else {
+                                throw 'Unexpected event type' + events[j].etype;
+                            }
+                        } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
+                            if (events[j].etype === 'load' || events[j].etype === 'update') {
+                                testBench.tlsut.properties[events[j].eid] = {
+                                    name: nodeObj.getAttribute('name'),
+                                    id: events[j].eid,
+                                    dataType: nodeObj.getAttribute('DataType'),
+                                    valueType: nodeObj.getAttribute('ValueType')
+                                };
+                                checkInterfaces = true;
+                            } else {
+                                throw 'Unexpected event type' + events[j].etype;
+                            }
+                        }
+                    } else if (self.smartClient.isMetaTypeOf(nodeObj, 'Container')) {
+                        // Top Level System Under Test has been loaded with children.
+                        if (!testBench.tlsut) {
+                            testBench.tlsut = { properties: {}, connectors: {} };
+                            checkInterfaces = true;
+                        }
+                    }
+                }
+            }
+            if (checkInterfaces) {
+                self.matchDesignsAndTestBenches(id);
+            }
+            self.update();
+        });
+    };
+
+    WorkspaceDetailsController.prototype.getConnectorEventCallback = function (owner, connector) {
+        var self = this;
+        return function (events) {
+            var j,
+                nodeObj;
+//            if (!testBench) {
+//                console.error('Test-bench does not exist for connector that is watched!');
+//                return;
+//            }
+//            connector = testBench.tlsut.connectors[connId];
+//            if (!connector) {
+//                console.error('Test-bench.tlsut.connector does not exist for connector that is watched!');
+//                return;
+//            }
+            for (j = 0; j < events.length; j += 1) {
+                if (events[j].etype === 'unload') {
+                    if (connector.domainPorts[events[j].eid]) {
+                        delete connector.domainPorts[events[j].eid];
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainConnector')) {
+                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        connector.domainPorts[events[j].eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: events[j].eid,
+                            type: nodeObj.getAttribute('Type')
+                        };
+                    } else {
+                        throw 'Unexpected event type' + events[j].etype;
+                    }
+                }
+            }
+            self.matchDesignsAndTestBenches(owner.id);
+            self.update();
+        };
     };
 
     // Components

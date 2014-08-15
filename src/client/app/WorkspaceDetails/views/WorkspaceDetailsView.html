@@ -58,9 +58,11 @@
                             <h5><strong>Interfaces</strong></h5>
                             <ul class="interface-list">
                                 <li data-ng-repeat="conn in component.interfaces.connectors | orderObjectBy: 'name'">
-                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                            </ul>
-                            <ul class="interface-list">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}
+                                    <i class="cyphy-tag purple" data-ng-repeat="port in conn.domainPorts | orderObjectBy: 'name'">
+                                        {{port.type}}
+                                    </i>
+                                </li>
                                 <li data-ng-repeat="prop in component.interfaces.properties | orderObjectBy: 'name'">
                                     <i class="cyphy-tag gray">{{prop.valueType === 'Fixed' ? 'Property' : 'Parameter'}}</i>
                                     {{prop.name}} ({{prop.dataType}})
@@ -142,14 +144,15 @@
                             </ul>
                         </div>
 
-
                         <div class="design-interfaces">
                             <h5><strong>Interfaces</strong></h5>
                             <ul class="interface-list">
                                 <li data-ng-repeat="conn in design.interfaces.connectors | orderObjectBy: 'name'">
-                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                            </ul>
-                            <ul class="interface-list">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}
+                                    <i class="cyphy-tag purple" data-ng-repeat="port in conn.domainPorts | orderObjectBy: 'name'">
+                                        {{port.type}}
+                                    </i>
+                                </li>
                                 <li data-ng-repeat="prop in design.interfaces.properties | orderObjectBy: 'name'">
                                     <i class="cyphy-tag gray">{{prop.valueType === 'Fixed' ? 'Property' : 'Parameter'}}
                                     </i> {{prop.name}} ({{prop.dataType}})</li>
@@ -223,9 +226,11 @@
                             <h5><strong>TLSUT Interfaces</strong></h5>
                             <ul class="interface-list">
                                 <li data-ng-repeat="conn in testBench.tlsut.connectors | orderObjectBy: 'name'">
-                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}</li>
-                            </ul>
-                            <ul class="interface-list">
+                                    <i class="cyphy-tag gray">Connector</i> {{conn.name}}
+                                    <i class="cyphy-tag purple" data-ng-repeat="port in conn.domainPorts | orderObjectBy: 'name'">
+                                        {{port.type}}
+                                    </i>
+                                </li>
                                 <li data-ng-repeat="prop in testBench.tlsut.properties | orderObjectBy: 'name'">
                                     <i class="cyphy-tag gray">{{prop.valueType === 'Fixed' ? 'Property' : 'Parameter'}}
                                     </i>{{prop.name}} ({{prop.dataType}})</li>
@@ -282,7 +287,7 @@
 
 <!--<ul class="list-group" data-ng-repeat="requirement in requirements | orderObjectBy: 'name'">-->
 <!--<li class="list-group-item" data-id="{{ requirement.id }}">-->
-<!--<!-- Header -->-->
+<!--<!-- Header -->
 <!--<a class="requirement-name" href="">{{ requirement.name }}</a>-->
 <!--<div>{{ requirement.description }}</div>-->
 
