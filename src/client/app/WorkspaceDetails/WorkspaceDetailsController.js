@@ -220,6 +220,9 @@ define([], function () {
                 if (events[j].etype === 'unload') {
                     if (component.interfaces.connectors[events[j].eid]) {
                         delete component.interfaces.connectors[events[j].eid];
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                     } else if (component.interfaces.properties[events[j].eid]) {
                         delete component.interfaces.properties[events[j].eid];
                     } else if (component.domains[events[j].eid]) {
@@ -234,7 +237,10 @@ define([], function () {
                             id: events[j].eid,
                             domainPorts: {}
                         };
-
+                        // Add a watcher to the connector.
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         component.interfaces.connectors[events[j].eid] = newConnector;
                         self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
                             [],
@@ -308,6 +314,9 @@ define([], function () {
                 if (events[j].etype === 'unload') {
                     if (design.interfaces.connectors[events[j].eid]) {
                         delete design.interfaces.connectors[events[j].eid];
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         checkInterfaces = true;
                     } else if (design.interfaces.properties[events[j].eid]) {
                         delete design.interfaces.properties[events[j].eid];
@@ -331,8 +340,11 @@ define([], function () {
                             id: events[j].eid,
                             domainPorts: {}
                         };
-
                         design.interfaces.connectors[events[j].eid] = newConnector;
+                        // Add a watcher to the connector.
+                        if (self.territories.hasOwnProperty(events[j].eid)) {
+                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                        }
                         self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
                             [],
                             self.getConnectorEventCallback(design, newConnector));
@@ -359,14 +371,26 @@ define([], function () {
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (nodeObj.getParentId() === id) {
-                        checkInterfaces = true;
-                        if (events[j].etype === 'load' || events[j].etype === 'update') {
+                        if (events[j].etype === 'load') {
+                            checkInterfaces = true;
                             design.interfaces.properties[events[j].eid] = {
                                 name: nodeObj.getAttribute('name'),
                                 id: events[j].eid,
                                 dataType: nodeObj.getAttribute('DataType'),
                                 valueType: nodeObj.getAttribute('ValueType')
                             };
+                        } else if (events[j].etype === 'update') {
+                            if (design.interfaces.properties[events[j].eid].name !== nodeObj.getAttribute('name') ||
+                                    design.interfaces.properties[events[j].eid].dataType !== nodeObj.getAttribute('DataType') ||
+                                    design.interfaces.properties[events[j].eid].valueType !== nodeObj.getAttribute('ValueType')) {
+                                checkInterfaces = true;
+                                design.interfaces.properties[events[j].eid] = {
+                                    name: nodeObj.getAttribute('name'),
+                                    id: events[j].eid,
+                                    dataType: nodeObj.getAttribute('DataType'),
+                                    valueType: nodeObj.getAttribute('ValueType')
+                                };
+                            }
                         } else {
                             throw 'Unexpected event type' + events[j].etype;
                         }
@@ -425,14 +449,14 @@ define([], function () {
                     if (testBench.tlsut) {
                         if (testBench.tlsut.connectors[events[j].eid]) {
                             delete testBench.tlsut.connectors[events[j].eid];
+                            if (self.territories.hasOwnProperty(events[j].eid)) {
+                                self.smartClient.removeUI(self.territories[events[j].eid]);
+                            }
                             checkInterfaces = true;
                         } else if (testBench.tlsut.properties[events[j].eid]) {
                             delete testBench.tlsut.properties[events[j].eid];
                             checkInterfaces = true;
                         }
-                    }
-                    if (self.territories.hasOwnProperty(events[j].eid)) {
-                        self.smartClient.removeUI(self.territories[events[j].eid]);
                     }
                 } else {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
@@ -449,8 +473,11 @@ define([], function () {
                                     id: events[j].eid,
                                     domainPorts: {}
                                 };
-
                                 testBench.tlsut.connectors[events[j].eid] = newConnector;
+                                // Add a watcher to the connector.
+                                if (self.territories.hasOwnProperty(events[j].eid)) {
+                                    self.smartClient.removeUI(self.territories[events[j].eid]);
+                                }
                                 self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
                                     [],
                                     self.getConnectorEventCallback(testBench, newConnector));
@@ -462,7 +489,7 @@ define([], function () {
                                 throw 'Unexpected event type' + events[j].etype;
                             }
                         } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                            if (events[j].etype === 'load' || events[j].etype === 'update') {
+                            if (events[j].etype === 'load') {
                                 testBench.tlsut.properties[events[j].eid] = {
                                     name: nodeObj.getAttribute('name'),
                                     id: events[j].eid,
@@ -470,6 +497,18 @@ define([], function () {
                                     valueType: nodeObj.getAttribute('ValueType')
                                 };
                                 checkInterfaces = true;
+                            } else if (events[j].etype === 'update') {
+                                if (testBench.tlsut.properties[events[j].eid].name !== nodeObj.getAttribute('name') ||
+                                        testBench.tlsut.properties[events[j].eid].dataType !== nodeObj.getAttribute('DataType') ||
+                                        testBench.tlsut.properties[events[j].eid].valueType !== nodeObj.getAttribute('ValueType')) {
+                                    checkInterfaces = true;
+                                    testBench.tlsut.properties[events[j].eid] = {
+                                        name: nodeObj.getAttribute('name'),
+                                        id: events[j].eid,
+                                        dataType: nodeObj.getAttribute('DataType'),
+                                        valueType: nodeObj.getAttribute('ValueType')
+                                    };
+                                }
                             } else {
                                 throw 'Unexpected event type' + events[j].etype;
                             }
@@ -494,36 +533,46 @@ define([], function () {
         var self = this;
         return function (events) {
             var j,
+                changes = false,
+                name,
+                type,
                 nodeObj;
-//            if (!testBench) {
-//                console.error('Test-bench does not exist for connector that is watched!');
-//                return;
-//            }
-//            connector = testBench.tlsut.connectors[connId];
-//            if (!connector) {
-//                console.error('Test-bench.tlsut.connector does not exist for connector that is watched!');
-//                return;
-//            }
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
                     if (connector.domainPorts[events[j].eid]) {
                         delete connector.domainPorts[events[j].eid];
+                        changes = true;
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainConnector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
+                    name = nodeObj.getAttribute('name');
+                    type = nodeObj.getAttribute('Type');
+                    if (events[j].etype === 'load') {
+                        changes = true;
                         connector.domainPorts[events[j].eid] = {
-                            name: nodeObj.getAttribute('name'),
+                            name: name,
                             id: events[j].eid,
-                            type: nodeObj.getAttribute('Type')
+                            type: type
                         };
+                    } else if (events[j].etype === 'update') {
+                        if (connector.domainPorts[events[j].eid].name !== name ||
+                                connector.domainPorts[events[j].eid].type !== type) {
+                            changes = true;
+                            connector.domainPorts[events[j].eid] = {
+                                name: name,
+                                id: events[j].eid,
+                                type: type
+                            };
+                        }
                     } else {
                         throw 'Unexpected event type' + events[j].etype;
                     }
                 }
             }
-            self.matchDesignsAndTestBenches(owner.id);
-            self.update();
+            if (changes) {
+                self.matchDesignsAndTestBenches(owner.id);
+                self.update();
+            }
         };
     };
 
