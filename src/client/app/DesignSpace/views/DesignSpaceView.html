@@ -3,12 +3,20 @@
     <h1 class="design-space-name">{{ name }}</h1>
 
     <div class="design-space-description">{{ description }}</div>
+
+    <div class="design-space-size">
+        <h3>Design space size</h3>
+        <ul>
+            <li data-ng-show=" !desertInfo.constraints" class="size-status">Status: {{desertInfo.status}}</li>
+            <li data-ng-repeat="(name, size) in desertInfo.constraints">{{name}} : {{size}}</li>
+        </ul>
+    </div>
 </header>
 
     <div class="row">
 <div class="design-space col-lg-8 col-md-12 col-sm-24 col-xs-24">
 
-    <h4>Containers</h4>
+    <h4>Sub Systems</h4>
 
     <ul class="list-group">
         <!-- One container item -->

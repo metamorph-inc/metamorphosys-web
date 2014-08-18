@@ -9,8 +9,9 @@ define(['xmljsonconverter'], function (Converter) {
     var DesertFrontEnd,
         CMDSTR;
 
-    DesertFrontEnd = function (smartClient) {
-        var self = this;
+    DesertFrontEnd = function (smartClient, options) {
+        var self = this,
+            opts = options || {};
         this.smartClient = smartClient;
         this.client = smartClient.client;
         this.blobClient = smartClient.blobClient;
@@ -27,9 +28,11 @@ define(['xmljsonconverter'], function (Converter) {
         this.results = {};
         this.listeners = {};
         this.patterns = {};
-        this.territoryId = this.client.addUI(this, function (events) {
-            self.handleUpdates(events);
-        });
+        if (opts.addUI) {
+            this.territoryId = this.client.addUI(this, function (events) {
+                self.handleUpdates(events);
+            });
+        }
     };
 
     DesertFrontEnd.prototype.handleUpdates = function (events) {
@@ -62,12 +65,24 @@ define(['xmljsonconverter'], function (Converter) {
     DesertFrontEnd.prototype.addListener = function (containerId, callback) {
         var self = this;
         if (self.listeners.hasOwnProperty(containerId)) {
-
+            console.warn('DesertFrontEnd Listener already added for container with id ' + containerId);
         } else {
             self.listeners[containerId] = [];
             self.results[containerId] = {status: 'LISTENING'};
             self.patterns[containerId] = {children: 999};
             self.client.updateTerritory(self.territoryId, self.patterns);
+        }
+        self.listeners[containerId].push(callback);
+        callback(self.results[containerId]);
+    };
+
+    DesertFrontEnd.prototype.addSimpleListener = function (containerId, callback) {
+        var self = this;
+        if (self.listeners.hasOwnProperty(containerId)) {
+            console.warn('DesertFrontEnd Listener already added for container with id ' + containerId);
+        } else {
+            self.listeners[containerId] = [];
+            self.results[containerId] = {status: 'LISTENING'};
         }
         self.listeners[containerId].push(callback);
         callback(self.results[containerId]);

@@ -16,21 +16,22 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
         self.smartClient = smartClient;
         self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
+        self.avmIdToId = {};
 
         self.chance = Chance ? new Chance() : null;
-        self.$scope.exportDesign = function (id) {
-            // FIXME: this should probably not be here.
-            self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
-                if (result.error) {
-                    console.error(result.error);
-                    return;
-                }
-                // FIXME: is this the right approach?
-                if (result.artifacts[0]) {
-                    window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
-                }
-            });
-        };
+//        self.$scope.exportDesign = function (id) {
+//            // FIXME: this should probably not be here.
+//            self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
+//                if (result.error) {
+//                    console.error(result.error);
+//                    return;
+//                }
+//                // FIXME: is this the right approach?
+//                if (result.artifacts[0]) {
+//                    window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
+//                }
+//            });
+//        };
         self.initialize();
     };
 
@@ -51,7 +52,6 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
         self.$scope.lastUpdated = null;
         self.$scope.containers = {};
         self.$scope.components = {};
-
 
         // initialization of methods
         if (self.smartClient) {
@@ -112,7 +112,13 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
-                        self.addContainer(events[i].eid);
+                        self.$scope.desertInfo = {status: 'INITIALIZED'};
+                        self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
+                            self.$scope.desertInfo = status;
+                            //self.growl.info(JSON.stringify(status, null, 2));
+                            self.update();
+                        });
+                        self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
                     } else if (event.etype === 'unload') {
                         console.error('TODO: not implemented yet.');
                     }
@@ -153,6 +159,7 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
             }
             container = {
                 id: id,
+                parentId: parentId,
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
@@ -207,6 +214,7 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
             }
             self.$scope.components[id] = {
                 id: id,
+                parentId: parentId,
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 avmId: nodeObj.getAttribute('ID'),
