@@ -1,11 +1,12 @@
-<div class="design-space">
+<article class="design-space-details">
+<header>
+    <h1 class="design-space-name">{{ name }}</h1>
 
-    <div>ID: {{ id }}</div>
+    <div class="design-space-description">{{ description }}</div>
+</header>
 
-    <div>Name: {{ name }}</div>
-
-    <div>{{ description }}</div>
-
+    <div class="row">
+<div class="design-space  col-lg-8 col-md-12 col-sm-24 col-xs-24">
 
     <h4>Containers</h4>
 
@@ -24,5 +25,28 @@
             <div>Updated <span am-time-ago="container.date"></span></div>
         </li>
     </ul>
+</div>
+
+<div class="components  col-lg-4 col-md-6 col-sm-12 col-xs-12">
+
+        <h4>Used Components</h4>
+
+        <ul class="list-group">
+            <!-- One container item -->
+            <li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'name'" data-id="{{ container.id }}">
+
+                <!-- Header -->
+                <a class="component-name" href="">{{ container.name }}</a>
+                <div>Type: {{container.type}}</div>
+                <div>Number of Components: {{container.componentsCount}}</div>
+                <div>Number of Containers: {{container.containersCount}}</div>
+
+                <div>{{ container.description }}</div>
+
+                <div>Updated <span am-time-ago="container.date"></span></div>
+            </li>
+        </ul>
+</div>
 
 </div>
+</article>
