@@ -1,21 +1,20 @@
 /**
- * Created by Zsolt on 6/24/2014.
+ * @author lattmann / https://github.com/lattmann
+ * @author pmeijer / https://github.com/pmeijer
  */
-/*globals define */
+/*globals define, console */
 
-define(['blob/BlobClient',
-        'xmljsonconverter',
-        'executor/ExecutorClient'], function (BlobClient, Converter, ExecutorClient) {
+define(['xmljsonconverter'], function (Converter) {
     'use strict';
     var DesertFrontEnd,
         CMDSTR;
 
-    DesertFrontEnd = function (parameters) {
+    DesertFrontEnd = function (smartClient) {
         var self = this;
-        this.client = parameters.client;
-        this.meta = parameters.meta;
-        this.blobClient = new BlobClient();
-        this.executorClient = new ExecutorClient();
+        this.smartClient = smartClient;
+        this.client = smartClient.client;
+        this.blobClient = smartClient.blobClient;
+        this.executorClient = smartClient.executorClient;
         this.xmlToJson = new Converter.Xml2json({
             skipWSText: true,
             arrayElements: {
@@ -183,7 +182,6 @@ define(['blob/BlobClient',
         pattern[containerId] = { children: -1 };
 
         desertSystem.DesertSystem.Space.Element.push(rootElement);
-        // FIXME: This is a dirty fix..
         self.populateElementsRec(rootNode, rootElement, idCounter);
         self.saveInputXmlToBlobArtifact(desertSystem, callback);
     };
@@ -198,7 +196,7 @@ define(['blob/BlobClient',
         for (i = 0; i < childrenIds.length; i += 1) {
             childNode = self.client.getNode(childrenIds[i]);
             name = childNode.getAttribute('name');
-            if (self.isMetaTypeOf(childNode, self.meta.Container)) {
+            if (self.smartClient.isMetaTypeOf(childNode, 'Container')) {
                 if (childNode.getAttribute('Type') === 'Compound') {
                     elem = self.createElementFromNode(name, 'true', idCounter);
                 } else if (childNode.getAttribute('Type') === 'Alternative') {
@@ -209,7 +207,7 @@ define(['blob/BlobClient',
                 }
                 rootElement.Element.push(elem);
                 self.populateElementsRec(childNode, elem, idCounter);
-            } else if (self.isMetaTypeOf(childNode, self.meta.AVMComponentModel)) {
+            } else if (self.smartClient.isMetaTypeOf(childNode, 'AVMComponentModel')) {
                 elem = self.createElementFromNode(name, 'false', idCounter);
                 rootElement.Element.push(elem);
             }
@@ -298,16 +296,6 @@ define(['blob/BlobClient',
                 }
             });
         });
-    };
-
-    DesertFrontEnd.prototype.isMetaTypeOf = function (node, metaNode) {
-        while (node) {
-            if (node.getId() === metaNode.getId()) {
-                return true;
-            }
-            node = this.client.getNode(node.getBaseId());
-        }
-        return false;
     };
 
     DesertFrontEnd.prototype.destroy = function () {

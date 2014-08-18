@@ -4,7 +4,7 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-define([], function () {
+define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
     "use strict";
 
     var DesignSpaceController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
@@ -14,6 +14,7 @@ define([], function () {
         self.$moment = $moment;
         self.$routeParams = $routeParams;
         self.smartClient = smartClient;
+        self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
 
         self.chance = Chance ? new Chance() : null;
@@ -49,6 +50,7 @@ define([], function () {
         self.$scope.readMe = null;
         self.$scope.lastUpdated = null;
         self.$scope.containers = {};
+        self.$scope.components = {};
 
 
         // initialization of methods
@@ -96,13 +98,12 @@ define([], function () {
 
         self.territories = {};
 
-        territoryPattern[self.$scope.id] = {children: 0};
+        territoryPattern[self.$scope.id] = {children: 999};
 
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
                 nodeObj;
-            //self.growl.info('events.length : ' + events.length);
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
@@ -111,48 +112,25 @@ define([], function () {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
-
-                        if (self.territories.hasOwnProperty(nodeObj.getId())) {
-
-                        } else {
-                            self.territories[nodeObj.getId()] = self.smartClient.addUI(nodeObj.getId(), ['Container'], function (events) {
-                                var j;
-
-                                for (j = 0; j < events.length; j += 1) {
-
-                                    if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                                        if (events[j].etype === 'load') {
-                                            self.addContainer(events[j].eid);
-
-                                        } else if (events[j].etype === 'update') {
-                                            //TODO: Something fitting..
-                                        }
-                                    }
-
-                                    if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                                        if (events[j].etype === 'load') {
-                                            self.addComponent(events[j].eid);
-                                        } else if (events[j].etype === 'update') {
-                                            //TODO: Something fitting, e.g. decrease componentsCount for container.
-                                        }
-                                    }
-
-                                    if (events[j].etype === 'unload') {
-                                        self.removeContainer(events[j].eid);
-                                    }
-                                }
-                                self.update();
-                            });
-                        }
+                        self.addContainer(events[i].eid);
                     } else if (event.etype === 'unload') {
                         console.error('TODO: not implemented yet.');
                     }
-                } else {
-                    self.growl.error('Object with different id than root-container raised event.');
+                } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'Container')) {
+                    if (events[i].etype === 'load') {
+                        self.addContainer(events[i].eid);
+                    } else if (events[i].etype === 'update') {
+                        //TODO: Something fitting..
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'AVMComponentModel')) {
+                    if (events[i].etype === 'load') {
+                        self.addComponent(events[i].eid);
+                    } else if (events[i].etype === 'update') {
+                        //TODO: Something fitting, e.g. decrease componentsCount for container.
+                    }
                 }
-
-                self.update();
             }
+            self.update();
         });
 
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
@@ -174,7 +152,7 @@ define([], function () {
                 self.$scope.containers[parentId].containersCount += 1;
             }
             container = {
-                id: nodeObj.getId(),
+                id: id,
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
@@ -227,7 +205,13 @@ define([], function () {
             if (self.$scope.containers[parentId]) {
                 self.$scope.containers[parentId].componentsCount += 1;
             }
-            //this.update();
+            self.$scope.components[id] = {
+                id: id,
+                name: nodeObj.getAttribute('name'),
+                description: nodeObj.getAttribute('INFO'),
+                avmId: nodeObj.getAttribute('ID'),
+                date: new Date()
+            };
         }
     };
 
