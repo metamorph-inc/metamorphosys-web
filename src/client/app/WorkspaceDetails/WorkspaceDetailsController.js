@@ -72,7 +72,7 @@ define([], function () {
         self.$scope.deleteObject = self.initDeleteObject();
         self.$scope.executeTestBench = self.initExecuteTestBench();
         self.$scope.updateTLSUT = self.initUpdateTLSUT();
-        self.$scope.openDashboard = self.initOpenDashboard();
+        self.$scope.getDashboard = self.initGetDashboard();
         // Populate components, designs and test-benches.
         for (i = 0; i < self.nbrOfComponets; i += 1) {
             id = '/' + i;
@@ -115,7 +115,7 @@ define([], function () {
                             self.$scope.deleteObject = self.initDeleteObject();
                             self.$scope.executeTestBench = self.initExecuteTestBench();
                             self.$scope.updateTLSUT = self.initUpdateTLSUT();
-                            self.$scope.openDashboard = self.initOpenDashboard();
+                            self.$scope.getDashboard = self.initGetDashboard();
                         }
                         if (self.territories.hasOwnProperty(event.eid)) {
                             // Workspace has a watcher..
@@ -1109,7 +1109,7 @@ define([], function () {
         };
     };
 
-    WorkspaceDetailsController.prototype.initOpenDashboard = function () {
+    WorkspaceDetailsController.prototype.initGetDashboard = function () {
         var self = this;
         if (!self.smartClient) {
             return function (id) {
@@ -1117,7 +1117,7 @@ define([], function () {
             };
         }
 
-        return function (id) {
+        return function (id, openLink) {
             var testBench = self.$scope.testBenches[id],
                 hash;
             if (!testBench) {
@@ -1136,11 +1136,13 @@ define([], function () {
 
                     if (metadata.content.hasOwnProperty(indexHTML)) {
                         link = self.smartClient.blobClient.getViewURL(hash, indexHTML);
-
                         // URL EXAMPLES
                         // http://localhost:8855/rest/blob/view/bc5d7d6c887c8b4531d32e86de7bc021e5c0e65e/index.html
                         // http://localhost:8855/rest/blob/metadata/bc5d7d6c887c8b4531d32e86de7bc021e5c0e65e
-                    window.open(link, '_blank');
+                        if (openLink) {
+                            window.open(link, '_blank');
+                        }
+                        return link;
                     } else {
                         self.growl.error('Package does not contain index.html file - execution probably failed.');
                     }

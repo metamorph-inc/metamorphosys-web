@@ -20,7 +20,7 @@
 
     <ul class="list-group">
         <!-- One container item -->
-        <li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'name'" data-id="{{ container.id }}">
+        <li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'id'" data-id="{{ container.id }}">
 
             <!-- Header -->
             <a class="container-name" href="">{{ container.name }}</a>

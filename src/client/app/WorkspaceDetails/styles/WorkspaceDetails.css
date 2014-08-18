@@ -95,3 +95,5 @@ article.workspace-details {
       background-color: #E5E5E5; }
       article.workspace-details .cyphy-tag.gray:hover {
         background-color: #B7B7B7; }
+  article.workspace-details .btn-dropdown {
+    text-align: left; }
