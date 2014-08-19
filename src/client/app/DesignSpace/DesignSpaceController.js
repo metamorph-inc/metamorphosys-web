@@ -4,8 +4,9 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
-    "use strict";
+define(['../../js/DesertFrontEnd',
+        'xmljsonconverter'], function (DesertFrontEnd, Converter) {
+    'use strict';
 
     var DesignSpaceController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
@@ -17,6 +18,14 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
         self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
         self.avmIdToId = {};
+        this.xmlToJson = new Converter.Xml2json({
+            skipWSText: true,
+            arrayElements: {
+                Configuration: true,
+                Element: true,
+                AlternativeAssignment: true
+            }
+        });
 
         self.chance = Chance ? new Chance() : null;
 //        self.$scope.exportDesign = function (id) {
@@ -115,8 +124,17 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
                         self.$scope.desertInfo = {status: 'INITIALIZED'};
                         self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
                             self.$scope.desertInfo = status;
-                            self.growl.info(JSON.stringify(status, null, 2));
+                            //self.growl.info(JSON.stringify(status, null, 2));
                             self.update();
+                            if (status.backFile) {
+                                self.getDesertOutputObject(status.backFile.content, function (err, desertObj) {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+                                    //TODO: use desertObj and idMap to display configurations.
+                                });
+                            }
                         });
                         self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
                     } else if (event.etype === 'unload') {
@@ -221,6 +239,25 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
                 date: new Date()
             };
         }
+    };
+
+    DesignSpaceController.prototype.getDesertOutputObject = function (hash, callback) {
+        var self = this;
+
+        self.smartClient.blobClient.getObject(hash, function (err, content) {
+            var desertObject;
+            if (err) {
+                callback('Could not get content for desert output XML, err: ' + err);
+                return;
+            }
+            desertObject = self.xmlToJson.convertFromBuffer(content);
+            //console.info(JSON.stringify(desertData, null, 2));
+            if (desertObject instanceof Error) {
+                callback('Output desert XML not valid xml, err: ' + desertObject.message);
+                return;
+            }
+            callback(null, desertObject);
+        });
     };
 
     return DesignSpaceController;

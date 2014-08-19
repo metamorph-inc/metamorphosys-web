@@ -100,11 +100,12 @@ define(['xmljsonconverter'], function (Converter) {
     DesertFrontEnd.prototype.calculateNbrOfCfgs = function (containerId) {
         var self = this;
         self.callListeners(containerId, 'CALCULATING');
-        self.getInputXmlHash(containerId, function (err, artifact) {
+        self.getInputXmlHash(containerId, function (err, artifact, idMap) {
             var filesToAdd = {};
             if (err) {
                 console.error('Failed to create desertInput.xml: ' + err);
-                return self.callListeners(containerId, 'ERROR');
+                self.callListeners(containerId, 'ERROR');
+                return;
             }
             filesToAdd['executor_config.json'] = JSON.stringify({
                 cmd: 'run_desert.cmd',
@@ -119,19 +120,22 @@ define(['xmljsonconverter'], function (Converter) {
             artifact.addFiles(filesToAdd, function (err, hashes) {
                 if (err) {
                     console.error('Failed to add execution files to desert-input, err: ' + err);
-                    return self.callListeners(containerId, 'ERROR');
+                    self.callListeners(containerId, 'ERROR');
+                    return;
                 }
                 artifact.save(function (err, artieHash) {
                     if (err) {
                         console.error('Failed to save desert-input, err: ' + err);
-                        return self.callListeners(containerId, 'ERROR');
+                        self.callListeners(containerId, 'ERROR');
+                        return;
                     }
                     self.executorClient.createJob(artieHash, function (err, jobInfo) {
                         var intervalID,
                             atSucceedJob;
                         if (err) {
                             console.error('Creating desert-job failed: ' + err);
-                            return self.callListeners(containerId, 'ERROR');
+                            self.callListeners(containerId, 'ERROR');
+                            return;
                         }
                         console.info('Initial job-info:' + JSON.stringify(jobInfo, null, 4));
                         atSucceedJob = function (jInfo) {
@@ -142,21 +146,25 @@ define(['xmljsonconverter'], function (Converter) {
                                     i;
                                 if (err) {
                                     console.error('Getting meta-data for result failed, err: ' + err);
-                                    return self.callListeners(containerId, 'ERROR');
+                                    self.callListeners(containerId, 'ERROR');
+                                    return;
                                 }
                                 if (!metadata.content.hasOwnProperty('desertInput_configs.xml')) {
                                     console.error('Desert did not generate a "desertInput_configs.xml".');
-                                    return self.callListeners(containerId, 'ERROR');
+                                    self.callListeners(containerId, 'ERROR');
+                                    return;
                                 }
                                 if (metadata.content.hasOwnProperty('desertInput_back.xml')) {
                                     desertInfo.backFile = metadata.content['desertInput_back.xml'];
+                                    desertInfo.idMap = idMap;
                                 } else {
                                     console.warning('Desert did not generate a "desertInput_back.xml".');
                                 }
                                 self.dealWithDesertOutput(metadata.content['desertInput_configs.xml'].content, function (err, cfgsInfo) {
                                     if (err) {
                                         console.error('Errors interpreting desert output, err: ' + err);
-                                        return self.callListeners(containerId, 'ERROR');
+                                        self.callListeners(containerId, 'ERROR');
+                                        return;
                                     }
                                     //console.log('Got cfgs : ' + JSON.stringify(cfgsInfo, null, 2));
                                     keys = Object.keys(cfgsInfo);
@@ -184,7 +192,7 @@ define(['xmljsonconverter'], function (Converter) {
                                     atSucceedJob(jInfo);
                                 } else {
                                     console.error('Execution failed: ' + err);
-                                    return self.callListeners(containerId, 'ERROR');
+                                    self.callListeners(containerId, 'ERROR');
                                 }
                             });
                         }, 200);
@@ -196,42 +204,38 @@ define(['xmljsonconverter'], function (Converter) {
 
     DesertFrontEnd.prototype.getInputXmlHash = function (containerId, callback) {
         var self = this,
-            pattern = {},
+            idMap = {},
             idCounter = { count: 3 },
             desertSystem = self.getDesertSystemData(),
             rootNode = self.client.getNode(containerId),
-            rootElement = self.createElementFromNode(rootNode.getAttribute('name'), 'true', idCounter);
-
-        pattern[containerId] = { children: -1 };
+            rootElement = self.createElementFromNode(rootNode, 'true', idCounter, idMap);
 
         desertSystem.DesertSystem.Space.Element.push(rootElement);
-        self.populateElementsRec(rootNode, rootElement, idCounter);
-        self.saveInputXmlToBlobArtifact(desertSystem, callback);
+        self.populateElementsRec(rootNode, rootElement, idCounter, idMap);
+        self.saveInputXmlToBlobArtifact(desertSystem, idMap, callback);
     };
 
-    DesertFrontEnd.prototype.populateElementsRec = function (rootNode, rootElement, idCounter) {
+    DesertFrontEnd.prototype.populateElementsRec = function (rootNode, rootElement, idCounter, idMap) {
         var self = this,
             i,
             childNode,
-            name,
             elem,
             childrenIds = rootNode.getChildrenIds();
         for (i = 0; i < childrenIds.length; i += 1) {
             childNode = self.client.getNode(childrenIds[i]);
-            name = childNode.getAttribute('name');
             if (self.smartClient.isMetaTypeOf(childNode, 'Container')) {
                 if (childNode.getAttribute('Type') === 'Compound') {
-                    elem = self.createElementFromNode(name, 'true', idCounter);
+                    elem = self.createElementFromNode(childNode, 'true', idCounter, idMap);
                 } else if (childNode.getAttribute('Type') === 'Alternative') {
-                    elem = self.createElementFromNode(name, 'false', idCounter);
+                    elem = self.createElementFromNode(childNode, 'false', idCounter, idMap);
                 } else {
-                    elem = self.createElementFromNode(name, 'false', idCounter);
-                    elem.Element.push(self.createElementFromNode('null', 'false', idCounter));
+                    elem = self.createElementFromNode(childNode, 'false', idCounter, idMap);
+                    elem.Element.push(self.createElementFromNode(null, 'false', idCounter, idMap));
                 }
                 rootElement.Element.push(elem);
-                self.populateElementsRec(childNode, elem, idCounter);
+                self.populateElementsRec(childNode, elem, idCounter, idMap);
             } else if (self.smartClient.isMetaTypeOf(childNode, 'AVMComponentModel')) {
-                elem = self.createElementFromNode(name, 'false', idCounter);
+                elem = self.createElementFromNode(childNode, 'false', idCounter, idMap);
                 rootElement.Element.push(elem);
             }
         }
@@ -267,19 +271,29 @@ define(['xmljsonconverter'], function (Converter) {
         };
     };
 
-    DesertFrontEnd.prototype.createElementFromNode = function (name, decomposition, idCounter) {
+    DesertFrontEnd.prototype.createElementFromNode = function (node, decomposition, idCounter, idMap) {
+        var id,
+            name;
         idCounter.count += 1;
+        id = idCounter.count.toString();
+        if (node) {
+            name = node.getAttribute('name');
+            idMap[id] = node.getId();
+        } else {
+            name = 'null';
+            idMap[id] = null;
+        }
         return {
-            '@_id': 'id' + idCounter.count.toString(),
+            '@_id': 'id' + id,
             '@decomposition': decomposition,
-            '@externalID': idCounter.count.toString(),
-            '@id': idCounter.count.toString(),
+            '@externalID': id,
+            '@id': id,
             '@name': name,
             'Element': []
         };
     };
 
-    DesertFrontEnd.prototype.saveInputXmlToBlobArtifact = function (desertSystem, callback) {
+    DesertFrontEnd.prototype.saveInputXmlToBlobArtifact = function (desertSystem, idMap, callback) {
         var self = this,
             artifact = self.blobClient.createArtifact('desert-input'),
             inputXml = self.jsonToXml.convertToString(desertSystem);
@@ -289,8 +303,8 @@ define(['xmljsonconverter'], function (Converter) {
                 return callback(err);
             }
             console.log('desertInput.xml has hash: ' + hash);
-            callback(null, artifact);
-            });
+            callback(null, artifact, idMap);
+        });
         //callback(null, '9e9985cda011a0040054af07a579493bde67b001');
     };
 
@@ -298,18 +312,21 @@ define(['xmljsonconverter'], function (Converter) {
         var self = this;
         self.blobClient.getMetadata(hash, function (err, metadata) {
             if (err) {
-                return callback('Could not obtain metadata for desert output XML, err: ' + err);
+                callback('Could not obtain metadata for desert output XML, err: ' + err);
+                return;
             }
             //console.info(JSON.stringify(metadata, null, 2));
             self.blobClient.getObject(hash, function (err, content) {
                 var desertData;
                 if (err) {
-                    return callback('Could not get content for desert output XML, err: ' + err);
+                    callback('Could not get content for desert output XML, err: ' + err);
+                    return;
                 }
                 desertData = self.xmlToJson.convertFromBuffer(content);
                 //console.info(JSON.stringify(desertData, null, 2));
                 if (desertData instanceof Error) {
-                    return callback('Output desert XML not valid xml, err: ' + desertData.message);
+                    callback('Output desert XML not valid xml, err: ' + desertData.message);
+                    return;
                 }
 
                 if (desertData.DesertConfigurations) {
