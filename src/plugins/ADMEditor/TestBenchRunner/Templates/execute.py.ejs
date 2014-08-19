@@ -132,7 +132,7 @@ def extract_components(src_path='ACMs', dst_path='components_extracted'):
     for f_name in files:
         if f_name.endswith('.zip'):
             zippy = zipfile.ZipFile(os.path.join(src_path, f_name))
-            zippy.extractall(os.path.join(dst_path, f_name.rstrip('.zip')))
+            zippy.extractall('\\\\?\\' + os.path.join(os.getcwd(), dst_path, f_name.rstrip('.zip')))
 
 
 def import_components(mga_path, dir_path='components_extracted'):
