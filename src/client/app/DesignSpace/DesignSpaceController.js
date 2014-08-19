@@ -115,7 +115,7 @@ define(['../../js/DesertFrontEnd'], function (DesertFrontEnd) {
                         self.$scope.desertInfo = {status: 'INITIALIZED'};
                         self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
                             self.$scope.desertInfo = status;
-                            //self.growl.info(JSON.stringify(status, null, 2));
+                            self.growl.info(JSON.stringify(status, null, 2));
                             self.update();
                         });
                         self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);

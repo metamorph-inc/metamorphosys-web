@@ -137,6 +137,9 @@ define(['xmljsonconverter'], function (Converter) {
                         atSucceedJob = function (jInfo) {
                             console.info('SUCCESS! Its final JobInfo looks like : ' + JSON.stringify(jInfo, null, 4));
                             self.blobClient.getMetadata(jInfo.resultHashes.all, function (err, metadata) {
+                                var desertInfo = { status: 'READY', constraints: {}, backFile: null},
+                                    keys,
+                                    i;
                                 if (err) {
                                     console.error('Getting meta-data for result failed, err: ' + err);
                                     return self.callListeners(containerId, 'ERROR');
@@ -145,17 +148,22 @@ define(['xmljsonconverter'], function (Converter) {
                                     console.error('Desert did not generate a "desertInput_configs.xml".');
                                     return self.callListeners(containerId, 'ERROR');
                                 }
+                                if (metadata.content.hasOwnProperty('desertInput_back.xml')) {
+                                    desertInfo.backFile = metadata.content['desertInput_back.xml'];
+                                } else {
+                                    console.warning('Desert did not generate a "desertInput_back.xml".');
+                                }
                                 self.dealWithDesertOutput(metadata.content['desertInput_configs.xml'].content, function (err, cfgsInfo) {
                                     if (err) {
                                         console.error('Errors interpreting desert output, err: ' + err);
                                         return self.callListeners(containerId, 'ERROR');
                                     }
-
-                                    console.log('Got cfgs : ' + JSON.stringify(cfgsInfo, null, 2));
-                                    self.results[containerId] = {status: 'READY', constraints: {
-                                        All: cfgsInfo.All['@NumConfigs'],
-                                        None: cfgsInfo.None['@NumConfigs']
-                                    }};
+                                    //console.log('Got cfgs : ' + JSON.stringify(cfgsInfo, null, 2));
+                                    keys = Object.keys(cfgsInfo);
+                                    for (i = 0; i < keys.length; i += 1) {
+                                        desertInfo.constraints[keys[i]] = cfgsInfo[keys[i]]['@NumConfigs'];
+                                    }
+                                    self.results[containerId] = desertInfo;
                                     self.callListeners(containerId, 'READY');
                                 });
                             });
@@ -328,10 +336,10 @@ define(['xmljsonconverter'], function (Converter) {
         'SET DESERT_EXE="%META_PATH%\\bin\\DesertTool.exe"',
         '   IF EXIST %DESERT_EXE% (',
         '       REM Installer machine.',
-        '       %DESERT_EXE% desertInput.xml /m',
+        '       %DESERT_EXE% desertInput.xml /c "applyAll"',
         '   ) ELSE IF EXIST "%META_PATH%\\src\\bin\\DesertTool.exe" (',
         '       REM Developer machine.',
-        '       "%META_PATH%\\src\\bin\\DesertTool.exe" desertInput.xml /m',
+        '       "%META_PATH%\\src\\bin\\DesertTool.exe" desertInput.xml /c "applyAll"',
         '   ) ELSE (',
         '       ECHO on',
         '       ECHO Could not find DesertTool.exe!',
