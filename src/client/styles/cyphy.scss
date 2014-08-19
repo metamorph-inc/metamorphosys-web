@@ -1,0 +1,23 @@
+.main-navigator-container {
+
+  .dropdown-navigator {
+    background: linear-gradient(#fff, #eee);
+    border-bottom: 1px solid #ddd;
+
+    color: #222;
+
+    > li:not(.separator):hover {
+      color: #fff;
+      background-color: #222;
+    }
+
+    li.cyphy-root{
+      background-image: url(../images/cyphy-icon.png);
+      background-position: 8px 3px;
+      background-repeat: no-repeat;
+      padding-left: 46px;
+    }
+
+  }
+
+}

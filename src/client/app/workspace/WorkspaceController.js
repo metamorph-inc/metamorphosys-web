@@ -8,10 +8,12 @@
 define([], function () {
     "use strict";
 
-    var WorkspaceController = function ($scope, $moment, $modal, $upload, smartClient, Chance, growl) {
+    var WorkspaceController = function ($scope, $rootScope, $moment, $modal, $upload, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
+        self.$rootScope = $rootScope;
+
         self.smartClient = smartClient;
         self.$modal = $modal;
         self.$moment = $moment;
@@ -27,6 +29,12 @@ define([], function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
+
+        this.$rootScope.workspaces = this.$scope.workspaces;
+
+        this.$rootScope.$emit('navigatorStructureChange');
+
+        console.log(this.$rootScope.workspaces);
     };
 
     WorkspaceController.ModalInstanceController = function ($scope, $modalInstance, data) {
@@ -48,6 +56,8 @@ define([], function () {
         // scope model
         self.$scope.search = {};
         self.$scope.workspaces = {};
+
+        self.$rootScope.workspaces = self.$scope.workspaces;
 
         // Pager
         self.$scope.pager = {};
