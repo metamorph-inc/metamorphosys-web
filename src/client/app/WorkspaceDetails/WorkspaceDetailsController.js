@@ -8,12 +8,13 @@
 define([], function () {
     "use strict";
 
-    var WorkspaceDetailsController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
+    var WorkspaceDetailsController = function ($scope, $rootScope, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
+        self.$rootScope = $rootScope;
         self.smartClient = smartClient;
         self.growl = growl;
         self.territories = {};
@@ -58,6 +59,11 @@ define([], function () {
             id;
 
         self.$scope.name = self.chance.word();
+        self.$rootScope.$emit('navigatorStructureChange', {
+            id: 'secondItem',
+            label: self.$scope.name,
+            menu: []
+        });
         self.$scope.description = self.chance.sentence();
         self.$scope.lastUpdated = {
             time: self.chance.date(),
@@ -108,6 +114,7 @@ define([], function () {
                 if (event.eid === self.$scope.id) {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
+                        self.$rootScope.$emit('navigatorStructureChange', self.getNavigatorStructure());
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         if (event.etype === 'load') {
                             self.$scope.exportDesign = self.initExportDesign();
@@ -1376,6 +1383,53 @@ define([], function () {
             }
         }
         return designComponents;
+    };
+
+    WorkspaceDetailsController.prototype.getNavigatorStructure = function () {
+        var self = this,
+            firstMenu,
+            secondMenu;
+
+        firstMenu = {
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root'
+//            menu: [{
+//                id: 'top',
+//                items: [
+//                    {
+//                        id: 'goto',
+//                        label: 'Goto',
+//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+//                        action: function () {
+//                            window.location.href('#/workspace')
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }]
+        };
+
+        secondMenu = {
+            id: 'workspace',
+            label: self.$scope.name,
+            itemClass: 'workspace'
+//            menu: [{
+//                id: 'top',
+//                items: [
+//                    {
+//                        id: 'open',
+//                        label: 'Open in editor',
+//                        iconClass: 'glyphicon glyphicon-edit',
+//                        action: function () {
+//                            window.location.href(self.getUrl(self.$scope.id));
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }]
+        };
+        return { items: [ firstMenu, secondMenu], separator: true};
     };
 
     return WorkspaceDetailsController;

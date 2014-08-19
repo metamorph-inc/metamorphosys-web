@@ -22,6 +22,26 @@ define([], function () {
         // chance is only for testing purposes
         self.chance = Chance ? new Chance() : null;
 
+        this.$rootScope.$emit('navigatorStructureChange', { items: [{
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root'
+//            menu: [{
+//                id: 'top',
+//                items: [
+//                    {
+//                        id: 'open',
+//                        label: 'Open in editor',
+//                        iconClass: 'glyphicon glyphicon-edit',
+//                        action: function () {
+//                            window.location.href('/?project=ADMEditor');
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }]
+        }]});
+
         self.initialize();
     };
 
@@ -29,14 +49,16 @@ define([], function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
-
-        this.$rootScope.workspaces = this.$scope.workspaces;
-
-        this.$rootScope.$emit('navigatorStructureChange');
-
-        console.log(this.$rootScope.workspaces);
     };
-
+//        this.$rootScope.workspaces = this.$scope.workspaces;
+//
+//        this.$rootScope.$emit('navigatorStructureChange', {
+//            id: 'secondItem',
+//            label: self.$scope.name,
+//            menu: []
+//        });
+//
+//        console.log(this.$rootScope.workspaces);
     WorkspaceController.ModalInstanceController = function ($scope, $modalInstance, data) {
 
         $scope.data = data;
