@@ -2,8 +2,6 @@
   background: linear-gradient(white, #eeeeee);
   border-bottom: 1px solid #ddd;
   color: #222; }
-  .main-navigator-container .dropdown-navigator > li {
-    padding: .4em 1em; }
   .main-navigator-container .dropdown-navigator > li:not(.separator):hover {
     color: #fff;
     background-color: #222; }
