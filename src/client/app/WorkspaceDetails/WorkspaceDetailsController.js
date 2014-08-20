@@ -1396,20 +1396,11 @@ define([], function () {
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
-            menu: [{
-                id: 'top',
-                items: [
-                    {
-                        id: 'goto',
-                        label: 'Navigate back...',
-                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-                        action: function () {
-                            window.location.href = '#/workspace';
-                        },
-                        actionData: {}
-                    }
-                ]
-            }]
+            action: function () {
+                window.location.href = '#/workspace';
+            },
+            actionData: {},
+            menu: []
         };
 
         secondMenu = {

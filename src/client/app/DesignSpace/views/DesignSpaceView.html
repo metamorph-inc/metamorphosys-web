@@ -4,7 +4,7 @@
 
     <div class="design-space-description">{{ description }}</div>
 
-    <div class="design-space-size">
+    <div data-ng-hide=" !desertInfo.status || desertInfo.status === 'LISTENING'" class="design-space-size">
         <h3>Design space size</h3>
         <ul>
             <li data-ng-show=" !desertInfo.constraints" class="size-status">Status: {{desertInfo.status}}</li>
@@ -14,16 +14,20 @@
 </header>
 
 <script type="text/ng-template"  id="tree_item_renderer.html">
-    {{container.name}} {{[container.type]}}
+    <input ng-if="containers[container.parentId].type === 'Alternative' || containers[container.parentId].type === 'Optional'" type="checkbox" ng-model="container.enabled"> {{container.name}} {{[container.type]}}
     <ul>
-        <li data-ng-repeat="container in container.containers | orderObjectBy: 'name'" ng-include="'tree_item_renderer.html'"></li>
-        <li data-ng-repeat="component in container.components | orderObjectBy: 'name'">{{component.name}}</li>
+        <li data-ng-repeat="container in container.containers | orderObjectBy: 'name'" ng-include="'tree_item_renderer.html'">
+        </li>
+        <li ng-hide="hideCompoundComponents && container.type === 'Compound'" data-ng-repeat="component in container.components | orderObjectBy: 'name'">
+            <input ng-if="container.type === 'Alternative' || container.type === 'Optional'" type="checkbox" ng-model="component.enabled">
+            {{component.name}}
+        </li>
+        <li ng-if="container.type === 'Optional'"><input type="checkbox" ng-model="component.enabled">null</li>
     </ul>
 </script>
 
 <div class="row">
 <div class="design-space col-lg-8 col-md-12 col-sm-24 col-xs-24">
-
     <h4>Sub Systems</h4>
     <ul>
         <li ng-repeat="container in rootNode" ng-include="'tree_item_renderer.html'"></li>

@@ -63,6 +63,8 @@ define(['../../js/DesertFrontEnd',
         self.$scope.containers = {};
         self.$scope.components = {};
         self.$scope.rootNode = [];
+        self.$scope.desertInfo = {};
+        self.$scope.hideCompoundComponents = false;
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -124,7 +126,6 @@ define(['../../js/DesertFrontEnd',
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.mainNavigator.items = self.getNavigatorStructure(nodeObj);
                         self.$scope.mainNavigator.separator = true;
-                        self.$scope.desertInfo = {status: 'INITIALIZED'};
                         self.addContainer(events[i].eid);
                         self.$scope.rootNode = [self.$scope.containers[self.$scope.id]];
                         self.desertFrontEnd.addSimpleListener(self.$scope.id, function (status) {
@@ -141,7 +142,6 @@ define(['../../js/DesertFrontEnd',
                                 });
                             }
                         });
-                        self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
                     } else if (event.etype === 'unload') {
                         console.error('TODO: not implemented yet.');
                     }
@@ -185,7 +185,8 @@ define(['../../js/DesertFrontEnd',
                 date: new Date(),
                 type: nodeObj.getAttribute('Type'),
                 containers: {},
-                components: {}
+                components: {},
+                enabled: true
             };
             if (self.$scope.containers[parentId]) {
                 self.$scope.containers[parentId].containers[id] = container;
@@ -239,7 +240,8 @@ define(['../../js/DesertFrontEnd',
                 name: nodeObj.getAttribute('name'),
                 description: nodeObj.getAttribute('INFO'),
                 avmId: nodeObj.getAttribute('ID'),
-                date: new Date()
+                date: new Date(),
+                enabled: true
             };
             if (self.$scope.containers[parentId]) {
                 self.$scope.containers[parentId].components[id] = component;
@@ -299,41 +301,23 @@ define(['../../js/DesertFrontEnd',
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
-            menu: [{
-                id: 'top',
-                items: [
-                    {
-                        id: 'goto',
-                        label: 'Navigate back...',
-                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-                        action: function () {
-                            window.location.href = '#/workspace';
-                        },
-                        actionData: {}
-                    }
-                ]
-            }]
+            action: function () {
+                window.location.href = '#/workspace';
+            },
+            actionData: {},
+            menu: []
         };
 
         secondMenu = {
             id: 'workspace',
             label: parentNode.getAttribute('name'),
             itemClass: 'workspace',
-            menu: [{
-                id: 'top',
-                items: [
-                    {
-                        id: 'goto',
-                        label: 'Navigate back...',
-                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-                        action: function () {
-                            console.log('#/workspaceDetails/' + parentNode.getId());
-                            window.location.href = '#/workspaceDetails/' + parentNode.getId();
-                        },
-                        actionData: {}
-                    }
-                ]
-            }]
+            action: function () {
+                console.log('#/workspaceDetails/' + parentNode.getId());
+                window.location.href = '#/workspaceDetails/' + parentNode.getId();
+            },
+            actionData: {},
+            menu: []
         };
 
         thirdMenu = {
@@ -344,12 +328,22 @@ define(['../../js/DesertFrontEnd',
                 id: 'top',
                 items: [
                     {
-                        id: 'goto',
-                        label: 'Navigate back...',
-                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+                        id: 'hide',
+                        label: 'Show/Hide Compound Components',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-filter',
                         action: function () {
-                            console.log('#/workspaceDetails/' + parentNode.getId());
-                            window.location.href = '#/workspaceDetails/' + parentNode.getId();
+                            self.$scope.hideCompoundComponents = !self.$scope.hideCompoundComponents;
+                        },
+                        actionData: {}
+                    },
+                    {
+                        id: 'desert',
+                        label: 'Calculate Design Space',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-th',
+                        action: function () {
+                            self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
                         },
                         actionData: {}
                     }
