@@ -122,7 +122,8 @@ define(['../../js/DesertFrontEnd',
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
-                        self.$rootScope.$emit('navigatorStructureChange', self.getNavigatorStructure(nodeObj));
+                        self.$scope.mainNavigator.items = self.getNavigatorStructure(nodeObj);
+                        self.$scope.mainNavigator.separator = true;
                         self.$scope.desertInfo = {status: 'INITIALIZED'};
                         self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
                             self.$scope.desertInfo = status;
@@ -278,44 +279,46 @@ define(['../../js/DesertFrontEnd',
             return {};
         }
 
+        console.log('Work-space : ' + parentNode.getId());
         firstMenu = {
             id: 'root',
             label: 'ADMEditor',
-            itemClass: 'cyphy-root'
-//            menu: [{
-//                id: 'top',
-//                items: [
-//                    {
-//                        id: 'goto',
-//                        label: 'Goto',
-//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-//                        action: function () {
-//                            window.location.href('#/workspace')
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }]
+            itemClass: 'cyphy-root',
+            menu: [{
+                id: 'top',
+                items: [
+                    {
+                        id: 'goto',
+                        label: 'Navigate back...',
+                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+                        action: function () {
+                            window.location.href = '#/workspace';
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         };
 
         secondMenu = {
             id: 'workspace',
             label: parentNode.getAttribute('name'),
-            itemClass: 'workspace'
-//            menu: [{
-//                id: 'top',
-//                items: [
-//                    {
-//                        id: 'goto',
-//                        label: 'Goto',
-//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-//                        action: function () {
-//                            window.location.href('#/workspaceDetails//808608105');
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }]
+            itemClass: 'workspace',
+            menu: [{
+                id: 'top',
+                items: [
+                    {
+                        id: 'goto',
+                        label: 'Navigate back...',
+                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+                        action: function () {
+                            console.log('#/workspaceDetails/' + parentNode.getId());
+                            window.location.href = '#/workspaceDetails/' + parentNode.getId();
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         };
 
         thirdMenu = {
@@ -325,7 +328,7 @@ define(['../../js/DesertFrontEnd',
             menu: []
         };
 
-        return { items: [ firstMenu, secondMenu, thirdMenu], separator: true};
+        return [ firstMenu, secondMenu, thirdMenu];
     };
     return DesignSpaceController;
 });

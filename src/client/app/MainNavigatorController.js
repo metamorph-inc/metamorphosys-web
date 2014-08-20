@@ -36,20 +36,16 @@ define([], function () {
 //            }]
         };
 
-        $scope.navigator = {
-            items: [
-                firstMenu
-            ]
-        };
+        $scope.mainNavigator.items = [firstMenu];
+        $scope.navigator = $scope.mainNavigator;
+        //$scope.workspaces = $rootScope.workspaces;
 
-        $scope.workspaces = $rootScope.workspaces;
-
-        rootScopeUnbind = $rootScope.$on('navigatorStructureChange', function (event, newNavigator) {
-            $scope.navigator = newNavigator;
-            self.update();
-        });
-
-        $scope.$on('$destroy', rootScopeUnbind);
+//        rootScopeUnbind = $rootScope.$on('navigatorStructureChange', function (event, newNavigator) {
+//            $scope.navigator = newNavigator;
+//            self.update();
+//        });
+//
+//        $scope.$on('$destroy', rootScopeUnbind);
 
 //    secondMenu = {
 //      id: 'secondItem',

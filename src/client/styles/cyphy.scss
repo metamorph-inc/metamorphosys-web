@@ -3,8 +3,11 @@
   .dropdown-navigator {
     background: linear-gradient(#fff, #eee);
     border-bottom: 1px solid #ddd;
-
     color: #222;
+
+    > li {
+      padding: .4em 1em;
+    }
 
     > li:not(.separator):hover {
       color: #fff;

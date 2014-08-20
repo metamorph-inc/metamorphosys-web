@@ -114,7 +114,8 @@ define([], function () {
                 if (event.eid === self.$scope.id) {
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
-                        self.$rootScope.$emit('navigatorStructureChange', self.getNavigatorStructure());
+                        self.$scope.mainNavigator.items = self.getNavigatorStructure();
+                        self.$scope.mainNavigator.separator = true;
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         if (event.etype === 'load') {
                             self.$scope.exportDesign = self.initExportDesign();
@@ -1393,21 +1394,21 @@ define([], function () {
         firstMenu = {
             id: 'root',
             label: 'ADMEditor',
-            itemClass: 'cyphy-root'
-//            menu: [{
-//                id: 'top',
-//                items: [
-//                    {
-//                        id: 'goto',
-//                        label: 'Goto',
-//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
-//                        action: function () {
-//                            window.location.href('#/workspace')
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }]
+            itemClass: 'cyphy-root',
+            menu: [{
+                id: 'top',
+                items: [
+                    {
+                        id: 'goto',
+                        label: 'Navigate back...',
+                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+                        action: function () {
+                            window.location.href = '#/workspace';
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         };
 
         secondMenu = {
@@ -1429,7 +1430,7 @@ define([], function () {
 //                ]
 //            }]
         };
-        return { items: [ firstMenu, secondMenu], separator: true};
+        return [ firstMenu, secondMenu];
     };
 
     return WorkspaceDetailsController;

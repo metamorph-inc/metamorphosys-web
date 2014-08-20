@@ -22,7 +22,7 @@ define([], function () {
         // chance is only for testing purposes
         self.chance = Chance ? new Chance() : null;
 
-        this.$rootScope.$emit('navigatorStructureChange', { items: [{
+        self.$scope.mainNavigator.items = [{
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root'
@@ -40,8 +40,8 @@ define([], function () {
 //                    }
 //                ]
 //            }]
-        }]});
-
+        }];
+        self.$scope.mainNavigator.separator = false;
         self.initialize();
     };
 
@@ -77,6 +77,7 @@ define([], function () {
 
         // scope model
         self.$scope.search = {};
+        self.$scope.workspaces = {};
 
         console.log('W: ', self.$scope.workspaces);
 

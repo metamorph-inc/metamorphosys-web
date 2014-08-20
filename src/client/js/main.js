@@ -236,7 +236,7 @@ require(
               'angularFileUpload', 'angular-growl', 'ngAnimate',
               'isis.ui.dropdownNavigator'
             ] ).run(function($rootScope) {
-              $rootScope.workspaces = { };
+              $rootScope.mainNavigator = { };
             });
 
           WebGMEGlobal.WebGMEApp = WebGMEApp;
