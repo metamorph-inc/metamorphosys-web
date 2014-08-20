@@ -12,16 +12,6 @@ define([], function () {
     var firstMenu,
       secondMenu;
 
-      console.log($scope);
-
-      $scope.workspaces = $rootScope.workspaces;
-
-      var rootScopeUnbind = $rootScope.$on('navigatorStructureChange', function(){
-        $scope.workspaces = $rootScope.workspaces;
-        console.log($rootScope.workspaces);
-      });
-
-      $scope.$on('$destroy', rootScopeUnbind);
 
     firstMenu = {
       id: 'root',

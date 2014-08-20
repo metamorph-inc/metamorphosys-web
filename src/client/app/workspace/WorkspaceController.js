@@ -29,12 +29,6 @@ define([], function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
-
-        this.$rootScope.workspaces = this.$scope.workspaces;
-
-        this.$rootScope.$emit('navigatorStructureChange');
-
-        console.log(this.$rootScope.workspaces);
     };
 
     WorkspaceController.ModalInstanceController = function ($scope, $modalInstance, data) {
@@ -55,9 +49,8 @@ define([], function () {
 
         // scope model
         self.$scope.search = {};
-        self.$scope.workspaces = {};
 
-        self.$rootScope.workspaces = self.$scope.workspaces;
+        console.log('W: ', self.$scope.workspaces);
 
         // Pager
         self.$scope.pager = {};
