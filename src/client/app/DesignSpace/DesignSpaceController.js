@@ -8,12 +8,13 @@ define(['../../js/DesertFrontEnd',
         'xmljsonconverter'], function (DesertFrontEnd, Converter) {
     'use strict';
 
-    var DesignSpaceController = function ($scope, $moment, $routeParams, smartClient, Chance, growl) {
+    var DesignSpaceController = function ($scope, $rootScope, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
+        self.$rootScope = $rootScope;
         self.smartClient = smartClient;
         self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
@@ -121,6 +122,7 @@ define(['../../js/DesertFrontEnd',
                     if (event.etype === 'load' || event.etype === 'update') {
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
+                        self.$rootScope.$emit('navigatorStructureChange', self.getNavigatorStructure(nodeObj));
                         self.$scope.desertInfo = {status: 'INITIALIZED'};
                         self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
                             self.$scope.desertInfo = status;
@@ -260,6 +262,71 @@ define(['../../js/DesertFrontEnd',
         });
     };
 
+    DesignSpaceController.prototype.getNavigatorStructure = function (node) {
+        var self = this,
+            firstMenu,
+            parentNode,
+            secondMenu,
+            thirdMenu;
+
+        parentNode = self.smartClient.client.getNode(node.getParentId());
+        while (parentNode && self.smartClient.isMetaTypeOf(parentNode, 'WorkSpace') === false) {
+            parentNode = self.smartClient.client.getNode(parentNode.getParentId());
+        }
+        if (!parentNode) {
+            console.error('No workspace for design!!');
+            return {};
+        }
+
+        firstMenu = {
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root'
+//            menu: [{
+//                id: 'top',
+//                items: [
+//                    {
+//                        id: 'goto',
+//                        label: 'Goto',
+//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+//                        action: function () {
+//                            window.location.href('#/workspace')
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }]
+        };
+
+        secondMenu = {
+            id: 'workspace',
+            label: parentNode.getAttribute('name'),
+            itemClass: 'workspace'
+//            menu: [{
+//                id: 'top',
+//                items: [
+//                    {
+//                        id: 'goto',
+//                        label: 'Goto',
+//                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+//                        action: function () {
+//                            window.location.href('#/workspaceDetails//808608105');
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }]
+        };
+
+        thirdMenu = {
+            id: 'designSpace',
+            label: self.$scope.name,
+            itemClass: 'designSpace',
+            menu: []
+        };
+
+        return { items: [ firstMenu, secondMenu, thirdMenu], separator: true};
+    };
     return DesignSpaceController;
 });
 
