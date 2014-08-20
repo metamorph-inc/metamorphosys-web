@@ -228,9 +228,9 @@ define([], function () {
                 if (events[j].etype === 'unload') {
                     if (component.interfaces.connectors[events[j].eid]) {
                         delete component.interfaces.connectors[events[j].eid];
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
-                        }
+//                        if (self.territories.hasOwnProperty(events[j].eid)) {
+//                            self.smartClient.removeUI(self.territories[events[j].eid]);
+//                        }
                     } else if (component.interfaces.properties[events[j].eid]) {
                         delete component.interfaces.properties[events[j].eid];
                     } else if (component.domains[events[j].eid]) {
@@ -245,14 +245,15 @@ define([], function () {
                             id: events[j].eid,
                             domainPorts: {}
                         };
-                        // Add a watcher to the connector.
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
-                        }
                         component.interfaces.connectors[events[j].eid] = newConnector;
-                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
-                            [],
-                            self.getConnectorEventCallback(component, newConnector));
+//                        // Add a watcher to the connector.
+//                        if (self.territories.hasOwnProperty(events[j].eid)) {
+//                            self.smartClient.removeUI(self.territories[events[j].eid]);
+//                        }
+//                        component.interfaces.connectors[events[j].eid] = newConnector;
+//                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
+//                            [],
+//                            self.getConnectorEventCallback(component, newConnector));
                     } else if (events[j].etype === 'update') {
                         if (component.interfaces.connectors[events[j].eid]) {
                             component.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
