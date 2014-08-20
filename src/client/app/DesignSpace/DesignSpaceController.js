@@ -62,7 +62,7 @@ define(['../../js/DesertFrontEnd',
         self.$scope.lastUpdated = null;
         self.$scope.containers = {};
         self.$scope.components = {};
-
+        self.$scope.rootNode = [];
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -125,7 +125,9 @@ define(['../../js/DesertFrontEnd',
                         self.$scope.mainNavigator.items = self.getNavigatorStructure(nodeObj);
                         self.$scope.mainNavigator.separator = true;
                         self.$scope.desertInfo = {status: 'INITIALIZED'};
-                        self.desertFrontEnd.addSimpleListener(self.$routeParams.id, function (status) {
+                        self.addContainer(events[i].eid);
+                        self.$scope.rootNode = [self.$scope.containers[self.$scope.id]];
+                        self.desertFrontEnd.addSimpleListener(self.$scope.id, function (status) {
                             self.$scope.desertInfo = status;
                             //self.growl.info(JSON.stringify(status, null, 2));
                             self.update();
@@ -175,9 +177,6 @@ define(['../../js/DesertFrontEnd',
         if (self.smartClient) {
             nodeObj = self.smartClient.client.getNode(id);
             parentId = nodeObj.getParentId();
-            if (self.$scope.containers[parentId]) {
-                self.$scope.containers[parentId].containersCount += 1;
-            }
             container = {
                 id: id,
                 parentId: parentId,
@@ -185,9 +184,12 @@ define(['../../js/DesertFrontEnd',
                 description: nodeObj.getAttribute('INFO'),
                 date: new Date(),
                 type: nodeObj.getAttribute('Type'),
-                componentsCount: 0,
-                containersCount: 0
+                containers: {},
+                components: {}
             };
+            if (self.$scope.containers[parentId]) {
+                self.$scope.containers[parentId].containers[id] = container;
+            }
         } else {
             container = {
                 id: id,
@@ -225,15 +227,13 @@ define(['../../js/DesertFrontEnd',
     DesignSpaceController.prototype.addComponent = function (id) {
         var self = this,
             nodeObj,
+            component,
             parentId;
 
         if (self.smartClient) {
             nodeObj = self.smartClient.client.getNode(id);
             parentId = nodeObj.getParentId();
-            if (self.$scope.containers[parentId]) {
-                self.$scope.containers[parentId].componentsCount += 1;
-            }
-            self.$scope.components[id] = {
+            component = {
                 id: id,
                 parentId: parentId,
                 name: nodeObj.getAttribute('name'),
@@ -241,6 +241,21 @@ define(['../../js/DesertFrontEnd',
                 avmId: nodeObj.getAttribute('ID'),
                 date: new Date()
             };
+            if (self.$scope.containers[parentId]) {
+                self.$scope.containers[parentId].components[id] = component;
+            }
+        } else {
+            component = {
+                id: id,
+                name: self.chance.word(),
+                description: self.chance.sentence(),
+                date: self.chance.date(),
+                avmId: self.chance.guid
+            };
+        }
+
+        if (component) {
+            self.$scope.components[id] = component;
         }
     };
 
@@ -325,11 +340,26 @@ define(['../../js/DesertFrontEnd',
             id: 'designSpace',
             label: self.$scope.name,
             itemClass: 'designSpace',
-            menu: []
+            menu: [{
+                id: 'top',
+                items: [
+                    {
+                        id: 'goto',
+                        label: 'Navigate back...',
+                        iconClass: 'glyphicon glyphicon-circle-arrow-left',
+                        action: function () {
+                            console.log('#/workspaceDetails/' + parentNode.getId());
+                            window.location.href = '#/workspaceDetails/' + parentNode.getId();
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         };
 
         return [ firstMenu, secondMenu, thirdMenu];
     };
+
     return DesignSpaceController;
 });
 

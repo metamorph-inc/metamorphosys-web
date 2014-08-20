@@ -13,26 +13,36 @@
     </div>
 </header>
 
-    <div class="row">
+<script type="text/ng-template"  id="tree_item_renderer.html">
+    {{container.name}} {{[container.type]}}
+    <ul>
+        <li data-ng-repeat="container in container.containers | orderObjectBy: 'name'" ng-include="'tree_item_renderer.html'"></li>
+        <li data-ng-repeat="component in container.components | orderObjectBy: 'name'">{{component.name}}</li>
+    </ul>
+</script>
+
+<div class="row">
 <div class="design-space col-lg-8 col-md-12 col-sm-24 col-xs-24">
 
     <h4>Sub Systems</h4>
-
-    <ul class="list-group">
-        <!-- One container item -->
-        <li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'id'" data-id="{{ container.id }}">
-
-            <!-- Header -->
-            <a class="container-name" href="">{{ container.name }}</a>
-            <div>Type: {{container.type}}</div>
-            <div>Number of Components: {{container.componentsCount}}</div>
-            <div>Number of Containers: {{container.containersCount}}</div>
-
-            <div>{{ container.description }}</div>
-
-            <div>Updated <span am-time-ago="container.date"></span></div>
-        </li>
+    <ul>
+        <li ng-repeat="container in rootNode" ng-include="'tree_item_renderer.html'"></li>
     </ul>
+    <!--<ul class="list-group">-->
+        <!--&lt;!&ndash; One container item &ndash;&gt;-->
+        <!--<li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'id'" data-id="{{ container.id }}">-->
+
+            <!--&lt;!&ndash; Header &ndash;&gt;-->
+            <!--<a class="container-name" href="">{{ container.name }}</a>-->
+            <!--<div>Type: {{container.type}}</div>-->
+            <!--<div>Number of Components: {{container.componentsCount}}</div>-->
+            <!--<div>Number of Containers: {{container.containersCount}}</div>-->
+
+            <!--<div>{{ container.description }}</div>-->
+
+            <!--<div>Updated <span am-time-ago="container.date"></span></div>-->
+        <!--</li>-->
+    <!--</ul>-->
 </div>
 
 <div class="components col-lg-4 col-md-6 col-sm-12 col-xs-12">
