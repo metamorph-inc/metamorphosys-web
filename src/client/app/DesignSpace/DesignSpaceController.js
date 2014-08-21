@@ -65,6 +65,7 @@ define(['../../js/DesertFrontEnd',
         self.$scope.rootNode = [];
         self.$scope.desertInfo = {};
         self.$scope.hideCompoundComponents = false;
+        self.$scope.desertCfgs = {};
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -133,12 +134,22 @@ define(['../../js/DesertFrontEnd',
                             //self.growl.info(JSON.stringify(status, null, 2));
                             self.update();
                             if (status.backFile) {
-                                self.getDesertOutputObject(status.backFile.content, function (err, desertObj) {
+                                self.getDesertDesertBackSystem(status.backFile.content, function (err, desertBackSystem) {
+                                    var i,
+                                        cfg;
                                     if (err) {
                                         console.error(err);
                                         return;
                                     }
-                                    //TODO: use desertObj and idMap to display configurations.
+                                    for (i = 0; i < desertBackSystem.Configuration.length; i += 1) {
+                                        cfg = desertBackSystem.Configuration[i];
+                                        self.$scope.desertCfgs[cfg['@id']] = {
+                                            name: cfg['@name'],
+                                            id: cfg['@id'],
+                                            checked: false
+                                        };
+                                    }
+                                    self.update();
                                 });
                             }
                         });
@@ -261,7 +272,7 @@ define(['../../js/DesertFrontEnd',
         }
     };
 
-    DesignSpaceController.prototype.getDesertOutputObject = function (hash, callback) {
+    DesignSpaceController.prototype.getDesertDesertBackSystem = function (hash, callback) {
         var self = this;
 
         self.smartClient.blobClient.getObject(hash, function (err, content) {
@@ -276,7 +287,7 @@ define(['../../js/DesertFrontEnd',
                 callback('Output desert XML not valid xml, err: ' + desertObject.message);
                 return;
             }
-            callback(null, desertObject);
+            callback(null, desertObject.DesertBackSystem);
         });
     };
 

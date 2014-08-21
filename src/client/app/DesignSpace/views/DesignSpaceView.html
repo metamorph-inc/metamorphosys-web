@@ -27,7 +27,7 @@
 </script>
 
 <div class="row">
-<div class="design-space col-lg-8 col-md-12 col-sm-24 col-xs-24">
+<div class="design-space col-lg-6 col-md-9 col-sm-18 col-xs-18">
     <h4>Sub Systems</h4>
     <ul>
         <li ng-repeat="container in rootNode" ng-include="'tree_item_renderer.html'"></li>
@@ -48,8 +48,18 @@
         <!--</li>-->
     <!--</ul>-->
 </div>
+<div class="configurations col-lg-3 col-md-4.5 col-sm-9 col-xs-9">
 
-<div class="components col-lg-4 col-md-6 col-sm-12 col-xs-12">
+    <h4>Configurations</h4>
+
+    <ul>
+        <li data-ng-repeat="cfg in desertCfgs | orderObjectBy: 'name'">
+            <input type="checkbox" ng-model="cfg.checked"> {{cfg['name']}}
+        </li>
+    </ul>
+</div>
+
+<div class="components col-lg-3 col-md-4.5 col-sm-9 col-xs-9">
 
         <h4>Used Components</h4>
 
