@@ -65,7 +65,10 @@ define(['../../js/DesertFrontEnd',
         self.$scope.rootNode = [];
         self.$scope.desertInfo = {};
         self.$scope.hideCompoundComponents = false;
-        self.$scope.desertCfgs = {};
+        self.$scope.desert = {
+            cfgs:  {},
+            selectedCfg: null
+        };
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -135,20 +138,33 @@ define(['../../js/DesertFrontEnd',
                             self.update();
                             if (status.backFile) {
                                 self.getDesertDesertBackSystem(status.backFile.content, function (err, desertBackSystem) {
-                                    var i,
-                                        cfg;
+                                    var j,
+                                        k,
+                                        cfg,
+                                        elem,
+                                        altAss,
+                                        elemIdToPath = {};
                                     if (err) {
                                         console.error(err);
                                         return;
                                     }
-                                    for (i = 0; i < desertBackSystem.Configuration.length; i += 1) {
-                                        cfg = desertBackSystem.Configuration[i];
-                                        self.$scope.desertCfgs[cfg['@id']] = {
+                                    for (j = 0; j < desertBackSystem.Element.length; j += 1) {
+                                        elem = desertBackSystem.Element[j];
+                                        elemIdToPath[elem['@_id']] = status.idMap[elem['@externalID']];
+                                    }
+                                    for (j = 0; j < desertBackSystem.Configuration.length; j += 1) {
+                                        cfg = desertBackSystem.Configuration[j];
+                                        self.$scope.desert.cfgs[cfg['@id']] = {
                                             name: cfg['@name'],
                                             id: cfg['@id'],
-                                            checked: false
+                                            alternativeAssignments: {}
                                         };
+                                        for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
+                                            altAss = cfg.AlternativeAssignment[k];
+                                            self.$scope.desert.cfgs[cfg['@id']].alternativeAssignments[elemIdToPath[altAss['@alternative_end_']]] = true;
+                                        }
                                     }
+                                    self.$scope.desert.selectedCfg = self.$scope.desert.cfgs['1'];
                                     self.update();
                                 });
                             }

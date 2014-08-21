@@ -14,13 +14,14 @@
 </header>
 
 <script type="text/ng-template"  id="tree_item_renderer.html">
-    <input ng-if="containers[container.parentId].type === 'Alternative' || containers[container.parentId].type === 'Optional'" type="checkbox" ng-model="container.enabled"> {{container.name}} {{[container.type]}}
+    <!--<input ng-if="containers[container.parentId].type === 'Alternative' || containers[container.parentId].type === 'Optional'" type="checkbox" ng-model="container.enabled">-->
+    {{container.name}} {{[container.type]}}
     <ul>
-        <li data-ng-repeat="container in container.containers | orderObjectBy: 'name'" ng-include="'tree_item_renderer.html'">
+        <li ng-class="{bold: desert.selectedCfg && desert.selectedCfg.alternativeAssignments[container.id]}" data-ng-repeat="container in container.containers | orderObjectBy: 'name'" ng-include="'tree_item_renderer.html'">
         </li>
-        <li ng-hide="hideCompoundComponents && container.type === 'Compound'" data-ng-repeat="component in container.components | orderObjectBy: 'name'">
-            <input ng-if="container.type === 'Alternative' || container.type === 'Optional'" type="checkbox" ng-model="component.enabled">
-            {{component.name}}
+        <li ng-class="{bold: desert.selectedCfg && desert.selectedCfg.alternativeAssignments[component.id]}" ng-hide="hideCompoundComponents && container.type === 'Compound'" data-ng-repeat="component in container.components | orderObjectBy: 'name'">
+            <!--<input ng-if="container.type === 'Alternative' || container.type === 'Optional'" type="checkbox" ng-model="component.enabled">-->
+                {{component.name}}
         </li>
         <li ng-if="container.type === 'Optional'"><input type="checkbox" ng-model="component.enabled">null</li>
     </ul>
@@ -32,31 +33,17 @@
     <ul>
         <li ng-repeat="container in rootNode" ng-include="'tree_item_renderer.html'"></li>
     </ul>
-    <!--<ul class="list-group">-->
-        <!--&lt;!&ndash; One container item &ndash;&gt;-->
-        <!--<li class="list-group-item" data-ng-repeat="container in containers | orderObjectBy: 'id'" data-id="{{ container.id }}">-->
-
-            <!--&lt;!&ndash; Header &ndash;&gt;-->
-            <!--<a class="container-name" href="">{{ container.name }}</a>-->
-            <!--<div>Type: {{container.type}}</div>-->
-            <!--<div>Number of Components: {{container.componentsCount}}</div>-->
-            <!--<div>Number of Containers: {{container.containersCount}}</div>-->
-
-            <!--<div>{{ container.description }}</div>-->
-
-            <!--<div>Updated <span am-time-ago="container.date"></span></div>-->
-        <!--</li>-->
-    <!--</ul>-->
 </div>
 <div class="configurations col-lg-3 col-md-4.5 col-sm-9 col-xs-9">
 
     <h4>Configurations</h4>
-
+    <form>
     <ul>
-        <li data-ng-repeat="cfg in desertCfgs | orderObjectBy: 'name'">
-            <input type="checkbox" ng-model="cfg.checked"> {{cfg['name']}}
+        <li data-ng-repeat="cfg in desert.cfgs">
+            <input type="radio" name="cfg-radio" data-ng-model="desert.selectedCfg" ng-value="cfg"> {{cfg.name}}
         </li>
     </ul>
+    </form>
 </div>
 
 <div class="components col-lg-3 col-md-4.5 col-sm-9 col-xs-9">
