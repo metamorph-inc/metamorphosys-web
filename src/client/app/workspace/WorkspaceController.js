@@ -25,21 +25,22 @@ define([], function () {
         self.$scope.mainNavigator.items = [{
             id: 'root',
             label: 'ADMEditor',
-            itemClass: 'cyphy-root'
-//            menu: [{
-//                id: 'top',
-//                items: [
-//                    {
-//                        id: 'open',
-//                        label: 'Open in editor',
-//                        iconClass: 'glyphicon glyphicon-edit',
-//                        action: function () {
-//                            window.location.href('/?project=ADMEditor');
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }]
+            itemClass: 'cyphy-root',
+            menu: [{
+                id: 'editor',
+                items: [
+                    {
+                        id: 'open',
+                        label: 'Open in editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        action: function () {
+                            window.open('/?project=ADMEditor', '_blank');
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         }];
         self.$scope.mainNavigator.separator = false;
         self.initialize();

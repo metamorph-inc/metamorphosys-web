@@ -1,4 +1,4 @@
-/*globals define, console*/
+/*globals define, console, window*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -64,6 +64,9 @@ define(['../../js/DesertFrontEnd',
         self.$scope.components = {};
         self.$scope.rootNode = [];
         self.$scope.desertInfo = {};
+        self.$scope.getUrl = function (objId) {
+            return '/?project=ADMEditor&activeObject=' + objId;
+        };
         self.$scope.hideCompoundComponents = false;
         self.$scope.desert = {
             cfgs:  {},
@@ -371,6 +374,20 @@ define(['../../js/DesertFrontEnd',
                         iconClass: 'glyphicon glyphicon-th',
                         action: function () {
                             self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
+                        },
+                        actionData: {}
+                    }
+                ]
+            }, {
+                id: 'editor',
+                items: [
+                    {
+                        id: 'open',
+                        label: 'Open in editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        action: function () {
+                            window.open('/?project=ADMEditor&activeObject=' + self.$scope.id, '_blank');
                         },
                         actionData: {}
                     }

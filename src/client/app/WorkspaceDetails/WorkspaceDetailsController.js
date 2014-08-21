@@ -39,9 +39,6 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
-        self.$scope.getUrl = function (objId) {
-            return '/?project=ADMEditor&activeObject=' + objId;
-        };
 
         self.compares = 0;
         if (self.smartClient) {
@@ -1406,21 +1403,22 @@ define([], function () {
         secondMenu = {
             id: 'workspace',
             label: self.$scope.name,
-            itemClass: 'workspace'
-//            menu: [{
-//                id: 'top',
-//                items: [
-//                    {
-//                        id: 'open',
-//                        label: 'Open in editor',
-//                        iconClass: 'glyphicon glyphicon-edit',
-//                        action: function () {
-//                            window.location.href(self.getUrl(self.$scope.id));
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }]
+            itemClass: 'workspace',
+            menu: [{
+                id: 'editor',
+                items: [
+                    {
+                        id: 'open',
+                        label: 'Open in editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        action: function () {
+                            window.open('/?project=ADMEditor&activeObject=' + self.$scope.id, '_blank');
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
         };
         return [ firstMenu, secondMenu];
     };
