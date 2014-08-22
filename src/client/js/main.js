@@ -237,6 +237,7 @@ require(
               'isis.ui.dropdownNavigator'
             ] ).run(function($rootScope) {
               $rootScope.mainNavigator = { };
+              $rootScope.appIsLoading = false;
             });
 
           WebGMEGlobal.WebGMEApp = WebGMEApp;

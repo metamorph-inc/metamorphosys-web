@@ -16,7 +16,12 @@
       background-repeat: no-repeat;
       padding-left: 46px;
     }
-
   }
-
+}
+body.loading {
+  .main-navigator-container {
+    li.cyphy-root{
+      background-image: url(../images/cyphy-icon.png);
+    }
+  }
 }

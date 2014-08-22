@@ -18,8 +18,8 @@ define(['../../js/DesertFrontEnd',
         self.smartClient = smartClient;
         self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
-        self.avmIdToId = {};
-        this.xmlToJson = new Converter.Xml2json({
+
+        self.xmlToJson = new Converter.Xml2json({
             skipWSText: true,
             arrayElements: {
                 Configuration: true,
@@ -64,14 +64,8 @@ define(['../../js/DesertFrontEnd',
         self.$scope.components = {};
         self.$scope.rootNode = [];
         self.$scope.desertInfo = {};
-        self.$scope.getUrl = function (objId) {
-            return '/?project=ADMEditor&activeObject=' + objId;
-        };
         self.$scope.hideCompoundComponents = false;
-        self.$scope.desert = {
-            cfgs:  {},
-            selectedCfg: null
-        };
+        self.$scope.desert = { cfgs:  {}, selectedCfg: null };
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -118,11 +112,19 @@ define(['../../js/DesertFrontEnd',
         self.territories = {};
 
         territoryPattern[self.$scope.id] = {children: 999};
-
+        self.$rootScope.appIsLoading = true;
+        self.update();
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
                 nodeObj;
+            self.$rootScope.appIsLoading = true;
+            self.update();
+            self.$scope.containers = {};
+            self.$scope.components = {};
+            self.$scope.rootNode = [];
+            self.$scope.desertInfo = {};
+            self.$scope.desert = { cfgs:  {}, selectedCfg: null };
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
@@ -176,24 +178,20 @@ define(['../../js/DesertFrontEnd',
                         console.error('TODO: not implemented yet.');
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'Container')) {
-                    if (events[i].etype === 'load') {
+                    if (events[i].etype === 'load' || events[i].etype === 'update') {
                         self.addContainer(events[i].eid);
-                    } else if (events[i].etype === 'update') {
-                        //TODO: Something fitting..
                     }
                 } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'AVMComponentModel')) {
-                    if (events[i].etype === 'load') {
+                    if (events[i].etype === 'load' || events[i].etype === 'update') {
                         self.addComponent(events[i].eid);
-                    } else if (events[i].etype === 'update') {
-                        //TODO: Something fitting, e.g. decrease componentsCount for container.
                     }
                 }
             }
+            self.$rootScope.appIsLoading = false;
             self.update();
         });
 
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
-
     };
 
     // Designs
@@ -326,7 +324,6 @@ define(['../../js/DesertFrontEnd',
             return {};
         }
 
-        console.log('Work-space : ' + parentNode.getId());
         firstMenu = {
             id: 'root',
             label: 'ADMEditor',

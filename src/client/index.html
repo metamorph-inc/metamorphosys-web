@@ -13,7 +13,7 @@
     <!-- favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
-<body>
+<body ng-class="{'loading': appIsLoading}">
 
 <div data-ng-controller="MainNavigatorController" class="main-navigator-container">
     <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
