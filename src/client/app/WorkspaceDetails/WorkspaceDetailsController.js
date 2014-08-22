@@ -39,7 +39,9 @@ define([], function () {
         self.$scope.designs = {};
         self.$scope.testBenches = {};
         self.$scope.requirements = {};
-
+        self.$scope.getUrl = function (objId) {
+            return '/?project=ADMEditor&activeObject=' + objId;
+        };
         self.compares = 0;
         if (self.smartClient) {
             // if smartClient exists
