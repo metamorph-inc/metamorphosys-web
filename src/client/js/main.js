@@ -259,8 +259,9 @@ require(
             require( [
               'CyPhyApp/app/workspace/WorkspaceController',
               'CyPhyApp/app/WorkspaceDetails/WorkspaceDetailsController',
-              'CyPhyApp/app/DesignSpace/DesignSpaceController'],
-              function ( WorkspaceController, WorkspaceDetailsController, DesignSpaceController ) {
+              'CyPhyApp/app/DesignSpace/DesignSpaceController',
+              'CyPhyApp/app/Workers/WorkersController'],
+              function ( WorkspaceController, WorkspaceDetailsController, DesignSpaceController, WorkersController ) {
                 // configure app
 
                 WebGMEApp.filter( 'orderObjectBy', function () {
@@ -282,6 +283,7 @@ require(
                 WebGMEApp.controller( 'WorkspaceController', WorkspaceController );
                 WebGMEApp.controller( 'WorkspaceDetailsController', WorkspaceDetailsController );
                 WebGMEApp.controller( 'DesignSpaceController', DesignSpaceController );
+                WebGMEApp.controller( 'WorkersController', WorkersController );
                 WebGMEApp.config( ['growlProvider', function ( growlProvider ) {
                   growlProvider.globalTimeToLive( {success: 5000, error: -1, warning: 20000, info: 5000} );
                 }] );
@@ -302,6 +304,11 @@ require(
                         templateUrl: 'app/DesignSpace/views/DesignSpaceView.html',
                         css: 'app/DesignSpace/styles/DesignSpace.css',
                         controller: 'DesignSpaceController'
+                      } ).
+                      when( '/workers', {
+                        templateUrl: 'app/Workers/views/WorkersView.html',
+                        css: 'app/Workers/styles/Workers.css',
+                        controller: 'WorkersController'
                       } ).
                       otherwise( {
                         redirectTo: '/workspace'

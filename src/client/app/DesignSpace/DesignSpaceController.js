@@ -340,7 +340,6 @@ define(['../../js/DesertFrontEnd',
             label: parentNode.getAttribute('name'),
             itemClass: 'workspace',
             action: function () {
-                console.log('#/workspaceDetails/' + parentNode.getId());
                 window.location.href = '#/workspaceDetails/' + parentNode.getId();
             },
             actionData: {},

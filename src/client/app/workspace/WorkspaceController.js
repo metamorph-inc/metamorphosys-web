@@ -27,6 +27,20 @@ define([], function () {
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
             menu: [{
+//                id: 'workers',
+//                items: [
+//                    {
+//                        id: 'viewWorkers',
+//                        label: 'View Workers',
+//                        disabled: false,
+//                        iconClass: 'glyphicon glyphicon-briefcase',
+//                        action: function () {
+//                            window.location.href = '#/workers';
+//                        },
+//                        actionData: {}
+//                    }
+//                ]
+//            }, {
                 id: 'editor',
                 items: [
                     {
@@ -51,15 +65,7 @@ define([], function () {
             this.$scope.$apply();
         }
     };
-//        this.$rootScope.workspaces = this.$scope.workspaces;
-//
-//        this.$rootScope.$emit('navigatorStructureChange', {
-//            id: 'secondItem',
-//            label: self.$scope.name,
-//            menu: []
-//        });
-//
-//        console.log(this.$rootScope.workspaces);
+
     WorkspaceController.ModalInstanceController = function ($scope, $modalInstance, data) {
 
         $scope.data = data;
@@ -79,8 +85,6 @@ define([], function () {
         // scope model
         self.$scope.search = {};
         self.$scope.workspaces = {};
-
-        console.log('W: ', self.$scope.workspaces);
 
         // Pager
         self.$scope.pager = {};
