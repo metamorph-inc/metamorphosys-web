@@ -27,20 +27,20 @@ define([], function () {
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
             menu: [{
-//                id: 'workers',
-//                items: [
-//                    {
-//                        id: 'viewWorkers',
-//                        label: 'View Workers',
-//                        disabled: false,
-//                        iconClass: 'glyphicon glyphicon-briefcase',
-//                        action: function () {
-//                            window.location.href = '#/workers';
-//                        },
-//                        actionData: {}
-//                    }
-//                ]
-//            }, {
+                id: 'workers',
+                items: [
+                    {
+                        id: 'viewWorkers',
+                        label: 'View Workers',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-briefcase',
+                        action: function () {
+                            window.location.href = '#/workers';
+                        },
+                        actionData: {}
+                    }
+                ]
+            }, {
                 id: 'editor',
                 items: [
                     {

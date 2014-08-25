@@ -7,12 +7,13 @@
 define([], function () {
     'use strict';
 
-    var WorkersController = function ($scope, $rootScope, $moment, $routeParams, smartClient, Chance, growl) {
+    var WorkersController = function ($scope, $interval, $moment, $routeParams, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
+        self.$interval = $interval;
         self.growl = growl;
         self.smartClient = smartClient;
         self.initialize();
@@ -30,13 +31,18 @@ define([], function () {
         self.$scope.dataModel = {
             workers: {}
         };
-
         self.$scope.mainNavigator.items = self.getNavigatorStructure();
         self.$scope.mainNavigator.separator = true;
-        self.intervalID = 0;
+
+        self.intervalPromise = null;
         self.$scope.$on('$destroy', function () {
-            window.clearInterval(self.intervalID);
-            self.intervalID = 0;
+            if (self.$interval.cancel(self.intervalPromise)) {
+                console.log('Workers interval cancelled');
+                console.log(self.intervalPromise);
+            } else {
+                console.error('Could not cancel WorkersInterval.');
+                console.error(self.intervalPromise);
+            }
         });
         if (self.smartClient) {
             // if smartClient exists
@@ -51,21 +57,24 @@ define([], function () {
     WorkersController.prototype.initTestData = function () {
         var self = this,
             rawResponse;
-        rawResponse = '{"pmeijer-PC_5336":{"clientId":"pmeijer-PC_5336","lastSeen":1408737168.284,"labels":' +
-            '["Dymola","META_14.09"],"jobs":[{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]' +
-            ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
-            'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
-            '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
-        self.$scope.dataModel.workersInfo = JSON.parse(rawResponse);
-        self.update();
+        if (!self.intervalPromise) {
+            self.intervalPromise =  self.$interval(function () {
+                rawResponse = '{"pmeijer-PC_5336":{"clientId":"pmeijer-PC_5336","lastSeen":1408737168.284,"labels":' +
+                    '["Dymola","META_14.09"],"jobs":[{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]' +
+                    ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
+                    'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
+                    '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
+                self.$scope.dataModel.workersInfo = JSON.parse(rawResponse);
+                self.update();
+            }, 1000);
+        }
     };
 
     WorkersController.prototype.initWithSmartClient = function () {
         var self = this;
-        if (self.intervalID === 0) {
-            self.intervalID = window.setInterval(function () {
+        if (!self.intervalPromise) {
+            self.intervalPromise =  self.$interval(function () {
                 self.smartClient.executorClient.getWorkersInfo(function (err, response) {
-                    console.log('I am alive :P');
                     if (err) {
                         self.growl.error('Problems getting workers info!');
                         self.console.error(err);
@@ -87,7 +96,10 @@ define([], function () {
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
-            action: function () {
+            action: function (event) {
+                console.log(event);
+                console.log(ad);
+                console.log('ADMEditor menu clicked!');
                 window.location.href = '#/workspace';
             },
             actionData: {},
@@ -101,7 +113,7 @@ define([], function () {
             menu: []
         };
 
-        return [ firstMenu, secondMenu];
+        return [ firstMenu, secondMenu ];
     };
 
     return WorkersController;
