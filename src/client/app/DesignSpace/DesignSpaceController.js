@@ -66,6 +66,7 @@ define(['../../js/DesertFrontEnd',
         self.$scope.desertInfo = {};
         self.$scope.hideCompoundComponents = false;
         self.$scope.desert = { cfgs:  {}, selectedCfg: null };
+        self.menuItemSave = null;
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -162,6 +163,7 @@ define(['../../js/DesertFrontEnd',
                                         self.$scope.desert.cfgs[cfg['@id']] = {
                                             name: cfg['@name'],
                                             id: cfg['@id'],
+                                            isSelected: false,
                                             alternativeAssignments: {}
                                         };
                                         for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
@@ -170,6 +172,7 @@ define(['../../js/DesertFrontEnd',
                                         }
                                     }
                                     self.$scope.desert.selectedCfg = self.$scope.desert.cfgs['1'];
+                                    self.menuItemSave.disabled = false;
                                     self.update();
                                 });
                             }
@@ -323,7 +326,28 @@ define(['../../js/DesertFrontEnd',
             console.error('No workspace for design!!');
             return {};
         }
-
+        self.menuItemSave = {
+            id: 'saveCfgs',
+            label: 'Save Configurations',
+            disabled: true,
+            iconClass: 'glyphicon glyphicon-floppy-save',
+            action: function () {
+                var key,
+                    cfg;
+                if (!self.$scope.desert) {
+                    console.error('No desert defined on scope');
+                }
+                for (key in self.$scope.desert.cfgs) {
+                    if (self.$scope.desert.cfgs.hasOwnProperty(key)) {
+                        cfg = self.$scope.desert.cfgs[key];
+                        if (cfg.isSelected) {
+                            self.growl.warning('Would save cfg : ' + JSON.stringify(cfg, null, 2));
+                        }
+                    }
+                }
+            },
+            actionData: {}
+        };
         firstMenu = {
             id: 'root',
             label: 'ADMEditor',
@@ -372,7 +396,8 @@ define(['../../js/DesertFrontEnd',
                             self.desertFrontEnd.calculateNbrOfCfgs(self.$scope.id);
                         },
                         actionData: {}
-                    }
+                    },
+                    self.menuItemSave
                 ]
             }, {
                 id: 'editor',

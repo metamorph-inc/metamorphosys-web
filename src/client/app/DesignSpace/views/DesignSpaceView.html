@@ -40,7 +40,8 @@
     <form>
     <ul>
         <li data-ng-repeat="cfg in desert.cfgs">
-            <input type="radio" name="cfg-radio" data-ng-model="desert.selectedCfg" ng-value="cfg"> {{cfg.name}}
+            <input type="checkbox" data-ng-model="cfg.isSelected">
+            <span ng-class="{bold: desert.selectedCfg && desert.selectedCfg.id === cfg.id}" ng-click="desert.selectedCfg = cfg">{{cfg.name}}</span>
         </li>
     </ul>
     </form>
