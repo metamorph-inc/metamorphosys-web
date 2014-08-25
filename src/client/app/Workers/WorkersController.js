@@ -98,7 +98,6 @@ define([], function () {
             itemClass: 'cyphy-root',
             action: function (event) {
                 console.log(event);
-                console.log(ad);
                 console.log('ADMEditor menu clicked!');
                 window.location.href = '#/workspace';
             },
