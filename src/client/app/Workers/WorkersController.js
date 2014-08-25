@@ -7,13 +7,14 @@
 define([], function () {
     'use strict';
 
-    var WorkersController = function ($scope, $interval, $moment, $routeParams, smartClient, Chance, growl) {
+    var WorkersController = function ($scope, $interval, $moment, $routeParams, $location, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
         self.$interval = $interval;
+        self.$location = $location;
         self.growl = growl;
         self.smartClient = smartClient;
         self.initialize();
@@ -31,14 +32,15 @@ define([], function () {
         self.$scope.dataModel = {
             workers: {}
         };
+        console.log('Workers init before update mainNavigator');
         self.$scope.mainNavigator.items = self.getNavigatorStructure();
         self.$scope.mainNavigator.separator = true;
-
+        console.log('Workers Updated mainNavigator');
         self.intervalPromise = null;
         self.$scope.$on('$destroy', function () {
             if (self.$interval.cancel(self.intervalPromise)) {
                 console.log('Workers interval cancelled');
-                console.log(self.intervalPromise);
+                //console.log(self.intervalPromise);
             } else {
                 console.error('Could not cancel WorkersInterval.');
                 console.error(self.intervalPromise);
@@ -96,11 +98,9 @@ define([], function () {
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root',
-            action: function (event) {
-                console.log(event);
-                console.log(ad);
-                console.log('ADMEditor menu clicked!');
-                window.location.href = '#/workspace';
+            action: function (ad, event) {
+                //console.log('ADMEditor menu clicked!', event);
+                self.$location.path('/workspace');
             },
             actionData: {},
             menu: []

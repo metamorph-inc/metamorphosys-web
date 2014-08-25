@@ -8,7 +8,7 @@
 define([], function () {
     "use strict";
 
-    var WorkspaceController = function ($scope, $rootScope, $moment, $modal, $upload, smartClient, Chance, growl) {
+    var WorkspaceController = function ($scope, $rootScope, $moment, $modal, $upload, $location, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
@@ -18,6 +18,7 @@ define([], function () {
         self.$modal = $modal;
         self.$moment = $moment;
         self.$upload = $upload;
+        self.$location = $location;
         self.growl = growl;
         // chance is only for testing purposes
         self.chance = Chance ? new Chance() : null;
@@ -34,8 +35,8 @@ define([], function () {
                         label: 'View Workers',
                         disabled: false,
                         iconClass: 'glyphicon glyphicon-briefcase',
-                        action: function () {
-                            window.location.href = '#/workers';
+                        action: function (ad, event) {
+                            self.$location.path('/workers');
                         },
                         actionData: {}
                     }

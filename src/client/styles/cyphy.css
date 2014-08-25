@@ -8,8 +8,9 @@
   .main-navigator-container .dropdown-navigator li.cyphy-root {
     background-image: url(../images/cyphy-icon.png);
     background-position: 8px 3px;
-    background-repeat: no-repeat;
-    padding-left: 46px; }
+    background-repeat: no-repeat; }
+    .main-navigator-container .dropdown-navigator li.cyphy-root .label-container {
+      padding-left: 46px; }
 
 body.loading .main-navigator-container li.cyphy-root {
   background-image: url(../images/cyphy-icon.png); }

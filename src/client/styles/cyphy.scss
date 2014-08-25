@@ -14,7 +14,9 @@
       background-image: url(../images/cyphy-icon.png);
       background-position: 8px 3px;
       background-repeat: no-repeat;
-      padding-left: 46px;
+      .label-container {
+        padding-left: 46px;
+      }
     }
   }
 }
