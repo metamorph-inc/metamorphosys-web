@@ -18,6 +18,8 @@ define([], function () {
         self.smartClient = smartClient;
         self.growl = growl;
         self.territories = {};
+        self.matchDesignsAndTestBenches = null;
+        self.compares = 0;
         // For test-data
         self.chance = Chance ? new Chance() : null;
         self.nbrOfComponets = 15;
@@ -42,7 +44,19 @@ define([], function () {
         self.$scope.getUrl = function (objId) {
             return '/?project=ADMEditor&activeObject=' + objId;
         };
-        self.compares = 0;
+        self.$scope.$on('$destroy', function () {
+            var key;
+            for (key in self.territories) {
+                if (self.territories.hasOwnProperty(key)) {
+                    if (self.territories[key].territoryId) {
+                        self.smartClient.removeUI(self.territories[key].territoryId);
+                        console.log('Removed Territory ', self.territories[key].territoryId);
+                    } else {
+                        console.error('No territoryId for ', self.territories[key]);
+                    }
+                }
+            }
+        });
         if (self.smartClient) {
             // if smartClient exists
             self.initWithSmartClient();
@@ -104,8 +118,12 @@ define([], function () {
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
-                nodeObj;
-
+                nodeObj,
+                spawnedTerritoryId;
+            if (self.territories['0'].hasLoaded === false) {
+                self.territories['0'].hasLoaded = true;
+                self.territoriesDebug('0');
+            }
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
@@ -127,15 +145,20 @@ define([], function () {
                         if (self.territories.hasOwnProperty(event.eid)) {
                             // Workspace has a watcher..
                         } else {
-                            self.territories[event.eid] = self.smartClient.addUI(
-                                event.eid,
+                            self.territories[event.eid] = {
+                                nodeId: event.eid,
+                                territoryId: null,
+                                hasLoaded: false
+                            };
+                            spawnedTerritoryId = self.smartClient.addUI(event.eid,
                                 ['ACMFolder', 'ADMFolder', 'ATMFolder', 'RequirementsFolder'],
-                                self.getWorkspaceEventCallback()
-                            );
+                                self.getWorkspaceEventCallback(event.eid));
+                            self.territories[event.eid].territoryId = spawnedTerritoryId;
                         }
                     } else if (event.etype === 'unload') {
                         if (self.territories.hasOwnProperty(event.eid)) {
-                            self.smartClient.removeUI(self.territories[event.eid]);
+                            self.smartClient.removeUI(self.territories[event.eid].territoryId);
+                            delete self.territories[event.eid];
                         }
                         self.growl.warning('Workspace "' + self.$scope.name + '" was deleted!');
                         window.location.href = '#workspace';
@@ -144,15 +167,22 @@ define([], function () {
             }
             self.update();
         });
-
+        self.territories['0'] = {
+            nodeId: '0',
+            territoryId: territoryId,
+            hasLoaded: false
+        };
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
-    WorkspaceDetailsController.prototype.getWorkspaceEventCallback = function () {
+    WorkspaceDetailsController.prototype.getWorkspaceEventCallback = function (id) {
         var self = this;
         return function (events) {
             var j;
-
+            if (self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesDebug(id);
+            }
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
                     if (self.$scope.components[events[j].eid]) {
@@ -204,19 +234,30 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.addComponentWatcher = function (id) {
         var self = this,
-            j;
+            j,
+            territoryId;
 
         self.addComponent(id);
 
         if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
+            console.log('Removed component territory, adding new..');
         }
-
-        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
+        self.territories[id] = {
+            nodeId: id,
+            territoryId: null,
+            hasLoaded: false
+        };
+        territoryId = self.smartClient.addUI(id, [], function (events) {
             var component = self.$scope.components[id],
                 nodeObj,
                 newConnector,
                 updateDomains = false;
+            if (self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesDebug(id);
+            }
             if (!component) {
                 return;
             }
@@ -290,24 +331,38 @@ define([], function () {
             }
             self.update();
         });
+        self.territories[id].territoryId = territoryId;
     };
 
     WorkspaceDetailsController.prototype.addDesignWatcher = function (id) {
         var self = this,
-            j;
+            j,
+            territoryId;
         // This only watches the interfaces
         self.addDesign(id);
 
         if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
+            console.log('Removed design territory, adding new..');
         }
-
-        self.territories[id] = self.smartClient.addUI(id, [], function (events) {
+        self.territories[id] = {
+            nodeId: id,
+            territoryId: null,
+            hasLoaded: false
+        };
+        territoryId = self.smartClient.addUI(id, [], function (events) {
             var design = self.$scope.designs[id],
                 nodeObj,
                 newConnector,
                 checkInterfaces = false,
-                componentId;
+                componentId,
+                spawnedTerritoryId;
+            if (self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesDebug(id);
+            }
+            console.log(self.territories);
             if (!design) {
                 return;
             }
@@ -323,7 +378,8 @@ define([], function () {
                     if (design.interfaces.connectors[events[j].eid]) {
                         delete design.interfaces.connectors[events[j].eid];
                         if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                            self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
+                            delete self.territories[events[j].eid];
                         }
                         checkInterfaces = true;
                     } else if (design.interfaces.properties[events[j].eid]) {
@@ -351,11 +407,18 @@ define([], function () {
                         design.interfaces.connectors[events[j].eid] = newConnector;
                         // Add a watcher to the connector.
                         if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid]);
+                            self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
+                            delete self.territories[events[j].eid];
+                            console.log('Removed connector territory, adding new..');
                         }
-                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
-                            [],
+                        self.territories[events[j].eid] = {
+                            nodeId: events[j].eid,
+                            territoryId: null,
+                            hasLoaded: false
+                        };
+                        spawnedTerritoryId = self.smartClient.addUI(events[j].eid, [],
                             self.getConnectorEventCallback(design, newConnector));
+                        self.territories[events[j].eid].territoryId = spawnedTerritoryId;
                     } else if (events[j].etype === 'update') {
                         if (design.interfaces.connectors[events[j].eid]) {
                             design.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
@@ -432,23 +495,36 @@ define([], function () {
             }
             self.update();
         });
+        self.territories[id].territoryId = territoryId;
     };
 
     WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
         var self = this,
-            j;
+            j,
+            territoryId;
 
         self.addTestBench(id);
 
         if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
+            console.log('Removed test-bench territory, adding new..');
         }
-
-        self.territories[id] = self.smartClient.addUI(id, ['Container'], function (events) {
+        self.territories[id] = {
+            nodeId: id,
+            territoryId: null,
+            hasLoaded: false
+        };
+        territoryId = self.smartClient.addUI(id, ['Container'], function (events) {
             var testBench = self.$scope.testBenches[id],
                 nodeObj,
                 newConnector,
+                spawnedTerritoryId,
                 checkInterfaces = false;
+            if (self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesDebug(id);
+            }
             if (!testBench) {
                 return;
             }
@@ -458,7 +534,8 @@ define([], function () {
                         if (testBench.tlsut.connectors[events[j].eid]) {
                             delete testBench.tlsut.connectors[events[j].eid];
                             if (self.territories.hasOwnProperty(events[j].eid)) {
-                                self.smartClient.removeUI(self.territories[events[j].eid]);
+                                self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
+                                delete self.territories[events[j].eid];
                             }
                             checkInterfaces = true;
                         } else if (testBench.tlsut.properties[events[j].eid]) {
@@ -484,11 +561,18 @@ define([], function () {
                                 testBench.tlsut.connectors[events[j].eid] = newConnector;
                                 // Add a watcher to the connector.
                                 if (self.territories.hasOwnProperty(events[j].eid)) {
-                                    self.smartClient.removeUI(self.territories[events[j].eid]);
+                                    self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
+                                    delete self.territories[events[j].eid];
+                                    console.log('Removed connector territory, adding new..');
                                 }
-                                self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
-                                    [],
+                                self.territories[events[j].eid] = {
+                                    nodeId: events[j].eid,
+                                    territoryId: null,
+                                    hasLoaded: false
+                                };
+                                spawnedTerritoryId = self.smartClient.addUI(events[j].eid, [],
                                     self.getConnectorEventCallback(testBench, newConnector));
+                                self.territories[events[j].eid].territoryId = spawnedTerritoryId;
                             } else if (events[j].etype === 'update') {
                                 if (testBench.tlsut.connectors[events[j].eid]) {
                                     testBench.tlsut.connectors[events[j].eid].name = nodeObj.getAttribute('name');
@@ -535,6 +619,7 @@ define([], function () {
             }
             self.update();
         });
+        self.territories[id].territoryId = territoryId;
     };
 
     WorkspaceDetailsController.prototype.getConnectorEventCallback = function (owner, connector) {
@@ -545,6 +630,10 @@ define([], function () {
                 name,
                 type,
                 nodeObj;
+            if (self.territories[connector.id].hasLoaded === false) {
+                self.territories[connector.id].hasLoaded = true;
+                self.territoriesDebug(connector.id);
+            }
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
                     if (connector.domainPorts[events[j].eid]) {
@@ -707,7 +796,8 @@ define([], function () {
         var self = this,
             name;
         if (self.territories[id]) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
         }
         if (self.$scope.components[id]) {
             name = self.$scope.components[id].name;
@@ -795,14 +885,15 @@ define([], function () {
             name,
             tbId;
         if (self.territories[id]) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
         }
         if (self.$scope.designs[id]) {
             name = self.$scope.designs[id].name;
             delete self.$scope.designs[id];
             // Clean-up in matching test-benches.
-            for (var tbId in self.$scope.testBenches) {
-                if (self.$scope.testBenches.hasOwnProperty(tbId)){
+            for (tbId in self.$scope.testBenches) {
+                if (self.$scope.testBenches.hasOwnProperty(tbId)) {
                     if (self.$scope.testBenches[tbId].designs.avaliable[id]) {
                         delete self.$scope.testBenches[tbId].designs.avaliable[id];
                     }
@@ -878,7 +969,8 @@ define([], function () {
         var self = this,
             name;
         if (self.territories[id]) {
-            self.smartClient.removeUI(self.territories[id]);
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
         }
         if (self.$scope.testBenches[id]) {
             name = self.$scope.testBenches[id].name;
@@ -1226,7 +1318,7 @@ define([], function () {
             match = true;
 
         this.compares += 1;
-        console.log('Number of compares : ' + this.compares);
+        //console.log('Number of compares : ' + this.compares);
         for (tId in tlsut.properties) {
             if (tlsut.properties.hasOwnProperty(tId)) {
                 tProp = tlsut.properties[tId];
@@ -1425,6 +1517,23 @@ define([], function () {
         return [ firstMenu, secondMenu];
     };
 
+    WorkspaceDetailsController.prototype.territoriesDebug = function (terrId) {
+        var self = this,
+            total = 0,
+            loaded = 0,
+            key;
+        for (key in self.territories) {
+            if (self.territories.hasOwnProperty(key)) {
+                total += 1;
+                if (self.territories[key].hasLoaded) {
+                    loaded += 1;
+                } else {
+                    //console.log(key);
+                }
+            }
+        }
+        console.log(terrId, loaded, total);
+    };
     return WorkspaceDetailsController;
 });
 
