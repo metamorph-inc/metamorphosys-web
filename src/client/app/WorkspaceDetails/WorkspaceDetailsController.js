@@ -122,7 +122,7 @@ define([], function () {
                 spawnedTerritoryId;
             if (self.territories['0'].hasLoaded === false) {
                 self.territories['0'].hasLoaded = true;
-                self.territoriesDebug('0');
+                self.territoriesLoaded('0');
             }
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
@@ -177,11 +177,11 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.getWorkspaceEventCallback = function (id) {
         var self = this;
-        return function (events) {
+        return function (events, done) {
             var j;
-            if (self.territories[id].hasLoaded === false) {
+            if (self.territories[id].hasLoaded === false && done) {
                 self.territories[id].hasLoaded = true;
-                self.territoriesDebug(id);
+                self.territoriesLoaded(id);
             }
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
@@ -249,14 +249,14 @@ define([], function () {
             territoryId: null,
             hasLoaded: false
         };
-        territoryId = self.smartClient.addUI(id, [], function (events) {
+        territoryId = self.smartClient.addUI(id, [], function (events, done) {
             var component = self.$scope.components[id],
                 nodeObj,
                 newConnector,
                 updateDomains = false;
-            if (self.territories[id].hasLoaded === false) {
+            if (self.territories[id].hasLoaded === false && done) {
                 self.territories[id].hasLoaded = true;
-                self.territoriesDebug(id);
+                self.territoriesLoaded(id);
             }
             if (!component) {
                 return;
@@ -351,16 +351,16 @@ define([], function () {
             territoryId: null,
             hasLoaded: false
         };
-        territoryId = self.smartClient.addUI(id, [], function (events) {
+        territoryId = self.smartClient.addUI(id, [], function (events, done) {
             var design = self.$scope.designs[id],
                 nodeObj,
                 newConnector,
                 checkInterfaces = false,
                 componentId,
                 spawnedTerritoryId;
-            if (self.territories[id].hasLoaded === false) {
+            if (self.territories[id].hasLoaded === false && done) {
                 self.territories[id].hasLoaded = true;
-                self.territoriesDebug(id);
+                self.territoriesLoaded(id);
             }
             console.log(self.territories);
             if (!design) {
@@ -515,15 +515,15 @@ define([], function () {
             territoryId: null,
             hasLoaded: false
         };
-        territoryId = self.smartClient.addUI(id, ['Container'], function (events) {
+        territoryId = self.smartClient.addUI(id, ['Container'], function (events, done) {
             var testBench = self.$scope.testBenches[id],
                 nodeObj,
                 newConnector,
                 spawnedTerritoryId,
                 checkInterfaces = false;
-            if (self.territories[id].hasLoaded === false) {
+            if (self.territories[id].hasLoaded === false && done) {
                 self.territories[id].hasLoaded = true;
-                self.territoriesDebug(id);
+                self.territoriesLoaded(id);
             }
             if (!testBench) {
                 return;
@@ -624,15 +624,15 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.getConnectorEventCallback = function (owner, connector) {
         var self = this;
-        return function (events) {
+        return function (events, done) {
             var j,
                 changes = false,
                 name,
                 type,
                 nodeObj;
-            if (self.territories[connector.id].hasLoaded === false) {
+            if (self.territories[connector.id].hasLoaded === false && done) {
                 self.territories[connector.id].hasLoaded = true;
-                self.territoriesDebug(connector.id);
+                self.territoriesLoaded(connector.id);
             }
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
@@ -992,9 +992,9 @@ define([], function () {
             testBench.designs.selected = nodeObj.getPointer('TopLevelSystemUnderTest').to;
             testBench.results = nodeObj.getAttribute('Results');
             testBench.resultsUrl = testBench.results ?
-                self.smartClient.blobClient.getDownloadURL(testBench.results) : null;
+                    self.smartClient.blobClient.getDownloadURL(testBench.results) : null;
             testBench.testBenchFilesUrl = testBench.testBenchFiles ?
-                self.smartClient.blobClient.getDownloadURL(testBench.testBenchFiles) : null;
+                    self.smartClient.blobClient.getDownloadURL(testBench.testBenchFiles) : null;
             self.update();
         } else {
             console.error('Trying to update non-existing test-bench.');
@@ -1318,7 +1318,7 @@ define([], function () {
             match = true;
 
         this.compares += 1;
-        //console.log('Number of compares : ' + this.compares);
+        console.log('Number of compares : ' + this.compares);
         for (tId in tlsut.properties) {
             if (tlsut.properties.hasOwnProperty(tId)) {
                 tProp = tlsut.properties[tId];
@@ -1517,11 +1517,12 @@ define([], function () {
         return [ firstMenu, secondMenu];
     };
 
-    WorkspaceDetailsController.prototype.territoriesDebug = function (terrId) {
+    WorkspaceDetailsController.prototype.territoriesLoaded = function (terrId) {
         var self = this,
             total = 0,
             loaded = 0,
             key;
+
         for (key in self.territories) {
             if (self.territories.hasOwnProperty(key)) {
                 total += 1;
@@ -1533,7 +1534,10 @@ define([], function () {
             }
         }
         console.log(terrId, loaded, total);
+
+        return loaded === total;
     };
+
     return WorkspaceDetailsController;
 });
 

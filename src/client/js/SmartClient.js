@@ -272,8 +272,6 @@ define(['js/client',
                 node,
                 len;
 
-            callback(events);
-
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 node = self.client.getNode(event.eid);
@@ -292,6 +290,7 @@ define(['js/client',
                     }
                 }
             }
+            callback(events, !updateTerr);
 
             if (updateTerr) {
                 self.client.updateTerritory(terrId, self.uiTerritories[terrId]);

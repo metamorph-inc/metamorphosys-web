@@ -60,11 +60,10 @@ define(['../../js/DesertFrontEnd',
             var key;
             for (key in self.territories) {
                 if (self.territories.hasOwnProperty(key)) {
-                    self.smartClient.removeUI(key);
-                    console.log('Removed Territory ', key);
+                    self.smartClient.removeUI(self.territories.territoryId);
+                    console.log('Removed Territory ', self.territories.territoryId);
                 }
             }
-
         });
         // initialization of methods
         if (self.smartClient) {
@@ -113,12 +112,17 @@ define(['../../js/DesertFrontEnd',
 
         self.$rootScope.appIsLoading = true;
         self.update();
+        self.territories[self.$scope.id] = {
+            nodeId: self.$scope.id,
+            territoryId: null,
+            hasLoaded: false
+        };
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
                 unloadOccurred = false,
                 nodeObj;
-            console.log('Territory in DesignSpaceController lives!');
+            self.territories[self.$scope.id].hasLoaded = true;
             self.$rootScope.appIsLoading = true;
             self.update();
             for (i = 0; i < events.length; i += 1) {
@@ -126,7 +130,6 @@ define(['../../js/DesertFrontEnd',
                 nodeObj = self.smartClient.client.getNode(event.eid);
                 if (event.eid === self.$scope.id) {
                     if (event.etype === 'load') {
-                        self.territories[territoryId].hasLoaded = true;
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.mainNavigator.items = self.getNavigatorStructure(nodeObj);
@@ -202,10 +205,7 @@ define(['../../js/DesertFrontEnd',
             self.update();
         });
 
-        self.territories[territoryId] = {
-            id: territoryId,
-            hasLoaded: false
-        };
+        self.territories[self.$scope.id].territoryId = territoryId;
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
