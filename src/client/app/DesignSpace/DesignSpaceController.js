@@ -8,13 +8,14 @@ define(['../../js/DesertFrontEnd',
         'xmljsonconverter'], function (DesertFrontEnd, Converter) {
     'use strict';
 
-    var DesignSpaceController = function ($scope, $rootScope, $moment, $routeParams, smartClient, Chance, growl) {
+    var DesignSpaceController = function ($scope, $rootScope, $moment, $routeParams, $location, smartClient, Chance, growl) {
         var self = this;
 
         self.$scope = $scope;
         self.$moment = $moment;
         self.$routeParams = $routeParams;
         self.$rootScope = $rootScope;
+        self.$location = $location;
         self.smartClient = smartClient;
         self.desertFrontEnd = new DesertFrontEnd(smartClient);
         self.growl = growl;
@@ -28,20 +29,9 @@ define(['../../js/DesertFrontEnd',
             }
         });
 
+        self.menuItemSave = null;
         self.chance = Chance ? new Chance() : null;
-//        self.$scope.exportDesign = function (id) {
-//            // FIXME: this should probably not be here.
-//            self.smartClient.runPlugin('AdmExporter', {activeNode: id, pluginConfig: {'acms': false}}, function (result) {
-//                if (result.error) {
-//                    console.error(result.error);
-//                    return;
-//                }
-//                // FIXME: is this the right approach?
-//                if (result.artifacts[0]) {
-//                    window.location.assign(self.smartClient.blobClient.getDownloadURL(result.artifacts[0]));
-//                }
-//            });
-//        };
+        self.territories = {};
         self.initialize();
     };
 
@@ -66,7 +56,16 @@ define(['../../js/DesertFrontEnd',
         self.$scope.desertInfo = {};
         self.$scope.hideCompoundComponents = false;
         self.$scope.desert = { cfgs:  {}, selectedCfg: null };
-        self.menuItemSave = null;
+        self.$scope.$on('$destroy', function () {
+            var key;
+            for (key in self.territories) {
+                if (self.territories.hasOwnProperty(key)) {
+                    self.smartClient.removeUI(key);
+                    console.log('Removed Territory ', key);
+                }
+            }
+
+        });
         // initialization of methods
         if (self.smartClient) {
             // if smartClient exists
@@ -110,33 +109,29 @@ define(['../../js/DesertFrontEnd',
             territoryPattern = {},
             territoryId;
 
-        self.territories = {};
-
         territoryPattern[self.$scope.id] = {children: 999};
+
         self.$rootScope.appIsLoading = true;
         self.update();
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
+                unloadOccurred = false,
                 nodeObj;
+            console.log('Territory in DesignSpaceController lives!');
             self.$rootScope.appIsLoading = true;
             self.update();
-            self.$scope.containers = {};
-            self.$scope.components = {};
-            self.$scope.rootNode = [];
-            self.$scope.desertInfo = {};
-            self.$scope.desert = { cfgs:  {}, selectedCfg: null };
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
-
                 if (event.eid === self.$scope.id) {
-                    if (event.etype === 'load' || event.etype === 'update') {
+                    if (event.etype === 'load') {
+                        self.territories[territoryId].hasLoaded = true;
                         self.$scope.name = nodeObj.getAttribute('name');
                         self.$scope.description = nodeObj.getAttribute('INFO');
                         self.$scope.mainNavigator.items = self.getNavigatorStructure(nodeObj);
                         self.$scope.mainNavigator.separator = true;
-                        self.addContainer(events[i].eid);
+                        self.addContainer(event.eid);
                         self.$scope.rootNode = [self.$scope.containers[self.$scope.id]];
                         self.desertFrontEnd.addSimpleListener(self.$scope.id, function (status) {
                             self.$scope.desertInfo = status;
@@ -177,23 +172,40 @@ define(['../../js/DesertFrontEnd',
                                 });
                             }
                         });
+                    } else if (event.etype === 'update') {
+                        console.warn('Update not handled for root-container!');
                     } else if (event.etype === 'unload') {
-                        console.error('TODO: not implemented yet.');
+                        self.growl.warning(self.$scope.name + ' was deleted.');
+                        self.$location.path('/workspace');
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'Container')) {
-                    if (events[i].etype === 'load' || events[i].etype === 'update') {
-                        self.addContainer(events[i].eid);
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Container')) {
+                    if (event.etype === 'load') {
+                        self.addContainer(event.eid);
+                    } else if (event.etype === 'update') {
+                        console.log('container ' + self.$scope.containers[event.eid].name + ' updated.');
+                    } else if (event.etype === 'unload') {
+                        self.removeContainer(event.eid);
+                        unloadOccurred = true;
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[i].eid, 'AVMComponentModel')) {
-                    if (events[i].etype === 'load' || events[i].etype === 'update') {
-                        self.addComponent(events[i].eid);
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'AVMComponentModel')) {
+                    if (event.etype === 'load') {
+                        self.addComponent(event.eid);
+                    } else if (event.etype === 'update') {
+                        console.log('component ' + self.$scope.components[event.eid].name + ' updated.');
                     }
                 }
+            }
+            if (unloadOccurred) {
+                self.growl.info('Containers or Components are being deleted from the design-space.');
             }
             self.$rootScope.appIsLoading = false;
             self.update();
         });
 
+        self.territories[territoryId] = {
+            id: territoryId,
+            hasLoaded: false
+        };
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
@@ -228,9 +240,7 @@ define(['../../js/DesertFrontEnd',
                 name: self.chance.word(),
                 description: self.chance.sentence(),
                 date: self.chance.date(),
-                type: null,
-                componentsCount: self.chance.integer({min: 0, max: 12}),
-                containersCount: self.chance.integer({min: 0, max: 4})
+                type: null
             };
             random = self.chance.integer({min: 0, max: 10});
             if (random > 5) {
@@ -249,11 +259,19 @@ define(['../../js/DesertFrontEnd',
     };
 
     DesignSpaceController.prototype.removeContainer = function (id) {
-        if (this.$scope.containers.hasOwnProperty(id)) {
-            delete this.$scope.containers[id];
+        var self = this,
+            currContainer,
+            parentContainer;
+        currContainer = self.$scope.containers[id];
+        if (currContainer) {
+            parentContainer = self.$scope.containers[currContainer.parentId];
+            if (parentContainer) {
+                if (parentContainer.containers[id]) {
+                    delete parentContainer.containers[id];
+                }
+            }
+            delete self.$scope.containers[id];
         }
-
-        this.update();
     };
 
     DesignSpaceController.prototype.addComponent = function (id) {
