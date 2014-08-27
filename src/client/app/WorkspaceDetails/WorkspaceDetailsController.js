@@ -25,12 +25,13 @@ define([], function () {
         self.nbrOfComponets = 15;
         self.nbrOfDesigns = 3;
         self.nbrOfTestBenches = 10;
+        self.allLoaded = false;
         self.initialize();
     };
 
     WorkspaceDetailsController.prototype.initialize = function () {
         var self = this;
-
+        //self.$rootScope.appIsLoading = true;
         // scope model
         self.$scope.id = self.$routeParams.id;
         self.$scope.name = '';
@@ -118,12 +119,7 @@ define([], function () {
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
                 event,
-                nodeObj,
-                spawnedTerritoryId;
-            if (self.territories['0'].hasLoaded === false) {
-                self.territories['0'].hasLoaded = true;
-                self.territoriesLoaded('0');
-            }
+                nodeObj;
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
                 nodeObj = self.smartClient.client.getNode(event.eid);
@@ -145,15 +141,7 @@ define([], function () {
                         if (self.territories.hasOwnProperty(event.eid)) {
                             // Workspace has a watcher..
                         } else {
-                            self.territories[event.eid] = {
-                                nodeId: event.eid,
-                                territoryId: null,
-                                hasLoaded: false
-                            };
-                            spawnedTerritoryId = self.smartClient.addUI(event.eid,
-                                ['ACMFolder', 'ADMFolder', 'ATMFolder', 'RequirementsFolder'],
-                                self.getWorkspaceEventCallback(event.eid));
-                            self.territories[event.eid].territoryId = spawnedTerritoryId;
+                            self.addWorkspaceWatcher(event.eid);
                         }
                     } else if (event.etype === 'unload') {
                         if (self.territories.hasOwnProperty(event.eid)) {
@@ -165,76 +153,129 @@ define([], function () {
                     }
                 }
             }
+            if (self.territories['0'].hasLoaded === false) {
+                self.territories['0'].hasLoaded = true;
+                self.territoriesLoaded('0');
+            }
             self.update();
         });
-        self.territories['0'] = {
-            nodeId: '0',
-            territoryId: territoryId,
-            hasLoaded: false
-        };
+
+        self.territories['0'] = { nodeId: '0', territoryId: territoryId, hasLoaded: false };
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
-    WorkspaceDetailsController.prototype.getWorkspaceEventCallback = function (id) {
-        var self = this;
-        return function (events, done) {
-            var j;
-            if (self.territories[id].hasLoaded === false && done) {
+    WorkspaceDetailsController.prototype.addWorkspaceWatcher = function (id) {
+        var self = this,
+            territoryPattern = {},
+            terrId;
+
+        territoryPattern[id] = { children: 1 };
+        terrId = self.smartClient.client.addUI(null, function (events) {
+            var j,
+                event;
+            for (j = 0; j < events.length; j += 1) {
+                event = events[j];
+                // The work-space is being watched from above.
+                if (event.eid === id) {
+                    continue;
+                }
+                if (event.etype === 'unload' && self.territories[event.eid]) {
+                    self.smartClient.removeUI(self.territories[event.eid].territoryId);
+                    delete self.territories[event.eid];
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'ACMFolder')) {
+                    if (event.etype === 'load') {
+                        self.addFolderWatcher(event.eid, 'acm');
+                    }
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'ADMFolder')) {
+                    if (event.etype === 'load') {
+                        self.addFolderWatcher(event.eid, 'adm');
+                    }
+                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'ATMFolder')) {
+                    if (event.etype === 'load') {
+                        self.addFolderWatcher(event.eid, 'atm');
+                    }
+                }
+            }
+            if (self.territories[id].hasLoaded === false) {
                 self.territories[id].hasLoaded = true;
                 self.territoriesLoaded(id);
             }
+        });
+
+        self.territories[id] = { nodeId: id, territoryId: terrId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(terrId, territoryPattern);
+    };
+
+    /**
+     * @param id - Path of folder node.
+     * @param type - 'acm', 'adm', 'atm' or 'requirement'.
+     */
+    WorkspaceDetailsController.prototype.addFolderWatcher = function (id, type) {
+        // TODO: the typeMap approach is probably not too good. saves some time when writing/testing the code.
+        var self = this,
+            territoryPattern = {},
+            terrId,
+            typeMap = {
+                acm: {
+                    folderMetaName: 'ACMFolder',
+                    modelMetaName: 'AVMComponentModel',
+                    modelWatcher: 'addComponentWatcher',
+                    modelUpdater: 'updateComponent',
+                    unloader: 'removeComponent'
+                },
+                adm: {
+                    folderMetaName: 'ADMFolder',
+                    modelMetaName: 'Container',
+                    modelWatcher: 'addDesignWatcher',
+                    modelUpdater: 'updateDesign',
+                    unloader: 'removeDesign'
+                },
+                atm: {
+                    folderMetaName: 'ATMFolder',
+                    modelMetaName: 'AVMTestBenchModel',
+                    modelWatcher: 'addTestBenchWatcher',
+                    modelUpdater: 'updateTestBench',
+                    unloader: 'removeTestBench'
+                }
+            };
+        territoryPattern[id] = { children: 1 };
+        terrId = self.smartClient.client.addUI(null, function (events) {
+            var j,
+                event;
             for (j = 0; j < events.length; j += 1) {
-                if (events[j].etype === 'unload') {
-                    if (self.$scope.components[events[j].eid]) {
-                        self.removeComponent(events[j].eid);
-                    } else if (self.$scope.designs[events[j].eid]) {
-                        self.removeDesign(events[j].eid);
-                    } else if (self.$scope.testBenches[events[j].eid]) {
-                        self.removeTestBench(events[j].eid);
+                event = events[j];
+                // The folder defining the territory is being watched from above.
+                if (event.eid === id) {
+                    continue;
+                }
+                if (event.etype === 'unload') {
+                    self[typeMap[type].unloader](id);
+                } else if (self.smartClient.isMetaTypeOf(event.eid, typeMap[type].folderMetaName)) {
+                    if (event.etype === 'load') {
+                        self.addFolderWatcher(event.eid, type);
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-                    if (events[j].etype === 'load') {
-                        self.addComponentWatcher(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.updateComponent(events[j].eid);
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
-                    }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Container')) {
-                    if (events[j].etype === 'load') {
-                        self.addDesignWatcher(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.updateDesign(events[j].eid);
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
-                    }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMTestBenchModel')) {
-                    if (events[j].etype === 'load') {
-                        self.addTestBenchWatcher(events[j].eid);
-                    } else if (events[j].etype === 'update') {
-                        self.updateTestBench(events[j].eid);
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
+                } else if (self.smartClient.isMetaTypeOf(event.eid, typeMap[type].modelMetaName)) {
+                    if (event.etype === 'load') {
+                        self[typeMap[type].modelWatcher](event.eid);
+                    } else if (event.etype === 'update') {
+                        self[typeMap[type].modelUpdater](event.eid);
                     }
                 }
-
-//
-//                if (self.smartClient.isMetaTypeOf(events[j].eid, 'RequirementCategory')) {
-//                    if (events[j].etype === 'load') {
-//                        self.addRequirement(events[j].eid);
-//                    } else if (events[j].etype === 'update') {
-//                        self.addRequirement(events[j].eid);
-//                    } else if (events[j].etype === 'unload') {
-//                        self.removeRequirement(events[j].eid);
-//                    }
-//                }
             }
-        };
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
+            }
+        });
+
+        self.territories[id] = { nodeId: id, territoryId: terrId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(terrId, territoryPattern);
     };
 
     WorkspaceDetailsController.prototype.addComponentWatcher = function (id) {
         var self = this,
             j,
+            territoryPattern = {},
             territoryId;
 
         self.addComponent(id);
@@ -244,33 +285,21 @@ define([], function () {
             delete self.territories[id];
             console.log('Removed component territory, adding new..');
         }
-        self.territories[id] = {
-            nodeId: id,
-            territoryId: null,
-            hasLoaded: false
-        };
-        territoryId = self.smartClient.addUI(id, [], function (events, done) {
+        territoryPattern[id] = {children: 1};
+        territoryId = self.smartClient.client.addUI(null, function (events) {
             var component = self.$scope.components[id],
                 nodeObj,
                 newConnector,
                 updateDomains = false;
-            if (self.territories[id].hasLoaded === false && done) {
-                self.territories[id].hasLoaded = true;
-                self.territoriesLoaded(id);
-            }
-            if (!component) {
-                return;
-            }
-            if (!component.interfaces) {
-                component.interfaces = { properties: {}, connectors: {} };
-            }
+
             for (j = 0; j < events.length; j += 1) {
+                // Component is being watch from above
+                if (events[j].eid === id) {
+                    continue;
+                }
                 if (events[j].etype === 'unload') {
                     if (component.interfaces.connectors[events[j].eid]) {
                         delete component.interfaces.connectors[events[j].eid];
-//                        if (self.territories.hasOwnProperty(events[j].eid)) {
-//                            self.smartClient.removeUI(self.territories[events[j].eid]);
-//                        }
                     } else if (component.interfaces.properties[events[j].eid]) {
                         delete component.interfaces.properties[events[j].eid];
                     } else if (component.domains[events[j].eid]) {
@@ -286,14 +315,6 @@ define([], function () {
                             domainPorts: {}
                         };
                         component.interfaces.connectors[events[j].eid] = newConnector;
-//                        // Add a watcher to the connector.
-//                        if (self.territories.hasOwnProperty(events[j].eid)) {
-//                            self.smartClient.removeUI(self.territories[events[j].eid]);
-//                        }
-//                        component.interfaces.connectors[events[j].eid] = newConnector;
-//                        self.territories[events[j].eid] = self.smartClient.addUI(events[j].eid,
-//                            [],
-//                            self.getConnectorEventCallback(component, newConnector));
                     } else if (events[j].etype === 'update') {
                         if (component.interfaces.connectors[events[j].eid]) {
                             component.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
@@ -329,51 +350,43 @@ define([], function () {
             if (updateDomains) {
                 component.domainsInfo = self.getDomainsInfo(component.domains);
             }
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
+            }
             self.update();
         });
-        self.territories[id].territoryId = territoryId;
+
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
     WorkspaceDetailsController.prototype.addDesignWatcher = function (id) {
         var self = this,
             j,
+            territoryPattern = {},
             territoryId;
         // This only watches the interfaces
         self.addDesign(id);
+        territoryPattern[id] = {children: 1};
 
         if (self.territories.hasOwnProperty(id)) {
             self.smartClient.removeUI(self.territories[id].territoryId);
             delete self.territories[id];
             console.log('Removed design territory, adding new..');
         }
-        self.territories[id] = {
-            nodeId: id,
-            territoryId: null,
-            hasLoaded: false
-        };
-        territoryId = self.smartClient.addUI(id, [], function (events, done) {
+
+        territoryId = self.smartClient.client.addUI(null, function (events) {
             var design = self.$scope.designs[id],
                 nodeObj,
                 newConnector,
                 checkInterfaces = false,
-                componentId,
                 spawnedTerritoryId;
-            if (self.territories[id].hasLoaded === false && done) {
-                self.territories[id].hasLoaded = true;
-                self.territoriesLoaded(id);
-            }
-            console.log(self.territories);
-            if (!design) {
-                return;
-            }
-            if (!design.interfaces) {
-                design.interfaces = { properties: {}, connectors: {} };
-                checkInterfaces = true;
-            }
-            if (!design.components) {
-                design.components = {};
-            }
+
             for (j = 0; j < events.length; j += 1) {
+                if (events[j].eid === id) {
+                    continue;
+                }
                 if (events[j].etype === 'unload') {
                     if (design.interfaces.connectors[events[j].eid]) {
                         delete design.interfaces.connectors[events[j].eid];
@@ -386,16 +399,6 @@ define([], function () {
                         delete design.interfaces.properties[events[j].eid];
                         checkInterfaces = true;
                     }
-                    // TODO: Unloading of components.
-//                    else if (events[j].etype === 'unload') {
-//                        //self.growl.warning('unload ' + events[j].eid);
-//                        if (design.components[componentId]) {
-//                            if (design.components[componentId].cnt === 1) {
-//                                delete design.components[componentId];
-//                            } else {
-//                                design.components[componentId].cnt -= 1;
-//                            }
-//                        }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (events[j].etype === 'load') {
@@ -427,18 +430,6 @@ define([], function () {
                         throw 'Unexpected event type' + events[j].etype;
                     }
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
-//                    if (nodeObj.getParentId() === id) {
-//                        checkInterfaces = true;
-//                        if (events[j].etype === 'load' || events[j].etype === 'update') {
-//                            design.interfaces.connectors[events[j].eid] = {
-//                                name: nodeObj.getAttribute('name'),
-//                                id: events[j].eid,
-//                                ports: []
-//                            };
-//                        } else {
-//                            throw 'Unexpected event type' + events[j].etype;
-//                        }
-//                    }
                 } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
                     nodeObj = self.smartClient.client.getNode(events[j].eid);
                     if (nodeObj.getParentId() === id) {
@@ -466,36 +457,20 @@ define([], function () {
                             throw 'Unexpected event type' + events[j].etype;
                         }
                     }
-//                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
-//                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-//                    componentId = nodeObj.getAttribute('ID');
-//                    if (events[j].etype === 'load') {
-//                        //self.growl.warning('load ' + events[j].eid);
-//                        if (design.components[componentId]) {
-//                            design.components[componentId].cnt += 1;
-//                        } else {
-//                            design.components[componentId] = {
-//                                componentId: componentId,
-//                                designId: id,
-//                                cnt: 1
-//                            };
-//                        }
-//                    } else if (events[j].etype === 'update') {
-//                        //self.growl.warning('update ' + events[j].eid);
-//                        // TODO: The only update that matters is the change of component ID.
-//                    } else {
-//                        throw 'Unexpected event type' + events[j].etype;
-//                    }
                 }
-
-
+            }
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
             }
             if (checkInterfaces) {
                 self.matchDesignsAndTestBenches(id);
             }
             self.update();
         });
-        self.territories[id].territoryId = territoryId;
+
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
     WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
@@ -521,13 +496,7 @@ define([], function () {
                 newConnector,
                 spawnedTerritoryId,
                 checkInterfaces = false;
-            if (self.territories[id].hasLoaded === false && done) {
-                self.territories[id].hasLoaded = true;
-                self.territoriesLoaded(id);
-            }
-            if (!testBench) {
-                return;
-            }
+
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
                     if (testBench.tlsut) {
@@ -614,6 +583,10 @@ define([], function () {
                     }
                 }
             }
+            if (self.territories[id].hasLoaded === false && done) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
+            }
             if (checkInterfaces) {
                 self.matchDesignsAndTestBenches(id);
             }
@@ -630,10 +603,7 @@ define([], function () {
                 name,
                 type,
                 nodeObj;
-            if (self.territories[connector.id].hasLoaded === false && done) {
-                self.territories[connector.id].hasLoaded = true;
-                self.territoriesLoaded(connector.id);
-            }
+
             for (j = 0; j < events.length; j += 1) {
                 if (events[j].etype === 'unload') {
                     if (connector.domainPorts[events[j].eid]) {
@@ -666,6 +636,10 @@ define([], function () {
                     }
                 }
             }
+            if (self.territories[connector.id].hasLoaded === false && done) {
+                self.territories[connector.id].hasLoaded = true;
+                self.territoriesLoaded(connector.id);
+            }
             if (changes) {
                 self.matchDesignsAndTestBenches(owner.id);
                 self.update();
@@ -692,7 +666,7 @@ define([], function () {
                 domains: {},
                 domainsInfo: null,
                 acm: '',
-                interfaces: null
+                interfaces: { properties: {}, connectors: {} }
             };
 
             if (nodeObj.getAttribute('Resource')) {
@@ -825,8 +799,8 @@ define([], function () {
                     all: -1,
                     none: -1
                 },
-                components: null,
-                interfaces: null
+                components: {},
+                interfaces: { properties: {}, connectors: {} }
             };
         } else {
             design = {
@@ -1405,6 +1379,74 @@ define([], function () {
         }
     };
 
+    WorkspaceDetailsController.prototype.territoriesLoaded = function (terrId) {
+        var self = this,
+            total = 0,
+            loaded = 0,
+            key;
+
+        for (key in self.territories) {
+            if (self.territories.hasOwnProperty(key)) {
+                total += 1;
+                if (self.territories[key].hasLoaded) {
+                    loaded += 1;
+                } else {
+                    //console.log(key);
+                }
+            }
+        }
+
+        console.log(terrId, loaded, total);
+        if (loaded === total) {
+            console.log('components, designs, test-benches',
+                Object.keys(self.$scope.components).length,
+                Object.keys(self.$scope.designs).length,
+                Object.keys(self.$scope.testBenches).length);
+        }
+        self.allLoaded = loaded === total;
+
+        return loaded === total;
+    };
+
+    WorkspaceDetailsController.prototype.getNavigatorStructure = function () {
+        var self = this,
+            firstMenu,
+            secondMenu;
+
+        firstMenu = {
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root',
+            action: function () {
+                window.location.href = '#/workspace';
+            },
+            actionData: {},
+            menu: []
+        };
+
+        secondMenu = {
+            id: 'workspace',
+            label: self.$scope.name,
+            itemClass: 'workspace',
+            menu: [{
+                id: 'editor',
+                items: [
+                    {
+                        id: 'open',
+                        label: 'Open in editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        action: function () {
+                            window.open('/?project=ADMEditor&activeObject=' + self.$scope.id, '_blank');
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
+        };
+        return [ firstMenu, secondMenu ];
+    };
+
     // TestData helper functions
     WorkspaceDetailsController.prototype.getRandomId = function () {
         var len = Math.floor((Math.random() * 2) + 3),
@@ -1478,66 +1520,5 @@ define([], function () {
         return designComponents;
     };
 
-    WorkspaceDetailsController.prototype.getNavigatorStructure = function () {
-        var self = this,
-            firstMenu,
-            secondMenu;
-
-        firstMenu = {
-            id: 'root',
-            label: 'ADMEditor',
-            itemClass: 'cyphy-root',
-            action: function () {
-                window.location.href = '#/workspace';
-            },
-            actionData: {},
-            menu: []
-        };
-
-        secondMenu = {
-            id: 'workspace',
-            label: self.$scope.name,
-            itemClass: 'workspace',
-            menu: [{
-                id: 'editor',
-                items: [
-                    {
-                        id: 'open',
-                        label: 'Open in editor',
-                        disabled: false,
-                        iconClass: 'glyphicon glyphicon-edit',
-                        action: function () {
-                            window.open('/?project=ADMEditor&activeObject=' + self.$scope.id, '_blank');
-                        },
-                        actionData: {}
-                    }
-                ]
-            }]
-        };
-        return [ firstMenu, secondMenu];
-    };
-
-    WorkspaceDetailsController.prototype.territoriesLoaded = function (terrId) {
-        var self = this,
-            total = 0,
-            loaded = 0,
-            key;
-
-        for (key in self.territories) {
-            if (self.territories.hasOwnProperty(key)) {
-                total += 1;
-                if (self.territories[key].hasLoaded) {
-                    loaded += 1;
-                } else {
-                    //console.log(key);
-                }
-            }
-        }
-        console.log(terrId, loaded, total);
-
-        return loaded === total;
-    };
-
     return WorkspaceDetailsController;
 });
-

@@ -308,6 +308,9 @@ define(['js/client',
 
     SmartClient.prototype.removeUI = function (guid) {
         this.client.removeUI(guid);
+        if (this.uiTerritories[guid]) {
+            delete this.uiTerritories[guid];
+        }
     };
 
 
