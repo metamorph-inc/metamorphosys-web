@@ -18,7 +18,6 @@ define([], function () {
         self.smartClient = smartClient;
         self.growl = growl;
         self.territories = {};
-        self.matchDesignsAndTestBenches = null;
         self.compares = 0;
         // For test-data
         self.chance = Chance ? new Chance() : null;
@@ -88,7 +87,6 @@ define([], function () {
 
         // Initialize functions
         self.$scope.exportDesign = self.initExportDesign();
-        self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
         self.$scope.deleteObject = self.initDeleteObject();
         self.$scope.executeTestBench = self.initExecuteTestBench();
         self.$scope.updateTLSUT = self.initUpdateTLSUT();
@@ -130,9 +128,9 @@ define([], function () {
                         self.$scope.mainNavigator.items = self.getNavigatorStructure();
                         self.$scope.mainNavigator.separator = true;
                         self.$scope.description = nodeObj.getAttribute('INFO');
+                        self.update(true);
                         if (event.etype === 'load') {
                             self.$scope.exportDesign = self.initExportDesign();
-                            self.matchDesignsAndTestBenches = self.initGetMatchingDesigns();
                             self.$scope.deleteObject = self.initDeleteObject();
                             self.$scope.executeTestBench = self.initExecuteTestBench();
                             self.$scope.updateTLSUT = self.initUpdateTLSUT();
@@ -175,11 +173,9 @@ define([], function () {
                 event;
             for (j = 0; j < events.length; j += 1) {
                 event = events[j];
-                // The work-space is being watched from above.
                 if (event.eid === id) {
-                    continue;
-                }
-                if (event.etype === 'unload' && self.territories[event.eid]) {
+                    // The work-space is being watched from above.
+                } else if (event.etype === 'unload' && self.territories[event.eid]) {
                     self.smartClient.removeUI(self.territories[event.eid].territoryId);
                     delete self.territories[event.eid];
                 } else if (self.smartClient.isMetaTypeOf(event.eid, 'ACMFolder')) {
@@ -214,7 +210,7 @@ define([], function () {
         // TODO: the typeMap approach is probably not too good. saves some time when writing/testing the code.
         var self = this,
             territoryPattern = {},
-            terrId,
+            territoryId,
             typeMap = {
                 acm: {
                     folderMetaName: 'ACMFolder',
@@ -239,16 +235,17 @@ define([], function () {
                 }
             };
         territoryPattern[id] = { children: 1 };
-        terrId = self.smartClient.client.addUI(null, function (events) {
+        if (self.removeTerritory(id)) {
+            console.warn('Removed folder territory, adding new..');
+        }
+        territoryId = self.smartClient.client.addUI(null, function (events) {
             var j,
                 event;
             for (j = 0; j < events.length; j += 1) {
                 event = events[j];
-                // The folder defining the territory is being watched from above.
                 if (event.eid === id) {
-                    continue;
-                }
-                if (event.etype === 'unload') {
+                    // The folder defining the territory is being watched from above.
+                } else if (event.etype === 'unload') {
                     self[typeMap[type].unloader](id);
                 } else if (self.smartClient.isMetaTypeOf(event.eid, typeMap[type].folderMetaName)) {
                     if (event.etype === 'load') {
@@ -268,8 +265,8 @@ define([], function () {
             }
         });
 
-        self.territories[id] = { nodeId: id, territoryId: terrId, hasLoaded: false };
-        self.smartClient.client.updateTerritory(terrId, territoryPattern);
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
     WorkspaceDetailsController.prototype.addComponentWatcher = function (id) {
@@ -278,72 +275,65 @@ define([], function () {
             territoryPattern = {},
             territoryId;
 
+        territoryPattern[id] = {children: 1};
         self.addComponent(id);
 
-        if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id].territoryId);
-            delete self.territories[id];
-            console.log('Removed component territory, adding new..');
+        if (self.removeTerritory(id)) {
+            console.warn('Removed component territory, adding new..');
         }
-        territoryPattern[id] = {children: 1};
+
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var component = self.$scope.components[id],
                 nodeObj,
                 newConnector,
+                event,
                 updateDomains = false;
 
             for (j = 0; j < events.length; j += 1) {
-                // Component is being watch from above
-                if (events[j].eid === id) {
-                    continue;
-                }
-                if (events[j].etype === 'unload') {
-                    if (component.interfaces.connectors[events[j].eid]) {
-                        delete component.interfaces.connectors[events[j].eid];
-                    } else if (component.interfaces.properties[events[j].eid]) {
-                        delete component.interfaces.properties[events[j].eid];
-                    } else if (component.domains[events[j].eid]) {
-                        delete component.domains[events[j].eid];
+                event = events[j];
+                if (event.eid === id) {
+                    // Component is being watch from above
+                } else if (event.etype === 'unload') {
+                    if (component.interfaces.connectors[event.eid]) {
+                        delete component.interfaces.connectors[event.eid];
+                    } else if (component.interfaces.properties[event.eid]) {
+                        delete component.interfaces.properties[event.eid];
+                    } else if (component.domains[event.eid]) {
+                        delete component.domains[event.eid];
                         updateDomains = true;
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (events[j].etype === 'load') {
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load') {
                         newConnector = {
                             name: nodeObj.getAttribute('name'),
-                            id: events[j].eid,
+                            id: event.eid,
                             domainPorts: {}
                         };
-                        component.interfaces.connectors[events[j].eid] = newConnector;
-                    } else if (events[j].etype === 'update') {
-                        if (component.interfaces.connectors[events[j].eid]) {
-                            component.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
+                        component.interfaces.connectors[event.eid] = newConnector;
+                    } else if (event.etype === 'update') {
+                        if (component.interfaces.connectors[event.eid]) {
+                            component.interfaces.connectors[event.eid].name = nodeObj.getAttribute('name');
                         }
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        component.interfaces.properties[events[j].eid] = {
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load' || event.etype === 'update') {
+                        component.interfaces.properties[event.eid] = {
                             name: nodeObj.getAttribute('name'),
-                            id: events[j].eid,
+                            id: event.eid,
                             dataType: nodeObj.getAttribute('DataType'),
                             valueType: nodeObj.getAttribute('ValueType')
                         };
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainModel')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'DomainModel')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
                     updateDomains = true;
-                    if (events[j].etype === 'load' || events[j].etype === 'update') {
-                        component.domains[events[j].eid] = {
-                            id: events[j].eid,
+                    if (event.etype === 'load' || event.etype === 'update') {
+                        component.domains[event.eid] = {
+                            id: event.eid,
                             type: nodeObj.getAttribute('Type')
                         };
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
                 }
             }
@@ -363,98 +353,71 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.addDesignWatcher = function (id) {
         var self = this,
-            j,
             territoryPattern = {},
             territoryId;
-        // This only watches the interfaces
-        self.addDesign(id);
-        territoryPattern[id] = {children: 1};
 
-        if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id].territoryId);
-            delete self.territories[id];
-            console.log('Removed design territory, adding new..');
+        territoryPattern[id] = {children: 1};
+        self.addDesign(id);
+
+        if (self.removeTerritory(id)) {
+            console.warn('Removed design territory, adding new..');
         }
 
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var design = self.$scope.designs[id],
                 nodeObj,
-                newConnector,
-                checkInterfaces = false,
-                spawnedTerritoryId;
+                j,
+                event,
+                checkInterfaces = false;
 
             for (j = 0; j < events.length; j += 1) {
-                if (events[j].eid === id) {
-                    continue;
-                }
-                if (events[j].etype === 'unload') {
-                    if (design.interfaces.connectors[events[j].eid]) {
-                        delete design.interfaces.connectors[events[j].eid];
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
-                            delete self.territories[events[j].eid];
+                event = events[j];
+                if (event.eid === id) {
+                    // Design is being watched from above.
+                } else if (event.etype === 'unload') {
+                    if (design.interfaces.connectors[event.eid]) {
+                        delete design.interfaces.connectors[event.eid];
+                        if (self.territories[event.eid]) {
+                            self.smartClient.removeUI(self.territories[event.eid].territoryId);
+                            delete self.territories[event.eid];
                         }
                         checkInterfaces = true;
-                    } else if (design.interfaces.properties[events[j].eid]) {
-                        delete design.interfaces.properties[events[j].eid];
+                    } else if (design.interfaces.properties[event.eid]) {
+                        delete design.interfaces.properties[event.eid];
                         checkInterfaces = true;
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (events[j].etype === 'load') {
-                        newConnector = {
-                            name: nodeObj.getAttribute('name'),
-                            id: events[j].eid,
-                            domainPorts: {}
-                        };
-                        design.interfaces.connectors[events[j].eid] = newConnector;
-                        // Add a watcher to the connector.
-                        if (self.territories.hasOwnProperty(events[j].eid)) {
-                            self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
-                            delete self.territories[events[j].eid];
-                            console.log('Removed connector territory, adding new..');
-                        }
-                        self.territories[events[j].eid] = {
-                            nodeId: events[j].eid,
-                            territoryId: null,
-                            hasLoaded: false
-                        };
-                        spawnedTerritoryId = self.smartClient.addUI(events[j].eid, [],
-                            self.getConnectorEventCallback(design, newConnector));
-                        self.territories[events[j].eid].territoryId = spawnedTerritoryId;
-                    } else if (events[j].etype === 'update') {
-                        if (design.interfaces.connectors[events[j].eid]) {
-                            design.interfaces.connectors[events[j].eid].name = nodeObj.getAttribute('name');
-                        }
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
-                    }
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (nodeObj.getParentId() === id) {
-                        if (events[j].etype === 'load') {
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load') {
+                        self.addConnectorWatcher(event.eid, id);
+                        checkInterfaces = true;
+                    } else if (event.etype === 'update') {
+                        if (design.interfaces.connectors[event.eid]) {
+                            design.interfaces.connectors[event.eid].name = nodeObj.getAttribute('name');
                             checkInterfaces = true;
-                            design.interfaces.properties[events[j].eid] = {
+                        }
+                    }
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load') {
+                        checkInterfaces = true;
+                        design.interfaces.properties[event.eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: event.eid,
+                            dataType: nodeObj.getAttribute('DataType'),
+                            valueType: nodeObj.getAttribute('ValueType')
+                        };
+                    } else if (event.etype === 'update') {
+                        if (design.interfaces.properties[event.eid].name !== nodeObj.getAttribute('name') ||
+                                design.interfaces.properties[event.eid].dataType !== nodeObj.getAttribute('DataType') ||
+                                design.interfaces.properties[event.eid].valueType !== nodeObj.getAttribute('ValueType')) {
+                            checkInterfaces = true;
+                            design.interfaces.properties[event.eid] = {
                                 name: nodeObj.getAttribute('name'),
-                                id: events[j].eid,
+                                id: event.eid,
                                 dataType: nodeObj.getAttribute('DataType'),
                                 valueType: nodeObj.getAttribute('ValueType')
                             };
-                        } else if (events[j].etype === 'update') {
-                            if (design.interfaces.properties[events[j].eid].name !== nodeObj.getAttribute('name') ||
-                                    design.interfaces.properties[events[j].eid].dataType !== nodeObj.getAttribute('DataType') ||
-                                    design.interfaces.properties[events[j].eid].valueType !== nodeObj.getAttribute('ValueType')) {
-                                checkInterfaces = true;
-                                design.interfaces.properties[events[j].eid] = {
-                                    name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid,
-                                    dataType: nodeObj.getAttribute('DataType'),
-                                    valueType: nodeObj.getAttribute('ValueType')
-                                };
-                            }
-                        } else {
-                            throw 'Unexpected event type' + events[j].etype;
                         }
                     }
                 }
@@ -463,7 +426,7 @@ define([], function () {
                 self.territories[id].hasLoaded = true;
                 self.territoriesLoaded(id);
             }
-            if (checkInterfaces) {
+            if (checkInterfaces && self.allLoaded) {
                 self.matchDesignsAndTestBenches(id);
             }
             self.update();
@@ -475,176 +438,211 @@ define([], function () {
 
     WorkspaceDetailsController.prototype.addTestBenchWatcher = function (id) {
         var self = this,
-            j,
+            territoryPattern = {},
             territoryId;
 
+        territoryPattern[id] = {children: 1};
         self.addTestBench(id);
 
-        if (self.territories.hasOwnProperty(id)) {
-            self.smartClient.removeUI(self.territories[id].territoryId);
-            delete self.territories[id];
+        if (self.removeTerritory(id)) {
             console.log('Removed test-bench territory, adding new..');
         }
-        self.territories[id] = {
-            nodeId: id,
-            territoryId: null,
-            hasLoaded: false
-        };
-        territoryId = self.smartClient.addUI(id, ['Container'], function (events, done) {
+
+        territoryId = self.smartClient.client.addUI(null, function (events) {
             var testBench = self.$scope.testBenches[id],
-                nodeObj,
-                newConnector,
-                spawnedTerritoryId,
-                checkInterfaces = false;
+                j,
+                event;
 
             for (j = 0; j < events.length; j += 1) {
-                if (events[j].etype === 'unload') {
-                    if (testBench.tlsut) {
-                        if (testBench.tlsut.connectors[events[j].eid]) {
-                            delete testBench.tlsut.connectors[events[j].eid];
-                            if (self.territories.hasOwnProperty(events[j].eid)) {
-                                self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
-                                delete self.territories[events[j].eid];
-                            }
-                            checkInterfaces = true;
-                        } else if (testBench.tlsut.properties[events[j].eid]) {
-                            delete testBench.tlsut.properties[events[j].eid];
-                            checkInterfaces = true;
-                        }
+                event = events[j];
+                if (event.eid === id) {
+                    // The test-bench is being watched from above.
+                } else if (event.etype === 'unload') {
+                    if (testBench.tlsut.id === event.eid) {
+                        testBench.tlsut = null;
+                        self.removeTerritory(id);
                     }
-                } else {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    if (self.smartClient.isMetaTypeOf(nodeObj.getParentId(), 'Container')) {
-                        // Top Level System Under Test has been loaded with children.
-                        if (!testBench.tlsut) {
-                            testBench.tlsut = { properties: {}, connectors: {} };
-                            checkInterfaces = true;
-                        }
-                        if (self.smartClient.isMetaTypeOf(events[j].eid, 'Connector')) {
-                            if (events[j].etype === 'load') {
-                                newConnector = {
-                                    name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid,
-                                    domainPorts: {}
-                                };
-                                testBench.tlsut.connectors[events[j].eid] = newConnector;
-                                // Add a watcher to the connector.
-                                if (self.territories.hasOwnProperty(events[j].eid)) {
-                                    self.smartClient.removeUI(self.territories[events[j].eid].territoryId);
-                                    delete self.territories[events[j].eid];
-                                    console.log('Removed connector territory, adding new..');
-                                }
-                                self.territories[events[j].eid] = {
-                                    nodeId: events[j].eid,
-                                    territoryId: null,
-                                    hasLoaded: false
-                                };
-                                spawnedTerritoryId = self.smartClient.addUI(events[j].eid, [],
-                                    self.getConnectorEventCallback(testBench, newConnector));
-                                self.territories[events[j].eid].territoryId = spawnedTerritoryId;
-                            } else if (events[j].etype === 'update') {
-                                if (testBench.tlsut.connectors[events[j].eid]) {
-                                    testBench.tlsut.connectors[events[j].eid].name = nodeObj.getAttribute('name');
-                                }
-                            } else {
-                                throw 'Unexpected event type' + events[j].etype;
-                            }
-                        } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'Property')) {
-                            if (events[j].etype === 'load') {
-                                testBench.tlsut.properties[events[j].eid] = {
-                                    name: nodeObj.getAttribute('name'),
-                                    id: events[j].eid,
-                                    dataType: nodeObj.getAttribute('DataType'),
-                                    valueType: nodeObj.getAttribute('ValueType')
-                                };
-                                checkInterfaces = true;
-                            } else if (events[j].etype === 'update') {
-                                if (testBench.tlsut.properties[events[j].eid].name !== nodeObj.getAttribute('name') ||
-                                        testBench.tlsut.properties[events[j].eid].dataType !== nodeObj.getAttribute('DataType') ||
-                                        testBench.tlsut.properties[events[j].eid].valueType !== nodeObj.getAttribute('ValueType')) {
-                                    checkInterfaces = true;
-                                    testBench.tlsut.properties[events[j].eid] = {
-                                        name: nodeObj.getAttribute('name'),
-                                        id: events[j].eid,
-                                        dataType: nodeObj.getAttribute('DataType'),
-                                        valueType: nodeObj.getAttribute('ValueType')
-                                    };
-                                }
-                            } else {
-                                throw 'Unexpected event type' + events[j].etype;
-                            }
-                        }
-                    } else if (self.smartClient.isMetaTypeOf(nodeObj, 'Container')) {
-                        // Top Level System Under Test has been loaded with children.
-                        if (!testBench.tlsut) {
-                            testBench.tlsut = { properties: {}, connectors: {} };
-                            checkInterfaces = true;
-                        }
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Container')) {
+                    if (event.etype === 'load') {
+                        self.addTLSUTWatcher(event.eid, id);
                     }
                 }
             }
-            if (self.territories[id].hasLoaded === false && done) {
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
                 self.territories[id].hasLoaded = true;
                 self.territoriesLoaded(id);
             }
-            if (checkInterfaces) {
-                self.matchDesignsAndTestBenches(id);
-            }
             self.update();
         });
-        self.territories[id].territoryId = territoryId;
+
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
-    WorkspaceDetailsController.prototype.getConnectorEventCallback = function (owner, connector) {
-        var self = this;
-        return function (events, done) {
-            var j,
-                changes = false,
-                name,
-                type,
-                nodeObj;
+    WorkspaceDetailsController.prototype.addTLSUTWatcher = function (id, ownerId) {
+        var self = this,
+            territoryPattern = {},
+            territoryId;
 
+        territoryPattern[id] = {children: 1};
+
+        if (self.removeTerritory(id)) {
+            console.warn('Removed tlsut territory, adding new..');
+        }
+
+        if (self.addTLSUT(id, ownerId) === false) {
+            console.warn('Could not find test-bench for TLSUT. (id, ownerId)', id, ownerId);
+            return;
+        }
+
+        territoryId = self.smartClient.client.addUI(null, function (events) {
+            var event,
+                nodeObj,
+                j,
+                checkInterfaces = false,
+                testBench = self.$scope.testBenches[ownerId];
+            if (!testBench) {
+                console.warn('Could not find test-bench for TLSUT. (id, ownerId)', id, ownerId);
+                self.removeTerritory(id);
+            }
             for (j = 0; j < events.length; j += 1) {
-                if (events[j].etype === 'unload') {
-                    if (connector.domainPorts[events[j].eid]) {
-                        delete connector.domainPorts[events[j].eid];
-                        changes = true;
+                event = events[j];
+                if (event.eid === id) {
+                    // TLSUT is being watched from above.
+                } else if (event.etype === 'unload') {
+                    if (testBench.tlsut) {
+                        if (testBench.tlsut.interfaces.connectors[event.eid]) {
+                            delete testBench.tlsut.interfaces.connectors[event.eid];
+                            checkInterfaces = true;
+                        } else if (testBench.tlsut.interfaces.properties[event.eid]) {
+                            delete testBench.tlsut.interfaces.properties[event.eid];
+                            checkInterfaces = true;
+                        }
                     }
-                } else if (self.smartClient.isMetaTypeOf(events[j].eid, 'DomainConnector')) {
-                    nodeObj = self.smartClient.client.getNode(events[j].eid);
-                    name = nodeObj.getAttribute('name');
-                    type = nodeObj.getAttribute('Type');
-                    if (events[j].etype === 'load') {
-                        changes = true;
-                        connector.domainPorts[events[j].eid] = {
-                            name: name,
-                            id: events[j].eid,
-                            type: type
-                        };
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Connector')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load') {
+                        self.addConnectorWatcher(event.eid, ownerId);
+                        checkInterfaces = true;
                     } else if (events[j].etype === 'update') {
-                        if (connector.domainPorts[events[j].eid].name !== name ||
-                                connector.domainPorts[events[j].eid].type !== type) {
-                            changes = true;
-                            connector.domainPorts[events[j].eid] = {
-                                name: name,
-                                id: events[j].eid,
-                                type: type
+                        if (testBench.tlsut.interfaces.connectors[event.eid].name !== nodeObj.getAttribute('name')) {
+                            testBench.tlsut.interfaces.connectors[event.eid].name = nodeObj.getAttribute('name');
+                            checkInterfaces = true;
+                        }
+                    }
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'Property')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    if (event.etype === 'load') {
+                        testBench.tlsut.interfaces.properties[event.eid] = {
+                            name: nodeObj.getAttribute('name'),
+                            id: event.eid,
+                            dataType: nodeObj.getAttribute('DataType'),
+                            valueType: nodeObj.getAttribute('ValueType')
+                        };
+                        checkInterfaces = true;
+                    } else if (event.etype === 'update') {
+                        if (testBench.tlsut.interfaces.properties[event.eid].name !== nodeObj.getAttribute('name') ||
+                                testBench.tlsut.interfaces.properties[event.eid].dataType !== nodeObj.getAttribute('DataType') ||
+                                testBench.tlsut.interfaces.properties[event.eid].valueType !== nodeObj.getAttribute('ValueType')) {
+                            checkInterfaces = true;
+                            testBench.tlsut.interfaces.properties[event.eid] = {
+                                name: nodeObj.getAttribute('name'),
+                                id: event.eid,
+                                dataType: nodeObj.getAttribute('DataType'),
+                                valueType: nodeObj.getAttribute('ValueType')
                             };
                         }
-                    } else {
-                        throw 'Unexpected event type' + events[j].etype;
                     }
                 }
             }
-            if (self.territories[connector.id].hasLoaded === false && done) {
-                self.territories[connector.id].hasLoaded = true;
-                self.territoriesLoaded(connector.id);
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
             }
-            if (changes) {
-                self.matchDesignsAndTestBenches(owner.id);
+            if (checkInterfaces && self.allLoaded) {
+                self.matchDesignsAndTestBenches(ownerId);
+            }
+            self.update();
+        });
+
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
+    };
+
+    WorkspaceDetailsController.prototype.addConnectorWatcher = function (id, ownerId) {
+        var self = this,
+            territoryPattern = {},
+            territoryId;
+
+        territoryPattern[id] = {children: 1};
+
+        if (self.removeTerritory(id)) {
+            console.warn('Removed connector territory, adding new. (id, ownerId)', id, ownerId);
+        }
+
+        if (self.addOrGetConnector(id, ownerId, true) === false) {
+            console.warn('Could not find owner when adding connector. (id, ownerId)', id, ownerId);
+            return;
+        }
+
+        territoryId = self.smartClient.client.addUI(null, function (events) {
+            var j,
+                checkInterfaces = false,
+                event,
+                name,
+                type,
+                connector = self.addOrGetConnector(id, ownerId, false),
+                nodeObj;
+            if (!connector) {
+                console.warn('Could not find owner or connector. (id, ownerId)', id, ownerId);
+                self.removeTerritory(id);
+            }
+            for (j = 0; j < events.length; j += 1) {
+                event = events[j];
+                if (event.eid === id) {
+                    // Connector is being watched from above
+                } else if (event.etype === 'unload') {
+                    if (connector.domainPorts[event.eid]) {
+                        delete connector.domainPorts[event.eid];
+                        checkInterfaces = true;
+                    }
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'DomainConnector')) {
+                    nodeObj = self.smartClient.client.getNode(event.eid);
+                    name = nodeObj.getAttribute('name');
+                    type = nodeObj.getAttribute('Type');
+
+                    if (event.etype === 'load') {
+                        checkInterfaces = true;
+                        connector.domainPorts[event.eid] = {
+                            name: name,
+                            id: event.eid,
+                            type: type
+                        };
+                    } else if (event.etype === 'update') {
+                        if (connector.domainPorts[event.eid].name !== name ||
+                                connector.domainPorts[event.eid].type !== type) {
+                            checkInterfaces = true;
+                            connector.domainPorts[event.eid] = {
+                                name: name,
+                                id: event.eid,
+                                type: type
+                            };
+                        }
+                    }
+                }
+            }
+            if (self.territories[id] && self.territories[id].hasLoaded === false) {
+                self.territories[id].hasLoaded = true;
+                self.territoriesLoaded(id);
+            }
+            if (checkInterfaces && self.allLoaded) {
+                self.matchDesignsAndTestBenches(ownerId);
                 self.update();
             }
-        };
+        });
+
+        self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+        self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
     // Components
@@ -939,6 +937,54 @@ define([], function () {
         }
     };
 
+    WorkspaceDetailsController.prototype.addTLSUT = function (id, ownerId) {
+        var self = this,
+            testBench;
+
+        testBench = self.$scope.testBenches[ownerId];
+        if (!testBench) {
+            return false;
+        }
+        if (testBench.tlsut) {
+            self.growl.warning(testBench.name + ' seems to have more than one TopLevelSystemUnderTest container.');
+        }
+        testBench.tlsut = {
+            id: id,
+            interfaces: { properties: {}, connectors: {} }
+        };
+
+        return true;
+    };
+
+    WorkspaceDetailsController.prototype.addOrGetConnector = function (id, ownerId, doAdd) {
+        var self = this,
+            owner,
+            connector,
+            interfaces;
+
+        owner = self.$scope.testBenches[ownerId];
+        if (owner && owner.tlsut) {
+            interfaces = owner.tlsut.interfaces;
+        } else if (self.$scope.designs[ownerId]) {
+            owner = self.$scope.designs[ownerId];
+            interfaces = owner.interfaces;
+        } else {
+            return null;
+        }
+
+        connector = interfaces.connectors[id];
+        if (!connector && doAdd) {
+            connector = {
+                name: self.smartClient.client.getNode(id).getAttribute('name'),
+                id: id,
+                domainPorts: {}
+            };
+            interfaces.connectors[id] = connector;
+        }
+
+        return connector;
+    };
+
     WorkspaceDetailsController.prototype.removeTestBench = function (id) {
         var self = this,
             name;
@@ -1019,67 +1065,6 @@ define([], function () {
     };
 
     // Function initializers.
-    WorkspaceDetailsController.prototype.initGetMatchingDesigns = function () {
-        var self = this;
-        if (!self.smartClient) {
-            return function (id) {
-                var tbDesigns = self.$scope.testBenches[id].designs,
-                    designId,
-                    tlsut = self.$scope.testBenches[id].tlsut,
-                    designInterface;
-
-                for (designId in self.$scope.designs) {
-                    if (self.$scope.designs.hasOwnProperty(designId)) {
-                        designInterface = self.$scope.designs[designId].interfaces;
-                        if (self.compareInterfaces(tlsut, designInterface)) {
-                            tbDesigns.avaliable[designId] = {id: designId};
-                        }
-                    }
-                }
-                return tbDesigns.avaliable;
-            };
-        }
-
-        return function (id) {
-            var testBench,
-                design,
-                designId,
-                testBenchId;
-            if (self.$scope.testBenches[id]) {
-                testBench = self.$scope.testBenches[id];
-                for (designId in self.$scope.designs) {
-                    if (self.$scope.designs.hasOwnProperty(designId)) {
-                        design = self.$scope.designs[designId];
-                        if (design.interfaces) {
-                            if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
-                                testBench.designs.avaliable[designId] = {id: designId};
-                            } else if (testBench.designs.avaliable[designId]) {
-                                delete testBench.designs.avaliable[designId];
-                            }
-                        } else {
-                            //console.info('Design: ' + design.name + ' does not have interfaces yet.');
-                        }
-                    }
-                }
-            } else if (self.$scope.designs[id]) {
-                design = self.$scope.designs[id];
-                for (testBenchId in self.$scope.testBenches) {
-                    if (self.$scope.testBenches.hasOwnProperty(testBenchId)) {
-                        testBench = self.$scope.testBenches[testBenchId];
-                        if (testBench.tlsut) {
-                            if (self.compareInterfaces(testBench.tlsut, design.interfaces)) {
-                                testBench.designs.avaliable[id] = {id: id};
-                            } else if (testBench.designs.avaliable[id]) {
-                                delete testBench.designs.avaliable[id];
-                            }
-                        } else {
-                            //console.info('testBench: ' + testBench.name + ' does not have tlsut yet.');
-                        }
-                    }
-                }
-            }
-        };
-    };
 
     WorkspaceDetailsController.prototype.initExportDesign = function () {
         var self = this;
@@ -1282,7 +1267,51 @@ define([], function () {
         }
     };
 
-    WorkspaceDetailsController.prototype.compareInterfaces = function (tlsut, designInterface) {
+    WorkspaceDetailsController.prototype.matchDesignsAndTestBenches = function (id) {
+        var self = this,
+            testBench,
+            design,
+            designId,
+            testBenchId;
+
+        if (self.$scope.testBenches[id]) {
+            testBench = self.$scope.testBenches[id];
+            if (!testBench.tlsut) {
+                testBench.designs.avaliable = {};
+                console.warn('Reset designs avaliable for test-bench', id);
+                return;
+            }
+            for (designId in self.$scope.designs) {
+                if (self.$scope.designs.hasOwnProperty(designId)) {
+                    design = self.$scope.designs[designId];
+                    if (self.compareInterfaces(testBench.tlsut.interfaces, design.interfaces)) {
+                        testBench.designs.avaliable[designId] = {id: designId};
+                    } else if (testBench.designs.avaliable[designId]) {
+                        delete testBench.designs.avaliable[designId];
+                    }
+                }
+            }
+        } else if (self.$scope.designs[id]) {
+            design = self.$scope.designs[id];
+            for (testBenchId in self.$scope.testBenches) {
+                if (self.$scope.testBenches.hasOwnProperty(testBenchId)) {
+                    testBench = self.$scope.testBenches[testBenchId];
+                    if (testBench.tlsut) {
+                        if (self.compareInterfaces(testBench.tlsut.interfaces, design.interfaces)) {
+                            testBench.designs.avaliable[id] = {id: id};
+                        } else if (testBench.designs.avaliable[id]) {
+                            delete testBench.designs.avaliable[id];
+                        }
+                    } else {
+                        testBench.designs.avaliable = {};
+                        console.warn('Reset designs avaliable for test-bench ', testBenchId);
+                    }
+                }
+            }
+        }
+    };
+
+    WorkspaceDetailsController.prototype.compareInterfaces = function (tlsutInterfaces, designInterface) {
         var tId,
             dId,
             tProp,
@@ -1293,9 +1322,9 @@ define([], function () {
 
         this.compares += 1;
         console.log('Number of compares : ' + this.compares);
-        for (tId in tlsut.properties) {
-            if (tlsut.properties.hasOwnProperty(tId)) {
-                tProp = tlsut.properties[tId];
+        for (tId in tlsutInterfaces.properties) {
+            if (tlsutInterfaces.properties.hasOwnProperty(tId)) {
+                tProp = tlsutInterfaces.properties[tId];
                 match = false;
                 for (dId in designInterface.properties) {
                     if (designInterface.properties.hasOwnProperty(dId)) {
@@ -1318,9 +1347,9 @@ define([], function () {
             return false;
         }
 
-        for (tId in tlsut.connectors) {
-            if (tlsut.connectors.hasOwnProperty(tId)) {
-                tConn = tlsut.connectors[tId];
+        for (tId in tlsutInterfaces.connectors) {
+            if (tlsutInterfaces.connectors.hasOwnProperty(tId)) {
+                tConn = tlsutInterfaces.connectors[tId];
                 match = false;
                 for (dId in designInterface.connectors) {
                     if (designInterface.connectors.hasOwnProperty(dId)) {
@@ -1373,16 +1402,20 @@ define([], function () {
         return domainsInfo;
     };
 
-    WorkspaceDetailsController.prototype.update = function () {
-        if (!this.$scope.$$phase) {
-            this.$scope.$apply();
+    WorkspaceDetailsController.prototype.update = function (forceApply) {
+        var self = this;
+        if (self.allLoaded || forceApply) {
+            if (!self.$scope.$$phase) {
+                self.$scope.$apply();
+            }
         }
     };
 
-    WorkspaceDetailsController.prototype.territoriesLoaded = function (terrId) {
+    WorkspaceDetailsController.prototype.territoriesLoaded = function (id) {
         var self = this,
             total = 0,
             loaded = 0,
+            tbId,
             key;
 
         for (key in self.territories) {
@@ -1395,17 +1428,31 @@ define([], function () {
                 }
             }
         }
-
-        console.log(terrId, loaded, total);
+        console.log(id, loaded, total);
         if (loaded === total) {
             console.log('components, designs, test-benches',
                 Object.keys(self.$scope.components).length,
                 Object.keys(self.$scope.designs).length,
                 Object.keys(self.$scope.testBenches).length);
         }
-        self.allLoaded = loaded === total;
+        if (self.allLoaded === false && loaded === total) {
+            self.allLoaded = true;
+            for (tbId in self.$scope.testBenches) {
+                if (self.$scope.testBenches.hasOwnProperty(tbId)) {
+                    self.matchDesignsAndTestBenches(tbId);
+                }
+            }
+        }
+    };
 
-        return loaded === total;
+    WorkspaceDetailsController.prototype.removeTerritory = function (id) {
+        var self = this;
+        if (self.territories.hasOwnProperty(id)) {
+            self.smartClient.removeUI(self.territories[id].territoryId);
+            delete self.territories[id];
+            return true;
+        }
+        return false;
     };
 
     WorkspaceDetailsController.prototype.getNavigatorStructure = function () {

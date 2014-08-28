@@ -228,13 +228,13 @@
                         <div class="tlsut">
                             <h5><strong>TLSUT Interfaces</strong></h5>
                             <ul class="interface-list">
-                                <li data-ng-repeat="conn in testBench.tlsut.connectors | orderObjectBy: 'name'">
+                                <li data-ng-repeat="conn in testBench.tlsut.interfaces.connectors | orderObjectBy: 'name'">
                                     <i class="cyphy-tag gray">Connector</i> {{conn.name}}
                                     <i class="cyphy-tag purple" data-ng-repeat="port in conn.domainPorts | orderObjectBy: 'name'">
                                         {{port.type}}
                                     </i>
                                 </li>
-                                <li data-ng-repeat="prop in testBench.tlsut.properties | orderObjectBy: 'name'">
+                                <li data-ng-repeat="prop in testBench.tlsut.interfaces.properties | orderObjectBy: 'name'">
                                     <i class="cyphy-tag gray">{{prop.valueType === 'Fixed' ? 'Property' : 'Parameter'}}
                                     </i>{{prop.name}} ({{prop.dataType}})</li>
                             </ul>
