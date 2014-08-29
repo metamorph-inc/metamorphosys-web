@@ -215,6 +215,7 @@ require(
 
         'isis-ui-components/dropdownNavigator/dropdownNavigator',
         'CyPhyApp/app/MainNavigatorController',
+        'CyPhyApp/app/ServerInfoController',
 
         'angular-file-upload-shim',
         'angular-file-upload',
@@ -227,7 +228,7 @@ require(
 
       ],
       function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient,
-                   DropDownNavigator, MainNavigatorController ) {
+                   DropDownNavigator, MainNavigatorController, ServerInfoController ) {
           // download angular and all plugins
           // create app
 
@@ -242,10 +243,11 @@ require(
 
           WebGMEGlobal.WebGMEApp = WebGMEApp;
 
+          var smartClient = new SmartClient( CONFIG );
+          WebGMEApp.value( 'smartClient', smartClient );
 
           WebGMEApp.controller( 'MainNavigatorController', MainNavigatorController );
-
-          var smartClient = new SmartClient( CONFIG );
+          //WebGMEApp.controller( 'ServerInfoController', ServerInfoController );
 
           smartClient.openProject( 'ADMEditor', 'master', ADMMETAMODEL, function ( err ) {
             if ( err ) {
@@ -253,7 +255,7 @@ require(
               return;
             }
 
-            WebGMEApp.value( 'smartClient', smartClient );
+            //WebGMEApp.value( 'smartClient', smartClient );
             WebGMEApp.value( 'Chance', null );
 
             require( [

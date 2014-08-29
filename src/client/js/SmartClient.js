@@ -1,3 +1,4 @@
+/*globals define, console */
 /**
  * Created by Zsolt on 7/3/2014.
  */
@@ -160,8 +161,9 @@ define(['js/client',
 
                 if (event.eid === self.ROOT_ID) {
                     if (event.etype === 'unload') {
+                        console.warn('A META-object was removed!');
                         self.metaNodes = {};
-                    } else if (event.etype === 'load' || event.etype === 'update') {
+                    } else if (event.etype === 'load') {
 
                         // get all meta types
                         metaObjectIds = nodeObj.getMemberIds('MetaAspectSet');
@@ -186,6 +188,7 @@ define(['js/client',
                         if (patternUpdated) {
                             self.client.updateTerritory(self.metaTerritoryId, self.metaTerritoryPattern);
                         }
+                    } else if (event.etype === 'update') {
 
                     } else {
                         throw 'Unrecognized event type: ' + event.etype;

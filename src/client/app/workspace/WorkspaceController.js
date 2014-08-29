@@ -202,12 +202,6 @@ define([], function () {
 
         self.idCounter = 0;
 
-        self.$scope.serverInfo = {
-            version: '0.1.0',
-            osName: 'Windows_NT',
-            node: 'v0.10.28'
-        };
-
         self.$scope.createWorkspace = function (workspace) {
             var id = '/' + self.idCounter,
                 today;
@@ -406,10 +400,6 @@ define([], function () {
             territoryId,
             clientMessage,
             k;
-
-        self.getServerInfo(function (info) {
-            self.$scope.serverInfo = info;
-        });
 
         for (k = 0; k < self.smartClient.initialMessages.length; k += 1) {
             clientMessage = self.smartClient.initialMessages[k];
@@ -1026,37 +1016,6 @@ define([], function () {
         if (doUpdate) {
             self.update();
         }
-    };
-
-    WorkspaceController.prototype.getServerInfo = function (callback) {
-        var self = this,
-            info = {};
-        self.smartClient.serverInfoClient.os(function (err, res) {
-            if (err) {
-                info.osName = 'N/A';
-                self.logger.error('Could not obtain os-info.');
-            } else {
-                info.osName = res.type;
-            }
-
-            self.smartClient.serverInfoClient.npm(function (err, res) {
-                if (err) {
-                    info.version = 'N/A';
-                    self.logger.error('Could not obtain webgme-cyphy version info.');
-                } else {
-                    info.version = res.version;
-                }
-                self.smartClient.serverInfoClient.node(function (err, res) {
-                    if (err) {
-                        info.node = 'N/A';
-                        self.logger.error('Could not obtain node version.');
-                    } else {
-                        info.node = res.version;
-                    }
-                    callback(info);
-                });
-            });
-        });
     };
 
     return WorkspaceController;

@@ -8,7 +8,7 @@
 define([], function () {
     'use strict';
 
-    var MainNavigatorController = function ($scope, $rootScope) {
+    var MainNavigatorController = function ($scope) {
         var firstMenu,
             self = this;
         self.$scope = $scope;

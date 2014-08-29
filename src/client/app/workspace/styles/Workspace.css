@@ -86,9 +86,3 @@ article.workspace {
     margin-top: 1.5em; }
   article.workspace .workspace-metadata-editor {
     padding-top: 1ex; }
-  article.workspace .server-info {
-    font-size: 80%;
-    text-align: center;
-    position: absolute;
-    bottom: 0;
-    width: 94%; }
