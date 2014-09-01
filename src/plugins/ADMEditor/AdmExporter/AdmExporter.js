@@ -87,6 +87,14 @@ define([
                 'value': false,
                 'valueType': 'boolean',
                 'readOnly': false
+            },
+            {
+                'name': 'cfgId',
+                'displayName': 'ID of selected configuration.',
+                'description': '(If null full design space will be exported)',
+                'value': '',
+                'valueType': 'string',
+                'readOnly': false
             }
         ];
     };
@@ -128,8 +136,6 @@ define([
                     callback('Could not save artifact : err' + err.toString(), self.result);
                     return;
                 }
-//                self.createMessage(null, 'ExecTime [s] total :: ' +
-//                    ((new Date().getTime() - timeStart) / 1000).toString());
                 self.result.addArtifact(hash);
                 self.result.setSuccess(true);
                 callback(null, self.result);
@@ -208,6 +214,7 @@ define([
         self.logger.info('At node "' + nodeName + '" of type "' + nodeType + '" with parent "' + parentName + '".');
 
         if (nodeType === 'AVMComponentModel') {
+            // TODO: If parent is Alternative, then only add if component is in AA.
             self.addComponentInstance(node, parent, containerData, callback);
         } else if (nodeType === 'Connector') {
             self.addConnector(node, parent, containerData, callback);
@@ -507,9 +514,13 @@ define([
                     parent = self.core.getParent(connectedPort);
                     parentMetaType = self.core.getAttribute(self.getMetaType(parent), 'name');
                     if (parentMetaType === 'AVMComponentModel') {
+                        //TODO: If parent of parent is alternative, then only add if parent is in AA.
                         id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(connectedPort, 'ID');
-                    } else {
+                    } else if (parentMetaType === 'Container') {
+                        //TODO: If parent of parent is alternative, then only add if parent is in AA.
                         id = self.core.getGuid(connectedPort);
+                    } else {
+                        callback('Unexpected Connector parentMetaType ' + parentMetaType);
                     }
                 }
                 callback(null, id);
@@ -667,10 +678,14 @@ define([
                                 self.logger.info('Skipping connection within same ACM : ' +
                                     self.core.getAttribute(node, 'name'));
                             } else {
+                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
                                 vsId = '{' + self.core.getGuid(vsParent) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
                             }
-                        } else {
+                        } else if (parentMetaType === 'Container') {
+                            //TODO: If parent of parent is alternative, then only add if parent is in AA.
                             vsId = self.core.getGuid(valueSourceNode);
+                        } else {
+                            self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
                         }
                     }
                     addPropertyData(vsId);
@@ -756,9 +771,13 @@ define([
                             parent = self.core.getParent(valueSource);
                             parentMetaType = self.core.getAttribute(self.getMetaType(parent), 'name');
                             if (parentMetaType === 'AVMComponentModel') {
+                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
                                 id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(valueSource, 'ID');
-                            } else {
+                            } else if (parentMetaType === 'Container') {
+                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
                                 id = self.core.getGuid(valueSource);
+                            } else {
+                                self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
                             }
 
                             if (!isSimple) {
@@ -833,6 +852,7 @@ define([
                             return;
                         }
                         if (self.isMetaTypeOf(childNode, self.meta.Container)) {
+                            //TODO: if containerData is Alternative, then only add if childNode.id is in AA.
                             subContainerData = self.getContainerData(childNode);
                             containerData.Container.push(subContainerData);
                             self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
