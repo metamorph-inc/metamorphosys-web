@@ -129,7 +129,7 @@ define(['xmljsonconverter'], function (Converter) {
                         self.callListeners(containerId, 'ERROR');
                         return;
                     }
-                    self.executorClient.createJob({hash: artieHash, labels: ['META_14.09']}, function (err, jobInfo) {
+                    self.executorClient.createJob({hash: artieHash, labels: []}, function (err, jobInfo) {
                         var intervalID,
                             atSucceedJob;
                         if (err) {
