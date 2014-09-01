@@ -60,15 +60,26 @@ define([], function () {
 
     WorkersController.prototype.initTestData = function () {
         var self = this,
-            rawResponse;
+            rawResponse,
+            testWorker;
+
         if (!self.intervalPromise) {
             self.intervalPromise =  self.$interval(function () {
-                rawResponse = '{"pmeijer-PC_5336":{"clientId":"pmeijer-PC_5336","lastSeen":1408737168.284,"labels":' +
-                    '["Dymola","META_14.09"],"jobs":[{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]' +
-                    ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
-                    'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
-                    '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
-                self.$scope.dataModel.workers = JSON.parse(rawResponse);
+//                rawResponse = '{"pmeijer-PC_5336":{"clientId":"pmeijer-PC_5336","lastSeen":1408737168.284,"labels":' +
+//                    '["Dymola","META_14.09"],"jobs":[{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]' +
+//                    ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
+//                    'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
+//                    '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
+//                self.$scope.dataModel.workers = JSON.parse(rawResponse);
+
+                self.$scope.dataModel.workers = self.$scope.dataModel.workers || {};
+
+                testWorker = 'worker_' + Math.floor(Math.random() * 1000);
+
+                if (Object.keys(self.$scope.dataModel.workers).length < 10) {
+                    self.$scope.dataModel.workers[testWorker] = self.getTestDataWorker(testWorker);
+                }
+
                 self.update();
             }, 1000);
         }
@@ -79,6 +90,17 @@ define([], function () {
 //            '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
 //        self.$scope.dataModel.workersInfo = JSON.parse(rawResponse);
 //        self.update();
+    };
+
+    WorkersController.prototype.getTestDataWorker = function (name) {
+        return {
+            "clientId": name,
+            "lastSeen": 1409589221.006,
+            "labels": [],
+            "jobs": [{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]
+                    ,"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","startTime":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}
+            ]
+        };
     };
 
     WorkersController.prototype.initWithSmartClient = function () {
