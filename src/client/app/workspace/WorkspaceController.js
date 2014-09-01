@@ -425,8 +425,7 @@ define([], function () {
 
         territoryId = self.smartClient.client.addUI(null, function (events) {
             var i,
-                event,
-                nodeObj;
+                event;
 
             for (i = 0; i < events.length; i += 1) {
                 event = events[i];
@@ -444,12 +443,9 @@ define([], function () {
                 } else if (self.smartClient.isMetaTypeOf(event.eid, 'WorkSpace')) {
                     if (event.eid !== self.smartClient.metaNodes.WorkSpace.getId()) {
                         if (event.etype === 'load') {
-                            nodeObj = self.smartClient.client.getNode(event.eid);
-                            self.addWorkspaceWatch(nodeObj);
+                            self.addWorkspaceWatch(event.eid);
                         } else if (event.etype === 'update') {
-                            // TODO: just update rather than creating new!
-                            nodeObj = self.smartClient.client.getNode(event.eid);
-                            self.addWorkspaceWatch(nodeObj);
+                            self.updateWorkspace(event.eid);
                         }
                     }
                 }
@@ -466,48 +462,23 @@ define([], function () {
         self.smartClient.client.updateTerritory(territoryId, territoryPattern);
     };
 
-    WorkspaceController.prototype.addWorkspaceWatch = function (nodeObj) {
+    WorkspaceController.prototype.addWorkspaceWatch = function (id) {
         var self = this,
             j,
-            id = nodeObj.getId(),
-            territoryId,
-            workspace;
+            territoryId;
 
-        workspace = {
-            id: id,
-            name: nodeObj.getAttribute('name'),
-            description: nodeObj.getAttribute('INFO'),
-            url: '/?project=ADMEditor&activeObject=' + nodeObj.getId(),
-            lastUpdated: {
-                time: new Date(),
-                user: 'N/A',
-                hash: '0123456789abcdef',
-                message: '????'
-            },
-            components: {
-                count: 0
-            },
-            designs: {
-                count: 0
-            },
-            testBenches: {
-                count: 0
-            },
-            requirements: {
-                count: 0
-            }
-        };
-
-        self.$scope.workspaces[id] = workspace;
-
+        self.addWorkspace(id);
         if (self.removeTerritory(id)) {
             console.warn('Removed work-space territory ', id);
         }
 
         territoryId = self.smartClient.addUI(id, ['ACMFolder', 'ADMFolder', 'ATMFolder', 'RequirementsFolder'], function (events) {
+            var workspace = self.$scope.workspaces[id];
+            if (!workspace) {
+                console.warn('Could not get work-space ', id);
+                return;
+            }
             for (j = 0; j < events.length; j += 1) {
-                //console.log(events[j]);
-
                 // component
                 if (self.smartClient.isMetaTypeOf(events[j].eid, 'AVMComponentModel')) {
                     if (events[j].etype === 'load') {
@@ -563,6 +534,52 @@ define([], function () {
             self.update();
         });
         self.territories[id] = { nodeId: id, territoryId: territoryId, hasLoaded: false };
+    };
+
+    WorkspaceController.prototype.addWorkspace = function (id) {
+        var self = this,
+            nodeObj = self.smartClient.client.getNode(id),
+            workspace;
+
+        workspace = {
+            id: id,
+            name: nodeObj.getAttribute('name'),
+            description: nodeObj.getAttribute('INFO'),
+            url: '/?project=ADMEditor&activeObject=' + nodeObj.getId(),
+            lastUpdated: {
+                time: new Date(),
+                user: 'N/A',
+                hash: '0123456789abcdef',
+                message: '????'
+            },
+            components: {
+                count: 0
+            },
+            designs: {
+                count: 0
+            },
+            testBenches: {
+                count: 0
+            },
+            requirements: {
+                count: 0
+            }
+        };
+
+        self.$scope.workspaces[id] = workspace;
+    };
+
+    WorkspaceController.prototype.updateWorkspace = function (id) {
+        var self = this,
+            workspace = self.$scope.workspaces[id],
+            nodeObj;
+        if (workspace) {
+            nodeObj = self.smartClient.client.getNode(id);
+            workspace.name = nodeObj.getAttribute('name');
+            workspace.description = nodeObj.getAttribute('INFO');
+        } else {
+            console.warn('Trying to update non-existing work-space.');
+        }
     };
 
     // Functions for creating functions that depend on the Root-node being loaded.
