@@ -29,7 +29,7 @@
 
     <link rel="stylesheet" href="./lib/angular-growl.min.css">
     <!--<script src="./lib/angular-growl.min.js" type="text/javascript"></script>-->
-
+    <link rel="stylesheet" href="./styles/cyphy.css">
 
     <script type="text/javascript">
         var DEBUG = true,
@@ -37,114 +37,148 @@
             _jqueryUIVersion = '1.10.4',
             _bootsrapVersion = '3.1.1';
 
-        require.config({
-            baseUrl: "../../",
+        require(['/bin/getconfig.js'], function (CONFIG) {
+            if ( CONFIG.paths ) {
 
-            map: {
-                '*': {
-                    'css': 'node_modules/webgme/src/client/lib/require/require-css/css',
-                    'text': 'node_modules/webgme/src/client/lib/require/require-text/text'
+                // attach external libraries to extlib/*
+
+                var keys = Object.keys( CONFIG.paths );
+                for ( var i = 0; i < keys.length; i += 1 ) {
+
+                    // assume this is a relative path from the current working directory
+                    CONFIG.paths[keys[i]] = CONFIG.paths[keys[i]];
                 }
-            },
 
-            paths: {
-                'jquery': 'node_modules/webgme/src/client/lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
-                'bootstrap': 'node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/js/bootstrap' + ( DEBUG ? '.min' : '' ),
-                'angular': 'node_modules/webgme/src/client/lib/angular/angular-1.2.19/angular' + ( DEBUG ? '.min' : '' ),
-                'angular-ui-bootstrap': 'node_modules/webgme/src/client/lib/angular/ui-bootstrap/ui-bootstrap-tpls-0.11.0.min',
-                'angular-route-styles': 'node_modules/webgme/src/client/lib/angular/angular-route-styles/route-styles'
-            },
+                // update client config to route the external lib requests
 
-            shim: {
-                'angular-ui-bootstrap': ['angular', 'bootstrap'],
+                require.config( {
+                    paths: CONFIG.paths
+                } );
 
-                'bootstrap': [
-                    'jquery',
-                            'css!node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap.min.css',
-                            'css!node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap-theme.min.css'
-                ]
-            },
+            }
+            require.config({
+                baseUrl: "../../",
 
-            waitSeconds: 15
-        });
-        // download modules and controllers for testing
-        require([
-            'angular-route-styles',
-            'angular-ui-bootstrap',
-            'src/client/lib/angular-growl.min',
-            'src/client/lib/angular-file-upload',
-            'src/client/lib/angular-file-upload-shim.min',
-            'src/client/app/workspace/WorkspaceController',
-            'src/client/app/WorkspaceDetails/WorkspaceDetailsController',
-            'src/client/app/DesignSpace/DesignSpaceController',
-            'src/client/lib/chance.min'], function(ngRouteStyles, ngBootstrap, ngGrowl, ngFileUpload, ngFileUploadShim, WorkspaceController, WorkspaceDetailsController, DesignSpaceController, Chance) {
-
-            "use strict";
-            var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate']);
-
-            WebGMEApp.value('smartClient', null);
-
-            WebGMEApp.value('Chance', Chance);
-
-
-            WebGMEApp.filter('orderObjectBy', function() {
-                return function(items, field, reverse) {
-                    var filtered = [];
-                    angular.forEach(items, function(item) {
-                        filtered.push(item);
-                    });
-                    filtered.sort(function (a, b) {
-                        return (a[field] > b[field] ? 1 : -1);
-                    });
-                    if (reverse) {
-                        filtered.reverse();
+                map: {
+                    '*': {
+                        'css': 'node_modules/webgme/src/client/lib/require/require-css/css',
+                        'text': 'node_modules/webgme/src/client/lib/require/require-text/text'
                     }
-                    return filtered;
-                };
+                },
+
+                paths: {
+                    'jquery': 'node_modules/webgme/src/client/lib/jquery/jquery-' + _jqueryVersion + ( DEBUG ? '.min' : '' ),
+                    'bootstrap': 'node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/js/bootstrap' + ( DEBUG ? '.min' : '' ),
+                    'angular': 'node_modules/webgme/src/client/lib/angular/angular-1.2.19/angular' + ( DEBUG ? '.min' : '' ),
+                    'angular-ui-bootstrap': 'node_modules/webgme/src/client/lib/angular/ui-bootstrap/ui-bootstrap-tpls-0.11.0.min',
+                    'angular-route-styles': 'node_modules/webgme/src/client/lib/angular/angular-route-styles/route-styles'
+                },
+
+                shim: {
+                    'angular-ui-bootstrap': ['angular', 'bootstrap'],
+
+                    'bootstrap': [
+                        'jquery',
+                                'css!node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap.min.css',
+                                'css!node_modules/webgme/src/client/lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap-theme.min.css'
+                    ]
+                },
+
+                waitSeconds: 15
             });
+            // download modules and controllers for testing
+            require([
+                'angular-route-styles',
+                'angular-ui-bootstrap',
+                'extlib/../../isis-ui-components/dropdownNavigator/dropdownNavigator',
+                'src/client/lib/angular-growl.min',
+                'src/client/lib/angular-file-upload',
+                'src/client/lib/angular-file-upload-shim.min',
+                'src/client/app/workspace/WorkspaceController',
+                'src/client/app/WorkspaceDetails/WorkspaceDetailsController',
+                'src/client/app/DesignSpace/DesignSpaceController',
+                'src/client/app/Workers/WorkersController',
+                'src/client/app/MainNavigatorController',
+                'src/client/lib/chance.min'], function(ngRouteStyles, ngBootstrap, DropDownNavigator,
+                                                       ngGrowl, ngFileUpload, ngFileUploadShim,
+                                                       WorkspaceController, WorkspaceDetailsController, DesignSpaceController,
+                                                       WorkersController, MainNavigatorController, Chance) {
+                "use strict";
+                var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment',
+                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.dropdownNavigator']).run(function($rootScope) {
+                    $rootScope.mainNavigator = { };
+                    $rootScope.appIsLoading = false;});
 
-            WebGMEApp.controller('WorkspaceController', WorkspaceController);
-            WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
-            WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
-            WebGMEApp.config(['growlProvider', function(growlProvider) {
-                growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
-            }]);
-            WebGMEApp.config(['$routeProvider',
-                function ($routeProvider) {
-                    $routeProvider.
-                            when('/workspace', {
-                                templateUrl: 'app/workspace/views/WorkspaceView.html',
-                                css: 'app/workspace/styles/Workspace.css',
-                                controller: 'WorkspaceController'
-                            }).
-                            when('/edit', {
-                                templateUrl: 'app/workspace/views/WorkspaceEditFields.html'
-                            }).
-                            when('/workspaceDetails/:id*', {
-                                templateUrl: 'app/WorkspaceDetails/views/WorkspaceDetailsView.html',
-                                css: 'app/WorkspaceDetails/styles/WorkspaceDetails.css',
-                                controller: 'WorkspaceDetailsController'
-                            }).
-                            when('/workspaceDetails', {
-                                redirectTo: '/workspaceDetails//1'
-                            }).
-                            when('/designSpace/:id*', {
-                                templateUrl: 'app/DesignSpace/views/DesignSpaceView.html',
-                                css: 'app/DesignSpace/styles/DesignSpace.css',
-                                controller: 'DesignSpaceController'
-                            }).
-                            when('/designSpace', {
-                                redirectTo: '/designSpace//1'
-                            }).
-                            otherwise({
-                                redirectTo: '/'
-                            });
+                WebGMEApp.value('smartClient', null);
+
+                WebGMEApp.value('Chance', Chance);
+
+
+                WebGMEApp.filter('orderObjectBy', function() {
+                    return function(items, field, reverse) {
+                        var filtered = [];
+                        angular.forEach(items, function(item) {
+                            filtered.push(item);
+                        });
+                        filtered.sort(function (a, b) {
+                            return (a[field] > b[field] ? 1 : -1);
+                        });
+                        if (reverse) {
+                            filtered.reverse();
+                        }
+                        return filtered;
+                    };
+                });
+                WebGMEApp.controller('MainNavigatorController', MainNavigatorController);
+                WebGMEApp.controller('WorkspaceController', WorkspaceController);
+                WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
+                WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
+                WebGMEApp.controller('WorkersController', WorkersController);
+
+                WebGMEApp.config(['growlProvider', function(growlProvider) {
+                    growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
                 }]);
+                WebGMEApp.config(['$routeProvider',
+                    function ($routeProvider) {
+                        $routeProvider.
+                                when('/workspace', {
+                                    templateUrl: 'app/workspace/views/WorkspaceView.html',
+                                    css: 'app/workspace/styles/Workspace.css',
+                                    controller: 'WorkspaceController'
+                                }).
+                                when('/edit', {
+                                    templateUrl: 'app/workspace/views/WorkspaceEditFields.html'
+                                }).
+                                when('/workspaceDetails/:id*', {
+                                    templateUrl: 'app/WorkspaceDetails/views/WorkspaceDetailsView.html',
+                                    css: 'app/WorkspaceDetails/styles/WorkspaceDetails.css',
+                                    controller: 'WorkspaceDetailsController'
+                                }).
+                                when('/workspaceDetails', {
+                                    redirectTo: '/workspaceDetails//1'
+                                }).
+                                when('/designSpace/:id*', {
+                                    templateUrl: 'app/DesignSpace/views/DesignSpaceView.html',
+                                    css: 'app/DesignSpace/styles/DesignSpace.css',
+                                    controller: 'DesignSpaceController'
+                                }).
+                                when('/designSpace', {
+                                    redirectTo: '/designSpace//1'
+                                }).
+                                when('/workers', {
+                                    templateUrl: 'app/Workers/views/WorkersView.html',
+                                    css: 'app/Workers/styles/Workers.css',
+                                    controller: 'WorkersController'
+                                }).
+                                otherwise({
+                                    redirectTo: '/'
+                                });
+                    }]);
 
-            angular.bootstrap(document, ['WebGMEApp']);
+                angular.bootstrap(document, ['WebGMEApp']);
 
+            });
         });
-
     </script>
 
 </head>
@@ -157,9 +191,13 @@
     <button onclick="location.href='#/workspace';"  type="button" class="btn btn-default">workspace</button>
     <button onclick="location.href='#/workspaceDetails';"  type="button" class="btn btn-default">workspace details</button>
     <button onclick="location.href='#/designSpace';"  type="button" class="btn btn-default">design space</button>
+    <button onclick="location.href='#/workers';"  type="button" class="btn btn-default">workers</button>
     <button onclick="location.href='#/edit';"  type="button" class="btn btn-default">workspace edit</button>
 </div>
 
+<div data-ng-controller="MainNavigatorController" class="main-navigator-container">
+    <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
+</div>
 
 <div growl></div>
 

@@ -247,7 +247,7 @@ require(
           WebGMEApp.value( 'smartClient', smartClient );
 
           WebGMEApp.controller( 'MainNavigatorController', MainNavigatorController );
-          //WebGMEApp.controller( 'ServerInfoController', ServerInfoController );
+          WebGMEApp.controller( 'ServerInfoController', ServerInfoController );
 
           smartClient.openProject( 'ADMEditor', 'master', ADMMETAMODEL, function ( err ) {
             if ( err ) {

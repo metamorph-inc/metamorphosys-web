@@ -23,6 +23,8 @@ define([], function () {
     WorkersController.prototype.update = function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
+        } else {
+            console.log('In $$phase..');
         }
     };
 
@@ -66,10 +68,17 @@ define([], function () {
                     ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
                     'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
                     '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
-                self.$scope.dataModel.workersInfo = JSON.parse(rawResponse);
+                self.$scope.dataModel.workers = JSON.parse(rawResponse);
                 self.update();
             }, 1000);
         }
+//        rawResponse = '{"pmeijer-PC_5336":{"clientId":"pmeijer-PC_5336","lastSeen":1408737168.284,"labels":' +
+//            '["Dymola","META_14.09"],"jobs":[{"hash":"796df3352f5df33656e76ad48d0faa72c15c2949","resultHashes":[]' +
+//            ',"resultSuperSet":null,"userId":[],"status":"RUNNING","createTime":"2014-08-22T19:52:45.329Z","start' +
+//            'Time":null,"finishTime":null,"worker":"pmeijer-PC_5336","labels":["META_14.09"]}]},"patrik-PC_1132":' +
+//            '{"clientId":"patrik-PC_1132","lastSeen":1408737167.951,"labels":[],"jobs":[]}}';
+//        self.$scope.dataModel.workersInfo = JSON.parse(rawResponse);
+//        self.update();
     };
 
     WorkersController.prototype.initWithSmartClient = function () {
