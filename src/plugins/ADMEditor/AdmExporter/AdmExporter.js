@@ -37,6 +37,8 @@ define([
         // No value flows or connector-compositions beyond the root-container
         // should be reported in the adm file.
         this.rootPath = null;
+        this.selectedCfg = null;
+        this.selectedAlternatives = null;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -89,9 +91,9 @@ define([
                 'readOnly': false
             },
             {
-                'name': 'cfgId',
-                'displayName': 'ID of selected configuration.',
-                'description': '(If null full design space will be exported)',
+                'name': 'desertCfg',
+                'displayName': 'Desert Configuration.',
+                'description': 'Only this configuration will be exported. (If empty whole design space will be exported.)',
                 'value': '',
                 'valueType': 'string',
                 'readOnly': false
@@ -142,56 +144,121 @@ define([
             });
         };
 
-        createArtifacts = function (err) {
-            var artifact,
-                admXmlStr;
+        self.setupDesertCfg(config.desertCfg, function (err) {
             if (err) {
-                callback(err, self.result);
+                self.logger.error(err);
+                callback(null, self.result);
                 return;
             }
-            artifact = self.blobClient.createArtifact('design');
-            admXmlStr = jsonToXml.convertToString({Design: self.admData});
-
-            artifact.addFile(self.admData['@Name'] + '.adm', admXmlStr, function (err, hash) {
+            if (self.selectedAlternatives) {
+                self.logger.info('Running on single configuration');
+                self.logger.info(JSON.stringify(self.selectedAlternatives, null));
+            }
+            createArtifacts = function (err) {
+                var artifact,
+                    admXmlStr;
                 if (err) {
-                    self.result.setSuccess(false);
-                    callback('Could not add adm file : err' + err.toString(), self.result);
+                    callback(err, self.result);
                     return;
                 }
-                self.logger.info('ADM hash: ' + hash);
-                if (self.includeAcms) {
-                    artifact.addObjectHashes(self.acmFiles, function (err, hashes) {
-                        if (err) {
-                            self.result.setSuccess(false);
-                            callback('Could not add acm files : err' + err.toString(), self.result);
-                            return;
-                        }
-                        self.logger.info('ACM hashes: ' + hashes.toString());
-                        artifact.addFiles({
-                            'execute.py': ejs.render(TEMPLATES['execute.py.ejs']),
-                            'run_execution.cmd': ejs.render(TEMPLATES['run_execution.cmd.ejs']),
-                            'empty.xme': ejs.render(TEMPLATES['empty.xme.ejs']),
-                            'executor_config.json': JSON.stringify({
-                                cmd: 'run_execution.cmd',
-                                files: [],
-                                dirs: []
-                            }, null, 4)
-                        }, function (err, hashes) {
+                artifact = self.blobClient.createArtifact('design');
+                admXmlStr = jsonToXml.convertToString({Design: self.admData});
+
+                artifact.addFile(self.admData['@Name'] + '.adm', admXmlStr, function (err, hash) {
+                    if (err) {
+                        self.result.setSuccess(false);
+                        callback('Could not add adm file : err' + err.toString(), self.result);
+                        return;
+                    }
+                    self.logger.info('ADM hash: ' + hash);
+                    if (self.includeAcms) {
+                        artifact.addObjectHashes(self.acmFiles, function (err, hashes) {
                             if (err) {
-                                callback('Could not script files : err' + err.toString(), self.result);
+                                self.result.setSuccess(false);
+                                callback('Could not add acm files : err' + err.toString(), self.result);
                                 return;
                             }
-                            self.logger.info('Script hashes: ' + hashes.toString());
-                            finishAndSaveArtifact(artifact);
+                            self.logger.info('ACM hashes: ' + hashes.toString());
+                            artifact.addFiles({
+                                'execute.py': ejs.render(TEMPLATES['execute.py.ejs']),
+                                'run_execution.cmd': ejs.render(TEMPLATES['run_execution.cmd.ejs']),
+                                'empty.xme': ejs.render(TEMPLATES['empty.xme.ejs']),
+                                'executor_config.json': JSON.stringify({
+                                    cmd: 'run_execution.cmd',
+                                    files: [],
+                                    dirs: []
+                                }, null, 4)
+                            }, function (err, hashes) {
+                                if (err) {
+                                    callback('Could not script files : err' + err.toString(), self.result);
+                                    return;
+                                }
+                                self.logger.info('Script hashes: ' + hashes.toString());
+                                finishAndSaveArtifact(artifact);
+                            });
                         });
-                    });
-                } else {
-                    finishAndSaveArtifact(artifact);
-                }
-            });
-        };
+                    } else {
+                        finishAndSaveArtifact(artifact);
+                    }
+                });
+            };
+            self.exploreDesign(self.activeNode, config.acms, createArtifacts);
+        });
+    };
 
-        self.exploreDesign(self.activeNode, config.acms, createArtifacts);
+    AdmExporter.prototype.setupDesertCfg = function (desertCfg, callback) {
+        var self = this;
+        if (!desertCfg) {
+            callback(null);
+            return;
+        }
+        self.core.loadByPath(self.rootNode, desertCfg, function (err, cfgNode) {
+            var name,
+                i,
+                aas;
+            if (err) {
+                self.createMessage(null, 'Could not load given configuration node, err: ' + err.toString(), 'error');
+                callback(err);
+                return;
+            }
+            if (self.startsWith(desertCfg, self.core.getPath(self.activeNode) === false)) {
+                self.createMessage(cfgNode, 'Given desert configuration is not within design.', 'error');
+                callback('Given desert configuration is not within design.');
+                return;
+            }
+            name = self.core.getAttribute(cfgNode, 'name');
+            aas = JSON.parse(self.core.getAttribute(cfgNode, 'AlternativeAssignments'));
+            self.selectedAlternatives = {};
+            for (i = 0; i < aas.length; i += 1) {
+                self.selectedAlternatives[aas[i].alternativeOf] = aas[i].selectedAlternative;
+            }
+            callback(null);
+        });
+    };
+
+    AdmExporter.prototype.shouldBeGenerated = function (node) {
+        var self = this,
+            parentNode,
+            parentId;
+        if (!self.selectedAlternatives) {
+            return true;
+        }
+        parentNode = self.core.getParent(node);
+        if (self.core.getAttribute(parentNode, 'Type') !== 'Alternative') {
+            return true;
+        }
+        parentId = self.core.getPath(parentNode);
+        if (self.selectedAlternatives[parentId]) {
+            if (self.selectedAlternatives[parentId] === self.core.getPath(node)) {
+                return true;
+            }
+        } else {
+            self.createMessage(parentNode, 'Container is not in the desert-configuration, the latter is out of date.',
+                'error');
+            return false;
+        }
+
+        return false;
     };
 
     AdmExporter.prototype.exploreDesign = function (startNode, includeACMs, callback) {
@@ -211,11 +278,14 @@ define([
             nodeName = self.core.getAttribute(node, 'name'),
             parentName = self.core.getAttribute(parent, 'name');
 
-        self.logger.info('At node "' + nodeName + '" of type "' + nodeType + '" with parent "' + parentName + '".');
-
         if (nodeType === 'AVMComponentModel') {
-            // TODO: If parent is Alternative, then only add if component is in AA.
-            self.addComponentInstance(node, parent, containerData, callback);
+            if (self.shouldBeGenerated(node)) {
+                self.addComponentInstance(node, parent, containerData, callback);
+            } else {
+                self.logger.info('At node "' + nodeName + '" of type "' + nodeType + '" with parent "' + parentName + '".');
+                self.logger.info('Will not be generated!');
+                callback(null);
+            }
         } else if (nodeType === 'Connector') {
             self.addConnector(node, parent, containerData, callback);
         } else if (nodeType === 'Property') {
@@ -514,11 +584,15 @@ define([
                     parent = self.core.getParent(connectedPort);
                     parentMetaType = self.core.getAttribute(self.getMetaType(parent), 'name');
                     if (parentMetaType === 'AVMComponentModel') {
-                        //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                        id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(connectedPort, 'ID');
+                        //If parent of parent is alternative, then only add if parent is in AA.
+                        if (self.shouldBeGenerated(parent)) {
+                            id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(connectedPort, 'ID');
+                        }
                     } else if (parentMetaType === 'Container') {
-                        //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                        id = self.core.getGuid(connectedPort);
+                        //If parent of parent is alternative, then only add if parent is in AA.
+                        if (self.shouldBeGenerated(parent)) {
+                            id = self.core.getGuid(connectedPort);
+                        }
                     } else {
                         callback('Unexpected Connector parentMetaType ' + parentMetaType);
                     }
@@ -678,12 +752,16 @@ define([
                                 self.logger.info('Skipping connection within same ACM : ' +
                                     self.core.getAttribute(node, 'name'));
                             } else {
-                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                                vsId = '{' + self.core.getGuid(vsParent) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
+                                // If parent of parent is alternative, then only add if parent is in AA.
+                                if (self.shouldBeGenerated(vsParent)) {
+                                    vsId = '{' + self.core.getGuid(vsParent) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
+                                }
                             }
                         } else if (parentMetaType === 'Container') {
-                            //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                            vsId = self.core.getGuid(valueSourceNode);
+                            //If parent of parent is alternative, then only add if parent is in AA.
+                            if (self.shouldBeGenerated(vsParent)) {
+                                vsId = self.core.getGuid(valueSourceNode);
+                            }
                         } else {
                             self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
                         }
@@ -771,11 +849,14 @@ define([
                             parent = self.core.getParent(valueSource);
                             parentMetaType = self.core.getAttribute(self.getMetaType(parent), 'name');
                             if (parentMetaType === 'AVMComponentModel') {
-                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                                id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                                if (self.shouldBeGenerated(parent)) {
+                                    id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                                }
                             } else if (parentMetaType === 'Container') {
-                                //TODO: If parent of parent is alternative, then only add if parent is in AA.
-                                id = self.core.getGuid(valueSource);
+                                //If parent of parent is alternative, then only add if parent is in AA.
+                                if (self.shouldBeGenerated(parent)) {
+                                    id = self.core.getGuid(valueSource);
+                                }
                             } else {
                                 self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
                             }
@@ -786,11 +867,12 @@ define([
                                     symbol = self.core.getAttribute(valueSource, 'name');
                                 }
                             }
-
-                            operands.push({
-                                symbol: symbol,
-                                id: id
-                            });
+                            if (id) {
+                                operands.push({
+                                    symbol: symbol,
+                                    id: id
+                                });
+                            }
                         }
                         counter -= 1;
                         if (counter <= 0) {
@@ -851,8 +933,8 @@ define([
                             callback(err);
                             return;
                         }
-                        if (self.isMetaTypeOf(childNode, self.meta.Container)) {
-                            //TODO: if containerData is Alternative, then only add if childNode.id is in AA.
+                        if (self.isMetaTypeOf(childNode, self.meta.Container) && self.shouldBeGenerated(childNode)) {
+                            // If containerData is Alternative, then only add if childNode.id is in AA.
                             subContainerData = self.getContainerData(childNode);
                             containerData.Container.push(subContainerData);
                             self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
