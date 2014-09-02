@@ -29,7 +29,6 @@ define(['../../js/DesertFrontEnd',
             }
         });
 
-        self.menuItemSave = null;
         self.chance = Chance ? new Chance() : null;
         self.territories = {};
         self.initialize();
@@ -176,7 +175,6 @@ define(['../../js/DesertFrontEnd',
                                         }
                                     }
                                     self.$scope.desert.selectedCfg = self.$scope.desert.cfgs['1'];
-                                    self.menuItemSave.disabled = false;
                                     self.update();
                                 });
                             }
@@ -338,6 +336,7 @@ define(['../../js/DesertFrontEnd',
             cfgSetPath,
             cfgPath,
             aa,
+            cfgCnt = 0,
             cfg;
 
         // Create the configuration set node.
@@ -355,6 +354,7 @@ define(['../../js/DesertFrontEnd',
             if (self.$scope.desert.cfgs.hasOwnProperty(key)) {
                 cfg = self.$scope.desert.cfgs[key];
                 if (cfg.isSelected) {
+                    cfgCnt += 1;
                     cfgPath = self.smartClient.client.createChild({
                         parentId: cfgSetPath,
                         baseId: self.smartClient.metaNodes.DesertConfiguration.getId()
@@ -372,7 +372,16 @@ define(['../../js/DesertFrontEnd',
                 }
             }
         }
-        self.growl.success('Created new DesertConfigurations in model.');
+        if (cfgCnt > 0) {
+            self.growl.success('Created new DesertConfigurations in model.');
+        } else {
+            self.growl.warning('There were no selected configurations.');
+        }
+    };
+
+    DesignSpaceController.prototype.loadConfigurationSet = function () {
+        var self = this;
+        self.growl.warning('Will open configuration window!');
     };
 
     DesignSpaceController.prototype.getNavigatorStructure = function (node) {
@@ -391,22 +400,7 @@ define(['../../js/DesertFrontEnd',
             return {};
         }
         self.menuItemSave = {
-            id: 'saveCfgs',
-            label: 'Save Configurations',
-            disabled: true,
-            iconClass: 'glyphicon glyphicon-floppy-save',
-            action: function () {
-                if (!self.$scope.desert) {
-                    console.error('No desert defined on scope');
-                    return;
-                }
-                if (Object.keys(self.$scope.desert.cfgs).length === 0) {
-                    self.growl.error('No configurations selected!');
-                    return;
-                }
-                self.saveConfigurationSet();
-            },
-            actionData: {}
+
         };
         firstMenu = {
             id: 'root',
@@ -457,7 +451,34 @@ define(['../../js/DesertFrontEnd',
                         },
                         actionData: {}
                     },
-                    self.menuItemSave
+                    {
+                        id: 'saveCfgs',
+                        label: 'Save Configurations',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-floppy-save',
+                        action: function () {
+                            if (!self.$scope.desert) {
+                                self.growl.error('Nothing to save.');
+                                return;
+                            }
+                            if (Object.keys(self.$scope.desert.cfgs).length === 0) {
+                                self.growl.error('No configurations to save. Did you calculate the design space?');
+                                return;
+                            }
+                            self.saveConfigurationSet();
+                        },
+                        actionData: {}
+                    },
+                    {
+                        id: 'loadCfgs',
+                        label: 'Load Configurations',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-floppy-open',
+                        action: function () {
+                            self.loadConfigurationSet();
+                        },
+                        actionData: {}
+                    }
                 ]
             }, {
                 id: 'editor',
