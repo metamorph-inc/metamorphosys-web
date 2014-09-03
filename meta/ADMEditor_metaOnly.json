@@ -70,6 +70,9 @@
     "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454":{
       
       },
+    "e544f3e4-e550-5750-8540-5598bbbf343c":{
+      
+      },
     "e87743ed-b89e-d8ce-7b87-7b9aadcb4961":{
       
       },
@@ -167,7 +170,7 @@
       "ProjectRegistry":{
         "FCO_ID":"/1"
         },
-      "validPlugins":"ExportWorkspace PluginGenerator AtmImporter GeneratePluginTests AcmImporter AdmImporter TestBenchRunner AdmExporter"
+      "validPlugins":"AtmExporter ExportWorkspace PluginGenerator AtmImporter GeneratePluginTests AcmImporter AdmImporter TestBenchRunner AdmExporter"
       },
     "sets":{
       "MetaAspectSet":[
@@ -456,6 +459,18 @@
             "position":{
               "x":22,
               "y":243
+              }
+            }
+          },
+        {
+          "attributes":{
+            
+            },
+          "guid":"e544f3e4-e550-5750-8540-5598bbbf343c",
+          "registry":{
+            "position":{
+              "x":49,
+              "y":394
               }
             }
           },
@@ -943,6 +958,18 @@
           "attributes":{
             
             },
+          "guid":"e544f3e4-e550-5750-8540-5598bbbf343c",
+          "registry":{
+            "position":{
+              "x":19,
+              "y":395
+              }
+            }
+          },
+        {
+          "attributes":{
+            
+            },
           "guid":"f0508110-9a11-3b6d-ea42-2193bf0485e0",
           "registry":{
             "position":{
@@ -1070,6 +1097,18 @@
             "position":{
               "x":146,
               "y":67
+              }
+            }
+          },
+        {
+          "attributes":{
+            
+            },
+          "guid":"e544f3e4-e550-5750-8540-5598bbbf343c",
+          "registry":{
+            "position":{
+              "x":8,
+              "y":28
               }
             }
           },
@@ -1582,6 +1621,17 @@
           "default":"[]",
           "type":"string"
           }
+        },
+      "children":{
+        "items":[
+          "e544f3e4-e550-5750-8540-5598bbbf343c"
+          ],
+        "maxItems":[
+          -1
+          ],
+        "minItems":[
+          -1
+          ]
         }
       },
     "parent":"1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
@@ -1728,9 +1778,9 @@
     "meta":{
       "aspects":{
         "NoValueFlow":[
-          "d5fc3678-2722-5112-c0bb-fa758f113246",
           "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-          "3317c9c6-6c44-1a06-a476-11f77d722b34"
+          "3317c9c6-6c44-1a06-a476-11f77d722b34",
+          "d5fc3678-2722-5112-c0bb-fa758f113246"
           ]
         },
       "attributes":{
@@ -1749,14 +1799,14 @@
         },
       "children":{
         "items":[
-          "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-          "d5fc3678-2722-5112-c0bb-fa758f113246",
-          "07d79d42-e631-fb69-a1f7-25b044d94fbb",
-          "3317c9c6-6c44-1a06-a476-11f77d722b34",
-          "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-          "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
           "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-          "9001f172-4258-ceaa-86e9-f6e80b85853d"
+          "9001f172-4258-ceaa-86e9-f6e80b85853d",
+          "3317c9c6-6c44-1a06-a476-11f77d722b34",
+          "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
+          "07d79d42-e631-fb69-a1f7-25b044d94fbb",
+          "d5fc3678-2722-5112-c0bb-fa758f113246",
+          "2bc42bca-a9be-0f33-16a7-ea847e546b37",
+          "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f"
           ],
         "maxItems":[
           -1,
@@ -1914,8 +1964,8 @@
       "DisplayFormat":"$VariableName",
       "lineEndArrow":"classic-xwide-xlong",
       "position":{
-        "x":287,
-        "y":694
+        "x":572,
+        "y":741
         }
       },
     "sets":{
@@ -2252,13 +2302,13 @@
     },
   "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454":{
     "attributes":{
-      "adm":"",
+      "Adm":"",
       "name":"DesertConfigurationSet"
       },
     "base":"cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
     "meta":{
       "attributes":{
-        "adm":{
+        "Adm":{
           "default":"",
           "type":"asset"
           }
@@ -2283,6 +2333,65 @@
       "position":{
         "x":352,
         "y":355
+        }
+      },
+    "sets":{
+      
+      }
+    },
+  "e544f3e4-e550-5750-8540-5598bbbf343c":{
+    "attributes":{
+      "Artifacts":"",
+      "Atm":"",
+      "CfgAdm":"",
+      "TestBenchManifest":"",
+      "name":"Result"
+      },
+    "base":"cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+    "meta":{
+      "attributes":{
+        "Artifacts":{
+          "default":"",
+          "type":"asset"
+          },
+        "Atm":{
+          "default":"",
+          "type":"asset"
+          },
+        "CfgAdm":{
+          "default":"",
+          "type":"asset"
+          },
+        "TestBenchManifest":{
+          "default":"",
+          "type":"string"
+          }
+        },
+      "pointers":{
+        "ExecutedTestBench":{
+          "items":[
+            "9fab1244-f449-d3c0-bfdc-f166f724e3f2"
+            ],
+          "max":1,
+          "maxItems":[
+            1
+            ],
+          "min":1,
+          "minItems":[
+            -1
+            ]
+          }
+        }
+      },
+    "parent":"1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+    "pointers":{
+      "ExecutedTestBench":null,
+      "base":"cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+    "registry":{
+      "position":{
+        "x":446,
+        "y":503
         }
       },
     "sets":{
@@ -2539,8 +2648,8 @@
       "color":"#808080",
       "lineWidth":2,
       "position":{
-        "x":429,
-        "y":471
+        "x":277,
+        "y":582
         }
       },
     "sets":{
@@ -2574,6 +2683,7 @@
   "d5fc3678-2722-5112-c0bb-fa758f113246":"1328879441",
   "dd35b139-3346-08f0-013c-1e3a8a522f7f":"794302266",
   "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454":"206008088",
+  "e544f3e4-e550-5750-8540-5598bbbf343c":"1368062975",
   "e87743ed-b89e-d8ce-7b87-7b9aadcb4961":"1922772359",
   "e9bd3f99-c925-8bc0-6bd5-15ac083d1028":"481954284",
   "edf95f43-efbd-5c2c-6384-6ab74c160c17":"91705197",
