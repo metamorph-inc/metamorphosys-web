@@ -88,19 +88,19 @@ define(['plugin/PluginConfig',
             {
                 'name': 'run',
                 'displayName': 'Run test-bench',
-                'description': 'Will start a job and run the test-bench(es).',
+                'description': 'Will start a job and run the test-bench.',
                 'value': false,
                 'valueType': 'boolean',
                 'readOnly': false
+            },
+            {
+                'name': 'configurationPath',
+                'displayName': 'DesertConfigurationID',
+                'description': 'ID of DesertConfiguration object inside referenced TopLevelSystemUnderTest.',
+                'value': '',
+                'valueType': 'string',
+                'readOnly': false
             }
-//            {
-//                'name': 'atmExport',
-//                'displayName': 'Export ATM',
-//                'description': 'Will export an ATM (no execution will take place).',
-//                'value': false,
-//                'valueType': 'boolean',
-//                'readOnly': false
-//            }
         ];
     };
 //</editor-fold>
