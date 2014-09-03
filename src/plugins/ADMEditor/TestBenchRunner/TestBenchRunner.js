@@ -8,9 +8,11 @@ define(['plugin/PluginConfig',
         'plugin/TestBenchRunner/TestBenchRunner/meta',
         'plugin/TestBenchRunner/TestBenchRunner/Templates/Templates',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
+        'plugin/AdmExporter/AtmExporter/AtmExporter',
         'xmljsonconverter',
         'executor/ExecutorClient',
-        'ejs'], function (PluginConfig, PluginBase, MetaTypes, TEMPLATES, AdmExporter, Converter, ExecutorClient, ejs) {
+        'ejs'
+    ],function (PluginConfig, PluginBase, MetaTypes, TEMPLATES, AdmExporter, AtmExporter, Converter, ExecutorClient, ejs) {
     'use strict';
 //<editor-fold desc="============================ Class Definition ================================">
     /**
@@ -25,7 +27,7 @@ define(['plugin/PluginConfig',
         PluginBase.call(this);
         this.meta = MetaTypes;
         this.referencedDesign = null;
-        this.multiRun = false;
+        this.saveToModel = false;
         // Execution frame-work.
         this.runExecution = false;
         this.run_exec_cmd = null;
@@ -43,6 +45,7 @@ define(['plugin/PluginConfig',
         this.atms = [];
 
         this.admExporter = null;
+        this.atmExporter = null;
     };
 
     // Prototypal inheritance from PluginBase.
@@ -94,6 +97,14 @@ define(['plugin/PluginConfig',
                 'readOnly': false
             },
             {
+                'name': 'save',
+                'displayName': 'Save results',
+                'description': 'Will save the results back to the model (only applicable when run is selected).',
+                'value': false,
+                'valueType': 'boolean',
+                'readOnly': false
+            },
+            {
                 'name': 'configurationPath',
                 'displayName': 'DesertConfigurationID',
                 'description': 'ID of DesertConfiguration object inside referenced TopLevelSystemUnderTest.',
@@ -118,28 +129,7 @@ define(['plugin/PluginConfig',
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            currentConfig = self.getCurrentConfig(),
-            callMainCallback = function (error, totalSuccess) {
-                self.mergeDashBoards(function (err) {
-                    if (err) {
-                        totalSuccess = false;
-                        error += err;
-                    }
-                    self.result.setSuccess(totalSuccess);
-                    self.save('Results for test-benches was updated after execution.', function (err) {
-                        if (err) {
-                            self.logger.error('Could not save result back to model.');
-                            error += err;
-                        }
-                        if (error) {
-                            self.result.setSuccess(false);
-                            callback(error, self.result);
-                        } else {
-                            callback(null, self.result);
-                        }
-                    });
-                });
-            };
+            currentConfig = self.getCurrentConfig();
 
         if (!self.activeNode) {
             self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
@@ -147,282 +137,84 @@ define(['plugin/PluginConfig',
             callback('Active node is not present!', self.result);
             return;
         }
-        self.multiRun = self.isMetaTypeOf(self.activeNode, self.META.ATMFolder);
-        self.exportAtm = currentConfig.atmExport;
-        self.runExecution = currentConfig.run;
-        if ((self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) || self.multiRun) === false) {
-            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel or an ATMFolder.', 'error');
-            callback(null, self.result);
-            return;
-        }
-        if (self.multiRun && self.exportAtm) {
-            self.createMessage(null, 'Exportation of atms is not supported on ATMFolders.', 'error');
+        if (self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) === false) {
+            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel.', 'error');
             callback(null, self.result);
             return;
         }
         self.updateMETA(self.meta);
+        self.runExecution = currentConfig.run;
+        self.saveToModel = currentConfig.save;
+        self.cfgPath = currentConfig.configurationPath;
 
-        if (self.multiRun) {
-            self.getTestBenchInfos(self.activeNode, function (err, testBenchInfos) {
-                var tbIDs = {},
-                    tbID,
-                    duplicateIDs = false,
-                    j;
+        self.getTestBenchInfo(self.activeNode, function (err, testBenchInfo) {
+            if (err) {
+                self.logger.error('getTestBenchInfo returned with error: ' + err.toString());
+                self.createMessage(self.activeNode, 'Something went wrong when exploring the test-bench.', 'error');
+                callback(null, self.result);
+                return;
+            }
+            self.getAdmAndAcms(self.referencedDesign, [testBenchInfo], function (err) {
                 if (err) {
                     self.logger.error(err);
-                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-benches.', 'error');
+                    self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
                     callback(null, self.result);
                     return;
                 }
-                if (testBenchInfos.length === 0) {
-                    self.createMessage(self.activeNode, 'No test-benches found in folder.', 'error');
-                    callback(null, self.result);
-                    return;
-                }
-                // Check if any test-benches share IDs.
-                for (j = 0; j < testBenchInfos.length; j += 1) {
-                    tbID = testBenchInfos[j].path;
-                    if (tbIDs.hasOwnProperty(tbID)) {
-                        self.createMessage(testBenchInfos[j].node, 'Test-bench IDs shared amongst test-benches. For ' +
-                            ' multi-run the ID of each test-bench must be unique.', 'error');
-                        self.createMessage(tbIDs[tbID], 'Test-bench has duplicate ID.', 'error');
-                        duplicateIDs = true;
-                    } else {
-                        tbIDs[tbID] = testBenchInfos[j].node;
-                    }
-                }
-                if (duplicateIDs) {
-                    callback(null, self.result);
-                    return;
-                }
-                self.logger.info('Got testBenchInfo about to explore referenced design..');
-                self.getAdmAndAcms(self.referencedDesign, testBenchInfos, function (err) {
-                    var i,
-                        totalSuccess = true,
-                        error = '',
-                        counter = testBenchInfos.length,
-                        counterCallback;
+                self.generateExecutionFiles(testBenchInfo, function (err, artifact) {
                     if (err) {
-                        self.logger.error(err);
-                        self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
-                        callback(null, self.result);
+                        callback('Could generateExecutionFiles : err' + err.toString(), self.result);
                         return;
                     }
-                    self.logger.info('Done with calling AdmExporter - ADM and ACMs gathered.');
-                    counterCallback = function (testBenchInfo) {
-                        return function (err, artifact) {
-                            if (err) {
-                                error += err;
-                                totalSuccess = false;
-                            }
-                            if (artifact) {
-                                artifact.save(function (err, hash) {
-                                    if (err) {
-                                        error += err;
-                                        totalSuccess = false;
-                                    }
-                                    self.logger.info('Saved exec-artifacts for test-bench "' + testBenchInfo.name + '"');
-                                    self.result.addArtifact(hash);
-                                    if (self.runExecution) {
-                                        self.logger.info('About to execute job for "' + testBenchInfo.name + '".');
-                                        self.executeJob(hash, testBenchInfo, function (err, success) {
-                                            if (err) {
-                                                error += err;
-                                            }
-                                            counter -= 1;
-                                            self.logger.info('TotalSuccess updated from "' + totalSuccess.toString() +
-                                                '" to "' + (totalSuccess && success).toString() + '".');
-                                            totalSuccess = totalSuccess && success;
-                                            if (counter <= 0) {
-                                                self.logger.info('All executions are done - about to finish..');
-                                                callMainCallback(error, totalSuccess);
-                                            }
-                                        });
-                                    } else {
-                                        counter -= 1;
-                                        self.logger.info('Artifact added to result. No executions to run..');
-                                        if (counter <= 0) {
-                                            self.logger.info('All artifacts have been saved.');
-                                            callMainCallback(error, totalSuccess);
-                                        }
-                                    }
-                                });
-                            } else {
-                                self.logger.info('No artifact was generated for test-bench "' + testBenchInfo.name + '".');
-                                counter -= 1;
-                                if (counter <= 0) {
-                                    self.logger.info('Last test-bench did not return an artifact.');
-                                    callMainCallback(error, totalSuccess);
-                                }
-                            }
-                        };
-                    };
-                    for (i = 0; i < testBenchInfos.length; i += 1) {
-                        self.generateExecutionFiles(testBenchInfos[i], counterCallback(testBenchInfos[i]));
-                    }
-                });
-            });
-        } else {
-            self.getTestBenchInfo(self.activeNode, function (err, testBenchInfo) {
-                var artifact,
-                    atmXmlStr,
-                    jsonToXml = new Converter.Json2xml();
-                if (err) {
-                    self.logger.error('getTestBenchInfo returned with error: ' + err.toString());
-                    self.createMessage(self.activeNode, 'Something went wrong when exploring the test-bench.', 'error');
-                    callback(null, self.result);
-                    return;
-                }
-                if (self.exportAtm) {
-                    if (err) {
-                        callback(err, self.result);
-                        return;
-                    }
-                    artifact = self.blobClient.createArtifact('testBench');
-                    atmXmlStr = jsonToXml.convertToString({TestBench: self.atms[0]});
-                    artifact.addFile(self.atms[0]['@Name'] + '.atm', atmXmlStr, function (err, hash) {
+                    artifact.save(function (err, hash) {
                         if (err) {
-                            callback('Could not add adm file : err' + err.toString(), self.result);
+                            callback('Could not save artifact : err' + err.toString(), self.result);
                             return;
                         }
-                        self.logger.info('Added atm files to artifact, it has hash: ' + hash);
-                        artifact.save(function (err, hash) {
-                            if (err) {
-                                callback('Could not save atm artifact : err' + err.toString(), self.result);
-                                return;
-                            }
-                            self.result.addArtifact(hash);
-                            self.result.setSuccess(true);
-                            callback(null, self.result);
-                        });
-                    });
-                } else {
-                    self.getAdmAndAcms(self.referencedDesign, [testBenchInfo], function (err) {
-                        if (err) {
-                            self.logger.error(err);
-                            self.createMessage(self.referencedDesign, 'Something went wrong when exploring the referenced design.', 'error');
-                            callback(null, self.result);
-                            return;
-                        }
-                        self.generateExecutionFiles(testBenchInfo, function (err, artifact) {
-                            if (err) {
-                                callback('Could generateExecutionFiles : err' + err.toString(), self.result);
-                                return;
-                            }
-                            artifact.save(function (err, hash) {
-                                if (err) {
-                                    callback('Could not save artifact : err' + err.toString(), self.result);
-                                    return;
-                                }
-                                self.result.addArtifact(hash);
-                                if (self.runExecution) {
-                                    self.executeJob(hash, testBenchInfo, function (err, success) {
-                                        self.result.setSuccess(success);
-                                        self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
-                                            callback(null, self.result);
-                                        });
+                        self.result.addArtifact(hash);
+                        if (self.runExecution) {
+                            self.executeJob(hash, testBenchInfo, function (err, success) {
+                                self.result.setSuccess(success);
+                                if (self.saveToModel) {
+                                    self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
+                                        callback(null, self.result);
                                     });
                                 } else {
-                                    self.result.setSuccess(true);
                                     callback(null, self.result);
                                 }
                             });
-                        });
+                        } else {
+                            self.result.setSuccess(true);
+                            callback(null, self.result);
+                        }
                     });
-                }
+                });
             });
-        }
-    };
-
-    TestBenchRunner.prototype.getTestBenchInfos = function (folderNode, callback) {
-        var self = this;
-        self.core.loadChildren(folderNode, function (err, children) {
-            var counter, i,
-                error = '',
-                metaTypeName,
-                childName,
-                counterCallback,
-                tbInfos = [];
-            if (err) {
-                callback('loadChildren failed for folder with err:' + err.toString());
-                return;
-            }
-            counter = children.length;
-            counterCallback = function (err, tbInfo) {
-                error = err ? error + err : error;
-                counter -= 1;
-                if (tbInfo) {
-                    self.logger.info('Added testBenchInfo for "' + tbInfo.name + '".');
-                    tbInfos.push(tbInfo);
-                } else {
-                    self.logger.warning('Visited child of ATMFolder without obtaining any test-bench info!');
-                }
-                if (counter <= 0) {
-                    if (self.core.hasPointer(folderNode, 'TopLevelSystemUnderTest')) {
-                        self.logger.debug('Found TopLevelSystemUnderTest reference at folder.');
-                        self.core.loadPointer(folderNode, 'TopLevelSystemUnderTest', function (err, design) {
-                            if (err) {
-                                self.logger.error('loading TLSUT failed with err: ' + err.toString());
-                                callback(err);
-                                return;
-                            }
-                            self.referencedDesign = design;
-                            self.logger.info('Found common referenced design from ATMFolder.');
-                            callback(error, tbInfos);
-                            return;
-                        });
-                    } else {
-                        self.createMessage(folderNode, 'No TopLevelSystemUnderTest reference set for folder.', 'error');
-                        callback('Found no reference to TLSUT.');
-                        return;
-                    }
-                }
-            };
-
-            if (children.length === 0) {
-                counterCallback(null);
-            }
-
-            for (i = 0; i < children.length; i += 1) {
-                metaTypeName = self.core.getAttribute(self.getMetaType(children[i]), 'name');
-                childName = self.core.getAttribute(children[i], 'name');
-                if (metaTypeName === 'AVMTestBenchModel') {
-                    self.getTestBenchInfo(children[i], counterCallback);
-                } else {
-                    counterCallback(null);
-                }
-            }
         });
     };
 
     TestBenchRunner.prototype.getTestBenchInfo = function (testBenchNode, callback) {
         var self = this,
-            folderNode,
             testBenchInfo = {};
         testBenchInfo.name = self.core.getAttribute(testBenchNode, 'name');
         testBenchInfo.path = self.core.getAttribute(testBenchNode, 'ID');
         testBenchInfo.testBenchFilesHash = self.core.getAttribute(testBenchNode, 'TestBenchFiles');
         testBenchInfo.node = testBenchNode;
-        if (!testBenchInfo.path && !self.exportAtm) {
+        if (!testBenchInfo.path) {
             self.createMessage(testBenchNode, 'There is no "ID" provided for the test-bench. It must be a path' +
                 ' in the project-tree of the xme in asset "TestBenchFiles", e.g. /TestBenches/Dynamics/MyTestBench', 'error');
             callback('TestBench ID not provided.');
             return;
         }
         self.logger.info('Getting data for test-bench "' + testBenchInfo.name + '".');
-        self.getTlsutInterface(testBenchNode, function (err, tlsut) {
+        self.initializeAtmExporter();
+        self.atmExporter.getTlsutInterface(testBenchNode, function (err, tlsut) {
             if (err) {
                 self.createMessage(testBenchNode, 'Could not obtain Top Level System Under test interface.', 'error');
                 callback('Something went wrong when getting tlsut interface err: ' + err);
                 return;
             }
             testBenchInfo.tlsut = tlsut;
-
-            if (self.multiRun) {
-                self.logger.info('Multi run - will look for container reference in ATMFolder');
-                callback(null, testBenchInfo);
-                return;
-            }
 
             // For single test-benches check the reference for the test-bench and its parent folder.
             if (self.core.hasPointer(testBenchNode, 'TopLevelSystemUnderTest')) {
@@ -437,235 +229,12 @@ define(['plugin/PluginConfig',
                     callback(null, testBenchInfo);
                 });
             } else {
-                self.logger.info('Test-bench did NOT have a TopLevelSystemUnderTest ref set. Looking at folder..');
-                folderNode = self.core.getParent(testBenchNode);
-                self.logger.info('Looking for ref at folder "' + self.core.getAttribute(folderNode, 'name') + '".');
-                if (self.core.hasPointer(folderNode, 'TopLevelSystemUnderTest')) {
-                    self.logger.info('Found TopLevelSystemUnderTest reference at folder.');
-                    self.core.loadPointer(folderNode, 'TopLevelSystemUnderTest', function (err, design) {
-                        if (err) {
-                            self.logger.error('loading TLSUT failed with err: ' + err.toString());
-                            callback(err);
-                            return;
-                        }
-                        self.referencedDesign = design;
-                        callback(null, testBenchInfo);
-                    });
-                } else {
-                    self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench or its folder.', 'error');
-                    callback('Found no reference to TLSUT.');
-                    return;
-                }
+                self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench.', 'error');
+                callback('Found no reference to TLSUT.');
             }
         });
     };
 
-//<editor-fold desc="============================ Obtaining ATM-data ===============================">
-    TestBenchRunner.prototype.getTlsutInterface = function (testBenchNode, callback) {
-        var self = this,
-            rootPath = self.core.getPath(testBenchNode),
-            name = self.core.getAttribute(testBenchNode, 'name'),
-            atmData = {
-                "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                "@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
-                "@Name": name,
-                "@xmlns": "avm",
-                "TopLevelSystemUnderTest": null,
-                "Parameter": [],
-                "Metric": [],
-                "TestInjectionPoint": [],
-                "TestComponent": [],
-                "Workflow": null,
-                "Settings": [],
-                "TestStructure": []
-            };
-        self.atms.push(atmData);
-        self.initializeAdmExporter();
-        self.admExporter.rootPath = rootPath;
-        // TODO: delete next line when ATM-flow is more mature.
-        self.admExporter.includeAcms = false;
-        self.logger.info('RootPath "' + rootPath + '" of test-bench "' + name + '" set in AdmExporter.');
-
-        self.core.loadChildren(testBenchNode, function (err, children) {
-            var counter, i,
-                error = '',
-                metaTypeName,
-                counterCallback,
-                tlsutData;
-            if (err) {
-                callback('loadChildren failed for test-bench "' + name + '" with err:' + err.toString());
-                return;
-            }
-            counter = children.length;
-            counterCallback = function (err) {
-                error = err ? error + err : error;
-                counter -= 1;
-                if (counter <= 0) {
-                    if (tlsutData) {
-                        callback(error, tlsutData);
-                    } else {
-                        callback(error + ' there was no Container in the test-bench "' + name + '".');
-                    }
-                }
-            };
-
-            if (children.length === 0) {
-                self.createMessage(testBenchNode, 'Test-bench "' + name + '" was empty!', 'error');
-                counterCallback('Test-bench "' + name + '" was empty!');
-            }
-
-            for (i = 0; i < children.length; i += 1) {
-                metaTypeName = self.core.getAttribute(self.getMetaType(children[i]), 'name');
-                if (metaTypeName === 'Container') {
-                    if (tlsutData) {
-                        self.createMessage(testBenchNode, 'There was more than one TLSUT in test-bench "' + name + '".', 'error');
-                        counterCallback('There was more than one TLSUT in test-bench "' + name + '".');
-                    } else {
-                        self.exploreTlsut(children[i], function (err, retrievedData) {
-                            tlsutData = retrievedData;
-                            counterCallback(err);
-                        });
-                    }
-                } else if (metaTypeName === 'Workflow') {
-                    self.addWorkflow(children[i], atmData, counterCallback);
-                } else if (metaTypeName === 'Metric') {
-                    self.addMetric(children[i], atmData, counterCallback);
-                } else if (metaTypeName === 'AVMComponentModel') {
-                    self.admExporter.addComponentInstance(children[i], testBenchNode, atmData, counterCallback);
-                } else {
-                    counterCallback(null);
-                }
-            }
-        });
-    };
-
-    TestBenchRunner.prototype.exploreTlsut = function (tlsutNode, callback) {
-        var self = this;
-        self.core.loadChildren(tlsutNode, function (err, children) {
-            var counter, i,
-                error = '',
-                metaTypeName,
-                childName,
-                counterCallback,
-                tlsutData = {
-                    properties: {},
-                    connectors: {}
-                };
-            if (err) {
-                callback('loadChildren failed for tlsut with err:' + err.toString());
-                return;
-            }
-            counter = children.length;
-            counterCallback = function (err) {
-                error = err ? error + err : error;
-                counter -= 1;
-                if (counter <= 0) {
-                    callback(error, tlsutData);
-                }
-            };
-
-            if (children.length === 0) {
-                counterCallback(null);
-            }
-
-            for (i = 0; i < children.length; i += 1) {
-                metaTypeName = self.core.getAttribute(self.getMetaType(children[i]), 'name');
-                childName = self.core.getAttribute(children[i], 'name');
-                if (metaTypeName === 'Property') {
-                    //TODO: Elaborate on the info stored, e.g. units, type etc. For now just use names.
-                    if (tlsutData.properties[childName]) {
-                        counterCallback('Duplicate name, "' + childName + '"  of properties in top level system under test!');
-                    } else {
-                        tlsutData.properties[childName] = children[i];
-                        counterCallback(null);
-                    }
-                } else if (metaTypeName === 'Connector') {
-                    //TODO: Elaborate on the info stored, e.g. domainConnectors, Classes etc.
-                    if (tlsutData.connectors[childName]) {
-                        counterCallback('Duplicate name, "' + childName + '"  of connectors in top level system under test!');
-                    } else {
-                        tlsutData.connectors[childName] = children[i];
-                        counterCallback(null);
-                    }
-                } else {
-                    counterCallback(null);
-                }
-            }
-        });
-    };
-
-    TestBenchRunner.prototype.addWorkflow = function (wfNode, atmData, callback) {
-        var self = this,
-            name = self.core.getAttribute(wfNode, 'name'),
-            wfData = {
-                '@Name': name,
-                '@xmlns': '',
-                'Task': []
-            };
-        atmData.Workflow = wfData;
-        self.core.loadChildren(wfNode, function (err, children) {
-            var counter, i,
-                addTask,
-                metaTypeName,
-                taskData;
-            if (err) {
-                callback('loadChildren failed for work-flow with err: ' + err.toString());
-                return;
-            }
-            counter = children.length;
-            addTask = function (taskNode) {
-                if (taskNode) {
-                    if (self.core.getAttribute(taskNode, 'Type') === 'InterpreterTask') {
-                        taskData = {
-                            '@xmlns:q1': 'avm',
-                            '@xsi:type': 'q1:InterpreterTask',
-                            '@Name': self.core.getAttribute(taskNode, 'name'),
-                            '@COMName': self.core.getAttribute(taskNode, 'COMName'),
-                            '@Parameters': self.core.getAttribute(taskNode, 'Parameters')
-                        };
-                        wfData.Task.push(taskData);
-                    }
-                }
-                counter -= 1;
-                if (counter <= 0) {
-                    callback(null);
-                }
-            };
-
-            if (children.length === 0) {
-                self.createMessage(wfNode, 'No task defined in Workflow!', 'error');
-                callback('No task defined in workflow');
-            }
-
-            for (i = 0; i < children.length; i += 1) {
-                metaTypeName = self.core.getAttribute(self.getMetaType(children[i]), 'name');
-                if (metaTypeName === 'Task') {
-                    addTask(children[i]);
-                } else {
-                    addTask(null, null);
-                }
-            }
-        });
-
-    };
-
-    TestBenchRunner.prototype.addMetric = function (metricNode, atmData, callback) {
-        var self = this,
-            name = self.core.getAttribute(metricNode, 'name'),
-            pos = self.core.getRegistry(metricNode, 'position');
-        atmData.Metric.push({
-            '@xmlns': '',
-            '@Name': name,
-            '@Notes': self.core.getAttribute(metricNode, 'INFO'),
-            "@XPosition": Math.floor(pos.x),
-            "@YPosition": Math.floor(pos.y),
-            "Value": null
-        });
-        callback(null);
-    };
-//</editor-fold>
-
-//<editor-fold desc="============================ Referenced Design ===============================">
     TestBenchRunner.prototype.getAdmAndAcms = function (designNode, testBenchInfos, callback) {
         var self = this;
         self.checkDesignAgainstTLSUTs(designNode, testBenchInfos, function (err, result) {
@@ -674,41 +243,31 @@ define(['plugin/PluginConfig',
                 return;
             }
             if (result !== true) {
-                self.createMessage(designNode, 'Design did not match all TopLevelSystemUnderTests!', 'error');
-                callback('Design did not match all TopLevelSystemUnderTests!');
+                self.createMessage(designNode, 'Design did not match TopLevelSystemUnderTests!', 'error');
+                callback('Design did not match TopLevelSystemUnderTests!');
                 return;
             }
             self.initializeAdmExporter();
-            self.admExporter.exploreDesign(designNode, true, function (err) {
+            self.admExporter.setupDesertCfg(self.cfgPath, function (err) {
                 if (err) {
-                    callback('AdmExporter.exploreDesign failed with error: ' + err);
+                    callback('Failed setting up desertConfigurations, err: ' + err);
                     return;
                 }
-                self.admData = self.admExporter.admData;
-                self.designAcmFiles = self.admExporter.acmFiles;
-                callback(null);
+                if (self.admExporter.selectedAlternatives) {
+                    self.logger.info('Running on single configuration');
+                    self.logger.info(JSON.stringify(self.selectedAlternatives, null));
+                }
+                self.admExporter.exploreDesign(designNode, true, function (err) {
+                    if (err) {
+                        callback('AdmExporter.exploreDesign failed with error: ' + err);
+                        return;
+                    }
+                    self.admData = self.admExporter.admData;
+                    self.designAcmFiles = self.admExporter.acmFiles;
+                    callback(null);
+                });
             });
         });
-
-    };
-
-    TestBenchRunner.prototype.initializeAdmExporter = function () {
-        var self = this;
-        if (self.admExporter === null) {
-            self.admExporter = new AdmExporter();
-            self.admExporter.meta = self.meta;
-            self.admExporter.META = self.META;
-            self.admExporter.core = self.core;
-            self.admExporter.logger = self.logger;
-            self.admExporter.result = self.result;
-            self.logger.info('AdmExporter had not been initialized - created a new instance.');
-        } else {
-            self.admExporter.acmFiles = {};
-            self.admExporter.gatheredAcms = {};
-            self.admExporter.rootPath = null;
-            self.admExporter.includeAcms = true;
-            self.logger.info('AdmExporter had already been initialized - reset acmFiles, gatheredAcms and rootPath.');
-        }
     };
 
     TestBenchRunner.prototype.checkDesignAgainstTLSUTs = function (designNode, testBenchInfos, callback) {
@@ -790,9 +349,39 @@ define(['plugin/PluginConfig',
             }
         });
     };
-//</editor-fold>
 
-//<editor-fold desc="============================ Execution Framework ===============================">
+    TestBenchRunner.prototype.initializeAdmExporter = function () {
+        var self = this;
+        if (self.admExporter === null) {
+            self.admExporter = new AdmExporter();
+            self.admExporter.meta = self.meta;
+            self.admExporter.META = self.META;
+            self.admExporter.core = self.core;
+            self.admExporter.logger = self.logger;
+            self.admExporter.result = self.result;
+            self.admExporter.rootNode = self.rootNode;
+            self.logger.info('AdmExporter had not been initialized - created a new instance.');
+        } else {
+            self.admExporter.acmFiles = {};
+            self.admExporter.gatheredAcms = {};
+            self.admExporter.rootPath = null;
+            self.admExporter.includeAcms = true;
+            self.logger.info('AdmExporter had already been initialized - reset acmFiles, gatheredAcms and rootPath.');
+        }
+    };
+
+    TestBenchRunner.prototype.initializeAtmExporter = function () {
+        var self = this;
+        self.atmExporter = new AtmExporter();
+        self.atmExporter.meta = self.meta;
+        self.atmExporter.META = self.META;
+        self.atmExporter.core = self.core;
+        self.atmExporter.logger = self.logger;
+        self.atmExporter.result = self.result;
+        self.atmExporter.atmData = null;
+        self.logger.info('AtmExporter initialized.');
+    };
+
     TestBenchRunner.prototype.generateExecutionFiles = function (testBenchInfo, callback) {
         var self = this,
             artifact,
@@ -816,18 +405,26 @@ define(['plugin/PluginConfig',
             cmd: 'run_execution.cmd',
             resultArtifacts: [
                 {
-                    name: testBenchInfo.name + '_dashboard',
+                    name: 'dashboard',
                     resultPatterns: ['dashboard/**', 'designs/**', 'design-space/**', 'requirements/**',
                         'test-benches/**', 'results/*/testbench_manifest.json', 'results/results.metaresults.json',
                         'manifest.project.json', 'index.html', '*.svg']
                 },
                 {
-                    name: testBenchInfo.name + '_logs',
+                    name: 'logs',
                     resultPatterns: [ 'log/**', '_FAILED.txt']
                 },
                 {
-                    name: testBenchInfo.name + '_all',
+                    name: 'all',
                     resultPatterns: []
+                },
+                {
+                    name: 'testBenchManifest',
+                    resultPatterns: ['results/*/testbench_manifest.json']
+                },
+                {
+                    name: 'cfgAdm',
+                    resultPatterns: ['designs/**']
                 }
             ]
 
@@ -885,7 +482,7 @@ define(['plugin/PluginConfig',
                         self.result.addArtifact(jInfo.resultHashes[key]);
                     }
                 }
-                self.blobClient.getMetadata(jInfo.resultHashes[testBenchInfo.name + '_logs'], function (err, metadata) {
+                self.blobClient.getMetadata(jInfo.resultHashes.logs, function (err, metadata) {
                     if (err) {
                         callback('Could not get metadata for result. Err: ' + err, false);
                         return;
@@ -896,11 +493,22 @@ define(['plugin/PluginConfig',
                         callback(null, false);
                         return;
                     }
-                    self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes[testBenchInfo.name + '_dashboard']);
-                    self.dashboardResults.push(jInfo.resultHashes[testBenchInfo.name + '_dashboard']);
-                    self.logger.info('No _FAILED.txt generated for test-bench "' + testBenchInfo.name + '".');
-                    callback(null, true);
-                    return;
+                    self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard);
+                    if (self.cfgPath) {
+                        self.core.loadByPath(self.rootNode, self.cfgPath, function (err, cfgNode) {
+                            var resultNode;
+                            resultNode = self.core.createNode({parent: cfgNode, base: self.meta.Result});
+                            self.core.setAttribute(resultNode, 'CfgAdm', jInfo.resultHashes.cfgAdm);
+                            self.core.setPointer(resultNode, 'ExecutedTestBench', testBenchInfo.node);
+                            self.core.setAttribute(resultNode, 'TestBenchManifest', 'It ran successfully..');
+                            self.core.setAttribute(resultNode, 'Artifacts', testBenchInfo.testBenchManifest);
+                            self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+                            callback(null, true);
+                        });
+                    } else {
+                        self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+                        callback(null, true);
+                    }
                 });
             };
 
@@ -926,6 +534,8 @@ define(['plugin/PluginConfig',
             }, 2000);
         });
     };
+
+//<editor-fold desc="============================ Unused methods ===============================">
 
     TestBenchRunner.prototype.mergeDashBoards = function (callback) {
         var self = this,
