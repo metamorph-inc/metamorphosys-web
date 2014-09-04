@@ -11,6 +11,7 @@ blob-local-storage
 executor-temp
 jobList.nedb
 workerList.nedb
+labelJobs.json
 
 # cyphy project temp files and directories
 mongodatabase
