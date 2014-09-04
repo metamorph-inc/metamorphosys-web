@@ -174,6 +174,10 @@ define(['plugin/PluginConfig',
                         self.result.addArtifact(hash);
                         if (self.runExecution) {
                             self.executeJob(hash, testBenchInfo, function (err, success) {
+                                if (err) {
+                                    self.logger.error(err);
+                                    callback(err, self.result);
+                                }
                                 self.result.setSuccess(success);
                                 if (self.saveToModel) {
                                     self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
@@ -255,7 +259,7 @@ define(['plugin/PluginConfig',
                 }
                 if (self.admExporter.selectedAlternatives) {
                     self.logger.info('Running on single configuration');
-                    self.logger.info(JSON.stringify(self.selectedAlternatives, null));
+                    self.logger.info(JSON.stringify(self.admExporter.selectedAlternatives, null));
                 }
                 self.admExporter.exploreDesign(designNode, true, function (err) {
                     if (err) {
@@ -501,7 +505,7 @@ define(['plugin/PluginConfig',
                             self.core.setAttribute(resultNode, 'CfgAdm', jInfo.resultHashes.cfgAdm);
                             self.core.setPointer(resultNode, 'ExecutedTestBench', testBenchInfo.node);
                             self.core.setAttribute(resultNode, 'TestBenchManifest', 'It ran successfully..');
-                            self.core.setAttribute(resultNode, 'Artifacts', testBenchInfo.testBenchManifest);
+                            self.core.setAttribute(resultNode, 'Artifacts', jInfo.resultHashes.testBenchManifest);
                             self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
                             callback(null, true);
                         });
