@@ -248,10 +248,7 @@ require(
 //
 //              DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'})
 //                  .then(function () {
-//                      return DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'});
-//                  })
-//                  .then(function () {
-//                      console.log('ready to work with objects...', context);
+//                      console.info('Project ADMEditor opened.');
 //                  })
 //                  .catch(function (reason) {
 //                      console.error(reason);
@@ -332,7 +329,7 @@ require(
                             css: 'app/Workers/styles/Workers.css',
                             controller: 'WorkersController'
                         } ).
-                      when( '/testBench', {
+                      when( '/testBench/:id*', {
                             templateUrl: 'app/TestBench/views/TestBenchView.html',
                             css: 'app/TestBench/styles/TestBench.css',
                             controller: 'TestBenchController'

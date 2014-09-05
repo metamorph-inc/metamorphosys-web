@@ -192,7 +192,8 @@
             data-ng-repeat="testBench in testBenches | orderObjectBy: 'name'">
 
             <header>
-                <h4><a class="testbench-name" href="">{{ testBench.name }}</a></h4>
+                <h4><a class="testbench-name" href="#/testBench/{{ testBench.id }}" tooltip="View Test Bench"
+                       tooltip-placement="right">{{ testBench.name }}</a></h4>
             </header>
 
             <div class="control-buttons">
