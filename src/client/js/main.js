@@ -216,7 +216,7 @@ require(
         'isis-ui-components/dropdownNavigator/dropdownNavigator',
         'CyPhyApp/app/MainNavigatorController',
         'CyPhyApp/app/ServerInfoController',
-
+        'js/services/DataStoreService',
         'angular-file-upload-shim',
         'angular-file-upload',
         'angular-growl',
@@ -235,10 +235,27 @@ require(
           var WebGMEApp = angular.module( 'WebGMEApp',
             ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
               'angularFileUpload', 'angular-growl', 'ngAnimate',
-              'isis.ui.dropdownNavigator'
-            ] ).run(function($rootScope) {
+              'isis.ui.dropdownNavigator', 'gme.services'
+            ] ).run(function($rootScope, DataStoreService) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;
+
+//              var context = {
+//                  db: 'my-db-connection-id',
+//                  projectId: 'ADMEditor',
+//                  branchId: 'master'
+//              };
+//
+//              DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'})
+//                  .then(function () {
+//                      return DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'});
+//                  })
+//                  .then(function () {
+//                      console.log('ready to work with objects...', context);
+//                  })
+//                  .catch(function (reason) {
+//                      console.error(reason);
+//                  });
             });
 
           WebGMEGlobal.WebGMEApp = WebGMEApp;
@@ -262,8 +279,10 @@ require(
               'CyPhyApp/app/workspace/WorkspaceController',
               'CyPhyApp/app/WorkspaceDetails/WorkspaceDetailsController',
               'CyPhyApp/app/DesignSpace/DesignSpaceController',
+              'CyPhyApp/app/TestBench/TestBenchController',
               'CyPhyApp/app/Workers/WorkersController'],
-              function ( WorkspaceController, WorkspaceDetailsController, DesignSpaceController, WorkersController ) {
+              function (
+                  WorkspaceController, WorkspaceDetailsController, DesignSpaceController, TestBenchController, WorkersController ) {
                 // configure app
 
                 WebGMEApp.filter( 'orderObjectBy', function () {
@@ -286,6 +305,7 @@ require(
                 WebGMEApp.controller( 'WorkspaceDetailsController', WorkspaceDetailsController );
                 WebGMEApp.controller( 'DesignSpaceController', DesignSpaceController );
                 WebGMEApp.controller( 'WorkersController', WorkersController );
+                WebGMEApp.controller( 'TestBenchController', TestBenchController );
                 WebGMEApp.config( ['growlProvider', function ( growlProvider ) {
                   growlProvider.globalTimeToLive( {success: 5000, error: -1, warning: 20000, info: 5000} );
                 }] );
@@ -308,10 +328,15 @@ require(
                         controller: 'DesignSpaceController'
                       } ).
                       when( '/workers', {
-                        templateUrl: 'app/Workers/views/WorkersView.html',
-                        css: 'app/Workers/styles/Workers.css',
-                        controller: 'WorkersController'
-                      } ).
+                            templateUrl: 'app/Workers/views/WorkersView.html',
+                            css: 'app/Workers/styles/Workers.css',
+                            controller: 'WorkersController'
+                        } ).
+                      when( '/testBench', {
+                            templateUrl: 'app/TestBench/views/TestBenchView.html',
+                            css: 'app/TestBench/styles/TestBench.css',
+                            controller: 'TestBenchController'
+                        } ).
                       otherwise( {
                         redirectTo: '/workspace'
                       } );
