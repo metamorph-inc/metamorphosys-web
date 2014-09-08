@@ -4,10 +4,12 @@
     <div class="test-bench-description">{{ testBench.description }}</div>
 </header>
 
-<div class="row">
-<div class="test-bench col-lg-6 col-md-9 col-sm-18 col-xs-18">
-
-</div>
+<div class="metrics">
+<ul class="metric-list">
+    <li class="metric-list-item" data-ng-repeat="metric in testBench.metrics | orderObjectBy: 'name'">
+        {{metric.name}}
+    </li>
+</ul>
 
 </div>
 </article>

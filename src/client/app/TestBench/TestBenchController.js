@@ -52,7 +52,7 @@ define(['../../js/DesertFrontEnd',
 
         self.$scope.testBench = self.testBench;
 
-        testBenchNode.onUpdate(function () {
+        testBenchNode.onUpdate(function (id) {
             console.log(self.testBench.name, testBenchNode.getAttribute('name'));
             self.testBench.name = testBenchNode.getAttribute('name');
             console.log(self.testBench.description, testBenchNode.getAttribute('INFO'));
@@ -64,16 +64,41 @@ define(['../../js/DesertFrontEnd',
         testBenchNode.loadChildren(self.context).then(function (childNodes) {
             var i;
             for (i = 0; i < childNodes.length; i += 1) {
-                console.log(childNodes[i].getAttribute('name'));
+                self.addMetric(childNodes[i]);
+                childNodes[i].onUnload(self.removeMetric(self));
             }
+            self.update();
+//            testBenchNode.onNewChildLoad(function (newNode) {
+//                var id = newNode.getId();
+//                self.testBench.metrics[newNode.getId()] = {name: newNode.name};
+//                newNode.onUnload(function () {
+//                    delete self.testBench.metrics[id];
+//                });
+//            });
         }).catch(function (reason) {
             console.error(reason);
         });
 
     };
 
-    TestBenchController.prototype.atDirectChildNode = function (id) {
-        var self = this;
+    TestBenchController.prototype.addMetric = function (node) {
+        var self = this,
+            id,
+            name;
+        name = node.getAttribute('name');
+        id = node.getId();
+        console.log(name, id);
+        self.testBench.metrics[id] = {
+            name: name,
+            id: id
+        };
+    };
+
+    TestBenchController.prototype.removeMetric = function (self) {
+        return function (id) {
+            delete self.testBench.metrics[id];
+            self.update();
+        };
     };
 
     TestBenchController.prototype.update = function () {
