@@ -68,13 +68,11 @@ define(['../../js/DesertFrontEnd',
                 childNodes[i].onUnload(self.removeMetric(self));
             }
             self.update();
-//            testBenchNode.onNewChildLoad(function (newNode) {
-//                var id = newNode.getId();
-//                self.testBench.metrics[newNode.getId()] = {name: newNode.name};
-//                newNode.onUnload(function () {
-//                    delete self.testBench.metrics[id];
-//                });
-//            });
+            testBenchNode.onNewChildLoaded(self.context, function (newNode) {
+                self.addMetric(newNode);
+                newNode.onUnload(self.removeMetric(self));
+                self.update();
+            });
         }).catch(function (reason) {
             console.error(reason);
         });
