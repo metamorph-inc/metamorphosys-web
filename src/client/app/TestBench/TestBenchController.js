@@ -10,30 +10,26 @@ define(['../../js/DesertFrontEnd',
 
     var TestBenchController = function ($scope, $rootScope, $q, $routeParams, $location, smartClient, Chance, growl, DataStoreService, NodeService) {
         var self = this,
-            nodeId = $routeParams.id;
+            nodeId = $routeParams.id,
+            context = {
+                db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
+                projectId: 'ADMEditor',
+                branchId: 'master',
+                territoryId: 'TestBenchController'
+            };
 
         self.$scope = $scope;
         self.testBench = {};
         self.NS = NodeService;
         self.$q = $q;
-
-        self.context = {
-            db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
-            projectId: 'ADMEditor',
-            branchId: 'master',
-            territoryId: 'terrId1'
-        };
-
-        DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'}).then(function () {
-            DataStoreService.selectBranch(self.context).then(function () {
-                console.log('Selected master branch..');
-                self.NS.loadNode2(self.context, nodeId)
-                    .then(function (node) {
-                        self.initialize(node);
-                    });
-            });
-        }).catch(function (reason) {
-            console.error(reason);
+        self.context = context;
+        console.log('Registering "initialize" event for NS.');
+        self.NS.on(self.context, 'initialize', function (currentContext) {
+            self.context = currentContext;
+            self.NS.loadNode2(self.context, nodeId)
+                .then(function (node) {
+                    self.initialize(node);
+                });
         });
     };
 

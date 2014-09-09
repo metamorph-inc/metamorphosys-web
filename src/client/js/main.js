@@ -239,7 +239,15 @@ require(
             ] ).run(function($rootScope, DataStoreService) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;
-
+              DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'})
+                .then(function () {
+                  DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
+                    .then(function () {
+                      console.log('Branch selected...');
+                    });
+              }).catch(function (reason) {
+                  console.error(reason);
+              });
 //              var context = {
 //                  db: 'my-db-connection-id',
 //                  projectId: 'ADMEditor',
