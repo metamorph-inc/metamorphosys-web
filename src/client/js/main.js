@@ -236,31 +236,18 @@ require(
             ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
               'angularFileUpload', 'angular-growl', 'ngAnimate',
               'isis.ui.dropdownNavigator', 'gme.services'
-            ] ).run(function($rootScope, DataStoreService) {
+            ] ).run(function($rootScope, DataStoreService, BranchService) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;
-              DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'})
+              DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
                 .then(function () {
-                  DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
-                    .then(function () {
-                      console.log('Branch selected...');
-                    });
+                   console.log('Branch selected...');
               }).catch(function (reason) {
-                  console.error(reason);
+                console.error(reason);
               });
-//              var context = {
-//                  db: 'my-db-connection-id',
-//                  projectId: 'ADMEditor',
-//                  branchId: 'master'
-//              };
-//
-//              DataStoreService.selectProject({db: 'my-db-connection-id', projectId: 'ADMEditor'})
-//                  .then(function () {
-//                      console.info('Project ADMEditor opened.');
-//                  })
-//                  .catch(function (reason) {
-//                      console.error(reason);
-//                  });
+              BranchService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
+                console.log('BranchService initialized..');
+              });
             });
 
           WebGMEGlobal.WebGMEApp = WebGMEApp;

@@ -23,20 +23,28 @@ define(['../../js/DesertFrontEnd',
         self.NS = NodeService;
         self.$q = $q;
         self.context = context;
+        self.metaNodes = null;
         console.log('Registering "initialize" event for NS.');
         self.NS.on(self.context, 'initialize', function (currentContext) {
             self.context = currentContext;
-            self.NS.loadNode2(self.context, nodeId)
-                .then(function (node) {
-                    self.initialize(node);
-                });
+            self.context.territoryId = 'TestBenchController';
+            console.log('NS initialized...', self.context);
+            self.NS.getMetaNodes(self.context).then(function (metaNodes) {
+                self.metaNodes = metaNodes;
+                self.NS.loadNode2(self.context, nodeId)
+                    .then(function (node) {
+                        self.initialize(node);
+                    });
+            }).catch(function (reason) {
+                console.error(reason);
+            });
         });
     };
 
     TestBenchController.prototype.initialize = function (testBenchNode) {
         var self = this;
         console.log('testbench node loaded.');
-
+        console.log('metaNodes', self.metaNodes);
         self.testBench = {
             id: testBenchNode.getId(),
             name: testBenchNode.getAttribute('name'),
@@ -81,7 +89,7 @@ define(['../../js/DesertFrontEnd',
             name;
         name = node.getAttribute('name');
         id = node.getId();
-        console.log(name, id);
+        //console.log(name, id);
         self.testBench.metrics[id] = {
             name: name,
             id: id
