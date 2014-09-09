@@ -28,21 +28,16 @@ define(['plugin/PluginConfig',
         this.meta = MetaTypes;
         this.referencedDesign = null;
         this.saveToModel = false;
+        this.resultsData = {};
         // Execution frame-work.
         this.runExecution = false;
         this.run_exec_cmd = null;
         this.exec_py = null;
         this.executorClient = null;
-        this.dashboardResults = [];
-        this.projectManifest = null;
-        this.metaResults = null;
-        this.designNameToDesignId = {};
         // AVM design format
         this.designAcmFiles = null;
         this.admData = null;
         this.admString = null;
-        this.exportAtm = false;
-        this.atms = [];
 
         this.admExporter = null;
         this.atmExporter = null;
@@ -177,12 +172,60 @@ define(['plugin/PluginConfig',
                                 if (err) {
                                     self.logger.error(err);
                                     callback(err, self.result);
+                                    return;
                                 }
                                 self.result.setSuccess(success);
                                 if (self.saveToModel) {
-                                    self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
-                                        callback(null, self.result);
+                                    self.loadLatestRoot(function (err, latestRootNode) {
+                                        if (err) {
+                                            self.logger.error(err);
+                                            callback(err, self.result);
+                                            return;
+                                        }
+                                        self.core.loadByPath(latestRootNode, self.resultsData.configurationPath, function (err, cfgNode) {
+                                            var resultNode;
+                                            if (err) {
+                                                self.logger.error(err);
+                                                callback(err, self.result);
+                                                return;
+                                            }
+                                            self.core.loadByPath(latestRootNode, self.resultsData.resultMetaNodePath, function (err, resMetaNode) {
+                                                if (err) {
+                                                    self.logger.error(err);
+                                                    callback(err, self.result);
+                                                    return;
+                                                }
+                                                self.core.loadByPath(latestRootNode, self.resultsData.executedTestBenchPath, function (err, tbNode) {
+                                                    if (err) {
+                                                        self.logger.error(err);
+                                                        callback(err, self.result);
+                                                        return;
+                                                    }
+                                                    resultNode = self.core.createNode({parent: cfgNode, base: resMetaNode});
+                                                    self.core.setAttribute(resultNode, 'name', new Date().toString());
+                                                    self.core.setAttribute(resultNode, 'CfgAdm', self.resultsData.cfgAdm);
+                                                    self.core.setPointer(resultNode, 'ExecutedTestBench', tbNode);
+                                                    self.core.setAttribute(resultNode, 'TestBenchManifest', 'See Artifacts...');
+                                                    self.core.setAttribute(resultNode, 'Artifacts', self.resultsData.testBenchManifest);
+                                                    self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+                                                    self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
+                                                        if (err) {
+                                                            self.result.setSuccess(false);
+                                                            callback(err, self.result);
+                                                        }
+                                                        callback(null, self.result);
+                                                    });
+                                                });
+                                            });
+                                        });
                                     });
+//                                    self.save2('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
+//                                        if (err) {
+//                                            self.result.setSuccess(false);
+//                                            callback(err, self.result);
+//                                        }
+//                                        callback(null, self.result);
+//                                    });
                                 } else {
                                     callback(null, self.result);
                                 }
@@ -499,20 +542,27 @@ define(['plugin/PluginConfig',
                     }
                     self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard);
                     if (self.cfgPath) {
-                        self.core.loadByPath(self.rootNode, self.cfgPath, function (err, cfgNode) {
-                            var resultNode;
-                            resultNode = self.core.createNode({parent: cfgNode, base: self.meta.Result});
-                            self.core.setAttribute(resultNode, 'CfgAdm', jInfo.resultHashes.cfgAdm);
-                            self.core.setPointer(resultNode, 'ExecutedTestBench', testBenchInfo.node);
-                            self.core.setAttribute(resultNode, 'TestBenchManifest', 'It ran successfully..');
-                            self.core.setAttribute(resultNode, 'Artifacts', jInfo.resultHashes.testBenchManifest);
-                            self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
-                            callback(null, true);
-                        });
-                    } else {
-                        self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
-                        callback(null, true);
+                        // Save data that is needed for storing data result node.
+                        self.resultsData = {
+                            cfgAdm: jInfo.resultHashes.cfgAdm,
+                            executedTestBenchPath: self.core.getPath(testBenchInfo.node),
+                            testBenchManifest: jInfo.resultHashes.testBenchManifest,
+                            resultMetaNodePath: self.core.getPath(self.meta.Result),
+                            configurationPath: self.cfgPath
+                        };
                     }
+                    self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+                    callback(null, true);
+//                        self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+//                        callback(null, true);
+//                        self.core.loadByPath(self.rootNode, self.cfgPath, function (err, cfgNode) {
+//                            var resultNode;
+//                            resultNode = self.core.createNode({parent: cfgNode, base: self.meta.Result});
+//                            self.core.setAttribute(resultNode, 'CfgAdm', jInfo.resultHashes.cfgAdm);
+//                            self.core.setPointer(resultNode, 'ExecutedTestBench', testBenchInfo.node);
+//                            self.core.setAttribute(resultNode, 'TestBenchManifest', 'It ran successfully..');
+//                            self.core.setAttribute(resultNode, 'Artifacts', jInfo.resultHashes.testBenchManifest);
+//                        });
                 });
             };
 
@@ -539,358 +589,60 @@ define(['plugin/PluginConfig',
         });
     };
 
-//<editor-fold desc="============================ Unused methods ===============================">
-
-    TestBenchRunner.prototype.mergeDashBoards = function (callback) {
-        var self = this,
-            masterDashHash,
-
-            mergedArtifact;
-        if (!(self.multiRun && self.runExecution && self.dashboardResults.length > 0)) {
-            self.logger.info('No dashboards to merge.');
-            callback(null);
-            return;
-        }
-
-        mergedArtifact = self.blobClient.createArtifact('mergedDashboards');
-        masterDashHash = self.dashboardResults[0];
-        self.dashboardResults.shift();
-        self.blobClient.getMetadata(masterDashHash, function (err, metaData) {
-            if (err) {
-                callback('Could not get metadata for masterDashHash. Err: ' + err);
-                return;
-            }
-            self.getProjectManifestAndMetaResults(metaData, function (err, projectManifest, metaResults) {
-                var exclude = {};
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                self.projectManifest = projectManifest;
-                self.metaResults = metaResults;
-                exclude['manifest.project.json'] = true;
-                exclude['results/results.metaresults.json'] = true;
-                self.addMetaDatasToArtifact(metaData.content, mergedArtifact, exclude, function (err, tbManifests) {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
-                    self.getDesignCfgToDesignId(tbManifests, function (err, cfgToDesignId) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-                        self.logger.info(JSON.stringify(cfgToDesignId, null, 2));
-                        self.designNameToDesignId = cfgToDesignId;
-                        self.addSlavesDashFiles(mergedArtifact, function (err) {
-                            var filesToAdd;
-                            if (err) {
-                                callback(err);
-                                return;
-                            }
-                            filesToAdd = {
-                                'manifest.project.json': JSON.stringify(self.projectManifest, null, 4),
-                                'results/results.metaresults.json': JSON.stringify(self.metaResults, null, 4)
-                            };
-                            mergedArtifact.addFiles(filesToAdd, function (err, hashes) {
-                                if (err) {
-                                    callback(err);
-                                    return;
-                                }
-                                mergedArtifact.save(function (err, artieHash) {
-                                    if (err) {
-                                        callback(err);
-                                        return;
-                                    }
-                                    self.result.addArtifact(artieHash);
-                                    self.core.setAttribute(self.activeNode, 'Results', artieHash);
-                                    callback(null);
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    };
-
-    TestBenchRunner.prototype.getJSObjFromMetaData = function (metaData, callback) {
-        var self = this,
-            contentHash = metaData.content;
-        self.logger.info('About to get JS-object from meta-data: ' +
-            JSON.stringify(metaData, null, 2) + '.');
-        self.blobClient.getObject(contentHash, function (err, content) {
-            var jsonString;
-            if (err) {
-                callback('Could not get content, err :' + err.toString());
-                return
-            }
-            jsonString = String.fromCharCode.apply(null, new Uint8Array(content));
-            self.logger.info(jsonString);
-            callback(null, JSON.parse(jsonString));
-        });
-    };
-
-    TestBenchRunner.prototype.getProjectManifestAndMetaResults = function (metaData, callback) {
-        var self = this,
-            manifestName = 'manifest.project.json',
-            metaResName = 'results/results.metaresults.json';
-
-        self.getJSObjFromMetaData(metaData.content[manifestName], function (err, projectManifest) {
-            if (err) {
-                callback(err);
-                return
-            }
-            self.getJSObjFromMetaData(metaData.content[metaResName], function (err, metaResults) {
-                if (err) {
-                    callback(err);
-                    return
-                }
-                callback(null, projectManifest, metaResults);
-            });
-        });
-    };
-
-    TestBenchRunner.prototype.addMetaDatasToArtifact = function (metaDatas, artifact, exclude, callback) {
-        var self = this,
-            metaDataToAdd = {},
-            toExclude = exclude || {},
-            fileName,
-            testBenchManifests = [];
-        for (fileName in metaDatas) {
-            if (metaDatas.hasOwnProperty(fileName) && toExclude[fileName] === undefined) {
-                metaDataToAdd[fileName] = metaDatas[fileName].content;
-                if (self.endsWith(fileName, '/testbench_manifest.json')) {
-                    testBenchManifests.push({
-                        fileName: fileName,
-                        softLinkHash: metaDatas[fileName]
-                    });
-                }
-            }
-        }
-
-        artifact.addMetadataHashes(metaDataToAdd, function (err, hashes) {
-            if (err) {
-                callback('Could not add metaDatas to artifact, err:' + err);
-                return;
-            }
-            callback(null, testBenchManifests);
-        });
-    };
-
-    TestBenchRunner.prototype.getDesignCfgToDesignId = function (testBenchManifests, callback) {
-        var self = this,
-            counter = testBenchManifests.length,
-            error = '',
-            i,
-            cfgToDesignId = {},
-            counterCallback = function (err, tbManifestObj) {
-                error = err ? error + err : error;
-                if (tbManifestObj) {
-                    cfgToDesignId[tbManifestObj.DesignName] = tbManifestObj.DesignID;
-                }
-                counter -= 1;
-                if (counter <= 0) {
-                    callback(error, cfgToDesignId);
-                }
-            };
-        if (testBenchManifests.length === 0) {
-            counterCallback('No test-bench manifest in master dashboard result!', null);
-        }
-        for (i = 0; i < testBenchManifests.length; i += 1) {
-            self.getJSObjFromMetaData(testBenchManifests[i].softLinkHash, counterCallback);
-        }
-    };
-
-    TestBenchRunner.prototype.addSlavesDashFiles = function (artifact, callback) {
-        var self = this,
-            counter = self.dashboardResults.length,
-            error = '',
-            i,
-            counterCallback = function (err) {
-                error = err ? error + err : error;
-                counter -= 1;
-                if (counter <= 0) {
-                    callback(error);
-                }
-            };
-
-        if (self.dashboardResults.length === 0) {
-            counterCallback(null);
-        }
-        for (i = 0; i < self.dashboardResults.length; i += 1) {
-            self.addSlaveDashFiles(self.dashboardResults[i], artifact, counterCallback);
-        }
-    };
-
-    TestBenchRunner.prototype.addSlaveDashFiles = function (dashHash, artifact, callback) {
-        var self = this;
-        self.blobClient.getMetadata(dashHash, function (err, slaveDashMetaData) {
-            if (err) {
-                callback('Could not get metadata for masterDashHash. Err: ' + err);
-                return;
-            }
-            self.getProjectManifestAndMetaResults(slaveDashMetaData, function (err, projectManifest, metaResults) {
-                var testBenchPath,
-                    i,
-                    metaDataToAdd = {},
-                    filesToAdd = {},
-                    counterCallback,
-                    error = '',
-                    counter;
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                // Add info from project-manifest
-                testBenchPath = projectManifest.Project.TestBenches[0];
-                self.projectManifest.Project.TestBenches.push(testBenchPath);
-                testBenchPath = testBenchPath.substring(2);
-                metaDataToAdd[testBenchPath] = slaveDashMetaData.content[testBenchPath].content;
-                // Add info from meta-results.
-                counter = metaResults.Results.length;
-                counterCallback = function (err) {
-                    error = err ? error + err : error;
-                    counter -= 1;
-                    if (counter <= 0) {
-                        artifact.addMetadataHashes(metaDataToAdd, function (err, hashes) {
-                            if (err) {
-                                callback('Could not add metaDatas of slave to artifact, err:' + err);
-                                return;
-                            }
-                            artifact.addFiles(filesToAdd, function (err, hashes) {
-                                if (err) {
-                                    callback('Could not add files of slave to artifact, err:' + err);
-                                    return;
-                                }
-                                callback(null);
-                            });
-                        });
-                    }
-                };
-                if (metaResults.Results.length === 0) {
-                    counterCallback('No results for: ' + JSON.stringify(projectManifest, null, 2));
-                }
-                for (i = 0; i < metaResults.Results.length; i += 1) {
-                    self.mergeResult(slaveDashMetaData, metaResults.Results[i], filesToAdd, counterCallback);
-                }
-            });
-        });
-    };
-
-    TestBenchRunner.prototype.mergeResult = function (metaData, result, filesToAdd, callback) {
-        var self = this,
-            tbManifestPath;
-        tbManifestPath = 'results' + result.Summary.substring(1);
-        self.logger.info(JSON.stringify(metaData.content, null, 2));
-        self.logger.info(tbManifestPath);
-        self.getJSObjFromMetaData(metaData.content[tbManifestPath], function (err, tbManifest) {
-            var designName;
-            if (err) {
-                callback('Could not get test-bench object, err: ' + err);
-                return;
-            }
-            designName = tbManifest.DesignName;
-            if (self.designNameToDesignId.hasOwnProperty(designName)) {
-                tbManifest.DesignID = self.designNameToDesignId[designName];
-                filesToAdd[tbManifestPath] = JSON.stringify(tbManifest, null, 4);
-                result.DesignID = tbManifest.DesignID;
-                self.metaResults.Results.push(result);
-            } else {
-                self.createMessage(self.activeNode, 'Design names are not equal amongst test-benches. "' + designName +
-                    '" did not exist in all dashboard folders.', 'warning');
-            }
-            callback(null);
-        });
-    };
-//</editor-fold>
-
     TestBenchRunner.prototype.endsWith = function (str, ending) {
         var lastIndex = str.lastIndexOf(ending);
         return (lastIndex !== -1) && (lastIndex + ending.length === str.length);
     };
 
-    TestBenchRunner.prototype.save2 = function (message, callback) {
+    TestBenchRunner.prototype.loadLatestRoot = function (callback) {
         var self = this;
-
-        this.logger.debug('Saving project');
-
-        // Commit changes.
-        this.core.persist(this.rootNode, function (err) {
-            // TODO: any error here?
-            if (err) {
-                self.logger.error(err);
-            }
-        });
-
-        var newRootHash = this.core.getHash(this.rootNode);
-
-        var commitMessage = '[Plugin] ' + this.getName() + ' (v' + this.getVersion() + ') updated the model.';
-        if (message) {
-            commitMessage += ' - ' + message;
-        }
-
-        this.currentHash = this.project.makeCommit([this.currentHash], newRootHash, commitMessage, function (err) {
-            // TODO: any error handling here?
-            if (err) {
-                self.logger.error(err);
-            }
-        });
-
-        if (this.branchName) {
-            // try to fast forward branch if there was a branch name defined
-
-            // FIXME: what if master branch is already in a different state?
-
-            this.project.getBranchNames(function (err, branchNames) {
+        if (self.branchName) {
+            self.project.getBranchNames(function (err, branchNames) {
+                var branchHash;
+                if (err) {
+                    callback(err);
+                    return;
+                }
                 if (branchNames.hasOwnProperty(self.branchName)) {
-                    var branchHash = branchNames[self.branchName];
+                    branchHash = branchNames[self.branchName];
                     if (branchHash === self.branchHash) {
-                        // the branch does not have any new commits
-                        // try to fast forward branch to the current commit
-                        self.project.setBranchHash(self.branchName, self.branchHash, self.currentHash, function (err) {
-                            if (err) {
-                                // fast forward failed
-                                self.logger.error(err);
-                                self.logger.info('"' + self.branchName + '" was NOT updated');
-                                self.logger.info('Project was saved to ' + self.currentHash + ' commit.');
-                            } else {
-                                // successful fast forward of branch to the new commit
-                                self.logger.info('"' + self.branchName + '" was updated to the new commit.');
-                                // roll starting point on success
-                                self.branchHash = self.currentHash;
-                            }
-                            callback(err);
-                        });
+                        // The branch does not have any new commits - return with original rootNode.
+                        self.logger.info('Branch did not change during execution..');
+                        callback(null, self.rootNode);
                     } else {
-                        // branch has changes a merge is required
-                        // TODO: try auto-merge, if fails ...
-                        self.logger.warn('Cannot fast forward "' + self.branchName + '" branch. Merge is required but not supported yet.');
-                        self.logger.info('Project was saved to ' + self.currentHash + ' commit.');
+                        // There were commits to the branch since the plugin started.
                         self.logger.info('Loading latest commit, from ' + self.branchHash);
-                        self.project.getBranchHash(self.branchName, self.branchHash, function (err, arg1, arg2) {
+                        self.project.getBranchHash(self.branchName, self.branchHash, function (err, latestHash) {
                             if (err) {
                                 self.logger.error(err);
+                                callback(err);
                                 return;
                             }
-                            console.log('arg1', arg1);
-                            console.log('arg1', arg2);
-                            callback(null);
+                            self.logger.info('Obtained latest commit hash for "' + self.branchName + '": ' + latestHash +
+                                '. Attempting to load commit..');
+                            self.project.loadObject(latestHash, function (err, commitObj) {
+                                if (err) {
+                                    callback(err);
+                                    return;
+                                }
+                                self.core.loadRoot(commitObj.root, function (err, latestRoot) {
+                                    if (err) {
+                                        callback(err);
+                                        return;
+                                    }
+                                    self.branchHash = branchHash;
+                                    self.rootNode = latestRoot;
+                                    callback(null, latestRoot);
+                                });
+                            });
                         });
                     }
                 } else {
-                    // branch was deleted or not found, do nothing
-                    self.logger.info('Project was saved to ' + self.currentHash + ' commit.');
-                    callback(null);
+                    callback(null, self.rootNode);
                 }
             });
-            // FIXME: is this call async??
-            // FIXME: we are not tracking all commits that we make
-
         } else {
-            // making commits, we have not started from a branch
-            this.logger.info('Project was saved to ' + this.currentHash + ' commit.');
-            callback(null);
+            callback(null, self.rootNode);
         }
     };
 
