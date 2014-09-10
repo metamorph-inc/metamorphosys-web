@@ -37,4 +37,20 @@
     </ul>
 </div>
 
+<div class="top-level-system-under-test">
+    <header>
+        <h2 class="top-level-system-under-test-header">Top Level System Under Test</h2>
+    </header>
+    <h3 class="configuration-sets-header">Configuration Sets</h3>
+    <ul class="configuration-sets-list">
+        <li class="properties-list-item" data-ng-repeat="cfgSet in tlsut.cfgSets | orderObjectBy: 'name'">
+            {{cfgSet.name}} ({{cfgSet.id}})
+            <ul class="configuration-list">
+                <li class="configuration-list-item" data-ng-repeat="cfg in cfgSet.cfgs | orderObjectBy: 'name'">
+                    {{cfg.name}} ({{cfg.id}})
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
 </article>

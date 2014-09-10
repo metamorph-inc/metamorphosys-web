@@ -8,38 +8,40 @@ define(['../../js/DesertFrontEnd',
         'xmljsonconverter'], function (DesertFrontEnd, Converter) {
     'use strict';
 
-    var TestBenchController = function ($scope, $rootScope, $q, $routeParams, $location, smartClient, Chance, growl, DataStoreService, NodeService) {
-        var self = this,
-            nodeId = $routeParams.id,
-            context = {
-                db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
-                projectId: 'ADMEditor',
-                branchId: 'master',
-                territoryId: 'TestBenchController'
-            };
+    var configurationSetController,
+        TestBenchController = function ($scope, $rootScope, $q, $routeParams, $location, smartClient, Chance, growl, DataStoreService, NodeService) {
+            var self = this,
+                nodeId = $routeParams.id,
+                context = {
+                    db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
+                    projectId: 'ADMEditor',
+                    branchId: 'master',
+                    territoryId: 'TestBenchController'
+                };
 
-        self.$scope = $scope;
-        self.testBench = {};
-        self.NS = NodeService;
-        self.$q = $q;
-        self.context = context;
-        self.meta = null;
-        console.log('Registering "initialize" event for NS.');
-        self.NS.on(self.context, 'initialize', function (currentContext) {
-            self.context = currentContext;
-            self.context.territoryId = 'TestBenchController';
-            console.log('NS initialized...', self.context);
-            self.NS.getMetaNodes(self.context).then(function (metaNodes) {
-                self.meta = metaNodes;
-                self.NS.loadNode2(self.context, nodeId)
-                    .then(function (node) {
-                        self.initialize(node);
+            self.$scope = $scope;
+            self.testBench = {};
+            self.NS = NodeService;
+            self.$q = $q;
+            self.context = context;
+            self.meta = null;
+            console.log('Registering "initialize" event for NS.');
+            self.NS.on(self.context, 'initialize', function (currentContext) {
+                self.context = currentContext;
+                self.context.territoryId = 'TestBenchController';
+                console.log('NS initialized...', self.context);
+                self.NS.getMetaNodes(self.context)
+                    .then(function (metaNodes) {
+                        self.meta = metaNodes;
+                        self.NS.loadNode2(self.context, nodeId)
+                            .then(function (node) {
+                                self.initialize(node);
+                            });
+                    }).catch(function (reason) {
+                        console.error(reason);
                     });
-            }).catch(function (reason) {
-                console.error(reason);
             });
-        });
-    };
+        };
 
     TestBenchController.prototype.initialize = function (testBenchNode) {
         var self = this;
@@ -52,11 +54,15 @@ define(['../../js/DesertFrontEnd',
             parameters: { },
             properties: { },
             metrics: { },
-            tlsut: { }
+            tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest')
         };
-
+        self.tlsut = {
+            id: null,
+            name: 'N/A',
+            cfgSets: { }
+        };
         self.$scope.testBench = self.testBench;
-
+        self.$scope.tlsut = self.tlsut;
         testBenchNode.onUpdate(function (id) {
             // this refers to the NodeObj.
             console.log(self.testBench.name, this.getAttribute('name'));
@@ -67,20 +73,21 @@ define(['../../js/DesertFrontEnd',
         });
 
         self.update();
-        testBenchNode.loadChildren(self.context).then(function (childNodes) {
-            var i;
-            for (i = 0; i < childNodes.length; i += 1) {
-                self.onImmediateChild(childNodes[i]);
-            }
-            self.update();
-            testBenchNode.onNewChildLoaded(self.context, function (newNode) {
-                self.onImmediateChild(newNode);
+        testBenchNode.loadChildren(self.context)
+            .then(function (childNodes) {
+                var i;
+                for (i = 0; i < childNodes.length; i += 1) {
+                    self.onImmediateChild(childNodes[i]);
+                }
                 self.update();
+                testBenchNode.onNewChildLoaded(self.context, function (newNode) {
+                    self.onImmediateChild(newNode);
+                    self.update();
+                });
+                //configurationSetController(self, self.testBench.tlsutId);
+            }).catch(function (reason) {
+                console.error(reason);
             });
-        }).catch(function (reason) {
-            console.error(reason);
-        });
-
     };
 
     TestBenchController.prototype.onImmediateChild = function (node) {
@@ -244,6 +251,28 @@ define(['../../js/DesertFrontEnd',
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
+    };
+
+    configurationSetController = function (self, designId) {
+        self.NS.loadNode2(self.context, designId)
+            .then(function (designNode) {
+                designNode.loadChildren(self.context)
+                    .then(function (childNodes) {
+                        var i;
+                        for (i = 0; i < childNodes.length; i += 1) {
+                            if (childNodes[i].isMetaTypeOf(self.meta.DesertConfigurationSet)) {
+                                self.tlsut.cfgSets[childNodes[i].getId()] = {
+                                    id: childNodes[i].getId(),
+                                    name: childNodes[i].getAttribute('name'),
+                                    cfgs: {}
+                                };
+                            }
+                        }
+                        self.update();
+                    });
+            }).catch(function (reason) {
+                console.error(reason);
+            });
     };
 
     return TestBenchController;
