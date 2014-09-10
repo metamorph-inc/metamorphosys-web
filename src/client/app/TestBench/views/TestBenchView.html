@@ -5,11 +5,36 @@
 </header>
 
 <div class="metrics">
-<ul class="metric-list">
-    <li class="metric-list-item" data-ng-repeat="metric in testBench.metrics | orderObjectBy: 'name'">
-        {{metric.name}}
-    </li>
-</ul>
-
+    <header>
+        <h4 class="metrics-header">Metrics</h4>
+    </header>
+    <ul class="metrics-list">
+        <li class="metrics-list-item" data-ng-repeat="metric in testBench.metrics | orderObjectBy: 'name'">
+            {{metric.name}} - {{metric.description}}
+        </li>
+    </ul>
 </div>
+
+<div class="parameters">
+    <header>
+        <h4 class="parameters-header">Parameters</h4>
+    </header>
+    <ul class="parameters-list">
+        <li class="parameters-list-item" data-ng-repeat="param in testBench.parameters | orderObjectBy: 'name'">
+            {{param.name}} {{param.value}} ({{param.dataType}}) - {{param.description}}
+        </li>
+    </ul>
+</div>
+
+<div class="properties">
+    <header>
+        <h4 class="properties-header">Properties</h4>
+    </header>
+    <ul class="properties-list">
+        <li class="properties-list-item" data-ng-repeat="prop in testBench.properties | orderObjectBy: 'name'">
+            {{prop.name}} {{prop.value}} ({{prop.dataType}}) - {{prop.description}}
+        </li>
+    </ul>
+</div>
+
 </article>
