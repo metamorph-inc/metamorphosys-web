@@ -14,6 +14,8 @@ IF %QUERY_ERRORLEVEL% == 1 (
     echo on
 echo "META tools not installed." >> _FAILED.txt
 echo "See Error Log: _FAILED.txt"
+popd
 exit /b %QUERY_ERRORLEVEL%
 )
 popd
+exit /b %ERRORLEVEL%
