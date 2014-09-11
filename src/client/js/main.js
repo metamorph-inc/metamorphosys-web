@@ -199,43 +199,57 @@ require(
           'angular-moment-js': CONFIG.paths.CyPhyApp + '/lib/angular-momentjs',
           'angular-file-upload-shim': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload-shim.min',
           'angular-file-upload': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload',
-          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min'
+          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min',
+          'gme-services': 'js/services/DataStoreService'
+        },
+        shim: {
+          'gme-services': ['angular'],
+          'CyPhyApp/js/services/CyPhyServices': ['angular']
         }
       } );
 
       // extlib paths are set now we can require our client
-      require( ['angular',
-        'angular-route',
-        'angular-route-styles',
-        'angular-ui-bootstrap',
-        'moment',
-        'angular-moment-js',
-        'text!CyPhyMETA/ADMEditor_metaOnly.json',
-        'CyPhyApp/js/SmartClient',
+      require(
+        [
+          'angular',
+          'angular-route',
+          'angular-route-styles',
+          'angular-ui-bootstrap',
+          'moment',
+          'angular-moment-js',
+          'text!CyPhyMETA/ADMEditor_metaOnly.json',
+          'CyPhyApp/js/SmartClient',
 
-        'isis-ui-components/dropdownNavigator/dropdownNavigator',
-        'CyPhyApp/app/MainNavigatorController',
-        'CyPhyApp/app/ServerInfoController',
-        'js/services/DataStoreService',
-        'angular-file-upload-shim',
-        'angular-file-upload',
-        'angular-growl',
+          'isis-ui-components/dropdownNavigator/dropdownNavigator',
+          'CyPhyApp/app/MainNavigatorController',
+          'CyPhyApp/app/ServerInfoController',
+          'gme-services',
+          'CyPhyApp/js/services/CyPhyServices',
+          'angular-file-upload-shim',
+          'angular-file-upload',
+          'angular-growl',
 
-        'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
-        'css!CyPhyApp/lib/angular-growl.min.css',
-
-        'css!CyPhyApp/styles/cyphy.css'
-
+          'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
+          'css!CyPhyApp/lib/angular-growl.min.css',
+          'css!CyPhyApp/styles/cyphy.css'
       ],
       function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient,
                    DropDownNavigator, MainNavigatorController, ServerInfoController ) {
           // download angular and all plugins
           // create app
 
-          var WebGMEApp = angular.module( 'WebGMEApp',
-            ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
-              'angularFileUpload', 'angular-growl', 'ngAnimate',
-              'isis.ui.dropdownNavigator', 'gme.services'
+          var WebGMEApp = angular.module(
+            'WebGMEApp', [
+              'ngRoute',
+              'routeStyles',
+              'angular-moment',
+              'ui.bootstrap',
+              'angularFileUpload',
+              'angular-growl',
+              'ngAnimate',
+              'isis.ui.dropdownNavigator',
+              'gme.services',
+              'cyphy.services'
             ] ).run(function($rootScope, DataStoreService, BranchService) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;

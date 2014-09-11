@@ -9,7 +9,7 @@ define(['../../js/DesertFrontEnd',
     'use strict';
 
     var configurationSetController,
-        TestBenchController = function ($scope, $rootScope, $q, $routeParams, $location, smartClient, Chance, growl, DataStoreService, NodeService) {
+        TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService) {
             var self = this,
                 nodeId = $routeParams.id,
                 context = {
@@ -20,9 +20,9 @@ define(['../../js/DesertFrontEnd',
                 };
 
             self.$scope = $scope;
+            self.DCSS = DesertCfgSetService;
             self.testBench = {};
             self.NS = NodeService;
-            self.$q = $q;
             self.context = context;
             self.meta = null;
             console.log('Registering "initialize" event for NS.');
@@ -57,7 +57,6 @@ define(['../../js/DesertFrontEnd',
             tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest').to
         };
         self.tlsut = {
-            id: null,
             name: 'N/A',
             cfgSets: { }
         };
@@ -65,11 +64,23 @@ define(['../../js/DesertFrontEnd',
         self.$scope.tlsut = self.tlsut;
         testBenchNode.onUpdate(function (id) {
             // this refers to the NodeObj.
-            console.log(self.testBench.name, this.getAttribute('name'));
-            self.testBench.name = this.getAttribute('name');
-            console.log(self.testBench.description, this.getAttribute('INFO'));
-            self.testBench.description = this.getAttribute('INFO');
-            self.update();
+            var newName = this.getAttribute('name'),
+                newDescr = this.getAttribute('INFO'),
+                newTLSUT = this.getPointer('TopLevelSystemUnderTest').to;
+            if (newName !== self.testBench.name || newDescr !== self.testBench.description ||
+                    newTLSUT !== self.testBench.tlsutId) {
+                self.testBench.name = newName;
+                self.testBench.description = newDescr;
+                if (newTLSUT && newTLSUT !== self.testBench.tlsutId) {
+                    self.testBench.tlsutId = newTLSUT;
+                    self.DCSS.addCfgSetsWatcher(self.context, self.testBench.tlsutId, self.getUpdateFn(self))
+                        .then(function (cfgSets) {
+                            self.testBench.cfgSets = cfgSets;
+                            self.update();
+                        });
+                }
+                self.update();
+            }
         });
 
         self.update();
@@ -84,7 +95,15 @@ define(['../../js/DesertFrontEnd',
                     self.onImmediateChild(newNode);
                     self.update();
                 });
-                configurationSetController(self, self.testBench.tlsutId);
+                //self.DCSS.logNodeServiceStatus(self.context);
+                if (self.testBench.tlsutId) {
+                    self.DCSS.addCfgSetsWatcher(self.context, self.testBench.tlsutId, self.getUpdateFn(self))
+                        .then(function (cfgSets) {
+                            self.tlsut.cfgSets = cfgSets;
+                            console.log('cfgSetsInController', cfgSets);
+                            self.update();
+                        });
+                }
             }).catch(function (reason) {
                 console.error(reason);
             });
@@ -247,32 +266,18 @@ define(['../../js/DesertFrontEnd',
         };
     };
 
+    TestBenchController.prototype.getUpdateFn = function (self) {
+        return function () {
+            if (!self.$scope.$$phase) {
+                self.$scope.$apply();
+            }
+        };
+    };
+
     TestBenchController.prototype.update = function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
-    };
-
-    configurationSetController = function (self, designId) {
-        self.NS.loadNode2(self.context, designId)
-            .then(function (designNode) {
-                designNode.loadChildren(self.context)
-                    .then(function (childNodes) {
-                        var i;
-                        for (i = 0; i < childNodes.length; i += 1) {
-                            if (childNodes[i].isMetaTypeOf(self.meta.DesertConfigurationSet)) {
-                                self.tlsut.cfgSets[childNodes[i].getId()] = {
-                                    id: childNodes[i].getId(),
-                                    name: childNodes[i].getAttribute('name'),
-                                    cfgs: {}
-                                };
-                            }
-                        }
-                        self.update();
-                    });
-            }).catch(function (reason) {
-                console.error(reason);
-            });
     };
 
     return TestBenchController;
