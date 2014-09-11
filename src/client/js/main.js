@@ -199,14 +199,13 @@ require(
           'angular-moment-js': CONFIG.paths.CyPhyApp + '/lib/angular-momentjs',
           'angular-file-upload-shim': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload-shim.min',
           'angular-file-upload': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload',
-          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min',
+          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min'
 
         },
           shim: {
-              '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular'],
-              '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular'],
               'angular-moment-js': ['angular', 'moment'],
-              'isis-ui-components/dropdownNavigator/dropdownNavigator': ['angular-moment-js']
+              '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular-moment-js'],
+              '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular']
           }
       } );
 
@@ -220,7 +219,7 @@ require(
         'text!CyPhyMETA/ADMEditor_metaOnly.json',
         'CyPhyApp/js/SmartClient',
 
-        'isis-ui-components/dropdownNavigator/dropdownNavigator',
+
         'CyPhyApp/app/MainNavigatorController',
         'CyPhyApp/app/ServerInfoController',
 
@@ -240,14 +239,14 @@ require(
 
       ],
       function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient,
-                   DropDownNavigator, MainNavigatorController, ServerInfoController ) {
+                    MainNavigatorController, ServerInfoController ) {
           // download angular and all plugins
           // create app
-
           var WebGMEApp = angular.module( 'WebGMEApp',
             ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
               'angularFileUpload', 'angular-growl', 'ngAnimate',
               'isis.ui.dropdownNavigator'
+              //'isis.ui.components'
             ] ).run(function($rootScope) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;
