@@ -199,8 +199,15 @@ require(
           'angular-moment-js': CONFIG.paths.CyPhyApp + '/lib/angular-momentjs',
           'angular-file-upload-shim': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload-shim.min',
           'angular-file-upload': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload',
-          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min'
-        }
+          'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min',
+
+        },
+          shim: {
+              '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular'],
+              '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular'],
+              'angular-moment-js': ['angular', 'moment'],
+              'isis-ui-components/dropdownNavigator/dropdownNavigator': ['angular-moment-js']
+          }
       } );
 
       // extlib paths are set now we can require our client
@@ -221,9 +228,9 @@ require(
         'angular-file-upload',
         'angular-growl',
 
-        'bower_components/isis-ui-components/dist/isis-ui-components.js',
-        'bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
-        'css!bower_components/isis-ui-components/dist/isis-ui-components.css',
+        '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
+        '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
+        'css!extlib/bower_components/isis-ui-components/dist/isis-ui-components.css',
 
 
         'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',

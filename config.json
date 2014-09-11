@@ -36,7 +36,7 @@
         "serverinfo": "./src/rest/serverInfo",
         "CyPhyApp" : "./src/client",
         "CyPhyMETA" : "./meta",
-        "bower_comopnents" : "./../bower_comopnents"
+        "bower_components" : "./../../../bower_components"
     },
 
     "test_paths": {
