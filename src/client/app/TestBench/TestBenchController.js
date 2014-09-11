@@ -54,7 +54,7 @@ define(['../../js/DesertFrontEnd',
             parameters: { },
             properties: { },
             metrics: { },
-            tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest')
+            tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest').to
         };
         self.tlsut = {
             id: null,
@@ -84,7 +84,7 @@ define(['../../js/DesertFrontEnd',
                     self.onImmediateChild(newNode);
                     self.update();
                 });
-                //configurationSetController(self, self.testBench.tlsutId);
+                configurationSetController(self, self.testBench.tlsutId);
             }).catch(function (reason) {
                 console.error(reason);
             });
