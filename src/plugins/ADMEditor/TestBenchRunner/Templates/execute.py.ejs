@@ -196,9 +196,9 @@ def import_design(mga_path, adm_file, testbench_config):
             logger.info('Creating DesignSpaceHelper')
             desert = win32com.client.Dispatch('MGA.Interpreter.DesignSpaceHelper')
             desert.Initialize(project)
-            logger.info('Calling InvokeEx')
-            selectedObjs = win32com.client.Dispatch('Mga.MgaFCOs')
-            desert.InvokeEx(project, design_mga, selectedObjs, 128)
+            logger.info('Calling ApplyConstraintsAndGenerateCWCs')
+            # selectedObjs = win32com.client.Dispatch('Mga.MgaFCOs')
+            desert.ApplyConstraintsAndGenerateCWCs(project, design_mga, False)
             configurations = design_mga.GetChildrenOfKind('Configurations')
             if configurations.Count == 0:
                 logger.warning('No Configurations found')
