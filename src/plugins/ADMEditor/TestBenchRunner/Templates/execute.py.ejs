@@ -104,7 +104,8 @@ def parse_xme_and_save_to_mga(file_name):
     logger.debug('Xme info :')
     logger.debug('  paradigm     : {0}'.format(paradigm))
     logger.debug('  paradigm_v   : {0}'.format(paradigm_v))
-    logger.debug('  paradigm_guid: {0}'.format(paradigm_guid))
+    import uuid
+    logger.debug('  paradigm_guid: {0}'.format(str(uuid.UUID(bytes_le=paradigm_guid))))
     logger.debug('  basename     : {0}'.format(basename))
     logger.debug('  version      : {0}'.format(version))
     if paradigm != 'CyPhyML':
@@ -195,10 +196,13 @@ def import_design(mga_path, adm_file, testbench_config):
             logger.info('Creating DesignSpaceHelper')
             desert = win32com.client.Dispatch('MGA.Interpreter.DesignSpaceHelper')
             desert.Initialize(project)
-            logger.info('Calling InvokeEx')
-            selectedObjs = win32com.client.Dispatch('Mga.MgaFCOs')
-            desert.InvokeEx(project, design_mga, selectedObjs, 128)
-            for cc in design_mga.GetChildrenOfKind('Configurations'):
+            logger.info('Calling ApplyConstraintsAndGenerateCWCs')
+            # selectedObjs = win32com.client.Dispatch('Mga.MgaFCOs')
+            desert.ApplyConstraintsAndGenerateCWCs(project, design_mga, False)
+            configurations = design_mga.GetChildrenOfKind('Configurations')
+            if configurations.Count == 0:
+                logger.warning('No Configurations found')
+            for cc in configurations:
                 logger.info('Found Configurations "{0}" inside design.'.format(cc.Name))
                 cfg_mgas = cc.GetChildrenOfKind('CWC')
                 for cfg_mga in cfg_mgas:
