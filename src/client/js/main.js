@@ -204,8 +204,7 @@ require(
         },
         shim: {
           'gme-services': ['angular'],
-          'CyPhyApp/js/services/CyPhyServices': ['angular']
-
+          'CyPhyApp/js/services/CyPhyServices': ['angular'],
           'angular-moment-js': ['angular', 'moment'],
           '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular-moment-js'],
           '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular']
@@ -226,13 +225,8 @@ require(
 
         'CyPhyApp/app/ServerInfoController',
         'CyPhyApp/app/MainNavigatorController',
-        'CyPhyApp/app/ServerInfoController',
         'gme-services',
         'CyPhyApp/js/services/CyPhyServices',
-        'angular-file-upload-shim',
-        'angular-file-upload',
-        'angular-growl',
-
         'angular-file-upload-shim',
         'angular-file-upload',
         'angular-growl',
