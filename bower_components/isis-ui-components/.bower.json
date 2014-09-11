@@ -1,0 +1,31 @@
+{
+  "name": "isis-ui-components",
+  "homepage": "https://github.com/vu-isis/isis-ui-components",
+  "authors": [
+    "Laszlo Juracz <laszlo.juracz@vanderbilt.edu>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular-dragdrop": "~1.0.7",
+    "angular-moment": "~0.8.2",
+    "angular-ui-sortable": "~0.12.11",
+    "moment": "~0.8.2"
+  },
+  "_release": "d83b92c757",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d83b92c75761b09fabce19ef20e935c595817042"
+  },
+  "_source": "git://github.com/vu-isis/isis-ui-components.git",
+  "_target": "*",
+  "_originalSource": "isis-ui-components",
+  "_direct": true
+}

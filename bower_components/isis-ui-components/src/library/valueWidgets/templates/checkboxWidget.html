@@ -1,0 +1,23 @@
+<div class="checkbox-widget"
+     ng-class="unresponsive? config.mode : ('col-lg-8 col-md-8 col-sm-8 col-xs-4 ' + config.mode)"
+     ng-switch on="config.mode">
+
+    <div ng-switch-when="display" class="pull-left" >
+        <div ng-switch on="value.value">
+            <div ng-switch-when="true" >
+                <i class="glyphicon glyphicon-ok"></i>
+            </div>
+            <div ng-switch-when="false" >
+                <i class="glyphicon glyphicon-remove"></i>
+            </div>
+        </div>
+
+    </div>
+    <div ng-switch-when="edit" class="pull-left">
+        <div class="btn-group btn-group-sm">
+            <label class="btn btn-sm btn-default" ng-model="value.value" btn-radio="true">Yes</label>
+            <label class="btn btn-sm btn-default" ng-model="value.value" btn-radio="false">No</label>
+        </div>
+    </div>
+
+</div>

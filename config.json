@@ -35,7 +35,8 @@
         "desert": "./src/rest/desert",
         "serverinfo": "./src/rest/serverInfo",
         "CyPhyApp" : "./src/client",
-        "CyPhyMETA" : "./meta"
+        "CyPhyMETA" : "./meta",
+        "bower_comopnents" : "./../bower_comopnents"
     },
 
     "test_paths": {

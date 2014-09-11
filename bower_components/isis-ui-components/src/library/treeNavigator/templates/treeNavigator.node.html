@@ -1,0 +1,9 @@
+<li title="{{ node.label }}"
+    data-ng-class="{ 'expanded': isNodeExpanded(node),
+     'active-node': config.state.activeNode === node.id,
+     'selected-node': isNodeSelected(node)}">
+
+    <tree-navigator-node-label></tree-navigator-node-label>
+
+    <tree-navigator-node-list nodes="node.children" config="config"></tree-navigator-node-list>
+</li>

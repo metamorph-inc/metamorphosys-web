@@ -1,0 +1,16 @@
+<div class="create-new-item" class="row">
+
+    <accordion close-others="oneAtATime">
+        <accordion-group is-open="formConfig.expanded">
+            <accordion-heading class="new-item-heading">
+                <i class="glyphicon"
+                   ng-class="{'glyphicon-chevron-up': formConfig.expanded, 'glyphicon-plus': !formConfig.expanded}"></i>
+                {{formConfig.title}}
+            </accordion-heading>
+            <div class="form-content"
+                 ng-include="formConfig.itemTemplateUrl"
+                 ng-controller="formConfig.controller">
+            </div>
+        </accordion-group>
+    </accordion>
+</div>

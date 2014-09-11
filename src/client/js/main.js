@@ -221,6 +221,11 @@ require(
         'angular-file-upload',
         'angular-growl',
 
+        'bower_components/isis-ui-components/dist/isis-ui-components.js',
+        'bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
+        'css!bower_components/isis-ui-components/dist/isis-ui-components.css',
+
+
         'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
         'css!CyPhyApp/lib/angular-growl.min.css',
 

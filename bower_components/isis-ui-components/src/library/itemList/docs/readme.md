@@ -1,0 +1,1 @@
+`itemList` renders content as a list-group with extra options. Depends on jQuery UI (not bundled) if sortable option used.

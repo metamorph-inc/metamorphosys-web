@@ -1,0 +1,10 @@
+<div class="string-widget"
+     ng-class="unresponsive? config.mode : ('col-lg-3 col-md-4 col-sm-5 col-xs-12 ' + config.mode)"
+     ng-switch on="config.mode">
+
+    <div ng-switch-when="display">{{value.value}}</div>
+    <div ng-switch-when="edit">
+        <input type="text" class="form-control" placeholder="{{value.placeHolder}}" ng-model="value.value">
+    </div>
+
+</div>

@@ -1,7 +1,6 @@
 .idea
 
 node_modules
-bower_components
 
 # webgme temp files and directories
 server.log
