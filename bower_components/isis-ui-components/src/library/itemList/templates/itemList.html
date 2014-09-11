@@ -1,0 +1,18 @@
+<div class="item-list">
+    <div class="row" ng-if="config.newItemForm">
+        <item-list-new-item
+                form-config="listData.config.newItemForm"></item-list-new-item>
+    </div>
+    <div class="row" ng-if="config.filter">
+        <div class="item-list-filter">
+            <div class="panel-group">
+                <div class="">
+                    <filter-input config="config.filter" data="listData.items"></filter-input>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <list-item-group></list-item-group>
+    </div>
+</div>

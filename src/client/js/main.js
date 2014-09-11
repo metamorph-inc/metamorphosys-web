@@ -205,6 +205,10 @@ require(
         shim: {
           'gme-services': ['angular'],
           'CyPhyApp/js/services/CyPhyServices': ['angular']
+
+          'angular-moment-js': ['angular', 'moment'],
+          '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular-moment-js'],
+          '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular']
         }
       } );
 
@@ -220,24 +224,34 @@ require(
           'text!CyPhyMETA/ADMEditor_metaOnly.json',
           'CyPhyApp/js/SmartClient',
 
-          'isis-ui-components/dropdownNavigator/dropdownNavigator',
-          'CyPhyApp/app/MainNavigatorController',
-          'CyPhyApp/app/ServerInfoController',
-          'gme-services',
-          'CyPhyApp/js/services/CyPhyServices',
-          'angular-file-upload-shim',
-          'angular-file-upload',
-          'angular-growl',
+        'CyPhyApp/app/ServerInfoController',
+        'CyPhyApp/app/MainNavigatorController',
+        'CyPhyApp/app/ServerInfoController',
+        'gme-services',
+        'CyPhyApp/js/services/CyPhyServices',
+        'angular-file-upload-shim',
+        'angular-file-upload',
+        'angular-growl',
 
-          'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
-          'css!CyPhyApp/lib/angular-growl.min.css',
-          'css!CyPhyApp/styles/cyphy.css'
+        'angular-file-upload-shim',
+        'angular-file-upload',
+        'angular-growl',
+
+        '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
+        '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
+        'css!extlib/bower_components/isis-ui-components/dist/isis-ui-components.css',
+
+
+        'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
+        'css!CyPhyApp/lib/angular-growl.min.css',
+
+        'css!CyPhyApp/styles/cyphy.css'
+
       ],
       function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient,
-                   DropDownNavigator, MainNavigatorController, ServerInfoController ) {
+                    MainNavigatorController, ServerInfoController ) {
           // download angular and all plugins
           // create app
-
           var WebGMEApp = angular.module(
             'WebGMEApp', [
               'ngRoute',

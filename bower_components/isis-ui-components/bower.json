@@ -1,0 +1,26 @@
+{
+  "name": "isis-ui-components",
+  "version": "0.0.1",
+  "homepage": "https://github.com/vu-isis/isis-ui-components",
+  "authors": [
+    "Laszlo Juracz <laszlo.juracz@vanderbilt.edu>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "ui"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular-dragdrop": "~1.0.7",
+    "angular-moment": "~0.8.2",
+    "angular-ui-sortable": "~0.12.11",
+    "moment": "~0.8.2"
+  }
+}
