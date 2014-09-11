@@ -1,5 +1,32 @@
 This is a collection of Angular ui-components originally developed for WebGME.
 
+## Intsall
+
+```
+bower install isis-ui-components
+```
+
+## Use
+
+Include library and template scripts:
+
+```
+<script src="dist/isis-ui-components.js"></script>
+<script src="dist/isis-ui-components-templates.js"></script>
+```
+
+Include library CSS:
+
+```
+<link type="text/css" rel="stylesheet" href="dist/isis-ui-components.css">
+```
+
+## Requirements
+
+- jQuery UI (1.11.1)
+- Angular-ui-bootstrap (0.10.0)
+
+
 ## Development
 
 Key gulp tasks:

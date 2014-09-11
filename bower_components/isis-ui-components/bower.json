@@ -6,6 +6,10 @@
     "Laszlo Juracz <laszlo.juracz@vanderbilt.edu>"
   ],
   "license": "MIT",
+  "keywords": [
+    "angular",
+    "ui"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
