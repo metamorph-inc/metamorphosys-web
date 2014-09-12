@@ -116,6 +116,7 @@ define([], function () {
                         ]
                     },
                     {
+                        //label: 'Extra',
                         items: [
 
                             {

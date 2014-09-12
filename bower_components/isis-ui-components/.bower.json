@@ -22,14 +22,13 @@
     "angular-ui-sortable": "~0.12.11",
     "moment": "~0.8.2"
   },
-  "_release": "e34e91b258",
+  "_release": "d6f534c4bc",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "e34e91b258e4200d3cc8f30a77a2d60533cd366a"
+    "commit": "d6f534c4bc634330471f7382cc3d8e0c3b3e18d7"
   },
   "_source": "git://github.com/vu-isis/isis-ui-components.git",
   "_target": "*",
-  "_originalSource": "isis-ui-components",
-  "_direct": true
+  "_originalSource": "isis-ui-components"
 }
