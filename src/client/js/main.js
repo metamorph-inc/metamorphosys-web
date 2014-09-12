@@ -245,8 +245,7 @@ require(
           var WebGMEApp = angular.module( 'WebGMEApp',
             ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
               'angularFileUpload', 'angular-growl', 'ngAnimate',
-              'isis.ui.dropdownNavigator'
-              //'isis.ui.components'
+              'isis.ui.components'
             ] ).run(function($rootScope) {
               $rootScope.mainNavigator = { };
               $rootScope.appIsLoading = false;

@@ -90,7 +90,6 @@
             require([
                 'angular-route-styles',
                 'angular-ui-bootstrap',
-                'extlib/../../isis-ui-components/dropdownNavigator/dropdownNavigator',
                 'src/client/lib/angular-growl.min',
                 'src/client/lib/angular-file-upload',
                 'src/client/lib/angular-file-upload-shim.min',
@@ -99,13 +98,18 @@
                 'src/client/app/DesignSpace/DesignSpaceController',
                 'src/client/app/Workers/WorkersController',
                 'src/client/app/MainNavigatorController',
-                'src/client/lib/chance.min'], function(ngRouteStyles, ngBootstrap, DropDownNavigator,
+                'src/client/lib/chance.min',
+
+                '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
+                '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
+                'css!../extlib/bower_components/isis-ui-components/dist/isis-ui-components.css'
+                ], function(ngRouteStyles, ngBootstrap,
                                                        ngGrowl, ngFileUpload, ngFileUploadShim,
                                                        WorkspaceController, WorkspaceDetailsController, DesignSpaceController,
                                                        WorkersController, MainNavigatorController, Chance) {
                 "use strict";
                 var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment',
-                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.dropdownNavigator']).run(function($rootScope) {
+                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.components']).run(function($rootScope) {
                     $rootScope.mainNavigator = { };
                     $rootScope.appIsLoading = false;});
 
