@@ -8,8 +8,7 @@ define(['../../js/DesertFrontEnd',
         'xmljsonconverter'], function (DesertFrontEnd, Converter) {
     'use strict';
 
-    var configurationSetController,
-        TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService) {
+    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService, smartClient) {
             var self = this,
                 nodeId = $routeParams.id,
                 context = {
@@ -21,10 +20,12 @@ define(['../../js/DesertFrontEnd',
 
             self.$scope = $scope;
             self.DCSS = DesertCfgSetService;
+            self.growl = growl;
             self.testBench = {};
             self.NS = NodeService;
             self.context = context;
             self.meta = null;
+            self.smartClient = smartClient; //TODO: Remove me and use services instead
             console.log('Registering "initialize" event for NS.');
             self.NS.on(self.context, 'initialize', function (currentContext) {
                 self.context = currentContext;
@@ -62,6 +63,17 @@ define(['../../js/DesertFrontEnd',
         };
         self.$scope.testBench = self.testBench;
         self.$scope.tlsut = self.tlsut;
+        self.$scope.runTestBench = function (cfgId) {
+            self.growl.info('Started executing :', cfgId);
+            self.smartClient.runPlugin('TestBenchRunner', { activeNode: self.testBench.id, pluginConfig: {
+                'run': true,
+                'save': true,
+                'configurationPath': cfgId
+            }}, function (result) {
+                self.growl.info('Execution done!');
+                console.log(result);
+            });
+        };
         testBenchNode.onUpdate(function (id) {
             // this refers to the NodeObj.
             var newName = this.getAttribute('name'),
@@ -73,11 +85,7 @@ define(['../../js/DesertFrontEnd',
                 self.testBench.description = newDescr;
                 if (newTLSUT && newTLSUT !== self.testBench.tlsutId) {
                     self.testBench.tlsutId = newTLSUT;
-                    self.DCSS.addCfgSetsWatcher(self.context, self.testBench.tlsutId, self.getUpdateFn(self))
-                        .then(function (cfgSets) {
-                            self.testBench.cfgSets = cfgSets;
-                            self.update();
-                        });
+                    self.addTlsutWatcher(self.testBench.tlsutId);
                 }
                 self.update();
             }
@@ -97,12 +105,7 @@ define(['../../js/DesertFrontEnd',
                 });
                 //self.DCSS.logNodeServiceStatus(self.context);
                 if (self.testBench.tlsutId) {
-                    self.DCSS.addCfgSetsWatcher(self.context, self.testBench.tlsutId, self.getUpdateFn(self))
-                        .then(function (cfgSets) {
-                            self.tlsut.cfgSets = cfgSets;
-                            console.log('cfgSetsInController', cfgSets);
-                            self.update();
-                        });
+                    self.addTlsutWatcher(self.testBench.tlsutId);
                 }
             }).catch(function (reason) {
                 console.error(reason);
@@ -121,6 +124,33 @@ define(['../../js/DesertFrontEnd',
             node.onUnload(self.removePropertyType(self));
             node.onUpdate(self.updatePropertyType(self));
         }
+    };
+
+    TestBenchController.prototype.addTlsutWatcher = function (id) {
+        var self = this;
+
+        self.DCSS.addCfgSetsWatcher(self.context, id, self.getUpdateFn(self))
+            .then(function (tlsutData) {
+                var cfgSetId;
+                self.tlsut.cfgSets = tlsutData.cfgSets;
+                self.tlsut.name = tlsutData.name;
+                //console.log('cfgSetsInController', cfgSets);
+                self.update();
+                for (cfgSetId in self.tlsut.cfgSets) {
+                    if (self.tlsut.cfgSets.hasOwnProperty(cfgSetId)) {
+                        self.DCSS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
+                            .then(function (cfgSetData) {
+                                // This function should not be made here!
+                                // Can cfgSetData be before coming here?
+                                if (self.tlsut.cfgSets[cfgSetData.id]) {
+                                    self.tlsut.cfgSets[cfgSetData.id].cfgs = cfgSetData.cfgs;
+                                    self.update();
+                                }
+                            }
+                        );
+                    }
+                }
+            });
     };
 
     /**

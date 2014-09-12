@@ -8,7 +8,9 @@ define([], function () {
 
     angular.module('cyphy.services', ['gme.services'])
         .service('DesertCfgSetService', function ($q, NodeService) {
-            var watchers = {};
+            // What is the purpose of these? How to clean up? Are the nodes the keys?
+            var setWatchers = {},
+                cfgWatchers = {};
 
             this.logNodeServiceStatus = function (context) {
                 NodeService.logContextState(context);
@@ -16,45 +18,97 @@ define([], function () {
 
             this.addCfgSetsWatcher = function (context, designId, updateListener) {
                 var deferred = $q.defer(),
-                    contextWatchers;
-                contextWatchers = watchers[context.territoryId] || [];
-                contextWatchers.push(updateListener);
-                watchers[context] = contextWatchers;
+                    data = {
+                        name: null,
+                        id: designId,
+                        cfgSets: {}
+                    };
+                setWatchers[designId] = setWatchers[designId] || {};
+                setWatchers[designId][context.territoryId] = updateListener;
                 NodeService.getMetaNodes(context).then(function (meta) {
                     NodeService.loadNode2(context, designId)
                         .then(function (designNode) {
                             console.log('designNode: ', designNode);
+                            data.name = designNode.getAttribute('name');
                             designNode.loadChildren(context)
                                 .then(function (childNodes) {
-                                    var i,
-                                        cfgSets = {};
+                                    var i;
                                     for (i = 0; i < childNodes.length; i += 1) {
                                         if (childNodes[i].isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                            cfgSets[childNodes[i].getId()] = {
+                                            data.cfgSets[childNodes[i].getId()] = {
                                                 id: childNodes[i].getId(),
                                                 name: childNodes[i].getAttribute('name'),
-                                                cfgs: {}
+                                                cfgs: null
                                             };
                                         }
                                     }
-                                    console.log('cfgSets', cfgSets);
+                                    //console.log('cfgSets', cfgSets);
                                     designNode.onNewChildLoaded(context, function (newNode) {
-                                        var j,
-                                            cfgSetWasAdded = false;
+                                        var cfgSetWasAdded = false;
                                         if (newNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                            cfgSets[newNode.getId()] = {
+                                            data.cfgSets[newNode.getId()] = {
                                                 id: newNode.getId(),
                                                 name: newNode.getAttribute('name'),
-                                                cfgs: {}
+                                                cfgs: null
                                             };
                                         }
                                         if (cfgSetWasAdded) {
-                                            for (j = 0; j < contextWatchers.length; j += 1) {
-                                                contextWatchers[j]();
-                                            }
+                                            updateListener();
                                         }
                                     });
-                                    deferred.resolve(cfgSets);
+                                    deferred.resolve(data);
+                                });
+                            designNode.onUpdate(function (id) {
+                                var newName = this.getAttribute('name');
+                                if (newName !== data.name) {
+                                    data.name = newName;
+                                    updateListener();
+                                }
+                            });
+                        });
+                });
+                return deferred.promise;
+            };
+
+            this.addCfgsWatcher = function (context, cfgSetId, updateListener) {
+                var deferred = $q.defer(),
+                    data = {
+                        name: null,
+                        id: cfgSetId,
+                        cfgs: {}
+                    };
+                cfgWatchers[cfgSetId] = cfgWatchers[cfgSetId] || {};
+                cfgWatchers[cfgSetId][context.territoryId] = updateListener;
+                NodeService.getMetaNodes(context).then(function (meta) {
+                    NodeService.loadNode2(context, cfgSetId)
+                        .then(function (cfgSetNode) {
+                            console.log('cfgSetNode: ', cfgSetNode);
+                            data.name = cfgSetNode.getAttribute('name');
+                            cfgSetNode.loadChildren(context)
+                                .then(function (childNodes) {
+                                    var i;
+                                    for (i = 0; i < childNodes.length; i += 1) {
+                                        if (childNodes[i].isMetaTypeOf(meta.DesertConfiguration)) {
+                                            data.cfgs[childNodes[i].getId()] = {
+                                                id: childNodes[i].getId(),
+                                                name: childNodes[i].getAttribute('name')
+                                            };
+                                        }
+                                    }
+                                    //console.log('cfgSets', cfgSets);
+                                    cfgSetNode.onNewChildLoaded(context, function (newNode) {
+                                        var cfgWasAdded = false;
+                                        if (newNode.isMetaTypeOf(meta.DesertConfiguration)) {
+                                            data.cfgs[newNode.getId()] = {
+                                                id: newNode.getId(),
+                                                name: newNode.getAttribute('name')
+                                            };
+                                        }
+                                        if (cfgWasAdded) {
+                                            updateListener();
+                                        }
+                                    });
+                                    deferred.resolve(data);
                                 });
                         });
                 });
