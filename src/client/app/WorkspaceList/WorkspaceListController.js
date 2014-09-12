@@ -8,40 +8,44 @@
 define([], function () {
     'use strict';
 
-    var WorkspaceListController = function ($scope) {
+    var WorkspaceListController = function ($scope, Chance) {
+        var self = this,
+            i,
+            items = [],
+            itemGenerator,
+            config;
 
+        self.chance = Chance ? new Chance() : null;;
 
-        var i, items2 = [], itemGenerator2, config;
-
-        itemGenerator2 = function (id) {
+        itemGenerator = function (id) {
             return {
                 id         : id,
-                title      : 'List sub-item ' + id,
+                title      : self.chance.name(),
                 toolTip    : 'Open item',
-                description: 'This is description here',
+                description: self.chance.sentence(),
                 lastUpdated: {
-                    time: Date.now(),
-                    user: 'N/A'
+                    time: self.chance.date({year: (new Date()).getFullYear()}),
+                    user: self.chance.name()
 
                 },
                 stats      : [
                     {
-                        value    : id,
+                        value    : self.chance.integer({min: 0, max: 5000}),
                         tooltip  : 'Components',
                         iconClass: 'fa fa-puzzle-piece'
                     },
                     {
-                        value    : id,
+                        value    : self.chance.integer({min: 0, max: 50}),
                         tooltip  : 'Design Spaces',
                         iconClass: 'fa fa-cubes'
                     },
                     {
-                        value    : id,
+                        value    : self.chance.integer({min: 0, max: 500}),
                         tooltip  : 'Test benches',
                         iconClass: 'glyphicon glyphicon-saved'
                     },
                     {
-                        value    : id,
+                        value    : self.chance.integer({min: 0, max: 20}),
                         tooltip  : 'Requirements',
                         iconClass: 'fa fa-bar-chart-o'
                     }
@@ -51,8 +55,8 @@ define([], function () {
         };
 
 
-        for (i = 0; i < 20; i += 1) {
-            items2.push(itemGenerator2(i));
+        for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
+            items.push(itemGenerator(i));
         }
 
         config = {
@@ -139,7 +143,7 @@ define([], function () {
                         newItem.url = 'something';
                         newItem.toolTip = newItem.title;
 
-                        items2.push(newItem);
+                        items.push(newItem);
 
                         $scope.newItem = {};
 
@@ -155,7 +159,7 @@ define([], function () {
         };
 
         $scope.listData = {
-            items: items2
+            items: items
         };
 
         $scope.config = config;
