@@ -31,22 +31,22 @@ define([], function () {
                 stats      : [
                     {
                         value    : self.chance.integer({min: 0, max: 5000}),
-                        tooltip  : 'Components',
+                        toolTip  : 'Components',
                         iconClass: 'fa fa-puzzle-piece'
                     },
                     {
                         value    : self.chance.integer({min: 0, max: 50}),
-                        tooltip  : 'Design Spaces',
+                        toolTip  : 'Design Spaces',
                         iconClass: 'fa fa-cubes'
                     },
                     {
                         value    : self.chance.integer({min: 0, max: 500}),
-                        tooltip  : 'Test benches',
+                        toolTip  : 'Test benches',
                         iconClass: 'glyphicon glyphicon-saved'
                     },
                     {
                         value    : self.chance.integer({min: 0, max: 20}),
-                        tooltip  : 'Requirements',
+                        toolTip  : 'Requirements',
                         iconClass: 'fa fa-bar-chart-o'
                     }
                 ]

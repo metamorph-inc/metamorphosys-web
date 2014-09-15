@@ -6,8 +6,8 @@
     <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/black-tie/jquery-ui.css">
     <link type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="isis-ui-components-docs.css">
 
+    <link type="text/css" rel="stylesheet" href="isis-ui-components-docs.css">
     <link type="text/css" rel="stylesheet" href="../isis-ui-components.css">
 
 </head>
@@ -17,16 +17,31 @@
     <h1>isis.ui.components</h1>
 
     <section ng-repeat="component in components" id="{{ component.name }}">
-        <div class="page-header"><h1>{{ component.name }} <small>(isis.ui.{{ component.name }})</small></h1></div>
+        <div class="page-header">
+            <h1>{{ component.name }}
+                <small>(isis.ui.{{ component.name }})</small>
+            </h1>
+        </div>
 
         <div class="row">
             <div class="col-md-6 show-grid" ng-include="component.template">
 
             </div>
             <div btf-markdown class="col-md-6" ng-include="component.docs">
-
             </div>
         </div>
+            <div class="row">
+                <tabset clas="col-md-12" ng-if="component.sources">
+                    <tab ng-repeat="sourceFile in component.sources"
+                         heading="{{sourceFile.fileName}}">
+                        <div data-ng-include="sourceFile.templateUrl"
+                             ui-codemirror
+                             ui-codemirror-opts="codeViewerOptions"
+                                ></div>
+                    </tab>
+                </tabset>
+            </div>
+
     </section>
 
 </div>

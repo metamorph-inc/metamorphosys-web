@@ -14,7 +14,7 @@
     "gulp-livereload": "^2.1.1",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.3",
-    "moment": "^2.8.3",
+    "moment": "^2.8.2",
     "ng-sortable": "0.0.3",
     "path": "^0.4.9",
     "process": "^0.7.0",
@@ -24,18 +24,22 @@
     "angular-markdown-directive": "^0.3.0",
     "angular-sanitize": "0.0.1",
     "browserify-shim": "^3.7.0",
-    "moment": "^2.8.2"
+    "cssify": "~0.6.0",
+    "code-mirror": "~3.22.0"
   },
   "browserify": {
     "transform": [
-      "browserify-shim"
+      "browserify-shim",
+      "cssify"
     ]
   },
   "browser": {
     "showdown": "./vendor/showdown_for_browserify.js",
     "angular-dragdrop": "./bower_components/angular-dragdrop/src/angular-dragdrop.min.js",
     "angular-ui-sortable": "./bower_components/angular-ui-sortable/sortable.min.js",
-    "angular-moment": "./bower_components/angular-moment/angular-moment.min.js"
+    "angular-moment": "./bower_components/angular-moment/angular-moment.min.js",
+    "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
+    "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js"
   },
   "browserify-shim": {
     "showdown": "Showdown",
