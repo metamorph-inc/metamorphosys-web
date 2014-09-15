@@ -8,7 +8,7 @@ define(['../../js/DesertFrontEnd',
         'xmljsonconverter'], function (DesertFrontEnd, Converter) {
     'use strict';
 
-    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService, smartClient) {
+    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService, smartClient, Chance) {
             var self = this,
                 nodeId = $routeParams.id,
                 context = {
@@ -24,29 +24,132 @@ define(['../../js/DesertFrontEnd',
             self.NS = NodeService;
             self.context = context;
             self.meta = null;
-            self.smartClient = smartClient; //TODO: Remove me and use services instead
-            self.NS.on(self.context, 'initialize', function (currentContext) {
-                self.context = currentContext;
-                console.log('NodeService initialized for context: ', self.context);
-                self.context.regionId = 'TestBenchController';
-                self.NS.getMetaNodes(self.context)
-                    .then(function (metaNodes) {
-                        self.meta = metaNodes;
-                        self.NS.loadNode(self.context, nodeId)
-                            .then(function (node) {
-                                self.initialize(node);
-                            });
-                    }).catch(function (reason) {
-                        console.error(reason);
-                    });
-            });
-            self.$scope.$on('$destroy', function () {
-                // Clean up spawned regions
-                self.DCSS.cleanUp(context);
-                // Clean up 'TestBenchController' region.
-                self.NS.cleanUpRegion(context);
-                self.NS.logContext(context);
-            });
+            if (smartClient) {
+                self.smartClient = smartClient; //TODO: Remove me and use services instead
+                self.NS.on(self.context, 'initialize', function (currentContext) {
+                    self.context = currentContext;
+                    console.log('NodeService initialized for context: ', self.context);
+                    self.context.regionId = 'TestBenchController';
+                    self.NS.getMetaNodes(self.context)
+                        .then(function (metaNodes) {
+                            self.meta = metaNodes;
+                            self.NS.loadNode(self.context, nodeId)
+                                .then(function (node) {
+                                    self.initialize(node);
+                                });
+                        }).catch(function (reason) {
+                            console.error(reason);
+                        });
+                });
+                self.$scope.$on('$destroy', function () {
+                    // Clean up spawned regions
+                    self.DCSS.cleanUp(context);
+                    // Clean up 'TestBenchController' region.
+                    self.NS.cleanUpRegion(context);
+                    self.NS.logContext(context);
+                });
+            } else {
+                var i,
+                    itemGenerator;
+
+                self.$scope.listData = {
+                    items: []
+                };
+                self.$scope.config = {
+
+                    sortable          : false,
+                    secondaryItemMenu : true,
+                    detailsCollapsible: true,
+                    showDetailsLabel  : 'Show details',
+                    hideDetailsLabel  : 'Hide details',
+
+                    // Event handlers
+
+                    itemSort: function (jQEvent, ui) {
+                        console.log('Sort happened', jQEvent, ui);
+                    },
+
+                    itemClick: function (event, item) {
+                        console.log('Clicked: ' + item);
+                        //document.location.hash = '/workspaceDetails//' + item.id;
+                    },
+
+                    itemContextmenuRenderer: function (e, item) {
+                        console.log('Contextmenu was triggered for node:', item);
+
+                        return [
+                            {
+                                items: [
+                                    {
+                                        id: 'runAllConfigurations',
+                                        label: 'Run all configurations',
+                                        disabled: false,
+                                        iconClass: 'glyphicon glyphicon-edit',
+                                        actionData: { id: item.id },
+                                        action: function (data) {
+                                            console.log(data);
+                                        }
+                                    }
+                                ]
+                            }
+//                            },
+//                            {
+//                                //label: 'Extra',
+//                                items: [
+//
+//                                    {
+//                                        id       : 'delete',
+//                                        label    : 'Delete',
+//                                        disabled : false,
+//                                        iconClass: 'fa fa-plus'
+//                                    }
+//                                ]
+//                            }
+                        ];
+                    },
+
+                    detailsRenderer: function (item) {
+                        item.details = 'My details are here now!';
+                    },
+
+                    filter: {
+                    }
+
+                };
+
+                self.chance = Chance ? new Chance() : null;
+
+                itemGenerator = function (id) {
+                    return {
+                        id         : id,
+                        title      : self.chance.name(),
+                        toolTip    : 'Open item',
+                        description: self.chance.sentence(),
+                        lastUpdated: {
+                            time: self.chance.date({year: (new Date()).getFullYear()}),
+                            user: self.chance.name()
+
+                        },
+                        stats      : [
+                            {
+                                value    : self.chance.integer({min: 0, max: 5000}),
+                                toolTip  : 'Configuration',
+                                iconClass: 'fa fa-puzzle-piece'
+                            }
+                        ],
+                        details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.',
+                        detailsTemplateUrl: 'details.html'
+
+                    };
+                };
+
+
+                for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
+                    self.$scope.listData.items.push(itemGenerator(i));
+                }
+
+                self.update();
+            }
         };
 
     TestBenchController.prototype.initialize = function (testBenchNode) {

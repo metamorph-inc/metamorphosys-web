@@ -55,4 +55,16 @@
         </li>
     </ul>
 </div>
+
+
+    <script type="text/ng-template" id="details.html">
+        <div>
+            {{ listData.items[$index].id }} {{ listData.items[$index].title }}
+        </div>
+    </script>
+
+    <div class="tlsut-item-list">
+        <item-list list-data="listData" config="config" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"></item-list>
+    </div>
+
 </article>

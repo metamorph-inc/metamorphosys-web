@@ -90,22 +90,30 @@
             require([
                 'angular-route-styles',
                 'angular-ui-bootstrap',
-                'extlib/../../isis-ui-components/dropdownNavigator/dropdownNavigator',
                 'src/client/lib/angular-growl.min',
                 'src/client/lib/angular-file-upload',
                 'src/client/lib/angular-file-upload-shim.min',
                 'src/client/app/workspace/WorkspaceController',
+                'src/client/app/WorkspaceList/WorkspaceListController',
                 'src/client/app/WorkspaceDetails/WorkspaceDetailsController',
                 'src/client/app/DesignSpace/DesignSpaceController',
+                'src/client/app/TestBench/TestBenchController',
                 'src/client/app/Workers/WorkersController',
                 'src/client/app/MainNavigatorController',
-                'src/client/lib/chance.min'], function(ngRouteStyles, ngBootstrap, DropDownNavigator,
+                'src/client/lib/chance.min',
+
+                '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
+                '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
+                'css!../extlib/bower_components/isis-ui-components/dist/isis-ui-components.css'
+                ], function(ngRouteStyles, ngBootstrap,
                                                        ngGrowl, ngFileUpload, ngFileUploadShim,
-                                                       WorkspaceController, WorkspaceDetailsController, DesignSpaceController,
-                                                       WorkersController, MainNavigatorController, Chance) {
+                                                       WorkspaceController, WorkspaceListController,
+                                                       WorkspaceDetailsController, DesignSpaceController,
+                                                       TestBenchController, WorkersController,
+                                                       MainNavigatorController, Chance) {
                 "use strict";
                 var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment',
-                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.dropdownNavigator']).run(function($rootScope) {
+                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.components']).run(function($rootScope) {
                     $rootScope.mainNavigator = { };
                     $rootScope.appIsLoading = false;});
 
@@ -131,9 +139,14 @@
                 });
                 WebGMEApp.controller('MainNavigatorController', MainNavigatorController);
                 WebGMEApp.controller('WorkspaceController', WorkspaceController);
+                WebGMEApp.controller('WorkspaceListController', WorkspaceListController);
                 WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
                 WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
+                WebGMEApp.controller('TestBenchController', TestBenchController);
                 WebGMEApp.controller('WorkersController', WorkersController);
+
+                WebGMEApp.service('NodeService', function () {});
+                WebGMEApp.service('DesertCfgSetService', function () {});
 
                 WebGMEApp.config(['growlProvider', function(growlProvider) {
                     growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
@@ -146,6 +159,11 @@
                                     css: 'app/workspace/styles/Workspace.css',
                                     controller: 'WorkspaceController'
                                 }).
+                                when('/workspaceList', {
+                                         templateUrl: 'app/WorkspaceList/views/WorkspaceListView.html',
+                                         //css: 'app/workspace/styles/Workspace.css',
+                                         controller: 'WorkspaceListController'
+                                     }).
                                 when('/edit', {
                                     templateUrl: 'app/workspace/views/WorkspaceEditFields.html'
                                 }).
@@ -164,6 +182,14 @@
                                 }).
                                 when('/designSpace', {
                                     redirectTo: '/designSpace//1'
+                                }).
+                                when('/testBench/:id*', {
+                                    templateUrl: 'app/TestBench/views/TestBenchView.html',
+                                    css: 'app/TestBench/styles/TestBench.css',
+                                    controller: 'TestBenchController'
+                                }).
+                                when('/testBench', {
+                                    redirectTo: '/testBench//1'
                                 }).
                                 when('/workers', {
                                     templateUrl: 'app/Workers/views/WorkersView.html',
@@ -189,8 +215,10 @@
 <!--<div data-ng-include="'app/workspace/views/WorkspaceView.html'"></div>-->
 <div class="btn-group">
     <button onclick="location.href='#/workspace';"  type="button" class="btn btn-default">workspace</button>
+    <button onclick="location.href='#/workspaceList';"  type="button" class="btn btn-default">workspace list</button>
     <button onclick="location.href='#/workspaceDetails';"  type="button" class="btn btn-default">workspace details</button>
     <button onclick="location.href='#/designSpace';"  type="button" class="btn btn-default">design space</button>
+    <button onclick="location.href='#/testBench';"  type="button" class="btn btn-default">test bench</button>
     <button onclick="location.href='#/workers';"  type="button" class="btn btn-default">workers</button>
     <button onclick="location.href='#/edit';"  type="button" class="btn btn-default">workspace edit</button>
 </div>

@@ -23,6 +23,7 @@ var
     ],
     docsTemplates: [
       'src/**/docs/*.html',
+      'src/**/docs/*.js',
       'src/**/docs/readme.md'
     ],
     docsStyles: [
