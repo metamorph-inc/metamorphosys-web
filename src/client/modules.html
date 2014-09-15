@@ -97,6 +97,7 @@
                 'src/client/app/WorkspaceList/WorkspaceListController',
                 'src/client/app/WorkspaceDetails/WorkspaceDetailsController',
                 'src/client/app/DesignSpace/DesignSpaceController',
+                'src/client/app/TestBench/TestBenchController',
                 'src/client/app/Workers/WorkersController',
                 'src/client/app/MainNavigatorController',
                 'src/client/lib/chance.min',
@@ -108,7 +109,8 @@
                                                        ngGrowl, ngFileUpload, ngFileUploadShim,
                                                        WorkspaceController, WorkspaceListController,
                                                        WorkspaceDetailsController, DesignSpaceController,
-                                                       WorkersController, MainNavigatorController, Chance) {
+                                                       TestBenchController, WorkersController,
+                                                       MainNavigatorController, Chance) {
                 "use strict";
                 var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment',
                     'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.components']).run(function($rootScope) {
@@ -140,7 +142,11 @@
                 WebGMEApp.controller('WorkspaceListController', WorkspaceListController);
                 WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
                 WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
+                WebGMEApp.controller('TestBenchController', TestBenchController);
                 WebGMEApp.controller('WorkersController', WorkersController);
+
+                WebGMEApp.service('NodeService', function () {});
+                WebGMEApp.service('DesertCfgSetService', function () {});
 
                 WebGMEApp.config(['growlProvider', function(growlProvider) {
                     growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
@@ -177,6 +183,14 @@
                                 when('/designSpace', {
                                     redirectTo: '/designSpace//1'
                                 }).
+                                when('/testBench/:id*', {
+                                    templateUrl: 'app/TestBench/views/TestBenchView.html',
+                                    css: 'app/TestBench/styles/TestBench.css',
+                                    controller: 'TestBenchController'
+                                }).
+                                when('/testBench', {
+                                    redirectTo: '/testBench//1'
+                                }).
                                 when('/workers', {
                                     templateUrl: 'app/Workers/views/WorkersView.html',
                                     css: 'app/Workers/styles/Workers.css',
@@ -204,6 +218,7 @@
     <button onclick="location.href='#/workspaceList';"  type="button" class="btn btn-default">workspace list</button>
     <button onclick="location.href='#/workspaceDetails';"  type="button" class="btn btn-default">workspace details</button>
     <button onclick="location.href='#/designSpace';"  type="button" class="btn btn-default">design space</button>
+    <button onclick="location.href='#/testBench';"  type="button" class="btn btn-default">test bench</button>
     <button onclick="location.href='#/workers';"  type="button" class="btn btn-default">workers</button>
     <button onclick="location.href='#/edit';"  type="button" class="btn btn-default">workspace edit</button>
 </div>
