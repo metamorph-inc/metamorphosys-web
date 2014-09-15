@@ -94,6 +94,11 @@ define(['../../js/DesertFrontEnd',
                     self.addTlsutWatcher(self.testBench.tlsutId);
                 } else if (!newTLSUT) {
                     self.DCSS.cleanUp(self.context);
+                    self.tlsut = {
+                        name: 'N/A',
+                        cfgSets: { }
+                    };
+                    self.NS.logContext(self.context);
                 }
                 self.update();
             }
