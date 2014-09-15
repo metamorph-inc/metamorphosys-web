@@ -24,6 +24,7 @@ define(['../../js/DesertFrontEnd',
             self.NS = NodeService;
             self.context = context;
             self.meta = null;
+            self.initListItems();
             if (smartClient) {
                 self.smartClient = smartClient; //TODO: Remove me and use services instead
                 self.NS.on(self.context, 'initialize', function (currentContext) {
@@ -52,71 +53,6 @@ define(['../../js/DesertFrontEnd',
                 var i,
                     itemGenerator;
 
-                self.$scope.listData = {
-                    items: []
-                };
-                self.$scope.config = {
-
-                    sortable          : false,
-                    secondaryItemMenu : true,
-                    detailsCollapsible: true,
-                    showDetailsLabel  : 'Show details',
-                    hideDetailsLabel  : 'Hide details',
-
-                    // Event handlers
-
-                    itemSort: function (jQEvent, ui) {
-                        console.log('Sort happened', jQEvent, ui);
-                    },
-
-                    itemClick: function (event, item) {
-                        console.log('Clicked: ' + item);
-                        //document.location.hash = '/workspaceDetails//' + item.id;
-                    },
-
-                    itemContextmenuRenderer: function (e, item) {
-                        console.log('Contextmenu was triggered for node:', item);
-
-                        return [
-                            {
-                                items: [
-                                    {
-                                        id: 'runAllConfigurations',
-                                        label: 'Run all configurations',
-                                        disabled: false,
-                                        iconClass: 'glyphicon glyphicon-edit',
-                                        actionData: { id: item.id },
-                                        action: function (data) {
-                                            console.log(data);
-                                        }
-                                    }
-                                ]
-                            }
-//                            },
-//                            {
-//                                //label: 'Extra',
-//                                items: [
-//
-//                                    {
-//                                        id       : 'delete',
-//                                        label    : 'Delete',
-//                                        disabled : false,
-//                                        iconClass: 'fa fa-plus'
-//                                    }
-//                                ]
-//                            }
-                        ];
-                    },
-
-                    detailsRenderer: function (item) {
-                        item.details = 'My details are here now!';
-                    },
-
-                    filter: {
-                    }
-
-                };
-
                 self.chance = Chance ? new Chance() : null;
 
                 itemGenerator = function (id) {
@@ -142,7 +78,6 @@ define(['../../js/DesertFrontEnd',
 
                     };
                 };
-
 
                 for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
                     self.$scope.listData.items.push(itemGenerator(i));
@@ -248,24 +183,47 @@ define(['../../js/DesertFrontEnd',
 
         self.DCSS.addCfgSetsWatcher(self.context, id, self.getUpdateFn(self))
             .then(function (tlsutData) {
-                var cfgSetId;
+                var cfgSetId,
+                    getNewItem;
                 self.tlsut.cfgSets = tlsutData.cfgSets;
                 self.tlsut.name = tlsutData.name;
-                //console.log('cfgSetsInController', cfgSets);
                 self.update();
+                getNewItem = function (id) {
+                    return {
+                        id         : id,
+                        title      : tlsutData.cfgSets[id].name,
+                        toolTip    : 'Open item',
+                        description: tlsutData.cfgSets[id].description,
+//                        lastUpdated: {
+//                            time: self.chance.date({year: (new Date()).getFullYear()}),
+//                            user: self.chance.name()
+//                        },
+//                        stats      : [
+//                            {
+//                                value    : self.chance.integer({min: 0, max: 5000}),
+//                                toolTip  : 'Configuration',
+//                                iconClass: 'fa fa-puzzle-piece'
+//                            }
+//                        ],
+                        details    : 'Configurations',
+                        detailsTemplateUrl: 'details.html'
+                    };
+                };
                 for (cfgSetId in self.tlsut.cfgSets) {
                     if (self.tlsut.cfgSets.hasOwnProperty(cfgSetId)) {
-                        self.DCSS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
-                            .then(function (cfgSetData) {
-                                // This function should not be made here!
-                                // Can cfgSetData be before coming here?
-                                if (self.tlsut.cfgSets[cfgSetData.id]) {
-                                    self.tlsut.cfgSets[cfgSetData.id].cfgs = cfgSetData.cfgs;
-                                    self.update();
-                                }
-                            });
+                        self.$scope.listData.items.push(getNewItem(cfgSetId));
+//                        self.DCSS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
+//                            .then(function (cfgSetData) {
+//                                // This function should not be made here!
+//                                // Can cfgSetData be before coming here?
+//                                if (self.tlsut.cfgSets[cfgSetData.id]) {
+//                                    self.tlsut.cfgSets[cfgSetData.id].cfgs = cfgSetData.cfgs;
+//                                    self.update();
+//                                }
+//                            });
                     }
                 }
+                self.update();
             });
     };
 
@@ -424,6 +382,74 @@ define(['../../js/DesertFrontEnd',
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
         }
+    };
+
+    TestBenchController.prototype.initListItems = function () {
+        var self = this;
+        self.$scope.config = {
+
+            sortable          : false,
+            secondaryItemMenu : true,
+            detailsCollapsible: true,
+            showDetailsLabel  : 'Show details',
+            hideDetailsLabel  : 'Hide details',
+
+            // Event handlers
+
+            itemSort: function (jQEvent, ui) {
+                console.log('Sort happened', jQEvent, ui);
+            },
+
+            itemClick: function (event, item) {
+                console.log('Clicked: ' + item);
+                //document.location.hash = '/workspaceDetails//' + item.id;
+            },
+
+            itemContextmenuRenderer: function (e, item) {
+                console.log('Contextmenu was triggered for node:', item);
+
+                return [
+                    {
+                        items: [
+                            {
+                                id: 'runAllConfigurations',
+                                label: 'Run all configurations',
+                                disabled: false,
+                                iconClass: 'glyphicon glyphicon-edit',
+                                actionData: { id: item.id },
+                                action: function (data) {
+                                    console.log(data);
+                                }
+                            }
+                        ]
+                    }
+//                            },
+//                            {
+//                                //label: 'Extra',
+//                                items: [
+//
+//                                    {
+//                                        id       : 'delete',
+//                                        label    : 'Delete',
+//                                        disabled : false,
+//                                        iconClass: 'fa fa-plus'
+//                                    }
+//                                ]
+//                            }
+                ];
+            },
+
+            detailsRenderer: function (item) {
+                item.details = 'My details are here now!';
+            },
+
+            filter: {
+            }
+
+        };
+        self.$scope.listData = {
+            items: []
+        };
     };
 
     return TestBenchController;

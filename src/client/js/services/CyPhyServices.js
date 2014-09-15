@@ -40,6 +40,7 @@ define([], function () {
                                             data.cfgSets[childNodes[i].getId()] = {
                                                 id: childNodes[i].getId(),
                                                 name: childNodes[i].getAttribute('name'),
+                                                description: childNodes[i].getAttribute('INFO'),
                                                 cfgs: null
                                             };
                                         }
@@ -51,6 +52,7 @@ define([], function () {
                                             data.cfgSets[newNode.getId()] = {
                                                 id: newNode.getId(),
                                                 name: newNode.getAttribute('name'),
+                                                description: newNode.getAttribute('INFO'),
                                                 cfgs: null
                                             };
                                         }

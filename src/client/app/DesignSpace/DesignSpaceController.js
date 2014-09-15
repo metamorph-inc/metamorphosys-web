@@ -337,6 +337,7 @@ define(['../../js/DesertFrontEnd',
             cfgPath,
             aa,
             cfgCnt = 0,
+            timeStamp = new Date().toString(),
             cfg;
 
         // Create the configuration set node.
@@ -347,7 +348,8 @@ define(['../../js/DesertFrontEnd',
         if (name) {
             self.smartClient.client.setAttributes(cfgSetPath, 'name', name, '[WebCyPhy] - DesertCfg was named: ' + name);
         }
-
+        self.smartClient.client.setAttributes(cfgSetPath, 'INFO', timeStamp,
+                '[WebCyPhy] - DesertCfg got new INFO: ' + timeStamp);
         self.growl.info('Created new DesertConfigurationSet in model. Adding configurations..');
         // Go through cfgs and for the selected ones add new configuration nodes.
         for (key in self.$scope.desert.cfgs) {
@@ -457,6 +459,7 @@ define(['../../js/DesertFrontEnd',
                         disabled: false,
                         iconClass: 'glyphicon glyphicon-floppy-save',
                         action: function () {
+                            self.growl.info('Saving configurations...');
                             if (!self.$scope.desert) {
                                 self.growl.error('Nothing to save.');
                                 return;
