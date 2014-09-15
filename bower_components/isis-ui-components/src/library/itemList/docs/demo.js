@@ -163,7 +163,7 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
       stats: [
         {
           value: id,
-          tooltip: 'Orders',
+          toolTip: 'Orders',
           iconClass: 'fa fa-cubes'
         }
       ],
