@@ -14,8 +14,7 @@ define(['../../js/DesertFrontEnd',
                 context = {
                     db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
                     projectId: 'ADMEditor',
-                    branchId: 'master',
-                    territoryId: 'TestBenchController'
+                    branchId: 'master'
                 };
 
             self.$scope = $scope;
@@ -26,21 +25,27 @@ define(['../../js/DesertFrontEnd',
             self.context = context;
             self.meta = null;
             self.smartClient = smartClient; //TODO: Remove me and use services instead
-            console.log('Registering "initialize" event for NS.');
             self.NS.on(self.context, 'initialize', function (currentContext) {
                 self.context = currentContext;
-                self.context.territoryId = 'TestBenchController';
-                console.log('NS initialized...', self.context);
+                console.log('NodeService initialized for context: ', self.context);
+                self.context.regionId = 'TestBenchController';
                 self.NS.getMetaNodes(self.context)
                     .then(function (metaNodes) {
                         self.meta = metaNodes;
-                        self.NS.loadNode2(self.context, nodeId)
+                        self.NS.loadNode(self.context, nodeId)
                             .then(function (node) {
                                 self.initialize(node);
                             });
                     }).catch(function (reason) {
                         console.error(reason);
                     });
+            });
+            self.$scope.$on('$destroy', function () {
+                // Clean up spawned regions
+                self.DCSS.cleanUp(context);
+                // Clean up 'TestBenchController' region.
+                self.NS.cleanUpRegion(context);
+                self.NS.logContext(context);
             });
         };
 
@@ -85,7 +90,10 @@ define(['../../js/DesertFrontEnd',
                 self.testBench.description = newDescr;
                 if (newTLSUT && newTLSUT !== self.testBench.tlsutId) {
                     self.testBench.tlsutId = newTLSUT;
+                    self.DCSS.cleanUp(self.context);
                     self.addTlsutWatcher(self.testBench.tlsutId);
+                } else if (!newTLSUT) {
+                    self.DCSS.cleanUp(self.context);
                 }
                 self.update();
             }
@@ -103,10 +111,11 @@ define(['../../js/DesertFrontEnd',
                     self.onImmediateChild(newNode);
                     self.update();
                 });
-                //self.DCSS.logNodeServiceStatus(self.context);
+
                 if (self.testBench.tlsutId) {
                     self.addTlsutWatcher(self.testBench.tlsutId);
                 }
+                self.NS.logContext(self.context);
             }).catch(function (reason) {
                 console.error(reason);
             });
@@ -146,8 +155,7 @@ define(['../../js/DesertFrontEnd',
                                     self.tlsut.cfgSets[cfgSetData.id].cfgs = cfgSetData.cfgs;
                                     self.update();
                                 }
-                            }
-                        );
+                            });
                     }
                 }
             });

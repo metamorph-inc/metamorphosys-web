@@ -8,27 +8,29 @@ define([], function () {
 
     angular.module('cyphy.services', ['gme.services'])
         .service('DesertCfgSetService', function ($q, NodeService) {
-            // What is the purpose of these? How to clean up? Are the nodes the keys?
-            var setWatchers = {},
-                cfgWatchers = {};
+            var watchers = {};
 
-            this.logNodeServiceStatus = function (context) {
-                NodeService.logContextState(context);
-            };
-
-            this.addCfgSetsWatcher = function (context, designId, updateListener) {
+            this.addCfgSetsWatcher = function (pContext, designId, updateListener) {
                 var deferred = $q.defer(),
                     data = {
                         name: null,
                         id: designId,
                         cfgSets: {}
+                    },
+                    context = {
+                        db: pContext.db,
+                        projectId: pContext.projectId,
+                        branchId: pContext.branchId,
+                        regionId: pContext.regionId + '_cfgSetsWatcher_' + designId
                     };
-                setWatchers[designId] = setWatchers[designId] || {};
-                setWatchers[designId][context.territoryId] = updateListener;
+                watchers[pContext.regionId] = watchers[pContext.regionId] || {};
+                watchers[pContext.regionId][context.regionId] = context;
+                console.log('Added new watcher: ', watchers);
+                NodeService.logContext(context);
                 NodeService.getMetaNodes(context).then(function (meta) {
-                    NodeService.loadNode2(context, designId)
+                    NodeService.loadNode(context, designId)
                         .then(function (designNode) {
-                            console.log('designNode: ', designNode);
+                            //console.log('designNode: ', designNode);
                             data.name = designNode.getAttribute('name');
                             designNode.loadChildren(context)
                                 .then(function (childNodes) {
@@ -70,19 +72,27 @@ define([], function () {
                 return deferred.promise;
             };
 
-            this.addCfgsWatcher = function (context, cfgSetId, updateListener) {
+            this.addCfgsWatcher = function (pContext, cfgSetId, updateListener) {
                 var deferred = $q.defer(),
                     data = {
                         name: null,
                         id: cfgSetId,
                         cfgs: {}
+                    },
+                    context = {
+                        db: pContext.db,
+                        projectId: pContext.projectId,
+                        branchId: pContext.branchId,
+                        regionId: pContext.regionId + '_cfgsWatcher_' + cfgSetId
                     };
-                cfgWatchers[cfgSetId] = cfgWatchers[cfgSetId] || {};
-                cfgWatchers[cfgSetId][context.territoryId] = updateListener;
+                watchers[pContext.regionId] = watchers[pContext.regionId] || {};
+                watchers[pContext.regionId][context.regionId] = context;
+                console.log('Added new watcher: ', watchers);
+                NodeService.logContext(context);
                 NodeService.getMetaNodes(context).then(function (meta) {
-                    NodeService.loadNode2(context, cfgSetId)
+                    NodeService.loadNode(context, cfgSetId)
                         .then(function (cfgSetNode) {
-                            console.log('cfgSetNode: ', cfgSetNode);
+                            //console.log('cfgSetNode: ', cfgSetNode);
                             data.name = cfgSetNode.getAttribute('name');
                             cfgSetNode.loadChildren(context)
                                 .then(function (childNodes) {
@@ -113,6 +123,22 @@ define([], function () {
                         });
                 });
                 return deferred.promise;
+            };
+
+            this.cleanUp = function (pContext) {
+                var childWatchers,
+                    key;
+                if (watchers[pContext.regionId]) {
+                    childWatchers = watchers[pContext.regionId];
+                    for (key in childWatchers) {
+                        if (childWatchers.hasOwnProperty(key)) {
+                            NodeService.cleanUpRegion(childWatchers[key]);
+                        }
+                    }
+                    delete watchers[pContext.regionId];
+                } else {
+                    console.log('Nothing to clean-up..');
+                }
             };
         });
 });
