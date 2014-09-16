@@ -147,7 +147,8 @@ define(['../../js/DesertFrontEnd',
                 self.update();
             }
         });
-
+        self.$scope.mainNavigator.items = self.getNavigatorStructure(testBenchNode);
+        self.$scope.mainNavigator.separator = true;
         self.update();
         testBenchNode.loadChildren(self.context)
             .then(function (childNodes) {
@@ -370,14 +371,6 @@ define(['../../js/DesertFrontEnd',
         };
     };
 
-    TestBenchController.prototype.getUpdateFn = function (self) {
-        return function () {
-            if (!self.$scope.$$phase) {
-                self.$scope.$apply();
-            }
-        };
-    };
-
     TestBenchController.prototype.update = function () {
         if (!this.$scope.$$phase) {
             this.$scope.$apply();
@@ -450,6 +443,72 @@ define(['../../js/DesertFrontEnd',
         self.$scope.listData = {
             items: []
         };
+    };
+
+    TestBenchController.prototype.getNavigatorStructure = function (tbNode) {
+        var self = this,
+            firstMenu,
+            secondMenu,
+            parentNode,
+            thirdMenu;
+//            getWorkSpaceNode = function (parentPromise) {
+//                parentPromise.then(function (parentNode) {
+//                    if (parentNode.isMetaTypeOf(self.meta.WorkSpace)) {
+//                        return parentPromise;
+//                    }
+//                    return getWorkSpaceNode(parentNode.getParentNode());
+//                });
+//            };
+        //TODO: Implement getParent node in NodeService
+//        tbNode.getParentNode().then(function(parentNode) {
+//            console.warn(parentNode.getAttribute('name'));
+//        });
+//        console.warn('requested parentNode');
+
+        firstMenu = {
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root',
+            action: function () {
+                window.location.href = '#/workspace';
+            },
+            actionData: {},
+            menu: []
+        };
+
+//        secondMenu = {
+//            id: 'workspace',
+//            label: workspaceName,
+//            itemClass: 'workspace',
+//            action: function () {
+//                window.location.href = '#/workspaceDetails/' + workspaceId;
+//            },
+//            actionData: {},
+//            menu: []
+//        };
+
+        thirdMenu = {
+            id: 'designSpace',
+            label: self.testBench.name,
+            itemClass: 'designSpace',
+            menu: [{
+                id: 'editor',
+                items: [
+                    {
+                        id: 'open',
+                        label: 'Open in editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        action: function () {
+                            window.open('/?project=ADMEditor&activeObject=' + self.testBench.id, '_blank');
+                        },
+                        actionData: {}
+                    }
+                ]
+            }]
+        };
+
+        return [ firstMenu, thirdMenu];
     };
 
     return TestBenchController;
