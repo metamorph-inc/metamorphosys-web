@@ -28,12 +28,12 @@ define(['../../js/DesertFrontEnd',
             self.context = context;
             self.meta = null;
             self.initListItems();
-            if (smartClient) {
+            if (Chance === null) {
                 self.smartClient = smartClient; //TODO: Remove me and use services instead
                 self.NS.on(self.context, 'initialize', function (currentContext) {
                     self.context = currentContext;
                     console.log('NodeService initialized for context: ', self.context);
-                    self.context.regionId = 'TestBenchController'; // TODO: this needs to be unique for this instance
+                    self.context.regionId = (new Date()).toISOString() + 'TestBenchController';
                     self.NS.getMetaNodes(self.context)
                         .then(function (metaNodes) {
                             self.meta = metaNodes;
@@ -109,6 +109,7 @@ define(['../../js/DesertFrontEnd',
         };
         self.$scope.testBench = self.testBench;
         self.$scope.tlsut = self.tlsut;
+
         self.$scope.runTestBench = function (cfgId) {
             self.growl.info('Started executing :', cfgId);
             self.smartClient.runPlugin('TestBenchRunner', { activeNode: self.testBench.id, pluginConfig: {
@@ -120,6 +121,7 @@ define(['../../js/DesertFrontEnd',
                 console.log(result);
             });
         };
+
         testBenchNode.onUpdate(function (id) {
             // this refers to the NodeObj.
             var newName = this.getAttribute('name'),
@@ -129,17 +131,16 @@ define(['../../js/DesertFrontEnd',
                     newTLSUT !== self.testBench.tlsutId) {
                 self.testBench.name = newName;
                 self.testBench.description = newDescr;
-                if (newTLSUT && newTLSUT !== self.testBench.tlsutId) {
-                    self.testBench.tlsutId = newTLSUT;
-                    self.DCS.cleanUp(self.context);
-                    self.addTlsutWatcher(self.testBench.tlsutId);
-                } else if (!newTLSUT) {
-                    self.DCS.cleanUp(self.context);
-                    self.tlsut = {
-                        name: 'N/A',
-                        cfgSets: { }
-                    };
-                    self.NS.logContext(self.context);
+                if (newTLSUT !== self.testBench.tlsutId) {
+                    if (newTLSUT) {
+                        self.testBench.tlsutId = newTLSUT;
+                        self.DCS.cleanUp(self.context);
+                        self.addTlsutWatcher(self.testBench.tlsutId);
+                    } else {
+                        self.DCS.cleanUp(self.context);
+                        self.tlsut = { name: 'N/A', cfgSets: { } };
+                        self.NS.logContext(self.context);
+                    }
                 }
                 self.update();
             }
@@ -190,7 +191,6 @@ define(['../../js/DesertFrontEnd',
                     getNewItem;
                 self.tlsut.cfgSets = tlsutData.cfgSets;
                 self.tlsut.name = tlsutData.name;
-                self.update();
                 getNewItem = function (id) {
                     return {
                         id         : id,
@@ -215,15 +215,6 @@ define(['../../js/DesertFrontEnd',
                 for (cfgSetId in self.tlsut.cfgSets) {
                     if (self.tlsut.cfgSets.hasOwnProperty(cfgSetId)) {
                         self.$scope.listData.items.push(getNewItem(cfgSetId));
-//                        self.DCS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
-//                            .then(function (cfgSetData) {
-//                                // This function should not be made here!
-//                                // Can cfgSetData be before coming here?
-//                                if (self.tlsut.cfgSets[cfgSetData.id]) {
-//                                    self.tlsut.cfgSets[cfgSetData.id].cfgs = cfgSetData.cfgs;
-//                                    self.update();
-//                                }
-//                            });
                     }
                 }
                 self.update();
@@ -394,8 +385,8 @@ define(['../../js/DesertFrontEnd',
             sortable          : false,
             secondaryItemMenu : true,
             detailsCollapsible: true,
-            showDetailsLabel  : 'Show details',
-            hideDetailsLabel  : 'Hide details',
+            showDetailsLabel  : 'Show Configurations',
+            hideDetailsLabel  : 'Hide Configurations',
 
             // Event handlers
 
