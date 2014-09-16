@@ -11,7 +11,7 @@ define(['../../js/DesertFrontEnd',
 
 //    angular.module('cyphy.ui.testBench', ['cyphy.ui.desertConfigurations']);
 
-    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService, smartClient, Chance) {
+    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertConfigurationServices, smartClient, Chance) {
             var self = this,
                 nodeId = $routeParams.id,
                 context = {
@@ -21,7 +21,7 @@ define(['../../js/DesertFrontEnd',
                 };
 
             self.$scope = $scope;
-            self.DCSS = DesertCfgSetService;
+            self.DCS = DesertConfigurationServices;
             self.growl = growl;
             self.testBench = {};
             self.NS = NodeService;
@@ -47,7 +47,7 @@ define(['../../js/DesertFrontEnd',
                 });
                 self.$scope.$on('$destroy', function () {
                     // Clean up spawned regions
-                    self.DCSS.cleanUp(context);
+                    self.DCS.cleanUp(context);
                     // Clean up 'TestBenchController' region.
                     self.NS.cleanUpRegion(context);
                     self.NS.logContext(context);
@@ -131,10 +131,10 @@ define(['../../js/DesertFrontEnd',
                 self.testBench.description = newDescr;
                 if (newTLSUT && newTLSUT !== self.testBench.tlsutId) {
                     self.testBench.tlsutId = newTLSUT;
-                    self.DCSS.cleanUp(self.context);
+                    self.DCS.cleanUp(self.context);
                     self.addTlsutWatcher(self.testBench.tlsutId);
                 } else if (!newTLSUT) {
-                    self.DCSS.cleanUp(self.context);
+                    self.DCS.cleanUp(self.context);
                     self.tlsut = {
                         name: 'N/A',
                         cfgSets: { }
@@ -184,7 +184,7 @@ define(['../../js/DesertFrontEnd',
     TestBenchController.prototype.addTlsutWatcher = function (id) {
         var self = this;
 
-        self.DCSS.addCfgSetsWatcher(self.context, id, self.getUpdateFn(self))
+        self.DCS.addCfgSetsWatcher(self.context, id, self.getUpdateFn(self))
             .then(function (tlsutData) {
                 var cfgSetId,
                     getNewItem;
@@ -215,7 +215,7 @@ define(['../../js/DesertFrontEnd',
                 for (cfgSetId in self.tlsut.cfgSets) {
                     if (self.tlsut.cfgSets.hasOwnProperty(cfgSetId)) {
                         self.$scope.listData.items.push(getNewItem(cfgSetId));
-//                        self.DCSS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
+//                        self.DCS.addCfgsWatcher(self.context, cfgSetId, self.getUpdateFn(self))
 //                            .then(function (cfgSetData) {
 //                                // This function should not be made here!
 //                                // Can cfgSetData be before coming here?

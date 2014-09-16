@@ -7,7 +7,7 @@ define([], function () {
     console.log(angular);
 
     angular.module('cyphy.services', ['gme.services'])
-        .service('DesertCfgSetService', function ($q, NodeService) {
+        .service('DesertConfigurationServices', function ($q, NodeService) {
             var watchers = {};
 
             this.addCfgSetsWatcher = function (pContext, designId, updateListener) {

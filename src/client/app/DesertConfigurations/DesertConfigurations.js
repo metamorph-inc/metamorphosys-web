@@ -1,4 +1,4 @@
-/*global angular, console*/
+/*global angular, console, define*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,8 +8,8 @@
 define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigurationsView) {
     'use strict';
 
-    angular.module('cyphy.ui.desertConfigurations', [])
-        .controller('DesertConfigurationController', function ($scope) {
+    angular.module('cyphy.ui.desertConfigurations', ['cyphy.services'])
+        .controller('DesertConfigurationController', function ($scope, DesertConfigurationServices) {
             var i;
 
             $scope.configurations = [];
@@ -19,7 +19,6 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                     name: $scope.setId + ' ' + i
                 });
             }
-
 
             $scope.notify = function (cfg) {
                 // TODO: call callback functions defined on config object

@@ -207,7 +207,8 @@ require(
                     '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular-moment-js'],
                     '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular'],
                     'gme-services': ['angular'],
-                    'CyPhyApp/js/services/CyPhyServices': ['angular']
+                    'CyPhyApp/js/services/CyPhyServices': ['angular'],
+                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations': ['angular']
                 }
             } );
 
@@ -229,6 +230,8 @@ require(
                     'angular-file-upload',
                     'angular-growl',
 
+                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations',
+
                     '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
                     '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
                     'css!extlib/bower_components/isis-ui-components/dist/isis-ui-components.css',
@@ -247,7 +250,7 @@ require(
                     var WebGMEApp = angular.module( 'WebGMEApp',
                         ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
                             'angularFileUpload', 'angular-growl', 'ngAnimate',
-                            'isis.ui.components',
+                            'isis.ui.components', 'cyphy.ui.desertConfigurations',
                             'gme.services', 'cyphy.services'
                         ] ).run(function($rootScope, DataStoreService, BranchService) {
                             $rootScope.mainNavigator = { };
