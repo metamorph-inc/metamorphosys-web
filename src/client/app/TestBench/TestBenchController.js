@@ -15,7 +15,7 @@ define(['../../js/DesertFrontEnd',
             var self = this,
                 nodeId = $routeParams.id,
                 context = {
-                    db: 'my-db-connection-id', // TODO: this needs to be unique for this instance
+                    db: 'my-db-connection-id',
                     projectId: 'ADMEditor',
                     branchId: 'master'
                 };
@@ -33,7 +33,7 @@ define(['../../js/DesertFrontEnd',
                 self.NS.on(self.context, 'initialize', function (currentContext) {
                     self.context = currentContext;
                     console.log('NodeService initialized for context: ', self.context);
-                    self.context.regionId = 'TestBenchController';
+                    self.context.regionId = 'TestBenchController'; // TODO: this needs to be unique for this instance
                     self.NS.getMetaNodes(self.context)
                         .then(function (metaNodes) {
                             self.meta = metaNodes;
