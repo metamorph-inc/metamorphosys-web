@@ -46,7 +46,7 @@ define([], function () {
                                         }
                                     }
                                     //console.log('cfgSets', cfgSets);
-                                    designNode.onNewChildLoaded(context, function (newNode) {
+                                    designNode.onNewChildLoaded(function (newNode) {
                                         var cfgSetWasAdded = false;
                                         if (newNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
                                             data.cfgSets[newNode.getId()] = {
@@ -74,6 +74,12 @@ define([], function () {
                 return deferred.promise;
             };
 
+            /**
+             * @param pContext - context of the controller that is using the watch.
+             * @param cfgSetId - path/id of DesertConfigurationSet node
+             * @param updateListener -
+             * @returns {*} - a promise that when resolved contains the data of the DesertConfigurationSet.
+             */
             this.addCfgsWatcher = function (pContext, cfgSetId, updateListener) {
                 var deferred = $q.defer(),
                     data = {
@@ -98,26 +104,33 @@ define([], function () {
                             data.name = cfgSetNode.getAttribute('name');
                             cfgSetNode.loadChildren(context)
                                 .then(function (childNodes) {
-                                    var i;
+                                    var i,
+                                        onUpdate = function (id) {
+                                            var newName = this.getAttribute('name');
+                                            console.warn(newName);
+                                            if (newName !== data.cfgs[id].name) {
+                                                data.cfgs[id].name = newName;
+                                                console.warn('changed');
+                                                updateListener();
+                                            }
+                                        },
+                                        onUnload = function (id) {
+                                            updateListener(true);
+                                        };
                                     for (i = 0; i < childNodes.length; i += 1) {
                                         if (childNodes[i].isMetaTypeOf(meta.DesertConfiguration)) {
                                             data.cfgs[childNodes[i].getId()] = {
                                                 id: childNodes[i].getId(),
                                                 name: childNodes[i].getAttribute('name')
                                             };
+                                            childNodes[i].onUpdate(onUpdate);
+                                            childNodes[i].onUnload(onUnload);
                                         }
                                     }
                                     //console.log('cfgSets', cfgSets);
-                                    cfgSetNode.onNewChildLoaded(context, function (newNode) {
-                                        var cfgWasAdded = false;
+                                    cfgSetNode.onNewChildLoaded(function (newNode) {
                                         if (newNode.isMetaTypeOf(meta.DesertConfiguration)) {
-                                            data.cfgs[newNode.getId()] = {
-                                                id: newNode.getId(),
-                                                name: newNode.getAttribute('name')
-                                            };
-                                        }
-                                        if (cfgWasAdded) {
-                                            updateListener();
+                                            updateListener(true);
                                         }
                                     });
                                     deferred.resolve(data);

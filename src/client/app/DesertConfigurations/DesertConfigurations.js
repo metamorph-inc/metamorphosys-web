@@ -16,6 +16,28 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                     projectId: 'ADMEditor',
                     branchId: 'master',
                     regionId: (new Date()).toISOString() + 'DesertConfigurationController'
+                },
+                update = function (destroy) {
+                    if (destroy) {
+                        DesertConfigurationServices.cleanUp(context);
+                        populateConfigurations();
+                    } else {
+                        if (!$scope.$$phase) {
+                            $scope.$apply();
+                        }
+                    }
+                },
+                populateConfigurations = function () {
+                    $scope.configurations = [];
+                    DesertConfigurationServices.addCfgsWatcher(context, $scope.setId, update)
+                        .then(function (cfgSetData) {
+                            var key;
+                            for (key in cfgSetData.cfgs) {
+                                if (cfgSetData.cfgs.hasOwnProperty(key)) {
+                                    $scope.configurations.push(cfgSetData.cfgs[key]);
+                                }
+                            }
+                        });
                 };
 
             $scope.configurations = [];
@@ -24,18 +46,7 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                     // Clean up spawned regions
                     DesertConfigurationServices.cleanUp(context);
                 });
-                DesertConfigurationServices.addCfgsWatcher(context, $scope.setId, function () {})
-                    .then(function (cfgSetData) {
-                        var key;
-                        for (key in cfgSetData.cfgs) {
-                            if (cfgSetData.cfgs.hasOwnProperty(key)) {
-                                $scope.configurations.push({
-                                    name: cfgSetData.cfgs[key].name,
-                                    id: cfgSetData.cfgs[key].id
-                                });
-                            }
-                        }
-                    });
+                populateConfigurations();
             } else {
                 for (i = 0; i < Math.floor(Math.random() * 10); i += 1) {
                     $scope.configurations.push({

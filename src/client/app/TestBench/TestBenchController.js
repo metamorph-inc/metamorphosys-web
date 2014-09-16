@@ -153,7 +153,7 @@ define(['../../js/DesertFrontEnd',
                     self.onImmediateChild(childNodes[i]);
                 }
                 self.update();
-                testBenchNode.onNewChildLoaded(self.context, function (newNode) {
+                testBenchNode.onNewChildLoaded(function (newNode) {
                     self.onImmediateChild(newNode);
                     self.update();
                 });
