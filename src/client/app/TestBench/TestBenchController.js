@@ -5,8 +5,11 @@
  */
 
 define(['../../js/DesertFrontEnd',
-        'xmljsonconverter'], function (DesertFrontEnd, Converter) {
+        'xmljsonconverter',
+       '../DesertConfigurations/DesertConfigurations'], function (DesertFrontEnd, Converter) {
     'use strict';
+
+//    angular.module('cyphy.ui.testBench', ['cyphy.ui.desertConfigurations']);
 
     var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertCfgSetService, smartClient, Chance) {
             var self = this,

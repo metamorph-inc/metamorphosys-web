@@ -102,6 +102,8 @@
                 'src/client/app/MainNavigatorController',
                 'src/client/lib/chance.min',
 
+
+                'src/client/app/DesertConfigurations/DesertConfigurations',
                 '../../bower_components/isis-ui-components/dist/isis-ui-components.js',
                 '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
                 'css!../extlib/bower_components/isis-ui-components/dist/isis-ui-components.css'
@@ -113,7 +115,8 @@
                                                        MainNavigatorController, Chance) {
                 "use strict";
                 var WebGMEApp = angular.module('WebGMEApp', ['ngRoute', 'routeStyles', 'angular-moment',
-                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.components']).run(function($rootScope) {
+                    'ui.bootstrap', 'angularFileUpload', 'angular-growl', 'ngAnimate', 'isis.ui.components',
+                    'cyphy.ui.desertConfigurations']).run(function($rootScope) {
                     $rootScope.mainNavigator = { };
                     $rootScope.appIsLoading = false;});
 
