@@ -34,30 +34,36 @@ define([], function () {
                             data.name = designNode.getAttribute('name');
                             designNode.loadChildren(context)
                                 .then(function (childNodes) {
-                                    var i;
+                                    var i,
+                                        onUpdate = function (id) {
+                                            var newName = this.getAttribute('name'),
+                                                newDesc = this.getAttribute('INFO');
+                                            console.warn(newName);
+                                            if (newName !== data.cfgSets[id].name ||
+                                                    newDesc !== data.cfgSets[id].description) {
+                                                //data.cfgSets[id].name = newName;
+                                                //console.warn('changed');
+                                                updateListener(true);
+                                            }
+                                        },
+                                        onUnload = function (id) {
+                                            updateListener(true);
+                                        };
                                     for (i = 0; i < childNodes.length; i += 1) {
                                         if (childNodes[i].isMetaTypeOf(meta.DesertConfigurationSet)) {
                                             data.cfgSets[childNodes[i].getId()] = {
                                                 id: childNodes[i].getId(),
                                                 name: childNodes[i].getAttribute('name'),
-                                                description: childNodes[i].getAttribute('INFO'),
-                                                cfgs: null
+                                                description: childNodes[i].getAttribute('INFO')
                                             };
+                                            childNodes[i].onUpdate(onUpdate);
+                                            childNodes[i].onUnload(onUnload);
                                         }
                                     }
                                     //console.log('cfgSets', cfgSets);
                                     designNode.onNewChildLoaded(function (newNode) {
-                                        var cfgSetWasAdded = false;
                                         if (newNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                            data.cfgSets[newNode.getId()] = {
-                                                id: newNode.getId(),
-                                                name: newNode.getAttribute('name'),
-                                                description: newNode.getAttribute('INFO'),
-                                                cfgs: null
-                                            };
-                                        }
-                                        if (cfgSetWasAdded) {
-                                            updateListener();
+                                            updateListener(true);
                                         }
                                     });
                                     deferred.resolve(data);
@@ -66,7 +72,7 @@ define([], function () {
                                 var newName = this.getAttribute('name');
                                 if (newName !== data.name) {
                                     data.name = newName;
-                                    updateListener();
+                                    updateListener(true);
                                 }
                             });
                         });

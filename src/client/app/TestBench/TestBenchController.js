@@ -21,7 +21,7 @@ define(['../../js/DesertFrontEnd',
                 };
 
             self.$scope = $scope;
-            self.DCS = DesertConfigurationServices;
+            self.DesertConfigurationServices = DesertConfigurationServices;
             self.growl = growl;
             self.testBench = {};
             self.NS = NodeService;
@@ -47,7 +47,7 @@ define(['../../js/DesertFrontEnd',
                 });
                 self.$scope.$on('$destroy', function () {
                     // Clean up spawned regions
-                    self.DCS.cleanUp(context);
+                    self.DesertConfigurationServices.cleanUp(context);
                     // Clean up 'TestBenchController' region.
                     self.NS.cleanUpRegion(context);
                     self.NS.logContext(context);
@@ -104,9 +104,11 @@ define(['../../js/DesertFrontEnd',
             tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest').to
         };
         self.tlsut = {
-            name: 'N/A',
-            cfgSets: { }
+            name: 'N/A'
         };
+        if (self.testBench.tlsutId) {
+            self.addTlsutWatcher(self.testBench.tlsutId);
+        }
         self.$scope.testBench = self.testBench;
         self.$scope.tlsut = self.tlsut;
 
@@ -134,11 +136,11 @@ define(['../../js/DesertFrontEnd',
                 if (newTLSUT !== self.testBench.tlsutId) {
                     if (newTLSUT) {
                         self.testBench.tlsutId = newTLSUT;
-                        self.DCS.cleanUp(self.context);
+                        self.DesertConfigurationServices.cleanUp(self.context);
                         self.addTlsutWatcher(self.testBench.tlsutId);
                     } else {
-                        self.DCS.cleanUp(self.context);
-                        self.tlsut = { name: 'N/A', cfgSets: { } };
+                        self.DesertConfigurationServices.cleanUp(self.context);
+                        self.tlsut = { name: 'N/A'};
                         self.NS.logContext(self.context);
                     }
                 }
@@ -158,10 +160,6 @@ define(['../../js/DesertFrontEnd',
                     self.onImmediateChild(newNode);
                     self.update();
                 });
-
-                if (self.testBench.tlsutId) {
-                    self.addTlsutWatcher(self.testBench.tlsutId);
-                }
                 self.NS.logContext(self.context);
             }).catch(function (reason) {
                 console.error(reason);
@@ -183,20 +181,26 @@ define(['../../js/DesertFrontEnd',
     };
 
     TestBenchController.prototype.addTlsutWatcher = function (id) {
-        var self = this;
-
-        self.DCS.addCfgSetsWatcher(self.context, id, self.getUpdateFn(self))
-            .then(function (tlsutData) {
-                var cfgSetId,
-                    getNewItem;
-                self.tlsut.cfgSets = tlsutData.cfgSets;
-                self.tlsut.name = tlsutData.name;
-                getNewItem = function (id) {
-                    return {
-                        id         : id,
-                        title      : tlsutData.cfgSets[id].name,
-                        toolTip    : 'Open item',
-                        description: tlsutData.cfgSets[id].description,
+        var self = this,
+            update = function (destroy) {
+                if (destroy) {
+                    self.DesertConfigurationServices.cleanUp(self.context);
+                    populateListDataItems();
+                }
+            },
+            populateListDataItems = function () {
+                self.$scope.listData.items = [];
+                self.DesertConfigurationServices.addCfgSetsWatcher(self.context, id, update)
+                    .then(function (data) {
+                        var cfgSetId,
+                            getNewItem;
+                        self.tlsut.name = data.name;
+                        getNewItem = function (id) {
+                            return {
+                                id         : id,
+                                title      : data.cfgSets[id].name,
+                                toolTip    : 'Open item',
+                                description: data.cfgSets[id].description,
 //                        lastUpdated: {
 //                            time: self.chance.date({year: (new Date()).getFullYear()}),
 //                            user: self.chance.name()
@@ -208,17 +212,19 @@ define(['../../js/DesertFrontEnd',
 //                                iconClass: 'fa fa-puzzle-piece'
 //                            }
 //                        ],
-                        details    : 'Configurations',
-                        detailsTemplateUrl: 'details.html'
-                    };
-                };
-                for (cfgSetId in self.tlsut.cfgSets) {
-                    if (self.tlsut.cfgSets.hasOwnProperty(cfgSetId)) {
-                        self.$scope.listData.items.push(getNewItem(cfgSetId));
-                    }
-                }
-                self.update();
-            });
+                                details    : 'Configurations',
+                                detailsTemplateUrl: 'details.html'
+                            };
+                        };
+                        for (cfgSetId in data.cfgSets) {
+                            if (data.cfgSets.hasOwnProperty(cfgSetId)) {
+                                self.$scope.listData.items.push(getNewItem(cfgSetId));
+                            }
+                        }
+                        self.update();
+                    });
+            };
+        populateListDataItems();
     };
 
     /**
