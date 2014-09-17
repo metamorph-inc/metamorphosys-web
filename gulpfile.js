@@ -135,10 +135,18 @@ gulp.task('compile-docs-templates', function () {
 
 
 gulp.task('compile-docs-styles', function () {
+    var processWinPath = function (file) {
+        var path = require('path');
+        if (process.platform === 'win32') {
+            file.path = path.relative('.', file.path);
+            file.path = file.path.replace(/\\/g, '/');
+        }
+    };
 
     console.log('Compiling styles...');
 
     gulp.src(sourcePaths.docsStyles)
+        .on('data', processWinPath)
         .pipe(sass({
             errLogToConsole: true,
             sourceComments: 'map'
