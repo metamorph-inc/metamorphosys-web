@@ -16,7 +16,7 @@ var argv = require('yargs').argv,
     sourcePaths = {
 
         docsSourceIndex: 'src/docs/cyphy_components_docs.html',
-        docsApp: 'src/docs/docs_app.js',
+        docsApp: './src/docs/docs_app.js',
         docsScripts: [
             'src/**/docs/*.js'
         ],
@@ -31,7 +31,7 @@ var argv = require('yargs').argv,
         ],
 
 
-        libraryModuleScript: 'src/library/cyphy-components.js',
+        libraryModuleScript: './src/library/cyphy-components.js',
         libraryScripts: [
 
             //'src/library/services/*.js',
@@ -64,8 +64,9 @@ var argv = require('yargs').argv,
 
     gulp = require('gulp'),
     jshint = require('gulp-jshint'),
-    browserify = require('gulp-browserify'),
+    browserify = require('browserify'),
     concat = require('gulp-concat'),
+    source = require('vinyl-source-stream'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
     runSequence = require('run-sequence'),
@@ -109,13 +110,11 @@ gulp.task('browserify-docs', function () {
         process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
     }
 
-    gulp.src(sourcePaths.docsApp, { read: false })
-        .pipe(browserify({
-            insertGlobals: true,
-            debug: debug
-        }))
-        .on('error', console.log)
-        .pipe(concat(libraryName + '-docs.js'))
+    return browserify({
+        entries: [sourcePaths.docsApp]
+    })
+        .bundle()
+        .pipe(source(libraryName + '-docs.js'))
         .pipe(gulp.dest(buildPaths.docsRoot));
 
 });
@@ -191,13 +190,11 @@ gulp.task('browserify-library', function () {
         process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
     }
 
-    gulp.src(sourcePaths.libraryModuleScript, { read: false })
-        .pipe(browserify({
-            insertGlobals: true,
-            debug: debug
-        }))
-        .on('error', console.log)
-        .pipe(concat(libraryName + '.js'))
+    return browserify({
+        entries: [sourcePaths.libraryModuleScript]
+    })
+        .bundle()
+        .pipe(source(libraryName + '.js'))
         .pipe(gulp.dest(buildPaths.scripts));
 
 });
