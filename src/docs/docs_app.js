@@ -8,6 +8,8 @@ var components = [
     }
 ];
 
+require('chance');
+
 require('../library/WorkspaceList/docs/demo.js');
 
 
@@ -23,6 +25,7 @@ require('code-mirror/mode/xml');
 require('code-mirror/mode/javascript');
 
 require('angular-ui-codemirror');
+
 
 
 var demoApp = angular.module(
