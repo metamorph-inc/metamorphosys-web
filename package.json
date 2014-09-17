@@ -52,7 +52,9 @@
         ]
     },
     "browser": {
-        "showdown": "./vendor/showdown_for_browserify.js"
+        "showdown": "./vendor/showdown_for_browserify.js",
+        "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
+        "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js"
     },
     "browserify-shim": {
         "showdown": "Showdown"

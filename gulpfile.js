@@ -15,7 +15,7 @@ var argv = require('yargs').argv,
 
     sourcePaths = {
 
-        docsSourceIndex: 'src/docs/cyphy_docs.html',
+        docsSourceIndex: 'src/docs/cyphy_components_docs.html',
         docsApp: 'src/docs/docs_app.js',
         docsScripts: [
             'src/**/docs/*.js'

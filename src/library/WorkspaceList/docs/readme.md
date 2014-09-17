@@ -1,0 +1,1 @@
+`WorkspaceList` components lists all workspaces in a WebGME project that uses the `ADMEditor` meta-model.
