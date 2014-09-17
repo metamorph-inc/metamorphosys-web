@@ -22,10 +22,11 @@ define(['../../js/DesertFrontEnd',
 
         self.$scope = $scope;
         self.DesertConfigurationServices = DesertConfigurationServices;
-        self.growl = growl;
-        self.testBench = {};
         self.NS = NodeService;
         self.NodeUtilities = NodeUtilities;
+        self.growl = growl;
+
+        self.testBench = {};
         self.context = context;
         self.meta = null;
         self.initListItems();
@@ -168,6 +169,7 @@ define(['../../js/DesertFrontEnd',
             },
             populateListDataItems = function () {
                 self.$scope.listData.items = [];
+                self.selectedConfigurations = {};
                 self.DesertConfigurationServices.addCfgSetsWatcher(self.context, id, update)
                     .then(function (data) {
                         var cfgSetId,
@@ -191,7 +193,8 @@ define(['../../js/DesertFrontEnd',
 //                            }
 //                        ],
                                 details    : 'Configurations',
-                                detailsTemplateUrl: 'details.html'
+                                detailsTemplateUrl: 'details.html',
+                                selectedConfigurations: {}
                             };
                         };
                         for (cfgSetId in data.cfgSets) {
@@ -382,13 +385,28 @@ define(['../../js/DesertFrontEnd',
                     {
                         items: [
                             {
-                                id: 'runAllConfigurations',
-                                label: 'Run all configurations',
+                                id: 'runSelectedConfigurations',
+                                label: 'Run selected configurations',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit',
-                                actionData: { id: item.id },
-                                action: function (data) {
-                                    console.log(data);
+                                iconClass: 'glyphicon glyphicon-expand',
+                                actionData: {},
+                                action: function () {
+                                    var key,
+                                        cfgIds = [];
+                                    if (item.selectedConfigurations) {
+                                        for (key in item.selectedConfigurations) {
+                                            if (item.selectedConfigurations === true) {
+                                                cfgIds.push(key);
+                                            }
+                                        }
+                                        if (cfgIds.length > 0) {
+                                            self.growl.info(cfgIds.toString());
+                                        } else {
+                                            self.growl.error('No configurations selected!');
+                                        }
+                                    } else {
+                                        self.growl.error('No configurations selected!');
+                                    }
                                 }
                             }
                         ]
@@ -415,8 +433,8 @@ define(['../../js/DesertFrontEnd',
 
             filter: {
             }
-
         };
+
         self.$scope.listData = {
             items: []
         };

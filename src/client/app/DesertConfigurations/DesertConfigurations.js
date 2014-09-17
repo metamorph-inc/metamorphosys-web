@@ -29,7 +29,7 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                 },
                 populateConfigurations = function () {
                     $scope.configurations = [];
-                    DesertConfigurationServices.addCfgsWatcher(context, $scope.setId, update)
+                    DesertConfigurationServices.addCfgsWatcher(context, $scope.item.id, update)
                         .then(function (cfgSetData) {
                             var key;
                             for (key in cfgSetData.cfgs) {
@@ -55,15 +55,14 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                 }
             }
             $scope.notify = function (cfg) {
-                // TODO: call callback functions defined on config object
-                console.log(cfg, 'changed');
+                $scope.item.selectedConfigurations[cfg.id] = cfg.checked;
+                console.log($scope.item);
             };
         })
         .directive('desertConfigurations', function () {
             return {
                 scope: {
-                    setId: '=',
-                    config: '='
+                    item: '='
                 },
                 restrict: 'E',
                 replace: true,
