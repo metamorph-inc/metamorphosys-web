@@ -3,10 +3,9 @@
  * @author lattmann / https://github.com/lattmann
  */
 
+angular.module('cyphy.components', []);
+
 require('./WorkspaceList/WorkspaceList');
 
 
 
-angular.module('webgme-cyphy', [
-    'webgme-cyphy.workspaceList'
-]);

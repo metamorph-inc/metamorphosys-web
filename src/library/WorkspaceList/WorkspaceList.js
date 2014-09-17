@@ -6,8 +6,10 @@
  */
 
 
-angular.module('webgme-cyphy.workspaceList', [])
+angular.module('cyphy.components')
     .controller('WorkspaceListController', function ($scope, Chance) {
+        'use strict';
+
         var self = this,
             i,
             items = [],

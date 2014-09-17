@@ -26,9 +26,9 @@ require('angular-ui-codemirror');
 
 
 var demoApp = angular.module(
-    'cyphy.ui.demoApp',
+    'cyphy.demoApp',
     [
-        'webgme-cyphy.demoApp.templates',
+        'cyphy.demoApp.templates',
         'btford.markdown',
         'ui.codemirror',
         'ui.bootstrap'

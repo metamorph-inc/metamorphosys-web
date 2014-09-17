@@ -8,10 +8,10 @@ var argv = require('yargs').argv,
     debug = !argv.production,
     debugShim = false, //this is for toggling browserify shim debug
 
-    libraryName = 'webgme-cyphy',
-    libraryTemplatesModule = 'webgme-cyphy.templates',
+    libraryName = 'cyphy-components',
+    libraryTemplatesModule = 'cyphy.components.templates',
 
-    docTemplatesModule = 'webgme-cyphy.demoApp.templates',
+    docTemplatesModule = 'cyphy.demoApp.templates',
 
     sourcePaths = {
 
@@ -31,7 +31,7 @@ var argv = require('yargs').argv,
         ],
 
 
-        libraryModuleScript: 'src/library/webgme-cyphy.js',
+        libraryModuleScript: 'src/library/cyphy-components.js',
         libraryScripts: [
 
             //'src/library/services/*.js',
