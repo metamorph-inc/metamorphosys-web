@@ -30,7 +30,8 @@ var demoApp = angular.module(
     [
         'webgme-cyphy.demoApp.templates',
         'btford.markdown',
-        'ui.codemirror'
+        'ui.codemirror',
+        'ui.bootstrap'
     ].concat(components.map(function (e) {
         return 'cyphy.ui.' + e.name + '.demo';
     }))
