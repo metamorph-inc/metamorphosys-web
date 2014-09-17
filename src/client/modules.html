@@ -94,7 +94,7 @@
                 'src/client/lib/angular-file-upload',
                 'src/client/lib/angular-file-upload-shim.min',
                 'src/client/app/workspace/WorkspaceController',
-                'src/client/app/WorkspaceList/WorkspaceListController',
+//                'src/client/app/WorkspaceList/WorkspaceListController',
                 'src/client/app/WorkspaceDetails/WorkspaceDetailsController',
                 'src/client/app/DesignSpace/DesignSpaceController',
                 'src/client/app/TestBench/TestBenchController',
@@ -109,7 +109,7 @@
                 'css!../extlib/bower_components/isis-ui-components/dist/isis-ui-components.css'
                 ], function(ngRouteStyles, ngBootstrap,
                                                        ngGrowl, ngFileUpload, ngFileUploadShim,
-                                                       WorkspaceController, WorkspaceListController,
+                                                       WorkspaceController, /*WorkspaceListController,*/
                                                        WorkspaceDetailsController, DesignSpaceController,
                                                        TestBenchController, WorkersController,
                                                        MainNavigatorController, Chance) {
@@ -142,7 +142,7 @@
                 });
                 WebGMEApp.controller('MainNavigatorController', MainNavigatorController);
                 WebGMEApp.controller('WorkspaceController', WorkspaceController);
-                WebGMEApp.controller('WorkspaceListController', WorkspaceListController);
+//                WebGMEApp.controller('WorkspaceListController', WorkspaceListController);
                 WebGMEApp.controller('WorkspaceDetailsController', WorkspaceDetailsController);
                 WebGMEApp.controller('DesignSpaceController', DesignSpaceController);
                 WebGMEApp.controller('TestBenchController', TestBenchController);
@@ -162,11 +162,11 @@
                                     css: 'app/workspace/styles/Workspace.css',
                                     controller: 'WorkspaceController'
                                 }).
-                                when('/workspaceList', {
-                                         templateUrl: 'app/WorkspaceList/views/WorkspaceListView.html',
-                                         //css: 'app/workspace/styles/Workspace.css',
-                                         controller: 'WorkspaceListController'
-                                     }).
+//                                when('/workspaceList', {
+//                                         templateUrl: 'app/WorkspaceList/views/WorkspaceListView.html',
+//                                         //css: 'app/workspace/styles/Workspace.css',
+//                                         controller: 'WorkspaceListController'
+//                                     }).
                                 when('/edit', {
                                     templateUrl: 'app/workspace/views/WorkspaceEditFields.html'
                                 }).
@@ -218,7 +218,7 @@
 <!--<div data-ng-include="'app/workspace/views/WorkspaceView.html'"></div>-->
 <div class="btn-group">
     <button onclick="location.href='#/workspace';"  type="button" class="btn btn-default">workspace</button>
-    <button onclick="location.href='#/workspaceList';"  type="button" class="btn btn-default">workspace list</button>
+    <!--<button onclick="location.href='#/workspaceList';"  type="button" class="btn btn-default">workspace list</button>-->
     <button onclick="location.href='#/workspaceDetails';"  type="button" class="btn btn-default">workspace details</button>
     <button onclick="location.href='#/designSpace';"  type="button" class="btn btn-default">design space</button>
     <button onclick="location.href='#/testBench';"  type="button" class="btn btn-default">test bench</button>
