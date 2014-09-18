@@ -45,7 +45,7 @@ Visit [localhost:8855](http://localhost:8855) to open the default WebGME editor
 
 Development mode `node_modules/gulp/bin/gulp.js dev`
 
-Visit `dist/docs/webgme-cyphy-docs.html`
+Visit `dist/docs/cyphy-components-docs.html`
 
 
  
