@@ -34,7 +34,8 @@ var demoApp = angular.module(
         'cyphy.demoApp.templates',
         'btford.markdown',
         'ui.codemirror',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'isis.ui.components'
     ].concat(components.map(function (e) {
         return 'cyphy.ui.' + e.name + '.demo';
     }))

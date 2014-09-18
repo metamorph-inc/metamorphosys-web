@@ -1,64 +1,18 @@
 /*globals angular, console, document*/
+'use strict';
 
 /**
  * @author pmeijer / https://github.com/pmeijer
  * @author lattmann / https://github.com/lattmann
  */
 
-
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, Chance) {
-        'use strict';
-
+    .controller('WorkspaceListController', function ($scope) {
         var self = this,
-            i,
-            items = [],
-            itemGenerator,
+            items = $scope.items,
             config;
 
-        self.chance = Chance ? new Chance() : null;
-
-        itemGenerator = function (id) {
-            return {
-                id: id,
-                title: self.chance.name(),
-                toolTip: 'Open item',
-                description: self.chance.sentence(),
-                lastUpdated: {
-                    time: self.chance.date({year: (new Date()).getFullYear()}),
-                    user: self.chance.name()
-
-                },
-                stats: [
-                    {
-                        value: self.chance.integer({min: 0, max: 5000}),
-                        toolTip: 'Components',
-                        iconClass: 'fa fa-puzzle-piece'
-                    },
-                    {
-                        value: self.chance.integer({min: 0, max: 50}),
-                        toolTip: 'Design Spaces',
-                        iconClass: 'fa fa-cubes'
-                    },
-                    {
-                        value: self.chance.integer({min: 0, max: 500}),
-                        toolTip: 'Test benches',
-                        iconClass: 'glyphicon glyphicon-saved'
-                    },
-                    {
-                        value: self.chance.integer({min: 0, max: 20}),
-                        toolTip: 'Requirements',
-                        iconClass: 'fa fa-bar-chart-o'
-                    }
-                ]
-                //details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
-            };
-        };
-
-
-        for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
-            items.push(itemGenerator(i));
-        }
+        console.log('WorkspaceListController');
 
         config = {
 
@@ -138,7 +92,7 @@ angular.module('cyphy.components')
 
             newItemForm: {
                 title: 'Create new item',
-                itemTemplateUrl: 'app/WorkspaceList/views/WorkspaceNewItemTemplate.html',
+                itemTemplateUrl: '/cyphy-components/templates/WorkspaceNewItem.html',
                 expanded: false,
                 controller: function ($scope) {
                     $scope.createItem = function (newItem) {
@@ -162,8 +116,19 @@ angular.module('cyphy.components')
         };
 
         $scope.listData = {
-            items: items
+            items: $scope.items
         };
 
         $scope.config = config;
+    })
+    .directive('workspaceList', function () {
+        return {
+            scope: {
+                items: '='
+            },
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/cyphy-components/templates/WorkspaceList.html',
+            controller: 'WorkspaceListController'
+        };
     });
