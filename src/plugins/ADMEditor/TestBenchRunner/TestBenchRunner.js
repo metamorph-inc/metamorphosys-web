@@ -295,6 +295,7 @@ define(['plugin/PluginConfig',
                 return;
             }
             self.initializeAdmExporter();
+            self.admExporter.rootPath = self.core.getPath(designNode);
             self.admExporter.setupDesertCfg(self.cfgPath, function (err) {
                 if (err) {
                     callback('Failed setting up desertConfigurations, err: ' + err);
