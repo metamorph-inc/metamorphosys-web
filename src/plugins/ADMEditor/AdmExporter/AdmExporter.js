@@ -206,13 +206,13 @@ define([
         });
     };
 
-    AdmExporter.prototype.setupDesertCfg = function (desertCfg, callback) {
+    AdmExporter.prototype.setupDesertCfg = function (desertCfgId, callback) {
         var self = this;
-        if (!desertCfg) {
+        if (!desertCfgId) {
             callback(null);
             return;
         }
-        self.core.loadByPath(self.rootNode, desertCfg, function (err, cfgNode) {
+        self.core.loadByPath(self.rootNode, desertCfgId, function (err, cfgNode) {
             var name,
                 i,
                 aas;
@@ -221,9 +221,14 @@ define([
                 callback(err);
                 return;
             }
-            if (self.startsWith(desertCfg, self.core.getPath(self.activeNode) === false)) {
+            if (self.startsWith(desertCfgId, self.rootPath) === false) {
                 self.createMessage(cfgNode, 'Given desert configuration is not within design.', 'error');
                 callback('Given desert configuration is not within design.');
+                return;
+            }
+            if (self.isMetaTypeOf(cfgNode, self.meta.DesertConfiguration) === false) {
+                self.createMessage(cfgNode, 'Given path to desert configuration is not pointing to a DesertConfiguration node.', 'error');
+                callback('Wrong meta-type of desert configuration.');
                 return;
             }
             name = self.core.getAttribute(cfgNode, 'name');
