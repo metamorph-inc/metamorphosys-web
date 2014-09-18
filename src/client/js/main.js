@@ -200,7 +200,11 @@ require(
                     'angular-file-upload-shim': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload-shim.min',
                     'angular-file-upload': CONFIG.paths.CyPhyApp + '/lib/angular-file-upload',
                     'angular-growl': CONFIG.paths.CyPhyApp + '/lib/angular-growl.min',
-                    'gme-services': 'js/services/DataStoreService'
+                    'gme-services': 'js/services/DataStoreService',
+
+                    // CyPhy components path resolution
+                    'cyphy-components': CONFIG.paths.cyphyDist + '/cyphy-components',
+                    'cyphy-components-templates': CONFIG.paths.cyphyDist + '/cyphy-components-templates'
                 },
                 shim: {
                     'angular-moment-js': ['angular', 'moment'],
@@ -208,7 +212,11 @@ require(
                     '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular'],
                     'gme-services': ['angular'],
                     'CyPhyApp/js/services/CyPhyServices': ['angular'],
-                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations': ['angular']
+                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations': ['angular'],
+
+                    // They depend on angular
+                    'cyphy-components': ['angular'],
+                    'cyphy-components-templates': ['angular']
                 }
             } );
 
@@ -236,6 +244,9 @@ require(
                     '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js',
                     'css!extlib/bower_components/isis-ui-components/dist/isis-ui-components.css',
 
+                    'cyphy-components',
+                    'cyphy-components-templates',
+                    // TODO: add css
 
                     'css!CyPhyApp/lib/font-awesome/css/font-awesome.min.css',
                     'css!CyPhyApp/lib/angular-growl.min.css',
@@ -251,7 +262,7 @@ require(
                         ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
                             'angularFileUpload', 'angular-growl', 'ngAnimate',
                             'isis.ui.components', 'cyphy.ui.desertConfigurations',
-                            'gme.services', 'cyphy.services'
+                            'gme.services', 'cyphy.services', 'cyphy.components'
                         ] ).run(function($rootScope, DataStoreService, BranchService) {
                             $rootScope.mainNavigator = { };
                             $rootScope.appIsLoading = false;
@@ -324,6 +335,10 @@ require(
                                                 css: 'app/workspace/styles/Workspace.css',
                                                 controller: 'WorkspaceController'
                                             } ).
+                                            when( '/workspaceList', {
+                                                template: '<div></div>',
+                                                controller: 'WorkspaceListController'
+                                            }).
                                             when( '/workspaceDetails/:id*', {
                                                 templateUrl: 'app/WorkspaceDetails/views/WorkspaceDetailsView.html',
                                                 css: 'app/WorkspaceDetails/styles/WorkspaceDetails.css',
