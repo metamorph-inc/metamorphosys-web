@@ -1,20 +1,65 @@
-/*globals console, angular*/
+/*globals console, angular, Chance*/
 
 'use strict';
 
-var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', []);
+var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
+    'cyphy.components',
+    'cyphy.components.templates'
+]);
 
 demoApp.controller('WorkspaceListDemoController', function ($scope) {
-    var chance = new Chance(),
-        numItems = chance.integer({min: 2, max: 15}),
+    var self = this,
+        numItems,
+        itemGenerator,
         i;
 
-    $scope.configurations = [];
+    console.log('WorkspaceListDemoController');
 
-    for (i = 0; i < numItems; i += 1) {
-        $scope.configurations.push({
-            id: i,
-            name: chance.word()
-        });
+    self.chance = new Chance();
+    numItems = self.chance.integer({min: 2, max: 15});
+
+    // this element
+    $scope.workspaces = [];
+
+    itemGenerator = function (id) {
+        return {
+            id: id,
+            title: self.chance.name(),
+            toolTip: 'Open item',
+            description: self.chance.sentence(),
+            lastUpdated: {
+                time: self.chance.date({year: (new Date()).getFullYear()}),
+                user: self.chance.name()
+            },
+            stats: [
+                {
+                    value: self.chance.integer({min: 0, max: 5000}),
+                    toolTip: 'Components',
+                    iconClass: 'fa fa-puzzle-piece'
+                },
+                {
+                    value: self.chance.integer({min: 0, max: 50}),
+                    toolTip: 'Design Spaces',
+                    iconClass: 'fa fa-cubes'
+                },
+                {
+                    value: self.chance.integer({min: 0, max: 500}),
+                    toolTip: 'Test benches',
+                    iconClass: 'glyphicon glyphicon-saved'
+                },
+                {
+                    value: self.chance.integer({min: 0, max: 20}),
+                    toolTip: 'Requirements',
+                    iconClass: 'fa fa-bar-chart-o'
+                }
+            ]
+            //details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
+        };
+    };
+
+    for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
+        $scope.workspaces.push(itemGenerator(i));
     }
+
+
 });

@@ -39,13 +39,21 @@ Visit [localhost:8855](http://localhost:8855) to open the default WebGME editor
 ## Utils ##
 - Adding a full directory to the local blob:  While models/objects are stored in the Mongo database,their associated resource files are stored on the WebGME server in the 'blob.' When importing a project, it is sometimes necessary to upload multiple resource files for each object in the project, and using `node add_dir_to_blob.js samples\RollingWheel` is the way to achieve this.
 
-# Building library #
+# Building library (cyphy-components)#
 
 `node_modules/gulp/bin/gulp.js compile-all`
 
 Development mode `node_modules/gulp/bin/gulp.js dev`
 
 Visit `dist/docs/cyphy-components-docs.html`
+
+## Library-dependencies ##
+
+- Angular (1.3.2)
+- jQuery UI (1.11.1)
+- Angular-ui-bootstrap (0.10.0)
+- isis-ui-components (0.0.2)
+
 
 
  
