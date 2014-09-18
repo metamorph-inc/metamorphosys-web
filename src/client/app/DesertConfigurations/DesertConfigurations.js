@@ -22,25 +22,27 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                         DesertConfigurationServices.cleanUp(context);
                         populateConfigurations();
                     } else {
-                        if (!$scope.$$phase) {
-                            $scope.$apply();
-                        }
+//                        if (!$scope.$$phase) {
+//                            $scope.$apply();
+//                        }
                     }
                 },
                 populateConfigurations = function () {
-                    $scope.configurations = [];
+                    $scope.data.configurations = [];
                     DesertConfigurationServices.addCfgsWatcher(context, $scope.item.id, update)
                         .then(function (cfgSetData) {
                             var key;
                             for (key in cfgSetData.cfgs) {
                                 if (cfgSetData.cfgs.hasOwnProperty(key)) {
-                                    $scope.configurations.push(cfgSetData.cfgs[key]);
+                                    $scope.data.configurations.push(cfgSetData.cfgs[key]);
                                 }
                             }
                         });
                 };
 
-            $scope.configurations = [];
+            $scope.data = {
+                configurations: []
+            };
             if (Chance === null) {
                 $scope.$on('$destroy', function () {
                     // Clean up spawned regions
@@ -49,7 +51,7 @@ define(['text!./views/DesertConfigurationsView.html'], function (DesertConfigura
                 populateConfigurations();
             } else {
                 for (i = 0; i < Math.floor(Math.random() * 10); i += 1) {
-                    $scope.configurations.push({
+                    $scope.data.configurations.push({
                         name: $scope.setId + ' ' + i
                     });
                 }

@@ -21,6 +21,7 @@ define(['../../js/DesertFrontEnd',
             };
 
         self.$scope = $scope;
+
         self.DesertConfigurationServices = DesertConfigurationServices;
         self.NS = NodeService;
         self.NodeUtilities = NodeUtilities;
@@ -29,6 +30,7 @@ define(['../../js/DesertFrontEnd',
         self.testBench = {};
         self.context = context;
         self.meta = null;
+        self.$scope.listData = {};
         self.initListItems();
         if (Chance !== null) {
             self.getTestData(Chance);
@@ -352,9 +354,10 @@ define(['../../js/DesertFrontEnd',
     };
 
     TestBenchController.prototype.update = function () {
-        if (!this.$scope.$$phase) {
-            this.$scope.$apply();
-        }
+//        if (!this.$scope.$$phase) {
+//            this.$scope.$apply();
+//        }
+//        console.log(':P');
     };
 
     TestBenchController.prototype.initListItems = function () {
@@ -435,9 +438,7 @@ define(['../../js/DesertFrontEnd',
             }
         };
 
-        self.$scope.listData = {
-            items: []
-        };
+        self.$scope.listData.items = [];
     };
 
     TestBenchController.prototype.getTestData = function (Chance) {
