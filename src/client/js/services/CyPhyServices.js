@@ -7,6 +7,36 @@ define([], function () {
     console.log(angular);
 
     angular.module('cyphy.services', ['gme.services'])
+        .service('NodeUtilities', function ($q) {
+            var self = this;
+
+            /**
+             * Recursively tries to get the parent of specified meta-type for node.
+             * @param node - node to get the parent for.
+             * @param parentMetaType - meta type node of parent.
+             * @param deferred - should be null (only used internally).
+             * @returns {*} - a promise.
+             */
+            this.getFirstParentOfType = function (node, parentMetaType, deferred) {
+                if (!deferred) {
+                    deferred = $q.defer();
+                }
+                node.getParentNode()
+                    .then(function (parentNode) {
+                        if (parentNode.isMetaTypeOf(parentMetaType)) {
+                            deferred.resolve(parentNode);
+                        } else {
+                            self.getFirstParentOfType(parentNode, parentMetaType, deferred);
+                        }
+                    })
+                    .catch(function (reason) {
+                        deferred.reject(reason);
+                    });
+
+                return deferred.promise;
+            };
+        })
+
         .service('DesertConfigurationServices', function ($q, NodeService) {
             var watchers = {};
 

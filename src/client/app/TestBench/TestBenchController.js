@@ -11,84 +11,53 @@ define(['../../js/DesertFrontEnd',
 
 //    angular.module('cyphy.ui.testBench', ['cyphy.ui.desertConfigurations']);
 
-    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, DesertConfigurationServices, smartClient, Chance) {
-            var self = this,
-                nodeId = $routeParams.id,
-                context = {
-                    db: 'my-db-connection-id',
-                    projectId: 'ADMEditor',
-                    branchId: 'master'
-                };
+    var TestBenchController = function ($scope, $rootScope, $routeParams, growl, NodeService, NodeUtilities, DesertConfigurationServices, smartClient, Chance) {
+        var self = this,
+            nodeId = $routeParams.id,
+            context = {
+                db: 'my-db-connection-id',
+                projectId: 'ADMEditor',
+                branchId: 'master'
+            };
 
-            self.$scope = $scope;
-            self.DesertConfigurationServices = DesertConfigurationServices;
-            self.growl = growl;
-            self.testBench = {};
-            self.NS = NodeService;
-            self.context = context;
-            self.meta = null;
-            self.initListItems();
-            if (Chance === null) {
-                self.smartClient = smartClient; //TODO: Remove me and use services instead
-                self.NS.on(self.context, 'initialize', function (currentContext) {
-                    self.context = currentContext;
-                    console.log('NodeService initialized for context: ', self.context);
-                    self.context.regionId = (new Date()).toISOString() + 'TestBenchController';
-                    self.NS.getMetaNodes(self.context)
-                        .then(function (metaNodes) {
-                            self.meta = metaNodes;
-                            self.NS.loadNode(self.context, nodeId)
-                                .then(function (node) {
-                                    self.initialize(node);
-                                });
-                        }).catch(function (reason) {
-                            console.error(reason);
+        self.$scope = $scope;
+        self.DesertConfigurationServices = DesertConfigurationServices;
+        self.NS = NodeService;
+        self.NodeUtilities = NodeUtilities;
+        self.growl = growl;
+
+        self.testBench = {};
+        self.context = context;
+        self.meta = null;
+        self.initListItems();
+        if (Chance !== null) {
+            self.getTestData(Chance);
+            return;
+        }
+        self.smartClient = smartClient; //TODO: Remove me and use services instead
+        self.$scope.$on('$destroy', function () {
+            // Clean up spawned regions
+            self.DesertConfigurationServices.cleanUp(context);
+            // Clean up 'TestBenchController' region.
+            self.NS.cleanUpRegion(context);
+            self.NS.logContext(context);
+        });
+        self.NS.on(self.context, 'initialize', function (currentContext) {
+            self.context = currentContext;
+            console.log('NodeService initialized for context: ', self.context);
+            self.context.regionId = (new Date()).toISOString() + 'TestBenchController';
+            self.NS.getMetaNodes(self.context)
+                .then(function (metaNodes) {
+                    self.meta = metaNodes;
+                    self.NS.loadNode(self.context, nodeId)
+                        .then(function (node) {
+                            self.initialize(node);
                         });
+                }).catch(function (reason) {
+                    console.error(reason);
                 });
-                self.$scope.$on('$destroy', function () {
-                    // Clean up spawned regions
-                    self.DesertConfigurationServices.cleanUp(context);
-                    // Clean up 'TestBenchController' region.
-                    self.NS.cleanUpRegion(context);
-                    self.NS.logContext(context);
-                });
-            } else {
-                var i,
-                    itemGenerator;
-
-                self.chance = Chance ? new Chance() : null;
-
-                itemGenerator = function (id) {
-                    return {
-                        id         : id,
-                        title      : self.chance.name(),
-                        toolTip    : 'Open item',
-                        description: self.chance.sentence(),
-                        lastUpdated: {
-                            time: self.chance.date({year: (new Date()).getFullYear()}),
-                            user: self.chance.name()
-
-                        },
-                        stats      : [
-                            {
-                                value    : self.chance.integer({min: 0, max: 5000}),
-                                toolTip  : 'Configuration',
-                                iconClass: 'fa fa-puzzle-piece'
-                            }
-                        ],
-                        details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.',
-                        detailsTemplateUrl: 'details.html'
-
-                    };
-                };
-
-                for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
-                    self.$scope.listData.items.push(itemGenerator(i));
-                }
-
-                self.update();
-            }
-        };
+        });
+    };
 
     TestBenchController.prototype.initialize = function (testBenchNode) {
         var self = this;
@@ -147,9 +116,17 @@ define(['../../js/DesertFrontEnd',
                 self.update();
             }
         });
-        self.$scope.mainNavigator.items = self.getNavigatorStructure(testBenchNode);
-        self.$scope.mainNavigator.separator = true;
-        self.update();
+
+        self.NodeUtilities.getFirstParentOfType(testBenchNode, self.meta.WorkSpace)
+            .then(function (workspaceNode) {
+                self.$scope.mainNavigator.items = self.getNavigatorStructure(workspaceNode);
+                self.$scope.mainNavigator.separator = true;
+                self.update();
+            })
+            .catch(function (reason) {
+                console.error(reason);
+            });
+
         testBenchNode.loadChildren(self.context)
             .then(function (childNodes) {
                 var i;
@@ -162,7 +139,8 @@ define(['../../js/DesertFrontEnd',
                     self.update();
                 });
                 self.NS.logContext(self.context);
-            }).catch(function (reason) {
+            })
+            .catch(function (reason) {
                 console.error(reason);
             });
     };
@@ -191,6 +169,7 @@ define(['../../js/DesertFrontEnd',
             },
             populateListDataItems = function () {
                 self.$scope.listData.items = [];
+                self.selectedConfigurations = {};
                 self.DesertConfigurationServices.addCfgSetsWatcher(self.context, id, update)
                     .then(function (data) {
                         var cfgSetId,
@@ -214,7 +193,8 @@ define(['../../js/DesertFrontEnd',
 //                            }
 //                        ],
                                 details    : 'Configurations',
-                                detailsTemplateUrl: 'details.html'
+                                detailsTemplateUrl: 'details.html',
+                                selectedConfigurations: {}
                             };
                         };
                         for (cfgSetId in data.cfgSets) {
@@ -405,13 +385,28 @@ define(['../../js/DesertFrontEnd',
                     {
                         items: [
                             {
-                                id: 'runAllConfigurations',
-                                label: 'Run all configurations',
+                                id: 'runSelectedConfigurations',
+                                label: 'Run selected configurations',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit',
-                                actionData: { id: item.id },
-                                action: function (data) {
-                                    console.log(data);
+                                iconClass: 'glyphicon glyphicon-expand',
+                                actionData: {},
+                                action: function () {
+                                    var key,
+                                        cfgIds = [];
+                                    if (item.selectedConfigurations) {
+                                        for (key in item.selectedConfigurations) {
+                                            if (item.selectedConfigurations === true) {
+                                                cfgIds.push(key);
+                                            }
+                                        }
+                                        if (cfgIds.length > 0) {
+                                            self.growl.info(cfgIds.toString());
+                                        } else {
+                                            self.growl.error('No configurations selected!');
+                                        }
+                                    } else {
+                                        self.growl.error('No configurations selected!');
+                                    }
                                 }
                             }
                         ]
@@ -438,32 +433,57 @@ define(['../../js/DesertFrontEnd',
 
             filter: {
             }
-
         };
+
         self.$scope.listData = {
             items: []
         };
     };
 
-    TestBenchController.prototype.getNavigatorStructure = function (tbNode) {
+    TestBenchController.prototype.getTestData = function (Chance) {
+        var self = this,
+            i,
+            chance,
+            itemGenerator;
+
+        chance = Chance ? new Chance() : null;
+
+        itemGenerator = function (id) {
+            return {
+                id         : id,
+                title      : chance.name(),
+                toolTip    : 'Open item',
+                description: chance.sentence(),
+                lastUpdated: {
+                    time: chance.date({year: (new Date()).getFullYear()}),
+                    user: chance.name()
+
+                },
+                stats      : [
+                    {
+                        value    : chance.integer({min: 0, max: 5000}),
+                        toolTip  : 'Configuration',
+                        iconClass: 'fa fa-puzzle-piece'
+                    }
+                ],
+                details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.',
+                detailsTemplateUrl: 'details.html'
+
+            };
+        };
+
+        for (i = 0; i < chance.integer({min: 0, max: 30}); i += 1) {
+            self.$scope.listData.items.push(itemGenerator(i));
+        }
+
+        self.update();
+    };
+
+    TestBenchController.prototype.getNavigatorStructure = function (workspaceNode) {
         var self = this,
             firstMenu,
             secondMenu,
-            parentNode,
             thirdMenu;
-//            getWorkSpaceNode = function (parentPromise) {
-//                parentPromise.then(function (parentNode) {
-//                    if (parentNode.isMetaTypeOf(self.meta.WorkSpace)) {
-//                        return parentPromise;
-//                    }
-//                    return getWorkSpaceNode(parentNode.getParentNode());
-//                });
-//            };
-        //TODO: Implement getParent node in NodeService
-//        tbNode.getParentNode().then(function(parentNode) {
-//            console.warn(parentNode.getAttribute('name'));
-//        });
-//        console.warn('requested parentNode');
 
         firstMenu = {
             id: 'root',
@@ -476,16 +496,16 @@ define(['../../js/DesertFrontEnd',
             menu: []
         };
 
-//        secondMenu = {
-//            id: 'workspace',
-//            label: workspaceName,
-//            itemClass: 'workspace',
-//            action: function () {
-//                window.location.href = '#/workspaceDetails/' + workspaceId;
-//            },
-//            actionData: {},
-//            menu: []
-//        };
+        secondMenu = {
+            id: 'workspace',
+            label: workspaceNode.getAttribute('name'),
+            itemClass: 'workspace',
+            action: function () {
+                window.location.href = '#/workspaceDetails/' + workspaceNode.getId();
+            },
+            actionData: {},
+            menu: []
+        };
 
         thirdMenu = {
             id: 'designSpace',
@@ -508,7 +528,7 @@ define(['../../js/DesertFrontEnd',
             }]
         };
 
-        return [ firstMenu, thirdMenu];
+        return [ firstMenu, secondMenu, thirdMenu];
     };
 
     return TestBenchController;
