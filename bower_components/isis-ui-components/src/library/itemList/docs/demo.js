@@ -21,9 +21,9 @@ demoApp.controller( 'ListItemDetailsDemoController', function ( $scope ) {
 
 demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
   var i,
-  items2 = [],
-  itemGenerator2,
-  config;
+    items2 = [],
+    itemGenerator2,
+    config;
 
   itemGenerator2 = function ( id ) {
     return {
@@ -36,13 +36,11 @@ demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
         user: 'N/A'
 
       },
-      stats: [
-        {
-          value: id,
-          tooltip: 'Orders',
-          iconClass: 'fa fa-cubes'
-        }
-      ],
+      stats: [ {
+        value: id,
+        tooltip: 'Orders',
+        iconClass: 'fa fa-cubes'
+      } ],
       details: 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
     };
   };
@@ -73,7 +71,7 @@ demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
     itemContextmenuRenderer: function ( e, item ) {
       console.log( 'Contextmenu was triggered for node:', item );
 
-      return  [{
+      return [ {
         items: [
 
           {
@@ -83,7 +81,7 @@ demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
             iconClass: 'fa fa-plus'
           }
         ]
-      }];
+      } ];
     },
 
     detailsRenderer: function ( item ) {
@@ -108,9 +106,6 @@ demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
 
         };
       }
-    },
-
-    filter: {
     }
 
   };
@@ -121,10 +116,9 @@ demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
 
   $scope.config2 = config;
 
-} )
-;
+} );
 
-demoApp.directive('demoSubList', function() {
+demoApp.directive( 'demoSubList', function () {
   return {
     restrict: 'E',
     replace: false,
@@ -134,7 +128,7 @@ demoApp.directive('demoSubList', function() {
     },
     template: '<item-list list-data="listData" config="config" class="col-md-12"></item-list>'
   };
-});
+} );
 
 demoApp.controller( 'ItemListDemoController', function ( $scope ) {
 
@@ -142,11 +136,11 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
   var
   i,
 
-  items = [],
+    items = [],
 
-  itemGenerator,
-  getItemContextmenu,
-  config;
+    itemGenerator,
+    getItemContextmenu,
+    config;
 
   itemGenerator = function ( id ) {
     return {
@@ -179,54 +173,42 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
 
   getItemContextmenu = function ( item ) {
 
-    var defaultItemContextmenu = [
-      {
-        items: [
-          {
-            id: 'create',
-            label: 'Create new',
-            disabled: true,
-            iconClass: 'fa fa-plus'
-          },
-          {
-            id: 'dummy',
-            label: 'Just for test ' + item.id,
+    var defaultItemContextmenu = [ {
+      items: [ {
+        id: 'create',
+        label: 'Create new',
+        disabled: true,
+        iconClass: 'fa fa-plus'
+      }, {
+        id: 'dummy',
+        label: 'Just for test ' + item.id,
 
-            actionData: item,
+        actionData: item,
 
+        action: function ( data ) {
+          console.log( 'testing ', data );
+        }
+
+      }, {
+        id: 'rename',
+        label: 'Rename'
+      }, {
+        id: 'preferences 3',
+        label: 'Preferences 3',
+        menu: [ {
+          items: [ {
+            id: 'sub_preferences 1',
+            label: 'Sub preferences 1'
+          }, {
+            id: 'sub_preferences 2',
+            label: 'Sub preferences 2',
             action: function ( data ) {
-              console.log( 'testing ', data );
+              console.log( 'testing2 ', data );
             }
-
-          },
-          {
-            id: 'rename',
-            label: 'Rename'
-          },
-          {
-            id: 'preferences 3',
-            label: 'Preferences 3',
-            menu: [
-              {
-                items: [
-                  {
-                    id: 'sub_preferences 1',
-                    label: 'Sub preferences 1'
-                  },
-                  {
-                    id: 'sub_preferences 2',
-                    label: 'Sub preferences 2',
-                    action: function ( data ) {
-                      console.log( 'testing2 ', data );
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ];
+          } ]
+        } ]
+      } ]
+    } ];
 
     return defaultItemContextmenu;
 
@@ -239,6 +221,8 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
     detailsCollapsible: true,
     showDetailsLabel: 'Show details',
     hideDetailsLabel: 'Hide details',
+
+    noItemsMessage: 'List is empty.',
 
     // Event handlers
 
@@ -290,5 +274,4 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
 
   $scope.config = config;
 
-} )
-;
+} );

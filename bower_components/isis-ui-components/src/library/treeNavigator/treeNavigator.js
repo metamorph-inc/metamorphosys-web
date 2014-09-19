@@ -7,13 +7,12 @@ require( './treeNavigator.header.js' );
 require( './treeNavigator.node.label.js' );
 
 angular.module(
-'isis.ui.treeNavigator',
-[
-  'isis.ui.treeNavigator.nodeList',
-  'isis.ui.treeNavigator.header',
-  'isis.ui.treeNavigator.node.label',
-  'ngDragDrop'
-] )
+  'isis.ui.treeNavigator', [
+    'isis.ui.treeNavigator.nodeList',
+    'isis.ui.treeNavigator.header',
+    'isis.ui.treeNavigator.node.label',
+    'ngDragDrop'
+  ] )
 
 .controller( 'TreeNavigatorController', function ( $scope ) {
 
@@ -36,18 +35,18 @@ angular.module(
 } )
 
 .directive(
-'treeNavigator', function () {
-  return {
-    scope: {
-      treeData: '=',
-      config: '='
-    },
+  'treeNavigator', function () {
+    return {
+      scope: {
+        treeData: '=',
+        config: '='
+      },
 
-    restrict: 'E',
-    replace: true,
-    templateUrl: '/isis-ui-components/templates/treeNavigator.html',
-    controller: 'TreeNavigatorController'
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/isis-ui-components/templates/treeNavigator.html',
+      controller: 'TreeNavigatorController'
 
-  };
-}
+    };
+  }
 );

@@ -31,7 +31,8 @@ The following options are allowed in `config`:
     - itemTemplateUrl: {string},
     - expanded: {boolean},
     - controller: {function},
-* `filter`: Not yet functioning.
+* `filter`: {Object}, if set a filter input is displayed.
+* `noItemsMessage`: {string} message to show when list is empty, default message says: "No items to show."
 
 Events exposed to callbacks in `config`:
 

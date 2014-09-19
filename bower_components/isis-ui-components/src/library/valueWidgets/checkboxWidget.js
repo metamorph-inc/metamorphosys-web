@@ -1,35 +1,39 @@
-/*globals define, angular, alert*/
+/*globals angular*/
 
+'use strict';
 
-define( [
-  'angular',
-  'text!./templates/checkboxWidget.html',
-  'css!./styles/checkboxWidget.css'
+require( '../services/isisUIServices.js' );
 
-], function ( ng, template ) {
+angular.module(
+  'isis.ui.checkboxWidget', [ 'isis.ui.services' ]
 
-  'use strict';
+)
+  .directive(
+    'checkboxWidget', [ 'isisTemplateService', '$compile',
+      function ( isisTemplateService, $compile ) {
 
-  angular.module(
-    'isis.ui.checkboxWidget', []
-
-  )
-    .directive(
-      'checkboxWidget',
-      function () {
+        var defaultTemplateUrl = '/isis-ui-components/templates/checkboxWidget.html';
 
         return {
           restrict: 'E',
           replace: true,
-          template: template,
-          scope: {
-            config: '=',
-            value: '=',
-            unresponsive: '='
+          require: 'ngModel',
+          link: function ( scope, element, attributes, ngModel ) {
+
+            var templateUrl;
+
+            templateUrl = scope.config && scope.config.templateUrl || defaultTemplateUrl;
+
+            isisTemplateService.getTemplate( scope.config.template, templateUrl )
+              .then( function ( template ) {
+                element.replaceWith( $compile( template, scope ) );
+              } );
+
+            console.log( ngModel.$viewValue );
+
           }
 
+
         };
-      } );
-
-
-} );
+      }
+    ] );

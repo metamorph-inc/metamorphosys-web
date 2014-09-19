@@ -34,12 +34,18 @@ var
 
     libraryModuleScript: 'src/library/isis-ui-components.js',
     libraryScripts: [
+
+      'src/library/services/*.js',
+
       'src/library/contextmenu/*.js',
       'src/library/dropdownNavigator/*.js',
       'src/library/simpleDialog/*.js',
       'src/library/treeNavigator/*.js',
       'src/library/hierarchicalMenu/*.js',
-      'src/library/itemList/*.js'
+      'src/library/itemList/*.js',
+      'src/library/validationErrorMarker/*.js',
+
+      'src/library/valueWidgets/*.js'
     ],
     libraryTemplates: [
       'src/**/templates/**/*.html'

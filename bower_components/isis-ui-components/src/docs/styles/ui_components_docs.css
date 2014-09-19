@@ -1,2 +1,16 @@
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important; }
+
 section {
-  min-height: 80px; }
+  min-height: 80px;
+  margin-bottom: 1em; }
+
+.tabbable > .nav-tabs a {
+  cursor: pointer; }
+
+.tabbable > .nav-tabs > li.active a {
+  background-color: #f7f7f7; }
+
+.tab-pane {
+  border: 1px solid #ddd;
+  border-top: none; }

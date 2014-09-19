@@ -2,7 +2,7 @@
 
 'use strict';
 
-require('./treeNavigator.node.label.js');
+require( './treeNavigator.node.label.js' );
 
 angular.module(
   'isis.ui.treeNavigator.node', [
@@ -10,13 +10,13 @@ angular.module(
   ]
 
 )
-.directive(
-  'treeNavigatorNode', function () {
-    return {
-      require: '^treeNavigatorNodeList',
-      restrict: 'E',
-      replace: true,
-      templateUrl: '/isis-ui-components/templates/treeNavigator.node.html'
-    };
-  }
+  .directive(
+    'treeNavigatorNode', function () {
+      return {
+        require: '^treeNavigatorNodeList',
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/isis-ui-components/templates/treeNavigator.node.html'
+      };
+    }
 );

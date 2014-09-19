@@ -19,10 +19,11 @@ angular.module(
 
             pre: function ( scope, el, attr, itemListCtl ) {
 
-              if (angular.isObject(scope.config) && angular.isObject(scope.config.newItemForm)) {
+              if ( angular.isObject( scope.config ) && angular.isObject( scope.config.newItemForm ) ) {
 
-                scope.config.newItemForm.controller = scope.config.newItemForm.controller || function () {
-                  return itemListCtl;
+                scope.config.newItemForm.controller = scope.config.newItemForm.controller ||
+                  function () {
+                    return itemListCtl;
                 };
 
                 scope.formConfig = scope.config.newItemForm;

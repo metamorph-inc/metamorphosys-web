@@ -1,3 +1,13 @@
+.item-list .filter-stats {
+  font-size: 80%;
+  padding-right: 1ex;
+  padding-top: .5ex;
+  color: #999;
+  text-align: right; }
+.item-list .no-items-to-show-message {
+  font-style: italic;
+  text-align: center;
+  color: #999; }
 .item-list ul.list-group li.item-list-item {
   background-color: #fff;
   transition: background-color .25s; }

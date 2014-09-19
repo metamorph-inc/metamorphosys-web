@@ -1,35 +1,41 @@
-/*globals define, angular, alert*/
+/*globals angular*/
 
 
-define( [
-  'angular',
-  'text!./templates/compoundWidget.html',
-  'css!./styles/compoundWidget.css'
+'use strict';
 
-], function ( ng, template ) {
+angular.module(
+  'isis.ui.compoundWidget', [ 'isis.ui.services' ]
 
-  'use strict';
+)
+  .directive(
+    'compoundWidget', [ 'isisTemplateService', '$compile',
+      function ( isisTemplateService, $compile ) {
 
-  angular.module(
-    'isis.ui.compoundWidget', []
-
-  )
-    .directive(
-      'compoundWidget',
-      function () {
+        var defaultTemplateUrl = '/isis-ui-components/templates/compoundWidget.html';
 
         return {
           restrict: 'E',
           replace: true,
-          template: template,
+          require: 'ngModel',
           scope: {
-            config: '=',
-            value: '=',
-            unresponsive: '='
+            config: '='
+          },
+          link: function ( scope, element, attributes, ngModel ) {
+
+            var templateUrl;
+
+            templateUrl = scope.config && scope.config.templateUrl || defaultTemplateUrl;
+
+            isisTemplateService.getTemplate( scope.config.template, templateUrl )
+              .then( function ( template ) {
+                element.replaceWidth( $compile( template, scope ) );
+              } );
+
+            console.log( ngModel.$viewValue );
+
           }
 
+
         };
-      } );
-
-
-} );
+      }
+    ] );

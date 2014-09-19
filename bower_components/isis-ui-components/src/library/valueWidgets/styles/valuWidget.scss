@@ -1,0 +1,28 @@
+$error-color: #ff0022;
+
+.value-widget {
+
+  label {
+    color: #555;
+  }
+
+  position: relative;
+
+  .value-display {
+    padding: 1ex;
+  }
+
+  &.ng-invalid {
+    input {
+      border-left: 3px solid $error-color;
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+      color: $error-color;
+    }
+
+    .value-display {
+      border-left: 3px solid $error-color;
+      color: $error-color;
+    }
+  }
+}

@@ -9890,7 +9890,8 @@ var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
 
 // overwrite WorkspaceService with dummy data
 demoApp.service('WorkspaceService', function () {
-    var workspaces = [],
+    var self = this,
+        workspaces = [],
         itemGenerator;
 
     itemGenerator = function (id) {
@@ -9930,8 +9931,7 @@ demoApp.service('WorkspaceService', function () {
     };
 
     this.getWorkspaces = function () {
-        var self = this,
-            numItems,
+        var numItems,
             i;
 
         console.log('Getting workspaces ...');

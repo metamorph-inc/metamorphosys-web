@@ -1,5 +1,19 @@
 .item-list {
 
+  .filter-stats {
+    font-size: 80%;
+    padding-right: 1ex;
+    padding-top: .5ex;
+    color: #999;
+    text-align: right;
+  }
+
+  .no-items-to-show-message {
+    font-style: italic;
+    text-align: center;
+    color: #999;
+  }
+
   ul.list-group {
 
     li.item-list-item {

@@ -21,8 +21,9 @@ Include library CSS:
 <link type="text/css" rel="stylesheet" href="dist/isis-ui-components.css">
 ```
 
-## Requirements
+## Library-dependencies
 
+- Angular (1.3.2)
 - jQuery UI (1.11.1)
 - Angular-ui-bootstrap (0.10.0)
 

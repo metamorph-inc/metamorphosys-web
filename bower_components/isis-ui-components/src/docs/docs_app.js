@@ -3,20 +3,24 @@
 
 var components = [
   {
+    name: 'valueWidgets',
+    sources: [ 'demo.html', 'demo.js']
+  },
+  {
     name: 'searchBox',
     sources: [ 'demo.html', 'demo.js']
   },
   {
     name: 'itemList',
-    sources: []
+    sources: [ 'demo.html', 'newItemTemplate.html', 'demo.js']
   },
   {
     name: 'simpleDialog',
-    sources: []
+    sources: [ 'demo.html', 'demo.js']
   },
   {
     name: 'hierarchicalMenu',
-    sources: []
+    sources: [ 'demo.html', 'demo.js']
   },
   {
     name: 'contextmenu',
@@ -24,73 +28,97 @@ var components = [
   },
   {
     name: 'dropdownNavigator',
-    sources: []
+    sources: [ 'demo.html', 'demo.js']
   },
   {
     name: 'treeNavigator',
-    sources: []
+    sources: [ 'demo.html', 'demo.js']
   }
 ];
 
-require('../library/simpleDialog/docs/demo.js');
-require('../library/hierarchicalMenu/docs/demo.js');
-require('../library/contextmenu/docs/demo.js');
-require('../library/dropdownNavigator/docs/demo.js');
-require('../library/treeNavigator/docs/demo.js');
-require('../library/itemList/docs/demo.js');
-require('../library/searchBox/docs/demo.js');
+require( '../library/simpleDialog/docs/demo.js' );
+require( '../library/hierarchicalMenu/docs/demo.js' );
+require( '../library/contextmenu/docs/demo.js' );
+require( '../library/dropdownNavigator/docs/demo.js' );
+require( '../library/treeNavigator/docs/demo.js' );
+require( '../library/itemList/docs/demo.js' );
+require( '../library/searchBox/docs/demo.js' );
+require( '../library/valueWidgets/docs/demo.js' );
 
-require('angular-sanitize');
-window.Showdown = require('showdown');
-require('angular-markdown-directive');
+require( 'angular-sanitize' );
+window.Showdown = require( 'showdown' );
+require( 'angular-markdown-directive' );
 
-require('codemirrorCSS');
-window.CodeMirror = require('code-mirror');
-require('angular-ui-codemirror');
+require( 'codemirrorCSS' );
+window.CodeMirror = require( 'code-mirror' );
+
+require( 'code-mirror/mode/htmlmixed' );
+require( 'code-mirror/mode/xml' );
+require( 'code-mirror/mode/javascript' );
+
+require( 'angular-ui-codemirror' );
 
 
 var demoApp = angular.module(
 'isis.ui.demoApp', [
   'isis.ui.demoApp.templates',
   'btford.markdown',
-  'ui.codemirror'
-].concat(components.map(function (e) {
+  'ui.codemirror',
+  'ui.bootstrap'
+].concat( components.map( function ( e ) {
   return 'isis.ui.' + e.name + '.demo';
-}))
+} ) )
 );
 
-demoApp.run(function () {
-  console.log('DemoApp run...');
-});
+demoApp.run( function () {
+  console.log( 'DemoApp run...' );
+} );
 
 demoApp.controller(
 'UIComponentsDemoController',
-function ($scope) {
+function ( $scope, $templateCache ) {
 
-  $scope.components = components.map(function (component) {
-    var sourceTemplates;
+  var fileExtensionRE,
+    codeMirrorModes;
 
-    if (angular.isArray(component.sources)) {
-      sourceTemplates = component.sources.map(function (sourceFile) {
+  fileExtensionRE = /(?:\.([^.]+))?$/;
+
+  codeMirrorModes = {
+    'js': 'javascript',
+    'html': 'htmlmixed'
+  };
+
+  $scope.components = components.map( function ( component ) {
+    var sources,
+    viewerOptions,
+    fileExtension;
+
+    if ( angular.isArray( component.sources ) ) {
+      sources = component.sources.map( function ( sourceFile ) {
+
+        fileExtension = fileExtensionRE.exec( sourceFile );
+
+        viewerOptions = {
+          lineWrapping: true,
+          lineNumbers: true,
+          readOnly: true,
+          mode: codeMirrorModes[fileExtension[1]] || 'xml'
+        };
+
         return {
           fileName: sourceFile,
-          templateUrl: '/library/' + component.name + '/docs/' + sourceFile
+          code: $templateCache.get( '/library/' + component.name + '/docs/' + sourceFile ),
+          viewerOptions: viewerOptions
         };
-      });
+      } );
     }
 
     return {
       name: component.name,
       template: '/library/' + component.name + '/docs/demo.html',
       docs: '/library/' + component.name + '/docs/readme.md',
-      sources: sourceTemplates
+      sources: sources
     };
-  });
+  } );
 
-  $scope.codeViewerOptions = {
-    lineWrapping : true,
-    lineNumbers: true,
-    readOnly: 'nocursor'
-  };
-
-});
+} );

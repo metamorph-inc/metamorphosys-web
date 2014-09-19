@@ -4,30 +4,29 @@
 
 require( './treeNavigator.node.js' );
 require( '../helpers/angular-recursion.js' );
-require('angular-dragdrop');
+require( 'angular-dragdrop' );
 
 angular.module(
-'isis.ui.treeNavigator.nodeList',
-[
-  'isis.ui.treeNavigator.node',
-  'RecursionHelper',
-  'ngDragDrop'
-]
+  'isis.ui.treeNavigator.nodeList', [
+    'isis.ui.treeNavigator.node',
+    'RecursionHelper',
+    'ngDragDrop'
+  ]
 )
 
 .controller( 'TreeNavigatorNodeListController', function ( $scope, $log ) {
 
   var initializeScope,
-  updateSelection,
-  removeNodeFromList,
-  markNodeExpanded;
+    updateSelection,
+    removeNodeFromList,
+    markNodeExpanded;
 
   // Tree helpers
 
-//  nodeParents = {},
-//  walkTree,
-//  getPathFromRoot,
-//  findFirstCommonParent;
+  //  nodeParents = {},
+  //  walkTree,
+  //  getPathFromRoot,
+  //  findFirstCommonParent;
 
 
   removeNodeFromList = function ( list, node ) {
@@ -62,20 +61,20 @@ angular.module(
     $scope.config.state = angular.extend( defaultTreeState, $scope.config.state || {} );
 
   };
-//
-//  getPathFromRoot = function(root, node) {
-//    var path = [];
-//
-//    return path;
-//  };
-//
-//  findFirstCommonParent = function(nodeA, nodeB) {
-//
-//    var parent = null;
-//
-//    return parent;
-//
-//  };
+  //
+  //  getPathFromRoot = function(root, node) {
+  //    var path = [];
+  //
+  //    return path;
+  //  };
+  //
+  //  findFirstCommonParent = function(nodeA, nodeB) {
+  //
+  //    var parent = null;
+  //
+  //    return parent;
+  //
+  //  };
 
   updateSelection = function ( $event, node ) {
     var index;
@@ -130,15 +129,15 @@ angular.module(
   // Node state helper/watcher functions
 
   $scope.isNodeExpanded = function ( node ) {
-    return ($scope.config.state.expandedNodes.indexOf( node.id ) > -1);
+    return ( $scope.config.state.expandedNodes.indexOf( node.id ) > -1 );
   };
 
   $scope.isNodeSelected = function ( node ) {
-    return ($scope.config.state.selectedNodes.indexOf( node.id ) > -1);
+    return ( $scope.config.state.selectedNodes.indexOf( node.id ) > -1 );
   };
 
   $scope.isNodeLoading = function ( node ) {
-    return ($scope.config.state.loadingNodes.indexOf( node.id ) > -1);
+    return ( $scope.config.state.loadingNodes.indexOf( node.id ) > -1 );
   };
 
   $scope.canNodeExpand = function ( node ) {
@@ -199,20 +198,18 @@ angular.module(
             $scope.config.nodeExpanderClick( $event, node, false );
           }
         }
-      }
-
-      else {
+      } else {
         if ( $scope.canNodeExpand( node ) ) {
           if ( node.children.length === 0 ) {
 
             // Need to load children
             if ( angular.isFunction( $scope.config.loadChildren ) ) {
-              $scope.config.state.loadingNodes.push( node.id);
+              $scope.config.state.loadingNodes.push( node.id );
               $scope.config.loadChildren( $event, node )
-              .then( function () {
-                removeNodeFromList($scope.config.state.loadingNodes, node);
-                markNodeExpanded( $event, node );
-              } );
+                .then( function () {
+                  removeNodeFromList( $scope.config.state.loadingNodes, node );
+                  markNodeExpanded( $event, node );
+                } );
             }
 
           } else {
@@ -226,30 +223,30 @@ angular.module(
   };
 
   $scope.nodeDrop = function ( $event, node, $data ) {
-    console.log($data, 'Dropped on ', node);
+    console.log( $data, 'Dropped on ', node );
   };
 
-//  $rootScope.$on('ANGULAR_DRAG_START', function($event){
-//    console.log($event);
-//  });
+  //  $rootScope.$on('ANGULAR_DRAG_START', function($event){
+  //    console.log($event);
+  //  });
 
 } )
 
 .directive(
-'treeNavigatorNodeList', function ( RecursionHelper ) {
-  return {
-    scope: {
-      nodes: '=',
-      config: '='
-    },
-    restrict: 'E',
-    replace: true,
-    templateUrl: '/isis-ui-components/templates/treeNavigator.nodeList.html',
-    controller: 'TreeNavigatorNodeListController',
-    compile: function ( element ) {
-      return RecursionHelper.compile( element );
-    }
+  'treeNavigatorNodeList', function ( RecursionHelper ) {
+    return {
+      scope: {
+        nodes: '=',
+        config: '='
+      },
+      restrict: 'E',
+      replace: true,
+      templateUrl: '/isis-ui-components/templates/treeNavigator.nodeList.html',
+      controller: 'TreeNavigatorNodeListController',
+      compile: function ( element ) {
+        return RecursionHelper.compile( element );
+      }
 
-  };
-}
+    };
+  }
 );

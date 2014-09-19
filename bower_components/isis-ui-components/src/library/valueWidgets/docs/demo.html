@@ -1,0 +1,36 @@
+<div data-ng-controller="ValueWidgetsDemoController" style="height: 500px; overflow-x:auto; padding: 0 1ex;">
+
+    <table class="table table-condensed">
+        <thead>
+            <th>Mode: edit</th>
+            <th>Mode: display</th>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="widget in widgets">
+                <td style="max-width: 300px; overflow-x: hidden; text-overflow: ellipsis;">
+                    <value-widget
+                        input-name="widget.name"
+                        input-label="widget.name"
+                        input-id="widget.name"
+                        widget-type="widget.name"
+                        ng-model="widget.value"
+                        widget-mode="'edit'"
+                        value-change="widget.valueChange"
+                        widget-config="widget.configEdit">
+                    </value-widget>
+                </td>
+                <td style="max-width: 300px; overflow-x: hidden; text-overflow: ellipsis;">
+                    <value-widget
+                        input-name="widget.name"
+                        input-label="widget.name"
+                        input-id="widget.name + '_display'"
+                        widget-type="widget.name"
+                        ng-model="widget.value"
+                        widget-mode="'display'"
+                        widget-config="widget.configDisplay">
+                    </value-widget>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
