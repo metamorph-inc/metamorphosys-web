@@ -731,8 +731,21 @@ define([
                     return;
                 }
                 if (valueFlows.length > 1) {
-                    self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
-                    callback(null);
+                    if (self.selectedAlternatives || self.core.getAttribute(parent, 'Type') !== 'Alternative') {
+                        // With only one configuration or within a non-alternative container there should not be any muxes!
+                        self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
+                        callback(null);
+                    } else {
+                        self.addValueFlowMux(valueFlows, parent, containerData, function (err, muxId) {
+                            if (err) {
+                                self.createMessage(node, 'Property had multiple incoming value-flows.' +
+                                    ' Failed to add valueFlow-mux for it.', 'error');
+                                callback(err);
+                                return;
+                            }
+                            addPropertyData(muxId);
+                        });
+                    }
                     return;
                 }
                 if (!self.core.hasPointer(valueFlows[0], 'src')) {
@@ -844,23 +857,23 @@ define([
 
                     return function (err, valueSource) {
                         var symbol,
-                            id,
-                            parent,
+                            valueSourceId,
+                            valueSourceParent,
                             parentMetaType;
 
                         if (err) {
                             error += err;
                         } else {
-                            parent = self.core.getParent(valueSource);
-                            parentMetaType = self.core.getAttribute(self.getMetaType(parent), 'name');
+                            valueSourceParent = self.core.getParent(valueSource);
+                            parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
                             if (parentMetaType === 'AVMComponentModel') {
-                                if (self.shouldBeGenerated(parent)) {
-                                    id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                                if (self.shouldBeGenerated(valueSourceParent)) {
+                                    valueSourceId = '{' + self.core.getGuid(valueSourceParent) + '}-' + self.core.getAttribute(valueSource, 'ID');
                                 }
                             } else if (parentMetaType === 'Container') {
                                 //If parent of parent is alternative, then only add if parent is in AA.
-                                if (self.shouldBeGenerated(parent)) {
-                                    id = self.core.getGuid(valueSource);
+                                if (self.shouldBeGenerated(valueSourceParent)) {
+                                    valueSourceId = self.core.getGuid(valueSource);
                                 }
                             } else {
                                 self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
@@ -872,10 +885,10 @@ define([
                                     symbol = self.core.getAttribute(valueSource, 'name');
                                 }
                             }
-                            if (id) {
+                            if (valueSourceId) {
                                 operands.push({
                                     symbol: symbol,
-                                    id: id
+                                    id: valueSourceId
                                 });
                             }
                         }
@@ -890,9 +903,62 @@ define([
                     addFormulaData([], error);
                 }
                 for (i = 0; i < valueFlows.length; i += 1) {
-                    self.core.loadPointer(valueFlows[i], 'src', counterCallback(valueFlows[i]));
+                    if (self.core.hasPointer(valueFlows[i], 'src')) {
+                        self.core.loadPointer(valueFlows[i], 'src', counterCallback(valueFlows[i]));
+                    } else {
+                        self.createMessage(valueFlows[i], 'ValueFlow Connection with no src exists in design.', 'error');
+                        counterCallback(valueFlows[i])('A valueFlow with only one direction pointer exists in model.');
+                    }
                 }
             });
+        }
+    };
+
+    AdmExporter.prototype.addValueFlowMux = function (valueFlows, parent, containerData, callback) {
+        var self = this,
+            i,
+            counter = valueFlows.length,
+            s4 = function () {
+                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            },
+            mux = {
+                '@ID': 'muxid-' + s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4(),
+                '@Source': ''
+            },
+            error = '',
+            counterCallback = function (err, valueSource) {
+                var valueSourceId,
+                    valueSourceParent,
+                    parentMetaType;
+
+                if (err) {
+                    error += err;
+                } else {
+                    valueSourceParent = self.core.getParent(valueSource);
+                    parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
+                    if (parentMetaType === 'AVMComponentModel') {
+                        valueSourceId = '{' + self.core.getGuid(valueSourceParent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                    } else if (parentMetaType === 'Container') {
+                        valueSourceId = self.core.getGuid(valueSource);
+                    } else {
+                        self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
+                    }
+                    mux['@Source'] = self.appendWhiteSpacedString(mux['@Source'], valueSourceId);
+                }
+                counter -= 1;
+                if (counter <= 0) {
+                    callback(error, mux['@ID']);
+                }
+            };
+
+        containerData.ValueFlowMux.push(mux);
+        for (i = 0; i < valueFlows.length; i += 1) {
+            if (self.core.hasPointer(valueFlows[i], 'src')) {
+                self.core.loadPointer(valueFlows[i], 'src', counterCallback);
+            } else {
+                self.createMessage(valueFlows[i], 'ValueFlow Connection with no src exists in design.', 'error');
+                counterCallback('A valueFlow with only one direction pointer exists in model.');
+            }
         }
     };
 
@@ -969,7 +1035,8 @@ define([
                 "Port": [],
                 "Connector": [],
                 "JoinData": [],
-                "Formula": []
+                "Formula": [],
+                "ValueFlowMux": []
             };
 
         if (!isRoot) {
