@@ -7,19 +7,10 @@ var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
     'cyphy.components.templates'
 ]);
 
-demoApp.controller('WorkspaceListDemoController', function ($scope) {
-    var self = this,
-        numItems,
-        itemGenerator,
-        i;
-
-    console.log('WorkspaceListDemoController');
-
-    self.chance = new Chance();
-    numItems = self.chance.integer({min: 2, max: 15});
-
-    // this element
-    $scope.workspaces = [];
+// overwrite WorkspaceService with dummy data
+demoApp.service('WorkspaceService', function () {
+    var workspaces = [],
+        itemGenerator;
 
     itemGenerator = function (id) {
         return {
@@ -57,9 +48,43 @@ demoApp.controller('WorkspaceListDemoController', function ($scope) {
         };
     };
 
-    for (i = 0; i < self.chance.integer({min: 0, max: 30}); i += 1) {
-        $scope.workspaces.push(itemGenerator(i));
-    }
+    this.getWorkspaces = function () {
+        var self = this,
+            numItems,
+            i;
 
+        console.log('Getting workspaces ...');
 
+        self.chance = new Chance();
+        numItems = self.chance.integer({min: 2, max: 15});
+
+        for (i = 0; i < numItems; i += 1) {
+            workspaces.push(itemGenerator(i));
+        }
+
+        console.log('Got workspaces ', workspaces.length);
+
+        return workspaces;
+    };
+
+    this.createWorkspace = function (data, otherWorkspaceId) {
+        var key,
+            newWorkspace = itemGenerator();
+
+        // TODO: if other workspace is defined then copy it and update with data
+        for (key in data) {
+            if (data.hasOwnProperty(key)) {
+                newWorkspace[key] = data[key];
+            }
+        }
+
+        workspaces.push(newWorkspace);
+    };
+
+    this.deleteWorkspace = function (id) {
+        var index = workspaces.map(function (e) { return e.id; }).indexOf(id);
+        if (index > -1) {
+            workspaces.splice(index, 1);
+        }
+    };
 });

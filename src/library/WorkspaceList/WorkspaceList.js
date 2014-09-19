@@ -7,9 +7,22 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope) {
+    .service('WorkspaceService', function () {
+        this.getWorkspaces = function () {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.createWorkspace = function (data, otherWorkspaceId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.deleteWorkspace = function (id) {
+            throw new Error('Not implemented yet.');
+        };
+    })
+    .controller('WorkspaceListController', function ($scope, WorkspaceService) {
         var self = this,
-            items = $scope.items,
+            items = WorkspaceService.getWorkspaces(), //$scope.items,
             config;
 
         console.log('WorkspaceListController');
@@ -65,8 +78,8 @@ angular.module('cyphy.components')
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
                                 actionData: { id: item.id },
-                                action: function (id) {
-                                    console.log(id);
+                                action: function (data) {
+                                    console.log(data);
                                 }
                             }
                         ]
@@ -79,7 +92,11 @@ angular.module('cyphy.components')
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
-                                iconClass: 'fa fa-plus'
+                                iconClass: 'fa fa-plus',
+                                actionData: { id: item.id },
+                                action: function (data) {
+                                    WorkspaceService.deleteWorkspace(data.id);
+                                }
                             }
                         ]
                     }
@@ -97,10 +114,7 @@ angular.module('cyphy.components')
                 controller: function ($scope) {
                     $scope.createItem = function (newItem) {
 
-                        newItem.url = 'something';
-                        newItem.toolTip = newItem.title;
-
-                        items.push(newItem);
+                        WorkspaceService.createWorkspace(newItem);
 
                         $scope.newItem = {};
 
@@ -116,16 +130,13 @@ angular.module('cyphy.components')
         };
 
         $scope.listData = {
-            items: $scope.items
+            items: items
         };
 
         $scope.config = config;
     })
     .directive('workspaceList', function () {
         return {
-            scope: {
-                items: '='
-            },
             restrict: 'E',
             replace: true,
             templateUrl: '/cyphy-components/templates/WorkspaceList.html',
