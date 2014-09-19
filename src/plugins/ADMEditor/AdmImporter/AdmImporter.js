@@ -41,6 +41,7 @@ define([
 //            src: {string},
 //            dst: {string}
 //        };
+        this.valueFlowMuxes = {};
         this.connectorCompositions = [];
 //        connectorCompositionsDataType = {
 //            src: {string},
@@ -123,6 +124,7 @@ define([
                 Property: true,
                 Formula: true,
                 Operand: true,
+                ValueFlowMux: true,
                 ComponentInstance: true,
                 PrimitivePropertyInstance: true,
                 ConnectorInstance: true,
@@ -445,6 +447,7 @@ define([
             connectorsData,
             propertiesData,
             formulasData,
+            muxData,
             i,
             indent = new Array(depth + 2).join('-');
         // Create the container and set attributes and registry.
@@ -468,6 +471,13 @@ define([
             subContainersData = containerData.Container;
             for (i = 0; i < subContainersData.length; i += 1) {
                 self.createContainer(subContainersData[i], container, depth);
+            }
+        }
+
+        if (containerData.ValueFlowMux) {
+            muxData = containerData.ValueFlowMux;
+            for (i = 0; i < muxData.length; i += 1) {
+                self.valueFlowMuxes[muxData[i]['@ID']] = muxData[i]['@Source'].split(' ');
             }
         }
 
@@ -653,6 +663,8 @@ define([
 
     AdmImporter.prototype.createProperty = function (propertyData, parentNode) {
         var self = this,
+            i,
+            muxSources,
             property,
             value = '',
             isParameter = false,
@@ -670,20 +682,40 @@ define([
                         value = valueExpression.AssignedValue.Value['#text'];
                     }
                 } else if (self.endsWith(assignedValue['@xsi:type'], 'DerivedValue')) {
-                    self.valueFlows.push({
-                        src: assignedValue['@ValueSource'],
-                        dst: valueID
-                    });
+                    if (self.valueFlowMuxes[assignedValue['@ValueSource']]) {
+                        muxSources = self.valueFlowMuxes[assignedValue['@ValueSource']];
+                        for (i = 0; i < muxSources.length; i += 1) {
+                            self.valueFlows.push({
+                                src: muxSources[i],
+                                dst: valueID
+                            });
+                        }
+                    } else {
+                        self.valueFlows.push({
+                            src: assignedValue['@ValueSource'],
+                            dst: valueID
+                        });
+                    }
                 }
             } else if (self.endsWith(valueExpression['@xsi:type'], 'FixedValue')) {
                 if (valueExpression.Value && valueExpression.Value['#text']) {
                     value = valueExpression.Value['#text'];
                 }
             } else if (self.endsWith(valueExpression['@xsi:type'], 'DerivedValue')) {
-                self.valueFlows.push({
-                    src: valueExpression['@ValueSource'],
-                    dst: valueID
-                });
+                if (self.valueFlowMuxes[valueExpression['@ValueSource']]) {
+                    muxSources = self.valueFlowMuxes[valueExpression['@ValueSource']];
+                    for (i = 0; i < muxSources.length; i += 1) {
+                        self.valueFlows.push({
+                            src: muxSources[i],
+                            dst: valueID
+                        });
+                    }
+                } else {
+                    self.valueFlows.push({
+                        src: valueExpression['@ValueSource'],
+                        dst: valueID
+                    });
+                }
             }
         }
 
@@ -694,10 +726,10 @@ define([
             if (valueExpression.Default && valueExpression.Default.Value['#text']) {
                 self.core.setAttribute(property, 'Default', valueExpression.Default.Value['#text']);
             }
-            if (valueExpression.Maximum.Value['#text']) {
+            if (valueExpression.Maximum && valueExpression.Maximum.Value['#text']) {
                 self.core.setAttribute(property, 'Maximum', valueExpression.Maximum.Value['#text']);
             }
-            if (valueExpression.Minimum.Value['#text']) {
+            if (valueExpression.Minimum && valueExpression.Minimum.Value['#text']) {
                 self.core.setAttribute(property, 'Minimum', valueExpression.Minimum.Value['#text']);
             }
         } else {
@@ -779,7 +811,6 @@ define([
             }
         }
     };
-
 //</editor-fold>
 
 //<editor-fold desc="============================ Making of connections =========================">
