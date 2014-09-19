@@ -182,7 +182,7 @@ define([
         }
         self.updateMETA(self.meta);
         //self.copies = config.copies;
-        self.copies = true;
+        self.copies = false;
         self.blobClient.getObject(config.admFile, function (err, xmlArrayBuffer) {
             var xml2json = new Converter.Xml2json({
                     skipWSText: true,
