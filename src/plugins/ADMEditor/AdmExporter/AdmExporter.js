@@ -953,6 +953,9 @@ define([
                 if (!self.core.hasPointer(valueFlow, 'src')) {
                     self.createMessage(valueFlow, 'ValueFlow Connection with no src exists in design.', 'error');
                     error += 'A valueFlow with only one direction pointer exists in model.';
+                    if (counter <= 0) {
+                        callback(error, null);
+                    }
                 } else {
                     self.core.loadPointer(valueFlow, 'src', function (err, valueSourceNode) {
                         var src,
@@ -960,9 +963,6 @@ define([
                         if (err) {
                             error += 'Could not load src pointer for ' + self.core.getAttribute(valueFlow, 'name')
                                 + 'err: ' + err.toString();
-                            if (counter <= 0) {
-                                callback(error, finalSrcId);
-                            }
                         } else if (self.nodeIsWithinDesign(valueSourceNode)) {
                             src = self.core.getParent(valueSourceNode);
                             srcParentMetaType = self.core.getAttribute(self.getMetaType(src), 'name');
@@ -992,9 +992,9 @@ define([
                             } else {
                                 finalSrcId = srcId;
                             }
-                            if (counter <= 0) {
-                                callback(error, finalSrcId);
-                            }
+                        }
+                        if (counter <= 0) {
+                            callback(error, finalSrcId);
                         }
                     });
                 }
