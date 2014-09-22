@@ -131,6 +131,7 @@ define([
         }
         self.meta = MetaTypes;
         self.updateMETA(self.meta);
+        self.rootPath = self.core.getPath(self.activeNode);
         finishAndSaveArtifact = function (artifact) {
             artifact.save(function (err, hash) {
                 if (err) {
@@ -731,61 +732,38 @@ define([
                     return;
                 }
                 if (valueFlows.length > 1) {
-                    if (self.selectedAlternatives || self.core.getAttribute(parent, 'Type') !== 'Alternative') {
+                    if (self.core.getAttribute(parent, 'Type') !== 'Alternative') {
                         // With only one configuration or within a non-alternative container there should not be any muxes!
                         self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
                         callback(null);
+                    } else if (self.selectedAlternatives) {
+                        self.getValueSrcId(valueFlows, node, parent, function (err, srcId) {
+                            if (err) {
+                                callback('Problems getting ValueSrcId in alternative for configuration, err: ' + err);
+                            } else {
+                                addPropertyData(srcId);
+                            }
+                        });
                     } else {
                         self.addValueFlowMux(valueFlows, parent, containerData, function (err, muxId) {
                             if (err) {
                                 self.createMessage(node, 'Property had multiple incoming value-flows.' +
                                     ' Failed to add valueFlow-mux for it.', 'error');
                                 callback(err);
-                                return;
+                            } else {
+                                addPropertyData(muxId);
                             }
-                            addPropertyData(muxId);
                         });
                     }
-                    return;
-                }
-                if (!self.core.hasPointer(valueFlows[0], 'src')) {
-                    self.createMessage(valueFlows[0], 'ValueFlow Connection with no src exists in design.', 'error');
-                    callback('A valueFlow with only one direction pointer exists in model.');
-                    return;
-                }
-                self.core.loadPointer(valueFlows[0], 'src', function (err, valueSourceNode) {
-                    var vsId,
-                        vsParent,
-                        parentMetaType;
-                    if (err) {
-                        callback('Could not load src pointer for ' + self.core.getAttribute(valueFlows[0], 'name')
-                            + 'err: ' + err.toString());
-                        return;
-                    }
-                    if (self.nodeIsWithinDesign(valueSourceNode)) {
-                        vsParent = self.core.getParent(valueSourceNode);
-                        parentMetaType = self.core.getAttribute(self.getMetaType(vsParent), 'name');
-                        if (parentMetaType === 'AVMComponentModel') {
-                            if (parentType === 'AVMComponentModel' && self.core.getPath(vsParent) === self.core.getPath(parent)) {
-                                self.logger.info('Skipping connection within same ACM : ' +
-                                    self.core.getAttribute(node, 'name'));
-                            } else {
-                                // If parent of parent is alternative, then only add if parent is in AA.
-                                if (self.shouldBeGenerated(vsParent)) {
-                                    vsId = '{' + self.core.getGuid(vsParent) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
-                                }
-                            }
-                        } else if (parentMetaType === 'Container') {
-                            //If parent of parent is alternative, then only add if parent is in AA.
-                            if (self.shouldBeGenerated(vsParent)) {
-                                vsId = self.core.getGuid(valueSourceNode);
-                            }
+                } else {
+                    self.getValueSrcId(valueFlows, node, parent, function (err, srcId) {
+                        if (err) {
+                            callback('Problems getting ValueSrcId, err: ' + err);
                         } else {
-                            self.logger.error('Unexpected parentMetaType of valueSourceNode' + parentMetaType);
+                            addPropertyData(srcId);
                         }
-                    }
-                    addPropertyData(vsId);
-                });
+                    });
+                }
             });
         }
     };
@@ -959,6 +937,70 @@ define([
                 self.createMessage(valueFlows[i], 'ValueFlow Connection with no src exists in design.', 'error');
                 counterCallback('A valueFlow with only one direction pointer exists in model.');
             }
+        }
+    };
+
+    AdmExporter.prototype.getValueSrcId = function (valueFlows, targetNode, targetParent, callback) {
+        var self = this,
+            error = '',
+            i,
+            finalSrcId,
+            counter = valueFlows.length,
+            parentType = self.getMetaType(targetParent),
+            atValueFlowNode = function (valueFlow) {
+                var srcId;
+                counter -= 1;
+                if (!self.core.hasPointer(valueFlow, 'src')) {
+                    self.createMessage(valueFlow, 'ValueFlow Connection with no src exists in design.', 'error');
+                    error += 'A valueFlow with only one direction pointer exists in model.';
+                } else {
+                    self.core.loadPointer(valueFlow, 'src', function (err, valueSourceNode) {
+                        var src,
+                            srcParentMetaType;
+                        if (err) {
+                            error += 'Could not load src pointer for ' + self.core.getAttribute(valueFlow, 'name')
+                                + 'err: ' + err.toString();
+                            if (counter <= 0) {
+                                callback(error, finalSrcId);
+                            }
+                        } else if (self.nodeIsWithinDesign(valueSourceNode)) {
+                            src = self.core.getParent(valueSourceNode);
+                            srcParentMetaType = self.core.getAttribute(self.getMetaType(src), 'name');
+                            if (srcParentMetaType === 'AVMComponentModel') {
+                                if (parentType === 'AVMComponentModel' && self.core.getPath(src) === self.core.getPath(targetParent)) {
+                                    self.logger.info('Skipping connection within same ACM : ' +
+                                        self.core.getAttribute(targetNode, 'name'));
+                                } else {
+                                    // If parent of parent is alternative, then only add if parent is in AA.
+                                    if (self.shouldBeGenerated(src)) {
+                                        srcId = '{' + self.core.getGuid(src) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
+                                    }
+                                }
+                            } else if (srcParentMetaType === 'Container') {
+                                //If parent of parent is alternative, then only add if parent is in AA.
+                                if (self.shouldBeGenerated(src)) {
+                                    srcId = self.core.getGuid(valueSourceNode);
+                                }
+                            } else {
+                                self.logger.error('Unexpected parentMetaType of valueSourceNode' + srcParentMetaType);
+                            }
+                        }
+                        if (srcId) {
+                            if (finalSrcId) {
+                                self.createMessage(targetNode, 'Cannot have more than one incoming value.', 'error');
+                                error += 'There is more than one incoming value..';
+                            } else {
+                                finalSrcId = srcId;
+                            }
+                            if (counter <= 0) {
+                                callback(error, finalSrcId);
+                            }
+                        }
+                    });
+                }
+            };
+        for (i = 0; i < valueFlows.length; i += 1) {
+            atValueFlowNode(valueFlows[i]);
         }
     };
 
