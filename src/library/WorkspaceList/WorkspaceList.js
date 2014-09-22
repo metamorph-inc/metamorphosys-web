@@ -19,6 +19,20 @@ angular.module('cyphy.components')
         this.deleteWorkspace = function (id) {
             throw new Error('Not implemented yet.');
         };
+
+
+        this.getComponents = function (workspaceId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.getDesigns = function (workspaceId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.getTestBenches = function (workspaceId) {
+            throw new Error('Not implemented yet.');
+        };
+
     })
     .controller('WorkspaceListController', function ($scope, WorkspaceService) {
         var self = this,

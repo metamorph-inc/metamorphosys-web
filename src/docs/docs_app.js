@@ -5,12 +5,17 @@ var components = [
     {
         name: 'WorkspaceList',
         sources: [ 'demo.html', 'demo.js']
+    },
+    {
+        name: 'ComponentList',
+        sources: [ 'demo.html', 'demo.js']
     }
 ];
 
 require('chance');
 
 require('../library/WorkspaceList/docs/demo.js');
+require('../library/ComponentList/docs/demo.js');
 
 
 require('angular-sanitize');

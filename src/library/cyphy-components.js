@@ -6,6 +6,7 @@
 angular.module('cyphy.components', []);
 
 require('./WorkspaceList/WorkspaceList');
+require('./ComponentList/ComponentList');
 
 
 

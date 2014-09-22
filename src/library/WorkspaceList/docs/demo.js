@@ -82,9 +82,64 @@ demoApp.service('WorkspaceService', function () {
     };
 
     this.deleteWorkspace = function (id) {
-        var index = workspaces.map(function (e) { return e.id; }).indexOf(id);
+        var index = workspaces.map(function (e) {
+            return e.id;
+        }).indexOf(id);
         if (index > -1) {
             workspaces.splice(index, 1);
         }
+    };
+
+
+    this.getComponents = function (workspaceId) {
+        var generateComponent,
+            numComps = self.chance.integer({min: 1, max: 5}),
+            i,
+            components = [];
+
+        generateComponent = function (id) {
+            return {
+                id: id,
+                title: self.chance.name(),
+                toolTip: 'Open item',
+                description: self.chance.sentence(),
+                lastUpdated: {
+                    time: self.chance.date({year: (new Date()).getFullYear()}),
+                    user: self.chance.name()
+                },
+                stats: [
+                    {
+                        value: 'Modelica ' + self.chance.integer({min: 0, max: 5}),
+                        toolTip: 'Modelica'
+                        //iconClass: 'fa fa-puzzle-piece'
+                    },
+                    {
+                        value: 'CAD ' + self.chance.integer({min: 0, max: 3}),
+                        toolTip: 'CAD'
+//                    iconClass: 'fa fa-cubes'
+                    },
+                    {
+                        value: 'Manufacturing ' + self.chance.integer({min: 0, max: 1}),
+                        toolTip: 'Manufacturing'
+//                    iconClass: 'glyphicon glyphicon-saved'
+                    }
+                ]
+                //details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
+            };
+        };
+
+        for (i = 0; i < numComps; i += 1) {
+            components.push(generateComponent(i));
+        }
+
+        return components;
+    };
+
+    this.getDesigns = function (workspaceId) {
+        throw new Error('Not implemented yet.');
+    };
+
+    this.getTestBenches = function (workspaceId) {
+        throw new Error('Not implemented yet.');
     };
 });

@@ -36,7 +36,8 @@ var argv = require('yargs').argv,
 
             //'src/library/services/*.js',
 
-            'src/library/WorkspaceList/*.js'
+            'src/library/WorkspaceList/*.js',
+            'src/library/ComponentList/*.js'
         ],
         libraryTemplates: [
             'src/library/**/templates/**/*.html'
