@@ -1,49 +1,56 @@
 /*globals angular, console, document, require*/
-'use strict';
 
 /**
  * @author pmeijer / https://github.com/pmeijer
  * @author lattmann / https://github.com/lattmann
  */
 
-require('../WorkspaceList/WorkspaceList');
-
-angular.module('cyphy.components')
-    .service('ComponentService', function () {
-        this.deleteComponent = function (componentId) {
+angular.module('cyphy.test-benches')
+    .service('TestBenchService', function () {
+        'use strict';
+        this.deleteTestBench = function (testBenchId) {
             throw new Error('Not implemented yet.');
         };
 
-        this.exportComponent = function (componentId) {
+        this.exportTestBench = function (testBenchId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.setTopLevelSystemUnderTest = function (testBenchId, designId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.runTestBench = function (testBenchId, configurationId) {
             throw new Error('Not implemented yet.');
         };
 
         /**
-         *  Watches all components (existence and their attributes) of a workspace.
+         *  Watches all test-benches (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
-        this.watchComponents = function (parentContext, workspaceId, updateListener) {
+        this.watchTestBenches = function (parentContext, workspaceId, updateListener) {
             throw new Error('Not implemented yet.');
         };
 
         /**
-         *  Watches a component w.r.t. interfaces and included domain-models.
+         *  Watches a test-bench w.r.t. interfaces.
          * @param parentContext - context of controller.
-         * @param componentId
+         * @param testBenchId
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
-        this.watchComponentDetails = function (parentContext, componentId, updateListener) {
+        this.watchTestBenchDetails = function (parentContext, testBenchId, updateListener) {
             throw new Error('Not implemented yet.');
         };
     })
-    .controller('ComponentListController', function ($scope, ComponentService) {
+    .controller('TestBenchListController', function ($scope, TestBenchService) {
+        'use strict';
         var self = this,
 //            items = WorkspaceService.getComponents(), //$scope.items,
             config;
 
-        console.log('ComponentListController');
+        console.log('TestBenchListController');
         console.log($scope.workspaceId);
 
 //        config = {
@@ -154,14 +161,15 @@ angular.module('cyphy.components')
 
 //        $scope.config = config;
     })
-    .directive('componentList', function () {
+    .directive('testBenchList', function () {
+        'use strict';
         return {
             restrict: 'E',
             scope: {
                 workspaceId: '=workspaceId'
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/ComponentList.html',
-            controller: 'ComponentListController'
+            templateUrl: '/cyphy-test-benches/templates/TestBenchList.html',
+            controller: 'TestBenchListController'
         };
     });

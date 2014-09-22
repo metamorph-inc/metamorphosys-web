@@ -8,6 +8,7 @@
 
 angular.module('cyphy.components')
     .service('WorkspaceService', function () {
+        // This should be watchWorkspaces
         this.getWorkspaces = function () {
             throw new Error('Not implemented yet.');
         };
@@ -16,23 +17,29 @@ angular.module('cyphy.components')
             throw new Error('Not implemented yet.');
         };
 
-        this.deleteWorkspace = function (id) {
+        this.deleteWorkspace = function (workspaceId) {
             throw new Error('Not implemented yet.');
         };
 
-
-        this.getComponents = function (workspaceId) {
+        this.exportWorkspace = function (workspaceId) {
             throw new Error('Not implemented yet.');
         };
 
-        this.getDesigns = function (workspaceId) {
+        this.watchWorkspaces = function (parentContext, updateListener) {
             throw new Error('Not implemented yet.');
         };
 
-        this.getTestBenches = function (workspaceId) {
+        this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
             throw new Error('Not implemented yet.');
         };
 
+        this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.watchNumberOfTestBenches = function (parentContext, workspaceId, updateListener) {
+            throw new Error('Not implemented yet.');
+        };
     })
     .controller('WorkspaceListController', function ($scope, WorkspaceService) {
         var self = this,

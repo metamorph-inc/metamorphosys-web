@@ -1,5 +1,4 @@
 /*globals angular, console, document, require*/
-'use strict';
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,42 +7,82 @@
 
 require('../WorkspaceList/WorkspaceList');
 
-angular.module('cyphy.components')
-    .service('ComponentService', function () {
-        this.deleteComponent = function (componentId) {
+angular.module('cyphy.designs')
+    .service('DesignService', function () {
+        'use strict';
+        this.deleteDesign = function (designId) {
             throw new Error('Not implemented yet.');
         };
 
-        this.exportComponent = function (componentId) {
+        this.exportDesign = function (designId) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.calculateConfigurations = function (data) {
+            throw new Error('Not implemented yet.');
+        };
+
+        this.saveConfigurationSet = function (designId, data) {
             throw new Error('Not implemented yet.');
         };
 
         /**
-         *  Watches all components (existence and their attributes) of a workspace.
+         *  Watches all designs (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
-        this.watchComponents = function (parentContext, workspaceId, updateListener) {
+        this.watchDesigns = function (parentContext, workspaceId, updateListener) {
             throw new Error('Not implemented yet.');
         };
 
         /**
-         *  Watches a component w.r.t. interfaces and included domain-models.
+         *  Watches a design w.r.t. interfaces.
          * @param parentContext - context of controller.
-         * @param componentId
+         * @param designId
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
-        this.watchComponentDetails = function (parentContext, componentId, updateListener) {
+        this.watchDesignDetails = function (parentContext, designId, updateListener) {
+            throw new Error('Not implemented yet.');
+        };
+
+        /**
+         *  Watches the full hierarchy of a design w.r.t. containers and components.
+         * @param parentContext - context of controller.
+         * @param designId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.watchDesignStructure = function (parentContext, designId, updateListener) {
+            throw new Error('Not implemented yet.');
+        };
+
+        /**
+         *  Watches the generated DesertConfigurationSets inside a Design.
+         * @param parentContext - context of controller.
+         * @param designId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.watchConfigurationSets = function (parentContext, designId, updateListener) {
+            throw new Error('Not implemented yet.');
+        };
+
+        /**
+         *  Watches the DesertConfiguration (w.r.t. existence and attributes) inside a DesertConfigurationSet.
+         * @param parentContext - context of controller.
+         * @param configurationSetId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.watchConfigurations = function (parentContext, configurationSetId, updateListener) {
             throw new Error('Not implemented yet.');
         };
     })
-    .controller('ComponentListController', function ($scope, ComponentService) {
+    .controller('DesignListController', function ($scope, DesignService) {
+        'use strict';
         var self = this,
 //            items = WorkspaceService.getComponents(), //$scope.items,
             config;
 
-        console.log('ComponentListController');
+        console.log('DesignListController');
         console.log($scope.workspaceId);
 
 //        config = {
@@ -154,14 +193,15 @@ angular.module('cyphy.components')
 
 //        $scope.config = config;
     })
-    .directive('componentList', function () {
+    .directive('designList', function () {
+        'use strict';
         return {
             restrict: 'E',
             scope: {
                 workspaceId: '=workspaceId'
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/ComponentList.html',
-            controller: 'ComponentListController'
+            templateUrl: '/cyphy-designs/templates/DesignList.html',
+            controller: 'DesignListController'
         };
     });
