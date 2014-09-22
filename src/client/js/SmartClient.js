@@ -450,6 +450,7 @@ define(['js/client',
                                 if (err) {
                                     console.error(err);
                                 }
+                                // FIXME: this is bad if err!=null
                                 callback(result);
                             });
                         }
