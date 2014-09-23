@@ -10,7 +10,6 @@ angular.module('cyphy.components', ['cyphy.services']);
 require('./WorkspaceList/WorkspaceList');
 require('./ComponentList/ComponentList');
 require('./DesignList/DesignList');
+require('./DesignTree/DesignTree');
 require('./TestBenchList/TestBenchList');
-
-
 
