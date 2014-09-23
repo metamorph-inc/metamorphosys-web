@@ -1,5 +1,4 @@
 /*globals angular*/
-'use strict';
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -9,6 +8,7 @@
 
 angular.module('cyphy.services')
     .service('WorkspaceService', function ($q, NodeService) {
+        'use strict';
         var watchers = {};
         this.getWorkspaces = function () {
             throw new Error('Not implemented yet.');
@@ -104,7 +104,95 @@ angular.module('cyphy.services')
         };
 
         this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchNumberOfComponents_' + workspaceId,
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    count: 0
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode,
+                            onUnload = function (id) {
+                                data.count -= 1;
+                                updateListener({id: id, type: 'unload', data: data.count});
+                            };
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (NodeService.isMetaTypeOf(childNode, meta.ACMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (NodeService.isMetaTypeOf(childNode, meta.AVMComponentModel)) {
+                                data.count += 1;
+                                childNode.onUnload(onUnload);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (NodeService.isMetaTypeOf(newChild, meta.ACMFolder)) {
+                                watchFromFolderRec(newChild, meta).then(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
+                            } else if (NodeService.isMetaTypeOf(newChild, meta.AVMComponentModel)) {
+                                data.count += 1;
+                                newChild.onUnload(onUnload);
+                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (NodeService.isMetaTypeOf(childNode, meta.ACMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (NodeService.isMetaTypeOf(newChild, meta.ACMFolder)) {
+                                    watchFromFolderRec(newChild, meta).then(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
