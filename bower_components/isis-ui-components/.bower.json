@@ -30,7 +30,6 @@
     "commit": "fdd279e4b45927e3892b87f4f068a6716908d59d"
   },
   "_source": "git://github.com/vu-isis/isis-ui-components.git",
-  "_target": "~0.0.4",
-  "_originalSource": "isis-ui-components",
-  "_direct": true
+  "_target": "*",
+  "_originalSource": "isis-ui-components"
 }
