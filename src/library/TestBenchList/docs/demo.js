@@ -3,8 +3,8 @@
 'use strict';
 
 var demoApp = angular.module('cyphy.ui.TestBenchList.demo', [
-    'cyphy.test-benches',
-    'cyphy.test-benches.templates'
+    'cyphy.components',
+    'cyphy.components.templates'
 ]);
 
 demoApp.service('TestBenchService', function () {

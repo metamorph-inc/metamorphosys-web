@@ -7,7 +7,7 @@
 
 require('../WorkspaceList/WorkspaceList');
 
-angular.module('cyphy.designs', ['gme.services'])
+angular.module('cyphy.components')
     .service('DesignService', function ($q, NodeService) {
         'use strict';
         var watchers = {};
@@ -189,7 +189,7 @@ angular.module('cyphy.designs', ['gme.services'])
     .controller('DesignListController', function ($scope, DesignService) {
         'use strict';
         var self = this,
-//            items = WorkspaceService.getComponents(), //$scope.items,
+            items = [],
             config;
 
         console.log('DesignListController');
@@ -311,7 +311,7 @@ angular.module('cyphy.designs', ['gme.services'])
                 workspaceId: '=workspaceId'
             },
             replace: true,
-            templateUrl: '/cyphy-designs/templates/DesignList.html',
+            templateUrl: '/cyphy-components/templates/DesignList.html',
             controller: 'DesignListController'
         };
     });

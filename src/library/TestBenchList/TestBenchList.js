@@ -5,7 +5,7 @@
  * @author lattmann / https://github.com/lattmann
  */
 
-angular.module('cyphy.test-benches')
+angular.module('cyphy.components')
     .service('TestBenchService', function () {
         'use strict';
         this.deleteTestBench = function (testBenchId) {
@@ -47,7 +47,7 @@ angular.module('cyphy.test-benches')
     .controller('TestBenchListController', function ($scope, TestBenchService) {
         'use strict';
         var self = this,
-//            items = WorkspaceService.getComponents(), //$scope.items,
+            items = [],
             config;
 
         console.log('TestBenchListController');
@@ -169,7 +169,7 @@ angular.module('cyphy.test-benches')
                 workspaceId: '=workspaceId'
             },
             replace: true,
-            templateUrl: '/cyphy-test-benches/templates/TestBenchList.html',
+            templateUrl: '/cyphy-components/templates/TestBenchList.html',
             controller: 'TestBenchListController'
         };
     });

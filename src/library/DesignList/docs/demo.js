@@ -3,8 +3,8 @@
 'use strict';
 
 var demoApp = angular.module('cyphy.ui.DesignList.demo', [
-    'cyphy.designs',
-    'cyphy.designs.templates'
+    'cyphy.components',
+    'cyphy.components.templates'
 ]);
 
 demoApp.service('DesignService', function () {

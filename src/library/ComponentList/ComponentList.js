@@ -40,8 +40,13 @@ angular.module('cyphy.components')
     })
     .controller('ComponentListController', function ($scope, ComponentService) {
         var self = this,
-//            items = WorkspaceService.getComponents(), //$scope.items,
+            items = [],
             config;
+
+        ComponentService.watchComponents(null, $scope.workspaceId, function (err, components) {
+            items = components;
+        });
+
 
         console.log('ComponentListController');
         console.log($scope.workspaceId);

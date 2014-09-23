@@ -9,13 +9,25 @@ var components = [
     {
         name: 'ComponentList',
         sources: [ 'demo.html', 'demo.js']
+    },
+    {
+        name: 'DesignList',
+        sources: [ 'demo.html', 'demo.js']
+    },
+    {
+        name: 'TestBenchList',
+        sources: [ 'demo.html', 'demo.js']
     }
 ];
 
 require('chance');
 
+angular.module('gme.services', []);
+
 require('../library/WorkspaceList/docs/demo.js');
 require('../library/ComponentList/docs/demo.js');
+require('../library/DesignList/docs/demo.js');
+require('../library/TestBenchList/docs/demo.js');
 
 
 require('angular-sanitize');
