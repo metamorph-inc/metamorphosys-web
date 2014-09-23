@@ -362,6 +362,7 @@ define([
             };
 
             if (children.length === 0) {
+                counter = 1;
                 counterCallback(null);
                 return;
             }
@@ -1034,10 +1035,10 @@ define([
                 callback('loadChildren failed for ' + self.core.getAttribute(node, 'name'));
                 return;
             }
-            counter.visits += children.length;
             if (children.length === 0) {
                 callback(null);
             } else {
+                counter.visits += children.length;
                 counter.visits -= 1;
                 atModelNodeCallback = function (childNode) {
                     return function (err) {
