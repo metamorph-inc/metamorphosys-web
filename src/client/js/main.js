@@ -262,7 +262,7 @@ require(
                         ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
                             'angularFileUpload', 'angular-growl', 'ngAnimate',
                             'isis.ui.components', 'cyphy.ui.desertConfigurations',
-                            'gme.services', 'cyphy.services', 'cyphy.components'
+                            'gme.services', 'cyphy.services', 'cyphy.components', 'cyphy.services.old'
                         ] ).run(function($rootScope, DataStoreService, BranchService) {
                             $rootScope.mainNavigator = { };
                             $rootScope.appIsLoading = false;

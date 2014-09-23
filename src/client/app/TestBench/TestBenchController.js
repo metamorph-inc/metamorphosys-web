@@ -123,6 +123,10 @@ define(['../../js/DesertFrontEnd',
             .then(function (workspaceNode) {
                 self.$scope.mainNavigator.items = self.getNavigatorStructure(workspaceNode);
                 self.$scope.mainNavigator.separator = true;
+//                self.DesertConfigurationServices.watchNumberOfComponents(self.context, workspaceNode.getId(), function (info) { console.warn(info)})
+//                    .then(function (data) {
+//                        console.warn(data);
+//                    });
                 self.update();
             })
             .catch(function (reason) {

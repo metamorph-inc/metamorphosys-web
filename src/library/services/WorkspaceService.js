@@ -26,6 +26,12 @@ angular.module('cyphy.services')
             throw new Error('Not implemented yet.');
         };
 
+        /**
+         * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
+         * @param {object} parentContext - context of controller.
+         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @returns {Promise} - Returns data when resolved.
+         */
         this.watchWorkspaces = function (parentContext, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchWorkspaces',
@@ -103,6 +109,13 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
+        /**
+         * Keeps track of the number of components (defined in ACMFolders) in the workspace.
+         * @param {object} parentContext - context of controller.
+         * @param {string} workspaceId
+         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @returns {Promise} - Returns data when resolved.
+         */
         this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchNumberOfComponents_' + workspaceId,
@@ -128,20 +141,20 @@ angular.module('cyphy.services')
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
-                            if (NodeService.isMetaTypeOf(childNode, meta.ACMFolder)) {
+                            if (childNode.isMetaTypeOf(meta.ACMFolder)) {
                                 queueList.push(watchFromFolderRec(childNode, meta));
-                            } else if (NodeService.isMetaTypeOf(childNode, meta.AVMComponentModel)) {
+                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
                                 data.count += 1;
                                 childNode.onUnload(onUnload);
                             }
                         }
 
                         folderNode.onNewChildLoaded(function (newChild) {
-                            if (NodeService.isMetaTypeOf(newChild, meta.ACMFolder)) {
+                            if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
                                     updateListener({id: newChild.getId(), type: 'load', data: data.count});
                                 });
-                            } else if (NodeService.isMetaTypeOf(newChild, meta.AVMComponentModel)) {
+                            } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
                                 updateListener({id: newChild.getId(), type: 'load', data: data.count});
@@ -170,12 +183,12 @@ angular.module('cyphy.services')
                                 childNode;
                             for (i = 0; i < children.length; i += 1) {
                                 childNode = children[i];
-                                if (NodeService.isMetaTypeOf(childNode, meta.ACMFolder)) {
+                                if (childNode.isMetaTypeOf(meta.ACMFolder)) {
                                     queueList.push(watchFromFolderRec(childNode, meta));
                                 }
                             }
                             workspaceNode.onNewChildLoaded(function (newChild) {
-                                if (NodeService.isMetaTypeOf(newChild, meta.ACMFolder)) {
+                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
                                         updateListener({id: newChild.getId(), type: 'load', data: data.count});
                                     });
@@ -195,16 +208,207 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
+        /**
+         * Keeps track of the number of containers (defined in ADMFolders) in the workspace.
+         * @param {object} parentContext - context of controller.
+         * @param {string} workspaceId
+         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @returns {Promise} - Returns data when resolved.
+         */
         this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchNumberOfDesigns_' + workspaceId,
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    count: 0
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode,
+                            onUnload = function (id) {
+                                data.count -= 1;
+                                updateListener({id: id, type: 'unload', data: data.count});
+                            };
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.ADMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (childNode.isMetaTypeOf(meta.Container)) {
+                                data.count += 1;
+                                childNode.onUnload(onUnload);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.ADMFolder)) {
+                                watchFromFolderRec(newChild, meta).then(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
+                            } else if (newChild.isMetaTypeOf(meta.Container)) {
+                                data.count += 1;
+                                newChild.onUnload(onUnload);
+                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.ADMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ADMFolder)) {
+                                    watchFromFolderRec(newChild, meta).then(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
+        /**
+         * Keeps track of the number of test-benches (defined in ATMFolders) in the workspace.
+         * @param {object} parentContext - context of controller.
+         * @param {string} workspaceId
+         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @returns {Promise} - Returns data when resolved.
+         */
         this.watchNumberOfTestBenches = function (parentContext, workspaceId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchNumberOfTestBenches_' + workspaceId,
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    count: 0
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode,
+                            onUnload = function (id) {
+                                data.count -= 1;
+                                updateListener({id: id, type: 'unload', data: data.count});
+                            };
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.ATMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (childNode.isMetaTypeOf(meta.AVMTestBenchModel)) {
+                                data.count += 1;
+                                childNode.onUnload(onUnload);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.ATMFolder)) {
+                                watchFromFolderRec(newChild, meta).then(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
+                            } else if (newChild.isMetaTypeOf(meta.AVMTestBenchModel)) {
+                                data.count += 1;
+                                newChild.onUnload(onUnload);
+                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.ATMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ATMFolder)) {
+                                    watchFromFolderRec(newChild, meta).then(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
+
         /**
          * Removes all watchers spawned from parentContext.
-         * @param parentContext - context of controller.
+         * @param {object} parentContext - context of controller.
          */
         this.cleanUpAllRegions = function (parentContext) {
             var childWatchers,
@@ -224,8 +428,8 @@ angular.module('cyphy.services')
 
         /**
          * Removes specified watcher (regionId)
-         * @param parentContext
-         * @param regionId
+         * @param {object} parentContext
+         * @param {string} regionId
          */
         this.cleanUpRegion = function (parentContext, regionId) {
             if (watchers[parentContext.regionId]) {

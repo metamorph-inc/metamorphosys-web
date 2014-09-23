@@ -6,7 +6,7 @@ define([], function () {
     console.log('loaded');
     console.log(angular);
 
-    angular.module('cyphy.services', ['gme.services'])
+    angular.module('cyphy.services.old', ['gme.services'])
         .service('NodeUtilities', function ($q) {
             var self = this;
 
