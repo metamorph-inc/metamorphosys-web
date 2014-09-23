@@ -34,7 +34,7 @@ var argv = require('yargs').argv,
         libraryModuleScript: './src/library/cyphy-components.js',
         libraryScripts: [
 
-            //'src/library/services/*.js',
+            'src/library/services/*.js',
 
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',

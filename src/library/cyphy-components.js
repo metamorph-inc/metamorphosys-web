@@ -3,7 +3,9 @@
  * @author lattmann / https://github.com/lattmann
  */
 
-angular.module('cyphy.components', ['gme.services']);
+require('./services/cyphy-services');
+
+angular.module('cyphy.components', ['cyphy.services']);
 
 require('./WorkspaceList/WorkspaceList');
 require('./ComponentList/ComponentList');
