@@ -15,6 +15,10 @@ var components = [
         sources: [ 'demo.html', 'demo.js']
     },
     {
+        name: 'DesignTree',
+        sources: [ 'demo.html', 'demo.js']
+    },
+    {
         name: 'TestBenchList',
         sources: [ 'demo.html', 'demo.js']
     }
@@ -27,6 +31,7 @@ angular.module('gme.services', []);
 require('../library/WorkspaceList/docs/demo.js');
 require('../library/ComponentList/docs/demo.js');
 require('../library/DesignList/docs/demo.js');
+require('../library/DesignTree/docs/demo.js');
 require('../library/TestBenchList/docs/demo.js');
 
 

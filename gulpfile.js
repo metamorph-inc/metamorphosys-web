@@ -39,6 +39,7 @@ var argv = require('yargs').argv,
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',
             'src/library/DesignList/*.js',
+            'src/library/DesignTree/*.js',
             'src/library/TestBenchList/*.js'
         ],
         libraryTemplates: [
@@ -114,7 +115,8 @@ gulp.task('browserify-docs', function () {
     }
 
     return browserify({
-        entries: [sourcePaths.docsApp]
+        entries: [sourcePaths.docsApp],
+        debug: debug
     })
         .bundle()
         .pipe(source(libraryName + '-docs.js'))
@@ -194,7 +196,8 @@ gulp.task('browserify-library', function () {
     }
 
     return browserify({
-        entries: [sourcePaths.libraryModuleScript]
+        entries: [sourcePaths.libraryModuleScript],
+        debug: debug
     })
         .bundle()
         .pipe(source(libraryName + '.js'))
