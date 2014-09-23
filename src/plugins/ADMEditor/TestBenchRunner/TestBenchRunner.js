@@ -175,7 +175,7 @@ define(['plugin/PluginConfig',
                                     return;
                                 }
                                 self.result.setSuccess(success);
-                                if (self.saveToModel) {
+                                if (self.saveToModel && self.cfgPath) {
                                     self.loadLatestRoot(function (err, latestRootNode) {
                                         if (err) {
                                             self.logger.error(err);
@@ -195,6 +195,7 @@ define(['plugin/PluginConfig',
                                                     callback(err, self.result);
                                                     return;
                                                 }
+
                                                 self.core.loadByPath(latestRootNode, self.resultsData.executedTestBenchPath, function (err, tbNode) {
                                                     if (err) {
                                                         self.logger.error(err);
@@ -213,19 +214,22 @@ define(['plugin/PluginConfig',
                                                             self.result.setSuccess(false);
                                                             callback(err, self.result);
                                                         }
+                                                        self.createMessage(resultNode, 'Results saved to result node.', 'info');
                                                         callback(null, self.result);
                                                     });
                                                 });
                                             });
                                         });
                                     });
-//                                    self.save2('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
-//                                        if (err) {
-//                                            self.result.setSuccess(false);
-//                                            callback(err, self.result);
-//                                        }
-//                                        callback(null, self.result);
-//                                    });
+                                } else if (self.saveToModel && success) {
+                                    self.save('Test-bench "' + testBenchInfo.name + '" results was updated after execution.', function (err) {
+                                        if (err) {
+                                            self.result.setSuccess(false);
+                                            callback(err, self.result);
+                                        }
+                                        self.createMessage(null, 'Results saved to test-bench node.', 'info');
+                                        callback(null, self.result);
+                                    });
                                 } else {
                                     callback(null, self.result);
                                 }
@@ -542,28 +546,16 @@ define(['plugin/PluginConfig',
                         return;
                     }
                     self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard);
-                    if (self.cfgPath) {
-                        // Save data that is needed for storing data result node.
-                        self.resultsData = {
-                            cfgAdm: jInfo.resultHashes.cfgAdm,
-                            executedTestBenchPath: self.core.getPath(testBenchInfo.node),
-                            testBenchManifest: jInfo.resultHashes.testBenchManifest,
-                            resultMetaNodePath: self.core.getPath(self.meta.Result),
-                            configurationPath: self.cfgPath
-                        };
-                    }
+                    // Save data that is needed for storing data result node.
+                    self.resultsData = {
+                        cfgAdm: jInfo.resultHashes.cfgAdm,
+                        executedTestBenchPath: self.core.getPath(testBenchInfo.node),
+                        testBenchManifest: jInfo.resultHashes.testBenchManifest,
+                        resultMetaNodePath: self.core.getPath(self.meta.Result),
+                        configurationPath: self.cfgPath
+                    };
                     self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
                     callback(null, true);
-//                        self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
-//                        callback(null, true);
-//                        self.core.loadByPath(self.rootNode, self.cfgPath, function (err, cfgNode) {
-//                            var resultNode;
-//                            resultNode = self.core.createNode({parent: cfgNode, base: self.meta.Result});
-//                            self.core.setAttribute(resultNode, 'CfgAdm', jInfo.resultHashes.cfgAdm);
-//                            self.core.setPointer(resultNode, 'ExecutedTestBench', testBenchInfo.node);
-//                            self.core.setAttribute(resultNode, 'TestBenchManifest', 'It ran successfully..');
-//                            self.core.setAttribute(resultNode, 'Artifacts', jInfo.resultHashes.testBenchManifest);
-//                        });
                 });
             };
 
