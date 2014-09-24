@@ -5,7 +5,7 @@
 
 require('./services/cyphy-services');
 
-angular.module('cyphy.components', ['cyphy.services']);
+angular.module('cyphy.components', ['cyphy.services', 'cyphy.components.templates']);
 
 require('./WorkspaceList/WorkspaceList');
 require('./ComponentList/ComponentList');
