@@ -1,5 +1,5 @@
 /*globals angular*/
-'use strict';
+
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -9,6 +9,7 @@
 
 angular.module('cyphy.services')
     .service('ComponentService', function ($q, NodeService) {
+        'use strict';
         var watchers = {};
         this.deleteComponent = function (componentId) {
             throw new Error('Not implemented yet.');
