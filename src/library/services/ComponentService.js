@@ -8,7 +8,8 @@
 
 
 angular.module('cyphy.services')
-    .service('ComponentService', function () {
+    .service('ComponentService', function ($q, NodeService) {
+        var watchers = {};
         this.deleteComponent = function (componentId) {
             throw new Error('Not implemented yet.');
         };
@@ -24,7 +25,142 @@ angular.module('cyphy.services')
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
         this.watchComponents = function (parentContext, workspaceId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchComponents',
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    components: {} // component {id: <string>, name: <string>, description: <string>,
+                                   //            avmId: <string>, resource: <hash|string>, classifications: <string> }
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        newAvmID = this.getAttribute('ID'),
+                        newResource = this.getAttribute('Resource'),
+                        newClass = this.getAttribute('Classifications'),
+                        hadChanges = false;
+                    if (newName !== data.components[id].name) {
+                        data.components[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.components[id].description) {
+                        data.components[id].description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (newAvmID !== data.components[id].avmId) {
+                        data.components[id].avmId = newAvmID;
+                        hadChanges = true;
+                    }
+                    if (newResource !== data.components[id].resource) {
+                        data.components[id].resource = newResource;
+                        hadChanges = true;
+                    }
+                    if (newClass !== data.components[id].classifications) {
+                        data.components[id].classifications = newClass;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data.components[id]});
+                    }
+                },
+                onUnload = function (id) {
+                    delete data.components[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            componentId,
+                            queueList = [],
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.ACMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+                                componentId = childNode.getId();
+                                data.components[componentId] = {
+                                    id: componentId,
+                                    name: childNode.getAttribute('name'),
+                                    description: childNode.getAttribute('INFO'),
+                                    avmId: childNode.getAttribute('ID'),
+                                    resource: childNode.getAttribute('Resource'),
+                                    classifications: childNode.getAttribute('Classifications')
+                                };
+                                childNode.onUnload(onUnload);
+                                childNode.onUpdate(onUpdate);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.ACMFolder)) {
+                                watchFromFolderRec(newChild, meta);
+                            } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
+                                componentId = newChild.getId();
+                                data.components[componentId] = {
+                                    id: componentId,
+                                    name: newChild.getAttribute('name'),
+                                    description: newChild.getAttribute('INFO'),
+                                    avmId: newChild.getAttribute('ID'),
+                                    resource: newChild.getAttribute('Resource'),
+                                    classifications: newChild.getAttribute('Classifications')
+                                };
+                                newChild.onUnload(onUnload);
+                                newChild.onUpdate(onUpdate);
+                                updateListener({id: newChild.getId(), type: 'load', data: data.components[componentId]});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.ACMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
+                                    watchFromFolderRec(newChild, meta);
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**
@@ -35,5 +171,43 @@ angular.module('cyphy.services')
          */
         this.watchComponentDetails = function (parentContext, componentId, updateListener) {
             throw new Error('Not implemented yet.');
+        };
+
+        /**
+         * Removes all watchers spawned from parentContext.
+         * @param {object} parentContext - context of controller.
+         */
+        this.cleanUpAllRegions = function (parentContext) {
+            var childWatchers,
+                key;
+            if (watchers[parentContext.regionId]) {
+                childWatchers = watchers[parentContext.regionId];
+                for (key in childWatchers) {
+                    if (childWatchers.hasOwnProperty(key)) {
+                        NodeService.cleanUpRegion(childWatchers[key]);
+                    }
+                }
+                delete watchers[parentContext.regionId];
+            } else {
+                console.log('Nothing to clean-up..');
+            }
+        };
+
+        /**
+         * Removes specified watcher (regionId)
+         * @param {object} parentContext
+         * @param {string} regionId
+         */
+        this.cleanUpRegion = function (parentContext, regionId) {
+            if (watchers[parentContext.regionId]) {
+                if (watchers[parentContext.regionId][regionId]) {
+                    NodeService.cleanUpRegion(regionId);
+                    delete watchers[parentContext.regionId][regionId];
+                } else {
+                    console.log('Nothing to clean-up..');
+                }
+            } else {
+                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
+            }
         };
     });

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- Include CSS library dependencies -->
+
+    <!-- Include CSS isis-ui-components -->
+
+    <!-- Include CSS cyphy-components -->
+
+    <title></title>
+</head>
+<body>
+
+<!-- Include library dependencies -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+
+<!-- Include WebGME libraries -->
+<!--  client -->
+<script src="/extlib/node_modules/webgme/build/client.build.js"></script>
+<!--  angular module services-->
+<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>
+
+<!-- Include isis-ui-components -->
+<script src="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.js"></script>
+<script src="/extlib/bower_components/isis-ui-components/dist/isis-ui-components-templates.js"></script>
+
+<!-- Include cyphy-components -->
+<script src="/extlib/dist/cyphy-components.js"></script>
+<script src="/extlib/dist/cyphy-components-templates.js"></script>
+
+<!-- Include application -->
+<script src="app.js"></script>
+
+<!-- Start the main application -->
+<script type="text/javascript">
+    var clientLoaded,
+            timeout = 5000, // 10 seconds
+            waitCounter = 0,
+            i,
+            success,
+            usedClasses = ["Client"],
+            interval = 200, // 100 milliseconds interval
+            waitForLoadId = setInterval(function () {
+                if (window.WebGMEGlobal &&
+                    window.WebGMEGlobal.classes) {
+                    // TODO: check for all classes that we use
+                    clearInterval(waitForLoadId);
+                    success = true;
+
+                    for (i = 0; i < usedClasses.length; i += 1) {
+                        if (window.WebGMEGlobal.classes.hasOwnProperty(usedClasses[i])) {
+                            console.log('WebGME ' + usedClasses[i] + ' is available.');
+                        } else {
+                            console.error('WebGME ' + usedClasses[i] + ' was not found.');
+                            success = false;
+                        }
+                    }
+
+                    if (success) {
+                        console.log('WebGME client library is ready to use.');
+                        clientLoaded();
+                    }
+                } else {
+                    console.log('Waiting for WebGME client library to load.');
+                    waitCounter += 1;
+                    if (waitCounter >= timeout / interval) {
+                        clearInterval(waitForLoadId);
+                        console.error('WebGME client library was not loaded within a reasonable time. (' + (timeout / 1000) + ' s)');
+                    }
+                }
+            }, interval);
+
+    clientLoaded = function () {
+        // main entry point of the app.js
+        // once the webgme Client is loaded and ready we can use it.
+
+        angular.bootstrap(document, ['CyPhyApp']);
+    };
+</script>
+
+</body>
+</html>
