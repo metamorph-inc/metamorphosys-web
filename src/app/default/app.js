@@ -4,6 +4,6 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'gme.services',
     'cyphy.components'
 ])
-    .run(function (DataStoreService) {
-        DataStoreService.connectToDatabase();
+    .run(function (DataStoreServiceTest) {
+        DataStoreServiceTest.connectToDatabase();
     });
