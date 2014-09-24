@@ -684,7 +684,7 @@ define([
                             }
                         };
                     }
-                } else {
+                } else if (parentType === 'AVMComponentModel') {
                     data['@ID'] = 'property.' + id;
                     if (valueSourceID) {
                         data.Value.ValueExpression = {
@@ -699,6 +699,8 @@ define([
                             }
                         };
                     }
+                } else {
+                    self.logger.error('Unexpected property parent type, ' + parentType);
                 }
                 containerData.Property.push(data);
             } else {
@@ -734,10 +736,10 @@ define([
                 }
                 if (valueFlows.length > 1) {
                     if (self.core.getAttribute(parent, 'Type') !== 'Alternative') {
-                        // With only one configuration or within a non-alternative container there should not be any muxes!
                         self.createMessage(node, self.core.getAttribute(node, 'name') + ' had more than one incoming value', 'warning');
                         callback(null);
                     } else if (self.selectedAlternatives) {
+                        // With only one configuration or within a non-alternative container there should NOT be any muxes.
                         self.getValueSrcId(valueFlows, node, parent, function (err, srcId) {
                             if (err) {
                                 callback('Problems getting ValueSrcId in alternative for configuration, err: ' + err);
@@ -947,7 +949,7 @@ define([
             i,
             finalSrcId,
             counter = valueFlows.length,
-            parentType = self.getMetaType(targetParent),
+            parentType = self.core.getAttribute(self.getMetaType(targetParent), 'name'),
             atValueFlowNode = function (valueFlow) {
                 var srcId;
                 counter -= 1;
