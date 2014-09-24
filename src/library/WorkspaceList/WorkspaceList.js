@@ -12,6 +12,12 @@ angular.module('cyphy.components')
             items = [], //$scope.items,
             workspaceItems = {},
             config,
+            context = {
+                db: 'my-db-connection-id',  // FIXME: This should come from the view..
+                projectId: 'ADMEditor',     // FIXME: This should come from the view..
+                branchId: 'master',         // FIXME: This should come from the view..
+                regionId: 'WorkspaceListController_' + (new Date()).toISOString()
+            },
             serviceData2WorkspaceItem;
 
         console.log('WorkspaceListController');
@@ -53,7 +59,11 @@ angular.module('cyphy.components')
                                 id: 'duplicateWorkspace',
                                 label: 'Duplicate',
                                 disabled: false,
-                                iconClass: 'fa fa-copy copy-icon'
+                                iconClass: 'fa fa-copy copy-icon',
+                                actionData: {id: item.id},
+                                action: function (data) {
+                                    WorkspaceService.duplicateWorkspace(context, data.id);
+                                }
                             },
                             {
                                 id: 'editWorkspace',
@@ -84,7 +94,7 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-plus',
                                 actionData: { id: item.id },
                                 action: function (data) {
-                                    WorkspaceService.deleteWorkspace(data.id);
+                                    WorkspaceService.deleteWorkspace(context, data.id);
                                 }
                             }
                         ]
@@ -103,7 +113,7 @@ angular.module('cyphy.components')
                 controller: function ($scope) {
                     $scope.createItem = function (newItem) {
 
-                        WorkspaceService.createWorkspace(newItem);
+                        WorkspaceService.createWorkspace(context, newItem);
 
                         $scope.newItem = {};
 
@@ -131,7 +141,7 @@ angular.module('cyphy.components')
             if (workspaceItems.hasOwnProperty(data.id)) {
                 workspaceItem = workspaceItems[data.id];
                 workspaceItem.name = data.name;
-                workpsaceItem.description = data.description;
+                workspaceItem.description = data.description;
             } else {
                 workspaceItem = {
                     id: data.id,
@@ -172,7 +182,7 @@ angular.module('cyphy.components')
         };
 
 
-        WorkspaceService.watchWorkspaces(null, function (updateObject) {
+        WorkspaceService.watchWorkspaces(context, function (updateObject) {
             var index;
 
             if (updateObject.type === 'load') {

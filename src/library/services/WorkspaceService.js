@@ -10,16 +10,24 @@ angular.module('cyphy.services')
     .service('WorkspaceService', function ($q, NodeService) {
         'use strict';
         var watchers = {};
-        this.getWorkspaces = function () {
+
+        this.duplicateWorkspace = function (context, otherWorkspaceId) {
             throw new Error('Not implemented yet.');
         };
 
-        this.createWorkspace = function (data, otherWorkspaceId) {
-            throw new Error('Not implemented yet.');
+        this.createWorkspace = function (context, data) {
+            console.warn(data);
         };
 
-        this.deleteWorkspace = function (workspaceId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Removes the work-space from the context (db/project/branch).
+         * @param context - context of controller, N.B. does not need to specify region.
+         * @param workspaceId
+         * @param [msg] - Commit message.
+         */
+        this.deleteWorkspace = function (context, workspaceId, msg) {
+            var message = msg || 'WorkspaceService.deleteWorkspace ' + workspaceId;
+            NodeService.destroyNode(context, workspaceId, message);
         };
 
         this.exportWorkspace = function (workspaceId) {
@@ -28,7 +36,7 @@ angular.module('cyphy.services')
 
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
-         * @param {object} parentContext - context of controller.
+         * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {function} updateListener - called on (filtered) changes in data-base.
          * @returns {Promise} - Returns data when resolved.
          */
@@ -111,7 +119,7 @@ angular.module('cyphy.services')
 
         /**
          * Keeps track of the number of components (defined in ACMFolders) in the workspace.
-         * @param {object} parentContext - context of controller.
+         * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
          * @param {function} updateListener - called on (filtered) changes in data-base.
          * @returns {Promise} - Returns data when resolved.
@@ -210,7 +218,7 @@ angular.module('cyphy.services')
 
         /**
          * Keeps track of the number of containers (defined in ADMFolders) in the workspace.
-         * @param {object} parentContext - context of controller.
+         * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
          * @param {function} updateListener - called on (filtered) changes in data-base.
          * @returns {Promise} - Returns data when resolved.
@@ -309,7 +317,7 @@ angular.module('cyphy.services')
 
         /**
          * Keeps track of the number of test-benches (defined in ATMFolders) in the workspace.
-         * @param {object} parentContext - context of controller.
+         * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
          * @param {function} updateListener - called on (filtered) changes in data-base.
          * @returns {Promise} - Returns data when resolved.

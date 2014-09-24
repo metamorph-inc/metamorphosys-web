@@ -12,7 +12,7 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
     var self = this,
         workspaceUpdateListener;
 
-    this.deleteWorkspace = function (workspaceId) {
+    this.deleteWorkspace = function (context, workspaceId) {
         $timeout(function () {
             workspaceUpdateListener({
                 id: workspaceId,
@@ -20,6 +20,14 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
                 data: null
             });
         }, 400);
+    };
+
+    this.duplicateWorkspace = function (context, otherWorkspaceId) {
+        console.log('Not implemented.', otherWorkspaceId);
+    };
+
+    this.createWorkspace = function (context, data) {
+        console.log('Not implemented.', data);
     };
 
     this.watchWorkspaces = function (parentContext, updateListener) {
