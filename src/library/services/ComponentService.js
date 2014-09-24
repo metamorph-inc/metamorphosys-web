@@ -11,11 +11,18 @@ angular.module('cyphy.services')
     .service('ComponentService', function ($q, NodeService) {
         'use strict';
         var watchers = {};
-        this.deleteComponent = function (componentId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Removes the component from the context (db/project/branch).
+         * @param context - context of controller, N.B. does not need to specify region.
+         * @param componentId
+         * @param [msg] - Commit message.
+         */
+        this.deleteComponent = function (context, componentId, msg) {
+            var message = msg || 'ComponentService.deleteComponent ' + componentId;
+            NodeService.destroyNode(context, componentId, message);
         };
 
-        this.exportComponent = function (componentId) {
+        this.exportComponent = function (context, componentId) {
             throw new Error('Not implemented yet.');
         };
 
@@ -23,7 +30,7 @@ angular.module('cyphy.services')
          *  Watches all components (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.components.
          */
         this.watchComponents = function (parentContext, workspaceId, updateListener) {
             var deferred = $q.defer(),
@@ -171,7 +178,76 @@ angular.module('cyphy.services')
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
         this.watchComponentDetails = function (parentContext, componentId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchComponentDetails_' + componentId,
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    domainModels: {},   //domainModel: id: <string>, type: <string>
+                    interfaces: {
+                        properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
+                        connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
+                    }
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, componentId)
+                    .then(function (componentNode) {
+                        componentNode.loadChildren().then(function (children) {
+                            var i,
+                                childId,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                childId = childNode.getId();
+                                if (childNode.isMetaTypeOf(meta.Property)) {
+                                    data.interfaces.properties[childId] = {
+                                        id: childId,
+                                        name: childNode.getAttribute('name'),
+                                        dataType: childNode.getAttribute('DataType'),
+                                        valueType: childNode.getAttribute('ValueType')
+                                    };
+                                    childNode.onUpdate(onPropertyUpdate);
+                                    childNode.onUnload(onPropertyUnload);
+                                } else if (childNode.isMetaTypeOf(meta.Property)) {
+                                    data.interfaces.connectors[childId] = {
+                                        id: childId,
+                                        name: childNode.getAttribute('name'),
+                                        domainPorts: {}
+                                    };
+                                    childNode.onUpdate(onConnectorUpdate);
+                                    childNode.onUnload(onConnectorUnload);
+                                    ///queueList.push(childNode.loadChildren(childNode));
+                                }
+                            }
+                            componentNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
+                                    watchFromFolderRec(newChild, meta).then(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
+                                }
+                            });
+
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**

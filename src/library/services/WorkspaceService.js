@@ -37,7 +37,7 @@ angular.module('cyphy.services')
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
          * @param {object} parentContext - context of controller (must have a regionId defined).
-         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @param {function} updateListener - called on (filtered) changes in data-base. Data is an object in data.workspaces.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchWorkspaces = function (parentContext, updateListener) {
@@ -121,7 +121,7 @@ angular.module('cyphy.services')
          * Keeps track of the number of components (defined in ACMFolders) in the workspace.
          * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
-         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
@@ -220,7 +220,7 @@ angular.module('cyphy.services')
          * Keeps track of the number of containers (defined in ADMFolders) in the workspace.
          * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
-         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
@@ -319,7 +319,7 @@ angular.module('cyphy.services')
          * Keeps track of the number of test-benches (defined in ATMFolders) in the workspace.
          * @param {object} parentContext - context of controller (must have a regionId defined).
          * @param {string} workspaceId
-         * @param {function} updateListener - called on (filtered) changes in data-base.
+         * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchNumberOfTestBenches = function (parentContext, workspaceId, updateListener) {
