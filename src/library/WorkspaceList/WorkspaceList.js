@@ -9,8 +9,10 @@
 angular.module('cyphy.components')
     .controller('WorkspaceListController', function ($scope, WorkspaceService) {
         var self = this,
-            items = WorkspaceService.getWorkspaces(), //$scope.items,
-            config;
+            items = [], //$scope.items,
+            workspaceItems = {},
+            config,
+            serviceData2WorkspaceItem;
 
         console.log('WorkspaceListController');
 
@@ -121,6 +123,90 @@ angular.module('cyphy.components')
         };
 
         $scope.config = config;
+
+
+        serviceData2WorkspaceItem = function (data) {
+            var workspaceItem;
+
+            if (workspaceItems.hasOwnProperty(data.id)) {
+                workspaceItem = workspaceItems[data.id];
+                workspaceItem.name = data.name;
+                workpsaceItem.description = data.description;
+            } else {
+                workspaceItem = {
+                    id: data.id,
+                    title: data.name,
+                    toolTip: 'Open item',
+                    description: data.description,
+                    lastUpdated: {
+                        time: new Date(), // TODO: get this
+                        user: 'N/A' // TODO: get this
+                    },
+                    stats: [
+                        {
+                            value: 0, // TODO: get this
+                            toolTip: 'Components',
+                            iconClass: 'fa fa-puzzle-piece'
+                        },
+                        {
+                            value: 0, // TODO: get this
+                            toolTip: 'Design Spaces',
+                            iconClass: 'fa fa-cubes'
+                        },
+                        {
+                            value: 0, // TODO: get this
+                            toolTip: 'Test benches',
+                            iconClass: 'glyphicon glyphicon-saved'
+                        },
+                        {
+                            value: 0, // TODO: get this
+                            toolTip: 'Requirements',
+                            iconClass: 'fa fa-bar-chart-o'
+                        }
+                    ]
+                };
+
+                workspaceItems[workspaceItem.id] = workspaceItem;
+                items.push(workspaceItem);
+            }
+        };
+
+
+        WorkspaceService.watchWorkspaces(null, function (updateObject) {
+            var index;
+
+            if (updateObject.type === 'load') {
+                serviceData2WorkspaceItem(updateObject.data);
+
+            } else if (updateObject.type === 'update') {
+                serviceData2WorkspaceItem(updateObject.data);
+
+            } else if (updateObject.type === 'unload') {
+                if (workspaceItems.hasOwnProperty(updateObject.id)) {
+                    index = items.map(function (e) {
+                        return e.id;
+                    }).indexOf(updateObject.id);
+                    if (index > -1) {
+                        items.splice(index, 1);
+                    }
+                    delete workspaceItems[updateObject.id];
+                }
+
+            } else {
+                throw new Error(updateObject);
+
+            }
+        })
+            .then(function (data) {
+                var workspaceId,
+                    workspaceItem;
+
+                for (workspaceId in data.workspaces) {
+                    if (data.workspaces.hasOwnProperty(workspaceId)) {
+                        serviceData2WorkspaceItem(data.workspaces[workspaceId]);
+                    }
+                }
+            });
     })
     .directive('workspaceList', function () {
         return {

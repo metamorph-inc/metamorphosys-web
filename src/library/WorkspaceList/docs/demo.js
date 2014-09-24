@@ -1,4 +1,4 @@
-/*globals console, angular, Chance*/
+/*globals console, angular, Chance, setTimeout*/
 
 'use strict';
 
@@ -8,87 +8,57 @@ var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
 ]);
 
 // overwrite WorkspaceService with dummy data
-demoApp.service('WorkspaceService', function () {
+demoApp.service('WorkspaceService', function ($q, $timeout) {
     var self = this,
-        workspaces = [],
-        itemGenerator;
+        workspaceUpdateListener;
 
-    itemGenerator = function (id) {
-        return {
-            id: id,
-            title: self.chance.name(),
-            toolTip: 'Open item',
-            description: self.chance.sentence(),
-            lastUpdated: {
-                time: self.chance.date({year: (new Date()).getFullYear()}),
-                user: self.chance.name()
-            },
-            stats: [
-                {
-                    value: self.chance.integer({min: 0, max: 5000}),
-                    toolTip: 'Components',
-                    iconClass: 'fa fa-puzzle-piece'
-                },
-                {
-                    value: self.chance.integer({min: 0, max: 50}),
-                    toolTip: 'Design Spaces',
-                    iconClass: 'fa fa-cubes'
-                },
-                {
-                    value: self.chance.integer({min: 0, max: 500}),
-                    toolTip: 'Test benches',
-                    iconClass: 'glyphicon glyphicon-saved'
-                },
-                {
-                    value: self.chance.integer({min: 0, max: 20}),
-                    toolTip: 'Requirements',
-                    iconClass: 'fa fa-bar-chart-o'
-                }
-            ]
-            //details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
-        };
+    this.deleteWorkspace = function (workspaceId) {
+        $timeout(function () {
+            workspaceUpdateListener({
+                id: workspaceId,
+                type: 'unload',
+                data: null
+            });
+        }, 400);
     };
 
-    this.getWorkspaces = function () {
-        var numItems,
-            i;
+    this.watchWorkspaces = function (parentContext, updateListener) {
+        var deferred = $q.defer(),
+            i,
+            numItems,
+            data = {
+                regionId: 'region_mockId',
+                workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
+            };
 
-        console.log('Getting workspaces ...');
+        workspaceUpdateListener = updateListener;
 
         self.chance = new Chance();
         numItems = self.chance.integer({min: 2, max: 15});
 
         for (i = 0; i < numItems; i += 1) {
-            workspaces.push(itemGenerator(i));
+            data.workspaces[i] = {
+                id: i,
+                name: self.chance.name(),
+                description: self.chance.sentence()
+            };
         }
 
-        console.log('Got workspaces ', workspaces.length);
+        $timeout(function () {
+            updateListener({
+                id: 'update_1',
+                type: 'load',
+                data: {
+                    id: 'update_1',
+                    name: 'Created elsewhere',
+                    description: 'New Workspace from update listener'
+                }
+            });
+        }, 2500);
 
-        return workspaces;
+        deferred.resolve(data);
+
+        return deferred.promise;
     };
-
-    this.createWorkspace = function (data, otherWorkspaceId) {
-        var key,
-            newWorkspace = itemGenerator();
-
-        // TODO: if other workspace is defined then copy it and update with data
-        for (key in data) {
-            if (data.hasOwnProperty(key)) {
-                newWorkspace[key] = data[key];
-            }
-        }
-
-        workspaces.push(newWorkspace);
-    };
-
-    this.deleteWorkspace = function (id) {
-        var index = workspaces.map(function (e) {
-            return e.id;
-        }).indexOf(id);
-        if (index > -1) {
-            workspaces.splice(index, 1);
-        }
-    };
-
 
 });
