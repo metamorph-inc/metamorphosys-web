@@ -258,9 +258,96 @@ gulp.task('compile-library',
     });
 
 
+// Application tasks
+var applications = ['default'],
+    i;
+
+for (i = 0; i < applications.length; i += 1) {
+    var appName = applications[i],
+        appSources = ['./src/app/' + appName + '/**/*.js'],
+        appModuleScript = './src/app/' + appName + '/app.js',
+
+        appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+        appTemplateModule = 'cyphy.' + appName + '.templates',
+
+        appStyles = ['src/app/' + appName + '/**/*.scss'];
+
+    // FIXME: add a function to which we pass all arguments, now it works only for one element
+
+    gulp.task('lint-' + appName + '-app', function () {
+
+        console.log('Linting ' + appName + '-app...');
+
+        gulp.src(appSources)
+            .pipe(jshint())
+            .pipe(jshint.reporter('default'));
+
+    });
+
+    gulp.task('browserify-' + appName + '-app', function () {
+
+        console.log('Browserifying ' + appName + '-app...');
+
+        if (debugShim) {
+            process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
+        }
+
+        return browserify({
+            entries: [appModuleScript],
+            debug: debug
+        })
+            .bundle()
+            .pipe(source(appName + '-app.js'))
+            .pipe(gulp.dest(buildPaths.scripts));
+
+    });
+
+    gulp.task('compile-' + appName + '-app-templates', function () {
+
+        console.log('Compiling ' + appName + '-app-templates...');
+
+        gulp.src(appTemplates)
+            .pipe(rename(function (path) {
+                path.dirname = 'templates';
+            }))
+            .pipe(templateCache(appName + '-app-templates.js', {
+                module: appTemplateModule,
+                standalone: true,
+                root: '/' + appName + '/'
+            }))
+            .pipe(gulp.dest(buildPaths.root));
+    });
+
+    gulp.task('compile-' + appName + '-app-styles', function () {
+
+        console.log('Compiling ' + appName + '-app styles...');
+
+        gulp.src(appStyles)
+            // The onerror handler prevents Gulp from crashing when you make a mistake in your SASS
+            .pipe(sass({
+                errLogToConsole: true,
+                sourceComments: 'map'
+            }))
+            .pipe(rename(function (path) {
+                path.dirname = '';
+            }))
+            .pipe(concat(appName + '-app.css'))
+            .pipe(gulp.dest(buildPaths.root));
+    });
+
+    gulp.task('compile-' + appName + '-app',
+        [ 'lint-' + appName + '-app', 'browserify-' + appName + '-app', 'compile-' + appName + '-app-templates', 'compile-' + appName + '-app-styles'],
+        function () {
+            console.log('Compiling ' + appName + '-app scripts...');
+        });
+
+
+}
+
+
 gulp.task('compile-all', function (cb) {
     runSequence('clean-build', [
-        'compile-docs', 'compile-library'
+        'compile-docs', 'compile-library', 'compile-default-app'
     ], cb);
 });
 
@@ -333,6 +420,25 @@ gulp.task('register-watchers', function (cb) {
     gulp.watch(sourcePaths.libraryTemplates, [ 'compile-library-templates', 'refresh-server' ]);
     gulp.watch(sourcePaths.libraryStyles, [ 'compile-library-styles', 'refresh-server' ]);
     gulp.watch(sourcePaths.libraryImages, [ 'compile-library-images', 'refresh-server' ]);
+
+
+    for (var i = 0; i < applications.length; i += 1) {
+        var appName = applications[i],
+            appSources = ['./src/app/' + appName + '/**/*.js'],
+            appModuleScript = './src/app/' + appName + '/app.js',
+
+            appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+            appTemplateModule = 'cyphy.' + appName + '.templates',
+
+            appStyles = ['src/app/' + appName + '/**/*.scss'];
+
+        gulp.watch(appModuleScript, [ 'compile-' + appName + '-app', 'refresh-server' ]);
+        gulp.watch(appSources, [ 'compile-' + appName + '-app', 'refresh-server' ]);
+        gulp.watch(appTemplates, [ 'compile-' + appName + '-app-templates', 'refresh-server' ]);
+        gulp.watch(appStyles, [ 'compile-' + appName + '-app-styles', 'refresh-server' ]);
+//        gulp.watch(sourcePaths.libraryImages, [ 'compile-' + appName + '-app-images', 'refresh-server' ]);
+
+    }
 
     return cb;
 });

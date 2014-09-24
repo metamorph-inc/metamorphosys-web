@@ -13,10 +13,18 @@
 </head>
 <body>
 
+<a ui-sref="workspaces">State 1</a>
+<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>
+
+<div ui-view></div>
+<!-- We'll also add some navigation: -->
+
+
 <!-- Include library dependencies -->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
+<script src="/extlib/bower_components/angular/angular.min.js"></script>
+<script src="/extlib/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
 
@@ -35,7 +43,8 @@
 <script src="/extlib/dist/cyphy-components-templates.js"></script>
 
 <!-- Include application -->
-<script src="app.js"></script>
+<script src="/extlib/dist/default-app.js"></script>
+<script src="/extlib/dist/default-app-templates.js"></script>
 
 <!-- Start the main application -->
 <script type="text/javascript">
