@@ -52,6 +52,26 @@ angular.module('cyphy.services')
                 data = {
                     regionId: regionId,
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        hadChanges = false;
+                    if (newName !== data.workspaces[id].name) {
+                        data.workspaces[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.workspaces[id].description) {
+                        data.workspaces[id].description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data.workspaces[id]});
+                    }
+                },
+                onUnload = function (id) {
+                    delete data.workspaces[id];
+                    updateListener({id: id, type: 'unload', data: null});
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -62,30 +82,10 @@ angular.module('cyphy.services')
                         rootNode.loadChildren().then(function (children) {
                             var i,
                                 childNode,
-                                wsId,
-                                onUpdate = function (id) {
-                                    var newName = this.getAttribute('name'),
-                                        newDesc = this.getAttribute('INFO'),
-                                        hadChanges = false;
-                                    if (newName !== data.workspaces[id].name) {
-                                        data.workspaces[id].name = newName;
-                                        hadChanges = true;
-                                    }
-                                    if (newDesc !== data.workspaces[id].description) {
-                                        data.workspaces[id].description = newDesc;
-                                        hadChanges = true;
-                                    }
-                                    if (hadChanges) {
-                                        updateListener({id: id, type: 'update', data: data.workspaces[id]});
-                                    }
-                                },
-                                onUnload = function (id) {
-                                    delete data.workspaces[id];
-                                    updateListener({id: id, type: 'unload', data: null});
-                                };
+                                wsId;
                             for (i = 0; i < children.length; i += 1) {
                                 childNode = children[i];
-                                if (NodeService.isMetaTypeOf(childNode, meta.WorkSpace)) {
+                                if (childNode.isMetaTypeOf(meta.WorkSpace)) {
                                     wsId = childNode.getId();
                                     data.workspaces[wsId] = {
                                         id: wsId,
@@ -97,7 +97,7 @@ angular.module('cyphy.services')
                                 }
                             }
                             rootNode.onNewChildLoaded(function (newChild) {
-                                if (NodeService.isMetaTypeOf(newChild, meta.WorkSpace)) {
+                                if (newChild.isMetaTypeOf(meta.WorkSpace)) {
                                     wsId = newChild.getId();
                                     data.workspaces[wsId] = {
                                         id: wsId,
