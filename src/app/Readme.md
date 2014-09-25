@@ -18,7 +18,8 @@ If you wish to create a new one the `sample` application is a good starting poin
 3. use `gulp.js dev` to continuously build your app, your library is compiled into the `dist` directory
     - `dist/my-new-app-app.js`
     - `dist/my-new-app-app-templates.js`
-4. change in the `my-new-app/index.html` the application specific javascript includes
+4. change your application dependency in `app.js` from `'cyphy.sample.templates'` to `'cyphy.my-new-app.templates'`
+5. change in the `my-new-app/index.html` the application specific javascript includes
 
 From:
 ```html
