@@ -137,7 +137,6 @@ angular.module('cyphy.services')
 
                     return recDeferred.promise;
                 };
-            debugger;
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             NodeService.getMetaNodes(context).then(function (meta) {

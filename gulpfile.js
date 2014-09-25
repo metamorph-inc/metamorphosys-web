@@ -259,7 +259,7 @@ gulp.task('compile-library',
 
 
 // Application tasks
-var applications = ['default', 'sample'],
+var applications = ['default', 'sample', 'servicetest'],
     i,
     registerAppTasks,
     gulpAppTaskNames = [];
