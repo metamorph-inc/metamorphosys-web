@@ -1,5 +1,5 @@
 /*globals angular, console, document, require*/
-'use strict';
+
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,6 +8,7 @@
 
 angular.module('cyphy.components')
     .controller('ComponentListController', function ($scope, ComponentService) {
+        'use strict';
         var self = this,
             items = [],
             config;

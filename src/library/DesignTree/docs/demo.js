@@ -1,13 +1,12 @@
 /*globals console, angular, Chance*/
 
-'use strict';
-
 var demoApp = angular.module('cyphy.ui.DesignTree.demo', [
     'cyphy.components',
     'cyphy.components.templates'
 ]);
 
 demoApp.service('DesignService', function () {
+    'use strict';
 
     this.watchDesignStructure = function (parentContext, designId, updateListener) {
         var treeStructure;

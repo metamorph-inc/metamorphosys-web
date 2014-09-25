@@ -1,5 +1,4 @@
 /*globals angular, require, window, console */
-'use strict';
 
 var components = [
     {
@@ -49,7 +48,6 @@ require('code-mirror/mode/javascript');
 require('angular-ui-codemirror');
 
 
-
 var demoApp = angular.module(
     'cyphy.demoApp',
     [
@@ -59,17 +57,21 @@ var demoApp = angular.module(
         'ui.bootstrap',
         'isis.ui.components'
     ].concat(components.map(function (e) {
+        'use strict';
+
         return 'cyphy.ui.' + e.name + '.demo';
     }))
 );
 
 demoApp.run(function () {
+    'use strict';
     console.log('DemoApp run...');
 });
 
 demoApp.controller(
     'CyPhyComponentsDemoController',
     function ($scope, $templateCache) {
+        'use strict';
 
         var fileExtensionRE,
             codeMirrorModes;
@@ -114,4 +116,5 @@ demoApp.controller(
             };
         });
 
-    });
+    }
+);

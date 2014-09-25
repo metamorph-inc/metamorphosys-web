@@ -1,7 +1,5 @@
 /*globals console, angular, Chance*/
 
-'use strict';
-
 var demoApp = angular.module('cyphy.ui.ComponentList.demo', [
     'cyphy.components',
     'cyphy.components.templates'
@@ -9,7 +7,10 @@ var demoApp = angular.module('cyphy.ui.ComponentList.demo', [
 
 // overwrite ComponentService with dummy data
 demoApp.service('ComponentService', function () {
-    var components = [];
+    'use strict';
+
+    var self = this,
+        components = [];
 
     this.watchComponents = function (parentContext, workspaceId, updateListener) {
         var generateComponent,

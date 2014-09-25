@@ -1,5 +1,4 @@
 /*globals angular, console, document*/
-'use strict';
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,6 +7,7 @@
 
 angular.module('cyphy.components')
     .controller('WorkspaceListController', function ($scope, WorkspaceService) {
+        'use strict';
         var self = this,
             items = [], //$scope.items,
             workspaceItems = {},

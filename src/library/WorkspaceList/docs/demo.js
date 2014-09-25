@@ -1,7 +1,5 @@
 /*globals console, angular, Chance, setTimeout*/
 
-'use strict';
-
 var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
     'cyphy.components',
     'cyphy.components.templates'
@@ -9,6 +7,8 @@ var demoApp = angular.module('cyphy.ui.WorkspaceList.demo', [
 
 // overwrite WorkspaceService with dummy data
 demoApp.service('WorkspaceService', function ($q, $timeout) {
+    'use strict';
+
     var self = this,
         workspaceUpdateListener;
 

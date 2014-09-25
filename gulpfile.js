@@ -259,21 +259,20 @@ gulp.task('compile-library',
 
 
 // Application tasks
-var applications = ['default'],
-    i;
+var applications = ['default', 'sample'],
+    i,
+    registerAppTasks,
+    gulpAppTaskNames = [];
 
-for (i = 0; i < applications.length; i += 1) {
-    var appName = applications[i],
-        appSources = ['./src/app/' + appName + '/**/*.js'],
+
+registerAppTasks = function (appName) {
+    var appSources = ['./src/app/' + appName + '/**/*.js'],
         appModuleScript = './src/app/' + appName + '/app.js',
 
         appTemplates = ['src/app/' + appName + '/views/**/*.html'],
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
         appStyles = ['src/app/' + appName + '/**/*.scss'];
-
-    // FIXME: add a function to which we pass all arguments, now it works only for one element
-
     gulp.task('lint-' + appName + '-app', function () {
 
         console.log('Linting ' + appName + '-app...');
@@ -341,14 +340,20 @@ for (i = 0; i < applications.length; i += 1) {
             console.log('Compiling ' + appName + '-app scripts...');
         });
 
+    gulpAppTaskNames.push('compile-' + appName + '-app');
 
+};
+
+
+for (i = 0; i < applications.length; i += 1) {
+    registerAppTasks(applications[i]);
 }
 
 
 gulp.task('compile-all', function (cb) {
     runSequence('clean-build', [
-        'compile-docs', 'compile-library', 'compile-default-app'
-    ], cb);
+        'compile-docs', 'compile-library'
+    ].concat(gulpAppTaskNames), cb);
 });
 
 
@@ -407,6 +412,9 @@ gulp.task('refresh-server', function () {
 
 
 gulp.task('register-watchers', function (cb) {
+    var i,
+        registerAppWatchers;
+
     gulp.watch(sourcePaths.index, [ 'compile-index', 'refresh-server' ]);
 
     gulp.watch(sourcePaths.docsSourceIndex, [ 'compile-docs', 'refresh-server' ]);
@@ -422,9 +430,8 @@ gulp.task('register-watchers', function (cb) {
     gulp.watch(sourcePaths.libraryImages, [ 'compile-library-images', 'refresh-server' ]);
 
 
-    for (var i = 0; i < applications.length; i += 1) {
-        var appName = applications[i],
-            appSources = ['./src/app/' + appName + '/**/*.js'],
+    registerAppWatchers = function (appName) {
+        var appSources = ['./src/app/' + appName + '/**/*.js'],
             appModuleScript = './src/app/' + appName + '/app.js',
 
             appTemplates = ['src/app/' + appName + '/views/**/*.html'],
@@ -438,6 +445,10 @@ gulp.task('register-watchers', function (cb) {
         gulp.watch(appStyles, [ 'compile-' + appName + '-app-styles', 'refresh-server' ]);
 //        gulp.watch(sourcePaths.libraryImages, [ 'compile-' + appName + '-app-images', 'refresh-server' ]);
 
+    };
+
+    for (i = 0; i < applications.length; i += 1) {
+        registerAppWatchers(applications[i]);
     }
 
     return cb;

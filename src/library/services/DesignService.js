@@ -1,5 +1,4 @@
-/*globals angular*/
-'use strict';
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
