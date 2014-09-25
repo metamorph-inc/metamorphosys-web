@@ -1,6 +1,6 @@
 # WebGME-CyPhy #
 
-[WebGME](https://github.com/webgme/webgme) is a collaborative meta-modeling environment which allows multiple users to simulataneously create and edit models within a single project. It stores the model objects in a Mongo database. WebCyPhy utilizes WebGME, and uses a meta-model similar to that used in the [META toolchain](http://www.isis.vanderbilt.edu/sites/default/files/u352/META_poster_48x36_Clean.pdf) developed by ISIS at Vanderbilt University.
+[WebGME](https://github.com/webgme/webgme) is a collaborative meta-modeling environment which allows multiple users to simulataneously create and edit models within a single project. It stores the model objects in a Mongo database. WebCyPhy utilizes WebGME, and uses a meta-model similar to that used in the [META toolchain](http://www.isis.vanderbilt.edu/sites/default/files/u352/META_poster_48x36_Clean.pdf) developed by the Institute for Software Integrated Systems at Vanderbilt University.
 
 # Starting from Scratch #
 
