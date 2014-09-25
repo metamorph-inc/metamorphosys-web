@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<!-- Include WebGME libraries -->
+<!--  client -->
+<script src="/extlib/node_modules/webgme/build/webgme.classes.build.js"></script>
+
+<!-- Start the main application -->
+<script type="text/javascript">
+    var clientLoaded,
+            timeout = 5000, // 10 seconds
+            waitCounter = 0,
+            i,
+            success,
+            usedClasses = ["Client"],
+            interval = 200, // 100 milliseconds interval
+            waitForLoadId = setInterval(function () {
+                if (window.WebGMEGlobal &&
+                    window.WebGMEGlobal.classes) {
+                    // TODO: check for all classes that we use
+                    clearInterval(waitForLoadId);
+                    success = true;
+
+                    for (i = 0; i < usedClasses.length; i += 1) {
+                        if (window.WebGMEGlobal.classes.hasOwnProperty(usedClasses[i])) {
+                            console.log('WebGME ' + usedClasses[i] + ' is available.');
+                        } else {
+                            console.error('WebGME ' + usedClasses[i] + ' was not found.');
+                            success = false;
+                        }
+                    }
+
+                    if (success) {
+                        console.log('WebGME client library is ready to use.');
+                        clientLoaded();
+                    }
+                } else {
+                    console.log('Waiting for WebGME client library to load.');
+                    waitCounter += 1;
+                    if (waitCounter >= timeout / interval) {
+                        clearInterval(waitForLoadId);
+                        console.error('WebGME client library was not loaded within a reasonable time. (' + (timeout / 1000) + ' s)');
+                    }
+                }
+            }, interval);
+
+    clientLoaded = function () {
+        // main entry point of the app.js
+        // once the webgme Client is loaded and ready we can use it.
+
+
+        var client = new WebGMEGlobal.classes.Client({host: window.location.basename});
+
+        client.connectToDatabaseAsync({}, function (err) {
+            var terrId;
+
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            console.log('connected to database');
+
+            client.addEventListener(client.events.BRANCH_CHANGED, function (__project, branchName) {
+                console.log('BRANCH_CHANGED event "' + branchName + '"');
+
+                if (terrId) {
+                    client.removeUI(terrId);
+                }
+
+                terrId = client.addUI({}, function (events) {
+                    console.log(events);
+                    console.log(client.getActualBranch());
+                });
+
+                client.updateTerritory(terrId, {'': {children: 0}});
+            });
+
+            client.selectProjectAsync('ADMEditor', function (err) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                console.log('selected a project');
+
+                client.selectBranchAsync('master', function (err) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    console.log('selected "master" branch');
+
+
+                    client.selectBranchAsync('a', function (err) {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+
+                        console.log('selected "a" branch');
+
+
+                        client.selectBranchAsync('b', function (err) {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
+
+                            console.log('selected "b" branch');
+
+                            setTimeout(function () {
+                                client.selectBranchAsync('master', function (err) {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+
+                                    console.log('selected "master" branch from a timeout');
+                                });
+                            }, 50);
+
+
+                            setTimeout(function () {
+                                client.selectBranchAsync('a', function (err) {
+                                    if (err) {
+                                        console.error(err);
+                                        return;
+                                    }
+
+                                    console.log('selected "a" branch from a timeout');
+                                });
+                            }, 500);
+                        });
+                    });
+
+
+                })
+            });
+
+        });
+    }
+</script>
+
+</body>
+</html>
