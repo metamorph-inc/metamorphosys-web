@@ -31,6 +31,7 @@ angular.module('cyphy.services')
          * @param parentContext - context of controller.
          * @param workspaceId
          * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.components.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchComponents = function (parentContext, workspaceId, updateListener) {
             var deferred = $q.defer(),
@@ -122,7 +123,7 @@ angular.module('cyphy.services')
                                 };
                                 newChild.onUnload(onUnload);
                                 newChild.onUpdate(onUpdate);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.components[componentId]});
+                                updateListener({id: componentId, type: 'load', data: data.components[componentId]});
                             }
                         });
                         if (queueList.length === 0) {
@@ -136,7 +137,7 @@ angular.module('cyphy.services')
 
                     return recDeferred.promise;
                 };
-
+            debugger;
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             NodeService.getMetaNodes(context).then(function (meta) {
@@ -176,6 +177,7 @@ angular.module('cyphy.services')
          * @param parentContext - context of controller.
          * @param componentId
          * @param updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchComponentDetails = function (parentContext, componentId, updateListener) {
             var deferred = $q.defer(),
@@ -188,6 +190,7 @@ angular.module('cyphy.services')
                 },
                 data = {
                     regionId: regionId,
+                    id: componentId,
                     domainModels: {},   //domainModel: id: <string>, type: <string>
                     interfaces: {
                         properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}

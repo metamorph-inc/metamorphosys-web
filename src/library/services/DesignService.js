@@ -28,13 +28,127 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches all designs (existence and their attributes) of a workspace.
+         *  Watches all containers (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.designs.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesigns = function (parentContext, workspaceId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchDesigns',
+                context = {
+                    db: parentContext.db,
+                    projectId: parentContext.projectId,
+                    branchId: parentContext.branchId,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    designs: {} // design {id: <string>, name: <string>, description: <string>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        hadChanges = false;
+                    if (newName !== data.designs[id].name) {
+                        data.designs[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.designs[id].description) {
+                        data.designs[id].description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data.designs[id]});
+                    }
+                },
+                onUnload = function (id) {
+                    delete data.designs[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            designId,
+                            queueList = [],
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.ADMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (childNode.isMetaTypeOf(meta.Container)) {
+                                designId = childNode.getId();
+                                data.designs[designId] = {
+                                    id: designId,
+                                    name: childNode.getAttribute('name'),
+                                    description: childNode.getAttribute('INFO')
+                                };
+                                childNode.onUnload(onUnload);
+                                childNode.onUpdate(onUpdate);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.ADMFolder)) {
+                                watchFromFolderRec(newChild, meta);
+                            } else if (newChild.isMetaTypeOf(meta.Container)) {
+                                designId = newChild.getId();
+                                data.designs[designId] = {
+                                    id: designId,
+                                    name: newChild.getAttribute('name'),
+                                    description: newChild.getAttribute('INFO')
+                                };
+                                newChild.onUnload(onUnload);
+                                newChild.onUpdate(onUpdate);
+                                updateListener({id: designId, type: 'load', data: data.designs[designId]});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.ADMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ADMFolder)) {
+                                    watchFromFolderRec(newChild, meta);
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**
@@ -42,6 +156,7 @@ angular.module('cyphy.services')
          * @param parentContext - context of controller.
          * @param designId
          * @param updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesignDetails = function (parentContext, designId, updateListener) {
             throw new Error('Not implemented yet.');
