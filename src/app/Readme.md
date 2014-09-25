@@ -32,9 +32,10 @@ To:
 <script src="/extlib/dist/my-new-app-app-templates.js"></script>
 ```
 
-5. start the webgme server (provides client library and database connection) `node app.js` in the root directory
-6. visit `http://localhost:8855/extlib/src/app/my-new-app/`
-7. continue changing and developing your app in the source directory `src/app/my-new-app`
+### Developing an application ###
+1. start the webgme server (provides client library and database connection) `node app.js` in the root directory
+2. visit `http://localhost:8855/extlib/src/app/my-new-app/`
+3. continue changing and developing your app in the source directory `src/app/my-new-app`
 
 Notes:
 - for more complex application see the `default` application
