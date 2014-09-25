@@ -42,7 +42,14 @@ var CyPhyApp = angular.module('CyPhyApp', [
                             });
                         ComponentService.watchComponents(testContext, key, function (info) { console.warn(info); })
                             .then(function (data) {
+                                var cKey;
                                 console.warn('watchComponents:', data);
+                                for (cKey in data.components) {
+                                    ComponentService.watchComponentDetails(testContext, cKey, function (info) { console.warn(info); })
+                                        .then(function (data) {
+                                            console.warn('watchComponentDetails:', data);
+                                    });
+                                }
                             });
                     }
                 });

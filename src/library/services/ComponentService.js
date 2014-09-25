@@ -193,6 +193,61 @@ angular.module('cyphy.services')
                         properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
                         connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
                     }
+                },
+                onPropertyUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDataType = this.getAttribute('DataType'),
+                        newValueType = this.getAttribute('ValueType'),
+                        hadChanges = false;
+                    if (newName !== data.interfaces.properties[id].name) {
+                        data.interfaces.properties[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDataType !== data.interfaces.properties[id].dataType) {
+                        data.interfaces.properties[id].dataType = newDataType;
+                        hadChanges = true;
+                    }
+                    if (newValueType !== data.interfaces.properties[id].valueType) {
+                        data.interfaces.properties[id].valueType = newValueType;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data});
+                    }
+                },
+                onPropertyUnload = function (id) {
+                    delete data.interfaces.properties[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                },
+                onConnectorUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        hadChanges = false;
+                    if (newName !== data.interfaces.connectors[id].name) {
+                        data.interfaces.connectors[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data});
+                    }
+                },
+                onConnectorUnload = function (id) {
+                    delete data.interfaces.connectors[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                },
+                onDomainModelUpdate = function (id) {
+                    var newType = this.getAttribute('Type'),
+                        hadChanges = false;
+                    if (newType !== data.domainModels[id].type) {
+                        data.domainModels[id].type = newType;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data});
+                    }
+                },
+                onDomainModelUnload = function (id) {
+                    delete data.domainModels[id];
+                    updateListener({id: id, type: 'unload', data: null});
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -217,7 +272,7 @@ angular.module('cyphy.services')
                                     };
                                     childNode.onUpdate(onPropertyUpdate);
                                     childNode.onUnload(onPropertyUnload);
-                                } else if (childNode.isMetaTypeOf(meta.Property)) {
+                                } else if (childNode.isMetaTypeOf(meta.Connector)) {
                                     data.interfaces.connectors[childId] = {
                                         id: childId,
                                         name: childNode.getAttribute('name'),
@@ -226,13 +281,45 @@ angular.module('cyphy.services')
                                     childNode.onUpdate(onConnectorUpdate);
                                     childNode.onUnload(onConnectorUnload);
                                     ///queueList.push(childNode.loadChildren(childNode));
+                                } else if (childNode.isMetaTypeOf(meta.DomainModel)) {
+                                    data.domainModels[childId] = {
+                                        id: childId,
+                                        type: childNode.getAttribute('Type')
+                                    };
+                                    childNode.onUpdate(onDomainModelUpdate);
+                                    childNode.onUnload(onDomainModelUnload);
                                 }
                             }
                             componentNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
-                                    watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                    });
+                                childId = newChild.getId();
+                                if (newChild.isMetaTypeOf(meta.Property)) {
+                                    data.interfaces.properties[childId] = {
+                                        id: childId,
+                                        name: newChild.getAttribute('name'),
+                                        dataType: newChild.getAttribute('DataType'),
+                                        valueType: newChild.getAttribute('ValueType')
+                                    };
+                                    newChild.onUpdate(onPropertyUpdate);
+                                    newChild.onUnload(onPropertyUnload);
+                                    updateListener({id: childId, type: 'load', data: data});
+                                } else if (newChild.isMetaTypeOf(meta.Connector)) {
+                                    data.interfaces.connectors[childId] = {
+                                        id: childId,
+                                        name: newChild.getAttribute('name'),
+                                        domainPorts: {}
+                                    };
+                                    newChild.onUpdate(onConnectorUpdate);
+                                    newChild.onUnload(onConnectorUnload);
+                                    updateListener({id: childId, type: 'load', data: data});
+                                    ///queueList.push(childNode.loadChildren(childNode));
+                                } else if (newChild.isMetaTypeOf(meta.DomainModel)) {
+                                    data.domainModels[childId] = {
+                                        id: childId,
+                                        type: childNode.getAttribute('Type')
+                                    };
+                                    newChild.onUpdate(onDomainModelUpdate);
+                                    newChild.onUnload(onDomainModelUnload);
+                                    updateListener({id: childId, type: 'load', data: data});
                                 }
                             });
 
