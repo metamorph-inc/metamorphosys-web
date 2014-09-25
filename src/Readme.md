@@ -13,13 +13,13 @@ Contains all source files that are developed as part of the project. May contain
 
 ## Where to put new components? ##
 
-|               | WGS Use| WGS Update | Sets DB id | Gets DB id  | SDB id  | MDB id | Sets PB | Get State | Set State |
-| ------------- |:------:|:----------:|:----------:|:-----------:|:-------:|:------:|:-------:|:---------:|:---------:|
-| CyPhy Services|   Y    |     ?      | NO         | NO          | YES     | YES    | NO      | NO        | NO        |
-| Controller/Directive A | N | N      | NO         | YES         | YES     | NO     | NO      | NO        | NO        |
-| Controller/Directive B | Y | Y      | NO         | YES         | YES     | NO     | YES     | YES       | YES       |
-| Views/Controllers  | ? | ?          | YES        | YES         | YES     | YES    | ?       | YES       | YES       |
-| Applications  | NO     | NO         | NO         | NO          | NO      | NO     | NO      | YES       | YES       |
+|               | WGS Use| Sets DB id | Gets DB id  | SDB id  | MDB id | Sets PB | Get State | Set State |
+| ------------- |:------:|:----------:|:-----------:|:-------:|:------:|:-------:|:---------:|:---------:|
+| CyPhy Services|   Y    | NO         | NO          | YES     | YES    | NO      | NO        | NO        |
+| Controller/Directive A | N | NO     | YES         | YES     | NO     | NO      | NO        | NO        |
+| Controller/Directive B | Y | NO     | YES         | YES     | NO     | YES     | YES       | YES       |
+| Views/Controllers  | ? | YES        | YES         | YES     | YES    | ?       | YES       | YES       |
+| Applications  | NO     | NO         | NO          | NO      | NO     | NO      | YES       | YES       |
 
 Acronyms
 - WGS - WebGME Services
