@@ -4,23 +4,29 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'gme.services',
     'cyphy.components'
 ])
-    .run(function (DataStoreService, BranchService, NodeService, WorkspaceService, ComponentService, DesignService, TestBenchService) {
-        DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
+    .run(function (DataStoreService, ProjectService, BranchService, NodeService, WorkspaceService, ComponentService, DesignService, TestBenchService) {
+        DataStoreService.connectToDatabase('my-db-connection-id', {host: window.location.basename})
+            .then(function () {
+                console.log('Connected ...');
+                return ProjectService.selectProject('my-db-connection-id', 'ADMEditor');
+            })
+            .then(function () {
+                console.log('Project selected...');
+                return BranchService.selectBranch('my-db-connection-id', 'master');
+            })
             .then(function () {
                 console.log('Branch selected...');
             }).catch(function (reason) {
                 console.error(reason);
             });
 
-        BranchService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
-            console.log('BranchService initialized..');
-        });
+//        BranchService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
+//            console.log('BranchService initialized..');
+//        });
 
-        NodeService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
+        NodeService.on('my-db-connection-id', 'initialize', function (currentContext) {
             var testContext = {
                 db: 'my-db-connection-id',
-                projectId: 'ADMEditor',
-                branchId: 'master',
                 regionId: 'TestRegion'
             };
             WorkspaceService.watchWorkspaces(testContext, function (info) { console.warn(info); })
