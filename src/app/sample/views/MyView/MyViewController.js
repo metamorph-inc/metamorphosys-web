@@ -14,18 +14,17 @@ angular.module('CyPhyApp')
         DataStoreService.connectToDatabase('my-db-connection-id', {host: window.location.basename})
             .then(function () {
                 console.log('connected');
+
+                ProjectService.getProjects('my-db-connection-id')
+                    .then(function (projectIds) {
+                        $scope.model.projectIds = projectIds;
+                    })
+                    .catch(function (reason) {
+                        console.error(reason);
+                    });
             })
             .catch(function (reason) {
                 console.error(reason);
-            })
+            });
 
-        ProjectService.on('my-db-connection-id', 'initialize', function () {
-            ProjectService.getProjects('my-db-connection-id')
-                .then(function (projectIds) {
-                    $scope.model.projectIds = projectIds;
-                })
-                .catch(function (reason) {
-                    console.error(reason);
-                });
-        });
     });
