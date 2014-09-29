@@ -6,21 +6,27 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, WorkspaceService) {
+    .controller('WorkspaceListController', function ($scope, WorkspaceService, NodeService) {
         'use strict';
         var self = this,
-            items = [], //$scope.items,
+            items = [],
             workspaceItems = {},
             config,
-            context = {
-                db: 'my-db-connection-id',  // FIXME: This should come from the view..
-                projectId: 'ADMEditor',     // FIXME: This should come from the view..
-                branchId: 'master',         // FIXME: This should come from the view..
-                regionId: 'WorkspaceListController_' + (new Date()).toISOString()
-            },
+            context,
             serviceData2WorkspaceItem;
 
         console.log('WorkspaceListController');
+
+        if ($scope.connectionId &&
+            angular.isString($scope.connectionId)) {
+
+            context = {
+                db: $scope.connectionId,
+                regionId: 'WorkspaceListController_' + (new Date()).toISOString()
+            }
+        } else {
+            throw new Error('connectionId must be defined and it must be a string');
+        }
 
         config = {
 
@@ -181,47 +187,60 @@ angular.module('cyphy.components')
             }
         };
 
+        // TODO: remove NodeService from here, since WorkspaceService should take care of this event
+        NodeService.on(context.db, 'initialize', function () {
 
-        WorkspaceService.watchWorkspaces(context, function (updateObject) {
-            var index;
+            // initialize all variables
+            items = [];
+            $scope.listData = {
+                items: items
+            };
+            workspaceItems = {};
 
-            if (updateObject.type === 'load') {
-                serviceData2WorkspaceItem(updateObject.data);
+            WorkspaceService.watchWorkspaces(context, function (updateObject) {
+                var index;
 
-            } else if (updateObject.type === 'update') {
-                serviceData2WorkspaceItem(updateObject.data);
+                if (updateObject.type === 'load') {
+                    serviceData2WorkspaceItem(updateObject.data);
 
-            } else if (updateObject.type === 'unload') {
-                if (workspaceItems.hasOwnProperty(updateObject.id)) {
-                    index = items.map(function (e) {
-                        return e.id;
-                    }).indexOf(updateObject.id);
-                    if (index > -1) {
-                        items.splice(index, 1);
+                } else if (updateObject.type === 'update') {
+                    serviceData2WorkspaceItem(updateObject.data);
+
+                } else if (updateObject.type === 'unload') {
+                    if (workspaceItems.hasOwnProperty(updateObject.id)) {
+                        index = items.map(function (e) {
+                            return e.id;
+                        }).indexOf(updateObject.id);
+                        if (index > -1) {
+                            items.splice(index, 1);
+                        }
+                        delete workspaceItems[updateObject.id];
                     }
-                    delete workspaceItems[updateObject.id];
+
+                } else {
+                    throw new Error(updateObject);
+
                 }
+            })
+                .then(function (data) {
+                    var workspaceId,
+                        workspaceItem;
 
-            } else {
-                throw new Error(updateObject);
-
-            }
-        })
-            .then(function (data) {
-                var workspaceId,
-                    workspaceItem;
-
-                for (workspaceId in data.workspaces) {
-                    if (data.workspaces.hasOwnProperty(workspaceId)) {
-                        serviceData2WorkspaceItem(data.workspaces[workspaceId]);
+                    for (workspaceId in data.workspaces) {
+                        if (data.workspaces.hasOwnProperty(workspaceId)) {
+                            serviceData2WorkspaceItem(data.workspaces[workspaceId]);
+                        }
                     }
-                }
-            });
+                });
+        });
     })
     .directive('workspaceList', function () {
         return {
             restrict: 'E',
             replace: true,
+            scope: {
+                connectionId: '=connectionId'
+            },
             templateUrl: '/cyphy-components/templates/WorkspaceList.html',
             controller: 'WorkspaceListController'
         };

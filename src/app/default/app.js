@@ -33,17 +33,16 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 controller: "WorkspaceDetailsController"
             });
     })
-    .run(function ($state, DataStoreService) {
+    .run(function ($state, DataStoreService, ProjectService) {
+        'use strict';
+        var connectionId = 'my-db-connection-id';
 
-        // TODO: we have to remove this logic from here.
-        DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
+        DataStoreService.connectToDatabase(connectionId, {host: window.location.basename})
             .then(function () {
-                console.log('Branch selected...');
-
-                // Redirect to workspaces once it is loaded.
-                $state.go('workspaces');
-
-            }).catch(function (reason) {
+                // select default project and branch (master)
+                return ProjectService.selectProject(connectionId, 'ADMEditor');
+            })
+            .catch(function (reason) {
                 console.error(reason);
             });
     });
