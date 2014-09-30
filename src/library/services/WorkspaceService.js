@@ -16,7 +16,15 @@ angular.module('cyphy.services')
         };
 
         this.createWorkspace = function (context, data) {
-            console.warn(data);
+            var deferred = $q.defer();
+            console.warn('Creating new workspace but not using data', data);
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
+                    .then(function (newNode) {
+                        deferred.resolve(newNode);
+                    });
+            });
+            return deferred.promise;
         };
 
         /**
@@ -450,5 +458,9 @@ angular.module('cyphy.services')
             } else {
                 console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
             }
+        };
+
+        this.logContext = function (context) {
+            NodeService.logContext(context);
         };
     });
