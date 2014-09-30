@@ -23,7 +23,7 @@ angular.module('cyphy.components')
             context = {
                 db: $scope.connectionId,
                 regionId: 'WorkspaceListController_' + (new Date()).toISOString()
-            }
+            };
         } else {
             throw new Error('connectionId must be defined and it must be a string');
         }
@@ -190,8 +190,11 @@ angular.module('cyphy.components')
         WorkspaceService.registerWatcher(context, function (destroyed) {
         //NodeService.on(context.db, 'initialize', function () {
             if (destroyed) {
-                console.error('Nodes are no longer avaliable, switch page or display some warning!');
+                console.info('destroy event raised');
+                // Data not (yet) avaliable.
                 return;
+            } else {
+                console.info('initialize event raised');
             }
             // initialize all variables
             items = [];

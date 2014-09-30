@@ -469,11 +469,13 @@ angular.module('cyphy.services')
                 watchers[parentContext.regionId] = {};
                 fn(false);
             });
-//            NodeService.on(parentContext.db, 'destroy', function () {
-//                // This should be enough, the regions should be cleaned up in NodeService.
-//                delete watchers[parentContext.regionId];
-//                fn(true);
-//            });
+            NodeService.on(parentContext.db, 'destroy', function () {
+                // This should be enough, the regions should be cleaned up in NodeService.
+                if (watchers[parentContext.regionId]) {
+                    delete watchers[parentContext.regionId];
+                }
+                fn(true);
+            });
         };
 
         this.logContext = function (context) {
