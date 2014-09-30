@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, WorkspaceService, NodeService) {
+    .controller('WorkspaceListController', function ($scope, WorkspaceService) {
         'use strict';
         var self = this,
             items = [],
@@ -187,9 +187,12 @@ angular.module('cyphy.components')
             }
         };
 
-        // TODO: remove NodeService from here, since WorkspaceService should take care of this event
-        NodeService.on(context.db, 'initialize', function () {
-
+        WorkspaceService.registerWatcher(context, function (destroyed) {
+        //NodeService.on(context.db, 'initialize', function () {
+            if (destroyed) {
+                console.error('Nodes are no longer avaliable, switch page or display some warning!');
+                return;
+            }
             // initialize all variables
             items = [];
             $scope.listData = {

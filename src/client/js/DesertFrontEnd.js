@@ -158,7 +158,7 @@ define(['xmljsonconverter'], function (Converter) {
                                     desertInfo.backFile = metadata.content['desertInput_back.xml'];
                                     desertInfo.idMap = idMap;
                                 } else {
-                                    console.warning('Desert did not generate a "desertInput_back.xml".');
+                                    console.warn('Desert did not generate a "desertInput_back.xml".');
                                 }
                                 self.dealWithDesertOutput(metadata.content['desertInput_configs.xml'].content, function (err, cfgsInfo) {
                                     if (err) {

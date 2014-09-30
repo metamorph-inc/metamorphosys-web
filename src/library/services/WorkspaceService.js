@@ -287,7 +287,10 @@ angular.module('cyphy.services')
                     return recDeferred.promise;
                 };
 
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            if (watchers.hasOwnProperty(parentContext.regionId) === false) {
+                console.error(parentContext.regionId + ' is not a registered watcher! ' +
+                    'Use "this.registerWatcher" before trying to access Node Objects.');
+            }
             watchers[parentContext.regionId][context.regionId] = context;
             NodeService.getMetaNodes(context).then(function (meta) {
                 NodeService.loadNode(context, workspaceId)
@@ -423,7 +426,7 @@ angular.module('cyphy.services')
         };
 
         /**
-         * Removes all watchers spawned from parentContext.
+         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
          * @param {object} parentContext - context of controller.
          */
         this.cleanUpAllRegions = function (parentContext) {
@@ -458,6 +461,19 @@ angular.module('cyphy.services')
             } else {
                 console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
             }
+        };
+
+        this.registerWatcher = function (parentContext, fn) {
+            NodeService.on(parentContext.db, 'initialize', function () {
+                // This should be enough, the regions will be cleaned up in NodeService.
+                watchers[parentContext.regionId] = {};
+                fn(false);
+            });
+//            NodeService.on(parentContext.db, 'destroy', function () {
+//                // This should be enough, the regions should be cleaned up in NodeService.
+//                delete watchers[parentContext.regionId];
+//                fn(true);
+//            });
         };
 
         this.logContext = function (context) {
