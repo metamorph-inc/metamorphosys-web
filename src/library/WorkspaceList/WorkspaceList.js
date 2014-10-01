@@ -13,17 +13,20 @@ angular.module('cyphy.components')
             workspaceItems = {},
             config,
             context,
-            serviceData2WorkspaceItem;
+            serviceData2WorkspaceItem,
+            addCountWatchers;
 
         console.log('WorkspaceListController');
 
-        if ($scope.connectionId &&
-            angular.isString($scope.connectionId)) {
 
+        if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
                 db: $scope.connectionId,
                 regionId: 'WorkspaceListController_' + (new Date()).toISOString()
             };
+            $scope.$on('$destroy', function () {
+                WorkspaceService.cleanUpAllRegions(context);
+            });
         } else {
             throw new Error('connectionId must be defined and it must be a string');
         }
@@ -160,22 +163,22 @@ angular.module('cyphy.components')
                     },
                     stats: [
                         {
-                            value: 0, // TODO: get this
+                            value: 0,
                             toolTip: 'Components',
                             iconClass: 'fa fa-puzzle-piece'
                         },
                         {
-                            value: 0, // TODO: get this
+                            value: 0,
                             toolTip: 'Design Spaces',
                             iconClass: 'fa fa-cubes'
                         },
                         {
-                            value: 0, // TODO: get this
+                            value: 0,
                             toolTip: 'Test benches',
                             iconClass: 'glyphicon glyphicon-saved'
                         },
                         {
-                            value: 0, // TODO: get this
+                            value: 0,
                             toolTip: 'Requirements',
                             iconClass: 'fa fa-bar-chart-o'
                         }
@@ -185,6 +188,45 @@ angular.module('cyphy.components')
                 workspaceItems[workspaceItem.id] = workspaceItem;
                 items.push(workspaceItem);
             }
+        };
+
+        addCountWatchers = function (workspaceId) {
+            WorkspaceService.watchNumberOfComponents(context, workspaceId, function (updateData) {
+                var workspaceData = workspaceItems[workspaceId];
+                if (workspaceData) {
+                    workspaceData.stats[0].value = updateData.data;
+                }
+            })
+                .then(function (data) {
+                    var workspaceData = workspaceItems[workspaceId];
+                    if (workspaceData) {
+                        workspaceData.stats[0].value = data.count;
+                    }
+                });
+            WorkspaceService.watchNumberOfDesigns(context, workspaceId, function (updateData) {
+                var workspaceData = workspaceItems[workspaceId];
+                if (workspaceData) {
+                    workspaceData.stats[1].value = updateData.data;
+                }
+            })
+                .then(function (data) {
+                    var workspaceData = workspaceItems[workspaceId];
+                    if (workspaceData) {
+                        workspaceData.stats[1].value = data.count;
+                    }
+                });
+            WorkspaceService.watchNumberOfTestBenches(context, workspaceId, function (updateData) {
+                var workspaceData = workspaceItems[workspaceId];
+                if (workspaceData) {
+                    workspaceData.stats[2].value = updateData.data;
+                }
+            })
+                .then(function (data) {
+                    var workspaceData = workspaceItems[workspaceId];
+                    if (workspaceData) {
+                        workspaceData.stats[2].value = data.count;
+                    }
+                });
         };
 
         WorkspaceService.registerWatcher(context, function (destroyed) {
@@ -220,6 +262,9 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
+                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfComponents_' + updateObject.id);
+                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfDesigns_' + updateObject.id);
+                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfTestBenches_' + updateObject.id);
                         delete workspaceItems[updateObject.id];
                     }
 
@@ -229,12 +274,12 @@ angular.module('cyphy.components')
                 }
             })
                 .then(function (data) {
-                    var workspaceId,
-                        workspaceItem;
+                    var workspaceId;
 
                     for (workspaceId in data.workspaces) {
                         if (data.workspaces.hasOwnProperty(workspaceId)) {
                             serviceData2WorkspaceItem(data.workspaces[workspaceId]);
+                            addCountWatchers(workspaceId);
                         }
                     }
                 });
