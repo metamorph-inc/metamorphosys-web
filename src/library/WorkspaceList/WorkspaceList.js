@@ -189,13 +189,6 @@ angular.module('cyphy.components')
 
         WorkspaceService.registerWatcher(context, function (destroyed) {
         //NodeService.on(context.db, 'initialize', function () {
-            if (destroyed) {
-                console.info('destroy event raised');
-                // Data not (yet) avaliable.
-                return;
-            } else {
-                console.info('initialize event raised');
-            }
             // initialize all variables
             items = [];
             $scope.listData = {
@@ -203,6 +196,13 @@ angular.module('cyphy.components')
             };
             workspaceItems = {};
 
+            if (destroyed) {
+                console.info('destroy event raised');
+                // Data not (yet) avaliable.
+                // TODO: display this to the user.
+                return;
+            }
+            console.info('initialize event raised');
             WorkspaceService.watchWorkspaces(context, function (updateObject) {
                 var index;
 

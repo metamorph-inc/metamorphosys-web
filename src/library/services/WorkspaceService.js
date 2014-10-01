@@ -18,12 +18,20 @@ angular.module('cyphy.services')
         this.createWorkspace = function (context, data) {
             var deferred = $q.defer();
             console.warn('Creating new workspace but not using data', data);
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
-                    .then(function (newNode) {
-                        deferred.resolve(newNode);
-                    });
-            });
+            NodeService.getMetaNodes(context)
+                .then(function (meta) {
+                    NodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
+                        .then(function (newNode) {
+                            deferred.resolve(newNode);
+                        })
+                        .catch(function (reason) {
+                            deferred.reject(reason);
+                        });
+                })
+                .catch(function (reason) {
+                    deferred.reject(reason);
+                });
+
             return deferred.promise;
         };
 
@@ -41,7 +49,7 @@ angular.module('cyphy.services')
         this.exportWorkspace = function (workspaceId) {
             throw new Error('Not implemented yet.');
         };
-
+        // TODO: make sure the methods below gets resolved at error too.
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
          * @param {object} parentContext - context of controller (must have a regionId defined).
