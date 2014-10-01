@@ -126,14 +126,13 @@ angular.module('cyphy.components')
         $scope.listData = {
             items: items
         };
-
-//        $scope.config = config;
     })
     .directive('componentList', function () {
         return {
             restrict: 'E',
             scope: {
-                workspaceId: '=workspaceId'
+                workspaceId: '=workspaceId',
+                connectionId: '=connectionId'
             },
             replace: true,
             templateUrl: '/cyphy-components/templates/ComponentList.html',

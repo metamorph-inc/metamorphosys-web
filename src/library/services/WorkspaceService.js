@@ -436,7 +436,7 @@ angular.module('cyphy.services')
                 childWatchers = watchers[parentContext.regionId];
                 for (key in childWatchers) {
                     if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(parentContext.db, childWatchers[key]);
+                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
                     }
                 }
                 delete watchers[parentContext.regionId];

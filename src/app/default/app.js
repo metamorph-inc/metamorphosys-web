@@ -1,4 +1,4 @@
-/*globals angular, console*/
+/*globals angular, console, window, require*/
 
 var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
@@ -13,7 +13,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'cyphy.default.templates'
 ])
     .config(function ($stateProvider, $urlRouterProvider) {
-        //
+        'use strict';
         // For any unmatched url, redirect to /workspaces
         $urlRouterProvider.otherwise('/index');
         //
