@@ -12,7 +12,15 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
     var self = this,
         workspaceUpdateListener;
 
-    this.deleteWorkspace = function (context, workspaceId) {
+    this.duplicateWorkspace = function (context, otherWorkspaceId) {
+        console.log('Not implemented.', otherWorkspaceId);
+    };
+
+    this.createWorkspace = function (context, data) {
+        console.log('Not implemented.', data);
+    };
+
+    this.deleteWorkspace = function (context, workspaceId, msg) {
         $timeout(function () {
             workspaceUpdateListener({
                 id: workspaceId,
@@ -22,12 +30,8 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
         }, 400);
     };
 
-    this.duplicateWorkspace = function (context, otherWorkspaceId) {
-        console.log('Not implemented.', otherWorkspaceId);
-    };
-
-    this.createWorkspace = function (context, data) {
-        console.log('Not implemented.', data);
+    this.exportWorkspace = function (workspaceId) {
+        console.log('Not implemented.', workspaceId);
     };
 
     this.watchWorkspaces = function (parentContext, updateListener) {
@@ -69,4 +73,51 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
         return deferred.promise;
     };
 
+    this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            updateListener({id: '/1/1', type: 'unload', data: self.chance.integer({min: 0, max: 175})});
+        }, 5000);
+        deferred.resolve({
+            regionId: workspaceId,
+            count: self.chance.integer({min: 0, max: 175})
+        });
+        return deferred.promise;
+    };
+
+    this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            updateListener({id: '/1/1', type: 'unload', data: self.chance.integer({min: 0, max: 15})});
+        }, 7000);
+        deferred.resolve({
+            regionId: workspaceId,
+            count: self.chance.integer({min: 0, max: 15})
+        });
+        return deferred.promise;
+    };
+
+    this.watchNumberOfTestBenches = function (parentContext, workspaceId, updateListener) {
+        var deferred = $q.defer();
+        $timeout(function () {
+            updateListener({id: '/1/1', type: 'unload', data: self.chance.integer({min: 0, max: 10})});
+        }, 3000);
+        deferred.resolve({
+            regionId: workspaceId,
+            count: self.chance.integer({min: 0, max: 10})
+        });
+        return deferred.promise;
+    };
+
+    this.cleanUpRegion = function (parentContext, regionId) {
+        console.log('cleanUpRegion');
+    };
+
+    this.cleanUpAllRegions = function (parentContext) {
+        console.log('cleanUpAllRegions');
+    };
+
+    this.registerWatcher = function (parentContext, fn) {
+        fn(false);
+    };
 });
