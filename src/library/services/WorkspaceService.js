@@ -428,6 +428,7 @@ angular.module('cyphy.services')
         /**
          * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
          * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          */
         this.cleanUpAllRegions = function (parentContext) {
             var childWatchers,
@@ -447,8 +448,10 @@ angular.module('cyphy.services')
 
         /**
          * Removes specified watcher (regionId)
-         * @param {object} parentContext
-         * @param {string} regionId
+         * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.db - Database connection of both parent and region to be deleted.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * @param {string} regionId - Region id of the spawned region that should be deleted.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
             if (watchers[parentContext.regionId]) {
@@ -463,6 +466,14 @@ angular.module('cyphy.services')
             }
         };
 
+        /**
+         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
+         * when they became unavailable. These are also called directly with the state of the NodeSerivce.
+         * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.db - Database connection.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
+         */
         this.registerWatcher = function (parentContext, fn) {
             NodeService.on(parentContext.db, 'initialize', function () {
                 // This should be enough, the regions will be cleaned up in NodeService.

@@ -5,5 +5,8 @@ angular.module('CyPhyApp')
         'use strict';
         var workspaceId = $state.params.workspaceId.replace(/-/g, '/');
         console.log('WorkspaceDetailsController', workspaceId);
+        $scope.dataModel = {
+            workspaceId: workspaceId
+        };
         //debugger;
     });

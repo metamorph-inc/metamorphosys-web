@@ -6,54 +6,49 @@ var demoApp = angular.module('cyphy.ui.ComponentList.demo', [
 ]);
 
 // overwrite ComponentService with dummy data
-demoApp.service('ComponentService', function () {
+demoApp.service('ComponentService', function ($q) {
     'use strict';
 
     var self = this,
         components = [];
 
     this.watchComponents = function (parentContext, workspaceId, updateListener) {
-        var generateComponent,
-            numComps = self.chance.integer({min: 1, max: 5}),
-            i;
-
-        generateComponent = function (id) {
-            return {
-                id: id,
-                title: self.chance.name(),
-                toolTip: 'Open item',
-                description: self.chance.sentence(),
-                lastUpdated: {
-                    time: self.chance.date({year: (new Date()).getFullYear()}),
-                    user: self.chance.name()
-                },
-                stats: [
-                    {
-                        value: 'Modelica ' + self.chance.integer({min: 0, max: 5}),
-                        toolTip: 'Modelica'
-                        //iconClass: 'fa fa-puzzle-piece'
-                    },
-                    {
-                        value: 'CAD ' + self.chance.integer({min: 0, max: 3}),
-                        toolTip: 'CAD'
-//                    iconClass: 'fa fa-cubes'
-                    },
-                    {
-                        value: 'Manufacturing ' + self.chance.integer({min: 0, max: 1}),
-                        toolTip: 'Manufacturing'
-//                    iconClass: 'glyphicon glyphicon-saved'
-                    }
-                ]
-                //details    : 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
+        var deferred = $q.defer(),
+            numComps,
+            i,
+            data = {
+                regionId: parentContext.regionId  + '_dummy_region',
+                components: {} // component {id: <string>, name: <string>, description: <string>,
+                //            avmId: <string>, resource: <hash|string>, classifications: <string> }
             };
-        };
 
+        self.chance = new Chance();
+        numComps = self.chance.integer({min: 2, max: 8})
         for (i = 0; i < numComps; i += 1) {
-            components.push(generateComponent(i));
+            data.components[i] = {
+                id: workspaceId + '/' + i.toString(),
+                name: self.chance.last(),
+                description: self.chance.sentence(),
+                avmId: self.chance.guid(),
+                resource: self.chance.hash(),
+                classifications: self.chance.gender()
+            };
         }
 
-        updateListener(null, components);
+        deferred.resolve(data);
 
+        return deferred.promise;
     };
 
+    this.cleanUpRegion = function (parentContext, regionId) {
+        console.log('cleanUpRegion');
+    };
+
+    this.cleanUpAllRegions = function (parentContext) {
+        console.log('cleanUpAllRegions');
+    };
+
+    this.registerWatcher = function (parentContext, fn) {
+        fn(false);
+    };
 });

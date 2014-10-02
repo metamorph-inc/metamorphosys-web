@@ -46,7 +46,7 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
         workspaceUpdateListener = updateListener;
 
         self.chance = new Chance();
-        numItems = self.chance.integer({min: 2, max: 15});
+        numItems = self.chance.integer({min: 2, max: 8});
 
         for (i = 0; i < numItems; i += 1) {
             data.workspaces[i] = {

@@ -38,8 +38,6 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchComponents',
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
                     regionId: regionId
                 },
                 data = {
@@ -183,8 +181,6 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchComponentDetails_' + componentId,
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
                     regionId: regionId
                 },
                 data = {
@@ -340,8 +336,9 @@ angular.module('cyphy.services')
         };
 
         /**
-         * Removes all watchers spawned from parentContext.
+         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
          * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          */
         this.cleanUpAllRegions = function (parentContext) {
             var childWatchers,
@@ -350,7 +347,7 @@ angular.module('cyphy.services')
                 childWatchers = watchers[parentContext.regionId];
                 for (key in childWatchers) {
                     if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key]);
+                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
                     }
                 }
                 delete watchers[parentContext.regionId];
@@ -361,13 +358,15 @@ angular.module('cyphy.services')
 
         /**
          * Removes specified watcher (regionId)
-         * @param {object} parentContext
-         * @param {string} regionId
+         * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.db - Database connection of both parent and region to be deleted.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * @param {string} regionId - Region id of the spawned region that should be deleted.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
             if (watchers[parentContext.regionId]) {
                 if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(regionId);
+                    NodeService.cleanUpRegion(parentContext.db, regionId);
                     delete watchers[parentContext.regionId][regionId];
                 } else {
                     console.log('Nothing to clean-up..');
@@ -375,5 +374,32 @@ angular.module('cyphy.services')
             } else {
                 console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
             }
+        };
+
+        /**
+         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
+         * when they became unavailable. These are also called directly with the state of the NodeSerivce.
+         * @param {object} parentContext - context of controller.
+         * @param {string} parentContext.db - Database connection.
+         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
+         */
+        this.registerWatcher = function (parentContext, fn) {
+            NodeService.on(parentContext.db, 'initialize', function () {
+                // This should be enough, the regions will be cleaned up in NodeService.
+                watchers[parentContext.regionId] = {};
+                fn(false);
+            });
+            NodeService.on(parentContext.db, 'destroy', function () {
+                // This should be enough, the regions should be cleaned up in NodeService.
+                if (watchers[parentContext.regionId]) {
+                    delete watchers[parentContext.regionId];
+                }
+                fn(true);
+            });
+        };
+
+        this.logContext = function (context) {
+            NodeService.logContext(context);
         };
     });

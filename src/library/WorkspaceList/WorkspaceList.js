@@ -230,7 +230,6 @@ angular.module('cyphy.components')
         };
 
         WorkspaceService.registerWatcher(context, function (destroyed) {
-        //NodeService.on(context.db, 'initialize', function () {
             // initialize all variables
             items = [];
             $scope.listData = {
