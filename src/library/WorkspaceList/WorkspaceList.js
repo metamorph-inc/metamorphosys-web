@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, WorkspaceService) {
+    .controller('WorkspaceListController', function ($scope, WorkspaceService, FileService) {
         'use strict';
         var self = this,
             items = [],
@@ -17,7 +17,6 @@ angular.module('cyphy.components')
             addCountWatchers;
 
         console.log('WorkspaceListController');
-
 
         if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
@@ -116,17 +115,53 @@ angular.module('cyphy.components')
             },
 
             newItemForm: {
-                title: 'Create new item',
+                title: 'Create new workspace',
                 itemTemplateUrl: '/cyphy-components/templates/WorkspaceNewItem.html',
                 expanded: false,
                 controller: function ($scope) {
+                    $scope.model = {
+                        droppedFiles: []
+                    };
+                    $scope.dragOverClass = function ($event) {
+                        var draggedItems = $event.dataTransfer.items,
+                            i,
+                            hasFile = false;
+                        console.warn(draggedItems);
+                        if (draggedItems === null) {
+                            hasFile = true;
+                        } else {
+                            for (i = 0; i < draggedItems.length; i += 1) {
+                                if (draggedItems[i].kind === 'file') {
+                                    hasFile = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        return hasFile ? "bg-success dragover" : "bg-danger dragover";
+                    };
+
+                    $scope.onDroppedFiles = function ($files) {
+                        FileService.saveDroppedFiles($files, {zip: true, adm: true, atm: true})
+                            .then(function (fInfos) {
+                                var i;
+                                console.log(fInfos);
+                                for (i = 0; i < fInfos.length; i += 1) {
+                                    $scope.model.droppedFiles.push(fInfos[i]);
+                                }
+                            });
+                    };
+
                     $scope.createItem = function (newItem) {
+                        var i;
+                        for (i = 0; i < $scope.files.length; i += 1) {
+                            console.log($scope.files[i]);
+                        }
+                        //WorkspaceService.createWorkspace(context, newItem);
 
-                        WorkspaceService.createWorkspace(context, newItem);
+                        //$scope.newItem = {};
 
-                        $scope.newItem = {};
-
-                        config.newItemForm.expanded = false; // this is how you close the form itself
+                        //config.newItemForm.expanded = false; // this is how you close the form itself
 
                     };
                 }

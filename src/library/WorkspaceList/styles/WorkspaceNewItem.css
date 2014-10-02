@@ -1,0 +1,9 @@
+form.drop-box-new-workspace {
+  padding: 2ex 1em;
+  border: 1px solid transparent; }
+  form.drop-box-new-workspace.dragover {
+    border: 1px dashed #666; }
+    form.drop-box-new-workspace.dragover.bg-success {
+      background-color: #dff0d8; }
+    form.drop-box-new-workspace.dragover.bg-danger {
+      background-color: #f2dede; }

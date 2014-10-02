@@ -121,3 +121,24 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
         fn(false);
     };
 });
+
+demoApp.service('FileService', function ($q) {
+    this.saveDroppedFiles = function (files, validExtensions) {
+        var deferred = $q.defer(),
+            addedFiles = [],
+            i;
+        for (i = 0; i < files.length; i += 1) {
+            addedFiles.push({
+                hash: '',
+                name: files[i].name,
+                type: 'zip',
+                size: files[i].size,
+                url: ''
+            });
+        }
+
+        deferred.resolve(addedFiles);
+
+        return deferred.promise;
+    };
+});

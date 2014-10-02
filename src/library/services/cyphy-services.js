@@ -4,7 +4,7 @@
  */
 
 angular.module('cyphy.services', ['gme.services']);
-
+require('./FileService');
 require('./WorkspaceService');
 require('./ComponentService');
 require('./DesignService');

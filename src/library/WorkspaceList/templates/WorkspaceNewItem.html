@@ -1,23 +1,20 @@
-<form class="drop-box new-order-set">
-    <div class="row">
-        <div class="col-md-3">
-            <input type="text" class="form-control" data-ng-model="newItem.id"
-                   placeholder="ID">
-        </div>
-    </div>
+<form class="drop-box-new-workspace" ng-file-drop="onDroppedFiles($files)" ng-file-drag-over-class="dragOverClass($event)">
     <div class="row">
         <div class="col-md-6">
-            <input type="text" class="form-control" data-ng-model="newItem.title"
-                   placeholder="New item name">
+            <input type="text" class="form-control" data-ng-model="newItem.name"
+                   placeholder="Name">
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-10">
             <textarea class="form-control edit-workspace-description" rows="5"
                       data-ng-model="newItem.description"
                       placeholder="Description"></textarea>
         </div>
     </div>
+    <ul class="dropped-files">
+        <li class="dropped-file" ng-repeat="file in model.droppedFiles"> {{file.name}} {{file.size}}</li>
+    </ul>
     <div class="row form-footer">
         <div class="col-md-8">
             <button class="btn btn-default btn-submit btn-success"
