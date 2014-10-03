@@ -12,6 +12,7 @@ require('./services/cyphy-services');
 angular.module('cyphy.components', ['cyphy.services', 'cyphy.components.templates', 'angularFileUpload']);
 
 require('./WorkspaceList/WorkspaceList');
+require('./ComponentDetails/ComponentDetails');
 require('./ComponentList/ComponentList');
 require('./DesignList/DesignList');
 require('./DesignTree/DesignTree');

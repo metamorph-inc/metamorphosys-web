@@ -278,7 +278,7 @@ angular.module('cyphy.components')
                 // TODO: display this to the user.
                 return;
             }
-            console.info('initialize event raised');
+            console.info('WorkspaceListController - initialize event raised');
             WorkspaceService.watchWorkspaces(context, function (updateObject) {
                 var index;
 
@@ -320,6 +320,7 @@ angular.module('cyphy.components')
         });
     })
     .directive('workspaceList', function () {
+        'use strict';
         return {
             restrict: 'E',
             replace: true,

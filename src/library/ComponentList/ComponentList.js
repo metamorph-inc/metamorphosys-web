@@ -1,6 +1,5 @@
 /*globals angular, console, document, require*/
 
-
 /**
  * @author pmeijer / https://github.com/pmeijer
  * @author lattmann / https://github.com/lattmann
@@ -140,9 +139,7 @@ angular.module('cyphy.components')
 
         ComponentService.registerWatcher(context, function (destroyed) {
             items = [];
-            $scope.listData = {
-                items: items
-            };
+            $scope.listData.items = items;
             componentItems = {};
 
             if (destroyed) {
@@ -154,11 +151,11 @@ angular.module('cyphy.components')
             console.info('initialize event raised');
 
             ComponentService.watchComponents(context, $scope.workspaceId, function (updateObj) {
-
+                //TODO: Implement the updating functionality.
             })
                 .then(function (data) {
                     var componentId;
-
+                    //debugger;
                     for (componentId in data.components) {
                         if (data.components.hasOwnProperty(componentId)) {
                             serviceData2ComponentItem(data.components[componentId]);
@@ -168,6 +165,7 @@ angular.module('cyphy.components')
         });
     })
     .directive('componentList', function () {
+        'use strict';
         return {
             restrict: 'E',
             scope: {
