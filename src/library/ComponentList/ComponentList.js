@@ -12,6 +12,7 @@ angular.module('cyphy.components')
             items = [],
             componentItems = {},
             serviceData2ComponentItem,
+            addDomainWatcher,
             config,
             context;
 
@@ -125,11 +126,11 @@ angular.module('cyphy.components')
                         user: 'N/A' // TODO: get this
                     },
                     stats: [
-//                        {
-//                            value: 0,
-//                            toolTip: 'Components',
-//                            iconClass: 'fa fa-puzzle-piece'
-//                        }
+                        {
+                            value: 0,
+                            toolTip: 'Domain Models (not final)',
+                            iconClass: 'glyphicon glyphicon-tint'
+                        }
                     ],
                     details    : 'Content',
                     detailsTemplateUrl: 'details.html'
@@ -138,6 +139,25 @@ angular.module('cyphy.components')
                 componentItems[componentItem.id] = componentItem;
                 items.push(componentItem);
             }
+        };
+
+        addDomainWatcher = function (componentId) {
+            debugger;
+            ComponentService.watchComponentDomains(context, componentId, function (updateData) {
+                //TODO: Implement the updating functionality.
+            })
+                .then(function (data) {
+                    debugger;
+                    var componentData = componentItems[componentId],
+                        key;
+                    if (componentData) {
+                        for (key in data.domainModels) {
+                            if (data.domainModels.hasOwnProperty(key)) {
+                                componentData.stats[0].value += 1;
+                            }
+                        }
+                    }
+                });
         };
 
         ComponentService.registerWatcher(context, function (destroyed) {
@@ -162,6 +182,7 @@ angular.module('cyphy.components')
                     for (componentId in data.components) {
                         if (data.components.hasOwnProperty(componentId)) {
                             serviceData2ComponentItem(data.components[componentId]);
+                            addDomainWatcher(componentId);
                         }
                     }
                 });

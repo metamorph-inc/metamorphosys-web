@@ -25,7 +25,7 @@ demoApp.service('ComponentService', function ($q) {
         numComps = 3;
         for (i = 0; i < numComps; i += 1) {
             data.components[i] = {
-                id: workspaceId + '/' + i.toString(),
+                id: i,
                 name: self.chance.last(),
                 description: self.chance.sentence(),
                 avmId: self.chance.guid(),
@@ -39,25 +39,22 @@ demoApp.service('ComponentService', function ($q) {
         return deferred.promise;
     };
 
-    this.watchComponentDetails = function (parentContext, componentId, updateListener) {
+    this.watchComponentInterfaces = function (parentContext, componentId, updateListener) {
         var deferred = $q.defer(),
             num,
             i,
             data = {
-                regionId: parentContext.regionId + '_dummy_details_' + componentId,
+                regionId: parentContext.regionId + '_dummy_interfaces_' + componentId,
                 id: componentId,
-                domainModels: {},   //domainModel: id: <string>, type: <string>
-                interfaces: {
-                    properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
-                    connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
-                }
+                properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
+                connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
             };
 
         self.chance = new Chance();
         num = 4;
         for (i = 0; i < num; i += 1) {
-            data.interfaces.properties[i] = {
-                id: componentId + '/' + i.toString(),
+            data.properties[i] = {
+                id: i,
                 name: self.chance.last(),
                 dataType: 'String',
                 valueType: 'Fixed'
@@ -65,8 +62,8 @@ demoApp.service('ComponentService', function ($q) {
         }
         num = 3;
         for (i = 0; i < num; i += 1) {
-            data.interfaces.connectors[i] = {
-                id: componentId + '/' + i.toString(),
+            data.connectors[i] = {
+                id: i,
                 name: self.chance.last(),
                 domainPorts: {}
             };
@@ -77,6 +74,55 @@ demoApp.service('ComponentService', function ($q) {
         return deferred.promise;
     };
 
+    this.watchComponentDomains = function (parentContext, componentId, updateListener) {
+        var deferred = $q.defer(),
+            num,
+            totalNum = 0,
+            i,
+            data = {
+                regionId: parentContext.regionId + '_dummy_domains_' + componentId,
+                id: componentId,
+                domainModels: {}   //domainModel: id: <string>, type: <string>
+            };
+
+        self.chance = new Chance();
+        num = self.chance.integer({min: 0, max: 2});
+        for (i = 0; i < num; i += 1) {
+            totalNum += 1;
+            data.domainModels[totalNum] = {
+                id: totalNum,
+                type: 'Modelica'
+            };
+        }
+        num = self.chance.integer({min: 0, max: 2});
+        for (i = 0; i < num; i += 1) {
+            totalNum += 1;
+            data.domainModels[totalNum] = {
+                id: totalNum,
+                type: 'CAD'
+            };
+        }
+        num = self.chance.integer({min: 0, max: 2});
+        for (i = 0; i < num; i += 1) {
+            totalNum += 1;
+            data.domainModels[totalNum] = {
+                id: totalNum,
+                type: 'Cyber'
+            };
+        }
+        num = self.chance.integer({min: 0, max: 2});
+        for (i = 0; i < num; i += 1) {
+            totalNum += 1;
+            data.domainModels[totalNum] = {
+                id: totalNum,
+                type: 'Manufacturing'
+            };
+        }
+
+        deferred.resolve(data);
+
+        return deferred.promise;
+    };
     this.cleanUpRegion = function (parentContext, regionId) {
         console.log('cleanUpRegion');
     };

@@ -170,15 +170,15 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches a component w.r.t. interfaces and included domain-models.
+         *  Watches the domain-models of a component.
          * @param parentContext - context of controller.
          * @param componentId
          * @param updateListener - invoked when there are (filtered) changes in data.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchComponentDetails = function (parentContext, componentId, updateListener) {
+        this.watchComponentDomains = function (parentContext, componentId, updateListener) {
             var deferred = $q.defer(),
-                regionId = parentContext.regionId + '_watchComponentDetails_' + componentId,
+                regionId = parentContext.regionId + '_watchComponentDomains_' + componentId,
                 context = {
                     db: parentContext.db,
                     regionId: regionId
@@ -186,51 +186,7 @@ angular.module('cyphy.services')
                 data = {
                     regionId: regionId,
                     id: componentId,
-                    domainModels: {},   //domainModel: id: <string>, type: <string>
-                    interfaces: {
-                        properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
-                        connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
-                    }
-                },
-                onPropertyUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        newDataType = this.getAttribute('DataType'),
-                        newValueType = this.getAttribute('ValueType'),
-                        hadChanges = false;
-                    if (newName !== data.interfaces.properties[id].name) {
-                        data.interfaces.properties[id].name = newName;
-                        hadChanges = true;
-                    }
-                    if (newDataType !== data.interfaces.properties[id].dataType) {
-                        data.interfaces.properties[id].dataType = newDataType;
-                        hadChanges = true;
-                    }
-                    if (newValueType !== data.interfaces.properties[id].valueType) {
-                        data.interfaces.properties[id].valueType = newValueType;
-                        hadChanges = true;
-                    }
-                    if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
-                    }
-                },
-                onPropertyUnload = function (id) {
-                    delete data.interfaces.properties[id];
-                    updateListener({id: id, type: 'unload', data: null});
-                },
-                onConnectorUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        hadChanges = false;
-                    if (newName !== data.interfaces.connectors[id].name) {
-                        data.interfaces.connectors[id].name = newName;
-                        hadChanges = true;
-                    }
-                    if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
-                    }
-                },
-                onConnectorUnload = function (id) {
-                    delete data.interfaces.connectors[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    domainModels: {}   //domainModel: id: <string>, type: <string>
                 },
                 onDomainModelUpdate = function (id) {
                     var newType = this.getAttribute('Type'),
@@ -261,25 +217,7 @@ angular.module('cyphy.services')
                             for (i = 0; i < children.length; i += 1) {
                                 childNode = children[i];
                                 childId = childNode.getId();
-                                if (childNode.isMetaTypeOf(meta.Property)) {
-                                    data.interfaces.properties[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        dataType: childNode.getAttribute('DataType'),
-                                        valueType: childNode.getAttribute('ValueType')
-                                    };
-                                    childNode.onUpdate(onPropertyUpdate);
-                                    childNode.onUnload(onPropertyUnload);
-                                } else if (childNode.isMetaTypeOf(meta.Connector)) {
-                                    data.interfaces.connectors[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        domainPorts: {}
-                                    };
-                                    childNode.onUpdate(onConnectorUpdate);
-                                    childNode.onUnload(onConnectorUnload);
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                } else if (childNode.isMetaTypeOf(meta.DomainModel)) {
+                                if (childNode.isMetaTypeOf(meta.DomainModel)) {
                                     data.domainModels[childId] = {
                                         id: childId,
                                         type: childNode.getAttribute('Type')
@@ -290,8 +228,129 @@ angular.module('cyphy.services')
                             }
                             componentNode.onNewChildLoaded(function (newChild) {
                                 childId = newChild.getId();
+                                if (newChild.isMetaTypeOf(meta.DomainModel)) {
+                                    data.domainModels[childId] = {
+                                        id: childId,
+                                        type: childNode.getAttribute('Type')
+                                    };
+                                    newChild.onUpdate(onDomainModelUpdate);
+                                    newChild.onUnload(onDomainModelUnload);
+                                    updateListener({id: childId, type: 'load', data: data});
+                                }
+                            });
+
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches the interfaces of a component.
+         * @param parentContext - context of controller.
+         * @param componentId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
+         */
+        this.watchComponentInterfaces = function (parentContext, componentId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchComponentInterfaces_' + componentId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    id: componentId,
+                    properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
+                    connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
+                },
+                onPropertyUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDataType = this.getAttribute('DataType'),
+                        newValueType = this.getAttribute('ValueType'),
+                        hadChanges = false;
+                    if (newName !== data.properties[id].name) {
+                        data.properties[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDataType !== data.properties[id].dataType) {
+                        data.properties[id].dataType = newDataType;
+                        hadChanges = true;
+                    }
+                    if (newValueType !== data.properties[id].valueType) {
+                        data.properties[id].valueType = newValueType;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data});
+                    }
+                },
+                onPropertyUnload = function (id) {
+                    delete data.properties[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                },
+                onConnectorUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        hadChanges = false;
+                    if (newName !== data.connectors[id].name) {
+                        data.connectors[id].name = newName;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        updateListener({id: id, type: 'update', data: data});
+                    }
+                },
+                onConnectorUnload = function (id) {
+                    delete data.connectors[id];
+                    updateListener({id: id, type: 'unload', data: null});
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, componentId)
+                    .then(function (componentNode) {
+                        componentNode.loadChildren().then(function (children) {
+                            var i,
+                                childId,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                childId = childNode.getId();
+                                if (childNode.isMetaTypeOf(meta.Property)) {
+                                    data.properties[childId] = {
+                                        id: childId,
+                                        name: childNode.getAttribute('name'),
+                                        dataType: childNode.getAttribute('DataType'),
+                                        valueType: childNode.getAttribute('ValueType')
+                                    };
+                                    childNode.onUpdate(onPropertyUpdate);
+                                    childNode.onUnload(onPropertyUnload);
+                                } else if (childNode.isMetaTypeOf(meta.Connector)) {
+                                    data.connectors[childId] = {
+                                        id: childId,
+                                        name: childNode.getAttribute('name'),
+                                        domainPorts: {}
+                                    };
+                                    childNode.onUpdate(onConnectorUpdate);
+                                    childNode.onUnload(onConnectorUnload);
+                                    ///queueList.push(childNode.loadChildren(childNode));
+                                }
+                            }
+                            componentNode.onNewChildLoaded(function (newChild) {
+                                childId = newChild.getId();
                                 if (newChild.isMetaTypeOf(meta.Property)) {
-                                    data.interfaces.properties[childId] = {
+                                    data.properties[childId] = {
                                         id: childId,
                                         name: newChild.getAttribute('name'),
                                         dataType: newChild.getAttribute('DataType'),
@@ -301,7 +360,7 @@ angular.module('cyphy.services')
                                     newChild.onUnload(onPropertyUnload);
                                     updateListener({id: childId, type: 'load', data: data});
                                 } else if (newChild.isMetaTypeOf(meta.Connector)) {
-                                    data.interfaces.connectors[childId] = {
+                                    data.connectors[childId] = {
                                         id: childId,
                                         name: newChild.getAttribute('name'),
                                         domainPorts: {}
@@ -310,14 +369,6 @@ angular.module('cyphy.services')
                                     newChild.onUnload(onConnectorUnload);
                                     updateListener({id: childId, type: 'load', data: data});
                                     ///queueList.push(childNode.loadChildren(childNode));
-                                } else if (newChild.isMetaTypeOf(meta.DomainModel)) {
-                                    data.domainModels[childId] = {
-                                        id: childId,
-                                        type: childNode.getAttribute('Type')
-                                    };
-                                    newChild.onUpdate(onDomainModelUpdate);
-                                    newChild.onUnload(onDomainModelUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
                                 }
                             });
 

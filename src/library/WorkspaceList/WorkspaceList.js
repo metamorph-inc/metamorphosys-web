@@ -284,6 +284,7 @@ angular.module('cyphy.components')
 
                 if (updateObject.type === 'load') {
                     serviceData2WorkspaceItem(updateObject.data);
+                    addCountWatchers(updateObject.id);
 
                 } else if (updateObject.type === 'update') {
                     serviceData2WorkspaceItem(updateObject.data);

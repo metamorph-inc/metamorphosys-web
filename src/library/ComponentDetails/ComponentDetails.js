@@ -50,13 +50,13 @@ angular.module('cyphy.components')
             }
             console.info('ComponentDetailsController - initialize event raised');
 
-            ComponentService.watchComponentDetails(context, $scope.componentId, function (updateObject) {
+            ComponentService.watchComponentInterfaces(context, $scope.componentId, function (updateObject) {
                 // Since watchComponentDetails keeps the data up-to-date there shouldn't be a need to do any
                 // updates here..
             })
-                .then(function (componentDetails) {
-                    $scope.details.properties = componentDetails.interfaces.properties;
-                    $scope.details.connectors = componentDetails.interfaces.connectors;
+                .then(function (componentInterfaces) {
+                    $scope.details.properties = componentInterfaces.properties;
+                    $scope.details.connectors = componentInterfaces.connectors;
                 });
         });
     })
