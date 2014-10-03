@@ -38,7 +38,7 @@ angular.module('cyphy.components')
 //                connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
 //            }
 //        }
-        debugger;
+
         ComponentService.registerWatcher(context, function (destroy) {
             $scope.details = {
                 properties: {},

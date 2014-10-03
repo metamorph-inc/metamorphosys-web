@@ -101,7 +101,8 @@ angular.module('cyphy.components')
         };
 
         $scope.listData = {
-            items: items
+            items: items,
+            connectionId: $scope.connectionId // FIXME: This is probably not the right way to do it..
         };
 
         $scope.config = config;
@@ -129,7 +130,9 @@ angular.module('cyphy.components')
 //                            toolTip: 'Components',
 //                            iconClass: 'fa fa-puzzle-piece'
 //                        }
-                    ]
+                    ],
+                    details    : 'Content',
+                    detailsTemplateUrl: 'details.html'
                 };
 
                 componentItems[componentItem.id] = componentItem;
