@@ -646,6 +646,12 @@ define([
                     self.core.setAttribute(domainConnector, 'Type', 'CadPlane');
                 } else if (self.endsWith(typeName, 'Point')) {
                     self.core.setAttribute(domainConnector, 'Type', 'CadPoint');
+                } else if (self.endsWith(typeName, 'Pin')) {
+                    self.core.setAttribute(domainConnector, 'Type', 'SchematicPin');
+                } else if (self.endsWith(typeName, 'SystemCPort')) {
+                    self.core.setAttribute(domainConnector, 'Type', 'SystemCPort');
+                } else if (self.endsWith(typeName, 'RFPort')) {
+                    self.core.setAttribute(domainConnector, 'Type', 'RFPort');
                 } else {
                     self.createMessage(domainConnector, 'Unknown Type for domain connector : ' +
                         JSON.stringify(connectorData.Role[i], null, 2), 'error');
