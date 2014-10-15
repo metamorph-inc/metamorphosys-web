@@ -472,64 +472,54 @@ define([
                 callback('loadChildren failed for connector ' + nodeName + ' :' + err.toString());
                 return;
             }
+            function addDomainConnector(child, attributes) {
+                var domainNodeName = self.core.getAttribute(child, 'name');
+                var commonAttributes = {
+                    '@ID': self.core.getGuid(child),
+                    '@PortMap': '',
+                    '@Name': domainNodeName,
+                    '@Notes': '',
+                    '@Definition': '',
+                };
+                for (var attr in attributes) {
+                    if (attributes.hasOwnProperty(attr))
+                        commonAttributes[attr] = attributes[attr];
+                }
+                domainConnectors.push(commonAttributes);
+            }
             for (i = 0; i < children.length; i += 1) {
                 typeName = self.core.getAttribute(children[i], 'Type');
                 domainNodeName = self.core.getAttribute(children[i], 'name');
                 if (typeName === 'ModelicaConnector') {
-                    domainConnectors.push({
+                    addDomainConnector(children[i], {
                         '@xmlns:q1': 'modelica',
                         '@xsi:type': 'q1:Connector',
-                        '@ID': self.core.getGuid(children[i]),
-                        '@PortMap': '',
-                        '@Name': domainNodeName,
-                        '@Notes': '',
-                        '@Definition': '',
                         '@Locator': domainNodeName,
                         '@Class': self.core.getAttribute(children[i], 'Class')
                     });
                 } else if (typeName === 'CadAxis') {
-                    domainConnectors.push({
+                    addDomainConnector(children[i], {
                         '@xmlns:q1': 'cad',
                         '@xsi:type': 'q1:Axis',
-                        '@ID': self.core.getGuid(children[i]),
-                        '@PortMap': '',
-                        '@Name': domainNodeName,
-                        '@Notes': '',
-                        '@Definition': '',
                         '@DatumName': ''
                     });
                 } else if (typeName === 'CadCoordinateSystem') {
-                    domainConnectors.push({
+                    addDomainConnector(children[i], {
                         '@xmlns:q1': 'cad',
                         '@xsi:type': 'q1:CoordinateSystem',
-                        '@ID': self.core.getGuid(children[i]),
-                        '@PortMap': '',
-                        '@Name': domainNodeName,
-                        '@Notes': '',
-                        '@Definition': '',
                         '@DatumName': ''
                     });
                 } else if (typeName === 'CadPlane') {
-                    domainConnectors.push({
+                    addDomainConnector(children[i], {
                         '@xmlns:q1': 'cad',
                         '@xsi:type': 'q1:Plane',
-                        '@ID': self.core.getGuid(children[i]),
-                        '@PortMap': '',
-                        '@Name': domainNodeName,
-                        '@Notes': '',
-                        '@Definition': '',
                         '@DatumName': '',
                         '@SurfaceReverseMap': ''
                     });
                 } else if (typeName === 'CadPoint') {
-                    domainConnectors.push({
+                    addDomainConnector(children[i], {
                         '@xmlns:q1': 'cad',
                         '@xsi:type': 'q1:Point',
-                        '@ID': self.core.getGuid(children[i]),
-                        '@PortMap': '',
-                        '@Name': domainNodeName,
-                        '@Notes': '',
-                        '@Definition': '',
                         '@DatumName': ''
                     });
                 }
