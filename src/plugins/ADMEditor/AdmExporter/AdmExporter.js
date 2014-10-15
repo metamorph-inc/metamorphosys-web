@@ -522,6 +522,21 @@ define([
                         '@xsi:type': 'q1:Point',
                         '@DatumName': ''
                     });
+                } else if (typeName === 'SchematicPin') {
+                    addDomainConnector(children[i], {
+                        '@xmlns:q1': 'schematic',
+                        '@xsi:type': 'q1:Pin',
+                    });
+                } else if (typeName === 'SystemCPort') {
+                    addDomainConnector(children[i], {
+                        '@xmlns:q1': 'systemc',
+                        '@xsi:type': 'q1:SystemCPort',
+                    });
+                } else if (typeName === 'RFPort') {
+                    addDomainConnector(children[i], {
+                        '@xmlns:q1': 'rf',
+                        '@xsi:type': 'q1:RFPort',
+                    });
                 }
             }
 
