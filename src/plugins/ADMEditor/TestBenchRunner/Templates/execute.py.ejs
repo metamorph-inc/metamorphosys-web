@@ -302,7 +302,7 @@ def run_execution_jobs():
     for job in jobs:
         os.chdir(job['dir'])
         try:
-            rc = call_subprocess_with_logging(job['cmd'])
+            rc = call_subprocess_with_logging('"%s" -m TestBenchExecutor testbench_manifest.json"' % sys.executable)
             if rc != 0:
                 logger.error('call failed! {0} in {1}'.format(job['cmd'], job['dir']))
                 failed_jobs += 1
