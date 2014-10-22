@@ -37,6 +37,10 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 logger.addHandler(ch_err)
 
+def close_log():
+    fh.close()
+import atexit
+atexit.register(close_log)
 
 ## Obtain the root directory for the META-tools.
 # Get the running meta-python path.
@@ -62,7 +66,7 @@ win32com.client.gencache.GetClassForCLSID = lambda x: None
 def call_subprocess_with_logging(command, my_env=None):
     """
     Calls the command, if error occurred logging is made of all non-empty returns.
-    Reraises the exception putting the formatet message in returncode
+    Reraises the exception putting the formatted message in returncode
 
     :param command: the command to be executed
     :param my_env: dictionary of environment-variables, None -> uses the default windows
@@ -311,7 +315,7 @@ def run_execution_jobs():
             os.chdir(root_dir)
     if failed_jobs > 0:
         with open('_FAILED.txt', 'ab+') as f_out:
-            f_out.write(str(failed_jobs) + ' of ' + str(nbr_of_jobs) +' jobs failed! See logs/execute.log.')
+            f_out.write(str(failed_jobs) + ' of ' + str(nbr_of_jobs) +' jobs failed! See log/execute.log.')
 
 
 def move_dashboard_files(new_dir):
@@ -361,14 +365,14 @@ if __name__ == '__main__':
     except IndexError:
         logger.error('Could not find an adm at {0}'.format(os.getcwd()))
         with open('_FAILED.txt', 'ab+') as f_out:
-            f_out.write('Execution failed! See logs/execute.log.')
+            f_out.write('Execution failed! See log/execute.log.')
         sys.exit(1)
     try:
         xme_path = [f for f in os.listdir('.') if f.endswith('.xme')][0]
     except IndexError:
         logger.error('Could not find an adm or xme file at {0}'.format(os.getcwd()))
         with open('_FAILED.txt', 'ab+') as f_out:
-            f_out.write('Execution failed! See logs/execute.log.')
+            f_out.write('Execution failed! See log/execute.log.')
         sys.exit(1)
     with open('testbench_config.json', 'r') as f_in:
         test_bench_config = json.load(f_in)
@@ -382,7 +386,7 @@ if __name__ == '__main__':
     else:
         logger.error('Components could not be imported!')
         with open('_FAILED.txt', 'ab+') as f_out:
-            f_out.write('Execution failed! See logs/execute.log.')
+            f_out.write('Execution failed! See log/execute.log.')
         sys.exit(1)
     try:
         test_bench_id, cfg_ids = import_design(mga_file, adm_path, test_bench_config)
