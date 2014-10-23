@@ -16,7 +16,10 @@ angular.module('cyphy.components', [
     'cyphy.components.templates',
     'angularFileUpload',
     'ngAnimate',
-    'angular-growl']);
+    'angular-growl'
+]).config(['growlProvider', function (growlProvider) {
+    growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
+}]);
 
 require('./WorkspaceList/WorkspaceList');
 require('./ComponentDetails/ComponentDetails');

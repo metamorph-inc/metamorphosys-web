@@ -15,7 +15,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     .config(function ($stateProvider, $urlRouterProvider) {
         'use strict';
         // For any unmatched url, redirect to /workspaces
-        $urlRouterProvider.otherwise('/index');
+        $urlRouterProvider.otherwise('/workspaces');
         //
         // Now set up the states
         $stateProvider

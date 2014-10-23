@@ -90,7 +90,7 @@ angular.module('cyphy.components')
                                 iconClass: 'glyphicon glyphicon-share-alt',
                                 actionData: { id: item.id },
                                 action: function (data) {
-                                    console.log(data);
+                                    growl.info('Not Implemented, id: ' + data.id);
                                 }
                             }
                         ]
