@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, WorkspaceService, FileService) {
+    .controller('WorkspaceListController', function ($scope, growl, WorkspaceService, FileService) {
         'use strict';
         var self = this,
             items = [],
@@ -76,8 +76,12 @@ angular.module('cyphy.components')
                             {
                                 id: 'editWorkspace',
                                 label: 'Edit',
-                                disabled: true,
-                                iconClass: 'glyphicon glyphicon-pencil'
+                                disabled: false,
+                                iconClass: 'glyphicon glyphicon-pencil',
+                                actionData: {id: item.id},
+                                action: function (data) {
+                                    growl.warning('Not Implemented, id: ' + data.id);
+                                }
                             },
                             {
                                 id: 'exportAsXME',

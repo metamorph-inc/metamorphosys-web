@@ -57,6 +57,22 @@ angular.module('cyphy.services')
         };
 
         /**
+         * Returns the download url for the given hash.
+         * @param {string} hash - hash to blob file.
+         * @returns {string} - the download url (null if hash is empty).
+         */
+        this.getDownloadUrl = function (hash) {
+            var url;
+            if (hash) {
+                url = blobClient.getDownloadURL(hash);
+            } else {
+                console.warn('No hash to blob file given');
+                url = null;
+            }
+
+            return url;
+        };
+        /**
          * Returns the file extension of the given filename.
          * @param {string} filename
          * @returns {string} - the resulting file extension.

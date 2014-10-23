@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentListController', function ($scope, ComponentService) {
+    .controller('ComponentListController', function ($scope, $window, growl, ComponentService, FileService) {
         'use strict';
         var self = this,
             items = [],
@@ -60,16 +60,25 @@ angular.module('cyphy.components')
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit'
+                                iconClass: 'glyphicon glyphicon-edit',
+                                action: function () {
+                                    $window.open('/?project=ADMEditor&activeObject=' + item.id, '_blank');
+                                }
                             },
                             {
-                                id: 'exportAsXME',
-                                label: 'Export as XME',
+                                id: 'exportAsAdm',
+                                label: 'Export ACM',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: { id: item.id },
+                                actionData: {resource: item.resource},
                                 action: function (data) {
-                                    console.log(data);
+                                    var hash = data.resource,
+                                        url = FileService.getDownloadUrl(hash);
+                                    if (url) {
+                                        $window.open(url);
+                                    } else {
+                                        growl.warning('Component does not have a resource.');
+                                    }
                                 }
                             }
                         ]
@@ -81,7 +90,7 @@ angular.module('cyphy.components')
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
-                                iconClass: 'fa fa-plus',
+                                iconClass: 'glyphicon glyphicon-remove',
                                 actionData: { id: item.id },
                                 action: function (data) {
                                     ComponentService.deleteWorkspace(context, data.id);
@@ -115,6 +124,7 @@ angular.module('cyphy.components')
                 componentItem = componentItems[data.id];
                 componentItem.name = data.name;
                 componentItem.description = data.description;
+                componentItem.resource = data.resource;
             } else {
                 componentItem = {
                     id: data.id,
@@ -133,7 +143,8 @@ angular.module('cyphy.components')
                         }
                     ],
                     details    : 'Content',
-                    detailsTemplateUrl: 'details.html'
+                    detailsTemplateUrl: 'details.html',
+                    resource: data.resource
                 };
 
                 componentItems[componentItem.id] = componentItem;
