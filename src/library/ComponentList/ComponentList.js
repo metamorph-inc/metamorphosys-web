@@ -142,12 +142,10 @@ angular.module('cyphy.components')
         };
 
         addDomainWatcher = function (componentId) {
-            debugger;
             ComponentService.watchComponentDomains(context, componentId, function (updateData) {
                 //TODO: Implement the updating functionality.
             })
                 .then(function (data) {
-                    debugger;
                     var componentData = componentItems[componentId],
                         key;
                     if (componentData) {
