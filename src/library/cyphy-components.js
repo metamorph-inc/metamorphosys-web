@@ -5,7 +5,7 @@
 // External dependencies
 require('../../bower_components/ng-file-upload/angular-file-upload-shim');
 require('../../bower_components/ng-file-upload/angular-file-upload');
-require('../../bower_components/angular-animate/angular-animate.min');
+//require('../../bower_components/angular-animate/angular-animate.min');
 require('../../bower_components/angular-growl/build/angular-growl.min');
 
 // Internal dependencies
@@ -15,7 +15,7 @@ angular.module('cyphy.components', [
     'cyphy.services',
     'cyphy.components.templates',
     'angularFileUpload',
-    'ngAnimate',
+//    'ngAnimate',
     'angular-growl'
 ]).config(['growlProvider', function (growlProvider) {
     growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
