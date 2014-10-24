@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 
 /**
@@ -8,9 +8,10 @@
 
 
 angular.module('cyphy.services')
-    .service('ComponentService', function ($q, NodeService) {
+    .service('ComponentService', function ($q, NodeService, BaseCyPhyService) {
         'use strict';
         var watchers = {};
+
         /**
          * Removes the component from the context (db/project/branch).
          * @param context - context of controller, N.B. does not need to specify region.
@@ -22,8 +23,16 @@ angular.module('cyphy.services')
             NodeService.destroyNode(context, componentId, message);
         };
 
-        this.exportComponent = function (context, componentId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the component.
+         * @param {string} context.db - Must exist within watchers and contain the component.
+         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {string} componentId - Path to component.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setComponentAttributes = function (context, componentId, attrs) {
+            return BaseCyPhyService.setNodeAttributes(context, componentId, attrs);
         };
 
         /**
@@ -387,67 +396,24 @@ angular.module('cyphy.services')
         };
 
         /**
-         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * See BaseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            var childWatchers,
-                key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
-                    }
-                }
-                delete watchers[parentContext.regionId];
-            } else {
-                console.log('Nothing to clean-up..');
-            }
+            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * Removes specified watcher (regionId)
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection of both parent and region to be deleted.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {string} regionId - Region id of the spawned region that should be deleted.
+         * See BaseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(parentContext.db, regionId);
-                    delete watchers[parentContext.regionId][regionId];
-                } else {
-                    console.log('Nothing to clean-up..');
-                }
-            } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
-            }
+            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
-         * when they became unavailable. These are also called directly with the state of the NodeSerivce.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
+         * See BaseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            NodeService.on(parentContext.db, 'initialize', function () {
-                // This should be enough, the regions will be cleaned up in NodeService.
-                watchers[parentContext.regionId] = {};
-                fn(false);
-            });
-            NodeService.on(parentContext.db, 'destroy', function () {
-                // This should be enough, the regions should be cleaned up in NodeService.
-                if (watchers[parentContext.regionId]) {
-                    delete watchers[parentContext.regionId];
-                }
-                fn(true);
-            });
+            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
 
         this.logContext = function (context) {

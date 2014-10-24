@@ -6,9 +6,10 @@
  */
 
 angular.module('cyphy.services')
-    .service('TestBenchService', function ($q, NodeService) {
+    .service('TestBenchService', function ($q, NodeService, BaseCyPhyService) {
         'use strict';
         var watchers = {};
+
         this.deleteTestBench = function (testBenchId) {
             throw new Error('Not implemented yet.');
         };
@@ -179,5 +180,26 @@ angular.module('cyphy.services')
          */
         this.watchTestBenchDetails = function (parentContext, testBenchId, updateListener) {
             throw new Error('Not implemented yet.');
+        };
+
+        /**
+         * See BaseCyPhyService.cleanUpAllRegions.
+         */
+        this.cleanUpAllRegions = function (parentContext) {
+            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+        };
+
+        /**
+         * See BaseCyPhyService.cleanUpRegion.
+         */
+        this.cleanUpRegion = function (parentContext, regionId) {
+            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+        };
+
+        /**
+         * See BaseCyPhyService.registerWatcher.
+         */
+        this.registerWatcher = function (parentContext, fn) {
+            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
     });

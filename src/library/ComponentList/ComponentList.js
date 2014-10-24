@@ -48,11 +48,11 @@ angular.module('cyphy.components')
 
             itemClick: function (event, item) {
                 console.log('Clicked: ' + item);
-                document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
             },
 
             itemContextmenuRenderer: function (e, item) {
-                console.log('Contextmenu was triggered for node:', item);
+                //console.log('Contextmenu was triggered for node:', item);
 
                 return [
                     {
@@ -68,18 +68,38 @@ angular.module('cyphy.components')
                                 }
                             },
                             {
-                                id: 'exportAsAdm',
+                                id: 'editComponent',
+                                label: 'Quick Edit',
+                                disabled: false,
+                                iconClass: 'glyphicon glyphicon-pencil',
+                                actionData: {info: item.description, id: item.id},
+                                action: function (data) {
+                                    var editContext = {
+                                            db: context.db,
+                                            regionId: context.regionId + '_watchComponents'
+                                        },
+                                        attrs = {
+                                            'INFO': 'This is a new custom Info!'
+                                        };
+                                    ComponentService.setComponentAttributes(editContext, data.id, attrs)
+                                        .then(function () {
+                                            console.log('Attribute updated');
+                                        });
+                                }
+                            },
+                            {
+                                id: 'exportAsAcm',
                                 label: 'Export ACM',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: {resource: item.resource},
+                                actionData: {resource: item.resource, name: item.title},
                                 action: function (data) {
                                     var hash = data.resource,
                                         url = FileService.getDownloadUrl(hash);
                                     if (url) {
-                                        $window.open(url);
+                                        growl.success('ACM file for <a href="' + url + '">' + data.name + '</a> exported.');
                                     } else {
-                                        growl.warning('Component does not have a resource.');
+                                        growl.warning(data.name + ' does not have a resource.');
                                     }
                                 }
                             }
@@ -210,7 +230,7 @@ angular.module('cyphy.components')
             console.info('initialize event raised');
 
             ComponentService.watchComponents(context, $scope.workspaceId, function (updateObj) {
-                //TODO: Implement the updating functionality.
+                console.warn(updateObj);
             })
                 .then(function (data) {
                     var componentId;

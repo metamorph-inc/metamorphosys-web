@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('DesignService', function ($q, NodeService) {
+    .service('DesignService', function ($q, NodeService, BaseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -251,52 +251,24 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        // FIXME: Watching configurations inside a configuration-set does probably not belong here.
-//        /**
-//         *  Watches the DesertConfiguration (w.r.t. existence and attributes) inside a DesertConfigurationSet.
-//         * @param parentContext - context of controller.
-//         * @param configurationSetId
-//         * @param updateListener - invoked when there are (filtered) changes in data.
-//         */
-//        this.watchConfigurations = function (parentContext, configurationSetId, updateListener) {
-//            throw new Error('Not implemented yet.');
-//        };
-
         /**
-         * Removes all watchers spawned from parentContext.
-         * @param parentContext - context of controller.
+         * See BaseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            var childWatchers,
-                key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key]);
-                    }
-                }
-                delete watchers[parentContext.regionId];
-            } else {
-                console.log('Nothing to clean-up..');
-            }
+            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * Removes specified watcher (regionId)
-         * @param parentContext
-         * @param regionId
+         * See BaseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(regionId);
-                    delete watchers[parentContext.regionId][regionId];
-                } else {
-                    console.log('Nothing to clean-up..');
-                }
-            } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
-            }
+            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+        };
+
+        /**
+         * See BaseCyPhyService.registerWatcher.
+         */
+        this.registerWatcher = function (parentContext, fn) {
+            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
     });
