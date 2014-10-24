@@ -9,15 +9,16 @@ angular.module('cyphy.components')
     .controller('ComponentListController', function ($scope, $window, growl, ComponentService, FileService) {
         'use strict';
         var self = this,
-            items = [],
-            componentItems = {},
-            serviceData2ComponentItem,
+            items = [],             // Items that are passed to the item-list ui-component.
+            componentItems = {},    // Same items are stored in a dictionary.
+            serviceData2ListItem,
             addDomainWatcher,
             config,
             context;
 
         console.log('ComponentListController');
 
+        // Check for valid connectionId and register clean-up on destroy event.
         if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
                 db: $scope.connectionId,
@@ -30,6 +31,7 @@ angular.module('cyphy.components')
             throw new Error('connectionId must be defined and it must be a string');
         }
 
+        // Configuration for the item list ui component.
         config = {
 
             sortable: false,
@@ -110,61 +112,86 @@ angular.module('cyphy.components')
 
         };
 
+        $scope.config = config;
         $scope.listData = {
             items: items,
             connectionId: $scope.connectionId // FIXME: This is probably not the right way to do it..
         };
 
-        $scope.config = config;
-
-        serviceData2ComponentItem = function (data) {
-            var componentItem;
+        // Transform the raw service node data to items for the list.
+        serviceData2ListItem = function (data) {
+            var listItem;
 
             if (componentItems.hasOwnProperty(data.id)) {
-                componentItem = componentItems[data.id];
-                componentItem.name = data.name;
-                componentItem.description = data.description;
-                componentItem.resource = data.resource;
+                listItem = componentItems[data.id];
+                listItem.name = data.name;
+                listItem.description = data.description;
+                listItem.resource = data.resource; // FIXME: This is probably not the right way to do it..
             } else {
-                componentItem = {
+                listItem = {
                     id: data.id,
                     title: data.name,
                     toolTip: 'Open item',
                     description: data.description,
                     lastUpdated: {
-                        time: new Date(), // TODO: get this
-                        user: 'N/A' // TODO: get this
+                        time: new Date(),   // TODO: get this in the future.
+                        user: 'N/A'         // TODO: get this in the future.
                     },
-                    stats: [
-                        {
-                            value: 0,
-                            toolTip: 'Domain Models (not final)',
-                            iconClass: 'glyphicon glyphicon-tint'
-                        }
-                    ],
+                    stats: [ ],
                     details    : 'Content',
                     detailsTemplateUrl: 'details.html',
-                    resource: data.resource
+                    resource: data.resource // FIXME: This is probably not the right way to do it..
                 };
-
-                componentItems[componentItem.id] = componentItem;
-                items.push(componentItem);
+                // Add the list-item to the items list and the dictionary.
+                items.push(listItem);
+                componentItems[listItem.id] = listItem;
             }
         };
 
         addDomainWatcher = function (componentId) {
+            var domainModelsToStat = function (domainModels) {
+                var stats = [],
+                    labelMap = {
+                        CAD:           { value: 0, toolTip: 'CAD',           iconClass: 'glyphicon glyphicon-stop' },
+                        Cyber:         { value: 0, toolTip: 'Cyber',         iconClass: 'glyphicon glyphicon-stop' },
+                        Manufacturing: { value: 0, toolTip: 'Manufacturing', iconClass: 'glyphicon glyphicon-stop' },
+                        Modelica:      { value: 0, toolTip: 'Modelica',      iconClass: 'glyphicon glyphicon-stop' }
+                    },
+                    key;
+                for (key in domainModels) {
+                    if (domainModels.hasOwnProperty(key)) {
+                        if (labelMap[domainModels[key].type]) {
+                            labelMap[domainModels[key].type].value += 1;
+                        } else {
+                            console.error('Unexpected domain-model type', domainModels[key].type);
+                        }
+                    }
+                }
+                for (key in labelMap) {
+                    if (labelMap.hasOwnProperty(key)) {
+                        if (labelMap[key].value > 0) {
+                            stats.push(labelMap[key]);
+                        }
+                    }
+                }
+                return stats;
+            };
+
             ComponentService.watchComponentDomains(context, componentId, function (updateData) {
-                //TODO: Implement the updating functionality.
+                var listItem = componentItems[componentId];
+                console.log('DomainModels updated, event type:', updateData.type);
+                if (listItem) {
+                    listItem.stats = domainModelsToStat(updateData.domainModels);
+                } else {
+                    console.warn('DomainModel data did not have matching componentData', componentId);
+                }
             })
                 .then(function (data) {
-                    var componentData = componentItems[componentId],
-                        key;
-                    if (componentData) {
-                        for (key in data.domainModels) {
-                            if (data.domainModels.hasOwnProperty(key)) {
-                                componentData.stats[0].value += 1;
-                            }
-                        }
+                    var listItem = componentItems[componentId];
+                    if (listItem) {
+                        listItem.stats = domainModelsToStat(data.domainModels);
+                    } else {
+                        console.warn('DomainModel data did not have matching componentData', componentId);
                     }
                 });
         };
@@ -175,7 +202,7 @@ angular.module('cyphy.components')
             componentItems = {};
 
             if (destroyed) {
-                console.info('destroy event raised');
+                console.warn('destroy event raised');
                 // Data not (yet) avaliable.
                 // TODO: display this to the user.
                 return;
@@ -187,10 +214,9 @@ angular.module('cyphy.components')
             })
                 .then(function (data) {
                     var componentId;
-                    //debugger;
                     for (componentId in data.components) {
                         if (data.components.hasOwnProperty(componentId)) {
-                            serviceData2ComponentItem(data.components[componentId]);
+                            serviceData2ListItem(data.components[componentId]);
                             addDomainWatcher(componentId);
                         }
                     }
