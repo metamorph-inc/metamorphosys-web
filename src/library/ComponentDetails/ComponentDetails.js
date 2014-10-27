@@ -32,7 +32,6 @@ angular.module('cyphy.components')
 //        data = {
 //            regionId: regionId,
 //            id: componentId,
-//            domainModels: {},   //domainModel: id: <string>, type: <string>
 //            interfaces: {
 //                properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
 //                connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }

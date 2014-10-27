@@ -179,7 +179,7 @@ angular.module('cyphy.components')
                     toolTip: 'Open item',
                     description: data.description,
                     lastUpdated: {
-                        time: new Date(),   // TODO: get this in the future.
+                        time: 'N/A',   // TODO: get this in the future.
                         user: 'N/A'         // TODO: get this in the future.
                     },
                     stats: [ ],

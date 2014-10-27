@@ -15,6 +15,18 @@ angular.module('cyphy.services')
             throw new Error('Not implemented yet.');
         };
 
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the component.
+         * @param {string} context.db - Must exist within watchers and contain the component.
+         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {string} designId - Path to design-space.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setDesignAttributes = function (context, designId, attrs) {
+            return BaseCyPhyService.setNodeAttributes(context, designId, attrs);
+        };
+
         this.exportDesign = function (designId) {
             throw new Error('Not implemented yet.');
         };
@@ -31,7 +43,7 @@ angular.module('cyphy.services')
          *  Watches all containers (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.designs.
+         * @param updateListener - invoked when there are (filtered) changes in data. Data is an object in data.designs.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesigns = function (parentContext, workspaceId, updateListener) {
