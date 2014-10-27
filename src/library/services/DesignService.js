@@ -51,8 +51,6 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchDesigns',
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
                     regionId: regionId
                 },
                 data = {
@@ -147,6 +145,137 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ADMFolder)) {
                                     watchFromFolderRec(newChild, meta);
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches all containers (existence and their attributes) of a workspace.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
+         */
+        this.watchNbrOfConfigurations = function (parentContext, designId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchNbrOfConfigurations_' + designId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    counters: {
+                        sets: 0,
+                        configurations: 0,
+                        results: 0
+                    }
+                },
+                watchConfiguration = function (cfgNode, meta, wasCreated) {
+                    var cfgDeferred = $q.defer(),
+                        resultOnUnload = function (id) {
+                            data.counters.results -= 1;
+                            updateListener({id: id, type: 'unload', data: data.counters});
+                        };
+                    // Count this set and add an unload handle.
+                    data.counters.configurations += 1;
+                    if (wasCreated) {
+                        updateListener({id: cfgNode.getId(), type: 'load', data: data.counters});
+                    }
+                    cfgNode.onUnload(function (id) {
+                        data.counters.configurations -= 1;
+                        updateListener({id: id, type: 'unload', data: data.counters});
+                    });
+                    cfgNode.loadChildren().then(function (children) {
+                        var i,
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.Result)) {
+                                data.counters.results += 1;
+                                childNode.onUnload(resultOnUnload);
+                            }
+                        }
+                        cfgNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.Result)) {
+                                data.counters.results += 1;
+                                updateListener({id: newChild.getId(), type: 'load', data: data.counters});
+                                childNode.onUnload(resultOnUnload);
+                            }
+                        });
+                        cfgDeferred.resolve();
+                    });
+
+                    return cfgDeferred.promise;
+                },
+                watchConfigurationSet = function (setNode, meta, wasCreated) {
+                    var setDeferred = $q.defer();
+                    // Count this set and add an unload handle.
+                    data.counters.sets += 1;
+                    if (wasCreated) {
+                        updateListener({id: setNode.getId(), type: 'load', data: data.counters});
+                    }
+                    setNode.onUnload(function (id) {
+                        data.counters.sets -= 1;
+                        updateListener({id: id, type: 'unload', data: data.counters});
+                    });
+                    setNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.DesertConfiguration)) {
+                                queueList.push(watchConfiguration(childNode, meta));
+                            }
+                        }
+                        setNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.DesertConfiguration)) {
+                                watchConfiguration(newChild, meta, true);
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            setDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                setDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return setDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            NodeService.getMetaNodes(context).then(function (meta) {
+                NodeService.loadNode(context, designId)
+                    .then(function (designNode) {
+                        designNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
+                                    queueList.push(watchConfigurationSet(childNode, meta));
+                                }
+                            }
+                            designNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.DesertConfigurationSet)) {
+                                    watchConfigurationSet(newChild, meta, true);
                                 }
                             });
                             if (queueList.length === 0) {

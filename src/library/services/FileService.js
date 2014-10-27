@@ -72,6 +72,7 @@ angular.module('cyphy.services')
 
             return url;
         };
+
         /**
          * Returns the file extension of the given filename.
          * @param {string} filename

@@ -13,6 +13,7 @@ angular.module('cyphy.components')
             designItems = {},       // Same items are stored in a dictionary.
             serviceData2ListItem,
             config,
+            addConfigurationWatcher,
             context;
 
         console.log('DesignListController');
@@ -184,9 +185,25 @@ angular.module('cyphy.components')
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
-                        user: 'N/A'         // TODO: get this in the future.
+                        user: 'N/A'    // TODO: get this in the future.
                     },
-                    stats: [ ],
+                    stats: [
+                        {
+                            value: 0,
+                            toolTip: 'Configuration Sets',
+                            iconClass: 'glyphicon glyphicon-th-large'
+                        },
+                        {
+                            value: 0,
+                            toolTip: 'Configurations',
+                            iconClass: 'glyphicon glyphicon-th'
+                        },
+                        {
+                            value: 0,
+                            toolTip: 'Results',
+                            iconClass: 'glyphicon glyphicon-stats'
+                        }
+                    ],
                     details    : 'Content',
                     detailsTemplateUrl: 'details.html'
                 };
@@ -194,6 +211,21 @@ angular.module('cyphy.components')
                 items.push(listItem);
                 designItems[listItem.id] = listItem;
             }
+        };
+
+        addConfigurationWatcher = function (designId) {
+            DesignService.watchNbrOfConfigurations(context, designId, function (updateObject) {
+                var listItem = designItems[designId];
+                console.log(updateObject);
+                listItem.stats[0].value = updateObject.data.counters.sets;
+                listItem.stats[1].value = updateObject.data.counters.configurations;
+                listItem.stats[2].value = updateObject.data.counters.results;
+            }).then(function (data) {
+                var listItem = designItems[designId];
+                listItem.stats[0].value = data.counters.sets;
+                listItem.stats[1].value = data.counters.configurations;
+                listItem.stats[2].value = data.counters.results;
+            });
         };
 
         DesignService.registerWatcher(context, function (destroyed) {
@@ -214,7 +246,7 @@ angular.module('cyphy.components')
                 console.warn(updateObject);
                 if (updateObject.type === 'load') {
                     serviceData2ListItem(updateObject.data);
-                    //addDomainWatcher(updateObject.id);
+                    addConfigurationWatcher(updateObject.id);
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
                 } else if (updateObject.type === 'unload') {
@@ -225,7 +257,7 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-                        //DesignService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
+                        DesignService.cleanUpRegion(context, context.regionId + '_watchNbrOfConfigurations_' + updateObject.id);
                         delete designItems[updateObject.id];
                     }
                 } else {
@@ -237,7 +269,7 @@ angular.module('cyphy.components')
                     for (designId in data.designs) {
                         if (data.designs.hasOwnProperty(designId)) {
                             serviceData2ListItem(data.designs[designId]);
-                            //addDomainWatcher(componentId);
+                            addConfigurationWatcher(designId);
                         }
                     }
                 });
