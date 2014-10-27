@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentListController', function ($scope, $window, growl, ComponentService, FileService) {
+    .controller('ComponentListController', function ($scope, $window, $modal, growl, ComponentService, FileService) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -69,22 +69,33 @@ angular.module('cyphy.components')
                             },
                             {
                                 id: 'editComponent',
-                                label: 'Quick Edit',
+                                label: 'Edit',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-pencil',
-                                actionData: {info: item.description, id: item.id},
+                                actionData: {description: item.description, id: item.id},
                                 action: function (data) {
                                     var editContext = {
                                             db: context.db,
                                             regionId: context.regionId + '_watchComponents'
                                         },
-                                        attrs = {
-                                            'INFO': 'This is a new custom Info!'
-                                        };
-                                    ComponentService.setComponentAttributes(editContext, data.id, attrs)
-                                        .then(function () {
-                                            console.log('Attribute updated');
+                                        modalInstance = $modal.open({
+                                            templateUrl: '/cyphy-components/templates/ComponentEdit.html',
+                                            controller: 'ComponentEditController',
+                                            //size: size,
+                                            resolve: { data: function () { return data; } }
                                         });
+
+                                    modalInstance.result.then(function (editedData) {
+                                        var attrs = {
+                                            'INFO': editedData.description
+                                        };
+                                        ComponentService.setComponentAttributes(editContext, data.id, attrs)
+                                            .then(function () {
+                                                console.log('Attribute updated');
+                                            });
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             },
                             {
@@ -242,6 +253,20 @@ angular.module('cyphy.components')
                     }
                 });
         });
+    })
+    .controller('ComponentEditController', function ($scope, $modalInstance, data) {
+        'use strict';
+        $scope.data = {
+            description: data.description
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.data);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     })
     .directive('componentList', function () {
         'use strict';
