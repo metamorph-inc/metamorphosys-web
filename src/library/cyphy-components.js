@@ -1,6 +1,7 @@
 /*globals require, angular */
 /**
  * @author lattmann / https://github.com/lattmann
+ * @author pmeijer / https://github.com/pmeijer
  */
 // External dependencies
 require('../../bower_components/ng-file-upload/angular-file-upload-shim');
@@ -21,6 +22,7 @@ angular.module('cyphy.components', [
     growlProvider.globalTimeToLive({success: 5000, error: -1, warning: 20000, info: 5000});
 }]);
 
+require('./SimpleModal/SimpleModal');
 require('./WorkspaceList/WorkspaceList');
 require('./ComponentDetails/ComponentDetails');
 require('./ComponentList/ComponentList');

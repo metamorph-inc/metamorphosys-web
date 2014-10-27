@@ -13,7 +13,7 @@ angular.module('cyphy.components')
             workspaceItems = {},
             config,
             context,
-            serviceData2WorkspaceItem,
+            serviceData2ListItem,
             addCountWatchers;
 
         console.log('WorkspaceListController');
@@ -182,8 +182,7 @@ angular.module('cyphy.components')
 
         $scope.config = config;
 
-
-        serviceData2WorkspaceItem = function (data) {
+        serviceData2ListItem = function (data) {
             var workspaceItem;
 
             if (workspaceItems.hasOwnProperty(data.id)) {
@@ -287,11 +286,11 @@ angular.module('cyphy.components')
                 var index;
 
                 if (updateObject.type === 'load') {
-                    serviceData2WorkspaceItem(updateObject.data);
+                    serviceData2ListItem(updateObject.data);
                     addCountWatchers(updateObject.id);
 
                 } else if (updateObject.type === 'update') {
-                    serviceData2WorkspaceItem(updateObject.data);
+                    serviceData2ListItem(updateObject.data);
 
                 } else if (updateObject.type === 'unload') {
                     if (workspaceItems.hasOwnProperty(updateObject.id)) {
@@ -317,7 +316,7 @@ angular.module('cyphy.components')
 
                     for (workspaceId in data.workspaces) {
                         if (data.workspaces.hasOwnProperty(workspaceId)) {
-                            serviceData2WorkspaceItem(data.workspaces[workspaceId]);
+                            serviceData2ListItem(data.workspaces[workspaceId]);
                             addCountWatchers(workspaceId);
                         }
                     }

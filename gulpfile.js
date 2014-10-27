@@ -35,7 +35,7 @@ var argv = require('yargs').argv,
         libraryScripts: [
 
             'src/library/services/*.js',
-
+            'src/library/SimpleModal/*.js',
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',
             'src/library/ComponentDetails/*.js',

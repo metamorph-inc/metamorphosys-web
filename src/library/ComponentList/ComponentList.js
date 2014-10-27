@@ -52,12 +52,9 @@ angular.module('cyphy.components')
             },
 
             itemContextmenuRenderer: function (e, item) {
-                //console.log('Contextmenu was triggered for node:', item);
-
                 return [
                     {
                         items: [
-
                             {
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
@@ -117,16 +114,33 @@ angular.module('cyphy.components')
                         ]
                     },
                     {
-                        //label: 'Extra',
                         items: [
                             {
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-remove',
-                                actionData: { id: item.id },
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    ComponentService.deleteWorkspace(context, data.id);
+                                    var modalInstance = $modal.open({
+                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                                        controller: 'SimpleModalController',
+                                        resolve: {
+                                            data: function () {
+                                                return {
+                                                    title: 'Delete Component',
+                                                    details: 'This will delete ' + data.name +
+                                                        ' from the workspace.'
+                                                };
+                                            }
+                                        }
+                                    });
+
+                                    modalInstance.result.then(function () {
+                                        ComponentService.deleteComponent(context, data.id);
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             }
                         ]
@@ -240,8 +254,30 @@ angular.module('cyphy.components')
             }
             console.info('initialize event raised');
 
-            ComponentService.watchComponents(context, $scope.workspaceId, function (updateObj) {
-                console.warn(updateObj);
+            ComponentService.watchComponents(context, $scope.workspaceId, function (updateObject) {
+                var index;
+                //console.warn(updateObject);
+                if (updateObject.type === 'load') {
+                    serviceData2ListItem(updateObject.data);
+                    addDomainWatcher(updateObject.id);
+
+                } else if (updateObject.type === 'update') {
+                    serviceData2ListItem(updateObject.data);
+
+                } else if (updateObject.type === 'unload') {
+                    if (componentItems.hasOwnProperty(updateObject.id)) {
+                        index = items.map(function (e) {
+                            return e.id;
+                        }).indexOf(updateObject.id);
+                        if (index > -1) {
+                            items.splice(index, 1);
+                        }
+                        ComponentService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
+                        delete componentItems[updateObject.id];
+                    }
+                } else {
+                    throw new Error(updateObject);
+                }
             })
                 .then(function (data) {
                     var componentId;
