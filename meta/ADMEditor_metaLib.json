@@ -783,9 +783,11 @@
             -1,
             -1,
             -1,
+            -1,
             -1
           ],
           "maxItems": [
+            -1,
             -1,
             -1,
             -1,
@@ -797,13 +799,14 @@
           ],
           "items": [
             "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "9001f172-4258-ceaa-86e9-f6e80b85853d",
+            "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d",
             "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "d5fc3678-2722-5112-c0bb-fa758f113246",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
             "07d79d42-e631-fb69-a1f7-25b044d94fbb",
-            "9001f172-4258-ceaa-86e9-f6e80b85853d"
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "d5fc3678-2722-5112-c0bb-fa758f113246",
+            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5"
           ]
         },
         "attributes": {
@@ -837,9 +840,9 @@
         },
         "aspects": {
           "NoValueFlow": [
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "d5fc3678-2722-5112-c0bb-fa758f113246",
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34"
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37"
           ]
         }
       },
@@ -1472,6 +1475,7 @@
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": {
       "attributes": {
         "Class": "",
+        "ID": "",
         "INFO": "Connector of a specific domain.",
         "Type": "",
         "name": "DomainPort"
@@ -1493,6 +1497,10 @@
               "CadCoordinateSystem"
             ],
             "type": "string"
+          },
+          "ID": {
+            "type": "string",
+            "default": ""
           }
         }
       },
@@ -1980,6 +1988,15 @@
         },
         "attributes": {}
       },
+      "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d": {
+        "registry": {
+          "position": {
+            "x": 732,
+            "y": 322
+          }
+        },
+        "attributes": {}
+      },
       "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
         "registry": {
           "position": {
@@ -2001,8 +2018,8 @@
       "edf95f43-efbd-5c2c-6384-6ab74c160c17": {
         "registry": {
           "position": {
-            "x": 529,
-            "y": 159
+            "x": 526,
+            "y": 43
           }
         },
         "attributes": {}
@@ -2019,8 +2036,8 @@
       "9001f172-4258-ceaa-86e9-f6e80b85853d": {
         "registry": {
           "position": {
-            "x": 399,
-            "y": 162
+            "x": 400,
+            "y": 73
           }
         },
         "attributes": {}
