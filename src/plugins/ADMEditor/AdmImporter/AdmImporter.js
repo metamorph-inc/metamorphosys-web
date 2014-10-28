@@ -626,7 +626,7 @@ define([
         if (connectorData.Role) {
             for (i = 0; i < connectorData.Role.length; i += 1) {
                 typeName =  connectorData.Role[i]['@xsi:type'];
-                domainConnector = self.core.createNode({parent: connector, base: self.meta.DomainConnector});
+                domainConnector = self.core.createNode({parent: connector, base: self.meta.DomainPort});
                 self.core.setAttribute(domainConnector, 'name', connectorData.Role[i]['@Name']);
                 self.core.setRegistry(domainConnector, 'position', { x: 100 + 200 * i, y: 100});
 

@@ -376,7 +376,9 @@ define(['plugin/PluginConfig',
             xPos = parseInt(avmConnInfo['@XPosition'], 10),
             yPos = parseInt(avmConnInfo['@YPosition'], 10),
             domainConns,
-            newConnectorNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.Connector });
+            newConnectorNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.Connector }),
+            newDomainConnNode,
+            i;
 
         self.core.setAttribute(newConnectorNode, 'name', connName);
         self.core.setAttribute(newConnectorNode, 'ID', connId);
@@ -385,9 +387,7 @@ define(['plugin/PluginConfig',
         if (avmConnInfo.hasOwnProperty('Role')) {
             domainConns = avmConnInfo['Role'];
 
-            var newDomainConnNode;
-
-            for (var i = 0; i < domainConns.length; i += 1) {
+            for (i = 0; i < domainConns.length; i += 1) {
                 newDomainConnNode = self.createNewDomainConnector(domainConns[i], newConnectorNode);
 
                 self.core.setRegistry(newDomainConnNode, 'position', {x: 200, y: 200 + 100*i});
@@ -401,7 +401,7 @@ define(['plugin/PluginConfig',
         var self = this,
             domainConnName = domainConnInfo['@Name'],
             domainConnType,
-            newDomainConnNode = self.core.createNode({parent: newConnNode, base: MetaTypes.DomainConnector });
+            newDomainConnNode = self.core.createNode({parent: newConnNode, base: MetaTypes.DomainPort });
 
         if (domainConnInfo.hasOwnProperty('@xsi:type')) {
             domainConnType = domainConnInfo['@xsi:type'];

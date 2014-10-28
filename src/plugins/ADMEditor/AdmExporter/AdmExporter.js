@@ -473,17 +473,19 @@ define([
                 return;
             }
             function addDomainConnector(child, attributes) {
-                var domainNodeName = self.core.getAttribute(child, 'name');
-                var commonAttributes = {
-                    '@ID': self.core.getGuid(child),
-                    '@PortMap': '',
-                    '@Name': domainNodeName,
-                    '@Notes': '',
-                    '@Definition': '',
-                };
-                for (var attr in attributes) {
-                    if (attributes.hasOwnProperty(attr))
+                var domainNodeName = self.core.getAttribute(child, 'name'),
+                    commonAttributes = {
+                        '@ID': self.core.getGuid(child),
+                        '@PortMap': '',
+                        '@Name': domainNodeName,
+                        '@Notes': '',
+                        '@Definition': ''
+                    },
+                    attr;
+                for (attr in attributes) {
+                    if (attributes.hasOwnProperty(attr)) {
                         commonAttributes[attr] = attributes[attr];
+                    }
                 }
                 domainConnectors.push(commonAttributes);
             }

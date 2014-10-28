@@ -606,7 +606,7 @@ define([], function () {
                         delete connector.domainPorts[event.eid];
                         checkInterfaces = true;
                     }
-                } else if (self.smartClient.isMetaTypeOf(event.eid, 'DomainConnector')) {
+                } else if (self.smartClient.isMetaTypeOf(event.eid, 'DomainPort')) {
                     nodeObj = self.smartClient.client.getNode(event.eid);
                     name = nodeObj.getAttribute('name');
                     type = nodeObj.getAttribute('Type');

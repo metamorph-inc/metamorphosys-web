@@ -1,11 +1,12 @@
 {
-  "bases": {},
+  "bases": {
+    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "/1"
+  },
   "root": {
-    "path": "",
-    "guid": "005cb34a-7523-4940-a1e9-0cb530ba1005"
+    "path": "/1008889918",
+    "guid": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353"
   },
   "relids": {
-    "005cb34a-7523-4940-a1e9-0cb530ba1005": null,
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": "1675023230",
     "07d79d42-e631-fb69-a1f7-25b044d94fbb": "319211427",
     "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": "711037118",
@@ -28,7 +29,6 @@
     "ab281360-2719-c4e0-c3c6-4eea03401141": "1220837843",
     "be02d298-2892-180a-ed1a-138dc589dd5c": "1299690106",
     "cb92c02d-84cf-f104-938b-b7de6641f8e5": "1998840078",
-    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
     "d5fc3678-2722-5112-c0bb-fa758f113246": "1328879441",
     "dd35b139-3346-08f0-013c-1e3a8a522f7f": "794302266",
     "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": "206008088",
@@ -40,955 +40,38 @@
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": "488584186"
   },
   "containment": {
-    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
-      "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {},
-      "07d79d42-e631-fb69-a1f7-25b044d94fbb": {},
-      "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {},
-      "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
-      "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
-      "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
-      "3317c9c6-6c44-1a06-a476-11f77d722b34": {},
-      "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d": {},
-      "4f1234d8-03e4-c420-3135-8ec481fc4c4a": {},
-      "58fcb797-8a06-2976-9632-d281b3c1ddd2": {},
-      "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
-      "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
-      "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
-      "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
-      "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae": {},
-      "9fab1244-f449-d3c0-bfdc-f166f724e3f2": {},
-      "a0399d5f-26ab-3fac-def4-3834f5decac9": {},
-      "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {},
-      "ab281360-2719-c4e0-c3c6-4eea03401141": {},
-      "be02d298-2892-180a-ed1a-138dc589dd5c": {},
-      "cb92c02d-84cf-f104-938b-b7de6641f8e5": {},
-      "d5fc3678-2722-5112-c0bb-fa758f113246": {},
-      "dd35b139-3346-08f0-013c-1e3a8a522f7f": {},
-      "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {},
-      "e544f3e4-e550-5750-8540-5598bbbf343c": {},
-      "e87743ed-b89e-d8ce-7b87-7b9aadcb4961": {},
-      "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {},
-      "edf95f43-efbd-5c2c-6384-6ab74c160c17": {},
-      "f0508110-9a11-3b6d-ea42-2193bf0485e0": {},
-      "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {}
-    },
-    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {}
+    "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {},
+    "07d79d42-e631-fb69-a1f7-25b044d94fbb": {},
+    "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {},
+    "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
+    "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
+    "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
+    "3317c9c6-6c44-1a06-a476-11f77d722b34": {},
+    "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d": {},
+    "4f1234d8-03e4-c420-3135-8ec481fc4c4a": {},
+    "58fcb797-8a06-2976-9632-d281b3c1ddd2": {},
+    "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
+    "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
+    "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
+    "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
+    "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae": {},
+    "9fab1244-f449-d3c0-bfdc-f166f724e3f2": {},
+    "a0399d5f-26ab-3fac-def4-3834f5decac9": {},
+    "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {},
+    "ab281360-2719-c4e0-c3c6-4eea03401141": {},
+    "be02d298-2892-180a-ed1a-138dc589dd5c": {},
+    "cb92c02d-84cf-f104-938b-b7de6641f8e5": {},
+    "d5fc3678-2722-5112-c0bb-fa758f113246": {},
+    "dd35b139-3346-08f0-013c-1e3a8a522f7f": {},
+    "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {},
+    "e544f3e4-e550-5750-8540-5598bbbf343c": {},
+    "e87743ed-b89e-d8ce-7b87-7b9aadcb4961": {},
+    "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {},
+    "edf95f43-efbd-5c2c-6384-6ab74c160c17": {},
+    "f0508110-9a11-3b6d-ea42-2193bf0485e0": {},
+    "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {}
   },
   "nodes": {
-    "005cb34a-7523-4940-a1e9-0cb530ba1005": {
-      "attributes": {
-        "name": "ADMEditor"
-      },
-      "base": null,
-      "meta": {
-        "children": {
-          "minItems": [
-            -1
-          ],
-          "maxItems": [
-            -1
-          ],
-          "items": [
-            "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-          ],
-          "min": "undefined",
-          "max": "undefined"
-        },
-        "attributes": {
-          "name": {
-            "type": "string"
-          }
-        },
-        "pointers": {},
-        "aspects": {},
-        "constraints": {}
-      },
-      "parent": null,
-      "pointers": {
-        "base": null
-      },
-      "registry": {
-        "MetaSheets": [
-          {
-            "SetID": "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740",
-            "order": 0,
-            "title": "META"
-          },
-          {
-            "SetID": "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5",
-            "order": 1,
-            "title": "Folders"
-          },
-          {
-            "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
-            "order": 2,
-            "title": "AVM Design Model"
-          },
-          {
-            "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
-            "order": 3,
-            "title": "AVM Component Model"
-          },
-          {
-            "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
-            "order": 4,
-            "title": "AVM Test bench Model"
-          },
-          {
-            "SetID": "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6",
-            "order": 5,
-            "title": "Requirements"
-          },
-          {
-            "SetID": "MetaAspectSet_4d5d204e-f520-ca21-01d9-1a9565f9b9c2",
-            "order": 6,
-            "title": "Tests"
-          }
-        ],
-        "ProjectRegistry": {
-          "FCO_ID": "/1"
-        },
-        "validPlugins": "AtmExporter ExportWorkspace PluginGenerator AtmImporter GeneratePluginTests AcmImporter AdmImporter TestBenchRunner AdmExporter"
-      },
-      "sets": {
-        "MetaAspectSet": [
-          {
-            "attributes": {},
-            "guid": "0375e1c1-1217-7aa9-5e14-53c709a2abbe",
-            "registry": {
-              "position": {
-                "x": 615,
-                "y": 216
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "07d79d42-e631-fb69-a1f7-25b044d94fbb",
-            "registry": {
-              "position": {
-                "x": 715,
-                "y": 319
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "0bced7fe-4c88-f3c1-f877-6a0d0f344c46",
-            "registry": {
-              "position": {
-                "x": 413,
-                "y": 591
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-            "registry": {
-              "position": {
-                "x": 104,
-                "y": 246
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1deced2f-f026-ca87-711c-d8148b1dfd3c",
-            "registry": {
-              "position": {
-                "x": 276,
-                "y": 503
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1f35a3aa-321d-359f-7838-242bc2d08ae5",
-            "registry": {
-              "position": {
-                "x": 386,
-                "y": 249
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "registry": {
-              "position": {
-                "x": 270,
-                "y": 579
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "registry": {
-              "position": {
-                "x": 214,
-                "y": 356
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d",
-            "registry": {
-              "position": {
-                "x": 702,
-                "y": 501
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "registry": {
-              "position": {
-                "x": 393,
-                "y": 529
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "registry": {
-              "position": {
-                "x": 399,
-                "y": 717
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "79f0cc09-f068-284b-5473-efcf5dfa3497",
-            "registry": {
-              "position": {
-                "x": 18,
-                "y": 304
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "8b1e277e-0f88-a58b-4aff-51c74250671d",
-            "registry": {
-              "position": {
-                "x": 366,
-                "y": 229
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9001f172-4258-ceaa-86e9-f6e80b85853d",
-            "registry": {
-              "position": {
-                "x": 586,
-                "y": 314
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
-            "registry": {
-              "position": {
-                "x": 450,
-                "y": 364
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9fab1244-f449-d3c0-bfdc-f166f724e3f2",
-            "registry": {
-              "position": {
-                "x": 131,
-                "y": 188
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a0399d5f-26ab-3fac-def4-3834f5decac9",
-            "registry": {
-              "position": {
-                "x": 228,
-                "y": 170
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "registry": {
-              "position": {
-                "x": 98,
-                "y": 648
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "ab281360-2719-c4e0-c3c6-4eea03401141",
-            "registry": {
-              "position": {
-                "x": 679,
-                "y": 475
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "be02d298-2892-180a-ed1a-138dc589dd5c",
-            "registry": {
-              "position": {
-                "x": 333,
-                "y": 770
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "registry": {
-              "position": {
-                "x": 137,
-                "y": 198
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "registry": {
-              "position": {
-                "x": 100,
-                "y": 100
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "d5fc3678-2722-5112-c0bb-fa758f113246",
-            "registry": {
-              "position": {
-                "x": 573,
-                "y": 156
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "dd35b139-3346-08f0-013c-1e3a8a522f7f",
-            "registry": {
-              "position": {
-                "x": 406,
-                "y": 269
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
-            "registry": {
-              "position": {
-                "x": 22,
-                "y": 243
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e544f3e4-e550-5750-8540-5598bbbf343c",
-            "registry": {
-              "position": {
-                "x": 49,
-                "y": 394
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e87743ed-b89e-d8ce-7b87-7b9aadcb4961",
-            "registry": {
-              "position": {
-                "x": 627,
-                "y": 392
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
-            "registry": {
-              "position": {
-                "x": 401,
-                "y": 274
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "edf95f43-efbd-5c2c-6384-6ab74c160c17",
-            "registry": {
-              "position": {
-                "x": 611,
-                "y": 414
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f0508110-9a11-3b6d-ea42-2193bf0485e0",
-            "registry": {
-              "position": {
-                "x": 507,
-                "y": 458
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "registry": {
-              "position": {
-                "x": 469,
-                "y": 556
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": [
-          {
-            "attributes": {},
-            "guid": "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "registry": {
-              "position": {
-                "x": 54,
-                "y": 400
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "registry": {
-              "position": {
-                "x": 335,
-                "y": 348
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "registry": {
-              "position": {
-                "x": 187,
-                "y": 455
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "8b1e277e-0f88-a58b-4aff-51c74250671d",
-            "registry": {
-              "position": {
-                "x": 158,
-                "y": 80
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "registry": {
-              "position": {
-                "x": 198,
-                "y": 569
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "registry": {
-              "position": {
-                "x": 137,
-                "y": 198
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
-            "registry": {
-              "position": {
-                "x": 424,
-                "y": 184
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f0508110-9a11-3b6d-ea42-2193bf0485e0",
-            "registry": {
-              "position": {
-                "x": 499,
-                "y": 350
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740": [
-          {
-            "attributes": {},
-            "guid": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-            "registry": {
-              "position": {
-                "x": 104,
-                "y": 246
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "registry": {
-              "position": {
-                "x": 100,
-                "y": 100
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5": [
-          {
-            "attributes": {},
-            "guid": "0375e1c1-1217-7aa9-5e14-53c709a2abbe",
-            "registry": {
-              "position": {
-                "x": 595,
-                "y": 208
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1f35a3aa-321d-359f-7838-242bc2d08ae5",
-            "registry": {
-              "position": {
-                "x": 415,
-                "y": 188
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "registry": {
-              "position": {
-                "x": 255,
-                "y": 358
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "8b1e277e-0f88-a58b-4aff-51c74250671d",
-            "registry": {
-              "position": {
-                "x": 75,
-                "y": 188
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a0399d5f-26ab-3fac-def4-3834f5decac9",
-            "registry": {
-              "position": {
-                "x": 225,
-                "y": 58
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "dd35b139-3346-08f0-013c-1e3a8a522f7f",
-            "registry": {
-              "position": {
-                "x": 235,
-                "y": 188
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6": [
-          {
-            "attributes": {},
-            "guid": "0375e1c1-1217-7aa9-5e14-53c709a2abbe",
-            "registry": {
-              "position": {
-                "x": 499,
-                "y": 119
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1deced2f-f026-ca87-711c-d8148b1dfd3c",
-            "registry": {
-              "position": {
-                "x": 461,
-                "y": 258
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
-            "registry": {
-              "position": {
-                "x": 766,
-                "y": 184
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "ab281360-2719-c4e0-c3c6-4eea03401141",
-            "registry": {
-              "position": {
-                "x": 487,
-                "y": 378
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "d5fc3678-2722-5112-c0bb-fa758f113246",
-            "registry": {
-              "position": {
-                "x": 258,
-                "y": 417
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_4d5d204e-f520-ca21-01d9-1a9565f9b9c2": [
-          {
-            "attributes": {},
-            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "registry": {
-              "position": {
-                "x": 631,
-                "y": 178
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e87743ed-b89e-d8ce-7b87-7b9aadcb4961",
-            "registry": {
-              "position": {
-                "x": 627,
-                "y": 392
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a": [
-          {
-            "attributes": {},
-            "guid": "0bced7fe-4c88-f3c1-f877-6a0d0f344c46",
-            "registry": {
-              "position": {
-                "x": 108,
-                "y": 746
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "1f35a3aa-321d-359f-7838-242bc2d08ae5",
-            "registry": {
-              "position": {
-                "x": 193,
-                "y": 80
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "registry": {
-              "position": {
-                "x": 201,
-                "y": 370
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "registry": {
-              "position": {
-                "x": 204,
-                "y": 217
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d",
-            "registry": {
-              "position": {
-                "x": 700,
-                "y": 481
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "4f1234d8-03e4-c420-3135-8ec481fc4c4a",
-            "registry": {
-              "position": {
-                "x": 343,
-                "y": 72
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "registry": {
-              "position": {
-                "x": 437,
-                "y": 305
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "registry": {
-              "position": {
-                "x": 232,
-                "y": 586
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "79f0cc09-f068-284b-5473-efcf5dfa3497",
-            "registry": {
-              "position": {
-                "x": 4,
-                "y": 284
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "registry": {
-              "position": {
-                "x": 6,
-                "y": 577
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "be02d298-2892-180a-ed1a-138dc589dd5c",
-            "registry": {
-              "position": {
-                "x": 286,
-                "y": 755
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "registry": {
-              "position": {
-                "x": 568,
-                "y": 87
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
-            "registry": {
-              "position": {
-                "x": -1,
-                "y": 167
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e544f3e4-e550-5750-8540-5598bbbf343c",
-            "registry": {
-              "position": {
-                "x": 19,
-                "y": 395
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f0508110-9a11-3b6d-ea42-2193bf0485e0",
-            "registry": {
-              "position": {
-                "x": 507,
-                "y": 458
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "registry": {
-              "position": {
-                "x": 638,
-                "y": 302
-              }
-            }
-          }
-        ],
-        "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2": [
-          {
-            "attributes": {},
-            "guid": "07d79d42-e631-fb69-a1f7-25b044d94fbb",
-            "registry": {
-              "position": {
-                "x": 410,
-                "y": 301
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "registry": {
-              "position": {
-                "x": 329,
-                "y": 450
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "registry": {
-              "position": {
-                "x": 83,
-                "y": 416
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9001f172-4258-ceaa-86e9-f6e80b85853d",
-            "registry": {
-              "position": {
-                "x": 399,
-                "y": 162
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "9fab1244-f449-d3c0-bfdc-f166f724e3f2",
-            "registry": {
-              "position": {
-                "x": 131,
-                "y": 188
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "registry": {
-              "position": {
-                "x": 322,
-                "y": 676
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "registry": {
-              "position": {
-                "x": 40,
-                "y": 612
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "d5fc3678-2722-5112-c0bb-fa758f113246",
-            "registry": {
-              "position": {
-                "x": 492,
-                "y": 489
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "dd35b139-3346-08f0-013c-1e3a8a522f7f",
-            "registry": {
-              "position": {
-                "x": 146,
-                "y": 67
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "e544f3e4-e550-5750-8540-5598bbbf343c",
-            "registry": {
-              "position": {
-                "x": 8,
-                "y": 28
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "edf95f43-efbd-5c2c-6384-6ab74c160c17",
-            "registry": {
-              "position": {
-                "x": 529,
-                "y": 159
-              }
-            }
-          },
-          {
-            "attributes": {},
-            "guid": "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "registry": {
-              "position": {
-                "x": 710,
-                "y": 432
-              }
-            }
-          }
-        ]
-      }
-    },
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
       "attributes": {
         "INFO": "Container of requirements.",
@@ -2054,56 +1137,6 @@
       },
       "sets": {}
     },
-    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
-      "attributes": {
-        "INFO": "",
-        "ReadMe": "",
-        "name": "FCO"
-      },
-      "base": null,
-      "meta": {
-        "children": {
-          "minItems": [],
-          "maxItems": [],
-          "items": [],
-          "min": "undefined",
-          "max": "undefined"
-        },
-        "attributes": {
-          "INFO": {
-            "default": "",
-            "type": "string"
-          },
-          "ReadMe": {
-            "default": "",
-            "type": "asset"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "pointers": {},
-        "aspects": {},
-        "constraints": {}
-      },
-      "parent": "005cb34a-7523-4940-a1e9-0cb530ba1005",
-      "pointers": {
-        "base": null
-      },
-      "registry": {
-        "DisplayFormat": "$name",
-        "PortSVGIcon": "",
-        "SVGIcon": "",
-        "decorator": "",
-        "isAbstract": false,
-        "isPort": false,
-        "position": {
-          "x": 1039,
-          "y": 141
-        }
-      },
-      "sets": {}
-    },
     "d5fc3678-2722-5112-c0bb-fa758f113246": {
       "attributes": {
         "INFO": "Metric value of an executed experiment.",
@@ -2534,5 +1567,514 @@
       "sets": {}
     }
   },
-  "metaSheets": {}
+  "metaSheets": {
+    "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": {
+      "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
+        "registry": {
+          "position": {
+            "x": 54,
+            "y": 400
+          }
+        },
+        "attributes": {}
+      },
+      "8b1e277e-0f88-a58b-4aff-51c74250671d": {
+        "registry": {
+          "position": {
+            "x": 158,
+            "y": 80
+          }
+        },
+        "attributes": {}
+      },
+      "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
+        "registry": {
+          "position": {
+            "x": 137,
+            "y": 198
+          }
+        },
+        "attributes": {}
+      },
+      "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {
+        "registry": {
+          "position": {
+            "x": 198,
+            "y": 569
+          }
+        },
+        "attributes": {}
+      },
+      "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {
+        "registry": {
+          "position": {
+            "x": 424,
+            "y": 184
+          }
+        },
+        "attributes": {}
+      },
+      "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
+        "registry": {
+          "position": {
+            "x": 335,
+            "y": 348
+          }
+        },
+        "attributes": {}
+      },
+      "f0508110-9a11-3b6d-ea42-2193bf0485e0": {
+        "registry": {
+          "position": {
+            "x": 499,
+            "y": 350
+          }
+        },
+        "attributes": {}
+      },
+      "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {
+        "registry": {
+          "position": {
+            "x": 187,
+            "y": 455
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
+        "order": 3,
+        "title": "AVM Component Model"
+      }
+    },
+    "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740": {
+      "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
+        "registry": {
+          "position": {
+            "x": 104,
+            "y": 246
+          }
+        },
+        "attributes": {}
+      },
+      "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
+        "registry": {
+          "position": {
+            "x": 100,
+            "y": 100
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740",
+        "order": 0,
+        "title": "META"
+      }
+    },
+    "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5": {
+      "a0399d5f-26ab-3fac-def4-3834f5decac9": {
+        "registry": {
+          "position": {
+            "x": 225,
+            "y": 58
+          }
+        },
+        "attributes": {}
+      },
+      "8b1e277e-0f88-a58b-4aff-51c74250671d": {
+        "registry": {
+          "position": {
+            "x": 75,
+            "y": 188
+          }
+        },
+        "attributes": {}
+      },
+      "3317c9c6-6c44-1a06-a476-11f77d722b34": {
+        "registry": {
+          "position": {
+            "x": 255,
+            "y": 358
+          }
+        },
+        "attributes": {}
+      },
+      "1f35a3aa-321d-359f-7838-242bc2d08ae5": {
+        "registry": {
+          "position": {
+            "x": 415,
+            "y": 188
+          }
+        },
+        "attributes": {}
+      },
+      "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
+        "registry": {
+          "position": {
+            "x": 595,
+            "y": 208
+          }
+        },
+        "attributes": {}
+      },
+      "dd35b139-3346-08f0-013c-1e3a8a522f7f": {
+        "registry": {
+          "position": {
+            "x": 235,
+            "y": 188
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5",
+        "order": 1,
+        "title": "Folders"
+      }
+    },
+    "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6": {
+      "d5fc3678-2722-5112-c0bb-fa758f113246": {
+        "registry": {
+          "position": {
+            "x": 258,
+            "y": 417
+          }
+        },
+        "attributes": {}
+      },
+      "1deced2f-f026-ca87-711c-d8148b1dfd3c": {
+        "registry": {
+          "position": {
+            "x": 461,
+            "y": 258
+          }
+        },
+        "attributes": {}
+      },
+      "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
+        "registry": {
+          "position": {
+            "x": 499,
+            "y": 119
+          }
+        },
+        "attributes": {}
+      },
+      "ab281360-2719-c4e0-c3c6-4eea03401141": {
+        "registry": {
+          "position": {
+            "x": 487,
+            "y": 378
+          }
+        },
+        "attributes": {}
+      },
+      "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae": {
+        "registry": {
+          "position": {
+            "x": 766,
+            "y": 184
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6",
+        "order": 5,
+        "title": "Requirements"
+      }
+    },
+    "MetaAspectSet_4d5d204e-f520-ca21-01d9-1a9565f9b9c2": {
+      "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
+        "registry": {
+          "position": {
+            "x": 631,
+            "y": 178
+          }
+        },
+        "attributes": {}
+      },
+      "e87743ed-b89e-d8ce-7b87-7b9aadcb4961": {
+        "registry": {
+          "position": {
+            "x": 627,
+            "y": 392
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_4d5d204e-f520-ca21-01d9-1a9565f9b9c2",
+        "order": 6,
+        "title": "Tests"
+      }
+    },
+    "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a": {
+      "1f35a3aa-321d-359f-7838-242bc2d08ae5": {
+        "registry": {
+          "position": {
+            "x": 193,
+            "y": 80
+          }
+        },
+        "attributes": {}
+      },
+      "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {
+        "registry": {
+          "position": {
+            "x": 108,
+            "y": 746
+          }
+        },
+        "attributes": {}
+      },
+      "e544f3e4-e550-5750-8540-5598bbbf343c": {
+        "registry": {
+          "position": {
+            "x": 19,
+            "y": 395
+          }
+        },
+        "attributes": {}
+      },
+      "4f1234d8-03e4-c420-3135-8ec481fc4c4a": {
+        "registry": {
+          "position": {
+            "x": 343,
+            "y": 72
+          }
+        },
+        "attributes": {}
+      },
+      "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
+        "registry": {
+          "position": {
+            "x": 568,
+            "y": 87
+          }
+        },
+        "attributes": {}
+      },
+      "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {
+        "registry": {
+          "position": {
+            "x": 232,
+            "y": 586
+          }
+        },
+        "attributes": {}
+      },
+      "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
+        "registry": {
+          "position": {
+            "x": 437,
+            "y": 305
+          }
+        },
+        "attributes": {}
+      },
+      "be02d298-2892-180a-ed1a-138dc589dd5c": {
+        "registry": {
+          "position": {
+            "x": 286,
+            "y": 755
+          }
+        },
+        "attributes": {}
+      },
+      "3317c9c6-6c44-1a06-a476-11f77d722b34": {
+        "registry": {
+          "position": {
+            "x": 204,
+            "y": 217
+          }
+        },
+        "attributes": {}
+      },
+      "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
+        "registry": {
+          "position": {
+            "x": 201,
+            "y": 370
+          }
+        },
+        "attributes": {}
+      },
+      "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {
+        "registry": {
+          "position": {
+            "x": 6,
+            "y": 577
+          }
+        },
+        "attributes": {}
+      },
+      "79f0cc09-f068-284b-5473-efcf5dfa3497": {
+        "registry": {
+          "position": {
+            "x": 4,
+            "y": 284
+          }
+        },
+        "attributes": {}
+      },
+      "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {
+        "registry": {
+          "position": {
+            "x": -1,
+            "y": 167
+          }
+        },
+        "attributes": {}
+      },
+      "466b5beb-14ad-ea2e-8331-8ddce8f0fa7d": {
+        "registry": {
+          "position": {
+            "x": 700,
+            "y": 481
+          }
+        },
+        "attributes": {}
+      },
+      "f0508110-9a11-3b6d-ea42-2193bf0485e0": {
+        "registry": {
+          "position": {
+            "x": 507,
+            "y": 458
+          }
+        },
+        "attributes": {}
+      },
+      "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
+        "registry": {
+          "position": {
+            "x": 638,
+            "y": 302
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
+        "order": 2,
+        "title": "AVM Design Model"
+      }
+    },
+    "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2": {
+      "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {
+        "registry": {
+          "position": {
+            "x": 322,
+            "y": 676
+          }
+        },
+        "attributes": {}
+      },
+      "dd35b139-3346-08f0-013c-1e3a8a522f7f": {
+        "registry": {
+          "position": {
+            "x": 146,
+            "y": 67
+          }
+        },
+        "attributes": {}
+      },
+      "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
+        "registry": {
+          "position": {
+            "x": 329,
+            "y": 450
+          }
+        },
+        "attributes": {}
+      },
+      "d5fc3678-2722-5112-c0bb-fa758f113246": {
+        "registry": {
+          "position": {
+            "x": 492,
+            "y": 489
+          }
+        },
+        "attributes": {}
+      },
+      "edf95f43-efbd-5c2c-6384-6ab74c160c17": {
+        "registry": {
+          "position": {
+            "x": 529,
+            "y": 159
+          }
+        },
+        "attributes": {}
+      },
+      "3317c9c6-6c44-1a06-a476-11f77d722b34": {
+        "registry": {
+          "position": {
+            "x": 83,
+            "y": 416
+          }
+        },
+        "attributes": {}
+      },
+      "9001f172-4258-ceaa-86e9-f6e80b85853d": {
+        "registry": {
+          "position": {
+            "x": 399,
+            "y": 162
+          }
+        },
+        "attributes": {}
+      },
+      "07d79d42-e631-fb69-a1f7-25b044d94fbb": {
+        "registry": {
+          "position": {
+            "x": 410,
+            "y": 301
+          }
+        },
+        "attributes": {}
+      },
+      "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
+        "registry": {
+          "position": {
+            "x": 40,
+            "y": 612
+          }
+        },
+        "attributes": {}
+      },
+      "e544f3e4-e550-5750-8540-5598bbbf343c": {
+        "registry": {
+          "position": {
+            "x": 8,
+            "y": 28
+          }
+        },
+        "attributes": {}
+      },
+      "9fab1244-f449-d3c0-bfdc-f166f724e3f2": {
+        "registry": {
+          "position": {
+            "x": 131,
+            "y": 188
+          }
+        },
+        "attributes": {}
+      },
+      "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
+        "registry": {
+          "position": {
+            "x": 710,
+            "y": 432
+          }
+        },
+        "attributes": {}
+      },
+      "global": {
+        "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
+        "order": 4,
+        "title": "AVM Test bench Model"
+      }
+    }
+  }
 }
