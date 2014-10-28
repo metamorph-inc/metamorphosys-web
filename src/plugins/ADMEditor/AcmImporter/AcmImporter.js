@@ -266,6 +266,7 @@ define(['plugin/PluginConfig',
             avmProperties,
             avmConnectors,
             avmDomainModels,
+            avmPorts,
             formulas,
             i,
             msg;
@@ -306,6 +307,13 @@ define(['plugin/PluginConfig',
 
             for (i = 0; i < avmConnectors.length; i += 1) {
                 self.createNewConnector(avmConnectors[i], newAcmNode);
+            }
+        }
+        if (avmComponent.hasOwnProperty('Port')) {
+            avmPorts = avmComponent['Port'];
+
+            for (i = 0; i < avmPorts.length; i += 1) {
+                self.createNewDomainPort(avmPorts[i], newAcmNode);
             }
         }
         if (avmComponent.hasOwnProperty('Property')) {
@@ -388,7 +396,7 @@ define(['plugin/PluginConfig',
             domainConns = avmConnInfo['Role'];
 
             for (i = 0; i < domainConns.length; i += 1) {
-                newDomainConnNode = self.createNewDomainConnector(domainConns[i], newConnectorNode);
+                newDomainConnNode = self.createNewDomainPort(domainConns[i], newConnectorNode);
 
                 self.core.setRegistry(newDomainConnNode, 'position', {x: 200, y: 200 + 100*i});
             }
@@ -397,11 +405,11 @@ define(['plugin/PluginConfig',
         return newConnectorNode;
     };
 
-    AcmImporter.prototype.createNewDomainConnector = function(domainConnInfo, newConnNode) {
+    AcmImporter.prototype.createNewDomainPort = function(domainConnInfo, parentNode) {
         var self = this,
             domainConnName = domainConnInfo['@Name'],
             domainConnType,
-            newDomainConnNode = self.core.createNode({parent: newConnNode, base: MetaTypes.DomainPort });
+            newDomainConnNode = self.core.createNode({parent: parentNode, base: MetaTypes.DomainPort });
 
         if (domainConnInfo.hasOwnProperty('@xsi:type')) {
             domainConnType = domainConnInfo['@xsi:type'];
@@ -764,7 +772,8 @@ define(['plugin/PluginConfig',
                     DomainModel: true,
                     Role: true,
                     Formula: true,
-                    Operand: true
+                    Operand: true,
+                    Port: true
                 }
             });
 
