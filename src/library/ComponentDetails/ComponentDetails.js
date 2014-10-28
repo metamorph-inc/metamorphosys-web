@@ -12,23 +12,24 @@ angular.module('cyphy.components')
             connectors = {};
 
         console.log('ComponentDetailsController');
-
-        if ($scope.connectionId && angular.isString($scope.connectionId)) {
-            context = {
-                db: $scope.connectionId,
-                regionId: 'ComponentDetails_' + (new Date()).toISOString()
+        $scope.init = function (connectionId) {
+            $scope.connectionId = connectionId;
+            if ($scope.connectionId && angular.isString($scope.connectionId)) {
+                context = {
+                    db: $scope.connectionId,
+                    regionId: 'ComponentDetails_' + (new Date()).toISOString()
+                };
+                $scope.$on('$destroy', function () {
+                    console.log('Destroying :', context.regionId);
+                    ComponentService.cleanUpAllRegions(context);
+                });
+            } else {
+                throw new Error('connectionId must be defined and it must be a string');
+            }
+            $scope.details = {
+                properties: properties,
+                connectors: connectors
             };
-            $scope.$on('$destroy', function () {
-                console.log('Destroying :', context.regionId);
-                ComponentService.cleanUpAllRegions(context);
-            });
-        } else {
-            throw new Error('connectionId must be defined and it must be a string');
-        }
-        $scope.details = {
-            properties: properties,
-            connectors: connectors
-        };
 //        data = {
 //            regionId: regionId,
 //            id: componentId,
@@ -38,34 +39,40 @@ angular.module('cyphy.components')
 //            }
 //        }
 
-        ComponentService.registerWatcher(context, function (destroy) {
-            $scope.details = {
-                properties: {},
-                connectors: {}
-            };
-            if (destroy) {
-                //TODO: notify user
-                return;
-            }
-            console.info('ComponentDetailsController - initialize event raised');
+            ComponentService.registerWatcher(context, function (destroy) {
+                $scope.details = {
+                    properties: {},
+                    connectors: {}
+                };
+                if (destroy) {
+                    //TODO: notify user
+                    return;
+                }
+                console.info('ComponentDetailsController - initialize event raised');
 
-            ComponentService.watchComponentInterfaces(context, $scope.componentId, function (updateObject) {
-                // Since watchComponentDetails keeps the data up-to-date there shouldn't be a need to do any
-                // updates here..
-            })
-                .then(function (componentInterfaces) {
-                    $scope.details.properties = componentInterfaces.properties;
-                    $scope.details.connectors = componentInterfaces.connectors;
-                });
-        });
+                ComponentService.watchInterfaces(context, $scope.componentId, function (updateObject) {
+                    // Since watchComponentDetails keeps the data up-to-date there shouldn't be a need to do any
+                    // updates here..
+                    console.log('watchInterfaces', updateObject);
+                })
+                    .then(function (componentInterfaces) {
+                        $scope.details.properties = componentInterfaces.properties;
+                        $scope.details.connectors = componentInterfaces.connectors;
+                    });
+            });
+        };
     })
     .directive('componentDetails', function () {
         'use strict';
         return {
             restrict: 'E',
             scope: {
-                connectionId: '=connectionId',
                 componentId: '=componentId'
+            },
+            require: '^componentList',
+            link: function (scope, elem, attr, componetListController) {
+                var connectionId = componetListController.getConnectionId();
+                scope.init(connectionId);
             },
             replace: true,
             templateUrl: '/cyphy-components/templates/ComponentDetails.html',

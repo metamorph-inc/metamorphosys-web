@@ -17,7 +17,9 @@ angular.module('cyphy.components')
             context;
 
         console.log('ComponentListController');
-
+        this.getConnectionId = function () {
+            return $scope.connectionId;
+        };
         // Check for valid connectionId and register clean-up on destroy event.
         if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
@@ -159,8 +161,7 @@ angular.module('cyphy.components')
 
         $scope.config = config;
         $scope.listData = {
-            items: items,
-            connectionId: $scope.connectionId // FIXME: This is probably not the right way to do it..
+            items: items
         };
 
         // Transform the raw service node data to items for the list.
@@ -180,11 +181,11 @@ angular.module('cyphy.components')
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
-                        user: 'N/A'         // TODO: get this in the future.
+                        user: 'N/A'    // TODO: get this in the future.
                     },
                     stats: [ ],
                     details    : 'Content',
-                    detailsTemplateUrl: 'details.html',
+                    detailsTemplateUrl: 'componentDetails.html',
                     resource: data.resource // FIXME: This is probably not the right way to do it..
                 };
                 // Add the list-item to the items list and the dictionary.

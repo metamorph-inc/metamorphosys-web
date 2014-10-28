@@ -36,7 +36,7 @@ angular.module('cyphy.components')
 
             sortable: false,
             secondaryItemMenu: true,
-            detailsCollapsible: true,
+            detailsCollapsible: false,
             showDetailsLabel: 'Show details',
             hideDetailsLabel: 'Hide details',
 
