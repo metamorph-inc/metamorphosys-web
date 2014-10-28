@@ -28,9 +28,9 @@ angular.module('cyphy.services')
 
         /**
          *  Watches all test-benches (existence and their attributes) of a workspace.
-         * @param parentContext - context of controller.
-         * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data. Data is an object in data.testBenches.
+         * @param {object} parentContext - context of controller.
+         * @param {string} workspaceId - Path to workspace that should be watched.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data. Data is an object in data.testBenches.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchTestBenches = function (parentContext, workspaceId, updateListener) {

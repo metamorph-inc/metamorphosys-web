@@ -47,7 +47,7 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
+                growl.warning('Not Implemented!');
                 //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
             },
 
@@ -175,7 +175,7 @@ angular.module('cyphy.components')
 
             if (designItems.hasOwnProperty(data.id)) {
                 listItem = designItems[data.id];
-                listItem.name = data.name;
+                listItem.title = data.name;
                 listItem.description = data.description;
             } else {
                 listItem = {

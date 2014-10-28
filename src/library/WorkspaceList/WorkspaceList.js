@@ -187,13 +187,13 @@ angular.module('cyphy.components')
 
             if (workspaceItems.hasOwnProperty(data.id)) {
                 workspaceItem = workspaceItems[data.id];
-                workspaceItem.name = data.name;
+                workspaceItem.title = data.name;
                 workspaceItem.description = data.description;
             } else {
                 workspaceItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: 'Open item',
+                    toolTip: 'Open Workspace',
                     description: data.description,
                     lastUpdated: {
                         time: new Date(), // TODO: get this

@@ -9,7 +9,8 @@ angular.module('cyphy.components')
         'use strict';
         var context = {},
             properties = {},
-            connectors = {};
+            connectors = {},
+            ports = {};
 
         console.log('ComponentDetailsController');
         $scope.init = function (connectionId) {
@@ -28,7 +29,8 @@ angular.module('cyphy.components')
             }
             $scope.details = {
                 properties: properties,
-                connectors: connectors
+                connectors: connectors,
+                ports: ports
             };
 //        data = {
 //            regionId: regionId,
@@ -42,7 +44,8 @@ angular.module('cyphy.components')
             ComponentService.registerWatcher(context, function (destroy) {
                 $scope.details = {
                     properties: {},
-                    connectors: {}
+                    connectors: {},
+                    ports: {}
                 };
                 if (destroy) {
                     //TODO: notify user
@@ -58,6 +61,7 @@ angular.module('cyphy.components')
                     .then(function (componentInterfaces) {
                         $scope.details.properties = componentInterfaces.properties;
                         $scope.details.connectors = componentInterfaces.connectors;
+                        $scope.details.ports = componentInterfaces.ports;
                     });
             });
         };

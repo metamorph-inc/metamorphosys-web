@@ -102,7 +102,7 @@ angular.module('cyphy.components')
                                 label: 'Export ACM',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: {resource: item.resource, name: item.title},
+                                actionData: {resource: item.data.resource, name: item.title},
                                 action: function (data) {
                                     var hash = data.resource,
                                         url = FileService.getDownloadUrl(hash);
@@ -170,9 +170,9 @@ angular.module('cyphy.components')
 
             if (componentItems.hasOwnProperty(data.id)) {
                 listItem = componentItems[data.id];
-                listItem.name = data.name;
+                listItem.title = data.name;
                 listItem.description = data.description;
-                listItem.resource = data.resource; // FIXME: This is probably not the right way to do it..
+                listItem.data.resource = data.resource;
             } else {
                 listItem = {
                     id: data.id,
@@ -186,7 +186,7 @@ angular.module('cyphy.components')
                     stats: [ ],
                     details    : 'Content',
                     detailsTemplateUrl: 'componentDetails.html',
-                    resource: data.resource // FIXME: This is probably not the right way to do it..
+                    data: { resource: data.resource}
                 };
                 // Add the list-item to the items list and the dictionary.
                 items.push(listItem);
