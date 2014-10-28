@@ -9,12 +9,12 @@
 
 
 angular.module('cyphy.services')
-    .service('BaseCyPhyService', function ($q, NodeService) {
+    .service('baseCyPhyService', function ($q, nodeService) {
         'use strict';
 
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
-         * when they became unavailable. These are also called directly with the state of the NodeService.
+         * when they became unavailable. These are also called directly with the state of the nodeService.
          * @param {string} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
          * @param {string} parentContext.db - Database connection.
@@ -22,13 +22,13 @@ angular.module('cyphy.services')
          * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
          */
         this.registerWatcher = function (watchers, parentContext, fn) {
-            NodeService.on(parentContext.db, 'initialize', function () {
-                // This should be enough, the regions will be cleaned up in NodeService.
+            nodeService.on(parentContext.db, 'initialize', function () {
+                // This should be enough, the regions will be cleaned up in nodeService.
                 watchers[parentContext.regionId] = {};
                 fn(false);
             });
-            NodeService.on(parentContext.db, 'destroy', function () {
-                // This should be enough, the regions should be cleaned up in NodeService.
+            nodeService.on(parentContext.db, 'destroy', function () {
+                // This should be enough, the regions should be cleaned up in nodeService.
                 if (watchers[parentContext.regionId]) {
                     delete watchers[parentContext.regionId];
                 }
@@ -49,7 +49,7 @@ angular.module('cyphy.services')
                 childWatchers = watchers[parentContext.regionId];
                 for (key in childWatchers) {
                     if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
+                        nodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
                     }
                 }
                 delete watchers[parentContext.regionId];
@@ -69,7 +69,7 @@ angular.module('cyphy.services')
         this.cleanUpRegion = function (watchers, parentContext, regionId) {
             if (watchers[parentContext.regionId]) {
                 if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(parentContext.db, regionId);
+                    nodeService.cleanUpRegion(parentContext.db, regionId);
                     delete watchers[parentContext.regionId][regionId];
                 } else {
                     console.log('Nothing to clean-up..');
@@ -89,7 +89,7 @@ angular.module('cyphy.services')
          */
         this.setNodeAttributes = function (context, id, attrs) {
             var deferred = $q.defer();
-            NodeService.loadNode(context, id)
+            nodeService.loadNode(context, id)
                 .then(function (nodeObj) {
                     var key;
                     for (key in attrs) {
@@ -194,8 +194,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, id)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, id)
                     .then(function (modelNode) {
                         modelNode.loadChildren().then(function (children) {
                             var i,
@@ -224,7 +224,7 @@ angular.module('cyphy.services')
                                     childNode.onUnload(onConnectorUnload);
                                     ///queueList.push(childNode.loadChildren(childNode));
                                 } else if (childNode.isMetaTypeOf(meta.DomainPort)) {
-                                    data.port[childId] = {
+                                    data.ports[childId] = {
                                         id: childId,
                                         name: childNode.getAttribute('name'),
                                         type: childNode.getAttribute('Type'),
@@ -258,7 +258,7 @@ angular.module('cyphy.services')
                                     updateListener({id: childId, type: 'load', data: data});
                                     ///queueList.push(childNode.loadChildren(childNode));
                                 } else if (newChild.isMetaTypeOf(meta.DomainPort)) {
-                                    data.port[childId] = {
+                                    data.ports[childId] = {
                                         id: childId,
                                         name: childNode.getAttribute('name'),
                                         type: childNode.getAttribute('Type'),

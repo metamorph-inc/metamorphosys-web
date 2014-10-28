@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentListController', function ($scope, $window, $modal, growl, ComponentService, FileService) {
+    .controller('ComponentListController', function ($scope, $window, $modal, growl, componentService, fileService) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -27,7 +27,7 @@ angular.module('cyphy.components')
                 regionId: 'ComponentListController_' + (new Date()).toISOString()
             };
             $scope.$on('$destroy', function () {
-                ComponentService.cleanUpAllRegions(context);
+                componentService.cleanUpAllRegions(context);
             });
         } else {
             throw new Error('connectionId must be defined and it must be a string');
@@ -88,7 +88,7 @@ angular.module('cyphy.components')
                                         var attrs = {
                                             'INFO': editedData.description
                                         };
-                                        ComponentService.setComponentAttributes(editContext, data.id, attrs)
+                                        componentService.setComponentAttributes(editContext, data.id, attrs)
                                             .then(function () {
                                                 console.log('Attribute updated');
                                             });
@@ -105,7 +105,7 @@ angular.module('cyphy.components')
                                 actionData: {resource: item.data.resource, name: item.title},
                                 action: function (data) {
                                     var hash = data.resource,
-                                        url = FileService.getDownloadUrl(hash);
+                                        url = fileService.getDownloadUrl(hash);
                                     if (url) {
                                         growl.success('ACM file for <a href="' + url + '">' + data.name + '</a> exported.');
                                     } else {
@@ -139,7 +139,7 @@ angular.module('cyphy.components')
                                     });
 
                                     modalInstance.result.then(function () {
-                                        ComponentService.deleteComponent(context, data.id);
+                                        componentService.deleteComponent(context, data.id);
                                     }, function () {
                                         console.log('Modal dismissed at: ' + new Date());
                                     });
@@ -223,7 +223,7 @@ angular.module('cyphy.components')
                 return stats;
             };
 
-            ComponentService.watchComponentDomains(context, componentId, function (updateData) {
+            componentService.watchComponentDomains(context, componentId, function (updateData) {
                 var listItem = componentItems[componentId];
                 console.log('DomainModels updated, event type:', updateData.type);
                 if (listItem) {
@@ -242,7 +242,7 @@ angular.module('cyphy.components')
                 });
         };
 
-        ComponentService.registerWatcher(context, function (destroyed) {
+        componentService.registerWatcher(context, function (destroyed) {
             items = [];
             $scope.listData.items = items;
             componentItems = {};
@@ -255,7 +255,7 @@ angular.module('cyphy.components')
             }
             console.info('initialize event raised');
 
-            ComponentService.watchComponents(context, $scope.workspaceId, function (updateObject) {
+            componentService.watchComponents(context, $scope.workspaceId, function (updateObject) {
                 var index;
                 //console.warn(updateObject);
                 if (updateObject.type === 'load') {
@@ -273,7 +273,7 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-                        ComponentService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
+                        componentService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
                         delete componentItems[updateObject.id];
                     }
                 } else {

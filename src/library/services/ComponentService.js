@@ -8,7 +8,7 @@
 
 
 angular.module('cyphy.services')
-    .service('ComponentService', function ($q, NodeService, BaseCyPhyService) {
+    .service('componentService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -20,7 +20,7 @@ angular.module('cyphy.services')
          */
         this.deleteComponent = function (context, componentId, msg) {
             var message = msg || 'ComponentService.deleteComponent ' + componentId;
-            NodeService.destroyNode(context, componentId, message);
+            nodeService.destroyNode(context, componentId, message);
         };
 
         /**
@@ -32,7 +32,7 @@ angular.module('cyphy.services')
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
         this.setComponentAttributes = function (context, componentId, attrs) {
-            return BaseCyPhyService.setNodeAttributes(context, componentId, attrs);
+            return baseCyPhyService.setNodeAttributes(context, componentId, attrs);
         };
 
         /**
@@ -146,8 +146,8 @@ angular.module('cyphy.services')
                 };
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -215,8 +215,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, componentId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, componentId)
                     .then(function (componentNode) {
                         componentNode.loadChildren().then(function (children) {
                             var i,
@@ -263,34 +263,34 @@ angular.module('cyphy.services')
         };
 
         /**
-         * See BaseCyPhyService.watchInterfaces.
+         * See baseCyPhyService.watchInterfaces.
          */
         this.watchInterfaces = function (parentContext, id, updateListener) {
-            return BaseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
         };
 
         /**
-         * See BaseCyPhyService.cleanUpAllRegions.
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * See BaseCyPhyService.cleanUpRegion.
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * See BaseCyPhyService.registerWatcher.
+         * See baseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
 
         this.logContext = function (context) {
-            NodeService.logContext(context);
+            nodeService.logContext(context);
         };
     });

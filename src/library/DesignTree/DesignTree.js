@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignTreeController', function ($scope, DesignService) {
+    .controller('DesignTreeController', function ($scope, designService) {
         'use strict';
         var self = this,
             items = [],
@@ -17,7 +17,7 @@ angular.module('cyphy.components')
 
         $scope.treeData = {};
 
-        DesignService.watchDesignStructure(null, $scope.designId, function (err, structure) {
+        designService.watchDesignStructure(null, $scope.designId, function (err, structure) {
             $scope.treeData = structure;
         });
 

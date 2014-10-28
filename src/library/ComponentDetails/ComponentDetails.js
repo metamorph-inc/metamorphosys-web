@@ -5,7 +5,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentDetailsController', function ($scope, ComponentService) {
+    .controller('ComponentDetailsController', function ($scope, componentService) {
         'use strict';
         var context = {},
             properties = {},
@@ -22,7 +22,7 @@ angular.module('cyphy.components')
                 };
                 $scope.$on('$destroy', function () {
                     console.log('Destroying :', context.regionId);
-                    ComponentService.cleanUpAllRegions(context);
+                    componentService.cleanUpAllRegions(context);
                 });
             } else {
                 throw new Error('connectionId must be defined and it must be a string');
@@ -41,7 +41,7 @@ angular.module('cyphy.components')
 //            }
 //        }
 
-            ComponentService.registerWatcher(context, function (destroy) {
+            componentService.registerWatcher(context, function (destroy) {
                 $scope.details = {
                     properties: {},
                     connectors: {},
@@ -53,7 +53,7 @@ angular.module('cyphy.components')
                 }
                 console.info('ComponentDetailsController - initialize event raised');
 
-                ComponentService.watchInterfaces(context, $scope.componentId, function (updateObject) {
+                componentService.watchInterfaces(context, $scope.componentId, function (updateObject) {
                     // Since watchComponentDetails keeps the data up-to-date there shouldn't be a need to do any
                     // updates here..
                     console.log('watchInterfaces', updateObject);

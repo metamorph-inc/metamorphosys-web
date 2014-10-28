@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.services')
-    .service('FileService', function ($q) {
+    .service('fileService', function ($q) {
         'use strict';
         var self = this,
             blobClient = new WebGMEGlobal.classes.BlobClient();

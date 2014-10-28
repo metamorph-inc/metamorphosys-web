@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('DesignService', function ($q, NodeService, BaseCyPhyService) {
+    .service('designService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -24,7 +24,7 @@ angular.module('cyphy.services')
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
         this.setDesignAttributes = function (context, designId, attrs) {
-            return BaseCyPhyService.setNodeAttributes(context, designId, attrs);
+            return baseCyPhyService.setNodeAttributes(context, designId, attrs);
         };
 
         this.exportDesign = function (designId) {
@@ -129,8 +129,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -260,8 +260,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, designId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
                     .then(function (designNode) {
                         designNode.loadChildren().then(function (children) {
                             var i,
@@ -339,9 +339,9 @@ angular.module('cyphy.services')
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             console.log('Added new watcher: ', watchers);
-            NodeService.logContext(context);
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, designId)
+            nodeService.logContext(context);
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
                     .then(function (designNode) {
                         data.name = designNode.getAttribute('name');
                         designNode.loadChildren(context)
@@ -393,23 +393,23 @@ angular.module('cyphy.services')
         };
 
         /**
-         * See BaseCyPhyService.cleanUpAllRegions.
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * See BaseCyPhyService.cleanUpRegion.
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * See BaseCyPhyService.registerWatcher.
+         * See baseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
     });

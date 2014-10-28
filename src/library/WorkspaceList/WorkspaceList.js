@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, growl, WorkspaceService, FileService) {
+    .controller('WorkspaceListController', function ($scope, growl, workspaceService, fileService) {
         'use strict';
         var self = this,
             items = [],
@@ -24,7 +24,7 @@ angular.module('cyphy.components')
                 regionId: 'WorkspaceListController_' + (new Date()).toISOString()
             };
             $scope.$on('$destroy', function () {
-                WorkspaceService.cleanUpAllRegions(context);
+                workspaceService.cleanUpAllRegions(context);
             });
         } else {
             throw new Error('connectionId must be defined and it must be a string');
@@ -70,7 +70,7 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-copy copy-icon',
                                 actionData: {id: item.id},
                                 action: function (data) {
-                                    WorkspaceService.duplicateWorkspace(context, data.id);
+                                    workspaceService.duplicateWorkspace(context, data.id);
                                 }
                             },
                             {
@@ -106,7 +106,7 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-plus',
                                 actionData: { id: item.id },
                                 action: function (data) {
-                                    WorkspaceService.deleteWorkspace(context, data.id);
+                                    workspaceService.deleteWorkspace(context, data.id);
                                 }
                             }
                         ]
@@ -146,7 +146,7 @@ angular.module('cyphy.components')
                     };
 
                     $scope.onDroppedFiles = function ($files) {
-                        FileService.saveDroppedFiles($files, {zip: true, adm: true, atm: true})
+                        fileService.saveDroppedFiles($files, {zip: true, adm: true, atm: true})
                             .then(function (fInfos) {
                                 var i;
                                 console.log(fInfos);
@@ -161,7 +161,7 @@ angular.module('cyphy.components')
                         for (i = 0; i < $scope.files.length; i += 1) {
                             console.log($scope.files[i]);
                         }
-                        //WorkspaceService.createWorkspace(context, newItem);
+                        //workspaceService.createWorkspace(context, newItem);
 
                         //$scope.newItem = {};
 
@@ -229,7 +229,7 @@ angular.module('cyphy.components')
         };
 
         addCountWatchers = function (workspaceId) {
-            WorkspaceService.watchNumberOfComponents(context, workspaceId, function (updateData) {
+            workspaceService.watchNumberOfComponents(context, workspaceId, function (updateData) {
                 var workspaceData = workspaceItems[workspaceId];
                 if (workspaceData) {
                     workspaceData.stats[0].value = updateData.data;
@@ -241,7 +241,7 @@ angular.module('cyphy.components')
                         workspaceData.stats[0].value = data.count;
                     }
                 });
-            WorkspaceService.watchNumberOfDesigns(context, workspaceId, function (updateData) {
+            workspaceService.watchNumberOfDesigns(context, workspaceId, function (updateData) {
                 var workspaceData = workspaceItems[workspaceId];
                 if (workspaceData) {
                     workspaceData.stats[1].value = updateData.data;
@@ -253,7 +253,7 @@ angular.module('cyphy.components')
                         workspaceData.stats[1].value = data.count;
                     }
                 });
-            WorkspaceService.watchNumberOfTestBenches(context, workspaceId, function (updateData) {
+            workspaceService.watchNumberOfTestBenches(context, workspaceId, function (updateData) {
                 var workspaceData = workspaceItems[workspaceId];
                 if (workspaceData) {
                     workspaceData.stats[2].value = updateData.data;
@@ -267,7 +267,7 @@ angular.module('cyphy.components')
                 });
         };
 
-        WorkspaceService.registerWatcher(context, function (destroyed) {
+        workspaceService.registerWatcher(context, function (destroyed) {
             // initialize all variables
             items = [];
             $scope.listData = {
@@ -282,7 +282,7 @@ angular.module('cyphy.components')
                 return;
             }
             console.info('WorkspaceListController - initialize event raised');
-            WorkspaceService.watchWorkspaces(context, function (updateObject) {
+            workspaceService.watchWorkspaces(context, function (updateObject) {
                 var index;
 
                 if (updateObject.type === 'load') {
@@ -300,9 +300,9 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfComponents_' + updateObject.id);
-                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfDesigns_' + updateObject.id);
-                        WorkspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfTestBenches_' + updateObject.id);
+                        workspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfComponents_' + updateObject.id);
+                        workspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfDesigns_' + updateObject.id);
+                        workspaceService.cleanUpRegion(context, context.regionId + '_watchNumberOfTestBenches_' + updateObject.id);
                         delete workspaceItems[updateObject.id];
                     }
 

@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('WorkspaceService', function ($q, NodeService, BaseCyPhyService) {
+    .service('workspaceService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -18,9 +18,9 @@ angular.module('cyphy.services')
         this.createWorkspace = function (context, data) {
             var deferred = $q.defer();
             console.warn('Creating new workspace but not using data', data);
-            NodeService.getMetaNodes(context)
+            nodeService.getMetaNodes(context)
                 .then(function (meta) {
-                    NodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
+                    nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
                         .then(function (newNode) {
                             deferred.resolve(newNode);
                         })
@@ -43,7 +43,7 @@ angular.module('cyphy.services')
          */
         this.deleteWorkspace = function (context, workspaceId, msg) {
             var message = msg || 'WorkspaceService.deleteWorkspace ' + workspaceId;
-            NodeService.destroyNode(context, workspaceId, message);
+            nodeService.destroyNode(context, workspaceId, message);
         };
 
         this.exportWorkspace = function (workspaceId) {
@@ -90,8 +90,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, '')
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, '')
                     .then(function (rootNode) {
                         rootNode.loadChildren().then(function (children) {
                             var i,
@@ -194,8 +194,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -294,8 +294,8 @@ angular.module('cyphy.services')
                     'Use "this.registerWatcher" before trying to access Node Objects.');
             }
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -391,8 +391,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -426,27 +426,27 @@ angular.module('cyphy.services')
         };
 
         /**
-         * See BaseCyPhyService.cleanUpAllRegions.
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            BaseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * See BaseCyPhyService.cleanUpRegion.
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            BaseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * See BaseCyPhyService.registerWatcher.
+         * See baseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            BaseCyPhyService.registerWatcher(watchers, parentContext, fn);
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
 
         this.logContext = function (context) {
-            NodeService.logContext(context);
+            nodeService.logContext(context);
         };
     });

@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignListController', function ($scope, $window, $modal, DesignService, growl) {
+    .controller('DesignListController', function ($scope, $window, $modal, designService, growl) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -25,7 +25,7 @@ angular.module('cyphy.components')
                 regionId: 'DesignListController_' + (new Date()).toISOString()
             };
             $scope.$on('$destroy', function () {
-                DesignService.cleanUpAllRegions(context);
+                designService.cleanUpAllRegions(context);
             });
         } else {
             throw new Error('connectionId must be defined and it must be a string');
@@ -91,7 +91,7 @@ angular.module('cyphy.components')
                                             'name': editedData.name,
                                             'INFO': editedData.description
                                         };
-                                        DesignService.setDesignAttributes(editContext, data.id, attrs)
+                                        designService.setDesignAttributes(editContext, data.id, attrs)
                                             .then(function () {
                                                 console.log('Attribute updated');
                                             });
@@ -143,7 +143,7 @@ angular.module('cyphy.components')
                                     });
 
                                     modalInstance.result.then(function () {
-                                        DesignService.deleteDesign(context, data.id);
+                                        designService.deleteDesign(context, data.id);
                                     }, function () {
                                         console.log('Modal dismissed at: ' + new Date());
                                     });
@@ -214,7 +214,7 @@ angular.module('cyphy.components')
         };
 
         addConfigurationWatcher = function (designId) {
-            DesignService.watchNbrOfConfigurations(context, designId, function (updateObject) {
+            designService.watchNbrOfConfigurations(context, designId, function (updateObject) {
                 var listItem = designItems[designId];
                 console.log(updateObject);
                 listItem.stats[0].value = updateObject.data.counters.sets;
@@ -228,7 +228,7 @@ angular.module('cyphy.components')
             });
         };
 
-        DesignService.registerWatcher(context, function (destroyed) {
+        designService.registerWatcher(context, function (destroyed) {
             items = [];
             $scope.listData.items = items;
             designItems = {};
@@ -241,7 +241,7 @@ angular.module('cyphy.components')
             }
             console.info('initialize event raised');
 
-            DesignService.watchDesigns(context, $scope.workspaceId, function (updateObject) {
+            designService.watchDesigns(context, $scope.workspaceId, function (updateObject) {
                 var index;
                 console.warn(updateObject);
                 if (updateObject.type === 'load') {
@@ -257,7 +257,7 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-                        DesignService.cleanUpRegion(context, context.regionId + '_watchNbrOfConfigurations_' + updateObject.id);
+                        designService.cleanUpRegion(context, context.regionId + '_watchNbrOfConfigurations_' + updateObject.id);
                         delete designItems[updateObject.id];
                     }
                 } else {
