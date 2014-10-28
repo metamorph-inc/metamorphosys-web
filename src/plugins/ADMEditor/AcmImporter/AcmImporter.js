@@ -408,6 +408,7 @@ define(['plugin/PluginConfig',
     AcmImporter.prototype.createNewDomainPort = function(domainConnInfo, parentNode) {
         var self = this,
             domainConnName = domainConnInfo['@Name'],
+            portID = domainConnInfo['@ID'],
             domainConnType,
             newDomainConnNode = self.core.createNode({parent: parentNode, base: MetaTypes.DomainPort });
 
@@ -432,6 +433,7 @@ define(['plugin/PluginConfig',
         }
 
         self.core.setAttribute(newDomainConnNode, 'name', domainConnName);
+        self.core.setAttribute(newDomainConnNode, 'ID', portID);
 
         return newDomainConnNode;
     };

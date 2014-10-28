@@ -32,9 +32,11 @@ define([
 //        componentInstancesDataType = {
 //            node: {nodeObj},
 //            connIdInModel2ID: {object},
-//            propertyIdInModel2ID: {object}
+//            propertyIdInModel2ID: {object},
+//            portIdInModel2ID: {object},
 //        };
         this.connID2Node = {};
+        this.portID2Node = {};
         this.valueFlowTargetID2Node = {};
         this.valueFlows = [];
 //        valueFlowsDataType = {
@@ -44,6 +46,11 @@ define([
         this.valueFlowMuxes = {};
         this.connectorCompositions = [];
 //        connectorCompositionsDataType = {
+//            src: {string},
+//            dst: {string}
+//        };
+        this.portMaps = [];
+//        portMapsDataType = {
 //            src: {string},
 //            dst: {string}
 //        };
@@ -128,7 +135,9 @@ define([
                 ComponentInstance: true,
                 PrimitivePropertyInstance: true,
                 ConnectorInstance: true,
-                Role: true
+                PortInstance: true,
+                Role: true,
+                Port: true
             },
             //timeStamp,
             timeStart = new Date().getTime(),
@@ -238,6 +247,7 @@ define([
                             self.makeValueFlows();
                             //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
                             //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                            self.makePortMaps();
                             finnishPlugin(null);
                         }
                     });
@@ -445,6 +455,7 @@ define([
             subContainersData,
             componentsData,
             connectorsData,
+            portData,
             propertiesData,
             formulasData,
             muxData,
@@ -497,6 +508,14 @@ define([
             }
         }
 
+        if (containerData.Port) {
+            portData = containerData.Port;
+            for (i = 0; i < portData.length; i += 1) {
+                self.createDomainPort(portData[i], container);
+                self.logger.info(indent + 'Created DomainPort : ' + portData[i]['@Name']);
+            }
+        }
+
         if (containerData.Property) {
             propertiesData = containerData.Property;
             for (i = 0; i < propertiesData.length; i += 1) {
@@ -528,7 +547,12 @@ define([
             property,
             propertyIdInModel,
             propertyId,
-            propertyIdInModel2ID = {};
+            propertyIdInModel2ID = {},
+            portInstanceData = componentData.PortInstance,
+            port,
+            portIdInModel,
+            portId,
+            portIdInModel2ID = {};
 
         if (self.componentID2Acm[avmID]) {
             self.logger.info('Found ACM for : ' + componentData['@Name']);
@@ -543,6 +567,14 @@ define([
                     connectorId = connectorInstanceData[i]['@ID'];
                     self.addConnectionData(parentNode, connectorInstanceData[i]);
                     connIdInModel2ID[connectorIdInModel] = connectorId;
+                }
+            }
+            if (portInstanceData) {
+                for (i = 0; i < portInstanceData.length; i += 1) {
+                    portIdInModel = portInstanceData[i]['@IDinComponentModel'];
+                    portId = portInstanceData[i]['@ID'];
+                    self.addPortMapData(parentNode, portInstanceData[i]);
+                    portIdInModel2ID[portIdInModel] = portId;
                 }
             }
             if (primitivePropertyData) {
@@ -562,7 +594,8 @@ define([
             self.componentInstances.push({
                 node: component,
                 connIdInModel2ID: connIdInModel2ID,
-                propertyIdInModel2ID: propertyIdInModel2ID
+                propertyIdInModel2ID: propertyIdInModel2ID,
+                portIdInModel2ID: portIdInModel2ID
             });
         } else {
             self.logger.warning('Could not find ACM for ComponentInstance : ' + componentData['@Name']);
@@ -615,9 +648,7 @@ define([
     AdmImporter.prototype.createConnector = function (connectorData, parentNode) {
         var self = this,
             i,
-            connector,
-            domainConnector,
-            typeName;
+            connector;
 
         connector = self.core.createNode({parent: parentNode, base: self.meta.Connector});
         self.connID2Node[connectorData['@ID']] = connector;
@@ -625,31 +656,7 @@ define([
         // Add Domain-Connectors (Role in adm).
         if (connectorData.Role) {
             for (i = 0; i < connectorData.Role.length; i += 1) {
-                typeName =  connectorData.Role[i]['@xsi:type'];
-                domainConnector = self.core.createNode({parent: connector, base: self.meta.DomainPort});
-                self.core.setAttribute(domainConnector, 'name', connectorData.Role[i]['@Name']);
-                self.core.setRegistry(domainConnector, 'position', { x: 100 + 200 * i, y: 100});
-
-                if (self.endsWith(typeName, 'Connector')) {
-                    if (connectorData.Role[i].hasOwnProperty('@Class')) {
-                        self.core.setAttribute(domainConnector, 'Type', 'ModelicaConnector');
-                        self.core.setAttribute(domainConnector, 'Class', connectorData.Role[i]['@Class']);
-                    } else {
-                        self.createMessage(domainConnector, 'Domain connector was of xsi:type Connector but did not ' +
-                            'have a Class defined. Unknown Type: ' + JSON.stringify(connectorData.Role[i], null, 2), 'error');
-                    }
-                } else if (self.endsWith(typeName, 'Axis')) {
-                    self.core.setAttribute(domainConnector, 'Type', 'CadAxis');
-                } else if (self.endsWith(typeName, 'CoordinateSystem')) {
-                    self.core.setAttribute(domainConnector, 'Type', 'CadCoordinateSystem');
-                } else if (self.endsWith(typeName, 'Plane')) {
-                    self.core.setAttribute(domainConnector, 'Type', 'CadPlane');
-                } else if (self.endsWith(typeName, 'Point')) {
-                    self.core.setAttribute(domainConnector, 'Type', 'CadPoint');
-                } else {
-                    self.createMessage(domainConnector, 'Unknown Type for domain connector : ' +
-                        JSON.stringify(connectorData.Role[i], null, 2), 'error');
-                }
+                self.createDomainPort(connectorData.Role[i], connector);
             }
         }
 
@@ -659,6 +666,48 @@ define([
         });
 
         self.addConnectionData(parentNode, connectorData);
+    };
+
+    AdmImporter.prototype.createDomainPort = function (portData, parentNode) {
+        var self = this,
+            port,
+            typeName;
+        port = self.core.createNode({parent: parentNode, base: self.meta.DomainPort});
+
+        self.core.setAttribute(port, 'name', portData['@Name']);
+
+        typeName =  portData['@xsi:type'];
+
+        if (self.endsWith(typeName, 'Connector')) {
+            if (portData.hasOwnProperty('@Class')) {
+                self.core.setAttribute(port, 'Type', 'ModelicaConnector');
+                self.core.setAttribute(port, 'Class', portData['@Class']);
+            } else {
+                self.createMessage(port, 'Domain port was of xsi:type Connector but did not ' +
+                    'have a Class defined. Unknown Type: ' + JSON.stringify(portData, null, 2), 'error');
+            }
+        } else if (self.endsWith(typeName, 'Axis')) {
+            self.core.setAttribute(port, 'Type', 'CadAxis');
+        } else if (self.endsWith(typeName, 'CoordinateSystem')) {
+            self.core.setAttribute(port, 'Type', 'CadCoordinateSystem');
+        } else if (self.endsWith(typeName, 'Plane')) {
+            self.core.setAttribute(port, 'Type', 'CadPlane');
+        } else if (self.endsWith(typeName, 'Point')) {
+            self.core.setAttribute(port, 'Type', 'CadPoint');
+        } else {
+            self.createMessage(port, 'Unknown Type for domain port : ' + JSON.stringify(portData, null, 2), 'error');
+        }
+
+        self.core.setRegistry(port, 'position', {
+            x: parseInt(portData['@XPosition'], 10),
+            y: parseInt(portData['@YPosition'], 10)
+        });
+
+        // Add port-map data only for ports directly inside the container.
+        if (self.isMetaTypeOf(parentNode, self.meta.Connector) === false) {
+            self.portID2Node[portData['@ID']] = port;
+            self.addPortMapData(parentNode, portData);
+        }
     };
 
     AdmImporter.prototype.createProperty = function (propertyData, parentNode) {
@@ -799,13 +848,28 @@ define([
 
     AdmImporter.prototype.addConnectionData = function (parentNode, connectorData) {
         var self = this,
-            connectedPortIDs,
+            connectedConnectorIDs,
             i;
         if (connectorData['@ConnectorComposition']) {
-            connectedPortIDs = connectorData['@ConnectorComposition'].split(" ");
-            for (i = 0; i < connectedPortIDs.length; i += 1) {
+            connectedConnectorIDs = connectorData['@ConnectorComposition'].split(" ");
+            for (i = 0; i < connectedConnectorIDs.length; i += 1) {
                 self.connectorCompositions.push({
                     src: connectorData['@ID'],
+                    dst: connectedConnectorIDs[i]
+                });
+            }
+        }
+    };
+
+    AdmImporter.prototype.addPortMapData = function (parentNode, portData) {
+        var self = this,
+            connectedPortIDs,
+            i;
+        if (portData['@PortMap']) {
+            connectedPortIDs = portData['@PortMap'].split(" ");
+            for (i = 0; i < connectedPortIDs.length; i += 1) {
+                self.portMaps.push({
+                    src: portData['@ID'],
                     dst: connectedPortIDs[i]
                 });
             }
@@ -860,7 +924,7 @@ define([
                 if (componentInstance.connIdInModel2ID[id]) {
                     self.connID2Node[componentInstance.connIdInModel2ID[id]] = children[i];
                 } else {
-                    self.logger.error('ConnectorID not in component.');
+                    self.logger.error('ConnectorID'  + id + ' not in ' + self.core.getAttribute(componentInstance.node, 'name'));
                 }
             } else if (metaTypeName === 'Property') {
                 id = self.core.getAttribute(children[i], 'ID');
@@ -868,6 +932,13 @@ define([
                     self.valueFlowTargetID2Node[componentInstance.propertyIdInModel2ID[id]] = children[i];
                 } else {
                     self.logger.error('PropertyID' + id + ' not in ' + self.core.getAttribute(componentInstance.node, 'name'));
+                }
+            } else if (metaTypeName === 'DomainPort') {
+                id = self.core.getAttribute(children[i], 'ID');
+                if (componentInstance.portIdInModel2ID[id]) {
+                    self.portID2Node[componentInstance.portIdInModel2ID[id]] = children[i];
+                } else {
+                    self.logger.error('PortID' + id + ' not in ' + self.core.getAttribute(componentInstance.node, 'name'));
                 }
             }
         }
@@ -904,6 +975,43 @@ define([
                     self.core.setPointer(connectionNode, 'dst', dstNode);
                 } else {
                     self.logger.error('Could not make connector-composition between src: ' + srcID +
+                        ' and dst: ' + dstID + '.');
+                }
+            }
+        }
+    };
+
+    AdmImporter.prototype.makePortMaps = function () {
+        var self = this,
+            srcID,
+            dstID,
+            parentNode,
+            srcNode,
+            dstNode,
+            i,
+            portMapNode,
+            jointID,
+            filteredPortMaps = {};
+
+        for (i = 0; i < self.portMaps.length; i += 1) {
+            srcID = self.portMaps[i].src;
+            dstID = self.portMaps[i].dst;
+            jointID = srcID + '__' + dstID;
+            if (filteredPortMaps[jointID]) {
+                // self.logger.info('Connection between ' + jointID + ' already added.');
+            } else {
+                self.logger.info('Adding [src] ' + srcID + ' and [dst]' + dstID);
+                jointID = dstID + '__' + srcID;
+                filteredPortMaps[jointID] = true;
+                srcNode = self.portID2Node[srcID];
+                dstNode = self.portID2Node[dstID];
+                parentNode = self.getConnectionParent(srcNode, dstNode, srcID, dstID);
+                if (parentNode) {
+                    portMapNode = self.core.createNode({parent: parentNode, base: self.meta.PortMap});
+                    self.core.setPointer(portMapNode, 'src', srcNode);
+                    self.core.setPointer(portMapNode, 'dst', dstNode);
+                } else {
+                    self.logger.error('Could not make port-map between src: ' + srcID +
                         ' and dst: ' + dstID + '.');
                 }
             }
