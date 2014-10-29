@@ -179,7 +179,59 @@ angular.module('cyphy.services')
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
         this.watchTestBenchDetails = function (parentContext, testBenchId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchTestBenchDetails_' + testBenchId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    containerIds: [],
+                    tlsut: null
+                },
+                onUnload = function (id) {
+                    var index = data.containerIds.indexOf(id);
+                    if (index > -1) {
+                        data.containerIds.splice(index, 1);
+                        updateListener({id: id, type: 'unload', data: data});
+                    }
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, testBenchId)
+                    .then(function (testBenchNode) {
+                        testBenchNode.loadChildren()
+                            .then(function (children) {
+                                var i;
+                                for (i = 0; i < children.length; i += 1) {
+                                    if (children[i].isMetaTypeOf(meta.Container)) {
+                                        data.containerIds.push(children[i].getId());
+                                        children[i].onUnload(onUnload);
+                                    }
+                                }
+                                testBenchNode.onNewChildLoaded(function (newChild) {
+                                    data.containerIds.push(newChild.getId());
+                                    newChild.onUnload(onUnload);
+                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                });
+                                deferred.resolve(data);
+                            });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches a test-bench w.r.t. interfaces.
+         * @param parentContext - context of controller.
+         * @param containerId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.watchInterfaces = function (parentContext, containerId, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, containerId, updateListener);
         };
 
         /**

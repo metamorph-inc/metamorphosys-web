@@ -39,7 +39,7 @@ angular.module('cyphy.components')
 
             sortable: false,
             secondaryItemMenu: true,
-            detailsCollapsible: false,
+            detailsCollapsible: true,
             showDetailsLabel: 'Show details',
             hideDetailsLabel: 'Hide details',
 
@@ -215,7 +215,7 @@ angular.module('cyphy.components')
                     },
                     stats: [ ],
                     details    : 'Content',
-                    detailsTemplateUrl: 'TestBenchDetails.html',
+                    detailsTemplateUrl: 'testBenchDetails.html',
                     data: {
                         files: data.files,
                         path: data.path,

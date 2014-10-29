@@ -24,9 +24,13 @@ angular.module('cyphy.components', [
 
 require('./SimpleModal/SimpleModal');
 require('./WorkspaceList/WorkspaceList');
+
 require('./ComponentDetails/ComponentDetails');
 require('./ComponentList/ComponentList');
+
 require('./DesignList/DesignList');
 require('./DesignTree/DesignTree');
+
+require('./TestBenchDetails/TestBenchDetails');
 require('./TestBenchList/TestBenchList');
 

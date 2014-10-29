@@ -32,14 +32,6 @@ angular.module('cyphy.components')
                 connectors: connectors,
                 ports: ports
             };
-//        data = {
-//            regionId: regionId,
-//            id: componentId,
-//            interfaces: {
-//                properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
-//                connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
-//            }
-//        }
 
             componentService.registerWatcher(context, function (destroy) {
                 $scope.details = {
@@ -54,7 +46,7 @@ angular.module('cyphy.components')
                 console.info('ComponentDetailsController - initialize event raised');
 
                 componentService.watchInterfaces(context, $scope.componentId, function (updateObject) {
-                    // Since watchComponentDetails keeps the data up-to-date there shouldn't be a need to do any
+                    // Since watchInterfaces keeps the data up-to-date there shouldn't be a need to do any
                     // updates here..
                     console.log('watchInterfaces', updateObject);
                 })
