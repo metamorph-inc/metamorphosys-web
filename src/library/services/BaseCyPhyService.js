@@ -122,7 +122,7 @@ angular.module('cyphy.services')
                 data = {
                     regionId: regionId,
                     id: id,
-                    properties: {}, //property:  {id: <string>, name: <string>, dataType: <string>, valueType <string>}
+                    properties: {}, //property:  {id: <string>, name: <string>, dataType: <string>, valueType <string>, derived <boolean>}
                     connectors: {}, //connector: {id: <string>, name: <string>, domainPorts: <object> }
                     ports: {}       //port:      {id: <string>, name: <string>, type: <string>, class: <string> }
                 },
@@ -130,6 +130,7 @@ angular.module('cyphy.services')
                     var newName = this.getAttribute('name'),
                         newDataType = this.getAttribute('DataType'),
                         newValueType = this.getAttribute('ValueType'),
+                        newDerived = isPropertyDerived(this),
                         hadChanges = false;
                     if (newName !== data.properties[id].name) {
                         data.properties[id].name = newName;
@@ -141,6 +142,10 @@ angular.module('cyphy.services')
                     }
                     if (newValueType !== data.properties[id].valueType) {
                         data.properties[id].valueType = newValueType;
+                        hadChanges = true;
+                    }
+                    if (newDerived !== data.properties[id].derived) {
+                        data.properties[id].derived = newDerived;
                         hadChanges = true;
                     }
                     if (hadChanges) {
@@ -190,6 +195,9 @@ angular.module('cyphy.services')
                 onPortUnload = function (id) {
                     delete data.ports[id];
                     updateListener({id: id, type: 'unload', data: null});
+                },
+                isPropertyDerived = function (node) {
+                    return node.getCollectionPaths('dst').length > 0;
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -210,7 +218,8 @@ angular.module('cyphy.services')
                                         id: childId,
                                         name: childNode.getAttribute('name'),
                                         dataType: childNode.getAttribute('DataType'),
-                                        valueType: childNode.getAttribute('ValueType')
+                                        valueType: childNode.getAttribute('ValueType'),
+                                        derived: isPropertyDerived(childNode)
                                     };
                                     childNode.onUpdate(onPropertyUpdate);
                                     childNode.onUnload(onPropertyUnload);
@@ -242,7 +251,8 @@ angular.module('cyphy.services')
                                         id: childId,
                                         name: newChild.getAttribute('name'),
                                         dataType: newChild.getAttribute('DataType'),
-                                        valueType: newChild.getAttribute('ValueType')
+                                        valueType: newChild.getAttribute('ValueType'),
+                                        derived: isPropertyDerived(newChild)
                                     };
                                     newChild.onUpdate(onPropertyUpdate);
                                     newChild.onUnload(onPropertyUnload);

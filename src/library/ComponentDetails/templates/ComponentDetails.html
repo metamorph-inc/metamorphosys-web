@@ -5,7 +5,9 @@
     </ul>
     <h5>Properties</h5>
     <ul class="property-list">
-        <li class="property-list-item" ng-repeat="prop in details.properties"> {{prop.name}} [{{prop.dataType}}] {{prop.valueType}}</li>
+        <li class="property-list-item" ng-repeat="prop in details.properties">
+            {{prop.name}} [{{prop.dataType}}] {{prop.valueType}} <span ng-if="prop.derived"> (is derived)</span>
+        </li>
     </ul>
     <h5>Ports</h5>
     <ul class="port-list">
