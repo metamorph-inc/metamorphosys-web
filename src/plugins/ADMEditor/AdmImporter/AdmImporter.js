@@ -703,11 +703,8 @@ define([
             y: parseInt(portData['@YPosition'], 10)
         });
 
-        // Add port-map data only for ports directly inside the container.
-        if (self.isMetaTypeOf(parentNode, self.meta.Connector) === false) {
-            self.portID2Node[portData['@ID']] = port;
-            self.addPortMapData(parentNode, portData);
-        }
+        self.portID2Node[portData['@ID']] = port;
+        self.addPortMapData(parentNode, portData);
     };
 
     AdmImporter.prototype.createProperty = function (propertyData, parentNode) {
