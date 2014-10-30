@@ -4,7 +4,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'gme.services',
     'cyphy.components'
 ])
-    .run(function (dataStoreService, projectService, branchService, nodeService, workspaceService, componentService, designService, testBenchService) {
+    .run(function (dataStoreService, projectService, branchService, nodeService, workspaceService, componentService, designService, testBenchService, pluginService) {
         'use strict';
         dataStoreService.connectToDatabase('my-db-connection-id', {host: window.location.basename})
             .then(function () {
@@ -30,6 +30,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 db: 'my-db-connection-id',
                 regionId: 'TestRegion'
             };
+            //pluginService.testRunPlugin(testContext);
             workspaceService.watchWorkspaces(testContext, function (info) { console.warn(info); })
                 .then(function (data) {
                     var key;

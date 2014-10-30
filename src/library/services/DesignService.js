@@ -305,12 +305,99 @@ angular.module('cyphy.services')
 
         /**
          *  Watches the full hierarchy of a design w.r.t. containers and components.
-         * @param parentContext - context of controller.
-         * @param designId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId - path to root container.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesignStructure = function (parentContext, designId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchDesignStructure_' + designId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    count: 0
+                },
+                watchFromFolderRec = function (folderNode, meta) {
+                    var recDeferred = $q.defer();
+                    folderNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode,
+                            onUnload = function (id) {
+                                data.count -= 1;
+                                updateListener({id: id, type: 'unload', data: data.count});
+                            };
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.ACMFolder)) {
+                                queueList.push(watchFromFolderRec(childNode, meta));
+                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+                                data.count += 1;
+                                childNode.onUnload(onUnload);
+                            }
+                        }
+
+                        folderNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.ACMFolder)) {
+                                watchFromFolderRec(newChild, meta).then(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
+                            } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
+                                data.count += 1;
+                                newChild.onUnload(onUnload);
+                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
+                    .then(function (workspaceNode) {
+                        workspaceNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.ACMFolder)) {
+                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                }
+                            }
+                            workspaceNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
+                                    watchFromFolderRec(newChild, meta).then(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         // FIXME: watchConfigurationSets and watchConfigurations should probably go to a DesertConfiguration-Service,

@@ -6,6 +6,7 @@
 
 angular.module('cyphy.services', ['gme.services']);
 require('./BaseCyPhyService');
+require('./PluginService');
 require('./FileService');
 require('./WorkspaceService');
 require('./ComponentService');

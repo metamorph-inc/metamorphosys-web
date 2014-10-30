@@ -5,7 +5,7 @@ var demoApp = angular.module('cyphy.ui.DesignList.demo', [
     'cyphy.components.templates'
 ]);
 
-demoApp.service('DesignService', function () {
+demoApp.service('designService', function () {
     'use strict';
 
 });
