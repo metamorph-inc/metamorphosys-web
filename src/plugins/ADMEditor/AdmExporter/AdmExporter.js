@@ -457,7 +457,7 @@ define([
                         portData['@PortMap'] = connectionString;
                         counter -= 1;
                         if (counter === 0) {
-                            callback(error, connectionString);
+                            callback(error);
                         }
                     };
                 };
@@ -466,6 +466,9 @@ define([
                 return;
             }
 
+            if (children.length === 0) {
+                callback(null);
+            }
             for (i = 0; i < children.length; i += 1) {
                 roleData = self.getDomainPortData(children[i], connectorNode);
                 domainConnectors.push(roleData);
