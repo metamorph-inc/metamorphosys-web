@@ -18,6 +18,6 @@ $templateCache.put("/library/ComponentDetails/docs/readme.md","TODO: add descrip
 $templateCache.put("/library/ComponentList/docs/readme.md","TODO: add description of `ComponentList`");
 $templateCache.put("/library/DesignList/docs/readme.md","TODO: add description of `DesignList`");
 $templateCache.put("/library/DesignTree/docs/readme.md","TODO: add description of `DesignTree`");
-$templateCache.put("/library/TestBenchList/docs/readme.md","TODO: add description of `TestBenchList`");
 $templateCache.put("/library/TestBenchDetails/docs/readme.md","TODO: add description of `TestBenchDetails`");
+$templateCache.put("/library/TestBenchList/docs/readme.md","TODO: add description of `TestBenchList`");
 $templateCache.put("/library/WorkspaceList/docs/readme.md","`WorkspaceList` components lists all workspaces in a WebGME project that uses the `ADMEditor` meta-model.\r\n\r\nWorkspace item structure\r\n\r\n* `id` - {string} identifier\r\n* `name` - {string} displayed name\r\n* `toolTip` - {string} tool tip on displayed name\r\n* `description` - {string} short description of the content\r\n* `lastUpdated` - {object} \r\n    - `time` - {date|string} date of last update\r\n    - `user` - {name} username who last updated\r\n* `stats` - {array of object} summary of statistics (components, design spaces, test benches, requirements)\r\n\r\nSee `demo.js` for an example.");}]);
