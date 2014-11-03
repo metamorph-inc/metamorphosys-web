@@ -302,6 +302,8 @@ define([
             self.addFormula(node, parent, containerData, false, callback);
         } else if (nodeType === 'DomainPort') {
             self.addDomainPort(node, parent, containerData, callback);
+        } else if (nodeType === 'AssemblyRoot') {
+            self.addAssemblyRoot(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -1012,6 +1014,53 @@ define([
         }
     };
 //</editor-fold>
+
+    AdmExporter.prototype.addAssemblyRoot = function (node, parent, containerData, callback) {
+        var self = this,
+            i,
+            counter,
+            error = '',
+            componentIds = self.core.getMemberPaths(node, 'Selection'),
+            counterCallback = function (err, componentNode) {
+                if (err) {
+                    error += 'Failed loading node from AssemblyRoot ' + err.toString();
+                } else if (componentNode) {
+                    if (self.shouldBeGenerated(componentNode)) {
+                        //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
+                        if (self.admData.DomainFeature) {
+                            // TODO: Append the selection here when format updated.
+                            self.logger.warning('Only one AssemblyRoot can be exported, an arbitrary selection will be made!');
+                            self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.core.getGuid(componentNode);
+                        } else {
+                            self.admData.DomainFeature = {
+                                '@xmlns:q1': 'cad',
+                                '@xmlns': '',
+                                '@xsi:type': 'q1:AssemblyRoot',
+                                '@AssemblyRootComponentInstance': self.core.getGuid(componentNode)
+                            };
+                        }
+                    } else {
+                        self.logger.info('Skipping AssemblyRoot Selection of "' + self.core.getPath(componentNode) + '".');
+                    }
+                }
+                counter -= 1;
+                if (counter <= 0) {
+                    callback(error);
+                }
+            };
+        counter = componentIds.length;
+        if (counter === 0) {
+            callback(null);
+        }
+        for (i = 0; i < componentIds.length; i += 1) {
+            if (self.startsWith(componentIds[i], self.rootPath)) {
+                self.core.loadByPath(self.rootNode, componentIds[i], counterCallback);
+            } else {
+                self.logger.warning('AssemblyRoot selection is not within design, see path "' + componentIds[i] + '".');
+                counterCallback(null, null);
+            }
+        }
+    };
 
     AdmExporter.prototype.visitAllChildrenFromRootContainer = function (rootNode, callback) {
         var self = this,
