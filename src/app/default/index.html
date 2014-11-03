@@ -5,6 +5,7 @@
 
     <!-- Include CSS library dependencies -->
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/angular-growl/build/angular-growl.min.css">
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
     <link type="text/css" href="/extlib/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -16,12 +17,11 @@
     <title></title>
 </head>
 <body>
-
-<a ui-sref="workspaces">State 1</a>
-<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>
+<div growl></div>
+<!--<a ui-sref="workspaces">State 1</a>-->
+<!--<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>-->
 
 <div ui-view></div>
-
 
 <!-- Include library dependencies -->
 <script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>
@@ -35,7 +35,8 @@
 <!--  client -->
 <script src="/extlib/node_modules/webgme/dist/webgme.classes.build.js"></script>
 <!--  angular module services-->
-<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>
+<!--<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>-->
+<script src="/extlib/node_modules/ng-gme/dist/ng-gme.js"></script>
 
 <!-- Include isis-ui-components -->
 <script src="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.js"></script>

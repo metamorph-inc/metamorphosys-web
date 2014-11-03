@@ -7,12 +7,24 @@
 
 
 angular.module('cyphy.services')
-    .service('DesignService', function ($q, NodeService) {
+    .service('designService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
         this.deleteDesign = function (designId) {
             throw new Error('Not implemented yet.');
+        };
+
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the component.
+         * @param {string} context.db - Must exist within watchers and contain the component.
+         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {string} designId - Path to design-space.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setDesignAttributes = function (context, designId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, designId, attrs);
         };
 
         this.exportDesign = function (designId) {
@@ -31,7 +43,7 @@ angular.module('cyphy.services')
          *  Watches all containers (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
          * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.designs.
+         * @param updateListener - invoked when there are (filtered) changes in data. Data is an object in data.designs.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesigns = function (parentContext, workspaceId, updateListener) {
@@ -39,8 +51,6 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchDesigns',
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
                     regionId: regionId
                 },
                 data = {
@@ -119,8 +129,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -152,6 +162,137 @@ angular.module('cyphy.services')
         };
 
         /**
+         *  Watches all containers (existence and their attributes) of a workspace.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
+         */
+        this.watchNbrOfConfigurations = function (parentContext, designId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchNbrOfConfigurations_' + designId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    counters: {
+                        sets: 0,
+                        configurations: 0,
+                        results: 0
+                    }
+                },
+                watchConfiguration = function (cfgNode, meta, wasCreated) {
+                    var cfgDeferred = $q.defer(),
+                        resultOnUnload = function (id) {
+                            data.counters.results -= 1;
+                            updateListener({id: id, type: 'unload', data: data.counters});
+                        };
+                    // Count this set and add an unload handle.
+                    data.counters.configurations += 1;
+                    if (wasCreated) {
+                        updateListener({id: cfgNode.getId(), type: 'load', data: data.counters});
+                    }
+                    cfgNode.onUnload(function (id) {
+                        data.counters.configurations -= 1;
+                        updateListener({id: id, type: 'unload', data: data.counters});
+                    });
+                    cfgNode.loadChildren().then(function (children) {
+                        var i,
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.Result)) {
+                                data.counters.results += 1;
+                                childNode.onUnload(resultOnUnload);
+                            }
+                        }
+                        cfgNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.Result)) {
+                                data.counters.results += 1;
+                                updateListener({id: newChild.getId(), type: 'load', data: data.counters});
+                                childNode.onUnload(resultOnUnload);
+                            }
+                        });
+                        cfgDeferred.resolve();
+                    });
+
+                    return cfgDeferred.promise;
+                },
+                watchConfigurationSet = function (setNode, meta, wasCreated) {
+                    var setDeferred = $q.defer();
+                    // Count this set and add an unload handle.
+                    data.counters.sets += 1;
+                    if (wasCreated) {
+                        updateListener({id: setNode.getId(), type: 'load', data: data.counters});
+                    }
+                    setNode.onUnload(function (id) {
+                        data.counters.sets -= 1;
+                        updateListener({id: id, type: 'unload', data: data.counters});
+                    });
+                    setNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode;
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.DesertConfiguration)) {
+                                queueList.push(watchConfiguration(childNode, meta));
+                            }
+                        }
+                        setNode.onNewChildLoaded(function (newChild) {
+                            if (newChild.isMetaTypeOf(meta.DesertConfiguration)) {
+                                watchConfiguration(newChild, meta, true);
+                            }
+                        });
+                        if (queueList.length === 0) {
+                            setDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                setDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return setDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
+                    .then(function (designNode) {
+                        designNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
+                                    queueList.push(watchConfigurationSet(childNode, meta));
+                                }
+                            }
+                            designNode.onNewChildLoaded(function (newChild) {
+                                if (newChild.isMetaTypeOf(meta.DesertConfigurationSet)) {
+                                    watchConfigurationSet(newChild, meta, true);
+                                }
+                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        /**
          *  Watches a design w.r.t. interfaces.
          * @param parentContext - context of controller.
          * @param designId
@@ -164,12 +305,143 @@ angular.module('cyphy.services')
 
         /**
          *  Watches the full hierarchy of a design w.r.t. containers and components.
-         * @param parentContext - context of controller.
-         * @param designId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId - path to root container.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchDesignStructure = function (parentContext, designId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchDesignStructure_' + designId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    rootId: designId,
+                    containers: {}, // container: {id: <string>, name: <string>, parentId: <string>, type: <string>,
+                                    //             subContainers: {id:<string>: <container>},
+                                    //             components:    {id:<string>: <container>}}
+                    components: {}  // component: {id: <string>, name: <string>, parentId: <string>,
+                                    //             , avmId: <string> }
+                },
+                getComponentInfo = function (node, parentId) {
+                    return {
+                        id: node.getId(),
+                        name: node.getAttribute('name'),
+                        parentId: parentId,
+                        avmId: node.getAttribute('ID')
+                    };
+                },
+                watchFromContainerRec = function (containerNode, rootContainer, meta) {
+                    var recDeferred = $q.defer();
+                    containerNode.loadChildren().then(function (children) {
+                        var i,
+                            queueList = [],
+                            childNode,
+                            onUnload = function (id) {
+                                //updateListener({id: id, type: 'unload', data: data.count});
+                            },
+                            container = {
+                                id: containerNode.getId(),
+                                name: containerNode.getAttribute('name'),
+                                type: containerNode.getAttribute('Type'),
+                                subContainers: {},
+                                components: {}
+                            },
+                            component;
+
+                        rootContainer.subContainers[containerNode.getId()] = container;
+                        data.containers[containerNode.getId()] = container;
+
+                        for (i = 0; i < children.length; i += 1) {
+                            childNode = children[i];
+                            if (childNode.isMetaTypeOf(meta.Container)) {
+                                queueList.push(watchFromContainerRec(childNode, container, meta));
+                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+                                component = getComponentInfo(childNode, container.id);
+                                container.components[childNode.getId()] = component;
+                                data.components[childNode.getId()] = component;
+                            }
+                        }
+
+//                        containerNode.onNewChildLoaded(function (newChild) {
+//                            if (newChild.isMetaTypeOf(meta.Container)) {
+//                                watchFromContainerRec(newChild, container, meta).then(function () {
+//                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                });
+//                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+//                                container[childNode.getId()] = getComponentInfo(childNode, container.id);
+//                                updateListener({id: newChild.getId(), type: 'load', data: data});
+//                            }
+//                        });
+
+                        if (queueList.length === 0) {
+                            recDeferred.resolve();
+                        } else {
+                            $q.all(queueList).then(function () {
+                                recDeferred.resolve();
+                            });
+                        }
+                    });
+
+                    return recDeferred.promise;
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
+                    .then(function (rootNode) {
+                        rootNode.loadChildren().then(function (children) {
+                            var i,
+                                queueList = [],
+                                childNode,
+                                rootContainer = {
+                                    id: rootNode.getId(),
+                                    name: rootNode.getAttribute('name'),
+                                    type: rootNode.getAttribute('Type'),
+                                    subContainers: {},
+                                    components: {}
+                                },
+                                component;
+
+                            data.containers[rootContainer.id] = rootContainer;
+                            data.containers[rootContainer.id] = rootContainer;
+                            for (i = 0; i < children.length; i += 1) {
+                                childNode = children[i];
+                                if (childNode.isMetaTypeOf(meta.Container)) {
+                                    queueList.push(watchFromContainerRec(childNode, rootContainer, meta));
+                                } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+                                    component = getComponentInfo(childNode, rootContainer.id);
+                                    rootContainer.components[childNode.getId()] = component;
+                                    data.components[childNode.getId()] = component;
+                                }
+                            }
+//                            rootNode.onNewChildLoaded(function (newChild) {
+//                                if (newChild.isMetaTypeOf(meta.Container)) {
+//                                    watchFromContainerRec(newChild, rootContainer, meta).then(function () {
+//                                        updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                    });
+//                                } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+//                                    rootContainer.components[childNode.getId()] = getComponentInfo(childNode, rootContainer.id);
+//                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                }
+//
+//                            });
+                            if (queueList.length === 0) {
+                                deferred.resolve(data);
+                            } else {
+                                $q.all(queueList).then(function () {
+                                    deferred.resolve(data);
+                                });
+                            }
+                        });
+                    });
+            });
+
+            return deferred.promise;
         };
 
         // FIXME: watchConfigurationSets and watchConfigurations should probably go to a DesertConfiguration-Service,
@@ -198,9 +470,9 @@ angular.module('cyphy.services')
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             console.log('Added new watcher: ', watchers);
-            NodeService.logContext(context);
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, designId)
+            nodeService.logContext(context);
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
                     .then(function (designNode) {
                         data.name = designNode.getAttribute('name');
                         designNode.loadChildren(context)
@@ -251,52 +523,24 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        // FIXME: Watching configurations inside a configuration-set does probably not belong here.
-//        /**
-//         *  Watches the DesertConfiguration (w.r.t. existence and attributes) inside a DesertConfigurationSet.
-//         * @param parentContext - context of controller.
-//         * @param configurationSetId
-//         * @param updateListener - invoked when there are (filtered) changes in data.
-//         */
-//        this.watchConfigurations = function (parentContext, configurationSetId, updateListener) {
-//            throw new Error('Not implemented yet.');
-//        };
-
         /**
-         * Removes all watchers spawned from parentContext.
-         * @param parentContext - context of controller.
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            var childWatchers,
-                key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key]);
-                    }
-                }
-                delete watchers[parentContext.regionId];
-            } else {
-                console.log('Nothing to clean-up..');
-            }
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * Removes specified watcher (regionId)
-         * @param parentContext
-         * @param regionId
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(regionId);
-                    delete watchers[parentContext.regionId][regionId];
-                } else {
-                    console.log('Nothing to clean-up..');
-                }
-            } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
-            }
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+        };
+
+        /**
+         * See baseCyPhyService.registerWatcher.
+         */
+        this.registerWatcher = function (parentContext, fn) {
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
     });

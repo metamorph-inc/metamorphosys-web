@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.services')
-    .service('FileService', function ($q) {
+    .service('fileService', function ($q) {
         'use strict';
         var self = this,
             blobClient = new WebGMEGlobal.classes.BlobClient();
@@ -54,6 +54,23 @@ angular.module('cyphy.services')
             }
 
             return deferred.promise;
+        };
+
+        /**
+         * Returns the download url for the given hash.
+         * @param {string} hash - hash to blob file.
+         * @returns {string} - the download url (null if hash is empty).
+         */
+        this.getDownloadUrl = function (hash) {
+            var url;
+            if (hash) {
+                url = blobClient.getDownloadURL(hash);
+            } else {
+                console.warn('No hash to blob file given');
+                url = null;
+            }
+
+            return url;
         };
 
         /**

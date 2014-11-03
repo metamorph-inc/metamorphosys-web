@@ -5,7 +5,7 @@ var demoApp = angular.module('cyphy.ui.DesignTree.demo', [
     'cyphy.components.templates'
 ]);
 
-demoApp.service('DesignService', function () {
+demoApp.service('designService', function () {
     'use strict';
 
     this.watchDesignStructure = function (parentContext, designId, updateListener) {

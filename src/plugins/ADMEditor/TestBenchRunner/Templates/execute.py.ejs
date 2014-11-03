@@ -175,8 +175,8 @@ def import_design(mga_path, adm_file, testbench_config):
             raise RuntimeError('Given test-bench path "' + testbench_config['path'] + '" does not exist in project!')
         try:
             logger.debug('Path returned MgaObject of type: {0}'.format(testbench_mga.MetaBase.Name))
-            if not testbench_mga.MetaBase.Name == 'TestBench':
-                raise NotImplementedError('Only CyPhy TestBench supported!')
+            #if not testbench_mga.MetaBase.Name == 'TestBench':
+            #    raise NotImplementedError('Only CyPhy TestBench supported!')
             testbench_id = testbench_mga.ID
             logger.debug('Found test-bench "{0}".'.format(testbench_mga.Name))
             logger.debug('Test-bench ID : {0}.'.format(testbench_id))

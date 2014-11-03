@@ -6,30 +6,34 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentListController', function ($scope, ComponentService) {
+    .controller('ComponentListController', function ($scope, $window, $modal, growl, componentService, fileService) {
         'use strict';
         var self = this,
-            items = [],
-            componentItems = {},
-            serviceData2ComponentItem,
+            items = [],             // Items that are passed to the item-list ui-component.
+            componentItems = {},    // Same items are stored in a dictionary.
+            serviceData2ListItem,
             addDomainWatcher,
             config,
             context;
 
         console.log('ComponentListController');
-
+        this.getConnectionId = function () {
+            return $scope.connectionId;
+        };
+        // Check for valid connectionId and register clean-up on destroy event.
         if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
                 db: $scope.connectionId,
                 regionId: 'ComponentListController_' + (new Date()).toISOString()
             };
             $scope.$on('$destroy', function () {
-                ComponentService.cleanUpAllRegions(context);
+                componentService.cleanUpAllRegions(context);
             });
         } else {
             throw new Error('connectionId must be defined and it must be a string');
         }
 
+        // Configuration for the item list ui component.
         config = {
 
             sortable: false,
@@ -46,45 +50,99 @@ angular.module('cyphy.components')
 
             itemClick: function (event, item) {
                 console.log('Clicked: ' + item);
-                document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
             },
 
             itemContextmenuRenderer: function (e, item) {
-                console.log('Contextmenu was triggered for node:', item);
-
                 return [
                     {
                         items: [
-
                             {
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit'
+                                iconClass: 'glyphicon glyphicon-edit',
+                                action: function () {
+                                    $window.open('/?project=ADMEditor&activeObject=' + item.id, '_blank');
+                                }
                             },
                             {
-                                id: 'exportAsXME',
-                                label: 'Export as XME',
+                                id: 'editComponent',
+                                label: 'Edit',
+                                disabled: false,
+                                iconClass: 'glyphicon glyphicon-pencil',
+                                actionData: {description: item.description, id: item.id},
+                                action: function (data) {
+                                    var editContext = {
+                                            db: context.db,
+                                            regionId: context.regionId + '_watchComponents'
+                                        },
+                                        modalInstance = $modal.open({
+                                            templateUrl: '/cyphy-components/templates/ComponentEdit.html',
+                                            controller: 'ComponentEditController',
+                                            //size: size,
+                                            resolve: { data: function () { return data; } }
+                                        });
+
+                                    modalInstance.result.then(function (editedData) {
+                                        var attrs = {
+                                            'INFO': editedData.description
+                                        };
+                                        componentService.setComponentAttributes(editContext, data.id, attrs)
+                                            .then(function () {
+                                                console.log('Attribute updated');
+                                            });
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
+                                }
+                            },
+                            {
+                                id: 'exportAsAcm',
+                                label: 'Export ACM',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: { id: item.id },
+                                actionData: {resource: item.data.resource, name: item.title},
                                 action: function (data) {
-                                    console.log(data);
+                                    var hash = data.resource,
+                                        url = fileService.getDownloadUrl(hash);
+                                    if (url) {
+                                        growl.success('ACM file for <a href="' + url + '">' + data.name + '</a> exported.');
+                                    } else {
+                                        growl.warning(data.name + ' does not have a resource.');
+                                    }
                                 }
                             }
                         ]
                     },
                     {
-                        //label: 'Extra',
                         items: [
                             {
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
-                                iconClass: 'fa fa-plus',
-                                actionData: { id: item.id },
+                                iconClass: 'glyphicon glyphicon-remove',
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    ComponentService.deleteWorkspace(context, data.id);
+                                    var modalInstance = $modal.open({
+                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                                        controller: 'SimpleModalController',
+                                        resolve: {
+                                            data: function () {
+                                                return {
+                                                    title: 'Delete Component',
+                                                    details: 'This will delete ' + data.name +
+                                                        ' from the workspace.'
+                                                };
+                                            }
+                                        }
+                                    });
+
+                                    modalInstance.result.then(function () {
+                                        componentService.deleteComponent(context, data.id);
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             }
                         ]
@@ -101,92 +159,151 @@ angular.module('cyphy.components')
 
         };
 
+        $scope.config = config;
         $scope.listData = {
-            items: items,
-            connectionId: $scope.connectionId // FIXME: This is probably not the right way to do it..
+            items: items
         };
 
-        $scope.config = config;
-
-        serviceData2ComponentItem = function (data) {
-            var componentItem;
+        // Transform the raw service node data to items for the list.
+        serviceData2ListItem = function (data) {
+            var listItem;
 
             if (componentItems.hasOwnProperty(data.id)) {
-                componentItem = componentItems[data.id];
-                componentItem.name = data.name;
-                componentItem.description = data.description;
+                listItem = componentItems[data.id];
+                listItem.title = data.name;
+                listItem.description = data.description;
+                listItem.data.resource = data.resource;
             } else {
-                componentItem = {
+                listItem = {
                     id: data.id,
                     title: data.name,
                     toolTip: 'Open item',
                     description: data.description,
                     lastUpdated: {
-                        time: new Date(), // TODO: get this
-                        user: 'N/A' // TODO: get this
+                        time: 'N/A',   // TODO: get this in the future.
+                        user: 'N/A'    // TODO: get this in the future.
                     },
-                    stats: [
-                        {
-                            value: 0,
-                            toolTip: 'Domain Models (not final)',
-                            iconClass: 'glyphicon glyphicon-tint'
-                        }
-                    ],
+                    stats: [ ],
                     details    : 'Content',
-                    detailsTemplateUrl: 'details.html'
+                    detailsTemplateUrl: 'componentDetails.html',
+                    data: { resource: data.resource}
                 };
-
-                componentItems[componentItem.id] = componentItem;
-                items.push(componentItem);
+                // Add the list-item to the items list and the dictionary.
+                items.push(listItem);
+                componentItems[listItem.id] = listItem;
             }
         };
 
         addDomainWatcher = function (componentId) {
-            debugger;
-            ComponentService.watchComponentDomains(context, componentId, function (updateData) {
-                //TODO: Implement the updating functionality.
+            var domainModelsToStat = function (domainModels) {
+                var stats = [],
+                    labelMap = {
+                        CAD:           { value: 0, toolTip: 'CAD',           iconClass: 'glyphicon glyphicon-stop' },
+                        Cyber:         { value: 0, toolTip: 'Cyber',         iconClass: 'glyphicon glyphicon-stop' },
+                        Manufacturing: { value: 0, toolTip: 'Manufacturing', iconClass: 'glyphicon glyphicon-stop' },
+                        Modelica:      { value: 0, toolTip: 'Modelica',      iconClass: 'glyphicon glyphicon-stop' }
+                    },
+                    key;
+                for (key in domainModels) {
+                    if (domainModels.hasOwnProperty(key)) {
+                        if (labelMap[domainModels[key].type]) {
+                            labelMap[domainModels[key].type].value += 1;
+                        } else {
+                            console.error('Unexpected domain-model type', domainModels[key].type);
+                        }
+                    }
+                }
+                for (key in labelMap) {
+                    if (labelMap.hasOwnProperty(key)) {
+                        if (labelMap[key].value > 0) {
+                            stats.push(labelMap[key]);
+                        }
+                    }
+                }
+                return stats;
+            };
+
+            componentService.watchComponentDomains(context, componentId, function (updateData) {
+                var listItem = componentItems[componentId];
+                console.log('DomainModels updated, event type:', updateData.type);
+                if (listItem) {
+                    listItem.stats = domainModelsToStat(updateData.domainModels);
+                } else {
+                    console.warn('DomainModel data did not have matching componentData', componentId);
+                }
             })
                 .then(function (data) {
-                    debugger;
-                    var componentData = componentItems[componentId],
-                        key;
-                    if (componentData) {
-                        for (key in data.domainModels) {
-                            if (data.domainModels.hasOwnProperty(key)) {
-                                componentData.stats[0].value += 1;
-                            }
-                        }
+                    var listItem = componentItems[componentId];
+                    if (listItem) {
+                        listItem.stats = domainModelsToStat(data.domainModels);
+                    } else {
+                        console.warn('DomainModel data did not have matching componentData', componentId);
                     }
                 });
         };
 
-        ComponentService.registerWatcher(context, function (destroyed) {
+        componentService.registerWatcher(context, function (destroyed) {
             items = [];
             $scope.listData.items = items;
             componentItems = {};
 
             if (destroyed) {
-                console.info('destroy event raised');
+                console.warn('destroy event raised');
                 // Data not (yet) avaliable.
                 // TODO: display this to the user.
                 return;
             }
             console.info('initialize event raised');
 
-            ComponentService.watchComponents(context, $scope.workspaceId, function (updateObj) {
-                //TODO: Implement the updating functionality.
+            componentService.watchComponents(context, $scope.workspaceId, function (updateObject) {
+                var index;
+                //console.warn(updateObject);
+                if (updateObject.type === 'load') {
+                    serviceData2ListItem(updateObject.data);
+                    addDomainWatcher(updateObject.id);
+
+                } else if (updateObject.type === 'update') {
+                    serviceData2ListItem(updateObject.data);
+
+                } else if (updateObject.type === 'unload') {
+                    if (componentItems.hasOwnProperty(updateObject.id)) {
+                        index = items.map(function (e) {
+                            return e.id;
+                        }).indexOf(updateObject.id);
+                        if (index > -1) {
+                            items.splice(index, 1);
+                        }
+                        componentService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
+                        delete componentItems[updateObject.id];
+                    }
+                } else {
+                    throw new Error(updateObject);
+                }
             })
                 .then(function (data) {
                     var componentId;
-                    //debugger;
                     for (componentId in data.components) {
                         if (data.components.hasOwnProperty(componentId)) {
-                            serviceData2ComponentItem(data.components[componentId]);
+                            serviceData2ListItem(data.components[componentId]);
                             addDomainWatcher(componentId);
                         }
                     }
                 });
         });
+    })
+    .controller('ComponentEditController', function ($scope, $modalInstance, data) {
+        'use strict';
+        $scope.data = {
+            description: data.description
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.data);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     })
     .directive('componentList', function () {
         'use strict';

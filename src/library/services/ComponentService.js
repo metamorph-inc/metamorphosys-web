@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 
 /**
@@ -8,9 +8,10 @@
 
 
 angular.module('cyphy.services')
-    .service('ComponentService', function ($q, NodeService) {
+    .service('componentService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
+
         /**
          * Removes the component from the context (db/project/branch).
          * @param context - context of controller, N.B. does not need to specify region.
@@ -19,11 +20,19 @@ angular.module('cyphy.services')
          */
         this.deleteComponent = function (context, componentId, msg) {
             var message = msg || 'ComponentService.deleteComponent ' + componentId;
-            NodeService.destroyNode(context, componentId, message);
+            nodeService.destroyNode(context, componentId, message);
         };
 
-        this.exportComponent = function (context, componentId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the component.
+         * @param {string} context.db - Must exist within watchers and contain the component.
+         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {string} componentId - Path to component.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setComponentAttributes = function (context, componentId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, componentId, attrs);
         };
 
         /**
@@ -137,8 +146,8 @@ angular.module('cyphy.services')
                 };
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -206,8 +215,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, componentId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, componentId)
                     .then(function (componentNode) {
                         componentNode.loadChildren().then(function (children) {
                             var i,
@@ -254,203 +263,34 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches the interfaces of a component.
-         * @param parentContext - context of controller.
-         * @param componentId
-         * @param updateListener - invoked when there are (filtered) changes in data.
-         * @returns {Promise} - Returns data when resolved.
+         * See baseCyPhyService.watchInterfaces.
          */
-        this.watchComponentInterfaces = function (parentContext, componentId, updateListener) {
-            var deferred = $q.defer(),
-                regionId = parentContext.regionId + '_watchComponentInterfaces_' + componentId,
-                context = {
-                    db: parentContext.db,
-                    regionId: regionId
-                },
-                data = {
-                    regionId: regionId,
-                    id: componentId,
-                    properties: {}, //property: {id: <string>, name: <string>, dataType: <string>, valueType <string>}
-                    connectors: {}  //connector: {id: <string>, name: <string>, domainPorts: <object> }
-                },
-                onPropertyUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        newDataType = this.getAttribute('DataType'),
-                        newValueType = this.getAttribute('ValueType'),
-                        hadChanges = false;
-                    if (newName !== data.properties[id].name) {
-                        data.properties[id].name = newName;
-                        hadChanges = true;
-                    }
-                    if (newDataType !== data.properties[id].dataType) {
-                        data.properties[id].dataType = newDataType;
-                        hadChanges = true;
-                    }
-                    if (newValueType !== data.properties[id].valueType) {
-                        data.properties[id].valueType = newValueType;
-                        hadChanges = true;
-                    }
-                    if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
-                    }
-                },
-                onPropertyUnload = function (id) {
-                    delete data.properties[id];
-                    updateListener({id: id, type: 'unload', data: null});
-                },
-                onConnectorUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        hadChanges = false;
-                    if (newName !== data.connectors[id].name) {
-                        data.connectors[id].name = newName;
-                        hadChanges = true;
-                    }
-                    if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
-                    }
-                },
-                onConnectorUnload = function (id) {
-                    delete data.connectors[id];
-                    updateListener({id: id, type: 'unload', data: null});
-                };
-
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, componentId)
-                    .then(function (componentNode) {
-                        componentNode.loadChildren().then(function (children) {
-                            var i,
-                                childId,
-                                queueList = [],
-                                childNode;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                childId = childNode.getId();
-                                if (childNode.isMetaTypeOf(meta.Property)) {
-                                    data.properties[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        dataType: childNode.getAttribute('DataType'),
-                                        valueType: childNode.getAttribute('ValueType')
-                                    };
-                                    childNode.onUpdate(onPropertyUpdate);
-                                    childNode.onUnload(onPropertyUnload);
-                                } else if (childNode.isMetaTypeOf(meta.Connector)) {
-                                    data.connectors[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        domainPorts: {}
-                                    };
-                                    childNode.onUpdate(onConnectorUpdate);
-                                    childNode.onUnload(onConnectorUnload);
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                }
-                            }
-                            componentNode.onNewChildLoaded(function (newChild) {
-                                childId = newChild.getId();
-                                if (newChild.isMetaTypeOf(meta.Property)) {
-                                    data.properties[childId] = {
-                                        id: childId,
-                                        name: newChild.getAttribute('name'),
-                                        dataType: newChild.getAttribute('DataType'),
-                                        valueType: newChild.getAttribute('ValueType')
-                                    };
-                                    newChild.onUpdate(onPropertyUpdate);
-                                    newChild.onUnload(onPropertyUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
-                                } else if (newChild.isMetaTypeOf(meta.Connector)) {
-                                    data.connectors[childId] = {
-                                        id: childId,
-                                        name: newChild.getAttribute('name'),
-                                        domainPorts: {}
-                                    };
-                                    newChild.onUpdate(onConnectorUpdate);
-                                    newChild.onUnload(onConnectorUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                }
-                            });
-
-                            if (queueList.length === 0) {
-                                deferred.resolve(data);
-                            } else {
-                                $q.all(queueList).then(function () {
-                                    deferred.resolve(data);
-                                });
-                            }
-                        });
-                    });
-            });
-
-            return deferred.promise;
+        this.watchInterfaces = function (parentContext, id, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
         };
 
         /**
-         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            var childWatchers,
-                key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
-                    }
-                }
-                delete watchers[parentContext.regionId];
-            } else {
-                console.log('Nothing to clean-up..');
-            }
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * Removes specified watcher (regionId)
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection of both parent and region to be deleted.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {string} regionId - Region id of the spawned region that should be deleted.
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(parentContext.db, regionId);
-                    delete watchers[parentContext.regionId][regionId];
-                } else {
-                    console.log('Nothing to clean-up..');
-                }
-            } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
-            }
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
-         * when they became unavailable. These are also called directly with the state of the NodeSerivce.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
+         * See baseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            NodeService.on(parentContext.db, 'initialize', function () {
-                // This should be enough, the regions will be cleaned up in NodeService.
-                watchers[parentContext.regionId] = {};
-                fn(false);
-            });
-            NodeService.on(parentContext.db, 'destroy', function () {
-                // This should be enough, the regions should be cleaned up in NodeService.
-                if (watchers[parentContext.regionId]) {
-                    delete watchers[parentContext.regionId];
-                }
-                fn(true);
-            });
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
 
         this.logContext = function (context) {
-            NodeService.logContext(context);
+            nodeService.logContext(context);
         };
     });

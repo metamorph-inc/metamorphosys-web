@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('WorkspaceService', function ($q, NodeService) {
+    .service('workspaceService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -18,9 +18,9 @@ angular.module('cyphy.services')
         this.createWorkspace = function (context, data) {
             var deferred = $q.defer();
             console.warn('Creating new workspace but not using data', data);
-            NodeService.getMetaNodes(context)
+            nodeService.getMetaNodes(context)
                 .then(function (meta) {
-                    NodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
+                    nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
                         .then(function (newNode) {
                             deferred.resolve(newNode);
                         })
@@ -43,7 +43,7 @@ angular.module('cyphy.services')
          */
         this.deleteWorkspace = function (context, workspaceId, msg) {
             var message = msg || 'WorkspaceService.deleteWorkspace ' + workspaceId;
-            NodeService.destroyNode(context, workspaceId, message);
+            nodeService.destroyNode(context, workspaceId, message);
         };
 
         this.exportWorkspace = function (workspaceId) {
@@ -90,8 +90,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, '')
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, '')
                     .then(function (rootNode) {
                         rootNode.loadChildren().then(function (children) {
                             var i,
@@ -194,8 +194,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -294,8 +294,8 @@ angular.module('cyphy.services')
                     'Use "this.registerWatcher" before trying to access Node Objects.');
             }
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -391,8 +391,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -426,70 +426,27 @@ angular.module('cyphy.services')
         };
 
         /**
-         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
+         * See baseCyPhyService.cleanUpAllRegions.
          */
         this.cleanUpAllRegions = function (parentContext) {
-            var childWatchers,
-                key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        NodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
-                    }
-                }
-                delete watchers[parentContext.regionId];
-            } else {
-                console.log('Nothing to clean-up..');
-            }
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
-         * Removes specified watcher (regionId)
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection of both parent and region to be deleted.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {string} regionId - Region id of the spawned region that should be deleted.
+         * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function (parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    NodeService.cleanUpRegion(parentContext.db, regionId);
-                    delete watchers[parentContext.regionId][regionId];
-                } else {
-                    console.log('Nothing to clean-up..');
-                }
-            } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
-            }
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
-         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
-         * when they became unavailable. These are also called directly with the state of the NodeSerivce.
-         * @param {object} parentContext - context of controller.
-         * @param {string} parentContext.db - Database connection.
-         * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
-         * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
+         * See baseCyPhyService.registerWatcher.
          */
         this.registerWatcher = function (parentContext, fn) {
-            NodeService.on(parentContext.db, 'initialize', function () {
-                // This should be enough, the regions will be cleaned up in NodeService.
-                watchers[parentContext.regionId] = {};
-                fn(false);
-            });
-            NodeService.on(parentContext.db, 'destroy', function () {
-                // This should be enough, the regions should be cleaned up in NodeService.
-                if (watchers[parentContext.regionId]) {
-                    delete watchers[parentContext.regionId];
-                }
-                fn(true);
-            });
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
 
         this.logContext = function (context) {
-            NodeService.logContext(context);
+            nodeService.logContext(context);
         };
     });

@@ -35,13 +35,14 @@ var argv = require('yargs').argv,
         libraryScripts: [
 
             'src/library/services/*.js',
-
+            'src/library/SimpleModal/*.js',
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',
             'src/library/ComponentDetails/*.js',
             'src/library/DesignList/*.js',
             'src/library/DesignTree/*.js',
-            'src/library/TestBenchList/*.js'
+            'src/library/TestBenchList/*.js',
+            'src/library/TestBenchDetails/*.js'
         ],
         libraryTemplates: [
             'src/library/**/templates/**/*.html'
@@ -83,7 +84,8 @@ var argv = require('yargs').argv,
     livereload = require('connect-livereload'),
     refresh = require('gulp-livereload'),
     lrserver = require('tiny-lr')(),
-    prettify = require('gulp-js-prettify');
+    prettify = require('gulp-js-prettify'),
+    exec = require('child_process').exec;
 
 // Utility tasks
 
@@ -350,10 +352,15 @@ for (i = 0; i < applications.length; i += 1) {
     registerAppTasks(applications[i]);
 }
 
+gulp.task('rjs-build', function () {
+    exec('node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js', function () {
+        console.log('Done requireJS build!');
+    });
+});
 
 gulp.task('compile-all', function (cb) {
     runSequence('clean-build', [
-        'compile-docs', 'compile-library'
+        'compile-docs', 'compile-library', 'rjs-build'
     ].concat(gulpAppTaskNames), cb);
 });
 

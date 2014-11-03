@@ -1,4 +1,4 @@
-
+/*globals window, webGMEGlobal, require, describe, it */
 
 
 if (typeof window === 'undefined') {
@@ -13,7 +13,7 @@ if (typeof window === 'undefined') {
 
 describe('TestTesting', function () {
     'use strict';
-    
+
     it('AdmExporter should fail on AtmAsActiveNode', function (done) {
         var projectName = 'ADMEditor',
             pluginName = 'AdmExporter',

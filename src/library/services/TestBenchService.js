@@ -6,9 +6,10 @@
  */
 
 angular.module('cyphy.services')
-    .service('TestBenchService', function ($q, NodeService) {
+    .service('testBenchService', function ($q, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
+
         this.deleteTestBench = function (testBenchId) {
             throw new Error('Not implemented yet.');
         };
@@ -27,9 +28,9 @@ angular.module('cyphy.services')
 
         /**
          *  Watches all test-benches (existence and their attributes) of a workspace.
-         * @param parentContext - context of controller.
-         * @param workspaceId
-         * @param updateListener - invoked when there are (filtered) changes in data. Data is an object in data.testBenches.
+         * @param {object} parentContext - context of controller.
+         * @param {string} workspaceId - Path to workspace that should be watched.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data. Data is an object in data.testBenches.
          * @returns {Promise} - Returns data when resolved.
          */
         this.watchTestBenches = function (parentContext, workspaceId, updateListener) {
@@ -139,8 +140,8 @@ angular.module('cyphy.services')
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
-            NodeService.getMetaNodes(context).then(function (meta) {
-                NodeService.loadNode(context, workspaceId)
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, workspaceId)
                     .then(function (workspaceNode) {
                         workspaceNode.loadChildren().then(function (children) {
                             var i,
@@ -178,6 +179,79 @@ angular.module('cyphy.services')
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
         this.watchTestBenchDetails = function (parentContext, testBenchId, updateListener) {
-            throw new Error('Not implemented yet.');
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchTestBenchDetails_' + testBenchId,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    containerIds: [],
+                    tlsut: null
+                },
+                onUnload = function (id) {
+                    var index = data.containerIds.indexOf(id);
+                    if (index > -1) {
+                        data.containerIds.splice(index, 1);
+                        updateListener({id: id, type: 'unload', data: data});
+                    }
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, testBenchId)
+                    .then(function (testBenchNode) {
+                        testBenchNode.loadChildren()
+                            .then(function (children) {
+                                var i;
+                                for (i = 0; i < children.length; i += 1) {
+                                    if (children[i].isMetaTypeOf(meta.Container)) {
+                                        data.containerIds.push(children[i].getId());
+                                        children[i].onUnload(onUnload);
+                                    }
+                                }
+                                testBenchNode.onNewChildLoaded(function (newChild) {
+                                    data.containerIds.push(newChild.getId());
+                                    newChild.onUnload(onUnload);
+                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                });
+                                deferred.resolve(data);
+                            });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches a test-bench w.r.t. interfaces.
+         * @param parentContext - context of controller.
+         * @param containerId
+         * @param updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.watchInterfaces = function (parentContext, containerId, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, containerId, updateListener);
+        };
+
+        /**
+         * See baseCyPhyService.cleanUpAllRegions.
+         */
+        this.cleanUpAllRegions = function (parentContext) {
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+        };
+
+        /**
+         * See baseCyPhyService.cleanUpRegion.
+         */
+        this.cleanUpRegion = function (parentContext, regionId) {
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+        };
+
+        /**
+         * See baseCyPhyService.registerWatcher.
+         */
+        this.registerWatcher = function (parentContext, fn) {
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
     });

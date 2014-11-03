@@ -300,6 +300,8 @@ define([
             self.addFormula(node, parent, containerData, true, callback);
         } else if (nodeType === 'CustomFormula') {
             self.addFormula(node, parent, containerData, false, callback);
+        } else if (nodeType === 'DomainPort') {
+            self.addDomainPort(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -372,6 +374,8 @@ define([
             for (i = 0; i < children.length; i += 1) {
                 if (self.isMetaTypeOf(children[i], self.meta.Connector)) {
                     self.addConnector(children[i], node, data, counterCallback);
+                } else if (self.isMetaTypeOf(children[i], self.meta.DomainPort)) {
+                    self.addDomainPort(children[i], node, data, counterCallback);
                 } else if (self.isMetaTypeOf(children[i], self.meta.Property)) {
                     self.addProperty(children[i], node, data, counterCallback);
                 } else {
@@ -381,78 +385,56 @@ define([
         });
     };
 
+//<editor-fold desc="=========================== Connectors/DomainPorts ==========================">
     AdmExporter.prototype.addConnector = function (node, parent, containerData, callback) {
         var self = this,
-            pos,
             parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
-            data,
-            collectionNames =  self.core.getCollectionNames(node),
-            counter = 2,
-            error = '',
-            counterCallback = function (err) {
-                error = err ? error + err : error;
-                counter -= 1;
-                if (counter === 0) {
-                    callback(error);
-                }
-            };
+            data = self.getConnectorData(node, parent);
+
         if (parentType === 'Container') {
-            pos = self.core.getRegistry(node, 'position');
-            data = {
-                "@Name": self.core.getAttribute(node, 'name'),
-                "@ID": self.core.getGuid(node),
-                "@ConnectorComposition": '',
-                "@ApplyJoinData": '',
-                "@Definition": '',
-                "@XPosition": Math.floor(pos.x),
-                "@YPosition": Math.floor(pos.y),
-                "Role": []
-            };
             containerData.Connector.push(data);
-        } else {
-            // This is a connector instance of a component.
-            data = {
-                "@ID": '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(node, 'ID'),
-                "@IDinComponentModel": self.core.getAttribute(node, 'ID'),
-                "@ConnectorComposition": '',
-                "@ApplyJoinData": ''
-            };
+        } else if (parentType === 'AVMComponentModel') {
             containerData.ConnectorInstance.push(data);
         }
 
-        self.addDomainConnectors(node, data, function (err) {
+        self.addRoles(node, data, function (err) {
             if (err) {
                 callback(err);
                 return;
             }
-            if (collectionNames.indexOf('src') > -1) {
-                self.getConnectorCompositionID(node, 'src', function (err, dstId) {
-                    if (err) {
-                        counterCallback(err);
-                        return;
-                    }
-                    data['@ConnectorComposition'] = self.appendWhiteSpacedString(data['@ConnectorComposition'], dstId);
-                    counterCallback(null);
-                });
-            } else {
-                counterCallback(null);
-            }
-            if (collectionNames.indexOf('dst') > -1) {
-                self.getConnectorCompositionID(node, 'dst', function (err, srcId) {
-                    if (err) {
-                        counterCallback(err);
-                        return;
-                    }
-                    data['@ConnectorComposition'] = self.appendWhiteSpacedString(data['@ConnectorComposition'], srcId);
-                    counterCallback(null);
-                });
-            } else {
-                counterCallback(null);
-            }
+            self.getConnectionString(node, function (err, connectionString) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                data['@ConnectorComposition'] = connectionString;
+                callback(null);
+            });
         });
     };
 
-    AdmExporter.prototype.addDomainConnectors = function (connectorNode, data, callback) {
+    AdmExporter.prototype.addDomainPort = function (node, parent, containerData, callback) {
+        var self = this,
+            parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
+            data = self.getDomainP(node, parent);
+
+        if (parentType === 'Container') {
+            containerData.Port.push(data);
+        } else if (parentType === 'AVMComponentModel') {
+            containerData.PortInstance.push(data);
+        }
+
+        self.getConnectionString(node, function (err, connectionString) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            data['@PortMap'] = connectionString;
+            callback(null);
+        });
+    };
+
+    AdmExporter.prototype.addRoles = function (connectorNode, data, callback) {
         var self = this,
             domainConnectors = data.Role,
             nodeName;
@@ -466,89 +448,86 @@ define([
         nodeName = self.core.getAttribute(connectorNode, 'name');
         self.core.loadChildren(connectorNode, function (err, children) {
             var i,
-                typeName,
-                domainNodeName;
+                roleData,
+                counter = children.length,
+                error = '',
+                getCounterCallback = function (portData) {
+                    return function (err, connectionString) {
+                        error = err ? error + err : error;
+                        portData['@PortMap'] = connectionString;
+                        counter -= 1;
+                        if (counter === 0) {
+                            callback(error);
+                        }
+                    };
+                };
             if (err) {
                 callback('loadChildren failed for connector ' + nodeName + ' :' + err.toString());
                 return;
             }
-            function addDomainConnector(child, attributes) {
-                var domainNodeName = self.core.getAttribute(child, 'name');
-                var commonAttributes = {
-                    '@ID': self.core.getGuid(child),
-                    '@PortMap': '',
-                    '@Name': domainNodeName,
-                    '@Notes': '',
-                    '@Definition': '',
-                };
-                for (var attr in attributes) {
-                    if (attributes.hasOwnProperty(attr))
-                        commonAttributes[attr] = attributes[attr];
-                }
-                domainConnectors.push(commonAttributes);
+
+            if (children.length === 0) {
+                callback(null);
             }
             for (i = 0; i < children.length; i += 1) {
-                typeName = self.core.getAttribute(children[i], 'Type');
-                domainNodeName = self.core.getAttribute(children[i], 'name');
-                if (typeName === 'ModelicaConnector') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'modelica',
-                        '@xsi:type': 'q1:Connector',
-                        '@Locator': domainNodeName,
-                        '@Class': self.core.getAttribute(children[i], 'Class')
-                    });
-                } else if (typeName === 'CadAxis') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'cad',
-                        '@xsi:type': 'q1:Axis',
-                        '@DatumName': ''
-                    });
-                } else if (typeName === 'CadCoordinateSystem') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'cad',
-                        '@xsi:type': 'q1:CoordinateSystem',
-                        '@DatumName': ''
-                    });
-                } else if (typeName === 'CadPlane') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'cad',
-                        '@xsi:type': 'q1:Plane',
-                        '@DatumName': '',
-                        '@SurfaceReverseMap': ''
-                    });
-                } else if (typeName === 'CadPoint') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'cad',
-                        '@xsi:type': 'q1:Point',
-                        '@DatumName': ''
-                    });
-                } else if (typeName === 'SchematicPin') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'schematic',
-                        '@xsi:type': 'q1:Pin',
-                    });
-                } else if (typeName === 'SystemCPort') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'systemc',
-                        '@xsi:type': 'q1:SystemCPort',
-                    });
-                } else if (typeName === 'RFPort') {
-                    addDomainConnector(children[i], {
-                        '@xmlns:q1': 'rf',
-                        '@xsi:type': 'q1:RFPort',
-                    });
-                }
+                roleData = self.getDomainPortData(children[i], connectorNode);
+                domainConnectors.push(roleData);
+                self.getConnectionString(children[i], getCounterCallback(roleData));
             }
-
-            callback(null);
         });
     };
 
-    AdmExporter.prototype.getConnectorCompositionID = function (connectorNode, collectionName, callback) {
+
+    /**
+     * Gets the full connection string for ConnectorComposition/PortMap of a Connector/DomainPort.
+     * @param portNode - Connector or DomainPort.
+     * @param {function} callback
+     */
+    AdmExporter.prototype.getConnectionString = function (portNode, callback) {
+        var self = this,
+            collectionNames =  self.core.getCollectionNames(portNode),
+            counter = 2,
+            error = '',
+            connectionString = '',
+            counterCallback = function (err) {
+                error = err ? error + err : error;
+                counter -= 1;
+                if (counter === 0) {
+                    callback(error, connectionString);
+                }
+            };
+
+        if (collectionNames.indexOf('src') > -1) {
+            self._getPartialConnectionString(portNode, 'src', function (err, dstId) {
+                if (err) {
+                    counterCallback(err);
+                    return;
+                }
+                connectionString = self.appendWhiteSpacedString(connectionString, dstId);
+                counterCallback(null);
+            });
+        } else {
+            counterCallback(null);
+        }
+        if (collectionNames.indexOf('dst') > -1) {
+            self._getPartialConnectionString(portNode, 'dst', function (err, srcId) {
+                if (err) {
+                    counterCallback(err);
+                    return;
+                }
+                connectionString = self.appendWhiteSpacedString(connectionString, srcId);
+                counterCallback(null);
+            });
+        } else {
+            counterCallback(null);
+        }
+    };
+
+    AdmExporter.prototype._getPartialConnectionString = function (portNode, collectionName, callback) {
         var self = this,
             pointerName = collectionName === 'src' ? 'dst' : 'src';
 
-        self.core.loadCollection(connectorNode, collectionName, function (err, connections) {
+        self.core.loadCollection(portNode, collectionName, function (err, connections) {
             var counter, i,
                 counterCallback,
                 error = '',
@@ -579,6 +558,13 @@ define([
         });
     };
 
+    /**
+     * Gets the ID of the connected Connector or DomainPort. (If the connected one is not part of the configuration -
+     * the 'returned' id is empty.)
+     * @param connectionNode - ConnectorComposition or PortMap to get the connected Connector/DomainPort through.
+     * @param {string} pointerName - 'src' or 'dst'.
+     * @param {function} callback
+     */
     AdmExporter.prototype.getConnectedPortID = function (connectionNode, pointerName, callback) {
         var self = this,
             hasPointer = self.core.hasPointer(connectionNode, pointerName);
@@ -587,6 +573,8 @@ define([
             self.core.loadPointer(connectionNode, pointerName, function (err, connectedPort) {
                 var id = '',
                     parent,
+                    grandParent,
+                    grandParentMetaType,
                     parentMetaType;
                 if (err) {
                     callback(err);
@@ -605,6 +593,16 @@ define([
                         if (self.shouldBeGenerated(parent)) {
                             id = self.core.getGuid(connectedPort);
                         }
+                    } else if (parentMetaType === 'Connector') {
+                        grandParent = self.core.getParent(parent);
+                        grandParentMetaType = self.core.getAttribute(self.getMetaType(grandParent), 'name');
+                        if (grandParentMetaType === 'Container') {
+                            if (self.shouldBeGenerated(grandParent)) {
+                                id = self.core.getGuid(connectedPort);
+                            }
+                        } else {
+                            callback('Unexpected Connector grandParentMetaType ' + grandParentMetaType);
+                        }
                     } else {
                         callback('Unexpected Connector parentMetaType ' + parentMetaType);
                     }
@@ -613,10 +611,12 @@ define([
             });
         } else {
             self.createMessage(connectionNode, 'Connection with no src/dst exists in design.', 'error');
-            callback('A connectorComposition with only one direction pointer exists in model.');
+            callback('A connection with only one direction pointer exists in model.');
         }
     };
+//</editor-fold>
 
+//<editor-fold desc="=========================== Properties/ValueFlows ==========================">
     AdmExporter.prototype.addProperty = function (node, parent, containerData, callback) {
         var self = this,
             pos = self.core.getRegistry(node, 'position'),
@@ -1011,6 +1011,7 @@ define([
             atValueFlowNode(valueFlows[i]);
         }
     };
+//</editor-fold>
 
     AdmExporter.prototype.visitAllChildrenFromRootContainer = function (rootNode, callback) {
         var self = this,
@@ -1096,6 +1097,127 @@ define([
         }
 
         return containerData;
+    };
+
+    AdmExporter.prototype.getConnectorData = function (node, parent) {
+        var self = this,
+            pos,
+            parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
+            data;
+
+        if (parentType === 'Container') {
+            pos = self.core.getRegistry(node, 'position');
+            data = {
+                "@Name": self.core.getAttribute(node, 'name'),
+                "@ID": self.core.getGuid(node),
+                "@ConnectorComposition": '',
+                "@ApplyJoinData": '',
+                "@Definition": '',
+                "@XPosition": Math.floor(pos.x),
+                "@YPosition": Math.floor(pos.y),
+                "Role": []
+            };
+        } else if (parentType === 'AVMComponentModel') {
+            data = {
+                "@ID": '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(node, 'ID'),
+                "@IDinComponentModel": self.core.getAttribute(node, 'ID'),
+                "@ConnectorComposition": '',
+                "@ApplyJoinData": ''
+            };
+        } else {
+            self.logger.error('Unexpected parent-type, ' + parentType + ', of connector.');
+            data = {};
+        }
+
+        return data;
+    };
+
+    AdmExporter.prototype.getDomainPortData = function (node, parent) {
+        var self = this,
+            typeName = self.core.getAttribute(node, 'Type'),
+            domainNodeName = self.core.getAttribute(node, 'name'),
+            parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
+            data,
+            pos,
+            attributes,
+            attr;
+
+        if (parentType === 'Container' || parentType === 'Connector') {
+            pos = self.core.getRegistry(node, 'position');
+            data = {
+                '@ID': self.core.getGuid(node),
+                '@PortMap': '',
+                '@Name': domainNodeName,
+                '@Notes': '',
+                '@Definition': '',
+                "@XPosition": Math.floor(pos.x),
+                "@YPosition": Math.floor(pos.y)
+            };
+            if (typeName === 'ModelicaConnector') {
+                attributes = {
+                    '@xmlns:q1': 'modelica',
+                    '@xsi:type': 'q1:Connector',
+                    '@Locator': domainNodeName,
+                    '@Class': self.core.getAttribute(node, 'Class')
+                };
+            } else if (typeName === 'CadAxis') {
+                attributes = {
+                    '@xmlns:q1': 'cad',
+                    '@xsi:type': 'q1:Axis',
+                    '@DatumName': ''
+                };
+            } else if (typeName === 'CadCoordinateSystem') {
+                attributes = {
+                    '@xmlns:q1': 'cad',
+                    '@xsi:type': 'q1:CoordinateSystem',
+                    '@DatumName': ''
+                };
+            } else if (typeName === 'CadPlane') {
+                attributes = {
+                    '@xmlns:q1': 'cad',
+                    '@xsi:type': 'q1:Plane',
+                    '@DatumName': '',
+                    '@SurfaceReverseMap': ''
+                };
+            } else if (typeName === 'CadPoint') {
+                attributes = {
+                    '@xmlns:q1': 'cad',
+                    '@xsi:type': 'q1:Point',
+                    '@DatumName': ''
+                };
+            } else if (typeName === 'SchematicPin') {
+                attributes = {
+                    '@xmlns:q1': 'schematic',
+                    '@xsi:type': 'q1:Pin',
+                };
+            } else if (typeName === 'SystemCPort') {
+                attributes = {
+                    '@xmlns:q1': 'systemc',
+                    '@xsi:type': 'q1:SystemCPort',
+                };
+            } else if (typeName === 'RFPort') {
+                attributes = {
+                    '@xmlns:q1': 'rf',
+                    '@xsi:type': 'q1:RFPort',
+                };
+            }
+            for (attr in attributes) {
+                if (attributes.hasOwnProperty(attr)) {
+                    data[attr] = attributes[attr];
+                }
+            }
+        } else if (parentType === 'AVMComponentModel') {
+            data = {
+                '@ID': '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(node, 'ID'),
+                '@PortMap': '',
+                '@IDinComponentModel': self.core.getAttribute(node, 'ID')
+            };
+        } else {
+            self.logger.error('Unexpected parent-type, ' + parentType + ', of domainPort.');
+            data = {};
+        }
+
+        return data;
     };
 
     AdmExporter.prototype.appendWhiteSpacedString = function (toBeAppended, appendix) {

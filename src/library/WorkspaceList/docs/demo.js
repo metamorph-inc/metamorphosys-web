@@ -123,6 +123,12 @@ demoApp.service('WorkspaceService', function ($q, $timeout) {
 });
 
 demoApp.service('FileService', function ($q) {
+    'use strict';
+
+    this.getDownloadUrl = function (hash) {
+        return null;
+    };
+
     this.saveDroppedFiles = function (files, validExtensions) {
         var deferred = $q.defer(),
             addedFiles = [],
