@@ -346,6 +346,7 @@ angular.module('cyphy.services')
                             container = {
                                 id: containerNode.getId(),
                                 name: containerNode.getAttribute('name'),
+                                type: containerNode.getAttribute('Type'),
                                 subContainers: {},
                                 components: {}
                             },
@@ -400,6 +401,7 @@ angular.module('cyphy.services')
                                 rootContainer = {
                                     id: rootNode.getId(),
                                     name: rootNode.getAttribute('name'),
+                                    type: rootNode.getAttribute('Type'),
                                     subContainers: {},
                                     components: {}
                                 },

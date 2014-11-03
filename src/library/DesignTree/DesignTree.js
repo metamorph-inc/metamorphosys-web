@@ -6,12 +6,12 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignTreeController', function ($scope, designService) {
+    .controller('DesignTreeController', function ($scope, $window, designService) {
         'use strict';
         var self = this,
             items = [],
             context,
-            config = {},
+            config,
             treeData,
             rootNode,
             buildTreeStructure;
@@ -30,6 +30,35 @@ angular.module('cyphy.components')
         } else {
             throw new Error('connectionId must be defined and it must be a string');
         }
+
+        config = {
+//            nodeClick: function ( e, node ) {
+//                console.log( 'Node was clicked:', node );
+//            },
+//
+//            nodeDblclick: function ( e, node ) {
+//                console.log( 'Node was double-clicked:', node );
+//            },
+
+            nodeContextmenuRenderer: function (e, node) {
+                return [{
+                    items: [{
+                        id: 'create',
+                        label: 'Open in Editor',
+                        disabled: false,
+                        iconClass: 'glyphicon glyphicon-edit',
+                        actionData: {id: node.id},
+                        action: function (data) {
+                            $window.open('/?project=ADMEditor&activeObject=' + data.id, '_blank');
+                        }
+                    }]
+                }];
+            }
+
+//            nodeExpanderClick: function ( e, node, isExpand ) {
+//                console.log( 'Expander was clicked for node:', node, isExpand );
+//            }
+        };
 
         rootNode = {
             id: $scope.designId,
@@ -71,14 +100,13 @@ angular.module('cyphy.components')
             }
             treeNode.id = container.id;
             treeNode.label = container.name;
-            treeNode.extraInfo = 'Container';
+            treeNode.extraInfo = container.type;
             for (key in container.components) {
                 if (container.components.hasOwnProperty(key)) {
                     childData = container.components[key];
                     treeNode.children.push({
                         id: childData.id,
-                        label: childData.name,
-                        extraInfo: 'Component'
+                        label: childData.name
                     });
                     treeNode.childrenCount += 1;
                 }
