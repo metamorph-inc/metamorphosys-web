@@ -47,8 +47,9 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                growl.warning('Not Implemented!');
-                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                var newUrl = '/designSpace/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
+                console.log(newUrl);
+                document.location.hash = newUrl;
             },
 
             itemContextmenuRenderer: function (e, item) {

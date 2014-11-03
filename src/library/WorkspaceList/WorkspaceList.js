@@ -46,8 +46,7 @@ angular.module('cyphy.components')
 
             itemClick: function (event, item) {
                 console.log('Clicked: ' + item);
-                document.location.hash =
-                    '/workspaceDetails/' + item.id.replace(/\//g, '-');
+                document.location.hash = '/workspaceDetails/' + item.id.replace(/\//g, '-');
             },
 
             itemContextmenuRenderer: function (e, item) {

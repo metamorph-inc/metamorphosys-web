@@ -319,39 +319,63 @@ angular.module('cyphy.services')
                 },
                 data = {
                     regionId: regionId,
-                    count: 0
+                    rootId: designId,
+                    containers: {}, // container: {id: <string>, name: <string>, parentId: <string>, type: <string>,
+                                    //             subContainers: {id:<string>: <container>},
+                                    //             components:    {id:<string>: <container>}}
+                    components: {}  // component: {id: <string>, name: <string>, parentId: <string>,
+                                    //             , avmId: <string> }
                 },
-                watchFromFolderRec = function (folderNode, meta) {
+                getComponentInfo = function (node, parentId) {
+                    return {
+                        id: node.getId(),
+                        name: node.getAttribute('name'),
+                        parentId: parentId,
+                        avmId: node.getAttribute('ID')
+                    };
+                },
+                watchFromContainerRec = function (containerNode, rootContainer, meta) {
                     var recDeferred = $q.defer();
-                    folderNode.loadChildren().then(function (children) {
+                    containerNode.loadChildren().then(function (children) {
                         var i,
                             queueList = [],
                             childNode,
                             onUnload = function (id) {
-                                data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
-                            };
+                                //updateListener({id: id, type: 'unload', data: data.count});
+                            },
+                            container = {
+                                id: containerNode.getId(),
+                                name: containerNode.getAttribute('name'),
+                                subContainers: {},
+                                components: {}
+                            },
+                            component;
+
+                        rootContainer.subContainers[containerNode.getId()] = container;
+                        data.containers[containerNode.getId()] = container;
+
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
-                            if (childNode.isMetaTypeOf(meta.ACMFolder)) {
-                                queueList.push(watchFromFolderRec(childNode, meta));
+                            if (childNode.isMetaTypeOf(meta.Container)) {
+                                queueList.push(watchFromContainerRec(childNode, container, meta));
                             } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
-                                data.count += 1;
-                                childNode.onUnload(onUnload);
+                                component = getComponentInfo(childNode, container.id);
+                                container.components[childNode.getId()] = component;
+                                data.components[childNode.getId()] = component;
                             }
                         }
 
-                        folderNode.onNewChildLoaded(function (newChild) {
-                            if (newChild.isMetaTypeOf(meta.ACMFolder)) {
-                                watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                });
-                            } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
-                                data.count += 1;
-                                newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                            }
-                        });
+//                        containerNode.onNewChildLoaded(function (newChild) {
+//                            if (newChild.isMetaTypeOf(meta.Container)) {
+//                                watchFromContainerRec(newChild, container, meta).then(function () {
+//                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                });
+//                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+//                                container[childNode.getId()] = getComponentInfo(childNode, container.id);
+//                                updateListener({id: newChild.getId(), type: 'load', data: data});
+//                            }
+//                        });
+
                         if (queueList.length === 0) {
                             recDeferred.resolve();
                         } else {
@@ -367,25 +391,43 @@ angular.module('cyphy.services')
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, workspaceId)
-                    .then(function (workspaceNode) {
-                        workspaceNode.loadChildren().then(function (children) {
+                nodeService.loadNode(context, designId)
+                    .then(function (rootNode) {
+                        rootNode.loadChildren().then(function (children) {
                             var i,
                                 queueList = [],
-                                childNode;
+                                childNode,
+                                rootContainer = {
+                                    id: rootNode.getId(),
+                                    name: rootNode.getAttribute('name'),
+                                    subContainers: {},
+                                    components: {}
+                                },
+                                component;
+
+                            data.containers[rootContainer.id] = rootContainer;
+                            data.containers[rootContainer.id] = rootContainer;
                             for (i = 0; i < children.length; i += 1) {
                                 childNode = children[i];
-                                if (childNode.isMetaTypeOf(meta.ACMFolder)) {
-                                    queueList.push(watchFromFolderRec(childNode, meta));
+                                if (childNode.isMetaTypeOf(meta.Container)) {
+                                    queueList.push(watchFromContainerRec(childNode, rootContainer, meta));
+                                } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+                                    component = getComponentInfo(childNode, rootContainer.id);
+                                    rootContainer.components[childNode.getId()] = component;
+                                    data.components[childNode.getId()] = component;
                                 }
                             }
-                            workspaceNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
-                                    watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                    });
-                                }
-                            });
+//                            rootNode.onNewChildLoaded(function (newChild) {
+//                                if (newChild.isMetaTypeOf(meta.Container)) {
+//                                    watchFromContainerRec(newChild, rootContainer, meta).then(function () {
+//                                        updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                    });
+//                                } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
+//                                    rootContainer.components[childNode.getId()] = getComponentInfo(childNode, rootContainer.id);
+//                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+//                                }
+//
+//                            });
                             if (queueList.length === 0) {
                                 deferred.resolve(data);
                             } else {
