@@ -1,6 +1,16 @@
 <div>
     <h1>Design Space</h1>
-    <div class="design-tree col-lg-4">
-        <design-tree data-connection-id="'my-db-connection-id'" design-id=dataModel.designId></design-tree>
+    <div class="component-list col-lg-4">
+        <h3><span class="fa fa-puzzle-piece"></span>Used Components</h3>
+        <component-list ng-if="state.designTreeLoaded"
+                        data-connection-id="'my-db-connection-id'"
+                        workspace-id=workspaceId
+                        avm-ids="state.avmIds"></component-list>
+        <span ng-if="!state.designTreeLoaded" class="component-list-load">Loading...</span>
     </div>
+    <div class="design-tree col-lg-4">
+        <h3><span class="fa fa-cubes"></span>Design Space Tree</h3>
+        <design-tree design-id="designId" connection-id="'my-db-connection-id'"></design-tree>
+    </div>
+
 </div>

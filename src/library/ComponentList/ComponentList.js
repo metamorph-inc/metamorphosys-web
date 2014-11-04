@@ -16,7 +16,7 @@ angular.module('cyphy.components')
             config,
             context;
 
-        console.log('ComponentListController');
+        console.log('ComponentListController', $scope.avmIds);
         this.getConnectionId = function () {
             return $scope.connectionId;
         };
@@ -49,8 +49,7 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
-                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                $scope.$emit('displayInstancesUp', {name: item.title, ids: item.data.instanceIds});
             },
 
             itemContextmenuRenderer: function (e, item) {
@@ -81,7 +80,9 @@ angular.module('cyphy.components')
                                             templateUrl: '/cyphy-components/templates/ComponentEdit.html',
                                             controller: 'ComponentEditController',
                                             //size: size,
-                                            resolve: { data: function () { return data; } }
+                                            resolve: { data: function () {
+                                                return data;
+                                            } }
                                         });
 
                                     modalInstance.result.then(function (editedData) {
@@ -177,17 +178,20 @@ angular.module('cyphy.components')
                 listItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: 'Open item',
+                    toolTip: $scope.avmIds ? 'Highlight instances' : '',
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
                         user: 'N/A'    // TODO: get this in the future.
                     },
                     stats: [ ],
-                    details    : 'Content',
+                    details: 'Content',
                     detailsTemplateUrl: 'componentDetails.html',
-                    data: { resource: data.resource}
+                    data: { resource: data.resource }
                 };
+                if ($scope.avmIds) {
+                    listItem.data.instanceIds = $scope.avmIds[data.avmId];
+                }
                 // Add the list-item to the items list and the dictionary.
                 items.push(listItem);
                 componentItems[listItem.id] = listItem;
@@ -198,10 +202,10 @@ angular.module('cyphy.components')
             var domainModelsToStat = function (domainModels) {
                 var stats = [],
                     labelMap = {
-                        CAD:           { value: 0, toolTip: 'CAD',           iconClass: 'glyphicon glyphicon-stop' },
-                        Cyber:         { value: 0, toolTip: 'Cyber',         iconClass: 'glyphicon glyphicon-stop' },
+                        CAD: { value: 0, toolTip: 'CAD', iconClass: 'glyphicon glyphicon-stop' },
+                        Cyber: { value: 0, toolTip: 'Cyber', iconClass: 'glyphicon glyphicon-stop' },
                         Manufacturing: { value: 0, toolTip: 'Manufacturing', iconClass: 'glyphicon glyphicon-stop' },
-                        Modelica:      { value: 0, toolTip: 'Modelica',      iconClass: 'glyphicon glyphicon-stop' }
+                        Modelica: { value: 0, toolTip: 'Modelica', iconClass: 'glyphicon glyphicon-stop' }
                     },
                     key;
                 for (key in domainModels) {
@@ -255,7 +259,7 @@ angular.module('cyphy.components')
             }
             console.info('initialize event raised');
 
-            componentService.watchComponents(context, $scope.workspaceId, function (updateObject) {
+            componentService.watchComponents(context, $scope.workspaceId, $scope.avmIds, function (updateObject) {
                 var index;
                 //console.warn(updateObject);
                 if (updateObject.type === 'load') {
@@ -311,7 +315,8 @@ angular.module('cyphy.components')
             restrict: 'E',
             scope: {
                 workspaceId: '=workspaceId',
-                connectionId: '=connectionId'
+                connectionId: '=connectionId',
+                avmIds: '=avmIds'
             },
             replace: true,
             templateUrl: '/cyphy-components/templates/ComponentList.html',

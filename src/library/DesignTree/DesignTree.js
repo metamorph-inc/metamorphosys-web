@@ -2,7 +2,6 @@
 
 /**
  * @author pmeijer / https://github.com/pmeijer
- * @author lattmann / https://github.com/lattmann
  */
 
 angular.module('cyphy.components')
@@ -14,6 +13,7 @@ angular.module('cyphy.components')
             config,
             treeData,
             rootNode,
+            avmIds = {},
             buildTreeStructure;
 
         console.log('DesignTreeController');
@@ -32,14 +32,6 @@ angular.module('cyphy.components')
         }
 
         config = {
-//            nodeClick: function ( e, node ) {
-//                console.log( 'Node was clicked:', node );
-//            },
-//
-//            nodeDblclick: function ( e, node ) {
-//                console.log( 'Node was double-clicked:', node );
-//            },
-
             nodeContextmenuRenderer: function (e, node) {
                 return [{
                     items: [{
@@ -53,8 +45,13 @@ angular.module('cyphy.components')
                         }
                     }]
                 }];
+            },
+            nodeClick: function ( e, node ) {
+                console.log( 'Node was clicked:', node, $scope );
             }
-
+//            nodeDblclick: function ( e, node ) {
+//                console.log( 'Node was double-clicked:', node );
+//            },
 //            nodeExpanderClick: function ( e, node, isExpand ) {
 //                console.log( 'Expander was clicked for node:', node, isExpand );
 //            }
@@ -80,7 +77,9 @@ angular.module('cyphy.components')
         };
         $scope.config = config;
         $scope.treeData = treeData;
-
+        $scope.$on('displayInstancesDown', function (event, data) {
+            $scope.config.state.selectedNodes = data;
+        });
         buildTreeStructure = function (container, parentTreeNode) {
             var key,
                 childData,
@@ -101,6 +100,7 @@ angular.module('cyphy.components')
             treeNode.id = container.id;
             treeNode.label = container.name;
             treeNode.extraInfo = container.type;
+            $scope.config.state.expandedNodes.push(treeNode.id);
             for (key in container.components) {
                 if (container.components.hasOwnProperty(key)) {
                     childData = container.components[key];
@@ -109,6 +109,11 @@ angular.module('cyphy.components')
                         label: childData.name
                     });
                     treeNode.childrenCount += 1;
+                    if (avmIds[childData.avmId]) {
+                        avmIds[childData.avmId].push(childData.id);
+                    } else {
+                        avmIds[childData.avmId] = [childData.id];
+                    }
                 }
             }
             for (key in container.subContainers) {
@@ -134,6 +139,7 @@ angular.module('cyphy.components')
                 .then(function (data) {
                     var rootContainer = data.containers[data.rootId];
                     buildTreeStructure(rootContainer);
+                    $scope.$emit('designTreeLoaded', avmIds);
                 });
         });
     })
