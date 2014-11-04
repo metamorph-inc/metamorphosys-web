@@ -31,9 +31,10 @@
 <script src="/extlib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/extlib/bower_components//angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
-<!-- Include WebGME libraries -->
+<!-- Include WebGME/WebCyphy libraries -->
 <!--  client -->
 <script src="/extlib/node_modules/webgme/dist/webgme.classes.build.js"></script>
+<script src="/extlib/dist/webcyphy.plugins.build.js"></script>
 <!--  angular module services-->
 <!--<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>-->
 <script src="/extlib/node_modules/ng-gme/dist/ng-gme.js"></script>
@@ -57,7 +58,7 @@
             waitCounter = 0,
             i,
             success,
-            usedClasses = ["Client"],
+            usedClasses = ["Client", "ExecutorClient"],
             interval = 200, // 100 milliseconds interval
             waitForLoadId = setInterval(function () {
                 if (window.WebGMEGlobal &&

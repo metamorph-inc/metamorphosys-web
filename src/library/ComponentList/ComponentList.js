@@ -49,7 +49,7 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                $scope.$emit('displayInstancesUp', {name: item.title, ids: item.data.instanceIds});
+                $scope.$emit('selectedInstances', {name: item.title, ids: item.data.instanceIds});
             },
 
             itemContextmenuRenderer: function (e, item) {

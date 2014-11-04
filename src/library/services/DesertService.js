@@ -11,7 +11,139 @@ angular.module('cyphy.services')
         'use strict';
         var CMDSTR;
 
+        this.calculateConfigurations = function (desertInput) {
+            var deferred = $q.defer(),
+                configurations = [
+                    {
+                        id: 1,
+                        name: "Conf. no: 1",
+                        alternativeAssignments: [
+                            {
+                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/91073815",
+                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: "Conf. no: 2",
+                        alternativeAssignments: [
+                            {
+                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1433471789",
+                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                            }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "Conf. no: 3",
+                        alternativeAssignments: [
+                            {
+                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1493907264",
+                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                            }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "Conf. no: 4",
+                        alternativeAssignments: [
+                            {
+                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1767521621",
+                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                            }
+                        ]
+                    }
+                ];
 
+            deferred.resolve(configurations);
+            return deferred.promise;
+        };
+
+        this.getDesertInputData = function (designStructureData) {
+            var desertSystem,
+                idMap = {},
+                idCounter = 4,
+                rootContainer = designStructureData.containers[designStructureData.rootId],
+                populateDataRec = function (container, element) {
+                    var key,
+                        childData,
+                        id;
+
+                    for (key in container.components) {
+                        if (container.components.hasOwnProperty(key)) {
+                            childData = container.components[key];
+                            idCounter += 1;
+                            id = idCounter.toString();
+                            idMap[id] = childData.id;
+                            element.Element.push({
+                                '@_id': 'id' + id,
+                                '@decomposition': 'false',
+                                '@externalID': id,
+                                '@id': id,
+                                '@name': childData.name,
+                                'Element': []
+                            });
+                        }
+                    }
+                    for (key in container.subContainers) {
+                        if (container.subContainers.hasOwnProperty(key)) {
+                            childData = container.subContainers[key];
+                            idCounter += 1;
+                            id = idCounter.toString();
+                            idMap[id] = childData.id;
+                            element.Element.push({
+                                '@_id': 'id' + id,
+                                '@decomposition': (childData.type === 'Compound').toString(),
+                                '@externalID': id,
+                                '@id': id,
+                                '@name': childData.name,
+                                'Element': []
+                            });
+                            populateDataRec(childData, element.Element[element.Element.length - 1]);
+                        }
+                    }
+                };
+            desertSystem = {
+                'DesertSystem': {
+                    '@xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                    '@SystemName': '',
+                    '@xsi:noNamespaceSchemaLocation': 'DesertIface.xsd',
+                    'ConstraintSet': {
+                        '@_id': 'id1',
+                        '@externalID': '1',
+                        '@id': '1',
+                        '@name': 'constraints'
+                    },
+                    'FormulaSet': {
+                        '@_id': 'id2',
+                        '@externalID': '2',
+                        '@id': '2',
+                        '@name': 'formulaSet'
+                    },
+                    'Space': {
+                        '@_id': 'id3',
+                        '@decomposition': 'true',
+                        '@externalID': '3',
+                        '@id': '3',
+                        '@name': 'DesignSpace',
+                        'Element': [
+                            {
+                                '@_id': 'id4',
+                                '@decomposition': 'true',
+                                '@externalID': '4',
+                                '@id': '4',
+                                '@name': rootContainer.name,
+                                'Element': []
+                            }
+                        ]
+                    }
+                }
+            };
+            populateDataRec(rootContainer, desertSystem.DesertSystem.Space.Element[0]);
+
+            return { desertSystem: desertSystem, idMap: idMap };
+        };
 
         CMDSTR = [
             ':: Runs <-DesertTools.exe-> desertInput.xml /m',

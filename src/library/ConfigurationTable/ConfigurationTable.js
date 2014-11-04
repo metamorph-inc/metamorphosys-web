@@ -13,93 +13,54 @@
 angular.module('cyphy.components')
     .controller('ConfigurationTableController', function ($scope) {
         'use strict';
-        $scope.models = {
+        $scope.dataModel = {
             changeInfo: [],
-            selectedCars: [
+            selected: [],
+            configurations: [
                 {
                     id: 1,
-                    name: 'Audi A4',
-                    modelYear: 2009,
-                    price: 34000
-                }
-            ],
-            carsForSale: [
-                {
-                    id: 1,
-                    name: 'Audi A4',
-                    modelYear: 2009,
-                    price: 34000
+                    name: "Conf. no: 1",
+                    alternativeAssignments: [
+                        {
+                            selectedAlternative: "/2130017834/542571494/1646059422/564312148/91073815",
+                            alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                        }
+                    ]
                 },
                 {
                     id: 2,
-                    name: 'BMW 328i',
-                    modelYear: 2012,
-                    price: 39000
+                    name: "Conf. no: 2",
+                    alternativeAssignments: [
+                        {
+                            selectedAlternative: "/2130017834/542571494/1646059422/564312148/1433471789",
+                            alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                        }
+                    ]
                 },
                 {
                     id: 3,
-                    name: 'Audi A6',
-                    modelYear: 2012,
-                    price: 44000
+                    name: "Conf. no: 3",
+                    alternativeAssignments: [
+                        {
+                            selectedAlternative: "/2130017834/542571494/1646059422/564312148/1493907264",
+                            alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                        }
+                    ]
                 },
                 {
                     id: 4,
-                    name: 'Audi S8',
-                    modelYear: 2014,
-                    price: 100000
-                },
-                {
-                    id: 5,
-                    name: 'Audi A4',
-                    modelYear: 2009,
-                    price: 34000
-                },
-                {
-                    id: 6,
-                    name: 'BMW 328i',
-                    modelYear: 2012,
-                    price: 39000
-                },
-                {
-                    id: 7,
-                    name: 'Audi A6',
-                    modelYear: 2012,
-                    price: 44000
-                },
-                {
-                    id: 8,
-                    name: 'Audi S8',
-                    modelYear: 2014,
-                    price: 100000
-                },
-                {
-                    id: 9,
-                    name: 'Audi A6',
-                    modelYear: 2012,
-                    price: 44000
-                },
-                {
-                    id: 10,
-                    name: 'Audi S8',
-                    modelYear: 2014,
-                    price: 100000
-                },
-                {
-                    id: 11,
-                    name: 'Audi A6',
-                    modelYear: 2012,
-                    price: 44000
-                },
-                {
-                    id: 12,
-                    name: 'Audi S8',
-                    modelYear: 2014,
-                    price: 100000
+                    name: "Conf. no: 4",
+                    alternativeAssignments: [
+                        {
+                            selectedAlternative: "/2130017834/542571494/1646059422/564312148/1767521621",
+                            alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                        }
+                    ]
                 }
             ]
         };
 
-        $scope.carsTableColumnDefinition = [
+        $scope.tableColumnDefinition = [
             {
                 columnHeaderDisplayName: 'Name',
                 templateUrl: 'tableCell.html',
@@ -107,9 +68,8 @@ angular.module('cyphy.components')
             }
         ];
 
-        // ========== ui handlers ========== //
-        $scope.buyCar = function (car) {
-            alert(car.name);
+        $scope.cfgClicked = function (cfg) {
+            $scope.$emit('configurationClicked', cfg);
         };
     })
     .directive('configurationTable', function () {

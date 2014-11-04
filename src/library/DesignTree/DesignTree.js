@@ -5,11 +5,9 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignTreeController', function ($scope, $window, designService) {
+    .controller('DesignTreeController', function ($scope, $window, designService, desertService) {
         'use strict';
-        var self = this,
-            items = [],
-            context,
+        var context,
             config,
             treeData,
             rootNode,
@@ -77,7 +75,7 @@ angular.module('cyphy.components')
         };
         $scope.config = config;
         $scope.treeData = treeData;
-        $scope.$on('displayInstancesDown', function (event, data) {
+        $scope.$on('setSelectedNodes', function (event, data) {
             $scope.config.state.selectedNodes = data;
         });
 
@@ -138,9 +136,14 @@ angular.module('cyphy.components')
                 console.warn(updateObject);
             })
                 .then(function (data) {
-                    var rootContainer = data.containers[data.rootId];
+                    var rootContainer = data.containers[data.rootId],
+                        desertInputData;
                     buildTreeStructure(rootContainer);
                     $scope.$emit('designTreeLoaded', avmIds);
+                    // FIXME: This part is only here to reuse the data from watchDesignStructure.
+                    // TODO: Find a more suitable location.
+                    desertInputData = desertService.getDesertInputData(data);
+                    $scope.$emit('desertInputReady', desertInputData);
                 });
         });
     })

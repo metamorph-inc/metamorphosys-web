@@ -175,6 +175,7 @@ define(['../../js/DesertFrontEnd',
                                         }
                                     }
                                     self.$scope.desert.selectedCfg = self.$scope.desert.cfgs['1'];
+                                    console.log('DESERT', self.$scope.desert);
                                     self.update();
                                 });
                             }
