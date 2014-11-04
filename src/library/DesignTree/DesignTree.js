@@ -80,6 +80,7 @@ angular.module('cyphy.components')
         $scope.$on('displayInstancesDown', function (event, data) {
             $scope.config.state.selectedNodes = data;
         });
+
         buildTreeStructure = function (container, parentTreeNode) {
             var key,
                 childData,

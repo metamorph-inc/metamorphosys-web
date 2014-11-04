@@ -12,5 +12,9 @@
         <h3><span class="fa fa-cubes"></span>Design Space Tree</h3>
         <design-tree design-id="designId" connection-id="'my-db-connection-id'"></design-tree>
     </div>
-
+    <div class="configurations-actions col-lg-4">
+        <h3><span class="glyphicon glyphicon-th"></span>Configurations</h3>
+        <button ng-disabled="state.designTreeLoaded === false" class="btn btn-default btn-sm" ng-click="callDesert()">Calculate Configurations</button>
+        <configuration-table></configuration-table>
+    </div>
 </div>

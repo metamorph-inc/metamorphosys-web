@@ -26,4 +26,7 @@ angular.module('CyPhyApp')
             $scope.$broadcast('displayInstancesDown', data.ids);
         });
 
+        $scope.callDesert = function () {
+            growl.warning('Not implemented!');
+        };
     });

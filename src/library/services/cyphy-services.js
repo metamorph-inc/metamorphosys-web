@@ -12,3 +12,4 @@ require('./WorkspaceService');
 require('./ComponentService');
 require('./DesignService');
 require('./TestBenchService');
+require('./DesertService');

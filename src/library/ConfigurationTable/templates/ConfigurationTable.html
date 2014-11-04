@@ -1,0 +1,22 @@
+<div class="configuration-table">
+
+    <!-- ========== template files ========== -->
+    <script type="text/ng-template" id="tableCell.html">
+        <a ng-click='buyCar(item)' tool-tip='View in tree'> {{item.name}} </a>
+    </script>
+
+    <p class="text-muted">
+        Cars Selected: <span class="badge">{{ models.selectedCars.length }}</span> of
+        <span class="badge">{{ models.carsForSale.length }}</span>
+    </p>
+
+    <!-- ========== Usage ========== -->
+    <ad-table-lite table-name="carsForSale"
+                   column-definition="carsTableColumnDefinition"
+                   local-data-source="models.carsForSale"
+                   page-sizes="[10, 20, 50, 100]"
+                   pagination-btn-group-classes="btn-group btn-group-sm"
+                   table-classes="table table-bordered"
+                   selected-items="models.selectedCars">
+    </ad-table-lite>
+</div>
