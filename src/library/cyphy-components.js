@@ -28,6 +28,7 @@ require('./WorkspaceList/WorkspaceList');
 require('./ComponentDetails/ComponentDetails');
 require('./ComponentList/ComponentList');
 
+require('./DesignDetails/DesignDetails');
 require('./DesignList/DesignList');
 require('./DesignTree/DesignTree');
 

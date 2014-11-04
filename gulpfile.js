@@ -40,6 +40,7 @@ var argv = require('yargs').argv,
             'src/library/ComponentList/*.js',
             'src/library/ComponentDetails/*.js',
             'src/library/DesignList/*.js',
+            'src/library/DesignDetails/*.js',
             'src/library/DesignTree/*.js',
             'src/library/TestBenchList/*.js',
             'src/library/TestBenchDetails/*.js'

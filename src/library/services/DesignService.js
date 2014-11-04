@@ -293,14 +293,13 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches a design w.r.t. interfaces.
+         *  Watches a design(space) w.r.t. interfaces.
          * @param parentContext - context of controller.
          * @param designId
          * @param updateListener - invoked when there are (filtered) changes in data.
-         * @returns {Promise} - Returns data when resolved.
          */
-        this.watchDesignDetails = function (parentContext, designId, updateListener) {
-            throw new Error('Not implemented yet.');
+        this.watchInterfaces = function (parentContext, designId, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, designId, updateListener);
         };
 
         /**

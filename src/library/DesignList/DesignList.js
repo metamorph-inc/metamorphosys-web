@@ -17,7 +17,9 @@ angular.module('cyphy.components')
             context;
 
         console.log('DesignListController');
-
+        this.getConnectionId = function () {
+            return $scope.connectionId;
+        };
         // Check for valid connectionId and register clean-up on destroy event.
         if ($scope.connectionId && angular.isString($scope.connectionId)) {
             context = {
@@ -36,7 +38,7 @@ angular.module('cyphy.components')
 
             sortable: false,
             secondaryItemMenu: true,
-            detailsCollapsible: false,
+            detailsCollapsible: true,
             showDetailsLabel: 'Show details',
             hideDetailsLabel: 'Hide details',
 
@@ -166,8 +168,7 @@ angular.module('cyphy.components')
 
         $scope.config = config;
         $scope.listData = {
-            items: items,
-            connectionId: $scope.connectionId // FIXME: This is probably not the right way to do it..
+            items: items
         };
 
         // Transform the raw service node data to items for the list.
@@ -206,7 +207,7 @@ angular.module('cyphy.components')
                         }
                     ],
                     details    : 'Content',
-                    detailsTemplateUrl: 'details.html'
+                    detailsTemplateUrl: 'designDetails.html'
                 };
                 // Add the list-item to the items list and the dictionary.
                 items.push(listItem);
