@@ -13,14 +13,17 @@ angular.module('CyPhyApp')
         $scope.designId = designId;
         $scope.state = {
             designTreeLoaded: false,
+            desertInputAvaliable: false,
+            configurationsAvaliable: false
+        };
+        $scope.dataModels = {
             avmIds: {},
-            configurationsAvaliable: false,
+            desertInput: {},
             configurations: []
         };
-        growl.warning('Configuration Table has dummy data!');
+
         $scope.$on('designTreeLoaded', function (event, data) {
-            $scope.state.avmIds = data.avmIds;
-            $scope.state.desertInput = data.desertInput;
+            $scope.dataModels.avmIds = data;
             $scope.state.designTreeLoaded = true;
         });
 
@@ -39,9 +42,14 @@ angular.module('CyPhyApp')
         });
 
         $scope.$on('desertInputReady', function (event, data) {
+            $scope.dataModels.desertInput = data;
+            $scope.state.desertInputAvaliable = true;
             console.log(data);
         });
 
         $scope.calculateConfigurations = function () {
+            //TODO: call desert using $scope.dataModels.desertInput
+            growl.warning('Configuration Table has dummy data!');
+            $scope.state.configurationsAvaliable = true;
         };
     });

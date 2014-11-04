@@ -5,7 +5,7 @@
         <component-list ng-if="state.designTreeLoaded"
                         data-connection-id="'my-db-connection-id'"
                         workspace-id=workspaceId
-                        avm-ids="state.avmIds"></component-list>
+                        avm-ids="dataModels.avmIds"></component-list>
         <span ng-if="!state.designTreeLoaded" class="component-list-load">Loading...</span>
     </div>
     <div class="design-tree col-lg-4">
@@ -15,9 +15,9 @@
     <div class="configurations-actions col-lg-4">
         <h3><span class="glyphicon glyphicon-th"></span>
             Configurations
-            <button ng-disabled="state.designTreeLoaded === false" class="btn btn-default btn-sm" ng-click="callDesert()">Calculate</button>
+            <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
         </h3>
 
-        <configuration-table></configuration-table>
+        <configuration-table ng-if="state.configurationsAvaliable"></configuration-table>
     </div>
 </div>
