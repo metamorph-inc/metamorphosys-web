@@ -13,6 +13,7 @@ angular.module('cyphy.services')
 
         this.calculateConfigurations = function (desertInput) {
             var deferred = $q.defer(),
+                inputArtifact,
                 configurations = [
                     {
                         id: 1,
@@ -59,6 +60,21 @@ angular.module('cyphy.services')
             deferred.resolve(configurations);
             return deferred.promise;
         };
+
+//        this.saveInputXmlToBlobArtifact = function (desertSystem) {
+//            var self = this,
+//                artifact = self.blobClient.createArtifact('desert-input'),
+//                inputXml = self.jsonToXml.convertToString(desertSystem);
+//            console.log('desertSystem', desertSystem);
+//            artifact.addFileAsSoftLink('desertInput.xml', inputXml, function (err, hash) {
+//                if (err) {
+//                    console.error('Could not add desert_input to artifact, err: ' + err);
+//                    return callback(err);
+//                }
+//                console.log('desertInput.xml has hash: ' + hash);
+//                callback(null, artifact, idMap);
+//            });
+//        };
 
         this.getDesertInputData = function (designStructureData) {
             var desertSystem,
