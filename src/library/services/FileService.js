@@ -73,7 +73,7 @@ angular.module('cyphy.services')
 
         this.getMetadata = function (hash) {
             var deferred = $q.defer();
-            blobClient.getMetaData(hash, function (err, metaData) {
+            blobClient.getMetadata(hash, function (err, metaData) {
                 if (err) {
                     deferred.reject(err);
                 } else {

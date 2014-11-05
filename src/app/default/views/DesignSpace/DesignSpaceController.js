@@ -52,8 +52,8 @@ angular.module('CyPhyApp')
                 .then(function (configurations) {
                     console.log(configurations);
                     //growl.warning('Configuration Table has dummy data!');
-                    //$scope.state.configurationsAvaliable = true;
-                    //$scope.dataModels.configurations = configurations;
+                    $scope.state.configurationsAvaliable = true;
+                    $scope.dataModels.configurations = configurations;
                 });
         };
     });

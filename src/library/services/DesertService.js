@@ -16,7 +16,8 @@ angular.module('cyphy.services')
                 arrayElements: {
                     Configuration: true,
                     Element: true,
-                    NaturalMember: true
+                    NaturalMember: true,
+                    AlternativeAssignment: true
                 }
             }),
             jsonToXml = new WebGMEGlobal.classes.Converters.Json2xml();
@@ -37,7 +38,10 @@ angular.module('cyphy.services')
                 })
                 .then(function (jobInfo) {
                     console.log('Job succeeded final jobInfo', jobInfo);
-                    deferred.resolve(jobInfo);
+                    return self.extractConfigurations(jobInfo, desertInput.idMap);
+                })
+                .then(function (configurations) {
+                    deferred.resolve(configurations);
                 })
                 .catch(function (err) {
                     deferred.reject('Calculating configurations failed, err: ' + err.toString());
@@ -114,7 +118,68 @@ angular.module('cyphy.services')
         };
 
         this.extractConfigurations = function (jobInfo, idMap) {
+            var deferred = $q.defer();
+            if ((jobInfo.resultHashes && jobInfo.resultHashes.all) === false) {
+                deferred.reject('JobInfo did not contain resultHashes.all');
+                return deferred.promise;
+            }
+            fileService.getMetadata(jobInfo.resultHashes.all)
+                .then(function (metadata) {
+//                    // TODO: Deal with configs when there's constraints
+//                    if (!metadata.content.hasOwnProperty('desertInput_configs.xml')) {
+//                        deferred.reject('Desert did not generate a "desertInput_configs.xml".');
+//                        return;
+//                    }
+                    if (!metadata.content.hasOwnProperty('desertInput_back.xml')) {
+                        deferred.reject('Desert did not generate a desertInput_back.xml.');
+                        return;
+                    }
 
+                    return fileService.getObject(metadata.content['desertInput_back.xml'].content);
+                })
+                .then(function (content) {
+                    var desertObject = xmlToJson.convertFromBuffer(content),
+                        desertBackSystem,
+                        j,
+                        k,
+                        cfg,
+                        elem,
+                        altAss,
+                        config,
+                        configurations = [],
+                        elemIdToPath = {};
+
+                    if (desertObject instanceof Error) {
+                        deferred.reject('Output desert XML not valid xml, err: ' + desertObject.message);
+                        return;
+                    }
+                    desertBackSystem = desertObject.DesertBackSystem;
+
+                    for (j = 0; j < desertBackSystem.Element.length; j += 1) {
+                        elem = desertBackSystem.Element[j];
+                        elemIdToPath[elem['@_id']] = idMap[elem['@externalID']];
+                    }
+                    for (j = 0; j < desertBackSystem.Configuration.length; j += 1) {
+                        cfg = desertBackSystem.Configuration[j];
+                        configurations.push({
+                            name: cfg['@name'],
+                            id: cfg['@id'],
+                            alternativeAssignments: []
+                        });
+                        config = configurations[configurations.length - 1];
+                        debugger;
+                        for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
+                            altAss = cfg.AlternativeAssignment[k];
+                            config.alternativeAssignments.push({
+                                selectedAlternative: elemIdToPath[altAss['@alternative_end_']],
+                                alternativeOf: elemIdToPath[altAss['@alternative_of_end_']]
+                            });
+                        }
+                    }
+                    deferred.resolve(configurations);
+                });
+
+            return deferred.promise;
         };
 
         this.calculateConfigurationsDummy = function (desertInput) {
