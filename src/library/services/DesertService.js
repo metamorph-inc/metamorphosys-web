@@ -1,4 +1,4 @@
-/*globals angular, console*/
+/*globals angular, console, WebGMEGlobal*/
 
 /**
  * This service contains methods for design space exploration through the Executor Client.
@@ -7,11 +7,117 @@
  */
 
 angular.module('cyphy.services')
-    .service('desertService', function ($q) {
+    .service('desertService', function ($q, $interval, fileService, executorService) {
         'use strict';
-        var CMDSTR;
+        var self = this,
+            CMDSTR,
+            xmlToJson = new WebGMEGlobal.classes.Converters.Xml2json({
+                skipWSText: true,
+                arrayElements: {
+                    Configuration: true,
+                    Element: true,
+                    NaturalMember: true
+                }
+            }),
+            jsonToXml = new WebGMEGlobal.classes.Converters.Json2xml();
 
         this.calculateConfigurations = function (desertInput) {
+            var deferred = $q.defer();
+
+            if ((desertInput.desertSystem && angular.isObject(desertInput.desertSystem) &&
+                angular.isObject(desertInput.idMap)) === false) {
+                deferred.reject('desertInput must contain a desertSystem and idMap object!');
+                return deferred.promise;
+            }
+
+            self.saveDesertInput(desertInput.desertSystem)
+                .then(function (inputHash) {
+                    console.log('Saved desertInput', fileService.getDownloadUrl(inputHash));
+                    return self.createAndRunJob(inputHash);
+                })
+                .then(function (jobInfo) {
+                    console.log('Job succeeded final jobInfo', jobInfo);
+                    deferred.resolve(jobInfo);
+                })
+                .catch(function (err) {
+                    deferred.reject('Calculating configurations failed, err: ' + err.toString());
+                });
+
+            return deferred.promise;
+        };
+
+        this.saveDesertInput = function (desertSystem) {
+            var deferred = $q.defer(),
+                artifact,
+                xmlString;
+
+            artifact = fileService.createArtifact('desert-input');
+            xmlString = jsonToXml.convertToString(desertSystem);
+
+            fileService.addFileAsSoftLinkToArtifact(artifact, 'desertInput.xml', xmlString)
+                .then(function (hash) {
+                    var execConfig = JSON.stringify({
+                            cmd: 'run_desert.cmd',
+                            resultArtifacts: [
+                                { name: 'all', resultPatterns: [] }
+                            ]
+                        }, null, 4),
+                        filesToAdd = {
+                            'executor_config.json': execConfig,
+                            'run_desert.cmd': CMDSTR
+                        };
+                    return fileService.addFilesToArtifact(artifact, filesToAdd);
+                })
+                .then(function (hashes) {
+                    return fileService.saveArtifact(artifact);
+                })
+                .then(function (artieHash) {
+                    deferred.resolve(artieHash);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Could not save DesertInput to blob, err: "' + reason + '"');
+                });
+
+            return deferred.promise;
+        };
+
+        this.createAndRunJob = function (inputHash) {
+            var deferred = $q.defer();
+            executorService.createJob({hash: inputHash, labels: []})
+                .then(function () {
+                    var stop;
+                    stop = $interval(function () {
+                        executorService.getInfo(inputHash)
+                            .then(function (jobInfo) {
+                                console.info(JSON.stringify(jobInfo, null, 4));
+                                if (jobInfo.status === 'CREATED' || jobInfo.status === 'RUNNING') {
+                                    return;
+                                }
+                                $interval.cancel(stop);
+                                if (jobInfo.status === 'SUCCESS') {
+                                    deferred.resolve(jobInfo);
+                                } else {
+                                    deferred.reject(JSON.stringify(jobInfo, null, 4));
+                                }
+                            })
+                            .catch(function (err) {
+                                $interval.cancel(stop);
+                                deferred.reject('Could not obtain jobInfo for desert' + err);
+                            });
+                    }, 200);
+                })
+                .catch(function (err) {
+                    deferred.reject('Could not create job' + err);
+                });
+
+            return deferred.promise;
+        };
+
+        this.extractConfigurations = function (jobInfo, idMap) {
+
+        };
+
+        this.calculateConfigurationsDummy = function (desertInput) {
             var deferred = $q.defer(),
                 inputArtifact,
                 configurations = [
@@ -60,21 +166,6 @@ angular.module('cyphy.services')
             deferred.resolve(configurations);
             return deferred.promise;
         };
-
-//        this.saveInputXmlToBlobArtifact = function (desertSystem) {
-//            var self = this,
-//                artifact = self.blobClient.createArtifact('desert-input'),
-//                inputXml = self.jsonToXml.convertToString(desertSystem);
-//            console.log('desertSystem', desertSystem);
-//            artifact.addFileAsSoftLink('desertInput.xml', inputXml, function (err, hash) {
-//                if (err) {
-//                    console.error('Could not add desert_input to artifact, err: ' + err);
-//                    return callback(err);
-//                }
-//                console.log('desertInput.xml has hash: ' + hash);
-//                callback(null, artifact, idMap);
-//            });
-//        };
 
         this.getDesertInputData = function (designStructureData) {
             var desertSystem,

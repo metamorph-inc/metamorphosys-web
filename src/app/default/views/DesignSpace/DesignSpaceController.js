@@ -1,7 +1,7 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $window, growl) {
+    .controller('DesignSpaceController', function ($scope, $state, $window, growl, desertService) {
         'use strict';
         var self = this,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
@@ -48,8 +48,12 @@ angular.module('CyPhyApp')
         });
 
         $scope.calculateConfigurations = function () {
-            //TODO: call desert using $scope.dataModels.desertInput
-            growl.warning('Configuration Table has dummy data!');
-            $scope.state.configurationsAvaliable = true;
+            desertService.calculateConfigurations($scope.dataModels.desertInput)
+                .then(function (configurations) {
+                    console.log(configurations);
+                    //growl.warning('Configuration Table has dummy data!');
+                    //$scope.state.configurationsAvaliable = true;
+                    //$scope.dataModels.configurations = configurations;
+                });
         };
     });

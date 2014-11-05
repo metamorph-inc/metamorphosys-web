@@ -1,6 +1,5 @@
 /*globals angular, WebGMEGlobal, console*/
 
-
 /**
  * @author pmeijer / https://github.com/pmeijer
  */
@@ -8,6 +7,31 @@
 angular.module('cyphy.services')
     .service('executorService', function ($q) {
         'use strict';
-        var self = this,
-            executorClient = new WebGMEGlobal.classes.ExecutorClient();
+        var executorClient = new WebGMEGlobal.classes.ExecutorClient();
+
+        this.createJob = function (jobData) {
+            var deferred = $q.defer();
+            executorClient.createJob(jobData, function (err, jobInfo) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(jobInfo);
+                }
+            });
+
+            return deferred.promise;
+        };
+
+        this.getInfo = function (jobHash) {
+            var deferred = $q.defer();
+            executorClient.getInfo(jobHash, function (err, jobInfo) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(jobInfo);
+                }
+            });
+
+            return deferred.promise;
+        };
     });
