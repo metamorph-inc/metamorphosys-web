@@ -39,6 +39,7 @@ require('./TestBenchDetails/TestBenchDetails');
 require('./TestBenchList/TestBenchList');
 
 require('./ConfigurationTable/ConfigurationTable');
+require('./ConfigurationSetSelector/ConfigurationSetSelector');
 
 
 

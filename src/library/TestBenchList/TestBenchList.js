@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('TestBenchListController', function ($scope, $window, $modal, growl, testBenchService) {
+    .controller('TestBenchListController', function ($scope, $window, $location, $modal, growl, testBenchService) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -50,8 +50,9 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                growl.warning('Not Implemented!');
-                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                var newUrl = '/testBench/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
+                console.log(newUrl);
+                $location.path(newUrl);
             },
 
             itemContextmenuRenderer: function (e, item) {
@@ -207,7 +208,7 @@ angular.module('cyphy.components')
                 listItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: 'Open Test Bench',
+                    toolTip: 'Open Test-Bench View',
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
@@ -246,10 +247,9 @@ angular.module('cyphy.components')
                 //console.warn(updateObject);
                 if (updateObject.type === 'load') {
                     serviceData2ListItem(updateObject.data);
-
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
-
+                    $scope.$apply();
                 } else if (updateObject.type === 'unload') {
                     if (testBenchItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -258,9 +258,9 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-//                        testBenchService.cleanUpRegion(context, context.regionId + '_watchTestBench_' + updateObject.id);
                         delete testBenchItems[updateObject.id];
                     }
+                    $scope.$apply();
                 } else {
                     throw new Error(updateObject);
                 }
@@ -270,7 +270,6 @@ angular.module('cyphy.components')
                     for (testBenchId in data.testBenches) {
                         if (data.testBenches.hasOwnProperty(testBenchId)) {
                             serviceData2ListItem(data.testBenches[testBenchId]);
-                            //addTestBenchWatcher(testBenchId);
                         }
                     }
                 });

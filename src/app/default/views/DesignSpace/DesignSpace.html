@@ -1,12 +1,13 @@
-<div>
+<div class="design-space">
     <h1>Design Space</h1>
-    <div class="component-list col-lg-4">
+    <div class="design-space-component-list col-lg-4">
         <h3><span class="fa fa-puzzle-piece"></span>Used Components</h3>
-        <component-list ng-if="state.designTreeLoaded"
+        <component-list ng-if="state.designTreeLoaded && state.hasComponents"
                         connection-id="'my-db-connection-id'"
                         workspace-id=workspaceId
                         avm-ids="dataModels.avmIds"></component-list>
         <span ng-if="!state.designTreeLoaded" class="component-list-load">Loading...</span>
+        <span ng-if="!state.hasComponents" class="component-list-load">No components in design..</span>
     </div>
     <div class="design-tree col-lg-4">
         <h3><span class="fa fa-cubes"></span>Design Space Tree</h3>
@@ -15,9 +16,15 @@
     <div class="configurations-actions col-lg-4">
         <h3><span class="glyphicon glyphicon-th"></span>
             Configurations
-            <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
+            <span class="configuration-buttons">
+                <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
+                <button ng-disabled="dataModels.configurations.length === 0" class="btn btn-default btn-sm" ng-click="saveConfigurations()">Save Set</button>
+                <configuration-set-selector design-id="designId"
+                                            connection-id="'my-db-connection-id'"
+                                            set-name="dataModels.setName"></configuration-set-selector>
+            </span>
         </h3>
-
-        <configuration-table ng-if="state.configurationsAvaliable" configurations="dataModels.configurations"></configuration-table>
+        <div ng-if="dataModels.configurations.length === 0">{{state.configurationStatus}}</div>
+        <configuration-table ng-if="dataModels.configurations.length > 0" configurations="dataModels.configurations"></configuration-table>
     </div>
 </div>

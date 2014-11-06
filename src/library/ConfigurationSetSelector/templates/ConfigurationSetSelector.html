@@ -1,0 +1,12 @@
+<span class="configuration-set-selector">
+    <div class="btn-group" dropdown is-open="dataModel.isOpen">
+        <button type="button" class="btn btn-default btn-sm dropdown-toggle" ng-disabled="dataModel.dataAvaliable === false">
+            Load Set <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="configurationSet in dataModel.configurationSets">
+                <a ng-click="loadConfigurations(configurationSet.id, configurationSet.name)">{{configurationSet.name}}</a>
+            </li>
+        </ul>
+    </div>
+</span>

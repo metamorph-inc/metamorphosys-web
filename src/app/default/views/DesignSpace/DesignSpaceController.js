@@ -14,16 +14,28 @@ angular.module('CyPhyApp')
         $scope.state = {
             designTreeLoaded: false,
             desertInputAvaliable: false,
-            configurationsAvaliable: false
+            configurationStatus: 'Select an action above...',
+            hasComponents: true
         };
+
         $scope.dataModels = {
             avmIds: {},
             desertInput: {},
-            configurations: []
+            configurations: [],
+            setName: null
         };
+
+        $scope.$watch(function (scope) { return scope.dataModels.configurations; },
+            function () {
+                $scope.$broadcast('newConfigurations', {
+                    configurations: $scope.dataModels.configurations,
+                    setName: $scope.dataModels.setName
+                });
+            });
 
         $scope.$on('designTreeLoaded', function (event, data) {
             $scope.dataModels.avmIds = data;
+            $scope.state.hasComponents = Object.keys(data).length > 0;
             $scope.state.designTreeLoaded = true;
         });
 
@@ -47,13 +59,33 @@ angular.module('CyPhyApp')
             console.log(data);
         });
 
+        $scope.$on('configurationsLoaded', function (event, data) {
+            $scope.dataModels.configurations = data.configurations;
+            $scope.dataModels.setName = data.setName;
+            console.log(data);
+            if (data.configurations.length === 0) {
+                growl.warning('There were no configurations in ' + data.setName);
+                $scope.state.configurationStatus = 'Select an action above...';
+            }
+        });
+
+        $scope.$on('selectionExposed', function (event, data) {
+            growl.warning('Not implemented ' + data.toString());
+        });
+
         $scope.calculateConfigurations = function () {
+            growl.info('Calculating configurations. Please wait..');
+            $scope.state.configurationStatus = 'Calculating..';
+            $scope.dataModels.configurations = [];
             desertService.calculateConfigurations($scope.dataModels.desertInput)
                 .then(function (configurations) {
                     console.log(configurations);
-                    //growl.warning('Configuration Table has dummy data!');
-                    $scope.state.configurationsAvaliable = true;
                     $scope.dataModels.configurations = configurations;
+                    $scope.dataModels.setName = 'calculated';
                 });
+        };
+
+        $scope.saveConfigurations = function () {
+            $scope.$broadcast('exposeSelection');
         };
     });

@@ -443,33 +443,27 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        // FIXME: watchConfigurationSets and watchConfigurations should probably go to a DesertConfiguration-Service,
-        // with a related controller DesertConfigurationSetList, where details are configurations.
         /**
          *  Watches the generated DesertConfigurationSets inside a Design.
-         * @param parentContext - context of controller.
-         * @param designId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId - path to design of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchConfigurationSets = function (parentContext, designId, updateListener) {
             var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchConfigurationSets_' + designId,
                 data = {
-                    name: null,
-                    id: designId,
-                    regionId: null,
-                    cfgSets: {}
+                    regionId: regionId,
+                    configurationSets: {}
                 },
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
-                    regionId: parentContext.regionId + '_watchConfigurationSets_' + designId
+                    regionId: regionId
                 };
-            data.regionId = context.regionId;
+
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            console.log('Added new watcher: ', watchers);
-            nodeService.logContext(context);
+            watchers[parentContext.regionId][regionId] = context;
             nodeService.getMetaNodes(context).then(function (meta) {
                 nodeService.loadNode(context, designId)
                     .then(function (designNode) {
@@ -477,24 +471,23 @@ angular.module('cyphy.services')
                         designNode.loadChildren(context)
                             .then(function (childNodes) {
                                 var i,
+                                    childId,
                                     onUpdate = function (id) {
-                                        var newName = this.getAttribute('name'),
-                                            newDesc = this.getAttribute('INFO');
-                                        console.warn(newName);
-                                        if (newName !== data.cfgSets[id].name ||
-                                            newDesc !== data.cfgSets[id].description) {
-                                            //data.cfgSets[id].name = newName;
-                                            //console.warn('changed');
-                                            updateListener(true);
+                                        var newName = this.getAttribute('name');
+                                        if (newName !== data.configurationSets[id].name) {
+                                            data.configurationSets[id].name = newName;
+                                            updateListener({id: id, type: 'update', data: data.configurationSets[id]});
                                         }
                                     },
                                     onUnload = function (id) {
-                                        updateListener(true);
+                                        delete data.configurationSets[id];
+                                        updateListener({id: id, type: 'unload', data: null});
                                     };
                                 for (i = 0; i < childNodes.length; i += 1) {
                                     if (childNodes[i].isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                        data.cfgSets[childNodes[i].getId()] = {
-                                            id: childNodes[i].getId(),
+                                        childId = childNodes[i].getId();
+                                        data.configurationSets[childId] = {
+                                            id: childId,
                                             name: childNodes[i].getAttribute('name'),
                                             description: childNodes[i].getAttribute('INFO')
                                         };
@@ -502,21 +495,109 @@ angular.module('cyphy.services')
                                         childNodes[i].onUnload(onUnload);
                                     }
                                 }
-                                //console.log('cfgSets', cfgSets);
+
                                 designNode.onNewChildLoaded(function (newNode) {
                                     if (newNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                        updateListener(true);
+                                        childId = newNode.getId();
+                                        data.configurationSets[childId] = {
+                                            id: childId,
+                                            name: newNode.getAttribute('name'),
+                                            description: newNode.getAttribute('INFO')
+                                        };
+                                        newNode.onUpdate(onUpdate);
+                                        newNode.onUnload(onUnload);
+                                        updateListener({id: childId, type: 'load', data: data.configurationSets[childId]});
                                     }
                                 });
                                 deferred.resolve(data);
                             });
-                        designNode.onUpdate(function (id) {
-                            var newName = this.getAttribute('name');
-                            if (newName !== data.name) {
-                                data.name = newName;
-                                updateListener(true);
-                            }
-                        });
+                    });
+            });
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches the generated DesertConfigurationSets inside a Design.
+         * @param {object} parentContext - context of controller.
+         * @param {string} configurationSetId - path to design of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
+         */
+        this.watchConfigurations = function (parentContext, configurationSetId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchConfigurations_' + configurationSetId,
+                data = {
+                    regionId: regionId,
+                    configurations: {}
+                },
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][regionId] = context;
+
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, configurationSetId)
+                    .then(function (cfgSetNode) {
+                        cfgSetNode.loadChildren(context)
+                            .then(function (childNodes) {
+                                var i,
+                                    childId,
+                                    onUpdate = function (id) {
+                                        var newName = this.getAttribute('name'),
+                                            newAltAss = this.getAttribute('AlternativeAssignments'),
+                                            hadChanges = false;
+
+                                        if (newName !== data.configurations[id].name) {
+                                            data.configurations[id].name = newName;
+                                            hadChanges = true;
+                                        }
+                                        if (newAltAss !== data.configurations[id].alternativeAssignments) {
+                                            data.configurations[id].alternativeAssignments = newAltAss;
+                                            hadChanges = true;
+                                        }
+
+                                        if (hadChanges) {
+                                            updateListener({id: id, type: 'update', data: data.configurations[id]});
+                                        }
+                                    },
+                                    onUnload = function (id) {
+                                        if (data.configurations[id]) {
+                                            delete data.configurations[id];
+                                        }
+                                        updateListener({id: id, type: 'unload', data: null});
+                                    };
+                                for (i = 0; i < childNodes.length; i += 1) {
+                                    childId = childNodes[i].getId();
+                                    if (childNodes[i].isMetaTypeOf(meta.DesertConfiguration)) {
+                                        data.configurations[childId] = {
+                                            id: childId,
+                                            name: childNodes[i].getAttribute('name'),
+                                            alternativeAssignments: childNodes[i].getAttribute('AlternativeAssignments')
+                                        };
+                                        childNodes[i].onUpdate(onUpdate);
+                                        childNodes[i].onUnload(onUnload);
+                                    }
+                                }
+
+                                cfgSetNode.onNewChildLoaded(function (newNode) {
+                                    if (newNode.isMetaTypeOf(meta.DesertConfiguration)) {
+                                        childId = newNode.getId();
+                                        data.configurations[childId] = {
+                                            id: childId,
+                                            name: newNode.getAttribute('name'),
+                                            alternativeAssignments: newNode.getAttribute('AlternativeAssignments')
+                                        };
+                                        newNode.onUpdate(onUpdate);
+                                        newNode.onUnload(onUnload);
+                                        updateListener({id: childId, type: 'load', data: data.configurations[childId]});
+                                    }
+                                });
+
+                                deferred.resolve(data);
+                            });
                     });
             });
             return deferred.promise;

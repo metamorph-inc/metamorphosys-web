@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, growl, workspaceService, fileService) {
+    .controller('WorkspaceListController', function ($scope, $window, $location, growl, workspaceService, fileService) {
         'use strict';
         var self = this,
             items = [],
@@ -45,12 +45,11 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
-                document.location.hash = '/workspaceDetails/' + item.id.replace(/\//g, '-');
+                $location.path('/workspaceDetails/' + item.id.replace(/\//g, '-'));
             },
 
             itemContextmenuRenderer: function (e, item) {
-                console.log('Contextmenu was triggered for node:', item);
+                //console.log('Contextmenu was triggered for node:', item);
 
                 return [
                     {
@@ -60,7 +59,10 @@ angular.module('cyphy.components')
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit'
+                                iconClass: 'glyphicon glyphicon-edit',
+                                action: function () {
+                                    $window.open('/?project=ADMEditor&activeObject=' + item.id, '_blank');
+                                }
                             },
                             {
                                 id: 'duplicateWorkspace',

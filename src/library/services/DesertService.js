@@ -167,7 +167,7 @@ angular.module('cyphy.services')
                             alternativeAssignments: []
                         });
                         config = configurations[configurations.length - 1];
-                        debugger;
+
                         for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
                             altAss = cfg.AlternativeAssignment[k];
                             config.alternativeAssignments.push({

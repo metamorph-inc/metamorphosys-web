@@ -44,7 +44,8 @@ var argv = require('yargs').argv,
             'src/library/DesignTree/*.js',
             'src/library/TestBenchList/*.js',
             'src/library/TestBenchDetails/*.js',
-            'src/library/ConfigurationTable/*.js'
+            'src/library/ConfigurationTable/*.js',
+            'src/library/ConfigurationSetSelector/*.js'
         ],
         libraryTemplates: [
             'src/library/**/templates/**/*.html'

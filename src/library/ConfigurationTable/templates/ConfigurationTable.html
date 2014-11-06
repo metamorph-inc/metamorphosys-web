@@ -1,13 +1,12 @@
 <div class="configuration-table">
 
-    <!-- ========== template files ========== -->
     <script type="text/ng-template" id="tableCell.html">
         <a ng-click="cfgClicked(item)" tooltip="View in tree" tooltip-placement="right"> {{item.name}} </a>
     </script>
 
     <p class="text-muted">
-        Cars Selected: <span class="badge">{{ dataModel.selected.length }}</span> of
-        <span class="badge">{{ dataModel.configurations.length }}</span>
+        Selected: <span class="badge">{{ dataModel.selected.length }}</span> of
+        <span class="badge">{{ dataModel.configurations.length }}</span> in {{dataModel.setName}}
     </p>
 
     <!-- ========== Usage ========== -->

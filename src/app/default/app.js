@@ -36,6 +36,11 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 url: "/designSpace/:workspaceId/:designId",
                 templateUrl: "/default/templates/DesignSpace.html",
                 controller: "DesignSpaceController"
+            })
+            .state('testBench', {
+                url: "/testBench/:workspaceId/:testBenchId",
+                templateUrl: "/default/templates/TestBench.html",
+                controller: "TestBenchController"
             });
     })
     .run(function ($state, dataStoreService, projectService) {
@@ -56,3 +61,4 @@ var CyPhyApp = angular.module('CyPhyApp', [
 require('./views/Workspaces/WorkspacesController');
 require('./views/WorkspaceDetails/WorkspaceDetailsController');
 require('./views/DesignSpace/DesignSpaceController');
+require('./views/TestBench/TestBenchController');

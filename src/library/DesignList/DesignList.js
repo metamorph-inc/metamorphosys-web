@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignListController', function ($scope, $window, $modal, designService, growl) {
+    .controller('DesignListController', function ($scope, $window, $location, $modal, designService, growl) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -14,7 +14,9 @@ angular.module('cyphy.components')
             serviceData2ListItem,
             config,
             addConfigurationWatcher,
-            context;
+            context,
+            itemClickFn,
+            itemClickTip;
 
         console.log('DesignListController');
         this.getConnectionId = function () {
@@ -33,6 +35,18 @@ angular.module('cyphy.components')
             throw new Error('connectionId must be defined and it must be a string');
         }
 
+        if ($scope.usedByTestBench) {
+            itemClickFn = function (event, item) {
+                $scope.$emit('topLevelSystemUnderTestSet', item);
+            };
+            itemClickTip = 'Set As Top Level System Under Test';
+        } else {
+            itemClickFn = function (event, item) {
+                var newUrl = '/designSpace/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
+                $location.path(newUrl);
+            };
+            itemClickTip = 'Open Design Space View';
+        }
         // Configuration for the item list ui component.
         config = {
 
@@ -48,11 +62,7 @@ angular.module('cyphy.components')
                 console.log('Sort happened', jQEvent, ui);
             },
 
-            itemClick: function (event, item) {
-                var newUrl = '/designSpace/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
-                console.log(newUrl);
-                document.location.hash = newUrl;
-            },
+            itemClick: itemClickFn,
 
             itemContextmenuRenderer: function (e, item) {
                 return [
@@ -183,7 +193,7 @@ angular.module('cyphy.components')
                 listItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: 'Open item',
+                    toolTip: itemClickTip,
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
@@ -251,6 +261,7 @@ angular.module('cyphy.components')
                     addConfigurationWatcher(updateObject.id);
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
+                    $scope.$apply();
                 } else if (updateObject.type === 'unload') {
                     if (designItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -262,6 +273,7 @@ angular.module('cyphy.components')
                         designService.cleanUpRegion(context, context.regionId + '_watchNbrOfConfigurations_' + updateObject.id);
                         delete designItems[updateObject.id];
                     }
+                    $scope.$apply();
                 } else {
                     throw new Error(updateObject);
                 }
@@ -298,7 +310,8 @@ angular.module('cyphy.components')
             restrict: 'E',
             scope: {
                 workspaceId: '=workspaceId',
-                connectionId: '=connectionId'
+                connectionId: '=connectionId',
+                usedByTestBench: '=usedByTestBench'
             },
             replace: true,
             templateUrl: '/cyphy-components/templates/DesignList.html',

@@ -83,6 +83,7 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
+                        console.warn('ComponentService found update');
                         updateListener({id: id, type: 'update', data: data.components[id]});
                     }
                 },
@@ -245,7 +246,7 @@ angular.module('cyphy.services')
                                 if (newChild.isMetaTypeOf(meta.DomainModel)) {
                                     data.domainModels[childId] = {
                                         id: childId,
-                                        type: childNode.getAttribute('Type')
+                                        type: newChild.getAttribute('Type')
                                     };
                                     newChild.onUpdate(onDomainModelUpdate);
                                     newChild.onUnload(onDomainModelUnload);
