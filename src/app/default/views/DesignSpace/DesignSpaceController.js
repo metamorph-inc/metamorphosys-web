@@ -1,7 +1,7 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $window, $modal, growl, desertService) {
+    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, growl, desertService) {
         'use strict';
         var self = this,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
@@ -24,16 +24,6 @@ angular.module('CyPhyApp')
             configurations: [],
             setName: null
         };
-
-//        $scope.$watch(function (scope) {
-//                return scope.dataModels.configurations;
-//            },
-//            function () {
-//                $scope.$broadcast('newConfigurations', {
-//                    configurations: $scope.dataModels.configurations,
-//                    setName: $scope.dataModels.setName
-//                });
-//            });
 
         $scope.$on('designTreeLoaded', function (event, data) {
             $scope.dataModels.avmIds = data;
@@ -62,13 +52,16 @@ angular.module('CyPhyApp')
         });
 
         $scope.$on('configurationsLoaded', function (event, data) {
-            $scope.dataModels.configurations = data.configurations;
-            $scope.dataModels.setName = data.setName;
-            console.log(data);
-            if (data.configurations.length === 0) {
-                growl.warning('There were no configurations in ' + data.setName);
-                $scope.state.configurationStatus = 'Select an action above...';
-            }
+            $scope.dataModels.configurations = [];
+            $timeout(function () {
+                $scope.dataModels.setName = data.setName;
+                $scope.dataModels.configurations = data.configurations;
+                console.log(data);
+                if (data.configurations.length === 0) {
+                    growl.warning('There were no configurations in ' + data.setName);
+                    $scope.state.configurationStatus = 'Select an action above...';
+                }
+            });
         });
 
         $scope.calculateConfigurations = function () {
@@ -93,9 +86,10 @@ angular.module('CyPhyApp')
                 growl.warning('No selected configurations!');
                 return;
             }
+
             modalInstance = $modal.open({
                 templateUrl: '/default/templates/SaveConfigurationSet.html',
-                controller: 'DesignEditController',
+                controller: 'SaveConfigurationSetController',
                 //size: size,
                 resolve: { data: function () {
                     return data;
@@ -114,7 +108,6 @@ angular.module('CyPhyApp')
     })
     .controller('SaveConfigurationSetController', function ($scope, $modalInstance, data) {
         'use strict';
-        console.warn(data);
         $scope.data = {
             description: null,
             name: null,

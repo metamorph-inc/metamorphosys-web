@@ -20,11 +20,12 @@
                 <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
                 <button ng-disabled="dataModels.configurations.length === 0" class="btn btn-default btn-sm" ng-click="saveConfigurations()">Save Set</button>
                 <configuration-set-selector design-id="designId"
-                                            connection-id="'my-db-connection-id'"
-                                            set-name="dataModels.setName"></configuration-set-selector>
+                                            connection-id="'my-db-connection-id'"></configuration-set-selector>
             </span>
         </h3>
         <div ng-if="dataModels.configurations.length === 0">{{state.configurationStatus}}</div>
-        <configuration-table ng-if="dataModels.configurations.length > 0" configurations="dataModels.configurations"></configuration-table>
+        <configuration-table ng-if="dataModels.configurations.length > 0"
+                             configurations="dataModels.configurations"
+                             set-name="dataModels.setName"></configuration-table>
     </div>
 </div>

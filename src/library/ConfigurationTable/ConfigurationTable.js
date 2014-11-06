@@ -14,9 +14,6 @@ angular.module('cyphy.components')
             setName: $scope.setName
         };
 
-//        $scope.$watch(function (scope) { return scope.dataModel.configurations; },
-//            function () { console.info('Watch triggered configurations!', $scope.dataModel.configurations); });
-
         $scope.tableColumnDefinition = [
             {
                 columnHeaderDisplayName: 'Name',
@@ -24,12 +21,6 @@ angular.module('cyphy.components')
                 sortKey: 'name'
             }
         ];
-
-        $scope.$on('newConfigurations', function (event, data) {
-            $scope.dataModel.configurations = data.configurations;
-            $scope.dataModel.setName = data.setName;
-            console.log('newConfigurations', data);
-        });
 
         $scope.$on('exposeSelection', function (event, data) {
             $scope.$emit('selectionExposed', $scope.dataModel.selected);
