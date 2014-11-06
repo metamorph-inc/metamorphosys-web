@@ -39,6 +39,9 @@ angular.module('cyphy.services')
             throw new Error('Not implemented yet.');
         };
 
+//        this.getDesignNode = function (context, designId) {
+//            nodeService.l
+//        };
         /**
          *  Watches all containers (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.

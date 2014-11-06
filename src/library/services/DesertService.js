@@ -155,9 +155,11 @@ angular.module('cyphy.services')
                     }
                     desertBackSystem = desertObject.DesertBackSystem;
 
-                    for (j = 0; j < desertBackSystem.Element.length; j += 1) {
-                        elem = desertBackSystem.Element[j];
-                        elemIdToPath[elem['@_id']] = idMap[elem['@externalID']];
+                    if (desertBackSystem.Element) {
+                        for (j = 0; j < desertBackSystem.Element.length; j += 1) {
+                            elem = desertBackSystem.Element[j];
+                            elemIdToPath[elem['@_id']] = idMap[elem['@externalID']];
+                        }
                     }
                     for (j = 0; j < desertBackSystem.Configuration.length; j += 1) {
                         cfg = desertBackSystem.Configuration[j];
@@ -167,13 +169,14 @@ angular.module('cyphy.services')
                             alternativeAssignments: []
                         });
                         config = configurations[configurations.length - 1];
-
-                        for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
-                            altAss = cfg.AlternativeAssignment[k];
-                            config.alternativeAssignments.push({
-                                selectedAlternative: elemIdToPath[altAss['@alternative_end_']],
-                                alternativeOf: elemIdToPath[altAss['@alternative_of_end_']]
-                            });
+                        if (cfg.AlternativeAssignment) {
+                            for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
+                                altAss = cfg.AlternativeAssignment[k];
+                                config.alternativeAssignments.push({
+                                    selectedAlternative: elemIdToPath[altAss['@alternative_end_']],
+                                    alternativeOf: elemIdToPath[altAss['@alternative_of_end_']]
+                                });
+                            }
                         }
                     }
                     deferred.resolve(configurations);

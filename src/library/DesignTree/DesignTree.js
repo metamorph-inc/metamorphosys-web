@@ -46,13 +46,15 @@ angular.module('cyphy.components')
             },
             nodeClick: function ( e, node ) {
                 console.log( 'Node was clicked:', node, $scope );
-            }
+            },
+            disableManualSelection: true
 //            nodeDblclick: function ( e, node ) {
 //                console.log( 'Node was double-clicked:', node );
 //            },
 //            nodeExpanderClick: function ( e, node, isExpand ) {
 //                console.log( 'Expander was clicked for node:', node, isExpand );
 //            }
+
         };
 
         rootNode = {

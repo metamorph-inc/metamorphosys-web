@@ -1,9 +1,10 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, growl, desertService) {
+    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, growl, desertService, designService) {
         'use strict';
         var self = this,
+            context,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
             designId = $state.params.designId.replace(/-/g, '/');
 
@@ -11,7 +12,22 @@ angular.module('CyPhyApp')
         $scope.connectionId = 'my-db-connection-id';
         $scope.workspaceId = workspaceId;
         $scope.designId = designId;
+
+        // Check for valid connectionId and register clean-up on destroy event.
+//        if ($scope.connectionId && angular.isString($scope.connectionId)) {
+//            context = {
+//                db: $scope.connectionId,
+//                regionId: 'DesignSpaceController' + (new Date()).toISOString()
+//            };
+//            $scope.$on('$destroy', function () {
+//                designService.cleanUpAllRegions(context);
+//            });
+//        } else {
+//            throw new Error('connectionId must be defined and it must be a string');
+//        }
+
         $scope.state = {
+            designNodeLoaded: false,
             designTreeLoaded: false,
             desertInputAvaliable: false,
             configurationStatus: 'Select an action above...',
@@ -22,7 +38,12 @@ angular.module('CyPhyApp')
             avmIds: {},
             desertInput: {},
             configurations: [],
-            setName: null
+            setName: null,
+            design: {
+                name: null,
+                description: null,
+                node: null
+            }
         };
 
         $scope.$on('designTreeLoaded', function (event, data) {
@@ -105,6 +126,22 @@ angular.module('CyPhyApp')
                 console.log('Modal dismissed at: ' + new Date());
             });
         });
+
+//        designService.registerWatcher(context, function (destroyed) {
+//
+//            if (destroyed) {
+//                console.warn('destroy event raised');
+//                // Data not (yet) avaliable.
+//                // TODO: display this to the user.
+//                return;
+//            }
+//            console.info('initialize event raised');
+//
+//            designService.getDesignNode(context, $scope.designId)
+//                .then(function (designNode) {
+//
+//                });
+//        });
     })
     .controller('SaveConfigurationSetController', function ($scope, $modalInstance, data) {
         'use strict';

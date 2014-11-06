@@ -13,7 +13,7 @@ angular.module('cyphy.services')
         'use strict';
 
         /**
-         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
+         * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
          * @param {string} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
@@ -104,7 +104,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        /** TODO: Watch domainPorts inside Connectors and check if properties are derived.
+        /** TODO: Watch domainPorts inside Connectors
          *  Watches the interfaces (Properties, Connectors and DomainPorts) of a model.
          * @param {string} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
