@@ -543,14 +543,14 @@ angular.module('cyphy.services')
                                         if (newName !== data.configurationSets[id].name) {
                                             data.configurationSets[id].name = newName;
                                             $timeout(function () {
-                                                updateListener({id: id, type: 'update', data: data.configurationSets[id]});
+                                                updateListener({id: id, type: 'update', data: data});
                                             });
                                         }
                                     },
                                     onUnload = function (id) {
                                         delete data.configurationSets[id];
                                         $timeout(function () {
-                                            updateListener({id: id, type: 'unload', data: null});
+                                            updateListener({id: id, type: 'unload', data: data});
                                         });
                                     };
                                 for (i = 0; i < childNodes.length; i += 1) {
@@ -577,7 +577,7 @@ angular.module('cyphy.services')
                                         newNode.onUpdate(onUpdate);
                                         newNode.onUnload(onUnload);
                                         $timeout(function () {
-                                            updateListener({id: childId, type: 'load', data: data.configurationSets[childId]});
+                                            updateListener({id: childId, type: 'load', data: data});
                                         });
                                     }
                                 });

@@ -39,7 +39,7 @@ angular.module('cyphy.components')
             }
 
             designService.watchConfigurationSets(context, $scope.designId, function (updateObject) {
-                //console.warn(updateObject);
+                $scope.dataModel.dataAvaliable = Object.keys(updateObject.data.configurationSets).length > 0;
             })
                 .then(function (data) {
                     $scope.dataModel.configurationSets = data.configurationSets;
