@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.services')
-    .service('testBenchService', function ($q, nodeService, baseCyPhyService) {
+    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -75,12 +75,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.testBenches[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.testBenches[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.testBenches[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -123,7 +127,9 @@ angular.module('cyphy.services')
                                 };
                                 newChild.onUnload(onUnload);
                                 newChild.onUpdate(onUpdate);
-                                updateListener({id: testBenchId, type: 'load', data: data.testBenches[testBenchId]});
+                                $timeout(function () {
+                                    updateListener({id: testBenchId, type: 'load', data: data.testBenches[testBenchId]});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -194,7 +200,9 @@ angular.module('cyphy.services')
                     var index = data.containerIds.indexOf(id);
                     if (index > -1) {
                         data.containerIds.splice(index, 1);
-                        updateListener({id: id, type: 'unload', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     }
                 };
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -214,7 +222,9 @@ angular.module('cyphy.services')
                                 testBenchNode.onNewChildLoaded(function (newChild) {
                                     data.containerIds.push(newChild.getId());
                                     newChild.onUnload(onUnload);
-                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data});
+                                    });
                                 });
                                 deferred.resolve(data);
                             });

@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('workspaceService', function ($q, nodeService, baseCyPhyService) {
+    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -80,12 +80,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.workspaces[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.workspaces[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.workspaces[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -120,7 +124,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onUpdate);
                                     newChild.onUnload(onUnload);
-                                    updateListener({id: wsId, type: 'load', data: data.workspaces[wsId]});
+                                    $timeout(function () {
+                                        updateListener({id: wsId, type: 'load', data: data.workspaces[wsId]});
+                                    });
                                 }
                             });
                             deferred.resolve(data);
@@ -157,7 +163,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -172,12 +180,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -210,7 +222,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });
@@ -254,7 +268,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -269,12 +285,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ADMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.Container)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -310,7 +330,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ADMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });
@@ -354,7 +376,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -369,12 +393,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ATMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.AVMTestBenchModel)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -407,7 +435,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ATMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });

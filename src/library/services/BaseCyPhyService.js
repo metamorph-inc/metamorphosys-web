@@ -9,7 +9,7 @@
 
 
 angular.module('cyphy.services')
-    .service('baseCyPhyService', function ($q, nodeService) {
+    .service('baseCyPhyService', function ($q, $timeout, nodeService) {
         'use strict';
 
         /**
@@ -149,12 +149,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onPropertyUnload = function (id) {
                     delete data.properties[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 onConnectorUpdate = function (id) {
                     var newName = this.getAttribute('name'),
@@ -164,12 +168,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onConnectorUnload = function (id) {
                     delete data.connectors[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 onPortUpdate = function (id) {
                     var newName = this.getAttribute('name'),
@@ -189,12 +197,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onPortUnload = function (id) {
                     delete data.ports[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 isPropertyDerived = function (node) {
                     return node.getCollectionPaths('dst').length > 0;
@@ -256,7 +268,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onPropertyUpdate);
                                     newChild.onUnload(onPropertyUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 } else if (newChild.isMetaTypeOf(meta.Connector)) {
                                     data.connectors[childId] = {
                                         id: childId,
@@ -265,7 +279,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onConnectorUpdate);
                                     newChild.onUnload(onConnectorUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                     ///queueList.push(childNode.loadChildren(childNode));
                                 } else if (newChild.isMetaTypeOf(meta.DomainPort)) {
                                     data.ports[childId] = {
@@ -276,7 +292,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onPortUpdate);
                                     newChild.onUnload(onPortUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 }
                             });
 

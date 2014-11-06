@@ -217,12 +217,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onDomainModelUnload = function (id) {
                     delete data.domainModels[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -256,7 +260,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onDomainModelUpdate);
                                     newChild.onUnload(onDomainModelUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 }
                             });
 

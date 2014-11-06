@@ -249,7 +249,6 @@ angular.module('cyphy.components')
                     serviceData2ListItem(updateObject.data);
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
-                    $scope.$apply();
                 } else if (updateObject.type === 'unload') {
                     if (testBenchItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -260,7 +259,6 @@ angular.module('cyphy.components')
                         }
                         delete testBenchItems[updateObject.id];
                     }
-                    $scope.$apply();
                 } else {
                     throw new Error(updateObject);
                 }

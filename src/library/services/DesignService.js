@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('designService', function ($q, nodeService, baseCyPhyService) {
+    .service('designService', function ($q, $timeout, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -70,12 +70,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.designs[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.designs[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.designs[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -112,7 +116,9 @@ angular.module('cyphy.services')
                                 };
                                 newChild.onUnload(onUnload);
                                 newChild.onUpdate(onUpdate);
-                                updateListener({id: designId, type: 'load', data: data.designs[designId]});
+                                $timeout(function () {
+                                    updateListener({id: designId, type: 'load', data: data.designs[designId]});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -187,16 +193,22 @@ angular.module('cyphy.services')
                     var cfgDeferred = $q.defer(),
                         resultOnUnload = function (id) {
                             data.counters.results -= 1;
-                            updateListener({id: id, type: 'unload', data: data.counters});
+                            $timeout(function () {
+                                updateListener({id: id, type: 'unload', data: data});
+                            });
                         };
                     // Count this set and add an unload handle.
                     data.counters.configurations += 1;
                     if (wasCreated) {
-                        updateListener({id: cfgNode.getId(), type: 'load', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: cfgNode.getId(), type: 'load', data: data});
+                        });
                     }
                     cfgNode.onUnload(function (id) {
                         data.counters.configurations -= 1;
-                        updateListener({id: id, type: 'unload', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     });
                     cfgNode.loadChildren().then(function (children) {
                         var i,
@@ -211,7 +223,9 @@ angular.module('cyphy.services')
                         cfgNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.Result)) {
                                 data.counters.results += 1;
-                                updateListener({id: newChild.getId(), type: 'load', data: data.counters});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                });
                                 childNode.onUnload(resultOnUnload);
                             }
                         });
@@ -225,11 +239,15 @@ angular.module('cyphy.services')
                     // Count this set and add an unload handle.
                     data.counters.sets += 1;
                     if (wasCreated) {
-                        updateListener({id: setNode.getId(), type: 'load', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: setNode.getId(), type: 'load', data: data});
+                        });
                     }
                     setNode.onUnload(function (id) {
                         data.counters.sets -= 1;
-                        updateListener({id: id, type: 'unload', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     });
                     setNode.loadChildren().then(function (children) {
                         var i,
@@ -476,12 +494,16 @@ angular.module('cyphy.services')
                                         var newName = this.getAttribute('name');
                                         if (newName !== data.configurationSets[id].name) {
                                             data.configurationSets[id].name = newName;
-                                            updateListener({id: id, type: 'update', data: data.configurationSets[id]});
+                                            $timeout(function () {
+                                                updateListener({id: id, type: 'update', data: data.configurationSets[id]});
+                                            });
                                         }
                                     },
                                     onUnload = function (id) {
                                         delete data.configurationSets[id];
-                                        updateListener({id: id, type: 'unload', data: null});
+                                        $timeout(function () {
+                                            updateListener({id: id, type: 'unload', data: null});
+                                        });
                                     };
                                 for (i = 0; i < childNodes.length; i += 1) {
                                     if (childNodes[i].isMetaTypeOf(meta.DesertConfigurationSet)) {
@@ -506,7 +528,9 @@ angular.module('cyphy.services')
                                         };
                                         newNode.onUpdate(onUpdate);
                                         newNode.onUnload(onUnload);
-                                        updateListener({id: childId, type: 'load', data: data.configurationSets[childId]});
+                                        $timeout(function () {
+                                            updateListener({id: childId, type: 'load', data: data.configurationSets[childId]});
+                                        });
                                     }
                                 });
                                 deferred.resolve(data);
@@ -560,14 +584,18 @@ angular.module('cyphy.services')
                                         }
 
                                         if (hadChanges) {
-                                            updateListener({id: id, type: 'update', data: data.configurations[id]});
+                                            $timeout(function () {
+                                                updateListener({id: id, type: 'update', data: data.configurations[id]});
+                                            });
                                         }
                                     },
                                     onUnload = function (id) {
                                         if (data.configurations[id]) {
                                             delete data.configurations[id];
                                         }
-                                        updateListener({id: id, type: 'unload', data: null});
+                                        $timeout(function () {
+                                            updateListener({id: id, type: 'unload', data: null});
+                                        });
                                     };
                                 for (i = 0; i < childNodes.length; i += 1) {
                                     childId = childNodes[i].getId();
@@ -592,7 +620,9 @@ angular.module('cyphy.services')
                                         };
                                         newNode.onUpdate(onUpdate);
                                         newNode.onUnload(onUnload);
-                                        updateListener({id: childId, type: 'load', data: data.configurations[childId]});
+                                        $timeout(function () {
+                                            updateListener({id: childId, type: 'load', data: data.configurations[childId]});
+                                        });
                                     }
                                 });
 

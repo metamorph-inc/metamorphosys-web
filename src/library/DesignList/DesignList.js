@@ -261,7 +261,6 @@ angular.module('cyphy.components')
                     addConfigurationWatcher(updateObject.id);
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
-                    $scope.$apply();
                 } else if (updateObject.type === 'unload') {
                     if (designItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -273,7 +272,6 @@ angular.module('cyphy.components')
                         designService.cleanUpRegion(context, context.regionId + '_watchNbrOfConfigurations_' + updateObject.id);
                         delete designItems[updateObject.id];
                     }
-                    $scope.$apply();
                 } else {
                     throw new Error(updateObject);
                 }
