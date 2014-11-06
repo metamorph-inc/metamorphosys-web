@@ -10,6 +10,7 @@ require( './treeNavigator/treeNavigator.js' );
 require( './itemList/itemList.js' );
 require( './searchBox/searchBox.js' );
 require( './valueWidgets/valueWidgets.js' );
+require( './decisionTable/decisionTable.js' );
 
 
 angular.module( 'isis.ui.components', [
@@ -23,6 +24,7 @@ angular.module( 'isis.ui.components', [
   'isis.ui.treeNavigator',
   'isis.ui.itemList',
   'isis.ui.searchBox',
-  'isis.ui.valueWidgets'
+  'isis.ui.valueWidgets',
+  'isis.ui.decisionTable'
 
 ] );

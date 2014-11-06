@@ -47,7 +47,7 @@ angular.module(
 
       $scope.itemMenuConfig = {
         triggerEvent: 'click',
-        position: 'right bottom'
+        position: 'left bottom'
       };
 
       $scope.config = $scope.config || {};

@@ -2,38 +2,57 @@
 
 'use strict';
 
-require( '../services/isisUIServices.js' );
-
 angular.module(
-  'isis.ui.checkboxWidget', [ 'isis.ui.services' ]
+'isis.ui.checkboxWidget', [ ]
 
 )
-  .directive(
-    'checkboxWidget', [ 'isisTemplateService', '$compile',
-      function ( isisTemplateService, $compile ) {
+.controller(
+'CheckboxWidgetController', function ($scope) {
 
-        var defaultTemplateUrl = '/isis-ui-components/templates/checkboxWidget.html';
+  $scope.trueLabel = $scope.widgetConfig.trueLabel || 'True';
+  $scope.falseLabel = $scope.widgetConfig.falseLabel || 'False';
 
-        return {
-          restrict: 'E',
-          replace: true,
-          require: 'ngModel',
-          link: function ( scope, element, attributes, ngModel ) {
+})
+.directive(
+'checkboxWidget', [ 'valueWidgetsService',
+  function (valueWidgetsService) {
 
-            var templateUrl;
+    var defaultTemplateUrl = '/isis-ui-components/templates/checkboxWidget.html';
 
-            templateUrl = scope.config && scope.config.templateUrl || defaultTemplateUrl;
+    return {
+      restrict: 'E',
+      scope: true,
+      replace: true,
+      require: '^ngModel',
+      controller: 'CheckboxWidgetController',
+      link: function ( scope, element, attributes, ngModel ) {
 
-            isisTemplateService.getTemplate( scope.config.template, templateUrl )
-              .then( function ( template ) {
-                element.replaceWith( $compile( template, scope ) );
-              } );
-
-            console.log( ngModel.$viewValue );
-
-          }
-
+        scope.myValue = {
 
         };
+
+        valueWidgetsService.getAndCompileWidgetTemplate( element, scope, defaultTemplateUrl );
+
+        ngModel.$formatters.push(function(modelValue) {
+          return modelValue;
+        });
+
+        ngModel.$render = function() {
+          scope.myValue.value = ngModel.$viewValue;
+        };
+
+        ngModel.$parsers.push(function(viewValue) {
+          return viewValue;
+        });
+
+        scope.$watch('myValue.value', function(val) {
+          ngModel.$setViewValue(val);
+        });
+
+        ngModel.$render();
+
       }
-    ] );
+
+    };
+  }
+] );

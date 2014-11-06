@@ -3,6 +3,10 @@
 
 var components = [
   {
+    name: 'decisionTable',
+    sources: [ 'demo.html', 'demo.js']
+  },
+  {
     name: 'valueWidgets',
     sources: [ 'demo.html', 'demo.js']
   },
@@ -44,12 +48,13 @@ require( '../library/treeNavigator/docs/demo.js' );
 require( '../library/itemList/docs/demo.js' );
 require( '../library/searchBox/docs/demo.js' );
 require( '../library/valueWidgets/docs/demo.js' );
+require( '../library/decisionTable/docs/demo.js' );
 
 require( 'angular-sanitize' );
 window.Showdown = require( 'showdown' );
 require( 'angular-markdown-directive' );
 
-require( 'codemirrorCSS' );
+require( 'codemirror-css' );
 window.CodeMirror = require( 'code-mirror' );
 
 require( 'code-mirror/mode/htmlmixed' );
@@ -57,6 +62,9 @@ require( 'code-mirror/mode/xml' );
 require( 'code-mirror/mode/javascript' );
 
 require( 'angular-ui-codemirror' );
+require( 'ng-grid' );
+require( 'ng-grid-css');
+require( 'ui-utils');
 
 
 var demoApp = angular.module(

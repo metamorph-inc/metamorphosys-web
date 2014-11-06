@@ -3513,7 +3513,10 @@ define('xmljsonconverter',['sax'], function (sax) {
         }
         self.rootNode = {};
         self.stack = [];
+        self.nsStack = [];
         self.parser = sax.parser(true);
+        // TODO make this configurable
+        self.nsMap = { "http://www.w3.org/2001/XMLSchema-instance": "xsi" };
 
         self.parser.ontext = function (text) {
             if (self.stack.length > 0) {
@@ -3527,65 +3530,85 @@ define('xmljsonconverter',['sax'], function (sax) {
             }
         };
 
-        if (opts.arrayElements) {
-            self.arrayElements = opts.arrayElements;
-            self.parser.onopentag = function (node) {
-                var key,
-                    parentNode,
-                    jsonNode = {};
+        function mapNamespace(ns, value) {
+            var colon = value.indexOf(':');
+            if (colon === -1) {
+                return value;
+            }
+            var namespace = value.substr(0, colon);
+            if (namespace in ns) {
+                return self.nsMap[ns[namespace]] || ns[namespace] + ':' + value.substr(colon + 1);
+            }
+            return value;
+        };
+        self.parser.onopentag = function (node) {
+            var key,
+                i,
+                parentNode,
+                node_name,
+                jsonNode = {};
 
-                if (self.stack.length === 0) {
-                    self.rootNode[node.name] = jsonNode;
-                } else {
-                    parentNode = self.stack[self.stack.length - 1];
-                    if (self.arrayElements[node.name]) {
-                        if (parentNode.hasOwnProperty(node.name)) {
-                            parentNode[node.name].push(jsonNode);
+            var ns = {};
+            for (key in node.attributes) {
+                if (node.attributes.hasOwnProperty(key) && key.substr(0, 6) === 'xmlns:') {
+                    ns[key.substr('xmlns:'.length)] = node.attributes[key];
+                }
+            }
+            if (Object.getOwnPropertyNames(ns).length === 0) {
+                if (self.nsStack.length > 0) {
+                    ns = self.nsStack[self.nsStack.length - 1];
+                }
+                self.nsStack.push(ns);
+            } else {
+                for (i = self.nsStack.length - 1; i >= 0; i--) {
+                    for (key in self.nsStack[i]) {
+                        if (!ns.hasOwnProperty(key) && self.nsStack[i].hasOwnProperty(key)) {
+                            ns[key] = self.nsStack[i];
+                        }
+                    }
+                }
+                self.nsStack.push(ns);
+            }
+            node_name = mapNamespace(ns, node.name);
+            if (self.stack.length === 0) {
+                self.rootNode[node_name] = jsonNode;
+            } else {
+                parentNode = self.stack[self.stack.length - 1];
+                if (opts.arrayElements) {
+                    self.arrayElements = opts.arrayElements;
+                    if (self.arrayElements[node_name]) {
+                        if (parentNode.hasOwnProperty(node_name)) {
+                            parentNode[node_name].push(jsonNode);
                         } else {
-                            parentNode[node.name] = [jsonNode];
+                            parentNode[node_name] = [jsonNode];
                         }
                     } else {
-                        parentNode[node.name] = jsonNode;
+                        parentNode[node_name] = jsonNode;
                     }
-                }
-                self.stack.push(jsonNode);
-                for (key in node.attributes) {
-                    if (node.attributes.hasOwnProperty(key)) {
-                        jsonNode[attrTag + key] = node.attributes[key];
-                    }
-                }
-            };
-        } else {
-            self.parser.onopentag = function (node) {
-                var key,
-                    parentNode,
-                    jsonNode = {};
-
-                if (self.stack.length === 0) {
-                    self.rootNode[node.name] = jsonNode;
                 } else {
-                    parentNode = self.stack[self.stack.length - 1];
-                    if (parentNode.hasOwnProperty(node.name)) {
-                        if (parentNode[node.name] instanceof Array) {
-                            parentNode[node.name].push(jsonNode);
+                    if (parentNode.hasOwnProperty(node_name)) {
+                        if (parentNode[node_name] instanceof Array) {
+                            parentNode[node_name].push(jsonNode);
                         } else {
-                            parentNode[node.name] = [parentNode[node.name], jsonNode];
+                            parentNode[node_name] = [parentNode[node_name], jsonNode];
                         }
                     } else {
-                        parentNode[node.name] = jsonNode;
+                        parentNode[node_name] = jsonNode;
                     }
                 }
-                self.stack.push(jsonNode);
-                for (key in node.attributes) {
-                    if (node.attributes.hasOwnProperty(key)) {
-                        jsonNode[attrTag + key] = node.attributes[key];
-                    }
+            }
+            self.stack.push(jsonNode);
+            for (key in node.attributes) {
+                if (node.attributes.hasOwnProperty(key)) {
+                    // TODO mapNamespace(key)
+                    jsonNode[attrTag + key] = node.attributes[key];
                 }
-            };
-        }
+            }
+        };
 
         self.parser.onclosetag = function (node) {
             self.stack.pop();
+            self.nsStack.pop();
         };
 
         self.parser.onerror = function (error) {

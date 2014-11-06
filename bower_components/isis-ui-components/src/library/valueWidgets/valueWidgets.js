@@ -17,6 +17,7 @@ var availableWidgets = {
   'checkbox': [ 'checkboxWidget', 'checkbox-widget' ],
   'select': [ 'selectWidget', 'select-widget' ]
 },
+
 widgetModules = [];
 
 angular.forEach( availableWidgets, function ( value ) {
@@ -25,41 +26,42 @@ angular.forEach( availableWidgets, function ( value ) {
 
 angular.module( 'isis.ui.valueWidgets', [ 'isis.ui.validationErrorMarker' ].concat( widgetModules ) )
 
-.factory( '$valueWidgets', function () {
-  var getWidgetElementForType;
+.factory( 'valueWidgetsService', function ( isisTemplateService, $compile ) {
 
-  getWidgetElementForType = function ( type ) {
+  var services = {
 
-    var result = availableWidgets[ type ] && availableWidgets[ type ][ 1 ];
+    getWidgetElementForType: function ( type ) {
 
-    if ( !result ) {
-      result = 'string-widget';
+      var result = availableWidgets[ type ] && availableWidgets[ type ][ 1 ];
+
+      if ( !result ) {
+        result = 'string-widget';
+      }
+
+      return result;
+
+    },
+
+    getAndCompileWidgetTemplate: function ( widgetElement, $scope, defaultTemplateUrl ) {
+
+      var templateUrl,
+      templateElement;
+
+      templateUrl = $scope.widgetConfig && $scope.widgetConfig.templateUrl || defaultTemplateUrl;
+
+      isisTemplateService.getTemplate( $scope.widgetConfig.template, templateUrl )
+      .then( function ( template ) {
+        templateElement = angular.element( template );
+        widgetElement.replaceWith( templateElement );
+        $compile( templateElement )( $scope );
+      } );
     }
-
-    return result;
-
   };
 
-  return {
-    getWidgetElementForType: getWidgetElementForType
-  };
+  return services;
+
 } )
-.controller( 'ValueWidgetController', function ( $scope, isisTemplateService, $compile ) {
-
-  $scope.getAndCompileWidgetTemplate = function ( widgetElement, defaultTemplateUrl ) {
-
-    var templateUrl,
-    templateElement;
-
-    templateUrl = $scope.widgetConfig && $scope.widgetConfig.templateUrl || defaultTemplateUrl;
-
-    isisTemplateService.getTemplate( $scope.widgetConfig.template, templateUrl )
-    .then( function ( template ) {
-      templateElement = angular.element( template );
-      widgetElement.replaceWith( templateElement );
-      $compile( templateElement )( $scope );
-    } );
-  };
+.controller( 'ValueWidgetController', function () {
 
 } )
 .directive( 'valueWidget',
@@ -70,21 +72,53 @@ function () {
     require: 'ngModel',
     templateUrl: '/isis-ui-components/templates/valueWidget.html',
     scope: {
-      value: '=ngModel',
+      model: '=ngModel',
+      modelConfig: '=?',
+
+      inputConfig: '=?',
+
       widgetType: '=?',
-      widgetConfig: '=?',
       widgetMode: '=?',
-      inputLabel: '=?',
-      inputName: '=?',
-      inputId: '=?'
+      widgetConfig: '=?',
+      widgetDisabled: '=?'
+
     },
     priority: 0,
+    controller: 'ValueWidgetController',
+    link: function ( scope, element, attributes, ngModel ) {
 
-    controller: 'ValueWidgetController'
+      scope.modelConfig = scope.modelConfig || {};
+      scope.widgetConfig = scope.widgetConfig || {};
+      scope.inputConfig = scope.inputConfig || {};
+
+      scope.placeHolder = scope.modelConfig.placeHolder || 'Enter value';
+
+      if ( angular.isObject( scope.modelConfig.validators ) ) {
+
+        ngModel.$validators = ngModel.$validators || {};
+        scope.validatorMessages = scope.validatorMessages || {};
+
+        angular.forEach( scope.modelConfig.validators, function ( validatorDescriptor ) {
+          if ( angular.isFunction( validatorDescriptor.method ) ) {
+            ngModel.$validators[validatorDescriptor.id] = validatorDescriptor.method;
+            scope.validatorMessages[validatorDescriptor.id] = validatorDescriptor.errorMessage;
+          }
+        } );
+
+      }
+
+      if ( angular.isFunction( scope.modelConfig.modelChange ) ) {
+        ngModel.$viewChangeListeners.push( function () {
+          scope.modelConfig.modelChange(ngModel.$modelValue);
+        } );
+
+      }
+    }
   };
-} )
-.directive( 'valueWidgetBody', [ '$log', '$compile', '$valueWidgets',
-  function ( $log, $compile, $valueWidgets ) {
+})
+.
+directive( 'valueWidgetBody', [ '$log', '$compile', 'valueWidgetsService',
+  function ( $log, $compile, valueWidgetsService ) {
 
     return {
       restrict: 'E',
@@ -97,19 +131,12 @@ function () {
         return {
           pre: function ( scope ) {
 
-            if ( !scope.widgetConfig ) {
-              scope.widgetConfig = {
-                placeHolder: 'Enter a value'
-              };
-            }
-
-
             if ( !scope.widgetMode ) {
               scope.widgetMode = 'edit';
             }
 
           },
-          post: function ( scope, element, attributes, controllers ) {
+          post: function ( scope, element ) {
 
             var
             widgetTemplateStr,
@@ -117,24 +144,7 @@ function () {
             widgetType,
             widgetDirective,
             newWidgetDirective,
-            linkIt,
-            ngModel;
-
-            ngModel = controllers[0];
-
-            if ( scope.widgetConfig && angular.isObject( scope.widgetConfig.validators ) ) {
-
-              ngModel.$validators = ngModel.$validators || {};
-              scope.validatorMessages = scope.validatorMessages || {};
-
-              angular.forEach( scope.widgetConfig.validators, function ( validatorDescriptor, validatorId ) {
-                if ( angular.isFunction( validatorDescriptor.method ) ) {
-                  ngModel.$validators[validatorId] = validatorDescriptor.method;
-                  scope.validatorMessages[validatorId] = validatorDescriptor.errorMessage;
-                }
-              } );
-
-            }
+            linkIt;
 
             linkIt = function () {
 
@@ -142,13 +152,13 @@ function () {
                 widgetType = scope.widgetType;
               } else {
 
-                if ( typeof scope.value === 'boolean' ) {
+                if ( typeof scope.model === 'boolean' ) {
                   widgetType = 'checkbox';
                 }
 
               }
 
-              newWidgetDirective = $valueWidgets.getWidgetElementForType( widgetType );
+              newWidgetDirective = valueWidgetsService.getWidgetElementForType( widgetType );
 
               if ( widgetDirective !== newWidgetDirective ) {
 

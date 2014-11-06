@@ -1,7 +1,7 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $window, growl, desertService) {
+    .controller('DesignSpaceController', function ($scope, $state, $window, $modal, growl, desertService) {
         'use strict';
         var self = this,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
@@ -25,13 +25,15 @@ angular.module('CyPhyApp')
             setName: null
         };
 
-        $scope.$watch(function (scope) { return scope.dataModels.configurations; },
-            function () {
-                $scope.$broadcast('newConfigurations', {
-                    configurations: $scope.dataModels.configurations,
-                    setName: $scope.dataModels.setName
-                });
-            });
+//        $scope.$watch(function (scope) {
+//                return scope.dataModels.configurations;
+//            },
+//            function () {
+//                $scope.$broadcast('newConfigurations', {
+//                    configurations: $scope.dataModels.configurations,
+//                    setName: $scope.dataModels.setName
+//                });
+//            });
 
         $scope.$on('designTreeLoaded', function (event, data) {
             $scope.dataModels.avmIds = data;
@@ -69,10 +71,6 @@ angular.module('CyPhyApp')
             }
         });
 
-        $scope.$on('selectionExposed', function (event, data) {
-            growl.warning('Not implemented ' + data.toString());
-        });
-
         $scope.calculateConfigurations = function () {
             growl.info('Calculating configurations. Please wait..');
             $scope.state.configurationStatus = 'Calculating..';
@@ -87,5 +85,47 @@ angular.module('CyPhyApp')
 
         $scope.saveConfigurations = function () {
             $scope.$broadcast('exposeSelection');
+        };
+
+        $scope.$on('selectionExposed', function (event, data) {
+            var modalInstance;
+            if (data.length < 1) {
+                growl.warning('No selected configurations!');
+                return;
+            }
+            modalInstance = $modal.open({
+                templateUrl: '/default/templates/SaveConfigurationSet.html',
+                controller: 'DesignEditController',
+                //size: size,
+                resolve: { data: function () {
+                    return data;
+                } }
+            });
+            modalInstance.result.then(function (result) {
+                var attrs = {
+                    'name': result.name,
+                    'INFO': result.description
+                };
+                growl.warning('Would save ' + result.name);
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        });
+    })
+    .controller('SaveConfigurationSetController', function ($scope, $modalInstance, data) {
+        'use strict';
+        console.warn(data);
+        $scope.data = {
+            description: null,
+            name: null,
+            nbrOfConfigurations: data.length
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.data);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
         };
     });

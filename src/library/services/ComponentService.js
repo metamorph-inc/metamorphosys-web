@@ -8,7 +8,7 @@
 
 
 angular.module('cyphy.services')
-    .service('componentService', function ($q, nodeService, baseCyPhyService) {
+    .service('componentService', function ($q, $timeout, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -84,12 +84,16 @@ angular.module('cyphy.services')
                     }
                     if (hadChanges) {
                         console.warn('ComponentService found update');
-                        updateListener({id: id, type: 'update', data: data.components[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.components[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.components[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -135,7 +139,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUnload(onUnload);
                                     newChild.onUpdate(onUpdate);
-                                    updateListener({id: componentId, type: 'load', data: data.components[componentId]});
+                                    $timeout(function () {
+                                        updateListener({id: componentId, type: 'load', data: data.components[componentId]});
+                                    });
                                 }
                             }
                         });

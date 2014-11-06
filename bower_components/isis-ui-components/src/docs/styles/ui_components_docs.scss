@@ -22,3 +22,8 @@ section {
   border: 1px solid #ddd;
   border-top: none;
 }
+
+.green-shadow {
+  border: 1px solid green;
+  box-shadow: 0 0 20px rgba(0,255,50,.8) !important;
+}

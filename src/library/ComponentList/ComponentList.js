@@ -267,7 +267,7 @@ angular.module('cyphy.components')
                     addDomainWatcher(updateObject.id);
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
-                    $scope.$apply();
+                    //$scope.$apply();
                 } else if (updateObject.type === 'unload') {
                     if (componentItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -279,7 +279,7 @@ angular.module('cyphy.components')
                         componentService.cleanUpRegion(context, context.regionId + '_watchComponentDomains_' + updateObject.id);
                         delete componentItems[updateObject.id];
                     }
-                    $scope.$apply();
+                    //$scope.$apply();
                 } else {
                     throw new Error(updateObject);
                 }

@@ -10,10 +10,12 @@
                 class="label">{{menuItemGroup.label}}
             </li>
 
-            <li data-ng-repeat="item in menuItemGroup.items | limitTo:menuItemGroup.totalItems || 100"
-                data-ng-class="{ 'dropdown-submenu':item.menu, 'selected': item.isSelected, 'disabled': item.disabled }">
+            <li
+                ng-init="itemIsDisabled=item.disabled || parentItem.disabled"
+                data-ng-repeat="item in menuItemGroup.items | limitTo:menuItemGroup.totalItems || 100"
+                data-ng-class="{ 'dropdown-submenu':item.menu, 'selected': item.isSelected, 'disabled': itemIsDisabled }">
                 <a data-ng-class="'action-' + item.id"
-                   data-ng-click="!item.disabled && item.action(item.actionData, $event)">
+                   data-ng-click="!itemIsDisabled && item.action(item.actionData, $event)">
                     <i data-ng-if="item.iconClass && !item.iconPullRight" data-ng-class="item.iconClass" class="item-icon"></i>
                     {{item.label}}
                     <i data-ng-if="item.iconClass && item.iconPullRight" data-ng-class="item.iconClass"></i>
@@ -23,7 +25,7 @@
                     aria-labelledby="dropdownMenu"
                     data-ng-if="item.menu"
                     ng-include="'menu-items'"
-                    data-ng-init="menu=item.menu">
+                    data-ng-init="menu=item.menu; parentItem=item;">
                 </ul>
             </li>
 
