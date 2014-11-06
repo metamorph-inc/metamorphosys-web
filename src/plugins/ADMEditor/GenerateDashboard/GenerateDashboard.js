@@ -92,6 +92,22 @@ define(['plugin/PluginConfig',
         self.updateMETA(self.metaTypes);
 
         // Run AdmExporter to get design_space/%ThisDesignName%.adm
+        self.initializeAdmExporter();
+        //self.admExporter.rootPath = "/243203739/1914067160/1594627875";
+        self.admExporter.rootPath = self.core.getPath(self.activeNode);
+
+        // self.activeNode needs to be the design, 2nd argument is bool, include/return acm files
+        self.admExporter.exploreDesign(self.activeNode, false, function (err) {
+            if (err) {
+                self.logger.error('AdmExporter.exploreDesign failed with error: ' + err);
+                return;
+            }
+
+            var admData = self.admExporter.admData;
+            self.logger.info(admData);
+        });
+
+
 
         // Create a manifest_project object (like the manifest.project.json file)
 
@@ -110,25 +126,25 @@ define(['plugin/PluginConfig',
 
     };
 
-//    GenerateDashboard.prototype.initializeAdmExporter = function () {
-//        var self = this;
-//        if (self.admExporter === null) {
-//            self.admExporter = new AdmExporter();
-//            self.admExporter.meta = self.meta;
-//            self.admExporter.META = self.META;
-//            self.admExporter.core = self.core;
-//            self.admExporter.logger = self.logger;
-//            self.admExporter.result = self.result;
-//            self.admExporter.rootNode = self.rootNode;
-//            self.logger.info('AdmExporter had not been initialized - created a new instance.');
-//        } else {
-//            self.admExporter.acmFiles = {};
-//            self.admExporter.gatheredAcms = {};
-//            self.admExporter.rootPath = null;
-//            self.admExporter.includeAcms = true;
-//            self.logger.info('AdmExporter had already been initialized - reset acmFiles, gatheredAcms and rootPath.');
-//        }
-//    };
+    GenerateDashboard.prototype.initializeAdmExporter = function () {
+        var self = this;
+        if (self.admExporter === null) {
+            self.admExporter = new AdmExporter();
+            self.admExporter.meta = self.metaTypes;  // meta is defined here (points to adjacent meta.js file)
+            self.admExporter.META = self.META;  // META is from PluginBase
+            self.admExporter.core = self.core;
+            self.admExporter.logger = self.logger;
+            self.admExporter.result = self.result;
+            self.admExporter.rootNode = self.rootNode;
+            self.logger.info('AdmExporter had not been initialized - created a new instance.');
+        } else {
+            self.admExporter.acmFiles = {};
+            self.admExporter.gatheredAcms = {};
+            self.admExporter.rootPath = null;
+            self.admExporter.includeAcms = true;
+            self.logger.info('AdmExporter had already been initialized - reset acmFiles, gatheredAcms and rootPath.');
+        }
+    };
 
     return GenerateDashboard;
 });
