@@ -19,7 +19,7 @@
             <span class="configuration-buttons">
                 <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
                 <button ng-disabled="dataModels.configurations.length === 0" class="btn btn-default btn-sm" ng-click="saveConfigurations()">Save Set</button>
-                <configuration-set-selector ng-if="true"
+                <configuration-set-selector
                                             design-id="designId"
                                             connection-id="'my-db-connection-id'"></configuration-set-selector>
             </span>

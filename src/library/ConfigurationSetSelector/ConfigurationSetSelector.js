@@ -39,7 +39,7 @@ angular.module('cyphy.components')
             }
 
             designService.watchConfigurationSets(context, $scope.designId, function (updateObject) {
-                console.warn(updateObject);
+                //console.warn(updateObject);
             })
                 .then(function (data) {
                     $scope.dataModel.configurationSets = data.configurationSets;

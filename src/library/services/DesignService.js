@@ -681,7 +681,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        this.saveConfigurationSet = function (setName, setDesc, configurations, designNode, meta) {
+        this.saveConfigurationSetNodes = function (setName, setDesc, configurations, designNode, meta) {
             var deferred = $q.defer(),
                 context = designNode.context;
             nodeService.createNode(context, designNode, meta.DesertConfigurationSet, 'web-cyphy saveConfigurationSet')
@@ -714,6 +714,38 @@ angular.module('cyphy.services')
                 });
 
             return deferred.promise;
+        };
+
+        this.saveConfigurationSet = function (setName, setDesc, configurations, designNode, meta) {
+            var context = designNode.context,
+                i,
+                aaStr,
+                metaCfgId = meta.DesertConfiguration.getId(),
+                metaCfgSetId = meta.DesertConfigurationSet.getId(),
+                setId,
+                cfgId,
+                designId = designNode.getId(),
+                params = {
+                    parentId: designId,
+                    baseId: metaCfgSetId
+                };
+            setId = nodeService.createChild(context, params, 'web-cyphy saveConfigurationSet configSet saved.');
+            nodeService.setAttributes(context, setId, 'name', setName, 'web-cyphy set name to ' + setName);
+            if (setDesc) {
+                nodeService.setAttributes(context, setId, 'INFO', setDesc, 'web-cyphy set INFO to ' + setDesc);
+            }
+            params = {
+                parentId: setId,
+                baseId: metaCfgId
+            };
+            for (i = 0; i < configurations.length; i += 1) {
+                cfgId = nodeService.createChild(context, params, 'web-cyphy saveConfigurationSet config saved.');
+                aaStr = JSON.stringify(configurations[i].alternativeAssignments);
+                nodeService.setAttributes(context, cfgId, 'name', configurations[i].name,
+                        'web-cyphy set name to ' + configurations[i].name);
+                nodeService.setAttributes(context, cfgId, 'AlternativeAssignments', aaStr,
+                        'web-cyphy set AlternativeAssignments to ' + aaStr);
+            }
         };
 
         /**

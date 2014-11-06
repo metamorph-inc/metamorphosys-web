@@ -167,7 +167,7 @@ angular.module('CyPhyApp')
                 return;
             }
             growl.info('Saving configuration set ' + $scope.data.name + 'this may take a while...');
-            designService.saveConfigurationSet($scope.data.name, $scope.data.description, configurations,
+            designService.saveConfigurationSetNodes($scope.data.name, $scope.data.description, configurations,
                 designNode, meta)
                 .then(function () {
                     growl.success('Configurations saved to ' + $scope.data.name);
