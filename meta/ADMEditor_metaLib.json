@@ -1359,7 +1359,11 @@
               "Modelica",
               "CAD",
               "Cyber",
-              "Manufacturing"
+              "Manufacturing",
+              "RF",
+              "EDA",
+              "SystemC",
+              "SPICE"
             ],
             "type": "string"
           }
@@ -1443,7 +1447,10 @@
               "CadPoint",
               "CadAxis",
               "CadPlane",
-              "CadCoordinateSystem"
+              "CadCoordinateSystem",
+              "RFPort",
+              "SchematicPin",
+              "SystemCPort"
             ],
             "type": "string"
           },
