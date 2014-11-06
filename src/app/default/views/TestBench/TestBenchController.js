@@ -1,7 +1,7 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('TestBenchController', function ($scope, $state, growl) {
+    .controller('TestBenchController', function ($scope, $state, $timeout, growl) {
         'use strict';
         var self = this,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
@@ -21,18 +21,16 @@ angular.module('CyPhyApp')
             setName: null
         };
 
-        $scope.$watch(function (scope) { return scope.dataModels.configurations; },
-            function () {
-                $scope.$broadcast('newConfigurations', $scope.dataModels.configurations);
-            });
-
         $scope.$on('configurationsLoaded', function (event, data) {
-            $scope.dataModels.configurations = data.configurations;
-            $scope.dataModels.setName = data.setName;
-            if (data.configurations.length === 0) {
-                growl.warning('There were no configurations in ' + data.setName);
-                $scope.state.configurationStatus = 'Select an action above...';
-            }
+            $scope.dataModels.configurations = [];
+            $timeout(function () {
+                $scope.dataModels.configurations = data.configurations;
+                $scope.dataModels.setName = data.setName;
+                if (data.configurations.length === 0) {
+                    growl.warning('There were no configurations in ' + data.setName);
+                    $scope.state.configurationStatus = 'Select an action above...';
+                }
+            });
         });
 
         $scope.$on('topLevelSystemUnderTestSet', function (event, data) {
