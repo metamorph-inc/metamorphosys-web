@@ -41,6 +41,6 @@
     },
 
     "test_paths": {
-        "mocks": "./node_modules/webgme-domain-tools/src/mocks"
+        "mocks": "./node_modules/webgme-domain-tools/test/mocks"
     }
 }

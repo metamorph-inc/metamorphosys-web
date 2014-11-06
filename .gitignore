@@ -17,3 +17,6 @@ labelJobs.json
 mongodatabase/*
 !mongodatabase/Readme.md
 
+coverage
+dump
+*.stackdump
