@@ -71,7 +71,8 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-copy copy-icon',
                                 actionData: {id: item.id},
                                 action: function (data) {
-                                    workspaceService.duplicateWorkspace(context, data.id);
+                                    growl.warning('Not Implemented!');
+                                    //workspaceService.duplicateWorkspace(context, data.id);
                                 }
                             },
                             {
@@ -91,7 +92,7 @@ angular.module('cyphy.components')
                                 iconClass: 'glyphicon glyphicon-share-alt',
                                 actionData: { id: item.id },
                                 action: function (data) {
-                                    growl.info('Not Implemented, id: ' + data.id);
+                                    growl.warning('Not Implemented, id: ' + data.id);
                                 }
                             }
                         ]
@@ -107,7 +108,8 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-plus',
                                 actionData: { id: item.id },
                                 action: function (data) {
-                                    workspaceService.deleteWorkspace(context, data.id);
+                                    growl.warning('Not Implemented!');
+                                    //workspaceService.deleteWorkspace(context, data.id);
                                 }
                             }
                         ]
@@ -159,9 +161,12 @@ angular.module('cyphy.components')
 
                     $scope.createItem = function (newItem) {
                         var i;
-                        for (i = 0; i < $scope.files.length; i += 1) {
-                            console.log($scope.files[i]);
+                        if ($scope.files) {
+                            for (i = 0; i < $scope.files.length; i += 1) {
+                                console.log($scope.files[i]);
+                            }
                         }
+                        growl.warning('Not Implemented!');
                         //workspaceService.createWorkspace(context, newItem);
 
                         //$scope.newItem = {};

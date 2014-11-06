@@ -21,6 +21,7 @@ angular.module('cyphy.components')
             };
             $scope.$on('$destroy', function () {
                 designService.cleanUpAllRegions(context);
+                //console.log('$destroyed ' + context.regionId);
             });
         } else {
             throw new Error('connectionId must be defined and it must be a string');

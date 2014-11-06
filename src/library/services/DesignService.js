@@ -31,17 +31,62 @@ angular.module('cyphy.services')
             throw new Error('Not implemented yet.');
         };
 
-        this.calculateConfigurations = function (data) {
-            throw new Error('Not implemented yet.');
+        this.watchDesignNode = function (parentContext, designId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchDesign',
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    meta: null,
+                    design: {} // design {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        hadChanges = false;
+                    if (newName !== data.design.name) {
+                        data.design.name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.design.description) {
+                        data.design.description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.design});
+                        });
+                    }
+                },
+                onUnload = function (id) {
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
+                    .then(function (designNode) {
+                        data.meta = meta;
+                        data.design = {
+                            id: designId,
+                            name: designNode.getAttribute('name'),
+                            description: designNode.getAttribute('INFO'),
+                            node: designNode
+                        };
+                        designNode.onUpdate(onUpdate);
+                        designNode.onUnload(onUnload);
+                        deferred.resolve(data);
+                    });
+            });
+
+            return deferred.promise;
         };
 
-        this.saveConfigurationSet = function (designId, data) {
-            throw new Error('Not implemented yet.');
-        };
-
-//        this.getDesignNode = function (context, designId) {
-//            nodeService.l
-//        };
         /**
          *  Watches all containers (existence and their attributes) of a workspace.
          * @param parentContext - context of controller.
@@ -633,6 +678,41 @@ angular.module('cyphy.services')
                             });
                     });
             });
+            return deferred.promise;
+        };
+
+        this.saveConfigurationSet = function (setName, setDesc, configurations, designNode, meta) {
+            var deferred = $q.defer(),
+                context = designNode.context;
+            nodeService.createNode(context, designNode, meta.DesertConfigurationSet, 'web-cyphy saveConfigurationSet')
+                .then(function (setNode) {
+                    var i,
+                        queueList = [];
+                    setNode.setAttribute('name', setName, 'web-cyphy set name to ' + setName);
+                    if (setDesc) {
+                        setNode.setAttribute('INFO', setDesc, 'web-cyphy set INFO to ' + setDesc);
+                    }
+                    for (i = 0; i < configurations.length; i += 1) {
+                        queueList.push(nodeService.createNode(context, setNode, meta.DesertConfiguration,
+                            'web-cyphy saveConfigurationSet'));
+                    }
+                    if (queueList.length === 0) {
+                        deferred.resolve();
+                    } else {
+                        $q.all(queueList).then(function (cfgNodes) {
+                            var aaStr;
+                            for (i = 0; i < cfgNodes.length; i += 1) {
+                                aaStr = JSON.stringify(configurations[i].alternativeAssignments);
+                                cfgNodes[i].setAttribute('name', configurations[i].name,
+                                        'web-cyphy set name to ' + configurations[i].name);
+                                cfgNodes[i].setAttribute('AlternativeAssignments', aaStr,
+                                        'web-cyphy set AlternativeAssignments to ' + aaStr);
+                            }
+                            deferred.resolve();
+                        });
+                    }
+                });
+
             return deferred.promise;
         };
 

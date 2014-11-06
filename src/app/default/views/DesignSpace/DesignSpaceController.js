@@ -1,10 +1,11 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, growl, desertService, designService) {
+    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, $location, growl, desertService, designService) {
         'use strict';
         var self = this,
             context,
+            meta,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
             designId = $state.params.designId.replace(/-/g, '/');
 
@@ -14,24 +15,24 @@ angular.module('CyPhyApp')
         $scope.designId = designId;
 
         // Check for valid connectionId and register clean-up on destroy event.
-//        if ($scope.connectionId && angular.isString($scope.connectionId)) {
-//            context = {
-//                db: $scope.connectionId,
-//                regionId: 'DesignSpaceController' + (new Date()).toISOString()
-//            };
-//            $scope.$on('$destroy', function () {
-//                designService.cleanUpAllRegions(context);
-//            });
-//        } else {
-//            throw new Error('connectionId must be defined and it must be a string');
-//        }
+        if ($scope.connectionId && angular.isString($scope.connectionId)) {
+            context = {
+                db: $scope.connectionId,
+                regionId: 'DesignSpaceController' + (new Date()).toISOString()
+            };
+            $scope.$on('$destroy', function () {
+                designService.cleanUpAllRegions(context);
+            });
+        } else {
+            throw new Error('connectionId must be defined and it must be a string');
+        }
 
         $scope.state = {
-            designNodeLoaded: false,
             designTreeLoaded: false,
             desertInputAvaliable: false,
             configurationStatus: 'Select an action above...',
-            hasComponents: true
+            hasComponents: true,
+            savingConfigurations: false
         };
 
         $scope.dataModels = {
@@ -40,9 +41,7 @@ angular.module('CyPhyApp')
             configurations: [],
             setName: null,
             design: {
-                name: null,
-                description: null,
-                node: null
+                name: 'Loading design...'
             }
         };
 
@@ -77,7 +76,6 @@ angular.module('CyPhyApp')
             $timeout(function () {
                 $scope.dataModels.setName = data.setName;
                 $scope.dataModels.configurations = data.configurations;
-                console.log(data);
                 if (data.configurations.length === 0) {
                     growl.warning('There were no configurations in ' + data.setName);
                     $scope.state.configurationStatus = 'Select an action above...';
@@ -107,52 +105,74 @@ angular.module('CyPhyApp')
                 growl.warning('No selected configurations!');
                 return;
             }
-
+            $scope.state.savingConfigurations = true;
             modalInstance = $modal.open({
                 templateUrl: '/default/templates/SaveConfigurationSet.html',
                 controller: 'SaveConfigurationSetController',
                 //size: size,
                 resolve: { data: function () {
-                    return data;
+                    return {configurations: data, meta: meta, designNode: $scope.dataModels.design.node};
                 } }
             });
             modalInstance.result.then(function (result) {
-                var attrs = {
-                    'name': result.name,
-                    'INFO': result.description
-                };
-                growl.warning('Would save ' + result.name);
+                $scope.state.savingConfigurations = false;
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
         });
 
-//        designService.registerWatcher(context, function (destroyed) {
-//
-//            if (destroyed) {
-//                console.warn('destroy event raised');
-//                // Data not (yet) avaliable.
-//                // TODO: display this to the user.
-//                return;
-//            }
-//            console.info('initialize event raised');
-//
-//            designService.getDesignNode(context, $scope.designId)
-//                .then(function (designNode) {
-//
-//                });
-//        });
+        designService.registerWatcher(context, function (destroyed) {
+
+            if (destroyed) {
+                console.warn('destroy event raised');
+                // Data not (yet) avaliable.
+                // TODO: display this to the user.
+                return;
+            }
+            console.info('initialize event raised');
+
+            designService.watchDesignNode(context, $scope.designId, function (updateObject) {
+                console.warn(updateObject);
+                if (updateObject.type === 'load') {
+                    console.warn('Load shouldnt happen');
+                } else if (updateObject.type === 'update') {
+                    $scope.dataModels.design = updateObject.data;
+                } else if (updateObject.type === 'unload') {
+                    growl.warning('Design Node was removed!');
+                    $location.path('/workspaceDetails/' + workspaceId.replace(/\//g, '-'));
+                } else {
+                    throw new Error(updateObject);
+                }
+            })
+                .then(function (data) {
+                    $scope.dataModels.design = data.design;
+                    meta = data.meta;
+                });
+        });
     })
-    .controller('SaveConfigurationSetController', function ($scope, $modalInstance, data) {
+    .controller('SaveConfigurationSetController', function ($scope, $modalInstance, $timeout, growl, data, designService) {
         'use strict';
+        var configurations = data.configurations,
+            meta = data.meta,
+            designNode = data.designNode;
         $scope.data = {
             description: null,
             name: null,
-            nbrOfConfigurations: data.length
+            nbrOfConfigurations: configurations.length
         };
 
         $scope.ok = function () {
-            $modalInstance.close($scope.data);
+            if (!$scope.data.name) {
+                growl.warning('You must provide a name!');
+                return;
+            }
+            growl.info('Saving configuration set ' + $scope.data.name + 'this may take a while...');
+            designService.saveConfigurationSet($scope.data.name, $scope.data.description, configurations,
+                designNode, meta)
+                .then(function () {
+                    growl.success('Configurations saved to ' + $scope.data.name);
+                    $modalInstance.close($scope.data);
+                });
         };
 
         $scope.cancel = function () {

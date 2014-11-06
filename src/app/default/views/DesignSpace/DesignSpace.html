@@ -1,5 +1,5 @@
 <div class="design-space">
-    <h1>Design Space</h1>
+    <h1>Design Space - {{dataModels.design.name}}</h1>
     <div class="design-space-component-list col-lg-4">
         <h3><span class="fa fa-puzzle-piece"></span>Used Components</h3>
         <component-list ng-if="state.designTreeLoaded && state.hasComponents"
@@ -19,7 +19,8 @@
             <span class="configuration-buttons">
                 <button ng-disabled="state.desertInputAvaliable === false" class="btn btn-default btn-sm" ng-click="calculateConfigurations()">Calculate</button>
                 <button ng-disabled="dataModels.configurations.length === 0" class="btn btn-default btn-sm" ng-click="saveConfigurations()">Save Set</button>
-                <configuration-set-selector design-id="designId"
+                <configuration-set-selector ng-if="true"
+                                            design-id="designId"
                                             connection-id="'my-db-connection-id'"></configuration-set-selector>
             </span>
         </h3>
