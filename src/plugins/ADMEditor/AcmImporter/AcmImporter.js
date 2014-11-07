@@ -450,7 +450,7 @@ define(['plugin/PluginConfig',
     AcmImporter.prototype.createNewProperty = function (avmPropInfo, newAcmNode) {
         var self = this,
             propName = avmPropInfo['@Name'],
-            propId = (avmPropInfo['@ID'] || '').split('.')[1],
+            propId = avmPropInfo['@ID'],
             xPos = parseInt(avmPropInfo['@XPosition'], 10),
             yPos = parseInt(avmPropInfo['@YPosition'], 10),
             avmValueInfo = self.getPropertyValue(avmPropInfo['Value']),

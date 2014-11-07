@@ -43,7 +43,8 @@ describe('AcmImporterSpec', function () {
         // "HierarchicalPropertyFlatten_InputModel.component.acm", CompoundProperty is not supported
         // "ProjectManifestPopulation_InputModel.component.acm", CompoundProperty is not supported
         "PropertiesWithinConnectors_InputModel.component.acm",
-        "Unit_Component.acm"].forEach(function(acmFilename) {
+        "Unit_Component.acm",
+        "Modelica.acm"].forEach(function(acmFilename) {
             it('regressions on ' + acmFilename, function() {
                     return AcmImporterTestLib.runAcmImporterRegression(model, Templates, acmFilename, expect);
                 }
