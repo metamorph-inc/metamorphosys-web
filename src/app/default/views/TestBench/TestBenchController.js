@@ -43,21 +43,29 @@ angular.module('CyPhyApp')
         });
 
         $scope.$on('selectionExposed', function (event, configurations) {
-            var configurationId;
-            if (configurations.length < 1) {
+            var i,
+                configuration,
+                numCfgs = configurations.length,
+                runTestBench = function (configuration) {
+                    testBenchService.runTestBench(context, testBenchId, configuration.id)
+                        .then(function (result) {
+                            growl.success('TestBench run successfully on ' + configuration.name + '.');
+                        })
+                        .catch(function (reason) {
+                            console.error(reason);
+                            growl.error("Running test-bench failed.");
+                        });
+                };
+            if (numCfgs < 1) {
                 growl.warning('No selected configurations!');
                 return;
             }
-            configurationId = configurations[0].id;
-            growl.info('Test-bench running on ' + configurations[0].name);
-            testBenchService.runTestBench(context, testBenchId, configurationId)
-                .then(function (result) {
-                    growl.success('TestBench run successful!');
-                })
-                .catch(function (reason) {
-                    console.error(reason);
-                    growl.error("Running test-bench failed.");
-                });
+
+            for (i = 0; i < numCfgs; i += 1) {
+                configuration = configurations[i];
+                growl.info('Test-bench started on ' + configuration.name + ' [' + (i + 1).toString() + '/' + numCfgs + ']');
+                runTestBench(configuration);
+            }
         });
 
         $scope.runTestBench = function () {
