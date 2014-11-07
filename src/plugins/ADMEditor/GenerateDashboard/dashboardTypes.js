@@ -48,10 +48,10 @@ define([], function () {
     function resultMetaresult(designID, testbench, summaryPath) {
         return {
             "Design": null,
-            "DesignID": designID || "{6a122855-da30-47d0-83a4-fe97607074f1}",
-            "TestBench": testbench || "SinusInput2.testbench.json",
+            "DesignID": '{' + designID + '}' || "{aaabbbccc111222333}",
+            "TestBench": testbench + ".testbench.json" || "some testbench",
             "Time": "2014-10-31 11-43-25",
-            "Summary": summaryPath || "./ftflkky0/testbench_manifest.json"
+            "Summary": "./" + summaryPath + "/testbench_manifest.json" || "random dir name / testbench manifest destiny"
         };
     }
 
@@ -59,24 +59,28 @@ define([], function () {
         return {
             $id: "1",
             Name: name || "SinusInput",
-            Metrics: [
-                {
-                    $id: "2",
-                    Requirement: null,
-                    Name: "MaxSpeed",
-                    Unit: "",
-                    Value: null
-                }
-            ],
-            Parameters: [
-                {
-                    $id: "3",
-                    Name: "WheelMass",
-                    Unit: "Kilogram",
-                    Value: "2"
-                }
-            ],
-            Requirements: [ ]
+            Metrics: [],
+            Parameters: [],
+            Requirements: []
+        };
+    }
+
+    function testbenchMetric(name, value, unit, id) {
+        return {
+            $id: id || Math.round(1000*Math.random()),
+            Requirement: null,
+            Name: name || "DefaultName (dashboardTypes.js line 87)",
+            Unit: unit || "Unitless",
+            Value: value || null
+        };
+    }
+
+    function testbenchParameter(name, value, unit, id) {
+        return {
+            $id: id || Math.round(1000*Math.random()),
+            Name: name || "DefaultName (dashboardTypes.js line 87)",
+            Unit: unit || "Unitless",
+            Value: value || null
         };
     }
 
@@ -106,34 +110,8 @@ define([], function () {
         };
     }
 
-//    function testbenchMetric(name, id, value) {
-//        return {
-//            "GMEID": "id-0067-00000665",
-//            "Description": "",
-//            "DisplayedName": null,
-//            "VisualizationArtifacts": [
-//                "plots/MaxSpeed.svg"
-//            ],
-//            "Value": value || "1.58532802606",
-//            "ID": id || "73184523-e4eb-4fa7-9298-3a964b94e212",
-//            "Unit": "m/s",
-//            "Name": name || "MaxSpeed"
-//        };
-//    }
-//
-//    function testbenchParameter(name, id, value) {
-//        return {
-//            "Description": "",
-//            "DisplayedName": null,
-//            "GMEID": "id-0067-00000663",
-//            "Value": value || "2",
-//            "Range": "-inf..inf",
-//            "ID": id || "9c22ff16-a786-48b7-a759-20200494c8d3",
-//            "Unit": "Kilogram",
-//            "Name": name || "WheelMass"
-//        };
-//    }
-//
+
+
 //    function testbenchSteps() {
 //        return {
 //            "ExecutionCompletionTimestamp": null,
@@ -149,7 +127,12 @@ define([], function () {
 
 return {
     manifestProjectJson: manifestProjectJson,
-    resultsMetaresultsJson: resultsMetaresultsJson
+    resultsMetaresultsJson: resultsMetaresultsJson,
+    resultMetaresult: resultMetaresult,
+    testbenchJson: testbenchJson,
+    testbenchMetric: testbenchMetric,
+    requirementsJson: requirementsJson,
+    testbenchParameter: testbenchParameter
 };
 
 });
