@@ -369,9 +369,9 @@ define(['plugin/PluginConfig',
         if (avmDomainModelInfo.hasOwnProperty('@xsi:type')) {
             domainModelType = avmDomainModelInfo['@xsi:type'];
 
-            if (domainModelType.indexOf('ModelicaModel') > -1) {
+            if (domainModelType === 'modelica:ModelicaModel') {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'Modelica');
-            } else if (domainModelType.indexOf('CADModel') > -1) {
+            } else if (domainModelType === 'cad:CADModel') {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'CAD');
             } else if (domainModelType.indexOf('Manufacturing') > -1) {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'Manufacturing');
@@ -424,7 +424,7 @@ define(['plugin/PluginConfig',
         if (domainConnInfo.hasOwnProperty('@xsi:type')) {
             domainConnType = domainConnInfo['@xsi:type'];
 
-            if (domainConnType.indexOf('Connector') > -1) {
+            if (domainConnType === 'modelica:Connector') {
                 self.core.setAttribute(newDomainConnNode, 'Type', 'ModelicaConnector');
 
                 if (domainConnInfo.hasOwnProperty('@Class')) {
@@ -510,7 +510,7 @@ define(['plugin/PluginConfig',
             if (avmPropValueExpression.hasOwnProperty('@xsi:type')) {
                 valueType = avmPropValueExpression['@xsi:type'];
 
-                if (valueType.indexOf('ParametricValue') > -1) {
+                if (valueType === 'avm:ParametricValue') {
                     valueInfo.type = 'Parametric';
 
                     if (avmPropValueExpression.hasOwnProperty('Minimum')) {
@@ -527,10 +527,10 @@ define(['plugin/PluginConfig',
                     } else {
                         valueInfo.default = valueInfo.value;
                     }
-                } else if (valueType.indexOf('FixedValue') > -1) {
+                } else if (valueType === 'avm:FixedValue') {
                     valueInfo.value = getValueText(avmPropValueExpression);
                     valueInfo.default = valueInfo.value;
-                } else if (valueType.indexOf('DerivedValue') > -1) {
+                } else if (valueType === 'avm:DerivedValue') {
                     if (avmValueObject.hasOwnProperty('@ID')) {
                         dstId = avmValueObject['@ID'];
                     }
@@ -567,7 +567,7 @@ define(['plugin/PluginConfig',
             newFormulaNode,
             i;
 
-        if (formulaType.indexOf('SimpleFormula') > -1) {
+        if (formulaType === 'avm:SimpleFormula') {
             newFormulaNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.SimpleFormula});
 
             if (avmFormulaInfo.hasOwnProperty('@Operation')) {
@@ -586,7 +586,7 @@ define(['plugin/PluginConfig',
                     }
                 }
             }
-        } else if (formulaType.indexOf('ComplexFormula') > -1) {
+        } else if (formulaType === 'avm:ComplexFormula') {
             newFormulaNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.CustomFormula});
 
             if (avmFormulaInfo.hasOwnProperty('@Expression')) {
