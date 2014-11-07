@@ -117,7 +117,6 @@ define(['plugin/PluginConfig',
             designName = self.core.getAttribute(self.activeNode, 'name'),
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
-            designSpaceAdm,
             resultObjectIDs = [
                 "/243203739/1914067160/1594627875/738670268/1604609344/1138983316",
                 "/243203739/1914067160/1594627875/738670268/1604609344/638117119",
@@ -145,10 +144,10 @@ define(['plugin/PluginConfig',
             self.dashboardObject.designSpace.name = designName;
             self.dashboardObject.designSpace.data = {Design: self.admExporter.admData};
 
-            // Create the manifest.project.json file
+            // Create the manifest.project.json
             self.dashboardObject.manifestProjectJson = new DashboardTypes.manifestProjectJson(workspaceName);
 
-            // Create the results.metaresults.json file
+            // Create the results.metaresults.json
             self.dashboardObject.results.resultsMetaresultsJson = new DashboardTypes.resultsMetaresultsJson();
 
             // Create requirements
@@ -161,7 +160,6 @@ define(['plugin/PluginConfig',
                     return callback(err, self.result);
                 }
 
-                // we should have here a full 'self.dashboardObject', ready for creating an artifact (???)
                 self.createDashboardArtifact(function (err, dashboardArtifactHash) {
                     if (err) {
                         self.logger.error(err);
@@ -295,7 +293,7 @@ define(['plugin/PluginConfig',
 
             self.processTestbenchManifest(tbManifestJson, designSpaceName, configName, configNodeGuid);
 
-            // Check if there is already an adm for this config
+            // Check if there is already an adm for this config (multiple results per config)
             if (self.dashboardObject.designs.hasOwnProperty(configName)) {
                 callback(null);
             } else {
@@ -372,16 +370,8 @@ define(['plugin/PluginConfig',
             }
 
             var tbManifestZip = new JSZip(tbManifestContent),
-                tbManifestObject = tbManifestZip.file(/testbench_manifest.json/),  // regular expression will return an array
+                tbManifestObject = tbManifestZip.file(/testbench_manifest.json/),
                 tbManifestJson;
-
-//            for (var fileName in tbManifestObject.files) {
-//                if (tbManifestObject.files.hasOwnProperty(fileName)) {
-//                    if (fileName.indexOf("testbench_manifest.json") > 0) {
-//                        var splitName = fileName.split('/');
-//                    }
-//                }
-//            }
 
             if (tbManifestObject === null) {
                 errMsg = "Could not get testbench_manifest from " + tbManifestHash + ": " + err;
@@ -389,7 +379,7 @@ define(['plugin/PluginConfig',
                 return callback(errMsg, null);
             }
 
-            // need to parse as json ???
+            // regular expression will return an array, so we need to get the first item
             tbManifestJson = JSON.parse(tbManifestObject[0].asText());
 
             callback(null, tbManifestJson);
@@ -416,7 +406,7 @@ define(['plugin/PluginConfig',
                 return callback(errMsg, null);
             }
 
-            // need to convert to json :(((
+            // need to convert to json for editing
             cfgAdmJson = self.convertXml2Json(cfgAdmXml[0].asArrayBuffer());
 
             if (cfgAdmJson instanceof Error) {
