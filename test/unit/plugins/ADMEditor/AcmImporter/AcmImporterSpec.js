@@ -44,6 +44,7 @@ describe('AcmImporterSpec', function () {
         // "ProjectManifestPopulation_InputModel.component.acm", CompoundProperty is not supported
         "PropertiesWithinConnectors_InputModel.component.acm",
         "Unit_Component.acm",
+        "Formulas.acm",
         "Modelica.acm"].forEach(function(acmFilename) {
             it('regressions on ' + acmFilename, function() {
                     return AcmImporterTestLib.runAcmImporterRegression(model, Templates, acmFilename, expect);

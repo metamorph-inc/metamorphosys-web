@@ -11,6 +11,7 @@ function(NodeMock, LoggerMock, AcmImporter) {
 
 
         var acm = Templates[acmFilename];
+        expect(acm).to.not.equal(undefined, acmFilename + " not found among Templates. (Did you run combine_templates.js?)");
         var importer = new AcmImporter();
         var acmJson = importer.convertXmlString2Json(acm);
         importer.initialize(new LoggerMock(), null);
@@ -35,11 +36,16 @@ function(NodeMock, LoggerMock, AcmImporter) {
         Object.keys(core._nodes).forEach(function (path) {
             delete core._nodes[path].guid;
         });
-        //var fs = require("fs");
-        //fs.writeFileSync(acmFilename + ".json", JSON.stringify(core._nodes, null, 4));
+        function writeRegressionJson() {
+            var fs = require("fs");
+            fs.writeFileSync(acmFilename + ".json", JSON.stringify(core._nodes, null, 4));
+        }
+        // writeRegressionJson();
 
         var nodesWithoutUndefined = JSON.parse(JSON.stringify(core._nodes)); // FIXME: do this more efficiently
-        expect(nodesWithoutUndefined).to.deep.equal(JSON.parse(Templates[acmFilename + ".json"]));
+        var expected = Templates[acmFilename + ".json"];
+        expect(expected).to.not.equal(undefined, acmFilename + ".json not found among Templates. To add it, uncomment writeRegressionJson, add to templates folder, and run combine_templates.js");
+        expect(nodesWithoutUndefined).to.deep.equal(JSON.parse(expected));
     }
 
     return {runAcmImporterRegression: runAcmImporterRegression};
