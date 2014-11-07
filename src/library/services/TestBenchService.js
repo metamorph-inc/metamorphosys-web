@@ -37,6 +37,7 @@ angular.module('cyphy.services')
             pluginService.runPlugin(context, 'TestBenchRunner', config)
                 .then(function (result) {
                     console.log("Result", result);
+                    deferred.resolve(result);
                 })
                 .catch(function (reason) {
                     deferred.reject('Something went terribly wrong, ' + reason);
