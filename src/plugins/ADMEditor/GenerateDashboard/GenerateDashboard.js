@@ -3,13 +3,15 @@
  */
 
 define(['plugin/PluginConfig',
-    'plugin/PluginBase',
-    'jszip',
-    'plugin/GenerateDashboard/GenerateDashboard/meta',
+        'plugin/PluginBase',
+        'ejs',
+        'plugin/GenerateDashboard/GenerateDashboard/Templates/Templates',
+        'jszip',
+        'plugin/GenerateDashboard/GenerateDashboard/meta',
         'plugin/GenerateDashboard/GenerateDashboard/dashboardTypes',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'xmljsonconverter'
-    ], function (PluginConfig, PluginBase, JSZip, MetaTypes, DashboardTypes, AdmExporter, Converter) {
+    ], function (PluginConfig, PluginBase, ejs, TEMPLATES, JSZip, MetaTypes, DashboardTypes, AdmExporter, Converter) {
     'use strict';
 
     /**
@@ -230,6 +232,8 @@ define(['plugin/PluginConfig',
 
         filesToAdd["manifest.project.json"] = JSON.stringify(self.dashboardObject.manifestProjectJson, null, 4);
 
+        filesToAdd["launch_SimpleHTTPServer.cmd"] = ejs.render(TEMPLATES['launch_SimpleHTTPServer.cmd.ejs']);
+        filesToAdd['index.html'] = ejs.render(TEMPLATES['index.html.ejs']);
 
         dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
             if (err) {
@@ -286,6 +290,9 @@ define(['plugin/PluginConfig',
                 return callback(err);
             }
 
+            // Append the config name to the design space name (e.g., Wheel + _ + Conf_no_1)
+            configName = designSpaceName + '_' + configName;
+
             self.processTestbenchManifest(tbManifestJson, designSpaceName, configName, configNodeGuid);
 
             // Check if there is already an adm for this config
@@ -300,6 +307,7 @@ define(['plugin/PluginConfig',
                     // 'rename' it (designSpaceName), and set the ID (designSpaceID)
                     admJson.Design['@DesignID'] = configNodeGuid;
                     admJson.Design['@Name'] = configName;
+                    admJson.Design.RootContainer['@Name'] = configName;
                     admJson.Design['@DesignSpaceSrcID'] = '{' + designSpaceID + '}';
 
                     self.dashboardObject.designs[configName] = admJson;
@@ -321,12 +329,14 @@ define(['plugin/PluginConfig',
             i;
 
         // modify the testbench_manifest.json
-        tbManifestJson.DesignName = designSpaceName + '_' + configName;
+        tbManifestJson.DesignName = configName;
         tbManifestJson.DesignID = '{' + configNodeGuid + '}';
 
         // add to the results.metaresults.json object
+        // generate a semi-random result directory name
         resultDirName = Math.random().toString(36).substring(8);
         resultDirName += Object.keys(self.dashboardObject.results.results).length;
+
         resultMetaresult =
             new DashboardTypes.resultMetaresult(configNodeGuid, tbManifestJson.TestBench, resultDirName);
 
