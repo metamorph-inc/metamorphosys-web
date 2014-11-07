@@ -32,11 +32,14 @@ define(['plugin/PluginConfig',
             "dashboard": "dashboard blob hash",
             "indexHtml": "index.html blob hash",
             "designs": {},
-            "designSpace": "design adm string",
+            "designSpace": {
+                "name": null,
+                "data": null
+            },
             "requirements": "dummy requirements blob hash",
             "results": {
                 "resultsMetaresultsJson": null,
-                results: {}
+                "results": {}
             },
             "testBenches": {},
             "manifestProjectJson": null
@@ -112,6 +115,7 @@ define(['plugin/PluginConfig',
             designName = self.core.getAttribute(self.activeNode, 'name'),
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
+            designSpaceAdm,
             resultObjectIDs = [
                 "/243203739/1914067160/1594627875/738670268/1604609344/1138983316",
                 "/243203739/1914067160/1594627875/738670268/1604609344/638117119",
@@ -135,9 +139,9 @@ define(['plugin/PluginConfig',
                 return callback(err, self.result);
             }
 
-            var admData = self.admExporter.admData;
-
-            self.dashboardObject.designSpace = self.json2xml.convertToString({Design: self.admExporter.admData});
+            // get the DesignSpace adm
+            self.dashboardObject.designSpace.name = designName;
+            self.dashboardObject.designSpace.data = {Design: self.admExporter.admData};
 
             // Create the manifest.project.json file
             self.dashboardObject.manifestProjectJson = new DashboardTypes.manifestProjectJson(workspaceName);
@@ -146,7 +150,7 @@ define(['plugin/PluginConfig',
             self.dashboardObject.results.resultsMetaresultsJson = new DashboardTypes.resultsMetaresultsJson();
 
             // Create requirements
-            self.dashboardObject.requirements = JSON.stringify(new DashboardTypes.requirementsJson(), null, 4);
+            self.dashboardObject.requirements = new DashboardTypes.requirementsJson();
 
             var getResultsCallbackFunction = function (err) {
                 if (err) {
@@ -156,7 +160,14 @@ define(['plugin/PluginConfig',
                 }
 
                 // we should have here a full 'self.dashboardObject', ready for creating an artifact (???)
-                self.createDashboardArtifact(function (err) {
+                self.createDashboardArtifact(function (err, dashboardArtifactHash) {
+                    if (err) {
+                        self.logger.error(err);
+                        self.result.setSuccess(false);
+                        return callback(err, self.result);
+                    }
+
+                    self.result.addArtifact(dashboardArtifactHash);
                     self.result.setSuccess(true);
                     self.save('added obj', function (err) {
                         callback(null, self.result);
@@ -171,12 +182,62 @@ define(['plugin/PluginConfig',
         self.admExporter.exploreDesign(self.designSpaceNode, false, exploreDesignCallbackFunction);
     };
 
-    GenerateDashboard.prototype.createDashboardArtifact = function () {
+    GenerateDashboard.prototype.createDashboardArtifact = function (callback) {
         var self = this,
             filesToAdd = {},
-            dashboardArtifact = self.blobClient.createArtifact('dashboard');
+            dashboardArtifact = self.blobClient.createArtifact('dashboard'),
+            filePath,
+            key;
+
+        // designs (configurations)
+        for (key in self.dashboardObject.designs) {
+            if (self.dashboardObject.designs.hasOwnProperty(key)) {
+                filePath = "designs/" + key + ".adm";
+                self.dashboardObject.manifestProjectJson.Project.Configurations.push("./" + filePath);
+                filesToAdd[filePath] = self.json2xml.convertToString(self.dashboardObject.designs[key]);
+            }
+        }
+
+        // design-space
+        filePath = "design-space/" + self.dashboardObject.designSpace.name + ".adm";
+        self.dashboardObject.manifestProjectJson.Project.DesignSpaceModels.push("./" + filePath);
+        filesToAdd[filePath] = self.json2xml.convertToString(self.dashboardObject.designSpace.data);
+
+        // requirements
+        filePath = "requirements/requirements.json";
+        filesToAdd[filePath] = JSON.stringify(self.dashboardObject.requirements, null, 4);
+
+        // results.metaresults.json
+        filePath = "results/results.metaresults.json";
+        filesToAdd[filePath] = JSON.stringify(self.dashboardObject.results.resultsMetaresultsJson, null, 4);
+
+        // results
+        for (key in self.dashboardObject.results.results) {
+            if (self.dashboardObject.results.results.hasOwnProperty(key)) {
+                filePath = "results/" + key + "/testbench_manifest.json";
+                filesToAdd[filePath] = JSON.stringify(self.dashboardObject.results.results[key], null, 4);
+            }
+        }
+
+        // test-benches
+        for (key in self.dashboardObject.testBenches) {
+            if (self.dashboardObject.testBenches.hasOwnProperty(key)) {
+                filePath = "test-benches/" + key;
+                self.dashboardObject.manifestProjectJson.Project.TestBenches.push("./" + filePath);
+                filesToAdd[filePath] = JSON.stringify(self.dashboardObject.testBenches[key], null, 4);
+            }
+        }
+
+        filesToAdd["manifest.project.json"] = JSON.stringify(self.dashboardObject.manifestProjectJson, null, 4);
 
 
+        dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
+            if (err) {
+                callback(err, null);
+            }
+
+            dashboardArtifact.save(callback);
+        });
     };
 
     GenerateDashboard.prototype.getResults = function (designSpaceName, designSpaceID, resultObjectIDs, callback) {
@@ -228,7 +289,7 @@ define(['plugin/PluginConfig',
             self.processTestbenchManifest(tbManifestJson, designSpaceName, configName, configNodeGuid);
 
             // Check if there is already an adm for this config
-            if (self.dashboardObject.designs.hasOwnProperty(configNodeGuid)) {
+            if (self.dashboardObject.designs.hasOwnProperty(configName)) {
                 callback(null);
             } else {
                 self.getCfgAdm(cfgAdmHash, function (err, admJson) {
@@ -241,7 +302,7 @@ define(['plugin/PluginConfig',
                     admJson.Design['@Name'] = configName;
                     admJson.Design['@DesignSpaceSrcID'] = '{' + designSpaceID + '}';
 
-                    self.dashboardObject.designs[configNodeGuid] = self.json2xml.convertToString(admJson);
+                    self.dashboardObject.designs[configName] = admJson;
 
                     callback(null);
                 });
@@ -259,7 +320,6 @@ define(['plugin/PluginConfig',
             tbMetric,
             i;
 
-
         // modify the testbench_manifest.json
         tbManifestJson.DesignName = designSpaceName + '_' + configName;
         tbManifestJson.DesignID = '{' + configNodeGuid + '}';
@@ -270,7 +330,7 @@ define(['plugin/PluginConfig',
         resultMetaresult =
             new DashboardTypes.resultMetaresult(configNodeGuid, tbManifestJson.TestBench, resultDirName);
 
-        self.dashboardObject.results.results[resultDirName] = JSON.stringify(tbManifestJson, null, 4);
+        self.dashboardObject.results.results[resultDirName] = tbManifestJson;
         self.dashboardObject.results.resultsMetaresultsJson.Results.push(resultMetaresult);
 
         // Generate a testbench description
@@ -288,7 +348,7 @@ define(['plugin/PluginConfig',
         }
 
         testBenchName += ".testbench.json";
-        self.dashboardObject.testBenches[testBenchName] = JSON.stringify(testbenchJson, null, 4);
+        self.dashboardObject.testBenches[testBenchName] = testbenchJson;
     };
 
     GenerateDashboard.prototype.getTestbenchManifest = function (tbManifestHash, callback) {

@@ -8,18 +8,10 @@ define([], function () {
     function manifestProjectJson(cyPhyProjectName) {
         return {
             Project: {
-                Components: [ ],
-                DesignSpaceModels: [
-                    "./design-space/Wheel.adm"
-                ],
-                Configurations: [
-                    "./designs/Wheel_cfg1.adm",
-                    "./designs/Wheel_cfg4.adm"
-                ],
-                TestBenches: [
-                    "./test-benches/SinusInput.testbench.json",
-                    "./test-benches/SinusInput2.testbench.json"
-                ],
+                Components: [],
+                DesignSpaceModels: [],
+                Configurations: [],
+                TestBenches: [],
                 Results: {
                     UrlHints: [
                         "./results/results.metaresults.json"
@@ -33,8 +25,8 @@ define([], function () {
                     vfLink: "",
                     text: ""
                 },
-                CyPhyProjectFileName: "RollingWheel.mga",
-                LastModified: "2014-10-31 11-43-25"
+                CyPhyProjectFileName: cyPhyProjectName || "None provided",
+                LastModified: "2014-11-5"
             }
         };
     }
