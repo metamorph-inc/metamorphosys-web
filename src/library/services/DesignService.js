@@ -40,7 +40,7 @@ angular.module('cyphy.services')
                 },
                 data = {
                     regionId: regionId,
-                    meta: null,
+                    meta: null, // META nodes - needed when creating new nodes...
                     design: {} // design {id: <string>, name: <string>, description: <string>, node <NodeObj>}
                 },
                 onUpdate = function (id) {

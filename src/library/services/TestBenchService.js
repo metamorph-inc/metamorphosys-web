@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.services')
-    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService) {
+    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService) {
         'use strict';
         var watchers = {};
 
@@ -22,8 +22,83 @@ angular.module('cyphy.services')
             throw new Error('Not implemented yet.');
         };
 
-        this.runTestBench = function (testBenchId, configurationId) {
-            throw new Error('Not implemented yet.');
+        this.runTestBench = function (context, testBenchId, configurationId) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: testBenchId,
+                    runOnServer: true,
+                    pluginConfig: {
+                        run: true,
+                        save: true,
+                        configurationPath: configurationId
+                    }
+                };
+            console.log(JSON.stringify(config));
+            pluginService.runPlugin(context, 'TestBenchRunner', config)
+                .then(function (result) {
+                    console.log("Result", result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.watchTestBenchNode = function (parentContext, designId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchTestBench',
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    meta: null, // META nodes - needed when creating new nodes...
+                    testBench: {} // design {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        hadChanges = false;
+                    if (newName !== data.design.name) {
+                        data.design.name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.design.description) {
+                        data.design.description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.design});
+                        });
+                    }
+                },
+                onUnload = function (id) {
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
+                    .then(function (designNode) {
+                        data.meta = meta;
+                        data.design = {
+                            id: designId,
+                            name: designNode.getAttribute('name'),
+                            description: designNode.getAttribute('INFO'),
+                            node: designNode
+                        };
+                        designNode.onUpdate(onUpdate);
+                        designNode.onUnload(onUnload);
+                        deferred.resolve(data);
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**

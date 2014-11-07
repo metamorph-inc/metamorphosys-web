@@ -16,4 +16,31 @@ angular.module('cyphy.services')
                 console.log(a, b, c);
             });
         };
+
+        /**
+         *
+         * @param {object} context
+         * @param {string} context.db
+         * @param {string} pluginName - Name of plugin to execute.
+         * @param {object} config - Object with plugin configuration.
+         * @param {object.string} config.activeNode - Path to activeNode.
+         * @param {object.Array.<string>} config.activeSelection - Paths to nodes in activeSelection.
+         * @param {object.boolean} config.runOnServer - Whether to run the plugin on the server or not.
+         * @param {object.object} config.pluginConfig - Plugin specific options.
+         */
+        this.runPlugin = function (context, pluginName, config) {
+            var deferred = $q.defer(),
+                dbConn = dataStoreService.getDatabaseConnection(context.db),
+                interpreterManager = new WebGMEGlobal.classes.InterpreterManager(dbConn.client);
+
+            interpreterManager.run(pluginName, config, function (result) {
+                if (result) {
+                    deferred.resolve(result);
+                } else {
+                    deferred.reject('No Result was return from plugin execution!');
+                }
+            });
+
+            return deferred.promise;
+        };
     });

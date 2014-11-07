@@ -1,14 +1,18 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('TestBenchController', function ($scope, $state, $timeout, growl) {
+    .controller('TestBenchController', function ($scope, $state, $timeout, growl, testBenchService) {
         'use strict';
         var self = this,
+            context = {
+                db: 'my-db-connection-id'
+            },
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
             testBenchId = $state.params.testBenchId.replace(/-/g, '/');
 
         console.log('TestBenchController');
-        $scope.connectionId = 'my-db-connection-id';
+        $scope.connectionId = context.db;
+
         $scope.workspaceId = workspaceId;
         $scope.testBenchId = testBenchId;
         $scope.state = {
@@ -33,13 +37,27 @@ angular.module('CyPhyApp')
             });
         });
 
-        $scope.$on('topLevelSystemUnderTestSet', function (event, data) {
-            $scope.state.designId = data.id;
-            console.log('topLevelSystemUnderTestSet', data);
+        $scope.$on('topLevelSystemUnderTestSet', function (event, listItem) {
+            $scope.state.designId = listItem.id;
+            console.log('topLevelSystemUnderTestSet', listItem);
         });
 
-        $scope.$on('selectionExposed', function (event, data) {
-            growl.warning('Not implemented ' + data.toString());
+        $scope.$on('selectionExposed', function (event, configurations) {
+            var configurationId;
+            if (configurations.length < 1) {
+                growl.warning('No selected configurations!');
+                return;
+            }
+            configurationId = configurations[0].id;
+            growl.info('Test-bench running on ' + configurations[0].name);
+            testBenchService.runTestBench(context, testBenchId, configurationId)
+                .then(function (result) {
+                    growl.success('TestBench run successful!');
+                })
+                .catch(function (reason) {
+                    console.error(reason);
+                    growl.error("Running test-bench failed.");
+                });
         });
 
         $scope.runTestBench = function () {
