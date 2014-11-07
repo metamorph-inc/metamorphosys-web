@@ -471,6 +471,9 @@ define(['plugin/PluginConfig',
         //self.propertyJson[propName] = avmPropInfo['Value'];
 
         self.id2NodeMap[propId] = newAcmPropertyNode;
+        if (avmPropInfo.Value) {
+            self.id2NodeMap[avmPropInfo.Value['@ID']] = newAcmPropertyNode;
+        }
     };
 
     AcmImporter.prototype.getPropertyValue = function (avmValueObject) {
@@ -640,6 +643,8 @@ define(['plugin/PluginConfig',
                     newValueFlowNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.ValueFlowComposition});
                     self.core.setPointer(newValueFlowNode, 'src', srcNode);
                     self.core.setPointer(newValueFlowNode, 'dst', dstNode);
+                } else {
+                    continue;
                 }
             }
         }
