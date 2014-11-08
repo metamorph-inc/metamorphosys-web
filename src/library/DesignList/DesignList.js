@@ -120,14 +120,14 @@ angular.module('cyphy.components')
                                 iconClass: 'glyphicon glyphicon-share-alt',
                                 actionData: {id: item.id, name: item.title},
                                 action: function (data) {
-                                    growl.warning('Not Implemented!');
-//                                    var hash = data.resource,
-//                                        url = FileService.getDownloadUrl(hash);
-//                                    if (url) {
-//                                        growl.success('ACM file for <a href="' + url + '">' + data.name + '</a> exported.');
-//                                    } else {
-//                                        growl.warning(data.name + ' does not have a resource.');
-//                                    }
+                                    designService.exportDesign(context, data.id)
+                                        .then(function (downloadUrl) {
+                                            growl.success('ADM file for <a href="' + downloadUrl + '">' + data.name + '</a> exported.');
+                                        })
+                                        .catch(function (reason) {
+                                            console.error(reason);
+                                            growl.error('Export failed, see console for details.');
+                                        });
                                 }
                             }
                         ]

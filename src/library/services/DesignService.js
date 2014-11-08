@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('designService', function ($q, $timeout, nodeService, baseCyPhyService) {
+    .service('designService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, fileService) {
         'use strict';
         var watchers = {};
 
@@ -35,8 +35,46 @@ angular.module('cyphy.services')
             return baseCyPhyService.setNodeAttributes(context, designId, attrs);
         };
 
-        this.exportDesign = function (designId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Calls AdmExporter.
+         * @param {object} context - Context for plugin.
+         * @param {string} context.db - Database connection to pull model from.
+         * @param {string} designId
+         * @param {string} [desertCfgPath] - Path to configuration if only one is to be exported.
+         * @returns {Promise} - resolves to {string} if successful.
+         */
+        this.exportDesign = function (context, designId, desertCfgPath) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: designId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        acms: false,
+                        desertCfg: desertCfgPath || ''
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AdmExporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    if (result.success) {
+                        console.log(result);
+                        deferred.resolve(fileService.getDownloadUrl(result.artifacts[0]));
+                    } else {
+                        if (result.error) {
+                            deferred.reject(result.error + ' messages: ' + angular.toJson(result.messages));
+                        } else {
+                            deferred.reject(angular.toJson(result.messages));
+                        }
+                    }
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong ' + reason);
+                });
+
+            return deferred.promise;
+
         };
 
         this.watchDesignNode = function (parentContext, designId, updateListener) {

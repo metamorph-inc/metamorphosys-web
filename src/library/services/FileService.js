@@ -11,6 +11,7 @@ angular.module('cyphy.services')
         var self = this,
             blobClient = new WebGMEGlobal.classes.BlobClient();
 
+        //TODO: Consider making an Artifact 'Class'.
         this.createArtifact = function (name) {
             return blobClient.createArtifact(name);
         };
@@ -23,6 +24,19 @@ angular.module('cyphy.services')
                 } else {
                     deferred.resolve(artieHash);
                 }
+            });
+
+            return deferred.promise;
+        };
+
+        this.getArtifact = function (hash) {
+            var deferred = $q.defer();
+            self.smartClient.blobClient.getArtifact(hash, function (err, artifact) {
+                if (err) {
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve(artifact, hash);
             });
 
             return deferred.promise;
