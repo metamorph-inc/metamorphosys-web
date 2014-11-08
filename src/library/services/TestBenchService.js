@@ -65,7 +65,8 @@ angular.module('cyphy.services')
                         newResults = this.getAttribute('Results'),
                         newFiles = this.getAttribute('TestBenchFiles'),
                         newTlsut = this.getPointer('TopLevelSystemUnderTest').to,
-                        hadChanges = false;
+                        hadChanges = false,
+                        tlsutChanged = false;
                     if (newName !== data.testBench.name) {
                         data.testBench.name = newName;
                         hadChanges = true;
@@ -86,13 +87,14 @@ angular.module('cyphy.services')
                         data.testBench.files = newFiles;
                         hadChanges = true;
                     }
-                    if (newTlsut !== data.testBench.tlsut) {
-                        data.testBench.tlsut = newTlsut;
+                    if (newTlsut !== data.testBench.tlsutId) {
+                        data.testBench.tlsutId = newTlsut;
                         hadChanges = true;
+                        tlsutChanged = true;
                     }
                     if (hadChanges) {
                         $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data.testBench});
+                            updateListener({id: id, type: 'update', data: data.testBench, tlsutChanged: tlsutChanged});
                         });
                     }
                 },
@@ -114,7 +116,8 @@ angular.module('cyphy.services')
                             path: testBenchNode.getAttribute('ID'),
                             results: testBenchNode.getAttribute('Results'),
                             files: testBenchNode.getAttribute('TestBenchFiles'),
-                            tlsut: testBenchNode.getPointer('TopLevelSystemUnderTest').to
+                            tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest').to,
+                            node: testBenchNode
                         };
                         testBenchNode.onUpdate(onUpdate);
                         testBenchNode.onUnload(onUnload);

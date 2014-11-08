@@ -4,12 +4,6 @@
         <h3><span class="fa fa-puzzle-piece"></span>Overview</h3>
         <div class="test-bench-attributes" ng-show="dataModels.testBench.description">
             {{dataModels.testBench.description}}
-            <div class="top-level-system-under-test" ng-show="dataModels.tlsut.name">
-                {{dataModels.tlsut.name}}
-            </div>
-            <div class="top-level-system-under-test" ng-show="!dataModels.tlsut.name">
-                Top Level System Under Test is not set.
-            </div>
         </div>
         <div class="test-bench-loading" ng-show="!dataModels.testBench.description">
             Loading test bench...
@@ -24,11 +18,11 @@
             Configurations
             <span class="configuration-buttons">
                 <button ng-disabled="dataModels.configurations.length === 0" class="btn btn-default btn-sm" ng-click="runTestBench()">Run</button>
-                <configuration-set-selector ng-if="state.designId" design-id="state.designId" connection-id="'my-db-connection-id'"></configuration-set-selector>
+                <configuration-set-selector ng-if="dataModels.testBench.tlsutId" design-id="dataModels.testBench.tlsutId" connection-id="'my-db-connection-id'"></configuration-set-selector>
             </span>
         </h3>
-        <div ng-show="!state.designId">Select a Top Level System Under Test...</div>
-        <div ng-show="state.designId && dataModels.configurations.length === 0">Select a set (if avaliable)..</div>
+        <div ng-show="!dataModels.testBench.tlsutId">Select a Top Level System Under Test...</div>
+        <div ng-show="dataModels.testBench.tlsutId && dataModels.configurations.length === 0">Select a set (if avaliable)..</div>
         <configuration-table ng-if="dataModels.configurations.length > 0"
                              configurations="dataModels.configurations"
                              set-name="dataModels.setName"></configuration-table>

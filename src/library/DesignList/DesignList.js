@@ -112,8 +112,8 @@ angular.module('cyphy.components')
                                 iconClass: 'fa fa-arrow-circle-right',
                                 actionData: {id: item.id, name: item.title},
                                 action: function (data) {
-                                    var oldTlsut = designItems[$scope.state.tlsut];
-                                    $scope.state.tlsut = data.id;
+                                    var oldTlsut = designItems[$scope.state.tlsutId];
+                                    $scope.state.tlsutId = data.id;
                                     $scope.$emit('topLevelSystemUnderTestSet', item, oldTlsut);
                                 }
                             },
@@ -189,6 +189,16 @@ angular.module('cyphy.components')
             tlsutId: null
         };
 
+        $scope.$on('topLevelSystemUnderTestChanged', function (event, id) {
+            if ($scope.state.tlsutId && designItems.hasOwnProperty($scope.state.tlsutId)) {
+                designItems[$scope.state.tlsutId].cssClass = '';
+            }
+            $scope.state.tlsutId = id;
+            if (designItems.hasOwnProperty(id)) {
+                designItems[id].cssClass = 'top-level-system-under-test';
+            }
+        });
+
         // Transform the raw service node data to items for the list.
         serviceData2ListItem = function (data) {
             var listItem;
@@ -202,7 +212,7 @@ angular.module('cyphy.components')
                     id: data.id,
                     title: data.name,
                     toolTip: 'Open Design Space View',
-                    cssClass: '',
+                    cssClass: $scope.state.tlsutId === data.id ? 'top-level-system-under-test' : '',
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.

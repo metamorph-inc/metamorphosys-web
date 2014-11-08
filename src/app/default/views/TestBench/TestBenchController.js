@@ -30,14 +30,14 @@ angular.module('CyPhyApp')
         }
 
         $scope.state = {
-            configurationStatus: 'Select a Top Level System Under Test...'
+            configurationStatus: 'Select a Top Level System Under Test...',
+            designId: null
         };
 
         $scope.dataModels = {
             testBench: {
                 name: 'Loading test-bench..'
             },
-            tlsut: {},
             configurations: [],
             setName: null
         };
@@ -55,14 +55,25 @@ angular.module('CyPhyApp')
         });
 
         $scope.$on('topLevelSystemUnderTestSet', function (event, newListItem, oldListItem) {
-            $scope.dataModels.tlsut.id = newListItem.id;
-            $scope.dataModels.tlsut.name = newListItem.title;
-            newListItem.cssClass = 'top-level-system-under-test';
-            if (oldListItem) {
-                oldListItem.cssClass = '';
+            if ($scope.dataModels.testBench.node) {
+                if ($scope.dataModels.testBench.tlsutId === newListItem.id) {
+                    growl.info('Design space is already set as Top Level System Under Test.');
+                } else {
+                    $scope.dataModels.testBench.tlsutId = null;
+                    $timeout(function () {
+                        $scope.dataModels.testBench.tlsutId = newListItem.id;
+                        newListItem.cssClass = 'top-level-system-under-test';
+                        if (oldListItem) {
+                            oldListItem.cssClass = '';
+                        }
+                        $scope.dataModels.testBench.node.makePointer('TopLevelSystemUnderTest', newListItem.id);
+                    });
+                }
+                //$scope.state.designId = newListItem.id;
+                console.log('topLevelSystemUnderTestSet', newListItem, oldListItem);
+            } else {
+                growl.warning('Can not set TLSUT while test-bench has not been loaded.');
             }
-            //$scope.state.designId = newListItem.id;
-            console.log('topLevelSystemUnderTestSet', newListItem, oldListItem);
         });
 
         $scope.$on('selectionExposed', function (event, configurations) {
@@ -111,6 +122,9 @@ angular.module('CyPhyApp')
                     console.warn('Load should not happen');
                 } else if (updateObject.type === 'update') {
                     $scope.dataModels.testBench = updateObject.data;
+                    if (updateObject.tlsutChanged) {
+                        $scope.$broadcast('topLevelSystemUnderTestChanged', $scope.dataModels.testBench.tlsutId);
+                    }
                 } else if (updateObject.type === 'unload') {
                     growl.warning('Test Bench was removed!');
                     $location.path('/workspaceDetails/' + workspaceId.replace(/\//g, '-'));
@@ -120,6 +134,9 @@ angular.module('CyPhyApp')
             })
                 .then(function (data) {
                     $scope.dataModels.testBench = data.testBench;
+                    if (data.testBench.tlsutId) {
+                        $scope.$broadcast('topLevelSystemUnderTestChanged', data.testBench.tlsutId);
+                    }
                 });
         });
     });
