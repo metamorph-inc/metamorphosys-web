@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -51,39 +51,76 @@ angular.module('cyphy.services')
 
         this.importFiles = function (context, folderIds, files) {
             var deferred = $q.defer(),
-                qList = [],
                 i,
                 counter,
+                total,
                 fs = {
                     acms: [],
                     adms: [],
                     atms: []
                 },
-                importAcmRec = function () {
-                    self.callAcmImporter(context, folderIds.acm, fs.acms[counter - 1])
-                        .then(getNotify(fs.acms[counter - 1]), getNotifyErr(fs.acms[counter - 1]));
-                },
-                getNotify = function (fInfo) {
-                    return function (result) {
-                        counter -= 1;
+                importAcmRec,
+                importAdmRec,
+                importAtmRec,
+                getNotify;
+
+            importAcmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAcmImporter(context, folderIds.acm, fs.acms[counter])
+                        .then(getNotify(fs.acms[counter], 'acm'), getNotify(fs.acms[counter]), 'acm');
+                } else {
+                    total = fs.adms.length;
+                    counter = total;
+                    importAdmRec();
+                }
+            };
+            importAdmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAdmImporter(context, folderIds.adm, fs.adms[counter])
+                        .then(getNotify(fs.adms[counter], 'adm'), getNotify(fs.adms[counter]), 'adm');
+                } else {
+                    total = fs.atms.length;
+                    counter = total;
+                    importAtmRec();
+                }
+            };
+            importAtmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAtmImporter(context, folderIds.atm, fs.atms[counter])
+                        .then(getNotify(fs.atms[counter], 'atm'), getNotify(fs.atms[counter], 'atm'));
+                } else {
+                    deferred.resolve();
+                }
+            };
+            getNotify = function (fInfo, type) {
+                return function (result) {
+                    if (angular.isString(result) === false && result.success === true) {
                         deferred.notify({type: 'success', message: '<a href="' + fInfo.url + '">' + fInfo.name +
-                            '</a>' + ' imported. (' + counter.toString() + ' file(s) left.)'});
-                        if (counter > 0) {
-                            importAcmRec();
+                            '</a>' + ' imported. ' + '[' + (total - counter) + '/' + total + ']'});
+                    } else {
+                        deferred.notify({type: 'error', message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                            '</a>' + ' failed to be imported, see console details.' +
+                            '[' + (total - counter) + '/' + total + ']'});
+                        if (angular.isString(result)) {
+                            console.error(result);
                         } else {
-                            deferred.resolve();
+                            console.error(angular.toJson(result.messages, true));
                         }
-                    };
-                },
-                getNotifyErr = function (fInfo) {
-                    return function (result) {
-                        counter -= 1;
-                        deferred.notify({type: 'error', message: fInfo.name + ' failed ' + counter.toString() + ' left.'});
-                        if (counter <= 0) {
-                            deferred.resolve();
-                        }
-                    };
+                    }
+                    if (type === 'acm') {
+                        importAcmRec();
+                    } else if (type === 'adm') {
+                        importAdmRec();
+                    } else if (type === 'atm') {
+                        importAtmRec();
+                    } else {
+                        deferred.reject('Unexpected import type ' + type);
+                    }
                 };
+            };
             // hash: "3636ead0785ca166f3b11193c4b2e5a670801eb1" name: "Damper.zip" size: "1.4 kB" type: "zip"
             // url: "/rest/blob/download/3636ead0785ca166f3b11193c4b2e5a670801eb1"
             for (i = 0; i < files.length; i += 1) {
@@ -96,7 +133,8 @@ angular.module('cyphy.services')
                 }
             }
 
-            counter = fs.acms.length;
+            total = fs.acms.length;
+            counter = total;
             importAcmRec();
 
             return deferred.promise;
@@ -115,6 +153,54 @@ angular.module('cyphy.services')
 
             pluginService.runPlugin(context, 'AcmImporter', config)
                 .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ACM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.callAdmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        admFile: fileInfo.hash
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AdmImporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.callAtmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        atmFile: fileInfo.hash
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AtmImporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ATM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
                     deferred.resolve(result);
                 })
                 .catch(function (reason) {

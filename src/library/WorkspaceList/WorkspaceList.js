@@ -189,6 +189,10 @@ angular.module('cyphy.components')
                                 db: context.db,
                                 regionId: context.regionId + '_watchWorkspaces'
                             };
+                        if (!newItem || !newItem.name) {
+                            growl.warning('Provide a name');
+                            return;
+                        }
                         workspaceService.createWorkspace(newItemContext, newItem.name, newItem.description)
                             .then(function (folderIds) {
                                 growl.success(newItem.name + ' created.');

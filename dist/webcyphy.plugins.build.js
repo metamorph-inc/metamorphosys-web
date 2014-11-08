@@ -3516,7 +3516,10 @@ define('xmljsonconverter',['sax'], function (sax) {
         self.nsStack = [];
         self.parser = sax.parser(true);
         // TODO make this configurable
-        self.nsMap = { "http://www.w3.org/2001/XMLSchema-instance": "xsi" };
+        self.nsMap = {
+            "http://www.w3.org/2001/XMLSchema-instance": "xsi",
+            "http://www.w3.org/2001/XMLSchema": "xsd",
+            };
 
         self.parser.ontext = function (text) {
             if (self.stack.length > 0) {
@@ -3537,7 +3540,7 @@ define('xmljsonconverter',['sax'], function (sax) {
             }
             var namespace = value.substr(0, colon);
             if (namespace in ns) {
-                return self.nsMap[ns[namespace]] || ns[namespace] + ':' + value.substr(colon + 1);
+                return (self.nsMap[ns[namespace]] || ns[namespace]) + ':' + value.substr(colon + 1);
             }
             return value;
         };
@@ -3550,8 +3553,13 @@ define('xmljsonconverter',['sax'], function (sax) {
 
             var ns = {};
             for (key in node.attributes) {
-                if (node.attributes.hasOwnProperty(key) && key.substr(0, 6) === 'xmlns:') {
-                    ns[key.substr('xmlns:'.length)] = node.attributes[key];
+                if (node.attributes.hasOwnProperty(key)) {
+                    if (key.substr(0, 6) === 'xmlns:') {
+                        ns[key.substr('xmlns:'.length)] = node.attributes[key];
+                    }
+                    if (key === 'xmlns') {
+                        ns[''] = node.attributes['xmlns'];
+                    }
                 }
             }
             if (Object.getOwnPropertyNames(ns).length === 0) {
@@ -3563,7 +3571,7 @@ define('xmljsonconverter',['sax'], function (sax) {
                 for (i = self.nsStack.length - 1; i >= 0; i--) {
                     for (key in self.nsStack[i]) {
                         if (!ns.hasOwnProperty(key) && self.nsStack[i].hasOwnProperty(key)) {
-                            ns[key] = self.nsStack[i];
+                            ns[key] = self.nsStack[i][key];
                         }
                     }
                 }
@@ -3600,8 +3608,13 @@ define('xmljsonconverter',['sax'], function (sax) {
             self.stack.push(jsonNode);
             for (key in node.attributes) {
                 if (node.attributes.hasOwnProperty(key)) {
-                    // TODO mapNamespace(key)
-                    jsonNode[attrTag + key] = node.attributes[key];
+                    var namespaceKey = mapNamespace(ns, key);
+                    if (namespaceKey === "xsi:type") {
+                        // the attribute value should be mapped too
+                        jsonNode[attrTag + namespaceKey] = mapNamespace(ns, node.attributes[key]);
+                    } else {
+                        jsonNode[attrTag + namespaceKey] = node.attributes[key];
+                    }
                 }
             }
         };
@@ -10258,6 +10271,11 @@ define('plugin/AdmImporter/AdmImporter/AdmImporter',[
                 }
             } else if (metaTypeName === 'Property') {
                 id = self.core.getAttribute(children[i], 'ID');
+                if (self.startsWith(id, 'property.')) {
+                    id = id.replace('property.', '');
+                } else if (self.startsWith(id, 'param.')) {
+                    id = id.replace('param.', '');
+                }
                 if (componentInstance.propertyIdInModel2ID[id]) {
                     self.valueFlowTargetID2Node[componentInstance.propertyIdInModel2ID[id]] = children[i];
                 } else {
@@ -10427,6 +10445,13 @@ define('plugin/AdmImporter/AdmImporter/AdmImporter',[
     AdmImporter.prototype.endsWith = function (str, ending) {
         var lastIndex = str.lastIndexOf(ending);
         return (lastIndex !== -1) && (lastIndex + ending.length === str.length);
+    };
+
+    AdmImporter.prototype.startsWith = function (str, start) {
+        if (start === '') {
+            return true;
+        }
+        return start.length > 0 && str.substring(0, start.length) === start;
     };
 
     return AdmImporter;
