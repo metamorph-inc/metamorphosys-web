@@ -154,6 +154,13 @@ angular.module('cyphy.services')
         };
 
         // WebCyPhySpecific functions.
+
+        /**
+         * TODO: This method should use promises internally!
+         * @param files
+         * @param validExtensions
+         * @returns {*}
+         */
         this.saveDroppedFiles = function (files, validExtensions) {
             var deferred = $q.defer(),
                 i,

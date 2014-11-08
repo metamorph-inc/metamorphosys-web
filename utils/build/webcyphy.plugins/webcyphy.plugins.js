@@ -3,13 +3,25 @@ define('webcyphy.plugins',
     [
         'xmljsonconverter',
         'executor/ExecutorClient',
+        'plugin/AcmImporter/AcmImporter/AcmImporter',
+        'plugin/AdmImporter/AdmImporter/AdmImporter',
+        'plugin/AtmImporter/AtmImporter/AtmImporter',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner'
-    ], function (Converters, ExecutorClient, AdmExporter, TestBenchRunner) {
+    ], function (Converters,
+                 ExecutorClient,
+                 AcmImporter,
+                 AdmImporter,
+                 AtmImporter,
+                 AdmExporter,
+                 TestBenchRunner) {
         'use strict';
         WebGMEGlobal.classes = WebGMEGlobal.classes || {};
         WebGMEGlobal.classes.ExecutorClient = ExecutorClient;
         WebGMEGlobal.classes.Converters = Converters;
+        WebGMEGlobal.plugins.AcmImporter = AcmImporter;
+        WebGMEGlobal.plugins.AdmImporter = AdmImporter;
+        WebGMEGlobal.plugins.AtmImporter = AtmImporter;
         WebGMEGlobal.plugins.AdmExporter = AdmExporter;
         WebGMEGlobal.plugins.TestBenchRunner = TestBenchRunner;
     });

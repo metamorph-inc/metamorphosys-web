@@ -160,19 +160,32 @@ angular.module('cyphy.components')
                     };
 
                     $scope.createItem = function (newItem) {
-                        var i;
-                        if ($scope.files) {
-                            for (i = 0; i < $scope.files.length; i += 1) {
-                                console.log($scope.files[i]);
-                            }
-                        }
-                        growl.warning('Not Implemented!');
-                        //workspaceService.createWorkspace(context, newItem);
-
-                        //$scope.newItem = {};
-
-                        //config.newItemForm.expanded = false; // this is how you close the form itself
-
+                        var newItemContext = {
+                                db: context.db,
+                                regionId: context.regionId + '_watchWorkspaces'
+                            };
+                        workspaceService.createWorkspace(newItemContext, newItem.name, newItem.description)
+                            .then(function (folderIds) {
+                                growl.success(newItem.name + ' created.');
+                                if ($scope.model.droppedFiles.length > 0) {
+                                    growl.info('Importing files..');
+                                    workspaceService.importFiles(newItemContext, folderIds, $scope.model.droppedFiles)
+                                        .then(function () {
+                                            growl.info('Finished importing files!', {ttl: 100});
+                                        }, function (reason) {
+                                            growl.error(reason);
+                                        }, function (info) {
+                                            growl[info.type](info.message);
+                                        })
+                                        .finally(function () {
+                                            config.newItemForm.expanded = false;
+                                            $scope.model.droppedFiles = [];
+                                        });
+                                } else {
+                                    config.newItemForm.expanded = false;
+                                    $scope.model.droppedFiles = [];
+                                }
+                            });
                     };
                 }
             },

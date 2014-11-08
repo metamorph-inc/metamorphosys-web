@@ -7,29 +7,122 @@
 
 
 angular.module('cyphy.services')
-    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService) {
+    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
 
         this.duplicateWorkspace = function (context, otherWorkspaceId) {
             throw new Error('Not implemented yet.');
         };
 
-        this.createWorkspace = function (context, data) {
-            var deferred = $q.defer();
-            console.warn('Creating new workspace but not using data', data);
+        this.createWorkspace = function (context, name, desc) {
+            var deferred = $q.defer(),
+                meta;
             nodeService.getMetaNodes(context)
-                .then(function (meta) {
-                    nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
-                        .then(function (newNode) {
-                            deferred.resolve(newNode);
-                        })
-                        .catch(function (reason) {
-                            deferred.reject(reason);
-                        });
+                .then(function (metaNodes) {
+                    meta = metaNodes;
+                    return nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace');
+                })
+                .then(function (wsNode) {
+                    var acmFolderId,
+                        admFolderId,
+                        atmFolderId,
+                        params = {
+                            parentId: wsNode.getId(),
+                            baseId: meta.ACMFolder.getId()
+                        };
+
+                    wsNode.setAttribute('name', name, 'web-cyphy set name to ' + name);
+                    if (desc) {
+                        wsNode.setAttribute('INFO', desc, 'web-cyphy set INFO to ' + desc);
+                    }
+
+                    acmFolderId = nodeService.createChild(context, params);
+                    params.baseId = meta.ADMFolder.getId();
+                    admFolderId = nodeService.createChild(context, params);
+                    params.baseId = meta.ATMFolder.getId();
+                    atmFolderId = nodeService.createChild(context, params);
+
+                    deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
                 })
                 .catch(function (reason) {
                     deferred.reject(reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.importFiles = function (context, folderIds, files) {
+            var deferred = $q.defer(),
+                qList = [],
+                i,
+                counter,
+                fs = {
+                    acms: [],
+                    adms: [],
+                    atms: []
+                },
+                importAcmRec = function () {
+                    self.callAcmImporter(context, folderIds.acm, fs.acms[counter - 1])
+                        .then(getNotify(fs.acms[counter - 1]), getNotifyErr(fs.acms[counter - 1]));
+                },
+                getNotify = function (fInfo) {
+                    return function (result) {
+                        counter -= 1;
+                        deferred.notify({type: 'success', message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                            '</a>' + ' imported. (' + counter.toString() + ' file(s) left.)'});
+                        if (counter > 0) {
+                            importAcmRec();
+                        } else {
+                            deferred.resolve();
+                        }
+                    };
+                },
+                getNotifyErr = function (fInfo) {
+                    return function (result) {
+                        counter -= 1;
+                        deferred.notify({type: 'error', message: fInfo.name + ' failed ' + counter.toString() + ' left.'});
+                        if (counter <= 0) {
+                            deferred.resolve();
+                        }
+                    };
+                };
+            // hash: "3636ead0785ca166f3b11193c4b2e5a670801eb1" name: "Damper.zip" size: "1.4 kB" type: "zip"
+            // url: "/rest/blob/download/3636ead0785ca166f3b11193c4b2e5a670801eb1"
+            for (i = 0; i < files.length; i += 1) {
+                if (files[i].type === 'zip') {
+                    fs.acms.push(files[i]);
+                } else if (files[i].type === 'adm') {
+                    fs.adms.push(files[i]);
+                } else if (files[i].type === 'atm') {
+                    fs.atms.push(files[i]);
+                }
+            }
+
+            counter = fs.acms.length;
+            importAcmRec();
+
+            return deferred.promise;
+        };
+
+        this.callAcmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        UploadedFile: fileInfo.hash,
+                        DeleteExisting: true
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AcmImporter', config)
+                .then(function (result) {
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
                 });
 
             return deferred.promise;

@@ -47,7 +47,8 @@ angular.module('cyphy.components')
             nodeClick: function ( e, node ) {
                 console.log( 'Node was clicked:', node, $scope );
             },
-            disableManualSelection: true
+            disableManualSelection: true,
+            folderIconClass: 'fa fa-cubes'
 //            nodeDblclick: function ( e, node ) {
 //                console.log( 'Node was double-clicked:', node );
 //            },
