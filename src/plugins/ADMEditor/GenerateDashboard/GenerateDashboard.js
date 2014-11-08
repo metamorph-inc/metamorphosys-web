@@ -29,10 +29,15 @@ define(['plugin/PluginConfig',
         this.admExporter = null;
         this.designSpaceNode = null;
         this.json2xml = null;
+        this.testResultObjectIDs = [
+            "/243203739/1914067160/1594627875/738670268/1604609344/1138983316",
+            "/243203739/1914067160/1594627875/738670268/1604609344/638117119",
+            "/243203739/1914067160/1594627875/738670268/14675327/721601556",
+            "/243203739/1914067160/1594627875/738670268/14675327/669656366"
+        ];
 
         this.dashboardObject = {
-            "dashboard": "dashboard blob hash",
-            "indexHtml": "index.html blob hash",
+            "dashboard": "ed3320752e9598774183d92a0600b9c53d85d3c2",
             "designs": {},
             "designSpace": {
                 "name": null,
@@ -89,7 +94,7 @@ define(['plugin/PluginConfig',
     GenerateDashboard.prototype.getConfigStructure = function () {
         return [
             {
-                'name': 'ResultIDs',
+                'name': 'resultIDs',
                 'displayName': 'Result Object IDs',
                 'description': 'IDs of Result objects to add to the Generated Dashboard, separated by semicolons.',
                 'value': '',
@@ -118,12 +123,15 @@ define(['plugin/PluginConfig',
             designName = self.core.getAttribute(self.activeNode, 'name'),
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
-            resultObjectIDs = [
-                "/243203739/1914067160/1594627875/738670268/1604609344/1138983316",
-                "/243203739/1914067160/1594627875/738670268/1604609344/638117119",
-                "/243203739/1914067160/1594627875/738670268/14675327/721601556",
-                "/243203739/1914067160/1594627875/738670268/14675327/669656366"
-            ];
+            currentConfig = self.getCurrentConfig(),
+            resultObjectIDs;
+
+        if (currentConfig.resultIDs) {
+            resultObjectIDs = currentConfig.resultIDs.split(';');
+        } else {
+            // Recursively get all the Result objects
+            self.logger.debug("Recursively get all the Result objects");
+        }
 
         self.updateMETA(self.metaTypes);
         self.json2xml = new Converter.Json2xml();
@@ -235,14 +243,50 @@ define(['plugin/PluginConfig',
         filesToAdd["manifest.project.json"] = JSON.stringify(self.dashboardObject.manifestProjectJson, null, 4);
 
         filesToAdd["launch_SimpleHTTPServer.cmd"] = ejs.render(TEMPLATES['launch_SimpleHTTPServer.cmd.ejs']);
-        filesToAdd['index.html'] = ejs.render(TEMPLATES['index.html.ejs']);
 
         dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
             if (err) {
                 callback(err, null);
             }
 
-            dashboardArtifact.save(callback);
+            // add the dashboard package to the artifact
+            self.blobClient.getMetadata(self.dashboardObject.dashboard, function (err, dashboardMetadata) {
+                if (err) {
+                    var msg = "Could not add dashboard files from blob. Add them manually";
+                    self.createMessage(self.designSpaceNode, msg);
+                    dashboardArtifact.save(callback);
+                } else {
+                    var path,
+                        hashToAdd,
+                        mdContent = dashboardMetadata.content,
+                        hashCounter = Object.keys(dashboardMetadata.content).length,
+                        errors = '',
+                        addDashboardHashCounterCallback = function (err, addedHash) {
+                            if (err) {
+                                errors += err;
+                            }
+
+                            self.logger.info("Added hash to artifact: " + addedHash);
+
+                            hashCounter -= 1;
+                            if (hashCounter === 0) {
+                                if (errors) {
+                                    callback(errors, null);
+                                }
+
+                                dashboardArtifact.save(callback);
+                            }
+                        };
+
+                    for (path in mdContent) {
+                        if (mdContent.hasOwnProperty(path)) {
+                            hashToAdd = mdContent[path].content;
+
+                            dashboardArtifact.addObjectHash(path, hashToAdd, addDashboardHashCounterCallback);
+                        }
+                    }
+                }
+            });
         });
     };
 
