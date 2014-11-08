@@ -101,9 +101,17 @@ angular.module('cyphy.components')
                                 label: 'Export as XME',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: { id: item.id },
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    growl.warning('Not Implemented, id: ' + data.id);
+                                    workspaceService.exportWorkspace(context, data.id)
+                                        .then(function (downloadUrl) {
+                                            growl.success('Workspace package for <a href="' + downloadUrl + '">' +
+                                                data.name + '</a> exported.');
+                                        })
+                                        .catch(function (reason) {
+                                            console.error(reason);
+                                            growl.error('Export failed, see console for details.');
+                                        });
                                 }
                             }
                         ]

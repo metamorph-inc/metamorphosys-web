@@ -7,7 +7,7 @@
 
 
 angular.module('cyphy.services')
-    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService) {
+    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, fileService) {
         'use strict';
         var self = this,
             watchers = {};
@@ -211,6 +211,44 @@ angular.module('cyphy.services')
         };
 
         /**
+         * Calls ExportWorkspace.
+         * @param {object} context - Context for plugin.
+         * @param {string} context.db - Database connection to pull model from.
+         * @param {string} workspaceId
+         * @returns {Promise} - resolves to download url if successful.
+         */
+        this.exportWorkspace = function (context, workspaceId) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: workspaceId,
+                    runOnServer: false,
+                    pluginConfig: { }
+                };
+
+            pluginService.runPlugin(context, 'ExportWorkspace', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    if (result.success) {
+                        console.log(result);
+                        deferred.resolve(fileService.getDownloadUrl(result.artifacts[0]));
+                    } else {
+                        if (result.error) {
+                            deferred.reject(result.error + ' messages: ' + angular.toJson(result.messages));
+                        } else {
+                            deferred.reject(angular.toJson(result.messages));
+                        }
+                    }
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong ' + reason);
+                });
+
+            return deferred.promise;
+
+        };
+
+        /**
          * Updates the given attributes
          * @param {object} context - Must exist within watchers and contain the design.
          * @param {string} context.db - Must exist within watchers and contain the design.
@@ -234,9 +272,6 @@ angular.module('cyphy.services')
             nodeService.destroyNode(context, workspaceId, message);
         };
 
-        this.exportWorkspace = function (workspaceId) {
-            throw new Error('Not implemented yet.');
-        };
         // TODO: make sure the methods below gets resolved at error too.
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.

@@ -24,7 +24,8 @@
         "plugin/AtmExporter": "./src/plugins/ADMEditor",
         "plugin/AcmImporter": "./src/plugins/ADMEditor",
         "plugin/AdmImporter": "./src/plugins/ADMEditor",
-        "plugin/AtmImporter": "./src/plugins/ADMEditor"
+        "plugin/AtmImporter": "./src/plugins/ADMEditor",
+        "plugin/ExportWorkspace": "./src/plugins/ADMEditor"
     },
     optimize: "none",
     insertRequire: ["webcyphy.plugins"],
