@@ -113,7 +113,8 @@ define(['plugin/PluginConfig',
         // These are all instantiated at this point.
         var self = this,
             //config = self.getCurrentConfig(),
-            workspaceName = self.core.getAttribute(self.rootNode, 'name'),// NOPE. this is 'ADMEditor', not 'rollo'
+            workSpaceName,
+            workSpaceNode,
             designName = self.core.getAttribute(self.activeNode, 'name'),
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
@@ -145,7 +146,10 @@ define(['plugin/PluginConfig',
             self.dashboardObject.designSpace.data = {Design: self.admExporter.admData};
 
             // Create the manifest.project.json
-            self.dashboardObject.manifestProjectJson = new DashboardTypes.manifestProjectJson(workspaceName);
+            workSpaceNode = self.getWorkspaceNode(self.designSpaceNode);
+            workSpaceName = self.core.getAttribute(workSpaceNode, 'name');
+
+            self.dashboardObject.manifestProjectJson = new DashboardTypes.manifestProjectJson(workSpaceName);
 
             // Create the results.metaresults.json
             self.dashboardObject.results.resultsMetaresultsJson = new DashboardTypes.resultsMetaresultsJson();
@@ -464,6 +468,17 @@ define(['plugin/PluginConfig',
             self.admExporter.includeAcms = true;
             self.logger.info('AdmExporter had already been initialized - reset acmFiles, gatheredAcms and rootPath.');
         }
+    };
+
+    GenerateDashboard.prototype.getWorkspaceNode = function (node) {
+        var self = this;
+        while (node) {
+            if (self.isMetaTypeOf(node, self.metaTypes.WorkSpace)) {
+                return node;
+            }
+            node = self.core.getParent(node);
+        }
+        self.logger.error('Could not find WorkSpace!!');
     };
 
     return GenerateDashboard;

@@ -42,7 +42,7 @@ define([], function () {
             "Design": null,
             "DesignID": '{' + designID + '}' || "{aaabbbccc111222333}",
             "TestBench": testbench + ".testbench.json" || "some testbench",
-            "Time": "2014-10-31 11-43-25",
+            "Time": "2014-11-5",
             "Summary": "./" + summaryPath + "/testbench_manifest.json" || "random dir name / testbench manifest destiny"
         };
     }
@@ -101,21 +101,6 @@ define([], function () {
             "Created": "some time in the future"
         };
     }
-
-
-
-//    function testbenchSteps() {
-//        return {
-//            "ExecutionCompletionTimestamp": null,
-//            "Description": null,
-//            "Parameters": [],
-//            "ExecutionStartTimestamp": null,
-//            "Invocation": "simulate_om.cmd OpenModelica__latest_",
-//            "PostProcess": null,
-//            "PreProcess": null,
-//            "Type": null
-//        };
-//    }
 
 return {
     manifestProjectJson: manifestProjectJson,
