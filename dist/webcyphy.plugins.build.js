@@ -8863,9 +8863,9 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
         if (avmDomainModelInfo.hasOwnProperty('@xsi:type')) {
             domainModelType = avmDomainModelInfo['@xsi:type'];
 
-            if (domainModelType.indexOf('ModelicaModel') > -1) {
+            if (domainModelType === 'modelica:ModelicaModel') {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'Modelica');
-            } else if (domainModelType.indexOf('CADModel') > -1) {
+            } else if (domainModelType === 'cad:CADModel') {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'CAD');
             } else if (domainModelType.indexOf('Manufacturing') > -1) {
                 self.core.setAttribute(newDomainModelNode, 'Type', 'Manufacturing');
@@ -8918,7 +8918,7 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
         if (domainConnInfo.hasOwnProperty('@xsi:type')) {
             domainConnType = domainConnInfo['@xsi:type'];
 
-            if (domainConnType.indexOf('Connector') > -1) {
+            if (domainConnType === 'modelica:Connector') {
                 self.core.setAttribute(newDomainConnNode, 'Type', 'ModelicaConnector');
 
                 if (domainConnInfo.hasOwnProperty('@Class')) {
@@ -8944,7 +8944,7 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
     AcmImporter.prototype.createNewProperty = function (avmPropInfo, newAcmNode) {
         var self = this,
             propName = avmPropInfo['@Name'],
-            propId = (avmPropInfo['@ID'] || '').split('.')[1],
+            propId = avmPropInfo['@ID'],
             xPos = parseInt(avmPropInfo['@XPosition'], 10),
             yPos = parseInt(avmPropInfo['@YPosition'], 10),
             avmValueInfo = self.getPropertyValue(avmPropInfo['Value']),
@@ -8965,6 +8965,9 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
         //self.propertyJson[propName] = avmPropInfo['Value'];
 
         self.id2NodeMap[propId] = newAcmPropertyNode;
+        if (avmPropInfo.Value) {
+            self.id2NodeMap[avmPropInfo.Value['@ID']] = newAcmPropertyNode;
+        }
     };
 
     AcmImporter.prototype.getPropertyValue = function (avmValueObject) {
@@ -9001,7 +9004,7 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
             if (avmPropValueExpression.hasOwnProperty('@xsi:type')) {
                 valueType = avmPropValueExpression['@xsi:type'];
 
-                if (valueType.indexOf('ParametricValue') > -1) {
+                if (valueType === 'avm:ParametricValue') {
                     valueInfo.type = 'Parametric';
 
                     if (avmPropValueExpression.hasOwnProperty('Minimum')) {
@@ -9018,10 +9021,10 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
                     } else {
                         valueInfo.default = valueInfo.value;
                     }
-                } else if (valueType.indexOf('FixedValue') > -1) {
+                } else if (valueType === 'avm:FixedValue') {
                     valueInfo.value = getValueText(avmPropValueExpression);
                     valueInfo.default = valueInfo.value;
-                } else if (valueType.indexOf('DerivedValue') > -1) {
+                } else if (valueType === 'avm:DerivedValue') {
                     if (avmValueObject.hasOwnProperty('@ID')) {
                         dstId = avmValueObject['@ID'];
                     }
@@ -9058,7 +9061,7 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
             newFormulaNode,
             i;
 
-        if (formulaType.indexOf('SimpleFormula') > -1) {
+        if (formulaType === 'avm:SimpleFormula') {
             newFormulaNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.SimpleFormula});
 
             if (avmFormulaInfo.hasOwnProperty('@Operation')) {
@@ -9077,7 +9080,7 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
                     }
                 }
             }
-        } else if (formulaType.indexOf('ComplexFormula') > -1) {
+        } else if (formulaType === 'avm:ComplexFormula') {
             newFormulaNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.CustomFormula});
 
             if (avmFormulaInfo.hasOwnProperty('@Expression')) {
@@ -9134,6 +9137,8 @@ define('plugin/AcmImporter/AcmImporter/AcmImporter',['plugin/PluginConfig',
                     newValueFlowNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.ValueFlowComposition});
                     self.core.setPointer(newValueFlowNode, 'src', srcNode);
                     self.core.setPointer(newValueFlowNode, 'dst', dstNode);
+                } else {
+                    continue;
                 }
             }
         }
@@ -9792,7 +9797,7 @@ define('plugin/AdmImporter/AdmImporter/AdmImporter',[
         // Create the container and set attributes and registry.
         container = self.core.createNode({parent: parentNode, base: self.meta.Container});
         self.core.setAttribute(container, 'name', containerData['@Name']);
-        self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice(3));
+        self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice("avm:".length));
         if (depth === 0) {
             self.core.setRegistry(container, 'position', {x: 100, y: 100});
         } else {

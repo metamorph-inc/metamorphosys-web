@@ -12,10 +12,6 @@ angular.module('cyphy.services')
         var self = this,
             watchers = {};
 
-        this.duplicateWorkspace = function (context, otherWorkspaceId) {
-            throw new Error('Not implemented yet.');
-        };
-
         this.createWorkspace = function (context, name, desc) {
             var deferred = $q.defer(),
                 meta;
@@ -129,9 +125,22 @@ angular.module('cyphy.services')
         };
 
         /**
-         * Removes the work-space from the context (db/project/branch).
-         * @param context - context of controller, N.B. does not need to specify region.
-         * @param workspaceId
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the design.
+         * @param {string} context.db - Must exist within watchers and contain the design.
+         * @param {string} context.regionId - Must exist within watchers and contain the design.
+         * @param {string} workspaceId - Path to workspace.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setWorkspaceAttributes = function (context, workspaceId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, workspaceId, attrs);
+        };
+
+        /**
+         * Removes the workspace from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} workspaceId - Path to workspace.
          * @param [msg] - Commit message.
          */
         this.deleteWorkspace = function (context, workspaceId, msg) {

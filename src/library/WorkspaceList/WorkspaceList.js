@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, $window, $location, growl, workspaceService, fileService) {
+    .controller('WorkspaceListController', function ($scope, $window, $location, $modal, growl, workspaceService, fileService) {
         'use strict';
         var self = this,
             items = [],
@@ -49,12 +49,9 @@ angular.module('cyphy.components')
             },
 
             itemContextmenuRenderer: function (e, item) {
-                //console.log('Contextmenu was triggered for node:', item);
-
                 return [
                     {
                         items: [
-
                             {
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
@@ -65,24 +62,38 @@ angular.module('cyphy.components')
                                 }
                             },
                             {
-                                id: 'duplicateWorkspace',
-                                label: 'Duplicate',
-                                disabled: false,
-                                iconClass: 'fa fa-copy copy-icon',
-                                actionData: {id: item.id},
-                                action: function (data) {
-                                    growl.warning('Not Implemented!');
-                                    //workspaceService.duplicateWorkspace(context, data.id);
-                                }
-                            },
-                            {
                                 id: 'editWorkspace',
                                 label: 'Edit',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-pencil',
-                                actionData: {id: item.id},
+                                actionData: {
+                                    id: item.id,
+                                    description: item.description,
+                                    name: item.title
+                                },
                                 action: function (data) {
-                                    growl.warning('Not Implemented, id: ' + data.id);
+                                    var editContext = {
+                                            db: context.db,
+                                            regionId: context.regionId + '_watchWorkspaces'
+                                        },
+                                        modalInstance = $modal.open({
+                                            templateUrl: '/cyphy-components/templates/WorkspaceEdit.html',
+                                            controller: 'WorkspaceEditController',
+                                            resolve: { data: function () { return data; } }
+                                        });
+
+                                    modalInstance.result.then(function (editedData) {
+                                        var attrs = {
+                                            'name': editedData.name,
+                                            'INFO': editedData.description
+                                        };
+                                        workspaceService.setWorkspaceAttributes(editContext, data.id, attrs)
+                                            .then(function () {
+                                                console.log('Attribute updated');
+                                            });
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             },
                             {
@@ -98,18 +109,32 @@ angular.module('cyphy.components')
                         ]
                     },
                     {
-                        //label: 'Extra',
                         items: [
-
                             {
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
-                                iconClass: 'fa fa-plus',
-                                actionData: { id: item.id },
+                                iconClass: 'glyphicon glyphicon-remove',
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    growl.warning('Not Implemented!');
-                                    //workspaceService.deleteWorkspace(context, data.id);
+                                    var modalInstance = $modal.open({
+                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                                        controller: 'SimpleModalController',
+                                        resolve: {
+                                            data: function () {
+                                                return {
+                                                    title: 'Delete Workspace',
+                                                    details: 'This will delete ' + data.name + ' from the project.'
+                                                };
+                                            }
+                                        }
+                                    });
+
+                                    modalInstance.result.then(function () {
+                                        workspaceService.deleteWorkspace(context, data.id);
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             }
                         ]
@@ -341,6 +366,21 @@ angular.module('cyphy.components')
                     }
                 });
         });
+    })
+    .controller('WorkspaceEditController', function ($scope, $modalInstance, data) {
+        'use strict';
+        $scope.data = {
+            description: data.description,
+            name: data.name
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.data);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     })
     .directive('workspaceList', function () {
         'use strict';

@@ -11,15 +11,23 @@ angular.module('cyphy.services')
         'use strict';
         var watchers = {};
 
-        this.deleteDesign = function (designId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Removes the design from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} designId - Path to design-space.
+         * @param [msg] - Commit message.
+         */
+        this.deleteDesign = function (context, designId, msg) {
+            var message = msg || 'designService.deleteDesign ' + designId;
+            nodeService.destroyNode(context, designId, message);
         };
 
         /**
          * Updates the given attributes
-         * @param {object} context - Must exist within watchers and contain the component.
-         * @param {string} context.db - Must exist within watchers and contain the component.
-         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {object} context - Must exist within watchers and contain the design.
+         * @param {string} context.db - Must exist within watchers and contain the design.
+         * @param {string} context.regionId - Must exist within watchers and contain the design.
          * @param {string} designId - Path to design-space.
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
