@@ -34,4 +34,17 @@ angular.module('cyphy.services')
 
             return deferred.promise;
         };
+
+        this.getWorkersInfo = function () {
+            var deferred = $q.defer();
+            executorClient.getWorkersInfo(function (err, response) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve(response);
+                }
+            });
+
+            return deferred.promise;
+        };
     });

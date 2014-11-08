@@ -42,7 +42,8 @@ var argv = require('yargs').argv,
             'src/library/TestBenchList/*.js',
             'src/library/InterfaceDetails/*.js',
             'src/library/ConfigurationTable/*.js',
-            'src/library/ConfigurationSetSelector/*.js'
+            'src/library/ConfigurationSetSelector/*.js',
+            'src/library/WorkersList/*.js'
         ],
         libraryTemplates: [
             'src/library/**/templates/**/*.html'

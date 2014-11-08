@@ -320,7 +320,7 @@ angular.module('cyphy.services')
                                 $timeout(function () {
                                     updateListener({id: newChild.getId(), type: 'load', data: data});
                                 });
-                                childNode.onUnload(resultOnUnload);
+                                newChild.onUnload(resultOnUnload);
                             }
                         });
                         cfgDeferred.resolve();

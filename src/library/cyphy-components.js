@@ -26,6 +26,7 @@ angular.module('cyphy.components', [
 }]);
 
 require('./SimpleModal/SimpleModal');
+
 require('./WorkspaceList/WorkspaceList');
 
 require('./ComponentList/ComponentDetails');
@@ -40,6 +41,8 @@ require('./TestBenchList/TestBenchList');
 
 require('./ConfigurationTable/ConfigurationTable');
 require('./ConfigurationSetSelector/ConfigurationSetSelector');
+
+require('./WorkersList/WorkersList');
 
 
 
