@@ -1,8 +1,19 @@
 <div class="test-bench-view">
-    <h1 class="main-header">Test Bench</h1>
+    <h1 class="main-header">Test Bench - {{dataModels.testBench.name}}</h1>
     <div class="test-bench-overview col-lg-4">
         <h3><span class="fa fa-puzzle-piece"></span>Overview</h3>
-
+        <div class="test-bench-attributes" ng-show="dataModels.testBench.description">
+            {{dataModels.testBench.description}}
+            <div class="top-level-system-under-test" ng-show="dataModels.tlsut.name">
+                {{dataModels.tlsut.name}}
+            </div>
+            <div class="top-level-system-under-test" ng-show="!dataModels.tlsut.name">
+                Top Level System Under Test is not set.
+            </div>
+        </div>
+        <div class="test-bench-loading" ng-show="!dataModels.testBench.description">
+            Loading test bench...
+        </div>
     </div>
     <div class="test-bench-designs col-lg-4">
         <h3><span class="fa fa-cubes"></span>Avaliable Designs</h3>

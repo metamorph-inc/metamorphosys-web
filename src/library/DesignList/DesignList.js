@@ -35,18 +35,7 @@ angular.module('cyphy.components')
             throw new Error('connectionId must be defined and it must be a string');
         }
 
-        if ($scope.usedByTestBench) {
-            itemClickFn = function (event, item) {
-                $scope.$emit('topLevelSystemUnderTestSet', item);
-            };
-            itemClickTip = 'Set As Top Level System Under Test';
-        } else {
-            itemClickFn = function (event, item) {
-                var newUrl = '/designSpace/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
-                $location.path(newUrl);
-            };
-            itemClickTip = 'Open Design Space View';
-        }
+
         // Configuration for the item list ui component.
         config = {
 
@@ -62,7 +51,10 @@ angular.module('cyphy.components')
                 console.log('Sort happened', jQEvent, ui);
             },
 
-            itemClick: itemClickFn,
+            itemClick: function (event, item) {
+                var newUrl = '/designSpace/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
+                $location.path(newUrl);
+            },
 
             itemContextmenuRenderer: function (e, item) {
                 return [
@@ -79,7 +71,7 @@ angular.module('cyphy.components')
                             },
                             {
                                 id: 'editDesign',
-                                label: 'Edit',
+                                label: 'Edit Attributes',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-pencil',
                                 actionData: {
@@ -111,6 +103,18 @@ angular.module('cyphy.components')
                                     }, function () {
                                         console.log('Modal dismissed at: ' + new Date());
                                     });
+                                }
+                            },
+                            {
+                                id: 'setAsTopLevelSystemUnderTest',
+                                label: 'Set as TLSUT',
+                                disabled: !$scope.usedByTestBench,
+                                iconClass: 'fa fa-arrow-circle-right',
+                                actionData: {id: item.id, name: item.title},
+                                action: function (data) {
+                                    var oldTlsut = designItems[$scope.state.tlsut];
+                                    $scope.state.tlsut = data.id;
+                                    $scope.$emit('topLevelSystemUnderTestSet', item, oldTlsut);
                                 }
                             },
                             {
@@ -181,6 +185,10 @@ angular.module('cyphy.components')
             items: items
         };
 
+        $scope.state = {
+            tlsutId: null
+        };
+
         // Transform the raw service node data to items for the list.
         serviceData2ListItem = function (data) {
             var listItem;
@@ -193,7 +201,8 @@ angular.module('cyphy.components')
                 listItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: itemClickTip,
+                    toolTip: 'Open Design Space View',
+                    cssClass: '',
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.

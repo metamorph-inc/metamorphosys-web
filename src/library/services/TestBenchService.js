@@ -46,7 +46,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        this.watchTestBenchNode = function (parentContext, designId, updateListener) {
+        this.watchTestBenchNode = function (parentContext, testBenchId, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchTestBench',
                 context = {
@@ -56,23 +56,43 @@ angular.module('cyphy.services')
                 data = {
                     regionId: regionId,
                     meta: null, // META nodes - needed when creating new nodes...
-                    testBench: {} // design {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>}
                 },
                 onUpdate = function (id) {
                     var newName = this.getAttribute('name'),
                         newDesc = this.getAttribute('INFO'),
+                        newPath = this.getAttribute('ID'),
+                        newResults = this.getAttribute('Results'),
+                        newFiles = this.getAttribute('TestBenchFiles'),
+                        newTlsut = this.getPointer('TopLevelSystemUnderTest').to,
                         hadChanges = false;
-                    if (newName !== data.design.name) {
-                        data.design.name = newName;
+                    if (newName !== data.testBench.name) {
+                        data.testBench.name = newName;
                         hadChanges = true;
                     }
-                    if (newDesc !== data.design.description) {
-                        data.design.description = newDesc;
+                    if (newDesc !== data.testBench.description) {
+                        data.testBench.description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (newPath !== data.testBench.path) {
+                        data.testBench.path = newPath;
+                        hadChanges = true;
+                    }
+                    if (newResults !== data.testBench.results) {
+                        data.testBench.results = newResults;
+                        hadChanges = true;
+                    }
+                    if (newFiles !== data.testBench.files) {
+                        data.testBench.files = newFiles;
+                        hadChanges = true;
+                    }
+                    if (newTlsut !== data.testBench.tlsut) {
+                        data.testBench.tlsut = newTlsut;
                         hadChanges = true;
                     }
                     if (hadChanges) {
                         $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data.design});
+                            updateListener({id: id, type: 'update', data: data.testBench});
                         });
                     }
                 },
@@ -84,17 +104,20 @@ angular.module('cyphy.services')
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
             watchers[parentContext.regionId][context.regionId] = context;
             nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, designId)
-                    .then(function (designNode) {
+                nodeService.loadNode(context, testBenchId)
+                    .then(function (testBenchNode) {
                         data.meta = meta;
-                        data.design = {
-                            id: designId,
-                            name: designNode.getAttribute('name'),
-                            description: designNode.getAttribute('INFO'),
-                            node: designNode
+                        data.testBench = {
+                            id: testBenchId,
+                            name: testBenchNode.getAttribute('name'),
+                            description: testBenchNode.getAttribute('INFO'),
+                            path: testBenchNode.getAttribute('ID'),
+                            results: testBenchNode.getAttribute('Results'),
+                            files: testBenchNode.getAttribute('TestBenchFiles'),
+                            tlsut: testBenchNode.getPointer('TopLevelSystemUnderTest').to
                         };
-                        designNode.onUpdate(onUpdate);
-                        designNode.onUnload(onUnload);
+                        testBenchNode.onUpdate(onUpdate);
+                        testBenchNode.onUnload(onUnload);
                         deferred.resolve(data);
                     });
             });
