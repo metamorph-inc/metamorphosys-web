@@ -202,10 +202,10 @@ angular.module('cyphy.components')
             var domainModelsToStat = function (domainModels) {
                 var stats = [],
                     labelMap = {
-                        CAD: { value: 0, toolTip: 'CAD', iconClass: 'glyphicon glyphicon-stop' },
-                        Cyber: { value: 0, toolTip: 'Cyber', iconClass: 'glyphicon glyphicon-stop' },
-                        Manufacturing: { value: 0, toolTip: 'Manufacturing', iconClass: 'glyphicon glyphicon-stop' },
-                        Modelica: { value: 0, toolTip: 'Modelica', iconClass: 'glyphicon glyphicon-stop' }
+                        CAD: { value: 0, toolTip: 'CAD', iconClass: 'fa fa-codepen' },
+                        Cyber: { value: 0, toolTip: 'Cyber', iconClass: 'fa fa-laptop' },
+                        Manufacturing: { value: 0, toolTip: 'Manufacturing', iconClass: 'fa fa-wrench' },
+                        Modelica: { value: 0, toolTip: 'Modelica', iconClass: 'fa fa-gears' }
                     },
                     key;
                 for (key in domainModels) {
