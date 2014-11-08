@@ -28,14 +28,14 @@ angular.module('cyphy.components', [
 require('./SimpleModal/SimpleModal');
 require('./WorkspaceList/WorkspaceList');
 
-require('./ComponentDetails/ComponentDetails');
+require('./ComponentList/ComponentDetails');
 require('./ComponentList/ComponentList');
 
-require('./DesignDetails/DesignDetails');
+require('./DesignList/DesignDetails');
 require('./DesignList/DesignList');
 require('./DesignTree/DesignTree');
 
-require('./TestBenchDetails/TestBenchDetails');
+require('./TestBenchList/TestBenchDetails');
 require('./TestBenchList/TestBenchList');
 
 require('./ConfigurationTable/ConfigurationTable');

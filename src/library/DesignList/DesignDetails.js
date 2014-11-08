@@ -5,24 +5,24 @@
  */
 
 angular.module('cyphy.components')
-    .controller('ComponentDetailsController', function ($scope, componentService) {
+    .controller('DesignDetailsController', function ($scope, designService) {
         'use strict';
         var context = {},
             properties = {},
             connectors = {},
             ports = {};
 
-        console.log('ComponentDetailsController');
+        console.log('DesignDetailsController');
         $scope.init = function (connectionId) {
             $scope.connectionId = connectionId;
             if ($scope.connectionId && angular.isString($scope.connectionId)) {
                 context = {
                     db: $scope.connectionId,
-                    regionId: 'ComponentDetails_' + (new Date()).toISOString()
+                    regionId: 'DesignDetails_' + (new Date()).toISOString()
                 };
                 $scope.$on('$destroy', function () {
                     console.log('Destroying :', context.regionId);
-                    componentService.cleanUpAllRegions(context);
+                    designService.cleanUpAllRegions(context);
                 });
             } else {
                 throw new Error('connectionId must be defined and it must be a string');
@@ -33,7 +33,7 @@ angular.module('cyphy.components')
                 ports: ports
             };
 
-            componentService.registerWatcher(context, function (destroy) {
+            designService.registerWatcher(context, function (destroy) {
                 $scope.details = {
                     properties: {},
                     connectors: {},
@@ -43,35 +43,35 @@ angular.module('cyphy.components')
                     //TODO: notify user
                     return;
                 }
-                console.info('ComponentDetailsController - initialize event raised');
+                console.info('DesignDetailsController - initialize event raised');
 
-                componentService.watchInterfaces(context, $scope.componentId, function (updateObject) {
+                designService.watchInterfaces(context, $scope.designId, function (updateObject) {
                     // Since watchInterfaces keeps the data up-to-date there shouldn't be a need to do any
                     // updates here..
                     console.log('watchInterfaces', updateObject);
                 })
-                    .then(function (componentInterfaces) {
-                        $scope.details.properties = componentInterfaces.properties;
-                        $scope.details.connectors = componentInterfaces.connectors;
-                        $scope.details.ports = componentInterfaces.ports;
+                    .then(function (designInterfaces) {
+                        $scope.details.properties = designInterfaces.properties;
+                        $scope.details.connectors = designInterfaces.connectors;
+                        $scope.details.ports = designInterfaces.ports;
                     });
             });
         };
     })
-    .directive('componentDetails', function () {
+    .directive('designDetails', function () {
         'use strict';
         return {
             restrict: 'E',
             scope: {
-                componentId: '=componentId'
+                designId: '=designId'
             },
-            require: '^componentList',
-            link: function (scope, elem, attr, componetListController) {
-                var connectionId = componetListController.getConnectionId();
+            require: '^designList',
+            link: function (scope, elem, attr, designListController) {
+                var connectionId = designListController.getConnectionId();
                 scope.init(connectionId);
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/ComponentDetails.html',
-            controller: 'ComponentDetailsController'
+            templateUrl: '/cyphy-components/templates/InterfaceDetails.html',
+            controller: 'DesignDetailsController'
         };
     });

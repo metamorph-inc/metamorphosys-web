@@ -10,10 +10,6 @@ var components = [
         sources: [ 'demo.html', 'demo.js']
     },
     {
-        name: 'ComponentDetails',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
         name: 'DesignList',
         sources: [ 'demo.html', 'demo.js']
     },
@@ -32,7 +28,6 @@ require('chance');
 angular.module('gme.services', []);
 
 require('../library/WorkspaceList/docs/demo.js');
-require('../library/ComponentDetails/docs/demo.js');
 require('../library/ComponentList/docs/demo.js');
 require('../library/DesignList/docs/demo.js');
 require('../library/DesignTree/docs/demo.js');

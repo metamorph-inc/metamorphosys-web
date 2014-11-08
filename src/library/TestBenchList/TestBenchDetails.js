@@ -85,7 +85,7 @@ angular.module('cyphy.components')
                 scope.init(connectionId);
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/TestBenchDetails.html',
+            templateUrl: '/cyphy-components/templates/InterfaceDetails.html',
             controller: 'TestBenchDetailsController'
         };
     });
