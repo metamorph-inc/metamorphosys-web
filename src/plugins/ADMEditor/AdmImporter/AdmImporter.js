@@ -925,6 +925,11 @@ define([
                 }
             } else if (metaTypeName === 'Property') {
                 id = self.core.getAttribute(children[i], 'ID');
+                if (self.startsWith(id, 'property.')) {
+                    id = id.replace('property.', '');
+                } else if (self.startsWith(id, 'param.')) {
+                    id = id.replace('param.', '');
+                }
                 if (componentInstance.propertyIdInModel2ID[id]) {
                     self.valueFlowTargetID2Node[componentInstance.propertyIdInModel2ID[id]] = children[i];
                 } else {
@@ -1094,6 +1099,13 @@ define([
     AdmImporter.prototype.endsWith = function (str, ending) {
         var lastIndex = str.lastIndexOf(ending);
         return (lastIndex !== -1) && (lastIndex + ending.length === str.length);
+    };
+
+    AdmImporter.prototype.startsWith = function (str, start) {
+        if (start === '') {
+            return true;
+        }
+        return start.length > 0 && str.substring(0, start.length) === start;
     };
 
     return AdmImporter;
