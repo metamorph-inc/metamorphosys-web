@@ -464,7 +464,7 @@ define([
         // Create the container and set attributes and registry.
         container = self.core.createNode({parent: parentNode, base: self.meta.Container});
         self.core.setAttribute(container, 'name', containerData['@Name']);
-        self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice(3));
+        self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice("avm:".length));
         if (depth === 0) {
             self.core.setRegistry(container, 'position', {x: 100, y: 100});
         } else {

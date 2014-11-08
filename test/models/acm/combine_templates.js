@@ -1,3 +1,4 @@
+/*globals process, __dirname */
 // find 'C:\Users\kevin\Documents\meta-tonka\META\test\InterchangeTest\ComponentInterchangeTest\ImportTestModels' -iname \*acm | while read -r file ; do echo "$file";  echo "$file" | sed 's!.*\\!!; s!ImportTestModels.!!; s!/!_!'; done
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
@@ -11,14 +12,19 @@
  * Usage: Run this script in the directory with the acm-templates, e.g. '%YourPlugin%/Templates'.
  */
 
+function hasExtension(fileName, ext) {
+    'use strict';
+    var ending = ext,
+        lastIndex = fileName.lastIndexOf(ending);
+    return (lastIndex !== -1) && (lastIndex + ending.length === fileName.length);
+}
+
 var main = function () {
     'use strict';
     var fs = require('fs'),
         isacmFile = function (str) {
             return ['.acm', '.json'].map(function (ext) {
-                var ending = ext,
-                    lastIndex = str.lastIndexOf(ending);
-                return (lastIndex !== -1) && (lastIndex + ending.length === str.length);
+                    return hasExtension(str, ext);
                 }).indexOf(true) !== -1;
         },
         walk = function (dir, done) {
@@ -54,31 +60,40 @@ var main = function () {
         i,
         templateContent;
 
-    walk('.', function (err, results) {
-        if (err) {
-            throw err;
-        }
-
-        for (i = 0; i < results.length; i += 1) {
-            fileName = results[i];
-            console.info(fileName);
-            if (isacmFile(fileName)) {
-                content[fileName.substring(2)] = fs.readFileSync(fileName, {'encoding': 'utf-8'});
+    ['unit', 'functional'].forEach(function (dir) {
+        walk(dir, function (err, results) {
+            if (err) {
+                throw err;
             }
-        }
 
-        console.info(content);
-        templateContent = '';
-        templateContent += '/* Generated file based on acm templates */\r\n';
-        templateContent += 'define([], function() {\r\n';
-        templateContent += '    return ' + JSON.stringify(content, null, 4);
-        templateContent += '});';
+            for (i = 0; i < results.length; i += 1) {
+                fileName = results[i];
+                console.info(fileName);
+                if (isacmFile(fileName)) {
+                    var relFilename = fileName.substring(1 + dir.length);
+                    content[relFilename] = fs.readFileSync(fileName, {'encoding': 'utf-8'});
+                    if (hasExtension(fileName, ".json")) {
+                        content[relFilename] = JSON.stringify(JSON.parse(content[relFilename]));
+                    }
+                }
+            }
 
-        fs.writeFileSync('Templates.js', templateContent);
-        console.info('Created Templates.js');
+            console.info(content);
+            templateContent = '';
+            templateContent += '/* global define,require */\r\n';
+            templateContent += '/* Generated file based on acm templates */\r\n';
+            templateContent += 'define([], function() {\r\n';
+            templateContent += '"use strict";\r\n';
+            templateContent += '    return ' + JSON.stringify(content, null, 4) + ';';
+            templateContent += '});';
+
+            fs.writeFileSync(dir + '/Templates.js', templateContent);
+            console.info('Created Templates.js');
+        });
     });
 };
 
 if (require.main === module) {
+    process.chdir(__dirname);
     main();
 }

@@ -3,13 +3,15 @@
  */
 
 define(['plugin/PluginConfig',
-    'plugin/PluginBase',
-    'jszip',
-    'plugin/GenerateDashboard/GenerateDashboard/meta',
+        'plugin/PluginBase',
+        'ejs',
+        'plugin/GenerateDashboard/GenerateDashboard/Templates/Templates',
+        'jszip',
+        'plugin/GenerateDashboard/GenerateDashboard/meta',
         'plugin/GenerateDashboard/GenerateDashboard/dashboardTypes',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'xmljsonconverter'
-    ], function (PluginConfig, PluginBase, JSZip, MetaTypes, DashboardTypes, AdmExporter, Converter) {
+    ], function (PluginConfig, PluginBase, ejs, TEMPLATES, JSZip, MetaTypes, DashboardTypes, AdmExporter, Converter) {
     'use strict';
 
     /**
@@ -115,7 +117,6 @@ define(['plugin/PluginConfig',
             designName = self.core.getAttribute(self.activeNode, 'name'),
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
-            designSpaceAdm,
             resultObjectIDs = [
                 "/243203739/1914067160/1594627875/738670268/1604609344/1138983316",
                 "/243203739/1914067160/1594627875/738670268/1604609344/638117119",
@@ -143,10 +144,10 @@ define(['plugin/PluginConfig',
             self.dashboardObject.designSpace.name = designName;
             self.dashboardObject.designSpace.data = {Design: self.admExporter.admData};
 
-            // Create the manifest.project.json file
+            // Create the manifest.project.json
             self.dashboardObject.manifestProjectJson = new DashboardTypes.manifestProjectJson(workspaceName);
 
-            // Create the results.metaresults.json file
+            // Create the results.metaresults.json
             self.dashboardObject.results.resultsMetaresultsJson = new DashboardTypes.resultsMetaresultsJson();
 
             // Create requirements
@@ -159,7 +160,6 @@ define(['plugin/PluginConfig',
                     return callback(err, self.result);
                 }
 
-                // we should have here a full 'self.dashboardObject', ready for creating an artifact (???)
                 self.createDashboardArtifact(function (err, dashboardArtifactHash) {
                     if (err) {
                         self.logger.error(err);
@@ -230,6 +230,8 @@ define(['plugin/PluginConfig',
 
         filesToAdd["manifest.project.json"] = JSON.stringify(self.dashboardObject.manifestProjectJson, null, 4);
 
+        filesToAdd["launch_SimpleHTTPServer.cmd"] = ejs.render(TEMPLATES['launch_SimpleHTTPServer.cmd.ejs']);
+        filesToAdd['index.html'] = ejs.render(TEMPLATES['index.html.ejs']);
 
         dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
             if (err) {
@@ -286,9 +288,12 @@ define(['plugin/PluginConfig',
                 return callback(err);
             }
 
+            // Append the config name to the design space name (e.g., Wheel + _ + Conf_no_1)
+            configName = designSpaceName + '_' + configName;
+
             self.processTestbenchManifest(tbManifestJson, designSpaceName, configName, configNodeGuid);
 
-            // Check if there is already an adm for this config
+            // Check if there is already an adm for this config (multiple results per config)
             if (self.dashboardObject.designs.hasOwnProperty(configName)) {
                 callback(null);
             } else {
@@ -300,6 +305,7 @@ define(['plugin/PluginConfig',
                     // 'rename' it (designSpaceName), and set the ID (designSpaceID)
                     admJson.Design['@DesignID'] = configNodeGuid;
                     admJson.Design['@Name'] = configName;
+                    admJson.Design.RootContainer['@Name'] = configName;
                     admJson.Design['@DesignSpaceSrcID'] = '{' + designSpaceID + '}';
 
                     self.dashboardObject.designs[configName] = admJson;
@@ -321,12 +327,14 @@ define(['plugin/PluginConfig',
             i;
 
         // modify the testbench_manifest.json
-        tbManifestJson.DesignName = designSpaceName + '_' + configName;
+        tbManifestJson.DesignName = configName;
         tbManifestJson.DesignID = '{' + configNodeGuid + '}';
 
         // add to the results.metaresults.json object
+        // generate a semi-random result directory name
         resultDirName = Math.random().toString(36).substring(8);
         resultDirName += Object.keys(self.dashboardObject.results.results).length;
+
         resultMetaresult =
             new DashboardTypes.resultMetaresult(configNodeGuid, tbManifestJson.TestBench, resultDirName);
 
@@ -362,16 +370,8 @@ define(['plugin/PluginConfig',
             }
 
             var tbManifestZip = new JSZip(tbManifestContent),
-                tbManifestObject = tbManifestZip.file(/testbench_manifest.json/),  // regular expression will return an array
+                tbManifestObject = tbManifestZip.file(/testbench_manifest.json/),
                 tbManifestJson;
-
-//            for (var fileName in tbManifestObject.files) {
-//                if (tbManifestObject.files.hasOwnProperty(fileName)) {
-//                    if (fileName.indexOf("testbench_manifest.json") > 0) {
-//                        var splitName = fileName.split('/');
-//                    }
-//                }
-//            }
 
             if (tbManifestObject === null) {
                 errMsg = "Could not get testbench_manifest from " + tbManifestHash + ": " + err;
@@ -379,7 +379,7 @@ define(['plugin/PluginConfig',
                 return callback(errMsg, null);
             }
 
-            // need to parse as json ???
+            // regular expression will return an array, so we need to get the first item
             tbManifestJson = JSON.parse(tbManifestObject[0].asText());
 
             callback(null, tbManifestJson);
@@ -406,7 +406,7 @@ define(['plugin/PluginConfig',
                 return callback(errMsg, null);
             }
 
-            // need to convert to json :(((
+            // need to convert to json for editing
             cfgAdmJson = self.convertXml2Json(cfgAdmXml[0].asArrayBuffer());
 
             if (cfgAdmJson instanceof Error) {

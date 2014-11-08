@@ -1,0 +1,9 @@
+:: Use System Python to start a SimpleHTTPServer
+echo off
+if exist "C:\Python27\python.exe" (
+"C:\Python27\python.exe" -m SimpleHTTPServer
+exit /b %ERRORLEVEL%
+) else (
+echo ERROR: "C:\Python27\python.exe" does not exist.
+pause
+)

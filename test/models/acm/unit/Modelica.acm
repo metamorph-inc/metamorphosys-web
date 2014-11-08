@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SchemaVersion="2.5" ID="9fec54cf-6be4-477f-9351-94b0a52caad8" Name="Modelica" Version="" xmlns="avm">
+  <DomainModel xmlns:q1="modelica" xsi:type="q1:ModelicaModel" Author="author" Notes="notes" XPosition="364" YPosition="168" Name="ModelicaModel" Class="class" xmlns="">
+    <Parameter Locator="param2">
+      <Value ID="id-43bb0e63-df59-4e8c-9cff-dda0df8af0a3">
+        <ValueExpression xmlns:q2="avm" xsi:type="q2:DerivedValue" ValueSource="id-3eb0bd47-c681-4868-b9ae-6fa5b9708521" />
+      </Value>
+    </Parameter>
+    <Parameter Locator="param1">
+      <Value ID="id-13e4f7f7-ed4c-454c-a71f-ac1ce69c4458">
+        <ValueExpression xmlns:q3="avm" xsi:type="q3:DerivedValue" ValueSource="id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1" />
+      </Value>
+    </Parameter>
+    <Connector ID="id-6112d61b-a843-47e6-b03f-1a6d0a886fee" PortMap="" Notes="instancenotes" Definition="definition" Name="mc1" Locator="locator" Class="class">
+      <Parameter Locator="param">
+        <Value ID="id-45095fec-00e8-455d-a89f-3b8574209594">
+          <ValueExpression xmlns:q4="avm" xsi:type="q4:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Parameter>
+      <Redeclare Notes="note" Type="Package" Locator="redecl">
+        <Value>
+          <ValueExpression xmlns:q5="avm" xsi:type="q5:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Redeclare>
+    </Connector>
+    <Connector ID="id-8e45cddc-b469-4ae4-b1f5-81c2c3bc39eb" PortMap="" Notes="instancenotes" Definition="definition" Name="mc2" Locator="locator" Class="class">
+      <Parameter Locator="param">
+        <Value ID="id-811f612b-7f53-4e97-8476-b5208770455d">
+          <ValueExpression xmlns:q6="avm" xsi:type="q6:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Parameter>
+      <Redeclare Notes="note" Type="Package" Locator="redecl">
+        <Value>
+          <ValueExpression xmlns:q7="avm" xsi:type="q7:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Redeclare>
+    </Connector>
+    <Redeclare Notes="note" Type="Package" Locator="redeclPackage">
+      <Value>
+        <ValueExpression xmlns:q8="avm" xsi:type="q8:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Connector" Locator="redeclConnector">
+      <Value>
+        <ValueExpression xmlns:q9="avm" xsi:type="q9:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Model" Locator="redeclModel">
+      <Value>
+        <ValueExpression xmlns:q10="avm" xsi:type="q10:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Class" Locator="redeclClass">
+      <Value>
+        <ValueExpression xmlns:q11="avm" xsi:type="q11:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Record" Locator="redeclRecord">
+      <Value>
+        <ValueExpression xmlns:q12="avm" xsi:type="q12:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Block" Locator="redeclBlock">
+      <Value>
+        <ValueExpression xmlns:q13="avm" xsi:type="q13:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+    <Redeclare Notes="note" Type="Function" Locator="redeclFunc">
+      <Value>
+        <ValueExpression xmlns:q14="avm" xsi:type="q14:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+  </DomainModel>
+  <Property xmlns:q15="avm" xsi:type="q15:PrimitiveProperty" Name="Prop" OnDataSheet="false" ID="property.id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1" XPosition="77" YPosition="392" xmlns="">
+    <Value ID="id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1" DimensionType="Scalar" Dimensions="" DataType="Real">
+      <ValueExpression xsi:type="q15:FixedValue">
+        <Value>5.5</Value>
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Property xmlns:q16="avm" xsi:type="q16:PrimitiveProperty" Name="Param" ID="param.id-3eb0bd47-c681-4868-b9ae-6fa5b9708521" XPosition="77" YPosition="462" xmlns="">
+    <Value ID="id-3eb0bd47-c681-4868-b9ae-6fa5b9708521" DimensionType="Scalar" Dimensions="" DataType="Integer">
+      <ValueExpression xsi:type="q16:ParametricValue">
+        <AssignedValue xsi:type="q16:FixedValue">
+          <Value>4</Value>
+        </AssignedValue>
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Connector ConnectorComposition="" ID="id-a99d8ceb-ab0c-42e3-a87f-e2dc046d4d0c" ApplyJoinData="" XPosition="84" YPosition="231" Notes="instancenotes" Definition="definition" Name="c" xmlns="">
+    <Role xmlns:q17="modelica" xsi:type="q17:Connector" ID="id-1439b05b-11ed-4a09-a115-22b756fc2548" PortMap="id-8e45cddc-b469-4ae4-b1f5-81c2c3bc39eb" Notes="instancenotes" XPosition="119" Definition="definition" YPosition="98" Name="mc" Locator="locator" Class="class">
+      <Parameter Locator="param">
+        <Value ID="id-d6668d15-40fc-4c89-ad3e-697f3fed3704">
+          <ValueExpression xmlns:q18="avm" xsi:type="q18:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Parameter>
+      <Redeclare Notes="note" Type="Package" Locator="redecl">
+        <Value>
+          <ValueExpression xmlns:q19="avm" xsi:type="q19:FixedValue">
+            <Value>val</Value>
+          </ValueExpression>
+        </Value>
+      </Redeclare>
+    </Role>
+  </Connector>
+  <Port xmlns:q20="modelica" xsi:type="q20:Connector" ID="id-1e497612-cac1-47c6-874f-3c714508546d" PortMap="id-6112d61b-a843-47e6-b03f-1a6d0a886fee" Notes="instancenotes" XPosition="119" Definition="definition" YPosition="98" Name="mc" Locator="locator" Class="class" xmlns="">
+    <Parameter Locator="param">
+      <Value ID="id-819db11a-f9d2-493d-9ba8-138de5b80659">
+        <ValueExpression xmlns:q21="avm" xsi:type="q21:DerivedValue" ValueSource="id-3eb0bd47-c681-4868-b9ae-6fa5b9708521" />
+      </Value>
+    </Parameter>
+    <Redeclare Notes="note" Type="Package" Locator="redecl">
+      <Value>
+        <ValueExpression xmlns:q22="avm" xsi:type="q22:FixedValue">
+          <Value>val</Value>
+        </ValueExpression>
+      </Value>
+    </Redeclare>
+  </Port>
+  <Classifications xmlns="" />
+</Component>
