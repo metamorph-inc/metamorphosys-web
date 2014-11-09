@@ -36,8 +36,17 @@ angular.module('cyphy.services')
             console.log(JSON.stringify(config));
             pluginService.runPlugin(context, 'TestBenchRunner', config)
                 .then(function (result) {
+                    var resultLight = {
+                        success: result.success,
+                        artifactsHtml: '',
+                        messages: result.messages
+                    };
                     console.log("Result", result);
-                    deferred.resolve(result);
+                    pluginService.getPluginArtifactsHtml(result.artifacts)
+                        .then(function (artifactsHtml) {
+                            resultLight.artifactsHtml = artifactsHtml;
+                            deferred.resolve(resultLight);
+                        });
                 })
                 .catch(function (reason) {
                     deferred.reject('Something went terribly wrong, ' + reason);

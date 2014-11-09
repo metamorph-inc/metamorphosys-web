@@ -31,14 +31,13 @@ angular.module('cyphy.services')
 
         this.getArtifact = function (hash) {
             var deferred = $q.defer();
-            self.smartClient.blobClient.getArtifact(hash, function (err, artifact) {
+            blobClient.getArtifact(hash, function (err, artifact) {
                 if (err) {
                     deferred.reject(err);
                     return;
                 }
-                deferred.resolve(artifact, hash);
+                deferred.resolve({artifact: artifact, hash: hash});
             });
-
             return deferred.promise;
         };
 

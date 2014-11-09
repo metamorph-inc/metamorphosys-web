@@ -80,10 +80,24 @@ angular.module('CyPhyApp')
             var i,
                 configuration,
                 numCfgs = configurations.length,
-                runTestBench = function (configuration) {
+                invokeTestBenchRunner = function (configuration) {
                     testBenchService.runTestBench(context, testBenchId, configuration.id)
-                        .then(function (result) {
-                            growl.success('TestBench run successfully on ' + configuration.name + '.');
+                        .then(function (resultLight) {
+                            var j;
+                            if (resultLight.success) {
+                                growl.success('TestBench run successfully on ' + configuration.name + '.' +
+                                    resultLight.artifactsHtml, {ttl: -1});
+                            } else {
+                                growl.error('TestBench run failed on ' + configuration.name + '.' +
+                                    resultLight.artifactsHtml, {ttl: -1});
+                                for (j = 0; j < resultLight.messages.length; j += 1) {
+                                    if (growl.hasOwnProperty(resultLight.messages[i].severity)) {
+                                        growl[resultLight.messages[i].severity](resultLight.messages[i].message);
+                                    } else {
+                                        growl.warning(resultLight.messages[i].message);
+                                    }
+                                }
+                            }
                         })
                         .catch(function (reason) {
                             console.error(reason);
@@ -98,7 +112,7 @@ angular.module('CyPhyApp')
             for (i = 0; i < numCfgs; i += 1) {
                 configuration = configurations[i];
                 growl.info('Test-bench started on ' + configuration.name + ' [' + (i + 1).toString() + '/' + numCfgs + ']');
-                runTestBench(configuration);
+                invokeTestBenchRunner(configuration);
             }
         });
 
