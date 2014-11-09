@@ -15,11 +15,19 @@ angular.module('cyphy.services')
         };
 
         this.exportTestBench = function (testBenchId) {
-            throw new Error('Not implemented yet.');
+            throw new Error('Not implemented.');
         };
 
-        this.setTopLevelSystemUnderTest = function (testBenchId, designId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the test bench.
+         * @param {string} context.db - Must exist within watchers and contain the test bench.
+         * @param {string} context.regionId - Must exist within watchers and contain the test bench.
+         * @param {string} testBenchId - Path to test bench.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setTestBenchAttributes = function (context, testBenchId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, testBenchId, attrs);
         };
 
         this.runTestBench = function (context, testBenchId, configurationId) {

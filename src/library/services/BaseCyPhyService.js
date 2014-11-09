@@ -89,6 +89,10 @@ angular.module('cyphy.services')
          */
         this.setNodeAttributes = function (context, id, attrs) {
             var deferred = $q.defer();
+            if (Object.keys(attrs).length === 0) {
+                console.log('no attribute to update');
+                deferred.resolve();
+            }
             nodeService.loadNode(context, id)
                 .then(function (nodeObj) {
                     var key;

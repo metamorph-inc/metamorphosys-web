@@ -1,0 +1,13 @@
+input.drop-box-edit-test-bench {
+  padding: 2ex 1em;
+  border: 1px solid transparent;
+  &.dragover {
+    border: 1px dashed #666;
+    &.bg-success {
+      background-color: #dff0d8;
+    }
+    &.bg-danger {
+      background-color: #f2dede;
+    }
+  }
+}

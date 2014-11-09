@@ -1,0 +1,9 @@
+input.drop-box-edit-test-bench {
+  padding: 2ex 1em;
+  border: 1px solid transparent; }
+  input.drop-box-edit-test-bench.dragover {
+    border: 1px dashed #666; }
+    input.drop-box-edit-test-bench.dragover.bg-success {
+      background-color: #dff0d8; }
+    input.drop-box-edit-test-bench.dragover.bg-danger {
+      background-color: #f2dede; }

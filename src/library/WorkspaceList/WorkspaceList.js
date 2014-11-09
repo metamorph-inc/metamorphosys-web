@@ -166,9 +166,9 @@ angular.module('cyphy.components')
                         var draggedItems = $event.dataTransfer.items,
                             i,
                             hasFile = false;
-                        console.warn(draggedItems);
+//                        console.warn(draggedItems);
                         if (draggedItems === null) {
-                            hasFile = true;
+                            hasFile = false;
                         } else {
                             for (i = 0; i < draggedItems.length; i += 1) {
                                 if (draggedItems[i].kind === 'file') {

@@ -85,6 +85,17 @@ angular.module('cyphy.services')
         };
 
         this.getMetadata = function (hash) {
+//        Example of returned data.
+//        {
+//            "name": "tbAsset.zip",
+//            "size": 103854,
+//            "mime": "application/zip",
+//            "isPublic": false,
+//            "tags": [],
+//            "content": "2357fbd673bec6e9590ee8ba34ec8df8a85ddaf8",
+//            "contentType": "object",
+//            "lastModified": "2014-11-09T00:21:22.000Z"
+//        }
             var deferred = $q.defer();
             blobClient.getMetadata(hash, function (err, metaData) {
                 if (err) {
