@@ -453,7 +453,7 @@ define(['plugin/PluginConfig',
         resultDirName += Object.keys(self.dashboardObject.results.results).length;
 
         resultMetaresult =
-            new DashboardTypes.resultMetaresult(configNodeGuid, tbManifestJson.TestBench, resultDirName);
+            new DashboardTypes.resultMetaresult(configNodeGuid, tbManifestJson.TestBench, tbManifestJson.Created, resultDirName);
 
         self.dashboardObject.results.results[resultDirName] = tbManifestJson;
         self.dashboardObject.results.resultsMetaresultsJson.Results.push(resultMetaresult);

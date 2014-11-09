@@ -37,12 +37,12 @@ define([], function () {
         };
     }
 
-    function resultMetaresult(designID, testbench, summaryPath) {
+    function resultMetaresult(designID, testbenchName, timeStamp, summaryPath) {
         return {
             "Design": null,
             "DesignID": '{' + designID + '}' || "{aaabbbccc111222333}",
-            "TestBench": testbench + ".testbench.json" || "some testbench",
-            "Time": "2014-11-5",
+            "TestBench": testbenchName + ".testbench.json" || "some testbench",
+            "Time": timeStamp,
             "Summary": "./" + summaryPath + "/testbench_manifest.json" || "random dir name / testbench manifest destiny"
         };
     }

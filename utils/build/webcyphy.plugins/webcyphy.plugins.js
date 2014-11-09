@@ -8,7 +8,8 @@ define('webcyphy.plugins',
         'plugin/AtmImporter/AtmImporter/AtmImporter',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',
-        'plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace'
+        'plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',
+        'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard'
     ], function (Converters,
                  ExecutorClient,
                  AcmImporter,
@@ -16,7 +17,8 @@ define('webcyphy.plugins',
                  AtmImporter,
                  AdmExporter,
                  TestBenchRunner,
-                 ExportWorkspace) {
+                 ExportWorkspace,
+                 GenerateDashboard) {
         'use strict';
         WebGMEGlobal.classes = WebGMEGlobal.classes || {};
         WebGMEGlobal.classes.ExecutorClient = ExecutorClient;
@@ -27,4 +29,5 @@ define('webcyphy.plugins',
         WebGMEGlobal.plugins.AdmExporter = AdmExporter;
         WebGMEGlobal.plugins.ExportWorkspace = ExportWorkspace;
         WebGMEGlobal.plugins.TestBenchRunner = TestBenchRunner;
+        WebGMEGlobal.plugins.GenerateDashboard = GenerateDashboard;
     });
