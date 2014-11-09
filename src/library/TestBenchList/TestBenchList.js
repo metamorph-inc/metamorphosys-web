@@ -81,41 +81,11 @@ angular.module('cyphy.components')
                                     path: item.data.path,
                                     editContext: {
                                         db: context.db,
-                                        regionId: context.regionId + '_watchComponents'
+                                        regionId: context.regionId + '_watchTestBenches'
                                     },
-                                    item: item
+                                    testBench: item
                                 },
-                                action: function (data) {
-                                    var modalInstance = $modal.open({
-                                            templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
-                                            controller: 'TestBenchEditController',
-                                            //size: size,
-                                            resolve: { data: function () { return data; } }
-                                        });
-
-                                    modalInstance.result.then(function (editedData) {
-                                        var attrs = { };
-                                        if (editedData.description !== data.item.description) {
-                                            attrs.INFO = editedData.description;
-                                        }
-                                        if (editedData.name !== data.item.title) {
-                                            attrs.name = editedData.name;
-                                        }
-                                        if (editedData.fileInfo.hash !== data.item.data.files) {
-                                            attrs.TestBenchFiles = editedData.fileInfo.hash;
-                                        }
-                                        if (editedData.path !== data.item.data.path) {
-                                            attrs.ID = editedData.path;
-                                        }
-
-                                        testBenchService.setTestBenchAttributes(data.editContext, data.id, attrs)
-                                            .then(function () {
-                                                console.log('Attribute(s) updated');
-                                            });
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                action: testBenchService.editTestBenchFn
                             }
                         ]
                     },
@@ -126,28 +96,12 @@ angular.module('cyphy.components')
                                 label: 'Delete',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-remove',
-                                actionData: { id: item.id, name: item.title },
-                                action: function (data) {
-                                    var modalInstance = $modal.open({
-                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                                        controller: 'SimpleModalController',
-                                        resolve: {
-                                            data: function () {
-                                                return {
-                                                    title: 'Delete Test Bench',
-                                                    details: 'This will delete ' + data.name +
-                                                        ' from the workspace.'
-                                                };
-                                            }
-                                        }
-                                    });
-
-                                    modalInstance.result.then(function () {
-                                        testBenchService.deleteTestBench(context, data.id);
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                actionData: {
+                                    id: item.id,
+                                    name: item.title,
+                                    context: context
+                                },
+                                action: testBenchService.deleteFn
                             }
                         ]
                     }

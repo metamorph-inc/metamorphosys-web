@@ -48,7 +48,7 @@ angular.module('cyphy.components')
             // Event handlers
 
             itemSort: function (jQEvent, ui) {
-                console.log('Sort happened', jQEvent, ui);
+                //console.log('Sort happened', jQEvent, ui);
             },
 
             itemClick: function (event, item) {
@@ -77,33 +77,13 @@ angular.module('cyphy.components')
                                 actionData: {
                                     id: item.id,
                                     description: item.description,
-                                    name: item.title
+                                    name: item.title,
+                                    context: {
+                                        db: context.db,
+                                        regionId: context.regionId + '_watchDesigns'
+                                    }
                                 },
-                                action: function (data) {
-                                    var editContext = {
-                                            db: context.db,
-                                            regionId: context.regionId + '_watchDesigns'
-                                        },
-                                        modalInstance = $modal.open({
-                                            templateUrl: '/cyphy-components/templates/DesignEdit.html',
-                                            controller: 'DesignEditController',
-                                            //size: size,
-                                            resolve: { data: function () { return data; } }
-                                        });
-
-                                    modalInstance.result.then(function (editedData) {
-                                        var attrs = {
-                                            'name': editedData.name,
-                                            'INFO': editedData.description
-                                        };
-                                        designService.setDesignAttributes(editContext, data.id, attrs)
-                                            .then(function () {
-                                                console.log('Attribute updated');
-                                            });
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                action: designService.editDesignFn
                             },
                             {
                                 id: 'setAsTopLevelSystemUnderTest',
@@ -122,17 +102,12 @@ angular.module('cyphy.components')
                                 label: 'Export ADM',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: {id: item.id, name: item.title},
-                                action: function (data) {
-                                    designService.exportDesign(context, data.id)
-                                        .then(function (downloadUrl) {
-                                            growl.success('ADM file for <a href="' + downloadUrl + '">' + data.name + '</a> exported.');
-                                        })
-                                        .catch(function (reason) {
-                                            console.error(reason);
-                                            growl.error('Export failed, see console for details.');
-                                        });
-                                }
+                                actionData: {
+                                    id: item.id,
+                                    name: item.title,
+                                    context: context
+                                },
+                                action: designService.exportAsAdmFn
                             }
                         ]
                     },
@@ -143,28 +118,12 @@ angular.module('cyphy.components')
                                 label: 'Delete',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-remove',
-                                actionData: { id: item.id, name: item.title },
-                                action: function (data) {
-                                    var modalInstance = $modal.open({
-                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                                        controller: 'SimpleModalController',
-                                        resolve: {
-                                            data: function () {
-                                                return {
-                                                    title: 'Delete Design Space',
-                                                    details: 'This will delete ' + data.name +
-                                                        ' from the workspace.'
-                                                };
-                                            }
-                                        }
-                                    });
-
-                                    modalInstance.result.then(function () {
-                                        designService.deleteDesign(context, data.id);
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                actionData: {
+                                    id: item.id,
+                                    name: item.title,
+                                    context: context
+                                },
+                                action: designService.deleteFn
                             }
                         ]
                     }
@@ -247,7 +206,7 @@ angular.module('cyphy.components')
         addConfigurationWatcher = function (designId) {
             designService.watchNbrOfConfigurations(context, designId, function (updateObject) {
                 var listItem = designItems[designId];
-                console.log(updateObject);
+                //console.log(updateObject);
                 listItem.stats[0].value = updateObject.data.counters.sets;
                 listItem.stats[1].value = updateObject.data.counters.configurations;
                 listItem.stats[2].value = updateObject.data.counters.results;
@@ -274,7 +233,7 @@ angular.module('cyphy.components')
 
             designService.watchDesigns(context, $scope.workspaceId, function (updateObject) {
                 var index;
-                console.warn(updateObject);
+                //console.warn(updateObject);
                 if (updateObject.type === 'load') {
                     serviceData2ListItem(updateObject.data);
                     addConfigurationWatcher(updateObject.id);

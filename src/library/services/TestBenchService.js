@@ -6,9 +6,63 @@
  */
 
 angular.module('cyphy.services')
-    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService) {
+    .service('testBenchService', function ($q, $timeout, $modal, nodeService, baseCyPhyService, pluginService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
+
+        this.editTestBenchFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
+                controller: 'TestBenchEditController',
+                //size: size,
+                resolve: { data: function () { return data; } }
+            });
+
+            modalInstance.result.then(function (editedData) {
+                var attrs = { };
+                if (editedData.description !== data.testBench.description) {
+                    attrs.INFO = editedData.description;
+                }
+                if (editedData.name !== data.testBench.title) {
+                    attrs.name = editedData.name;
+                }
+                if (editedData.fileInfo.hash !== data.testBench.data.files) {
+                    attrs.TestBenchFiles = editedData.fileInfo.hash;
+                }
+                if (editedData.path !== data.testBench.data.path) {
+                    attrs.ID = editedData.path;
+                }
+
+                self.setTestBenchAttributes(data.editContext, data.id, attrs)
+                    .then(function () {
+                        console.log('Attribute(s) updated');
+                    });
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        this.deleteFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                controller: 'SimpleModalController',
+                resolve: {
+                    data: function () {
+                        return {
+                            title: 'Delete Test Bench',
+                            details: 'This will delete ' + data.name + ' from the workspace.'
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                self.deleteTestBench(data.context, data.id);
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
 
         /**
          * Removes the test bench from the context.

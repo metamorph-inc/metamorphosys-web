@@ -7,9 +7,64 @@
 
 
 angular.module('cyphy.services')
-    .service('designService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, fileService) {
+    .service('designService', function ($q, $timeout, $location, $modal, growl, nodeService, baseCyPhyService, pluginService, fileService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
+
+        this.editDesignFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/DesignEdit.html',
+                controller: 'DesignEditController',
+                //size: size,
+                resolve: { data: function () { return data; } }
+            });
+
+            modalInstance.result.then(function (editedData) {
+                var attrs = {
+                    'name': editedData.name,
+                    'INFO': editedData.description
+                };
+                self.setDesignAttributes(data.context, data.id, attrs)
+                    .then(function () {
+                        console.log('Attribute updated');
+                    });
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        this.exportAsAdmFn = function (data) {
+            self.exportDesign(data.context, data.id)
+                .then(function (downloadUrl) {
+                    growl.success('ADM file for <a href="' + downloadUrl + '">' + data.name + '</a> exported.');
+                })
+                .catch(function (reason) {
+                    console.error(reason);
+                    growl.error('Export failed, see console for details.');
+                });
+        };
+
+        this.deleteFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                controller: 'SimpleModalController',
+                resolve: {
+                    data: function () {
+                        return {
+                            title: 'Delete Design Space',
+                            details: 'This will delete ' + data.name + ' from the workspace.'
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                self.deleteDesign(data.context, data.id);
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
 
         /**
          * Removes the design from the context.
@@ -107,6 +162,7 @@ angular.module('cyphy.services')
 
             return deferred.promise;
         };
+
         this.watchDesignNode = function (parentContext, designId, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchDesign',
