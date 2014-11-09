@@ -124,13 +124,16 @@ define(['plugin/PluginConfig',
             designObjectID = self.core.getPath(self.activeNode),
             designID = self.core.getGuid(self.activeNode),
             currentConfig = self.getCurrentConfig(),
-            resultObjectIDs;
+            resultObjectIDs = [];
+
+        if (self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
+            self.createMessage(null, 'This plugin must be called from a Container.', 'error');
+            callback(null, self.result);
+            return;
+        }
 
         if (currentConfig.resultIDs) {
             resultObjectIDs = currentConfig.resultIDs.split(';');
-        } else {
-            // Recursively get all the Result objects
-            self.logger.debug("Recursively get all the Result objects");
         }
 
         self.updateMETA(self.metaTypes);
@@ -292,33 +295,99 @@ define(['plugin/PluginConfig',
 
     GenerateDashboard.prototype.getResults = function (designSpaceName, designSpaceID, resultObjectIDs, callback) {
         var self = this,
-            resultCounter = 0,
-            cumulativeError = "";
+            resultCounter = resultObjectIDs.length,
+            cumulativeError = "",
+            decrementCounterCallback,
+            loadByPathCallbackFunction,
+            loadDesertConfigChildrenCallback,
+            loadDesertConfigSetChildrenCallback,
+            loadDesignSpaceChildrenCallback,
+            i,
+            ithChild,
+            iResult,
+            iConfig,
+            finished = false;
 
-        var incrementCounterCallback = function (err) {
+        decrementCounterCallback = function (err) {
             if (err) {
                 cumulativeError += err;
             }
 
-            resultCounter += 1;
+            resultCounter -= 1;
 
-            if (resultCounter === resultObjectIDs.length) {
+            if (resultCounter === 0) {
                 return callback(cumulativeError);
             }
         };
 
-        // Iterate over the list of Result IDs (async with counter)
-        var loadByPathCallbackFunction = function (err, loadedNode) {
-            if (err) {
-                return incrementCounterCallback(err);
+        if (resultCounter !== 0) {
+            // Iterate over the user-defined list of Result IDs (async with counter)
+            loadByPathCallbackFunction = function (err, loadedNode) {
+                if (err) {
+                    return decrementCounterCallback(err);
+                }
+
+                self.readAndModifyResultData(loadedNode, designSpaceName, designSpaceID, decrementCounterCallback);
+            };
+
+            for (i = 0; i < resultObjectIDs.length; i++) {
+
+                self.core.loadByPath(self.rootNode, resultObjectIDs[i], loadByPathCallbackFunction);
             }
 
-            self.readAndModifyResultData(loadedNode, designSpaceName, designSpaceID, incrementCounterCallback);
-        };
+        } else {
 
-        for (var i=0;i<resultObjectIDs.length;i++) {
+            loadDesertConfigChildrenCallback = function (err, resultNodes) {
+                if (err) {
+                    return callback(err);
+                }
 
-            self.core.loadByPath(self.rootNode, resultObjectIDs[i], loadByPathCallbackFunction);
+                if (resultNodes.length > 0) {
+                    // only want to get results from one configuration set ("firstOrDefault")
+                    finished = true;
+                }
+
+                resultCounter += resultNodes.length;
+
+                for (iResult = 0; iResult < resultNodes.length; iResult++) {
+                    if (self.isMetaTypeOf(resultNodes[iResult], self.metaTypes.Result)) {
+                        self.readAndModifyResultData(resultNodes[iResult], designSpaceName, designSpaceID, decrementCounterCallback);
+                    }
+                }
+            };
+
+            loadDesertConfigSetChildrenCallback = function (err, desertConfigs) {
+                if (err) {
+                    return callback(err);
+                }
+
+                for (iConfig = 0; iConfig < desertConfigs.length; iConfig++) {
+                    if (self.isMetaTypeOf(desertConfigs[iConfig], self.metaTypes.DesertConfiguration)) {
+                        self.core.loadChildren(desertConfigs[iConfig], loadDesertConfigChildrenCallback);
+                    }
+                }
+            };
+
+            loadDesignSpaceChildrenCallback = function (err, designSpaceChildren) {
+                if (err) {
+                    return callback(err);
+                }
+
+                for (i = 0; i < designSpaceChildren.length; i++) {
+                    if (finished) {
+                        // only want to get results from one configuration set ("firstOrDefault")
+                        continue;
+                    }
+
+                    ithChild = designSpaceChildren[i];
+                    if (self.isMetaTypeOf(ithChild, self.metaTypes.DesertConfigurationSet)) {
+                        self.createMessage(ithChild, "Created dashboard for DesertConfigurationSet.", 'info');
+                        self.core.loadChildren(ithChild, loadDesertConfigSetChildrenCallback);
+                    }
+                }
+            };
+
+            self.core.loadChildren(self.designSpaceNode, loadDesignSpaceChildrenCallback);
         }
     };
 
