@@ -10,8 +10,16 @@ angular.module('cyphy.services')
         'use strict';
         var watchers = {};
 
-        this.deleteTestBench = function (testBenchId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Removes the test bench from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} testBenchId - Path to design-space.
+         * @param [msg] - Commit message.
+         */
+        this.deleteTestBench = function (context, testBenchId, msg) {
+            var message = msg || 'testBenchService.deleteTestBench ' + testBenchId;
+            nodeService.destroyNode(context, testBenchId, message);
         };
 
         this.exportTestBench = function (testBenchId) {

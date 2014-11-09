@@ -110,7 +110,7 @@ angular.module('cyphy.components')
 
                                         testBenchService.setTestBenchAttributes(data.editContext, data.id, attrs)
                                             .then(function () {
-                                                console.log('Attribute updated');
+                                                console.log('Attribute(s) updated');
                                             });
                                     }, function () {
                                         console.log('Modal dismissed at: ' + new Date());
@@ -143,7 +143,7 @@ angular.module('cyphy.components')
                                     });
 
                                     modalInstance.result.then(function () {
-                                        testBenchService.deleteComponent(context, data.id);
+                                        testBenchService.deleteTestBench(context, data.id);
                                     }, function () {
                                         console.log('Modal dismissed at: ' + new Date());
                                     });
