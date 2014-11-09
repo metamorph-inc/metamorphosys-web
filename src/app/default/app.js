@@ -43,6 +43,16 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 controller: "TestBenchController"
             });
     })
+    .controller('MainNavigatorController', function ($rootScope, $scope) {
+        'use strict';
+        $scope.navigator = {};
+        $scope.navigator.items = [{
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root'
+        }];
+        $rootScope.mainNavigator = $scope.navigator;
+    })
     .run(function ($state, dataStoreService, projectService) {
         'use strict';
         var connectionId = 'my-db-connection-id';

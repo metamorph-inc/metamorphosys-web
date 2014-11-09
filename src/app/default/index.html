@@ -14,13 +14,17 @@
 
     <!-- Include CSS cyphy-components -->
     <link type="text/css" rel="stylesheet" href="/extlib/dist/cyphy-components.css">
+    <!-- Include App specific css-->
+    <link type="text/css" rel="stylesheet" href="/extlib/dist/default-app.css">
     <title></title>
 </head>
 <body>
 <div growl></div>
 <!--<a ui-sref="workspaces">State 1</a>-->
 <!--<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>-->
-
+<div data-ng-controller="MainNavigatorController" class="main-navigator-container">
+    <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
+</div>
 <div ui-view></div>
 
 <!-- Include library dependencies -->
@@ -99,6 +103,5 @@
         angular.bootstrap(document, ['CyPhyApp']);
     };
 </script>
-
 </body>
 </html>
