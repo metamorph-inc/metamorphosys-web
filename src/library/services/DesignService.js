@@ -77,6 +77,36 @@ angular.module('cyphy.services')
 
         };
 
+        this.generateDashboard = function (context, designId, resultIds) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: designId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        resultIDs: resultIds.join(';')
+                    }
+                };
+            console.log(JSON.stringify(config));
+            pluginService.runPlugin(context, 'GenerateDashboard', config)
+                .then(function (result) {
+                    var resultLight = {
+                        success: result.success,
+                        artifactsHtml: '',
+                        messages: result.messages
+                    };
+                    console.log("Result", result);
+                    pluginService.getPluginArtifactsHtml(result.artifacts)
+                        .then(function (artifactsHtml) {
+                            resultLight.artifactsHtml = artifactsHtml;
+                            deferred.resolve(resultLight);
+                        });
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
         this.watchDesignNode = function (parentContext, designId, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchDesign',
@@ -567,7 +597,7 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchConfigurationSets_' + designId,
                 data = {
                     regionId: regionId,
-                    configurationSets: {}
+                    configurationSets: {} //configurationSet {id: <string>, name: <string>, description: <string>}
                 },
                 context = {
                     db: parentContext.db,
@@ -635,9 +665,9 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches the generated DesertConfigurationSets inside a Design.
+         *  Watches the generated DesertConfigurations inside a DesertConfigurationSets.
          * @param {object} parentContext - context of controller.
-         * @param {string} configurationSetId - path to design of which to watch.
+         * @param {string} configurationSetId - path to DesertConfigurationSet of which to watch.
          * @param {function} updateListener - invoked when there are (filtered) changes in data.
          * @returns {Promise} - Returns data when resolved.
          */
@@ -646,7 +676,7 @@ angular.module('cyphy.services')
                 regionId = parentContext.regionId + '_watchConfigurations_' + configurationSetId,
                 data = {
                     regionId: regionId,
-                    configurations: {}
+                    configurations: {} //configuration {id: <string>, name: <string>, alternativeAssignments: <string>}
                 },
                 context = {
                     db: parentContext.db,
@@ -724,6 +754,73 @@ angular.module('cyphy.services')
                             });
                     });
             });
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches the generated DesertConfigurationSets inside a Design.
+         * @param {object} parentContext - context of controller.
+         * @param {object} configuration - Configuration of which to watch.
+         * @param {string} configuration.id - path to Configuration of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.appendWatchResults = function (parentContext, configuration) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchResults_' + configuration.id,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][regionId] = context;
+            configuration.regionId = regionId;
+            configuration.results = {};
+
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, configuration.id)
+                    .then(function (cfgNode) {
+                        cfgNode.loadChildren(context)
+                            .then(function (childNodes) {
+                                var i,
+                                    childId,
+                                    hasResults = false,
+                                    onUnload = function (id) {
+                                        $timeout(function () {
+                                            if (configuration.results[id]) {
+                                                delete configuration.results[id];
+                                            }
+                                        });
+                                    };
+                                for (i = 0; i < childNodes.length; i += 1) {
+                                    childId = childNodes[i].getId();
+                                    if (childNodes[i].isMetaTypeOf(meta.Result)) {
+                                        configuration.results[childId] = {
+                                            id: childId
+                                            //name: childNodes[i].getAttribute('name'),
+                                        };
+                                        //childNodes[i].onUpdate(onUpdate); TODO: When attributes are watch add this.
+                                        childNodes[i].onUnload(onUnload);
+                                        hasResults = true;
+                                    }
+                                }
+
+                                cfgNode.onNewChildLoaded(function (newNode) {
+                                    if (newNode.isMetaTypeOf(meta.Result)) {
+                                        childId = newNode.getId();
+                                        $timeout(function () {
+                                            configuration.results[childId] = {
+                                                id: childId
+                                            };
+                                        });
+                                    }
+                                });
+
+                                deferred.resolve(hasResults);
+                            });
+                    });
+            });
+
             return deferred.promise;
         };
 

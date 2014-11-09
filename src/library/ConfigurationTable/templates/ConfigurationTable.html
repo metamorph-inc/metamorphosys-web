@@ -2,6 +2,8 @@
 
     <script type="text/ng-template" id="tableCell.html">
         <a ng-click="cfgClicked(item)" tooltip="View in tree" tooltip-placement="right"> {{item.name}} </a>
+
+        <a ng-repeat="res in item.results" class="results" tooltip="Results avaliable" tooltip-placement="right">!</a>
     </script>
 
     <p class="text-muted">

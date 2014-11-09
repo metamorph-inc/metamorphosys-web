@@ -22,6 +22,7 @@
                 <configuration-set-selector
                                             design-id="designId"
                                             connection-id="'my-db-connection-id'"></configuration-set-selector>
+                <button ng-disabled="!state.resultsAvaliable" class="btn btn-default btn-sm" ng-click="generateDashboard()">Generate Dashboard</button>
             </span>
         </h3>
         <div ng-if="dataModels.configurations.length === 0">{{state.configurationStatus}}</div>

@@ -91,17 +91,17 @@ angular.module('CyPhyApp')
                                 growl.error('TestBench run failed on ' + configuration.name + '.' +
                                     resultLight.artifactsHtml, {ttl: -1});
                                 for (j = 0; j < resultLight.messages.length; j += 1) {
-                                    if (growl.hasOwnProperty(resultLight.messages[i].severity)) {
-                                        growl[resultLight.messages[i].severity](resultLight.messages[i].message);
+                                    if (growl.hasOwnProperty(resultLight.messages[j].severity)) {
+                                        growl[resultLight.messages[j].severity](resultLight.messages[j].message);
                                     } else {
-                                        growl.warning(resultLight.messages[i].message);
+                                        growl.warning(resultLight.messages[j].message);
                                     }
                                 }
                             }
                         })
                         .catch(function (reason) {
                             console.error(reason);
-                            growl.error("Running test-bench failed.");
+                            growl.error('Running test-bench failed.');
                         });
                 };
             if (numCfgs < 1) {

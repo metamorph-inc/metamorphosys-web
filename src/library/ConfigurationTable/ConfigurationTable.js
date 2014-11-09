@@ -22,8 +22,8 @@ angular.module('cyphy.components')
             }
         ];
 
-        $scope.$on('exposeSelection', function (event, data) {
-            $scope.$emit('selectionExposed', $scope.dataModel.selected);
+        $scope.$on('exposeSelection', function (event, type) {
+            $scope.$emit('selectionExposed', $scope.dataModel.selected, type);
         });
 
         $scope.cfgClicked = function (cfg) {

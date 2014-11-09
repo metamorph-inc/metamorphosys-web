@@ -1,13 +1,27 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, $location, growl, desertService, designService) {
+    .controller('DesignSpaceController', function ($scope, $state, $timeout, $modal, $location, $q, growl, desertService, designService) {
         'use strict';
         var self = this,
             context,
             meta,
             workspaceId = $state.params.workspaceId.replace(/-/g, '/'),
-            designId = $state.params.designId.replace(/-/g, '/');
+            designId = $state.params.designId.replace(/-/g, '/'),
+            saveConfigurations,
+            generateDashboard,
+            cleanUpConfigurations = function () {
+                var i,
+                    config;
+                for (i = 0; i < $scope.dataModels.configurations.length; i += 1) {
+                    config = $scope.dataModels.configurations[i];
+                    if (config.hasOwnProperty('regionId')) {
+                        designService.cleanUpRegion(context, config.regionId);
+                    }
+                }
+                $scope.state.resultsAvaliable = false;
+                $scope.dataModels.configurations = [];
+            };
 
         console.log('DesignSpaceController');
         $scope.connectionId = 'my-db-connection-id';
@@ -32,7 +46,8 @@ angular.module('CyPhyApp')
             desertInputAvaliable: false,
             configurationStatus: 'Select an action above...',
             hasComponents: true,
-            savingConfigurations: false
+            savingConfigurations: false,
+            resultsAvaliable: false
         };
 
         $scope.dataModels = {
@@ -72,36 +87,48 @@ angular.module('CyPhyApp')
         });
 
         $scope.$on('configurationsLoaded', function (event, data) {
-            $scope.dataModels.configurations = [];
+            cleanUpConfigurations();
             $timeout(function () {
+                var i,
+                    queueList = [];
                 $scope.dataModels.setName = data.setName;
                 $scope.dataModels.configurations = data.configurations;
                 if (data.configurations.length === 0) {
                     growl.warning('There were no configurations in ' + data.setName);
                     $scope.state.configurationStatus = 'Select an action above...';
                 }
+                for (i = 0; i < $scope.dataModels.configurations.length; i += 1) {
+                    queueList.push(designService.appendWatchResults(context, $scope.dataModels.configurations[i]));
+                }
+                $q.all(queueList)
+                    .then(function (hasResults) {
+                        hasResults.map(function (res) {
+                            if (res === true) {
+                                $scope.state.resultsAvaliable = true;
+                            }
+                        });
+                    });
             });
         });
 
         $scope.calculateConfigurations = function () {
             growl.info('Calculating configurations. Please wait..');
             $scope.state.configurationStatus = 'Calculating..';
-            $scope.dataModels.configurations = [];
+            cleanUpConfigurations();
             desertService.calculateConfigurations($scope.dataModels.desertInput)
                 .then(function (configurations) {
-                    console.log(configurations);
                     $scope.dataModels.configurations = configurations;
                     $scope.dataModels.setName = 'calculated';
                 });
         };
 
         $scope.saveConfigurations = function () {
-            $scope.$broadcast('exposeSelection');
+            $scope.$broadcast('exposeSelection', 'save');
         };
 
-        $scope.$on('selectionExposed', function (event, data) {
+        saveConfigurations = function (configurations) {
             var modalInstance;
-            if (data.length < 1) {
+            if (configurations.length < 1) {
                 growl.warning('No selected configurations!');
                 return;
             }
@@ -111,7 +138,7 @@ angular.module('CyPhyApp')
                 controller: 'SaveConfigurationSetController',
                 //size: size,
                 resolve: { data: function () {
-                    return {configurations: data, meta: meta, designNode: $scope.dataModels.design.node};
+                    return {configurations: configurations, meta: meta, designNode: $scope.dataModels.design.node};
                 } }
             });
             modalInstance.result.then(function (result) {
@@ -119,6 +146,56 @@ angular.module('CyPhyApp')
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
             });
+        };
+
+        $scope.generateDashboard = function () {
+            $scope.$broadcast('exposeSelection', 'dashboard');
+        };
+
+        generateDashboard = function (configurations) {
+            var i,
+                key,
+                resultIds = [];
+            for (i = 0; i < configurations.length; i += 1) {
+                for (key in configurations[i].results) {
+                    if (configurations[i].results.hasOwnProperty(key)) {
+                        resultIds.push(key);
+                    }
+                }
+            }
+            if (resultIds.length > 0) {
+                growl.info('Generating dashboard for ' + resultIds.length + ' results.');
+                designService.generateDashboard(context, $scope.designId, resultIds)
+                    .then(function (resultLight) {
+                        var k;
+                        if (resultLight.success) {
+                            growl.success('Dashboard generated ' + resultLight.artifactsHtml, {ttl: -1});
+                        } else {
+                            growl.error('Dashboard generation failed.');
+                            for (k = 0; k < resultLight.messages.length; k += 1) {
+                                if (growl.hasOwnProperty(resultLight.messages[k].severity)) {
+                                    growl[resultLight.messages[k].severity](resultLight.messages[k].message);
+                                } else {
+                                    growl.warning(resultLight.messages[k].message);
+                                }
+                            }
+                        }
+                    })
+                    .catch(function (reason) {
+                        console.error(reason);
+                        growl.error('Dashboard generation failed.');
+                    });
+            } else {
+                growl.warning('No results in selected configurations!');
+            }
+        };
+
+        $scope.$on('selectionExposed', function (event, data, eType) {
+            if (eType === 'save') {
+                saveConfigurations(data);
+            } else if (eType === 'dashboard') {
+                generateDashboard(data);
+            }
         });
 
         designService.registerWatcher(context, function (destroyed) {
