@@ -20,7 +20,9 @@
                 "y": 0
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/7"
+        },
         "collection": {},
         "path": "/1/33",
         "parent": "/1",
@@ -50,7 +52,9 @@
                 "y": 231
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/9"
+        },
         "collection": {},
         "path": "/1/33/34",
         "parent": "/1/33",
@@ -78,7 +82,9 @@
                 "y": 200
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": null
+        },
         "collection": {},
         "path": "/1/33/34/35",
         "parent": "/1/33/34",
@@ -104,7 +110,9 @@
                 "y": 0
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": null
+        },
         "collection": {},
         "path": "/1/33/36",
         "parent": "/1/33",
@@ -133,7 +141,9 @@
                 "y": 392
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {},
         "path": "/1/33/37",
         "parent": "/1/33",
@@ -162,7 +172,9 @@
                 "y": 462
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {},
         "path": "/1/33/38",
         "parent": "/1/33",
@@ -187,7 +199,9 @@
                 "y": 168
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/15"
+        },
         "collection": {},
         "path": "/1/33/39",
         "parent": "/1/33",

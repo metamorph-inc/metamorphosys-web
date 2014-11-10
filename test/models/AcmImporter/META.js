@@ -44,8 +44,8 @@ define([], function () {
         meta.DesertConfigurationSet = core.createNode({base: meta.FCO});
         core.setAttribute(meta.DesertConfigurationSet, 'name', 'DesertConfigurationSet');
 
-        meta.DomainConnector = core.createNode({base: meta.FCO});
-        core.setAttribute(meta.DomainConnector, 'name', 'DomainConnector');
+        meta.DomainPort = core.createNode({base: meta.FCO});
+        core.setAttribute(meta.DomainPort, 'name', 'DomainPort');
 
         meta.DomainModel = core.createNode({base: meta.FCO});
         core.setAttribute(meta.DomainModel, 'name', 'DomainModel');
