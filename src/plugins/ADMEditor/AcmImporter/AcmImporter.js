@@ -423,7 +423,7 @@ define(['plugin/PluginConfig',
             domainConnName = domainConnInfo['@Name'],
             portID = domainConnInfo['@ID'],
             domainConnType,
-            newDomainConnNode = self.core.createNode({parent: parentNode, base: MetaTypes.DomainConnector });
+            newDomainConnNode = self.core.createNode({parent: parentNode, base: MetaTypes.DomainPort });
 
         if (domainConnInfo.hasOwnProperty('@xsi:type')) {
             domainConnType = domainConnInfo['@xsi:type'];

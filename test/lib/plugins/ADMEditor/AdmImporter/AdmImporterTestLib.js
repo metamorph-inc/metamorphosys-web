@@ -45,7 +45,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
                     fs.writeFileSync(admFilename + ".json", JSON.stringify(nodes, null, 4));
                 }
 
-                writeRegressionJson();
+                // writeRegressionJson();
                 var nodesWithoutUndefined = JSON.parse(JSON.stringify(nodes)); // FIXME: do this more efficiently
                 var expected = Templates[admFilename + ".json"];
                 expect(expected).to.not.equal(undefined, admFilename + ".json not found among Templates. To add it, uncomment writeRegressionJson, add to templates folder, and run combine_templates.js");

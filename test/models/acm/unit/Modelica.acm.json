@@ -83,7 +83,7 @@
             }
         },
         "pointers": {
-            "base": null
+            "base": "/14"
         },
         "collection": {},
         "path": "/1/33/34/35",
@@ -111,7 +111,7 @@
             }
         },
         "pointers": {
-            "base": null
+            "base": "/14"
         },
         "collection": {},
         "path": "/1/33/36",
