@@ -21,7 +21,9 @@
                 "y": 0
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/7"
+        },
         "collection": {},
         "path": "/1/33",
         "parent": "/1",
@@ -47,7 +49,9 @@
                 "y": null
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/9"
+        },
         "collection": {},
         "path": "/1/33/34",
         "parent": "/1/33",

@@ -280,6 +280,10 @@ define(['plugin/PluginConfig',
             i,
             msg;
 
+        if (typeof self.metaTypes.ACMFolder !== 'object') {
+            self.updateMETA(self.metaTypes);
+        }
+
         if (self.id2ComponentMap.hasOwnProperty(id)) {
             existingAcmNodeWithSameId = self.id2ComponentMap[id];
             existingAcmParentFolder = self.core.getParent(existingAcmNodeWithSameId);
@@ -499,7 +503,7 @@ define(['plugin/PluginConfig',
                 if (valueAndText.hasOwnProperty('#text')) {
                     return valueAndText['#text'];
                 } else {
-                    return '\'#text\' not found';
+                    return '';
                 }
             }
         };

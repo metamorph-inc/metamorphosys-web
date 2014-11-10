@@ -20,7 +20,9 @@
                 "y": 0
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/7"
+        },
         "collection": {},
         "path": "/1/33",
         "parent": "/1",
@@ -66,7 +68,9 @@
                 "y": 294
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {
             "dst": [
                 "/1/33/42"
@@ -102,7 +106,9 @@
                 "y": 343
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {
             "dst": [
                 "/1/33/43"
@@ -117,7 +123,7 @@
         "attributes": {
             "name": "P2",
             "ID": "property.id-bd5d3652-a30e-43ae-9e16-18420833ea1b",
-            "Value": "'#text' not found",
+            "Value": "",
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
@@ -135,7 +141,9 @@
                 "y": 357
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {
             "src": [
                 "/1/33/48",
@@ -169,7 +177,9 @@
                 "y": 273
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {
             "dst": [
                 "/1/33/44"
@@ -187,7 +197,7 @@
         "attributes": {
             "name": "UnusedParameter",
             "ID": "param.id-833c6c3e-cab8-4723-bb29-2ea816e890a5",
-            "Value": "'#text' not found",
+            "Value": "",
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Parametric",
@@ -205,7 +215,9 @@
                 "y": 49
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {},
         "path": "/1/33/38",
         "parent": "/1/33",
@@ -216,7 +228,7 @@
         "attributes": {
             "name": "Parameter",
             "ID": "param.id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571",
-            "Value": "'#text' not found",
+            "Value": "",
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Parametric",
@@ -234,7 +246,9 @@
                 "y": 147
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/18"
+        },
         "collection": {
             "src": [
                 "/1/33/44",
@@ -264,7 +278,9 @@
                 "y": 224
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/31"
+        },
         "collection": {
             "dst": [
                 "/1/33/45",
@@ -294,7 +310,9 @@
                 "y": 196
             }
         },
-        "pointers": {},
+        "pointers": {
+            "base": "/28"
+        },
         "collection": {
             "src": [
                 "/1/33/42"
@@ -326,6 +344,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/41",
             "dst": "/1/33/34"
         },
@@ -352,6 +371,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/34",
             "dst": "/1/33/35"
         },
@@ -378,6 +398,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/39",
             "dst": "/1/33/37"
         },
@@ -404,6 +425,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/39",
             "dst": "/1/33/40"
         },
@@ -430,6 +452,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/39",
             "dst": "/1/33/41"
         },
@@ -456,6 +479,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/37",
             "dst": "/1/33/40"
         },
@@ -482,6 +506,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/36",
             "dst": "/1/33/40"
         },
@@ -508,6 +533,7 @@
             }
         },
         "pointers": {
+            "base": "/25",
             "src": "/1/33/36",
             "dst": "/1/33/41"
         },

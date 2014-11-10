@@ -110,11 +110,100 @@ define([
         ];
     };
 //</editor-fold>
+    AdmImporter.prototype.innerMain = function (xmlArrayBuffer, callback, finnishPlugin) {
+        var self = this,
+            xml2json = new Converter.Xml2json({
+                skipWSText: true,
+                arrayElements: self.arrayElementsInXml
+            }),
+            admFolder = self.activeNode,
+            workspaceNode;
+
+        self.updateMETA(self.meta);
+        //self.copies = config.copies;
+        self.copies = true;
+        if (typeof xmlArrayBuffer === 'string') {
+            self.admData = xml2json.convertFromString(xmlArrayBuffer);
+        } else {
+            self.admData = xml2json.convertFromBuffer(xmlArrayBuffer);
+        }
+        if (self.admData instanceof Error) {
+            self.createMessage(null, 'Given adm not valid xml: ' + self.admData.message, 'error');
+            callback(null, self.result);
+            return;
+        }
+
+        self.admData = self.admData['Design'];
+        workspaceNode = self.getWorkspaceNode(admFolder);
+        //timeStamp = new Date().getTime();
+        self.exploreACMs(workspaceNode, false, function (err) {
+            if (err) {
+                callback(err, self.result);
+                return;
+            }
+            //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
+            //        ((new Date().getTime() - timeStamp) / 1000).toString());
+            if (self.acmCounter > 0) {
+                self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.', 'error');
+                self.logMissingACMsToResult();
+                callback(null, self.result);
+                return;
+            }
+            //timeStamp = new Date().getTime();
+            self.container = self.createAdmDesign(admFolder);
+            //self.createMessage(null, 'ExecTime [s] createAdmDesign :: ' +
+            //    ((new Date().getTime() - timeStamp) / 1000).toString());
+            if (false) {
+                self.makeConnectorCompositions();
+                self.makeValueFlows();
+                finnishPlugin(null);
+            } else {
+                //timeStamp = new Date().getTime();
+                self.gatherComponentInstanceContent(function (err) {
+                    //self.createMessage(null, 'ExecTime [s] gatherComponentInstanceContent :: ' +
+                    //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                    if (err) {
+                        finnishPlugin(err);
+                    } else {
+                        //timeStamp = new Date().getTime();
+                        self.makeConnectorCompositions();
+                        //self.createMessage(null, 'ExecTime [s] makeConnectorCompositions :: ' +
+                        //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                        //timeStamp = new Date().getTime();
+                        self.makeValueFlows();
+                        //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
+                        //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                        self.makePortMaps();
+                        finnishPlugin(null);
+                    }
+                });
+            }
+        });
+    };
+
+    AdmImporter.prototype.arrayElementsInXml = {
+        Design: false,
+        RootContainer: false,
+        Value: false,
+        Container: true,
+        Connector: true,
+        Property: true,
+        Formula: true,
+        Operand: true,
+        ValueFlowMux: true,
+        ComponentInstance: true,
+        PrimitivePropertyInstance: true,
+        ConnectorInstance: true,
+        PortInstance: true,
+        Role: true,
+        Port: true
+    };
+
     /**
-    * Main function for the plugin to execute. This will perform the execution.
-    * Notes:
-    * - Always log with the provided logger.[error,warning,info,debug].
-    * - Do NOT put any user interaction logic UI, etc. inside this method.
+     * Main function for the plugin to execute. This will perform the execution.
+     * Notes:
+     * - Always log with the provided logger.[error,warning,info,debug].
+     * - Do NOT put any user interaction logic UI, etc. inside this method.
     * - callback always have to be called even if error happened.
     *
     * @param {function(string, plugin.PluginResult)} callback - the result callback
@@ -122,23 +211,6 @@ define([
     AdmImporter.prototype.main = function (callback) {
         var self = this,
             config = self.getCurrentConfig(),
-            arrayElementsInXml = {
-                Design: false,
-                RootContainer: false,
-                Value: false,
-                Container: true,
-                Connector: true,
-                Property: true,
-                Formula: true,
-                Operand: true,
-                ValueFlowMux: true,
-                ComponentInstance: true,
-                PrimitivePropertyInstance: true,
-                ConnectorInstance: true,
-                PortInstance: true,
-                Role: true,
-                Port: true
-            },
             //timeStamp,
             timeStart = new Date().getTime(),
             debug = false,
@@ -189,70 +261,8 @@ define([
             callback(null, self.result);
             return;
         }
-        self.updateMETA(self.meta);
-        //self.copies = config.copies;
-        self.copies = true;
         self.blobClient.getObject(config.admFile, function (err, xmlArrayBuffer) {
-            var xml2json = new Converter.Xml2json({
-                    skipWSText: true,
-                    arrayElements: arrayElementsInXml
-                }),
-                admFolder = self.activeNode,
-                workspaceNode;
-
-            self.admData = xml2json.convertFromBuffer(xmlArrayBuffer);
-            if (self.admData instanceof Error) {
-                self.createMessage(null, 'Given adm not valid xml: ' + self.admData.message, 'error');
-                callback(null, self.result);
-                return;
-            }
-
-            self.admData = self.admData['Design'];
-            workspaceNode = self.getWorkspaceNode(admFolder);
-            //timeStamp = new Date().getTime();
-            self.exploreACMs(workspaceNode, false, function (err) {
-                if (err) {
-                    callback(err, self.result);
-                    return;
-                }
-                //self.createMessage(null, 'ExecTime [s] exploreACMs     :: ' +
-                //        ((new Date().getTime() - timeStamp) / 1000).toString());
-                if (self.acmCounter > 0) {
-                    self.createMessage(workspaceNode, 'Work-space did not have all ACMs used by the design.', 'error');
-                    self.logMissingACMsToResult();
-                    callback(null, self.result);
-                    return;
-                }
-                //timeStamp = new Date().getTime();
-                self.createAdmDesign(admFolder);
-                //self.createMessage(null, 'ExecTime [s] createAdmDesign :: ' +
-                //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                if (false) {
-                    self.makeConnectorCompositions();
-                    self.makeValueFlows();
-                    finnishPlugin(null);
-                } else {
-                    //timeStamp = new Date().getTime();
-                    self.gatherComponentInstanceContent(function (err) {
-                        //self.createMessage(null, 'ExecTime [s] gatherComponentInstanceContent :: ' +
-                        //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                        if (err) {
-                            finnishPlugin(err);
-                        } else {
-                            //timeStamp = new Date().getTime();
-                            self.makeConnectorCompositions();
-                            //self.createMessage(null, 'ExecTime [s] makeConnectorCompositions :: ' +
-                            //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                            //timeStamp = new Date().getTime();
-                            self.makeValueFlows();
-                            //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
-                            //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                            self.makePortMaps();
-                            finnishPlugin(null);
-                        }
-                    });
-                }
-            });
+            self.innerMain(xmlArrayBuffer, callback, finnishPlugin);
         });
     };
 
@@ -307,7 +317,7 @@ define([
             return;
         }
         self.initializeComponentMap(self.admData.RootContainer);
-        self.logger.info('Number of unqiue ACMs (acmCounter) is ' + self.acmCounter.toString());
+        self.logger.info('Number of unique ACMs (acmCounter) is ' + self.acmCounter.toString());
         self.core.loadChildren(node, function (err, children) {
             var counter,
                 i,
@@ -416,6 +426,8 @@ define([
                             self.core.getPath(children[i]) + '" will not be used.');
                     }
                     callback(null);
+                } else {
+                    counter.visits--;
                 }
             }
         });
