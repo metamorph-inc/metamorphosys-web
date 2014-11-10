@@ -119,6 +119,14 @@ angular.module('CyPhyApp')
                 .then(function (configurations) {
                     $scope.dataModels.configurations = configurations;
                     $scope.dataModels.setName = 'calculated';
+                    $scope.state.configurationStatus = 'Calculated';
+                })
+                .catch(function (reason) {
+                    console.error(reason);
+                    growl.error('Failed to calculate configurations, see console for more info.');
+                    $scope.dataModels.configurations = [];
+                    $scope.dataModels.setName = '';
+                    $scope.state.configurationStatus = 'Failed to calculate.';
                 });
         };
 
