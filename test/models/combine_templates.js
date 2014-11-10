@@ -23,7 +23,7 @@ var main = function () {
     'use strict';
     var fs = require('fs'),
         isacmFile = function (str) {
-            return ['.acm', '.json'].map(function (ext) {
+            return ['.acm', '.adm', '.json'].map(function (ext) {
                     return hasExtension(str, ext);
                 }).indexOf(true) !== -1;
         },
@@ -60,7 +60,7 @@ var main = function () {
         i,
         templateContent;
 
-    ['unit', 'functional'].forEach(function (dir) {
+    ['acm/unit', 'adm/unit'].forEach(function (dir) {
         walk(dir, function (err, results) {
             if (err) {
                 throw err;
