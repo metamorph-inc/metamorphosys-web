@@ -2,14 +2,7 @@
 define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AcmImporter/AcmImporter/AcmImporter'],
 function(NodeMock, LoggerMock, AcmImporter) {
     'use strict';
-    function runAcmImporterRegression(model, Templates, acmFilename, expect) {
-        NodeMock._nodes = [];
-        var model_ = model();
-        var core = model_.core;
-        var root = core._rootNode;
-        var META = model_.META;
-
-
+    function runAcmImporter(Templates, acmFilename, expect, core, root, activeNode, META) {
         var acm = Templates[acmFilename];
         expect(acm).to.not.equal(undefined, acmFilename + " not found among Templates. (Did you run combine_templates.js?)");
         var importer = new AcmImporter();
@@ -24,12 +17,21 @@ function(NodeMock, LoggerMock, AcmImporter) {
             'commitHash': 'commitHash',
             'currentHash': 'currentHash',
             'rootNode': root,
-            'activeNode': root,
+            'activeNode': activeNode,
             'activeSelection': [],
             'META': META
         });
+        var newComponent = importer.createNewAcm(activeNode, 'hash', acmJson);
+    }
+
+    function runAcmImporterRegression(model, Templates, acmFilename, expect) {
+        NodeMock._nodes = [];
+        var model_ = model();
+        var core = model_.core;
+        var root = core._rootNode;
+        var META = model_.META;
         var origCorePaths = Object.keys(core._nodes);
-        var newComponent = importer.createNewAcm(root, 'hash', acmJson);
+        runAcmImporter(Templates, acmFilename, expect, core, root, root, META);
         origCorePaths.forEach(function (path) {
             delete core._nodes[path];
         });
@@ -48,5 +50,6 @@ function(NodeMock, LoggerMock, AcmImporter) {
         expect(nodesWithoutUndefined).to.deep.equal(JSON.parse(expected));
     }
 
-    return {runAcmImporterRegression: runAcmImporterRegression};
+    return {runAcmImporterRegression: runAcmImporterRegression,
+        runAcmImporter: runAcmImporter };
 });
