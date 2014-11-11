@@ -366,6 +366,10 @@ define(['plugin/PluginConfig',
             yPos = parseInt(avmDomainModelInfo['@YPosition'], 10),
             modelicaClass;
 
+        if (!domainModelName) {
+            domainModelName = avmDomainModelInfo['@xsi:type'].substr(avmDomainModelInfo['@xsi:type'].indexOf(':') + 1);
+        }
+
         newDomainModelNode = self.core.createNode({parent: newAcmNode, base: MetaTypes.DomainModel });
         self.core.setAttribute(newDomainModelNode, 'name', domainModelName);
         self.core.setRegistry(newDomainModelNode, 'position', {x: xPos, y: yPos});
