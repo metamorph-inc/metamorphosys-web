@@ -39,8 +39,19 @@ angular.module('cyphy.services')
                     admFolderId = nodeService.createChild(context, params);
                     params.baseId = meta.ATMFolder.getId();
                     atmFolderId = nodeService.createChild(context, params);
-
-                    deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
+                    nodeService.loadNode(context, acmFolderId)
+                        .then(function () {
+                            return nodeService.loadNode(context, admFolderId);
+                        })
+                        .then(function () {
+                            return nodeService.loadNode(context, atmFolderId);
+                        })
+                        .then(function () {
+                            deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
+                        })
+                        .catch(function (reason) {
+                            deferred.reject(reason);
+                        });
                 })
                 .catch(function (reason) {
                     deferred.reject(reason);

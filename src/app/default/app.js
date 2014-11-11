@@ -53,7 +53,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
         }];
         $rootScope.mainNavigator = $scope.navigator;
     })
-    .run(function ($state, dataStoreService, projectService) {
+    .run(function ($state, growl, dataStoreService, projectService) {
         'use strict';
         var connectionId = 'my-db-connection-id';
 
@@ -63,6 +63,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 return projectService.selectProject(connectionId, 'ADMEditor');
             })
             .catch(function (reason) {
+                growl.error('ADMEditor does not exist. Create and import it using the <a href="' +
+                    window.location.origin + '"> webgme interface</a>.');
                 console.error(reason);
             });
     });

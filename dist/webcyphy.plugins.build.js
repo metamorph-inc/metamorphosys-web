@@ -3695,14 +3695,6 @@ define('xmljsonconverter',['sax'], function (sax) {
         this.xmlDeclaration = xmlDeclaration;
     };
 
-    function xmlEscape(str) {
-        return str.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-    }
-
     JSON2XML.prototype._convertToStringRec = function (key, value) {
         var subKeys,
             elemTag = '',
