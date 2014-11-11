@@ -19,6 +19,9 @@
 #    docker rm mms-webcyphy
 #    docker rmi mms-webcyphy
 
+# TROUBLESHOOTING
+# Sometimes other applications (we're looking at you, Skype) will listen on port 80. Use 'netstat -nab | grep "80"' on the host computer to find competing listeners.
+
 FROM dockerfile/nodejs
 MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 
