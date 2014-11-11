@@ -68,7 +68,7 @@ var main = function () {
 
             for (i = 0; i < results.length; i += 1) {
                 fileName = results[i];
-                console.info(fileName);
+                // console.info(fileName);
                 if (isacmFile(fileName)) {
                     var relFilename = fileName.substring(1 + dir.length);
                     content[relFilename] = fs.readFileSync(fileName, {'encoding': 'utf-8'});
@@ -78,7 +78,7 @@ var main = function () {
                 }
             }
 
-            console.info(content);
+            //console.info(content);
             templateContent = '';
             templateContent += '/* global define,require */\r\n';
             templateContent += '/* Generated file based on acm templates */\r\n';
