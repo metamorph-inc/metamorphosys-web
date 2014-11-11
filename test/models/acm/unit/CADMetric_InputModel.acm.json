@@ -38,6 +38,7 @@
         "attributes": {
             "name": "Propagate_Fixed",
             "Unit": "meter",
+            "ID": "ID11",
             "Value": "",
             "Minimum": "-inf",
             "Maximum": "inf",
@@ -69,6 +70,7 @@
         "attributes": {
             "name": "Propagate_Param",
             "Unit": "meter",
+            "ID": "ID12",
             "Value": "",
             "Minimum": "-inf",
             "Maximum": "inf",
@@ -98,6 +100,7 @@
     "/1/33/36": {
         "ID": 36,
         "attributes": {
+            "name": "CADModel",
             "Type": "CAD"
         },
         "registry": {

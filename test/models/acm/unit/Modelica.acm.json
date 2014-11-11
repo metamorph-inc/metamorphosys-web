@@ -122,7 +122,7 @@
         "ID": 37,
         "attributes": {
             "name": "Prop",
-            "ID": "property.id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1",
+            "ID": "id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1",
             "Value": "5.5",
             "Minimum": "-inf",
             "Maximum": "inf",
@@ -153,7 +153,7 @@
         "ID": 38,
         "attributes": {
             "name": "Param",
-            "ID": "param.id-3eb0bd47-c681-4868-b9ae-6fa5b9708521",
+            "ID": "id-3eb0bd47-c681-4868-b9ae-6fa5b9708521",
             "Value": "4",
             "Minimum": "-inf",
             "Maximum": "inf",

@@ -34,6 +34,7 @@
     "/1/33/34": {
         "ID": 34,
         "attributes": {
+            "name": "CADModel",
             "Type": "CAD"
         },
         "registry": {
