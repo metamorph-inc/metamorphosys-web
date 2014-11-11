@@ -1,6 +1,7 @@
 # HOWTO run webgme-cyphy in Docker
 # 0. On Windows or OSX, install boot2docker and configure it
 #    bash "c:\Program Files\Boot2Docker for Windows\start.sh"
+#    "c:\Program Files\Boot2Docker for Windows\boot2docker.exe" stop
 #    "c:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "boot2docker-vm" --natpf1 "containerssh,tcp,,80,,80"
 #    bash "c:\Program Files\Boot2Docker for Windows\start.sh"
 #    ssh-agent
