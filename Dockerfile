@@ -8,7 +8,8 @@
 # 1. Run a mongodb container
 #    docker run --name webgme_mongo -d dockerfile/mongodb
 # 2. Run a webgme-cyphy container
-#    git clone git@bitbucket.org:metamorphsoftwareinc/mms-webcyphy.git
+#    git clone https://mmsbmachine@bitbucket.org/metamorphsoftwareinc/mms-webcyphy.git
+#	     password: MMSbuild
 #    docker build -t mms-webcyphy ./mms-webcyphy
 #    docker run -p 80:8855 --name mms-webcyphy --link webgme_mongo:webgme_mongo -d mms-webcyphy
 # 3. Inspect/stop/kill/rm/cleanup
