@@ -427,7 +427,7 @@ define([
                     }
                     callback(null);
                 } else {
-                    counter.visits--;
+                    callback(null);
                 }
             }
         });
