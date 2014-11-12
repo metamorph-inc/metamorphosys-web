@@ -1,43 +1,26 @@
-var fs = require('fs');
 var PATH = require('path');
-//var webgme_classes = require(PATH.resolve(__dirname, '../node_modules/webgme/dist/webgme.classes.build.js'));
-//var WebGMEGlobal = {};
-//eval(fs.readFileSync(PATH.resolve(__dirname, '../node_modules/webgme/dist/webgme.classes.build.js'), {encoding: 'utf-8'}).substr(3));
-//console.log(WebGMEGlobal)
-//console.log(webgme_classes)
+var cyphyRootDir = PATH.resolve(__dirname, '..');
+var fs = require('fs');
 var webGme = require('webgme');
-//requirejs('webgme.classes', function (c) { } );
 var CONFIG = webGMEGlobal.getConfig();
 var requirejs = require('requirejs');
-require(PATH.resolve(__dirname, '../test-conf.js'));
-//requirejs.s.contexts._.config.paths.client = 'client/js';
-//console.log(requirejs.s.contexts._.config.paths);
+require(PATH.resolve(cyphyRootDir, 'test-conf.js'));
+require(PATH.resolve(__dirname, 'JSON2_ordered'));
 
-var commandLineConfig = require(PATH.resolve(__dirname, "../config.json"))
-webGMEGlobal.setConfig(commandLineConfig);
+var CyPhyConfig = require(PATH.resolve(cyphyRootDir, "config.json"));
+webGMEGlobal.setConfig(CyPhyConfig);
 // TODO: check if command line config valid or not
 // TODO: probably we should not overwrite the dictionary and array options
-for (var key in commandLineConfig) {
-    CONFIG[key] = commandLineConfig[key];
+for (var key in CyPhyConfig) {
+    CONFIG[key] = CyPhyConfig[key];
 }
-
-
-var pluginConfig = {};
-pluginConfig.projectName = "TmpProject";
-pluginConfig.branch = "master";
-pluginConfig.pluginName = "PluginGenerator";
-pluginConfig.activeNode = undefined;
-pluginConfig.activeSelection = undefined;
-pluginConfig.pluginConfig = {};
-
 
 requirejs([
     'core/coreforplugins',
     'storage/serveruserstorage',
     'coreclient/serialization',
     'blob/BlobClient',
-    'superagent',
-], function (Core, Storage, Serialization, BlobClient, superagent) {
+], function (Core, Storage, Serialization, BlobClient) {
 
 //requirejs.s.contexts._.config.nodeRequire = undefined;
 //requirejs(['js/client'], function (Client) {
@@ -52,7 +35,7 @@ requirejs([
             }
             var core = new Core(project),
                 root = core.createNode({parent:null, base:null});
-            Serialization.import(core, root, JSON.parse(fs.readFileSync(PATH.resolve(__dirname, "../meta/ADMEditor_metaOnly.json"), {encoding: 'utf-8'})), function(err) {
+            Serialization.import(core, root, JSON.parse(fs.readFileSync(PATH.resolve(cyphyRootDir, "meta/ADMEditor_metaOnly.json"), {encoding: 'utf-8'})), function(err) {
                 if (err) {
                     return storage.deleteProject(name,function(){
                         console.log(err);
@@ -89,7 +72,7 @@ requirejs([
                                         if (err) {
                                             fatal(err);
                                         }
-                                        fs.writeFileSync(PATH.resolve(__dirname, '..', 'meta/ADMEditor_metaLib.json'), JSON.stringify(res, undefined, 4), {encoding: 'utf-8'});
+                                        fs.writeFileSync(PATH.resolve(cyphyRootDir, 'meta/ADMEditor_metaLib.json'), JSON.stringify_ordered(res, undefined, 4), {encoding: 'utf-8'});
                                         project.closeProject();
                                         storage.closeDatabase();
                                         writeMetaJs();
@@ -104,6 +87,13 @@ requirejs([
     });
 
     function writeMetaJs() {
+        var pluginConfig = {};
+        pluginConfig.projectName = "TmpProject";
+        pluginConfig.branch = "master";
+        pluginConfig.pluginName = "PluginGenerator";
+        pluginConfig.activeNode = undefined;
+        pluginConfig.activeSelection = undefined;
+        pluginConfig.pluginConfig = {};
         webGme.runPlugin.main(CONFIG, pluginConfig, function (err, result) {
             if (err) {
                 fatal(err);
@@ -118,9 +108,6 @@ requirejs([
                 if (err) {
                     fatal(err);
                 }
-                //var url = blobClient.getDownloadURL(data.descriptor.content['src/plugins/TmpProject/NewPlugin/meta.js'].content);
-                // superagent.get(blobClient.getDownloadURL(result.artifacts[0], 'src/plugins/TmpProject/NewPlugin/meta.js'))
-                //superagent.get(blobClient.getDownloadURL(data.descriptor.content['src/plugins/TmpProject/NewPlugin/meta.js'].content))
                 blobClient.getSubObject(result.artifacts[0], 'src/plugins/TmpProject/NewPlugin/meta.js', function (err, res) {
                     if (err) {
                         fatal(err);
@@ -131,14 +118,11 @@ requirejs([
                         'src/plugins/ADMEditor/AdmImporter/meta.js',
                         'src/plugins/ADMEditor/AtmExporter/meta.js',
                         'src/plugins/ADMEditor/AtmImporter/meta.js'].forEach(function (f) {
-                            fs.writeFileSync(PATH.resolve(__dirname, '..', f), meta_js, {encoding: 'utf-8'});
+                            fs.writeFileSync(PATH.resolve(cyphyRootDir, f), meta_js, {encoding: 'utf-8'});
                         });
                 });
             });
         });
-    }
-
-    function exportLib() {
     }
 });
 
