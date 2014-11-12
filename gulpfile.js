@@ -33,16 +33,17 @@ var argv = require('yargs').argv,
 
         libraryModuleScript: './src/library/cyphy-components.js',
         libraryScripts: [
-
             'src/library/services/*.js',
             'src/library/SimpleModal/*.js',
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',
-            'src/library/ComponentDetails/*.js',
             'src/library/DesignList/*.js',
             'src/library/DesignTree/*.js',
             'src/library/TestBenchList/*.js',
-            'src/library/TestBenchDetails/*.js'
+            'src/library/InterfaceDetails/*.js',
+            'src/library/ConfigurationTable/*.js',
+            'src/library/ConfigurationSetSelector/*.js',
+            'src/library/WorkersList/*.js'
         ],
         libraryTemplates: [
             'src/library/**/templates/**/*.html'

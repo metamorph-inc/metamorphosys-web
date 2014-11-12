@@ -122,7 +122,7 @@ describe('TestTesting', function () {
         });
     });
 
-    it('AdmExporter should succeed on WheelADM', function (done) {
+    it.skip('AdmExporter should succeed on WheelADM', function (done) {
         var projectName = 'ADMEditor',
             pluginName = 'AdmExporter',
             testPoint = '/1937510081/640868054/1855432438',
@@ -176,7 +176,7 @@ describe('TestTesting', function () {
         });
     });
 
-    it('AcmImporter should succeed on ImportDamper', function (done) {
+    it.skip('AcmImporter should succeed on ImportDamper', function (done) {
         var projectName = 'ADMEditor',
             pluginName = 'AcmImporter',
             testPoint = '/1937510081/977006072/311681776',
@@ -195,7 +195,7 @@ describe('TestTesting', function () {
         });
     });
 
-    it('AdmImporter should succeed on ImportWheel', function (done) {
+    it.skip('AdmImporter should succeed on ImportWheel', function (done) {
         var projectName = 'ADMEditor',
             pluginName = 'AdmImporter',
             testPoint = '/1937510081/799069300/1883835269/1367508869',

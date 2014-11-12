@@ -2,41 +2,41 @@
 
 var components = [
     {
-        name: 'WorkspaceList',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
-        name: 'ComponentList',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
-        name: 'ComponentDetails',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
-        name: 'DesignList',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
-        name: 'DesignTree',
-        sources: [ 'demo.html', 'demo.js']
-    },
-    {
-        name: 'TestBenchList',
+        name: 'WorkersList',
         sources: [ 'demo.html', 'demo.js']
     }
+//    {
+//        name: 'WorkspaceList',
+//        sources: [ 'demo.html', 'demo.js']
+//    },
+//    {
+//        name: 'ComponentList',
+//        sources: [ 'demo.html', 'demo.js']
+//    },
+//    {
+//        name: 'DesignList',
+//        sources: [ 'demo.html', 'demo.js']
+//    },
+//    {
+//        name: 'DesignTree',
+//        sources: [ 'demo.html', 'demo.js']
+//    },
+//    {
+//        name: 'TestBenchList',
+//        sources: [ 'demo.html', 'demo.js']
+//    }
 ];
 
 require('chance');
 
 angular.module('gme.services', []);
 
-require('../library/WorkspaceList/docs/demo.js');
-require('../library/ComponentDetails/docs/demo.js');
-require('../library/ComponentList/docs/demo.js');
-require('../library/DesignList/docs/demo.js');
-require('../library/DesignTree/docs/demo.js');
-require('../library/TestBenchList/docs/demo.js');
+require('../library/WorkersList/docs/demo.js');
+//require('../library/WorkspaceList/docs/demo.js');
+//require('../library/ComponentList/docs/demo.js');
+//require('../library/DesignList/docs/demo.js');
+//require('../library/DesignTree/docs/demo.js');
+//require('../library/TestBenchList/docs/demo.js');
 
 
 require('angular-sanitize');

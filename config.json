@@ -36,11 +36,12 @@
         "serverinfo": "./src/rest/serverInfo",
         "CyPhyApp" : "./src/client",
         "CyPhyMETA" : "./meta",
-        "bower_components" : "./../../../bower_components",
         "cyphyDist": "./dist"
     },
 
     "test_paths": {
-        "mocks": "./node_modules/webgme-domain-tools/src/mocks"
+        "mocks": "./node_modules/webgme-domain-tools/test/mocks",
+        "test/models": "./test/models",
+        "test/lib": "./test/lib"
     }
 }

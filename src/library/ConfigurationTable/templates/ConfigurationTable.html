@@ -1,0 +1,23 @@
+<div class="configuration-table">
+
+    <script type="text/ng-template" id="tableCell.html">
+        <a ng-click="cfgClicked(item)" tooltip="View in tree" tooltip-placement="right"> {{item.name}} </a>
+
+        <a ng-repeat="res in item.results" class="results" tooltip="Results avaliable" tooltip-placement="right">!</a>
+    </script>
+
+    <p class="text-muted">
+        Selected: <span class="badge">{{ dataModel.selected.length }}</span> of
+        <span class="badge">{{ dataModel.configurations.length }}</span> in {{dataModel.setName}}
+    </p>
+
+    <!-- ========== Usage ========== -->
+    <ad-table-lite table-name="DesertConfigurations"
+                   column-definition="tableColumnDefinition"
+                   local-data-source="dataModel.configurations"
+                   page-sizes="[10, 20, 50, 100]"
+                   pagination-btn-group-classes="btn-group btn-group-sm"
+                   table-classes="table table-bordered"
+                   selected-items="dataModel.selected">
+    </ad-table-lite>
+</div>

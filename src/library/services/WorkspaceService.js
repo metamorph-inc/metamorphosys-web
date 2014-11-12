@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -7,22 +7,47 @@
 
 
 angular.module('cyphy.services')
-    .service('workspaceService', function ($q, nodeService, baseCyPhyService) {
+    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, fileService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
 
-        this.duplicateWorkspace = function (context, otherWorkspaceId) {
-            throw new Error('Not implemented yet.');
-        };
-
-        this.createWorkspace = function (context, data) {
-            var deferred = $q.defer();
-            console.warn('Creating new workspace but not using data', data);
+        this.createWorkspace = function (context, name, desc) {
+            var deferred = $q.defer(),
+                meta;
             nodeService.getMetaNodes(context)
-                .then(function (meta) {
-                    nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace')
-                        .then(function (newNode) {
-                            deferred.resolve(newNode);
+                .then(function (metaNodes) {
+                    meta = metaNodes;
+                    return nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace');
+                })
+                .then(function (wsNode) {
+                    var acmFolderId,
+                        admFolderId,
+                        atmFolderId,
+                        params = {
+                            parentId: wsNode.getId(),
+                            baseId: meta.ACMFolder.getId()
+                        };
+
+                    wsNode.setAttribute('name', name, '[WebCyPhy] - set name to ' + name);
+                    if (desc) {
+                        wsNode.setAttribute('INFO', desc, '[WebCyPhy] - set INFO to ' + desc);
+                    }
+
+                    acmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AcmFolder');
+                    params.baseId = meta.ADMFolder.getId();
+                    admFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AdmFolder');
+                    params.baseId = meta.ATMFolder.getId();
+                    atmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AtmFolder');
+                    nodeService.loadNode(context, acmFolderId)
+                        .then(function () {
+                            return nodeService.loadNode(context, admFolderId);
+                        })
+                        .then(function () {
+                            return nodeService.loadNode(context, atmFolderId);
+                        })
+                        .then(function () {
+                            deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
                         })
                         .catch(function (reason) {
                             deferred.reject(reason);
@@ -35,10 +60,222 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
+        this.importFiles = function (context, folderIds, files) {
+            var deferred = $q.defer(),
+                i,
+                counter,
+                total,
+                fs = {
+                    acms: [],
+                    adms: [],
+                    atms: []
+                },
+                importAcmRec,
+                importAdmRec,
+                importAtmRec,
+                getNotify;
+
+            importAcmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAcmImporter(context, folderIds.acm, fs.acms[counter])
+                        .then(getNotify(fs.acms[counter], 'acm'), getNotify(fs.acms[counter]), 'acm');
+                } else {
+                    total = fs.adms.length;
+                    counter = total;
+                    importAdmRec();
+                }
+            };
+            importAdmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAdmImporter(context, folderIds.adm, fs.adms[counter])
+                        .then(getNotify(fs.adms[counter], 'adm'), getNotify(fs.adms[counter]), 'adm');
+                } else {
+                    total = fs.atms.length;
+                    counter = total;
+                    importAtmRec();
+                }
+            };
+            importAtmRec = function () {
+                counter -= 1;
+                if (counter >= 0) {
+                    self.callAtmImporter(context, folderIds.atm, fs.atms[counter])
+                        .then(getNotify(fs.atms[counter], 'atm'), getNotify(fs.atms[counter], 'atm'));
+                } else {
+                    deferred.resolve();
+                }
+            };
+            getNotify = function (fInfo, type) {
+                return function (result) {
+                    if (angular.isString(result) === false && result.success === true) {
+                        deferred.notify({type: 'success', message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                            '</a>' + ' imported. ' + '[' + (total - counter) + '/' + total + ']'});
+                    } else {
+                        deferred.notify({type: 'error', message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                            '</a>' + ' failed to be imported, see console details.' +
+                            '[' + (total - counter) + '/' + total + ']'});
+                        if (angular.isString(result)) {
+                            console.error(result);
+                        } else {
+                            console.error(angular.toJson(result.messages, true));
+                        }
+                    }
+                    if (type === 'acm') {
+                        importAcmRec();
+                    } else if (type === 'adm') {
+                        importAdmRec();
+                    } else if (type === 'atm') {
+                        importAtmRec();
+                    } else {
+                        deferred.reject('Unexpected import type ' + type);
+                    }
+                };
+            };
+            // hash: "3636ead0785ca166f3b11193c4b2e5a670801eb1" name: "Damper.zip" size: "1.4 kB" type: "zip"
+            // url: "/rest/blob/download/3636ead0785ca166f3b11193c4b2e5a670801eb1"
+            for (i = 0; i < files.length; i += 1) {
+                if (files[i].type === 'zip') {
+                    fs.acms.push(files[i]);
+                } else if (files[i].type === 'adm') {
+                    fs.adms.push(files[i]);
+                } else if (files[i].type === 'atm') {
+                    fs.atms.push(files[i]);
+                }
+            }
+
+            total = fs.acms.length;
+            counter = total;
+            importAcmRec();
+
+            return deferred.promise;
+        };
+
+        this.callAcmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        UploadedFile: fileInfo.hash,
+                        DeleteExisting: true
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AcmImporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ACM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.callAdmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        admFile: fileInfo.hash
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AdmImporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.callAtmImporter = function (context, folderId, fileInfo) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: folderId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        atmFile: fileInfo.hash
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AtmImporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ATM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    deferred.resolve(result);
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
         /**
-         * Removes the work-space from the context (db/project/branch).
-         * @param context - context of controller, N.B. does not need to specify region.
-         * @param workspaceId
+         * Calls ExportWorkspace.
+         * @param {object} context - Context for plugin.
+         * @param {string} context.db - Database connection to pull model from.
+         * @param {string} workspaceId
+         * @returns {Promise} - resolves to download url if successful.
+         */
+        this.exportWorkspace = function (context, workspaceId) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: workspaceId,
+                    runOnServer: false,
+                    pluginConfig: { }
+                };
+
+            pluginService.runPlugin(context, 'ExportWorkspace', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    if (result.success) {
+                        console.log(result);
+                        deferred.resolve(fileService.getDownloadUrl(result.artifacts[0]));
+                    } else {
+                        if (result.error) {
+                            deferred.reject(result.error + ' messages: ' + angular.toJson(result.messages));
+                        } else {
+                            deferred.reject(angular.toJson(result.messages));
+                        }
+                    }
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong ' + reason);
+                });
+
+            return deferred.promise;
+
+        };
+
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the design.
+         * @param {string} context.db - Must exist within watchers and contain the design.
+         * @param {string} context.regionId - Must exist within watchers and contain the design.
+         * @param {string} workspaceId - Path to workspace.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setWorkspaceAttributes = function (context, workspaceId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, workspaceId, attrs);
+        };
+
+        /**
+         * Removes the workspace from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} workspaceId - Path to workspace.
          * @param [msg] - Commit message.
          */
         this.deleteWorkspace = function (context, workspaceId, msg) {
@@ -46,9 +283,6 @@ angular.module('cyphy.services')
             nodeService.destroyNode(context, workspaceId, message);
         };
 
-        this.exportWorkspace = function (workspaceId) {
-            throw new Error('Not implemented yet.');
-        };
         // TODO: make sure the methods below gets resolved at error too.
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
@@ -80,12 +314,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.workspaces[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.workspaces[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.workspaces[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -120,7 +358,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onUpdate);
                                     newChild.onUnload(onUnload);
-                                    updateListener({id: wsId, type: 'load', data: data.workspaces[wsId]});
+                                    $timeout(function () {
+                                        updateListener({id: wsId, type: 'load', data: data.workspaces[wsId]});
+                                    });
                                 }
                             });
                             deferred.resolve(data);
@@ -157,7 +397,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -172,12 +414,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -210,7 +456,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ACMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });
@@ -254,7 +502,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -269,12 +519,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ADMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.Container)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -310,7 +564,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ADMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });
@@ -354,7 +610,9 @@ angular.module('cyphy.services')
                             childNode,
                             onUnload = function (id) {
                                 data.count -= 1;
-                                updateListener({id: id, type: 'unload', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: id, type: 'unload', data: data.count});
+                                });
                             };
                         for (i = 0; i < children.length; i += 1) {
                             childNode = children[i];
@@ -369,12 +627,16 @@ angular.module('cyphy.services')
                         folderNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.ATMFolder)) {
                                 watchFromFolderRec(newChild, meta).then(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                    });
                                 });
                             } else if (newChild.isMetaTypeOf(meta.AVMTestBenchModel)) {
                                 data.count += 1;
                                 newChild.onUnload(onUnload);
-                                updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -407,7 +669,9 @@ angular.module('cyphy.services')
                             workspaceNode.onNewChildLoaded(function (newChild) {
                                 if (newChild.isMetaTypeOf(meta.ATMFolder)) {
                                     watchFromFolderRec(newChild, meta).then(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        $timeout(function () {
+                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
+                                        });
                                     });
                                 }
                             });

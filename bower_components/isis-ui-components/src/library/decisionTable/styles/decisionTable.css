@@ -1,0 +1,7 @@
+.decision-table .table-style {
+  width: 400px;
+  border: 1px solid #d4d4d4; }
+.decision-table .decision-table-declarations {
+  margin-bottom: 1em; }
+.decision-table .ngViewport {
+  overflow: visible; }

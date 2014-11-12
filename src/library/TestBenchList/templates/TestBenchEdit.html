@@ -2,7 +2,8 @@
     <div class="modal-header">
         <h3 class="modal-title">Edit Test Bench</h3>
     </div>
-    <div class="modal-body">
+    <div class="modal-body drop-box-edit-test-bench" ng-file-drop="onDroppedFiles($files)"
+         ng-file-drag-over-class="dragOverClass($event)">
         <div class="row">
             <div class="col-md-6">
                 <span class="title">Name</span>
@@ -17,8 +18,9 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <span class="title">Test Bench Files (TODO: Make a file-drop and display hyperlink)</span>
-                <input type="text" class="form-control" data-ng-model="data.files">
+                <span class="title">Test Bench Zip File [drop files here]</span>
+                <br>
+                <a ng-if="data.fileInfo.name" ng-href="{{data.fileInfo.url}}">{{data.fileInfo.name}}</a>
             </div>
             <div class="col-md-6">
                 <span class="title">Test Bench Path</span>

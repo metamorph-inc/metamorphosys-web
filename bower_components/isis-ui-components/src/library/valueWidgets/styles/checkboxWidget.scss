@@ -9,3 +9,7 @@
   }
 
 }
+
+.checkbox-widget[disabled] {
+  cursor: no-drop;
+}

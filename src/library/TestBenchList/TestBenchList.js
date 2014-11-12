@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('TestBenchListController', function ($scope, $window, $modal, growl, testBenchService) {
+    .controller('TestBenchListController', function ($scope, $window, $location, $modal, growl, testBenchService) {
         'use strict';
         var self = this,
             items = [],             // Items that are passed to the item-list ui-component.
@@ -50,8 +50,9 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                growl.warning('Not Implemented!');
-                //document.location.hash = '/component/' + item.id.replace(/\//g, '-');
+                var newUrl = '/testBench/' + $scope.workspaceId.replace(/\//g, '-') + '/' + item.id.replace(/\//g, '-');
+                console.log(newUrl);
+                $location.path(newUrl);
             },
 
             itemContextmenuRenderer: function (e, item) {
@@ -77,69 +78,14 @@ angular.module('cyphy.components')
                                     description: item.description,
                                     name: item.title,
                                     files: item.data.files,
-                                    path: item.data.path
+                                    path: item.data.path,
+                                    editContext: {
+                                        db: context.db,
+                                        regionId: context.regionId + '_watchTestBenches'
+                                    },
+                                    testBench: item
                                 },
-                                action: function (data) {
-                                    var editContext = {
-                                            db: context.db,
-                                            regionId: context.regionId + '_watchComponents'
-                                        },
-                                        modalInstance = $modal.open({
-                                            templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
-                                            controller: 'TestBenchEditController',
-                                            //size: size,
-                                            resolve: { data: function () { return data; } }
-                                        });
-
-                                    modalInstance.result.then(function (editedData) {
-                                        var attrs = {
-                                            INFO: editedData.description,
-                                            name: editedData.name,
-                                            TestBenchFiles: editedData.files,
-                                            ID: editedData.path
-                                        };
-                                        testBenchService.setComponentAttributes(editContext, data.id, attrs)
-                                            .then(function () {
-                                                console.log('Attribute updated');
-                                            });
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
-                            },
-                            {
-                                id: 'executeTestBench',
-                                label: 'Execute Test Bench',
-                                disabled: false,
-                                iconClass: 'glyphicon glyphicon-expand',
-                                actionData: {id: item.id},
-                                action: function (data) {
-                                    var modalInstance = $modal.open({
-                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                                        controller: 'SimpleModalController',
-                                        resolve: {
-                                            data: function () {
-                                                return {
-                                                    title: 'Execute Test Bench',
-                                                    details: 'This will run the simulations for all possible ' +
-                                                        'combinations of the design space as one job. The compound ' +
-                                                        'result will be attached to the test-bench (rather than ' +
-                                                        'saved to results objects in the associated design).' +
-                                                        'The other path is to generated configurations for your ' +
-                                                        'design and open up the test-bench and execute a selected ' +
-                                                        'set of designs. This way you can add new results as you add ' +
-                                                        'more test-benches or configurations.'
-                                                };
-                                            }
-                                        }
-                                    });
-
-                                    modalInstance.result.then(function () {
-                                        growl.warning('Not Implemented!');
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                action: testBenchService.editTestBenchFn
                             }
                         ]
                     },
@@ -150,28 +96,12 @@ angular.module('cyphy.components')
                                 label: 'Delete',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-remove',
-                                actionData: { id: item.id, name: item.title },
-                                action: function (data) {
-                                    var modalInstance = $modal.open({
-                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                                        controller: 'SimpleModalController',
-                                        resolve: {
-                                            data: function () {
-                                                return {
-                                                    title: 'Delete Test Bench',
-                                                    details: 'This will delete ' + data.name +
-                                                        ' from the workspace.'
-                                                };
-                                            }
-                                        }
-                                    });
-
-                                    modalInstance.result.then(function () {
-                                        testBenchService.deleteComponent(context, data.id);
-                                    }, function () {
-                                        console.log('Modal dismissed at: ' + new Date());
-                                    });
-                                }
+                                actionData: {
+                                    id: item.id,
+                                    name: item.title,
+                                    context: context
+                                },
+                                action: testBenchService.deleteFn
                             }
                         ]
                     }
@@ -207,7 +137,7 @@ angular.module('cyphy.components')
                 listItem = {
                     id: data.id,
                     title: data.name,
-                    toolTip: 'Open Test Bench',
+                    toolTip: 'Open Test-Bench View',
                     description: data.description,
                     lastUpdated: {
                         time: 'N/A',   // TODO: get this in the future.
@@ -246,10 +176,8 @@ angular.module('cyphy.components')
                 //console.warn(updateObject);
                 if (updateObject.type === 'load') {
                     serviceData2ListItem(updateObject.data);
-
                 } else if (updateObject.type === 'update') {
                     serviceData2ListItem(updateObject.data);
-
                 } else if (updateObject.type === 'unload') {
                     if (testBenchItems.hasOwnProperty(updateObject.id)) {
                         index = items.map(function (e) {
@@ -258,7 +186,6 @@ angular.module('cyphy.components')
                         if (index > -1) {
                             items.splice(index, 1);
                         }
-//                        testBenchService.cleanUpRegion(context, context.regionId + '_watchTestBench_' + updateObject.id);
                         delete testBenchItems[updateObject.id];
                     }
                 } else {
@@ -270,19 +197,55 @@ angular.module('cyphy.components')
                     for (testBenchId in data.testBenches) {
                         if (data.testBenches.hasOwnProperty(testBenchId)) {
                             serviceData2ListItem(data.testBenches[testBenchId]);
-                            //addTestBenchWatcher(testBenchId);
                         }
                     }
                 });
         });
     })
-    .controller('TestBenchEditController', function ($scope, $modalInstance, data) {
+    .controller('TestBenchEditController', function ($scope, $modalInstance, growl, data, fileService) {
         'use strict';
+        var fileInfo;
         $scope.data = {
             description: data.description,
             name: data.name,
-            files: data.files,
+            fileInfo: {
+                hash: data.files,
+                name: null,
+                url: fileService.getDownloadUrl(data.files)
+            },
             path: data.path
+        };
+        fileInfo = $scope.data.fileInfo;
+        if (fileInfo.hash) {
+            fileService.getMetadata(fileInfo.hash)
+                .then(function (metadata) {
+                    fileInfo.name = metadata.name;
+                })
+                .catch(function (err) {
+                    console.error('Could not get meta-data for hash', fileInfo.hash);
+                });
+        }
+
+        $scope.dragOverClass = function ($event) {
+            var draggedItems = $event.dataTransfer.items,
+                hasFile = false;
+            //console.warn(draggedItems);
+            hasFile = draggedItems && draggedItems.length === 1 && draggedItems[0].kind === 'file';
+
+            return hasFile ? "bg-success dragover" : "bg-danger dragover";
+        };
+
+        $scope.onDroppedFiles = function ($files) {
+            fileService.saveDroppedFiles($files, {zip: true})
+                .then(function (fInfos) {
+                    if (fInfos.length !== 1) {
+                        growl.error('One zip file must be dropped!');
+                    } else {
+                        fileInfo.name = fInfos[0].name;
+                        fileInfo.url = fInfos[0].name;
+                        fileInfo.hash = fInfos[0].hash;
+                    }
+                });
         };
 
         $scope.ok = function () {

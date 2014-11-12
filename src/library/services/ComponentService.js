@@ -8,7 +8,7 @@
 
 
 angular.module('cyphy.services')
-    .service('componentService', function ($q, nodeService, baseCyPhyService) {
+    .service('componentService', function ($q, $timeout, nodeService, baseCyPhyService) {
         'use strict';
         var watchers = {};
 
@@ -40,9 +40,10 @@ angular.module('cyphy.services')
          * @param parentContext - context of controller.
          * @param workspaceId
          * @param updateListener - invoked when there are (filtered) changes in data.  Data is an object in data.components.
+         * @param {object} avmIds - An optional filter that only watches components with IDs that evaluates to true.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchComponents = function (parentContext, workspaceId, updateListener) {
+        this.watchComponents = function (parentContext, workspaceId, avmIds, updateListener) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchComponents',
                 context = {
@@ -82,12 +83,17 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.components[id]});
+                        console.warn('ComponentService found update');
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.components[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.components[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -102,16 +108,18 @@ angular.module('cyphy.services')
                                 queueList.push(watchFromFolderRec(childNode, meta));
                             } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
                                 componentId = childNode.getId();
-                                data.components[componentId] = {
-                                    id: componentId,
-                                    name: childNode.getAttribute('name'),
-                                    description: childNode.getAttribute('INFO'),
-                                    avmId: childNode.getAttribute('ID'),
-                                    resource: childNode.getAttribute('Resource'),
-                                    classifications: childNode.getAttribute('Classifications')
-                                };
-                                childNode.onUnload(onUnload);
-                                childNode.onUpdate(onUpdate);
+                                if (!avmIds || avmIds.hasOwnProperty(childNode.getAttribute('ID'))) {
+                                    data.components[componentId] = {
+                                        id: componentId,
+                                        name: childNode.getAttribute('name'),
+                                        description: childNode.getAttribute('INFO'),
+                                        avmId: childNode.getAttribute('ID'),
+                                        resource: childNode.getAttribute('Resource'),
+                                        classifications: childNode.getAttribute('Classifications')
+                                    };
+                                    childNode.onUnload(onUnload);
+                                    childNode.onUpdate(onUpdate);
+                                }
                             }
                         }
 
@@ -120,17 +128,21 @@ angular.module('cyphy.services')
                                 watchFromFolderRec(newChild, meta);
                             } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
                                 componentId = newChild.getId();
-                                data.components[componentId] = {
-                                    id: componentId,
-                                    name: newChild.getAttribute('name'),
-                                    description: newChild.getAttribute('INFO'),
-                                    avmId: newChild.getAttribute('ID'),
-                                    resource: newChild.getAttribute('Resource'),
-                                    classifications: newChild.getAttribute('Classifications')
-                                };
-                                newChild.onUnload(onUnload);
-                                newChild.onUpdate(onUpdate);
-                                updateListener({id: componentId, type: 'load', data: data.components[componentId]});
+                                if (!avmIds || avmIds.hasOwnProperty(newChild.getAttribute('ID'))) {
+                                    data.components[componentId] = {
+                                        id: componentId,
+                                        name: newChild.getAttribute('name'),
+                                        description: newChild.getAttribute('INFO'),
+                                        avmId: newChild.getAttribute('ID'),
+                                        resource: newChild.getAttribute('Resource'),
+                                        classifications: newChild.getAttribute('Classifications')
+                                    };
+                                    newChild.onUnload(onUnload);
+                                    newChild.onUpdate(onUpdate);
+                                    $timeout(function () {
+                                        updateListener({id: componentId, type: 'load', data: data.components[componentId]});
+                                    });
+                                }
                             }
                         });
                         if (queueList.length === 0) {
@@ -205,12 +217,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onDomainModelUnload = function (id) {
                     delete data.domainModels[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 };
 
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -240,11 +256,13 @@ angular.module('cyphy.services')
                                 if (newChild.isMetaTypeOf(meta.DomainModel)) {
                                     data.domainModels[childId] = {
                                         id: childId,
-                                        type: childNode.getAttribute('Type')
+                                        type: newChild.getAttribute('Type')
                                     };
                                     newChild.onUpdate(onDomainModelUpdate);
                                     newChild.onUnload(onDomainModelUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 }
                             });
 

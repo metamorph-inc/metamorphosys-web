@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -6,24 +6,205 @@
  */
 
 angular.module('cyphy.services')
-    .service('testBenchService', function ($q, nodeService, baseCyPhyService) {
+    .service('testBenchService', function ($q, $timeout, $modal, nodeService, baseCyPhyService, pluginService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
 
-        this.deleteTestBench = function (testBenchId) {
-            throw new Error('Not implemented yet.');
+        this.editTestBenchFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
+                controller: 'TestBenchEditController',
+                //size: size,
+                resolve: { data: function () { return data; } }
+            });
+
+            modalInstance.result.then(function (editedData) {
+                var attrs = { };
+                if (editedData.description !== data.testBench.description) {
+                    attrs.INFO = editedData.description;
+                }
+                if (editedData.name !== data.testBench.title) {
+                    attrs.name = editedData.name;
+                }
+                if (editedData.fileInfo.hash !== data.testBench.data.files) {
+                    attrs.TestBenchFiles = editedData.fileInfo.hash;
+                }
+                if (editedData.path !== data.testBench.data.path) {
+                    attrs.ID = editedData.path;
+                }
+
+                self.setTestBenchAttributes(data.editContext, data.id, attrs)
+                    .then(function () {
+                        console.log('Attribute(s) updated');
+                    });
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        this.deleteFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                controller: 'SimpleModalController',
+                resolve: {
+                    data: function () {
+                        return {
+                            title: 'Delete Test Bench',
+                            details: 'This will delete ' + data.name + ' from the workspace.'
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                self.deleteTestBench(data.context, data.id);
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        /**
+         * Removes the test bench from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} testBenchId - Path to design-space.
+         * @param [msg] - Commit message.
+         */
+        this.deleteTestBench = function (context, testBenchId, msg) {
+            var message = msg || 'testBenchService.deleteTestBench ' + testBenchId;
+            nodeService.destroyNode(context, testBenchId, message);
         };
 
         this.exportTestBench = function (testBenchId) {
-            throw new Error('Not implemented yet.');
+            throw new Error('Not implemented.');
         };
 
-        this.setTopLevelSystemUnderTest = function (testBenchId, designId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Updates the given attributes
+         * @param {object} context - Must exist within watchers and contain the test bench.
+         * @param {string} context.db - Must exist within watchers and contain the test bench.
+         * @param {string} context.regionId - Must exist within watchers and contain the test bench.
+         * @param {string} testBenchId - Path to test bench.
+         * @param {object} attrs - Keys are names of attributes and values are the wanted value.
+         */
+        this.setTestBenchAttributes = function (context, testBenchId, attrs) {
+            return baseCyPhyService.setNodeAttributes(context, testBenchId, attrs);
         };
 
-        this.runTestBench = function (testBenchId, configurationId) {
-            throw new Error('Not implemented yet.');
+        this.runTestBench = function (context, testBenchId, configurationId) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: testBenchId,
+                    runOnServer: true,
+                    pluginConfig: {
+                        run: true,
+                        save: true,
+                        configurationPath: configurationId
+                    }
+                };
+            //console.log(JSON.stringify(config));
+            pluginService.runPlugin(context, 'TestBenchRunner', config)
+                .then(function (result) {
+                    var resultLight = {
+                        success: result.success,
+                        artifactsHtml: '',
+                        messages: result.messages
+                    };
+                    console.log("Result", result);
+                    pluginService.getPluginArtifactsHtml(result.artifacts)
+                        .then(function (artifactsHtml) {
+                            resultLight.artifactsHtml = artifactsHtml;
+                            deferred.resolve(resultLight);
+                        });
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
+        this.watchTestBenchNode = function (parentContext, testBenchId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchTestBench',
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    meta: null, // META nodes - needed when creating new nodes...
+                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        newPath = this.getAttribute('ID'),
+                        newResults = this.getAttribute('Results'),
+                        newFiles = this.getAttribute('TestBenchFiles'),
+                        newTlsut = this.getPointer('TopLevelSystemUnderTest').to,
+                        hadChanges = false,
+                        tlsutChanged = false;
+                    if (newName !== data.testBench.name) {
+                        data.testBench.name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.testBench.description) {
+                        data.testBench.description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (newPath !== data.testBench.path) {
+                        data.testBench.path = newPath;
+                        hadChanges = true;
+                    }
+                    if (newResults !== data.testBench.results) {
+                        data.testBench.results = newResults;
+                        hadChanges = true;
+                    }
+                    if (newFiles !== data.testBench.files) {
+                        data.testBench.files = newFiles;
+                        hadChanges = true;
+                    }
+                    if (newTlsut !== data.testBench.tlsutId) {
+                        data.testBench.tlsutId = newTlsut;
+                        hadChanges = true;
+                        tlsutChanged = true;
+                    }
+                    if (hadChanges) {
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.testBench, tlsutChanged: tlsutChanged});
+                        });
+                    }
+                },
+                onUnload = function (id) {
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, testBenchId)
+                    .then(function (testBenchNode) {
+                        data.meta = meta;
+                        data.testBench = {
+                            id: testBenchId,
+                            name: testBenchNode.getAttribute('name'),
+                            description: testBenchNode.getAttribute('INFO'),
+                            path: testBenchNode.getAttribute('ID'),
+                            results: testBenchNode.getAttribute('Results'),
+                            files: testBenchNode.getAttribute('TestBenchFiles'),
+                            tlsutId: testBenchNode.getPointer('TopLevelSystemUnderTest').to,
+                            node: testBenchNode
+                        };
+                        testBenchNode.onUpdate(onUpdate);
+                        testBenchNode.onUnload(onUnload);
+                        deferred.resolve(data);
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**
@@ -75,12 +256,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.testBenches[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.testBenches[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.testBenches[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -123,7 +308,9 @@ angular.module('cyphy.services')
                                 };
                                 newChild.onUnload(onUnload);
                                 newChild.onUpdate(onUpdate);
-                                updateListener({id: testBenchId, type: 'load', data: data.testBenches[testBenchId]});
+                                $timeout(function () {
+                                    updateListener({id: testBenchId, type: 'load', data: data.testBenches[testBenchId]});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -194,7 +381,9 @@ angular.module('cyphy.services')
                     var index = data.containerIds.indexOf(id);
                     if (index > -1) {
                         data.containerIds.splice(index, 1);
-                        updateListener({id: id, type: 'unload', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     }
                 };
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
@@ -214,7 +403,9 @@ angular.module('cyphy.services')
                                 testBenchNode.onNewChildLoaded(function (newChild) {
                                     data.containerIds.push(newChild.getId());
                                     newChild.onUnload(onUnload);
-                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: newChild.getId(), type: 'load', data: data});
+                                    });
                                 });
                                 deferred.resolve(data);
                             });

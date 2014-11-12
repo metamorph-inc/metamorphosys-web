@@ -52,8 +52,6 @@ angular.module(
       require: '^ngModel',
       link: function (scope, element, attributes, ngModel) {
 
-        console.log(scope.embedded);
-
         scope.validationErrors = [];
         scope.invalid = false;
 

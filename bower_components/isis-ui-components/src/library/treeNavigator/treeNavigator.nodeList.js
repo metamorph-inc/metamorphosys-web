@@ -7,19 +7,19 @@ require( '../helpers/angular-recursion.js' );
 require( 'angular-dragdrop' );
 
 angular.module(
-  'isis.ui.treeNavigator.nodeList', [
-    'isis.ui.treeNavigator.node',
-    'RecursionHelper',
-    'ngDragDrop'
-  ]
+'isis.ui.treeNavigator.nodeList', [
+  'isis.ui.treeNavigator.node',
+  'RecursionHelper',
+  'ngDragDrop'
+]
 )
 
 .controller( 'TreeNavigatorNodeListController', function ( $scope, $log ) {
 
   var initializeScope,
-    updateSelection,
-    removeNodeFromList,
-    markNodeExpanded;
+  updateSelection,
+  removeNodeFromList,
+  markNodeExpanded;
 
   // Tree helpers
 
@@ -89,8 +89,6 @@ angular.module(
           // select all opened tree elements between the two nodes
           $scope.config.state.selectedNodes = [ node.id ];
           $log.warn( 'Range selection is not implemented properly yet.' );
-
-
 
 
         } else if ( $event.ctrlKey || $event.metaKey ) {
@@ -206,10 +204,10 @@ angular.module(
             if ( angular.isFunction( $scope.config.loadChildren ) ) {
               $scope.config.state.loadingNodes.push( node.id );
               $scope.config.loadChildren( $event, node )
-                .then( function () {
-                  removeNodeFromList( $scope.config.state.loadingNodes, node );
-                  markNodeExpanded( $event, node );
-                } );
+              .then( function () {
+                removeNodeFromList( $scope.config.state.loadingNodes, node );
+                markNodeExpanded( $event, node );
+              } );
             }
 
           } else {
@@ -233,20 +231,20 @@ angular.module(
 } )
 
 .directive(
-  'treeNavigatorNodeList', function ( RecursionHelper ) {
-    return {
-      scope: {
-        nodes: '=',
-        config: '='
-      },
-      restrict: 'E',
-      replace: true,
-      templateUrl: '/isis-ui-components/templates/treeNavigator.nodeList.html',
-      controller: 'TreeNavigatorNodeListController',
-      compile: function ( element ) {
-        return RecursionHelper.compile( element );
-      }
+'treeNavigatorNodeList', function ( RecursionHelper ) {
+  return {
+    scope: {
+      nodes: '=',
+      config: '='
+    },
+    restrict: 'E',
+    replace: true,
+    templateUrl: '/isis-ui-components/templates/treeNavigator.nodeList.html',
+    controller: 'TreeNavigatorNodeListController',
+    compile: function ( element ) {
+      return RecursionHelper.compile( element );
+    }
 
-    };
-  }
+  };
+}
 );

@@ -95,7 +95,8 @@ demoApp.controller( 'ContextmenuDemoController', function ( $scope ) {
     triggerEvent: 'mouseover',
     position: 'left bottom',
     contentTemplateUrl: 'contextmenu-custom-content.html',
-    doNotAutoClose: true
+    doNotAutoClose: true,
+    menuCssClass: 'green-shadow'
   };
 
   $scope.menuData = menuData;

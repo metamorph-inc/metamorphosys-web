@@ -24,6 +24,11 @@
 
     overflow: visible;
 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     > li > a {
       display: block;
       padding: 3px 20px;
@@ -42,6 +47,20 @@
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
       background-color: #e8e8e8;
       text-decoration: none;
+    }
+
+    a {
+      cursor: pointer;
+    }
+
+    .disabled {
+      opacity: .65;
+      a {
+        cursor: not-allowed;
+        &:hover {
+          background-color: transparent;
+        }
+      }
     }
 
     li.divider {

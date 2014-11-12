@@ -7,19 +7,82 @@
 
 
 angular.module('cyphy.services')
-    .service('designService', function ($q, nodeService, baseCyPhyService) {
+    .service('designService', function ($q, $timeout, $location, $modal, growl, nodeService, baseCyPhyService, pluginService, fileService) {
         'use strict';
-        var watchers = {};
+        var self = this,
+            watchers = {};
 
-        this.deleteDesign = function (designId) {
-            throw new Error('Not implemented yet.');
+        this.editDesignFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/DesignEdit.html',
+                controller: 'DesignEditController',
+                //size: size,
+                resolve: { data: function () { return data; } }
+            });
+
+            modalInstance.result.then(function (editedData) {
+                var attrs = {
+                    'name': editedData.name,
+                    'INFO': editedData.description
+                };
+                self.setDesignAttributes(data.context, data.id, attrs)
+                    .then(function () {
+                        console.log('Attribute updated');
+                    });
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        this.exportAsAdmFn = function (data) {
+            self.exportDesign(data.context, data.id)
+                .then(function (downloadUrl) {
+                    growl.success('ADM file for <a href="' + downloadUrl + '">' + data.name + '</a> exported.');
+                })
+                .catch(function (reason) {
+                    console.error(reason);
+                    growl.error('Export failed, see console for details.');
+                });
+        };
+
+        this.deleteFn = function (data) {
+            var modalInstance = $modal.open({
+                templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                controller: 'SimpleModalController',
+                resolve: {
+                    data: function () {
+                        return {
+                            title: 'Delete Design Space',
+                            details: 'This will delete ' + data.name + ' from the workspace.'
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function () {
+                self.deleteDesign(data.context, data.id);
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        /**
+         * Removes the design from the context.
+         * @param {object} context - context of controller.
+         * @param {string} context.db - data-base connection.
+         * @param {string} designId - Path to design-space.
+         * @param [msg] - Commit message.
+         */
+        this.deleteDesign = function (context, designId, msg) {
+            var message = msg || 'designService.deleteDesign ' + designId;
+            nodeService.destroyNode(context, designId, message);
         };
 
         /**
          * Updates the given attributes
-         * @param {object} context - Must exist within watchers and contain the component.
-         * @param {string} context.db - Must exist within watchers and contain the component.
-         * @param {string} context.regionId - Must exist within watchers and contain the component.
+         * @param {object} context - Must exist within watchers and contain the design.
+         * @param {string} context.db - Must exist within watchers and contain the design.
+         * @param {string} context.regionId - Must exist within watchers and contain the design.
          * @param {string} designId - Path to design-space.
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
@@ -27,16 +90,133 @@ angular.module('cyphy.services')
             return baseCyPhyService.setNodeAttributes(context, designId, attrs);
         };
 
-        this.exportDesign = function (designId) {
-            throw new Error('Not implemented yet.');
+        /**
+         * Calls AdmExporter.
+         * @param {object} context - Context for plugin.
+         * @param {string} context.db - Database connection to pull model from.
+         * @param {string} designId
+         * @param {string} [desertCfgPath] - Path to configuration if only one is to be exported.
+         * @returns {Promise} - resolves to {string} if successful.
+         */
+        this.exportDesign = function (context, designId, desertCfgPath) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: designId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        acms: false,
+                        desertCfg: desertCfgPath || ''
+                    }
+                };
+
+            pluginService.runPlugin(context, 'AdmExporter', config)
+                .then(function (result) {
+                    //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
+                    // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
+                    if (result.success) {
+                        console.log(result);
+                        deferred.resolve(fileService.getDownloadUrl(result.artifacts[0]));
+                    } else {
+                        if (result.error) {
+                            deferred.reject(result.error + ' messages: ' + angular.toJson(result.messages));
+                        } else {
+                            deferred.reject(angular.toJson(result.messages));
+                        }
+                    }
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong ' + reason);
+                });
+
+            return deferred.promise;
+
         };
 
-        this.calculateConfigurations = function (data) {
-            throw new Error('Not implemented yet.');
+        this.generateDashboard = function (context, designId, resultIds) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: designId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        resultIDs: resultIds.join(';')
+                    }
+                };
+            console.log(JSON.stringify(config));
+            pluginService.runPlugin(context, 'GenerateDashboard', config)
+                .then(function (result) {
+                    var resultLight = {
+                        success: result.success,
+                        artifactsHtml: '',
+                        messages: result.messages
+                    };
+                    console.log("Result", result);
+                    pluginService.getPluginArtifactsHtml(result.artifacts)
+                        .then(function (artifactsHtml) {
+                            resultLight.artifactsHtml = artifactsHtml;
+                            deferred.resolve(resultLight);
+                        });
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
         };
 
-        this.saveConfigurationSet = function (designId, data) {
-            throw new Error('Not implemented yet.');
+        this.watchDesignNode = function (parentContext, designId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchDesign',
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                },
+                data = {
+                    regionId: regionId,
+                    meta: null, // META nodes - needed when creating new nodes...
+                    design: {} // design {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                },
+                onUpdate = function (id) {
+                    var newName = this.getAttribute('name'),
+                        newDesc = this.getAttribute('INFO'),
+                        hadChanges = false;
+                    if (newName !== data.design.name) {
+                        data.design.name = newName;
+                        hadChanges = true;
+                    }
+                    if (newDesc !== data.design.description) {
+                        data.design.description = newDesc;
+                        hadChanges = true;
+                    }
+                    if (hadChanges) {
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.design});
+                        });
+                    }
+                },
+                onUnload = function (id) {
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
+                };
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][context.regionId] = context;
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, designId)
+                    .then(function (designNode) {
+                        data.meta = meta;
+                        data.design = {
+                            id: designId,
+                            name: designNode.getAttribute('name'),
+                            description: designNode.getAttribute('INFO'),
+                            node: designNode
+                        };
+                        designNode.onUpdate(onUpdate);
+                        designNode.onUnload(onUnload);
+                        deferred.resolve(data);
+                    });
+            });
+
+            return deferred.promise;
         };
 
         /**
@@ -70,12 +250,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data.designs[id]});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data.designs[id]});
+                        });
                     }
                 },
                 onUnload = function (id) {
                     delete data.designs[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 watchFromFolderRec = function (folderNode, meta) {
                     var recDeferred = $q.defer();
@@ -112,7 +296,9 @@ angular.module('cyphy.services')
                                 };
                                 newChild.onUnload(onUnload);
                                 newChild.onUpdate(onUpdate);
-                                updateListener({id: designId, type: 'load', data: data.designs[designId]});
+                                $timeout(function () {
+                                    updateListener({id: designId, type: 'load', data: data.designs[designId]});
+                                });
                             }
                         });
                         if (queueList.length === 0) {
@@ -187,16 +373,22 @@ angular.module('cyphy.services')
                     var cfgDeferred = $q.defer(),
                         resultOnUnload = function (id) {
                             data.counters.results -= 1;
-                            updateListener({id: id, type: 'unload', data: data.counters});
+                            $timeout(function () {
+                                updateListener({id: id, type: 'unload', data: data});
+                            });
                         };
                     // Count this set and add an unload handle.
                     data.counters.configurations += 1;
                     if (wasCreated) {
-                        updateListener({id: cfgNode.getId(), type: 'load', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: cfgNode.getId(), type: 'load', data: data});
+                        });
                     }
                     cfgNode.onUnload(function (id) {
                         data.counters.configurations -= 1;
-                        updateListener({id: id, type: 'unload', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     });
                     cfgNode.loadChildren().then(function (children) {
                         var i,
@@ -211,8 +403,10 @@ angular.module('cyphy.services')
                         cfgNode.onNewChildLoaded(function (newChild) {
                             if (newChild.isMetaTypeOf(meta.Result)) {
                                 data.counters.results += 1;
-                                updateListener({id: newChild.getId(), type: 'load', data: data.counters});
-                                childNode.onUnload(resultOnUnload);
+                                $timeout(function () {
+                                    updateListener({id: newChild.getId(), type: 'load', data: data});
+                                });
+                                newChild.onUnload(resultOnUnload);
                             }
                         });
                         cfgDeferred.resolve();
@@ -225,11 +419,15 @@ angular.module('cyphy.services')
                     // Count this set and add an unload handle.
                     data.counters.sets += 1;
                     if (wasCreated) {
-                        updateListener({id: setNode.getId(), type: 'load', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: setNode.getId(), type: 'load', data: data});
+                        });
                     }
                     setNode.onUnload(function (id) {
                         data.counters.sets -= 1;
-                        updateListener({id: id, type: 'unload', data: data.counters});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'unload', data: data});
+                        });
                     });
                     setNode.loadChildren().then(function (children) {
                         var i,
@@ -293,14 +491,13 @@ angular.module('cyphy.services')
         };
 
         /**
-         *  Watches a design w.r.t. interfaces.
+         *  Watches a design(space) w.r.t. interfaces.
          * @param parentContext - context of controller.
          * @param designId
          * @param updateListener - invoked when there are (filtered) changes in data.
-         * @returns {Promise} - Returns data when resolved.
          */
-        this.watchDesignDetails = function (parentContext, designId, updateListener) {
-            throw new Error('Not implemented yet.');
+        this.watchInterfaces = function (parentContext, designId, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, designId, updateListener);
         };
 
         /**
@@ -444,33 +641,27 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        // FIXME: watchConfigurationSets and watchConfigurations should probably go to a DesertConfiguration-Service,
-        // with a related controller DesertConfigurationSetList, where details are configurations.
         /**
          *  Watches the generated DesertConfigurationSets inside a Design.
-         * @param parentContext - context of controller.
-         * @param designId
-         * @param updateListener - invoked when there are (filtered) changes in data.
+         * @param {object} parentContext - context of controller.
+         * @param {string} designId - path to design of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
          */
         this.watchConfigurationSets = function (parentContext, designId, updateListener) {
             var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchConfigurationSets_' + designId,
                 data = {
-                    name: null,
-                    id: designId,
-                    regionId: null,
-                    cfgSets: {}
+                    regionId: regionId,
+                    configurationSets: {} //configurationSet {id: <string>, name: <string>, description: <string>}
                 },
                 context = {
                     db: parentContext.db,
-                    projectId: parentContext.projectId,
-                    branchId: parentContext.branchId,
-                    regionId: parentContext.regionId + '_watchConfigurationSets_' + designId
+                    regionId: regionId
                 };
-            data.regionId = context.regionId;
+
             watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            console.log('Added new watcher: ', watchers);
-            nodeService.logContext(context);
+            watchers[parentContext.regionId][regionId] = context;
             nodeService.getMetaNodes(context).then(function (meta) {
                 nodeService.loadNode(context, designId)
                     .then(function (designNode) {
@@ -478,24 +669,27 @@ angular.module('cyphy.services')
                         designNode.loadChildren(context)
                             .then(function (childNodes) {
                                 var i,
+                                    childId,
                                     onUpdate = function (id) {
-                                        var newName = this.getAttribute('name'),
-                                            newDesc = this.getAttribute('INFO');
-                                        console.warn(newName);
-                                        if (newName !== data.cfgSets[id].name ||
-                                            newDesc !== data.cfgSets[id].description) {
-                                            //data.cfgSets[id].name = newName;
-                                            //console.warn('changed');
-                                            updateListener(true);
+                                        var newName = this.getAttribute('name');
+                                        if (newName !== data.configurationSets[id].name) {
+                                            data.configurationSets[id].name = newName;
+                                            $timeout(function () {
+                                                updateListener({id: id, type: 'update', data: data});
+                                            });
                                         }
                                     },
                                     onUnload = function (id) {
-                                        updateListener(true);
+                                        delete data.configurationSets[id];
+                                        $timeout(function () {
+                                            updateListener({id: id, type: 'unload', data: data});
+                                        });
                                     };
                                 for (i = 0; i < childNodes.length; i += 1) {
                                     if (childNodes[i].isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                        data.cfgSets[childNodes[i].getId()] = {
-                                            id: childNodes[i].getId(),
+                                        childId = childNodes[i].getId();
+                                        data.configurationSets[childId] = {
+                                            id: childId,
                                             name: childNodes[i].getAttribute('name'),
                                             description: childNodes[i].getAttribute('INFO')
                                         };
@@ -503,24 +697,254 @@ angular.module('cyphy.services')
                                         childNodes[i].onUnload(onUnload);
                                     }
                                 }
-                                //console.log('cfgSets', cfgSets);
+
                                 designNode.onNewChildLoaded(function (newNode) {
                                     if (newNode.isMetaTypeOf(meta.DesertConfigurationSet)) {
-                                        updateListener(true);
+                                        childId = newNode.getId();
+                                        data.configurationSets[childId] = {
+                                            id: childId,
+                                            name: newNode.getAttribute('name'),
+                                            description: newNode.getAttribute('INFO')
+                                        };
+                                        newNode.onUpdate(onUpdate);
+                                        newNode.onUnload(onUnload);
+                                        $timeout(function () {
+                                            updateListener({id: childId, type: 'load', data: data});
+                                        });
                                     }
                                 });
                                 deferred.resolve(data);
                             });
-                        designNode.onUpdate(function (id) {
-                            var newName = this.getAttribute('name');
-                            if (newName !== data.name) {
-                                data.name = newName;
-                                updateListener(true);
-                            }
-                        });
                     });
             });
             return deferred.promise;
+        };
+
+        /**
+         *  Watches the generated DesertConfigurations inside a DesertConfigurationSets.
+         * @param {object} parentContext - context of controller.
+         * @param {string} configurationSetId - path to DesertConfigurationSet of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         * @returns {Promise} - Returns data when resolved.
+         */
+        this.watchConfigurations = function (parentContext, configurationSetId, updateListener) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchConfigurations_' + configurationSetId,
+                data = {
+                    regionId: regionId,
+                    configurations: {} //configuration {id: <string>, name: <string>, alternativeAssignments: <string>}
+                },
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][regionId] = context;
+
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, configurationSetId)
+                    .then(function (cfgSetNode) {
+                        cfgSetNode.loadChildren(context)
+                            .then(function (childNodes) {
+                                var i,
+                                    childId,
+                                    onUpdate = function (id) {
+                                        var newName = this.getAttribute('name'),
+                                            newAltAss = this.getAttribute('AlternativeAssignments'),
+                                            hadChanges = false;
+
+                                        if (newName !== data.configurations[id].name) {
+                                            data.configurations[id].name = newName;
+                                            hadChanges = true;
+                                        }
+                                        if (newAltAss !== data.configurations[id].alternativeAssignments) {
+                                            data.configurations[id].alternativeAssignments = newAltAss;
+                                            hadChanges = true;
+                                        }
+
+                                        if (hadChanges) {
+                                            $timeout(function () {
+                                                updateListener({id: id, type: 'update', data: data.configurations[id]});
+                                            });
+                                        }
+                                    },
+                                    onUnload = function (id) {
+                                        if (data.configurations[id]) {
+                                            delete data.configurations[id];
+                                        }
+                                        $timeout(function () {
+                                            updateListener({id: id, type: 'unload', data: null});
+                                        });
+                                    };
+                                for (i = 0; i < childNodes.length; i += 1) {
+                                    childId = childNodes[i].getId();
+                                    if (childNodes[i].isMetaTypeOf(meta.DesertConfiguration)) {
+                                        data.configurations[childId] = {
+                                            id: childId,
+                                            name: childNodes[i].getAttribute('name'),
+                                            alternativeAssignments: childNodes[i].getAttribute('AlternativeAssignments')
+                                        };
+                                        childNodes[i].onUpdate(onUpdate);
+                                        childNodes[i].onUnload(onUnload);
+                                    }
+                                }
+
+                                cfgSetNode.onNewChildLoaded(function (newNode) {
+                                    if (newNode.isMetaTypeOf(meta.DesertConfiguration)) {
+                                        childId = newNode.getId();
+                                        data.configurations[childId] = {
+                                            id: childId,
+                                            name: newNode.getAttribute('name'),
+                                            alternativeAssignments: newNode.getAttribute('AlternativeAssignments')
+                                        };
+                                        newNode.onUpdate(onUpdate);
+                                        newNode.onUnload(onUnload);
+                                        $timeout(function () {
+                                            updateListener({id: childId, type: 'load', data: data.configurations[childId]});
+                                        });
+                                    }
+                                });
+
+                                deferred.resolve(data);
+                            });
+                    });
+            });
+            return deferred.promise;
+        };
+
+        /**
+         *  Watches the generated DesertConfigurationSets inside a Design.
+         * @param {object} parentContext - context of controller.
+         * @param {object} configuration - Configuration of which to watch.
+         * @param {string} configuration.id - path to Configuration of which to watch.
+         * @param {function} updateListener - invoked when there are (filtered) changes in data.
+         */
+        this.appendWatchResults = function (parentContext, configuration) {
+            var deferred = $q.defer(),
+                regionId = parentContext.regionId + '_watchResults_' + configuration.id,
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                };
+
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][regionId] = context;
+            configuration.regionId = regionId;
+            configuration.results = {};
+
+            nodeService.getMetaNodes(context).then(function (meta) {
+                nodeService.loadNode(context, configuration.id)
+                    .then(function (cfgNode) {
+                        cfgNode.loadChildren(context)
+                            .then(function (childNodes) {
+                                var i,
+                                    childId,
+                                    hasResults = false,
+                                    onUnload = function (id) {
+                                        $timeout(function () {
+                                            if (configuration.results[id]) {
+                                                delete configuration.results[id];
+                                            }
+                                        });
+                                    };
+                                for (i = 0; i < childNodes.length; i += 1) {
+                                    childId = childNodes[i].getId();
+                                    if (childNodes[i].isMetaTypeOf(meta.Result)) {
+                                        configuration.results[childId] = {
+                                            id: childId
+                                            //name: childNodes[i].getAttribute('name'),
+                                        };
+                                        //childNodes[i].onUpdate(onUpdate); TODO: When attributes are watch add this.
+                                        childNodes[i].onUnload(onUnload);
+                                        hasResults = true;
+                                    }
+                                }
+
+                                cfgNode.onNewChildLoaded(function (newNode) {
+                                    if (newNode.isMetaTypeOf(meta.Result)) {
+                                        childId = newNode.getId();
+                                        $timeout(function () {
+                                            configuration.results[childId] = {
+                                                id: childId
+                                            };
+                                        });
+                                    }
+                                });
+
+                                deferred.resolve(hasResults);
+                            });
+                    });
+            });
+
+            return deferred.promise;
+        };
+
+        this.saveConfigurationSetNodes = function (setName, setDesc, configurations, designNode, meta) {
+            var deferred = $q.defer(),
+                context = designNode.context;
+            nodeService.createNode(context, designNode, meta.DesertConfigurationSet, 'web-cyphy saveConfigurationSet')
+                .then(function (setNode) {
+                    var i,
+                        queueList = [];
+                    setNode.setAttribute('name', setName, 'web-cyphy set name to ' + setName);
+                    if (setDesc) {
+                        setNode.setAttribute('INFO', setDesc, 'web-cyphy set INFO to ' + setDesc);
+                    }
+                    for (i = 0; i < configurations.length; i += 1) {
+                        queueList.push(nodeService.createNode(context, setNode, meta.DesertConfiguration,
+                            'web-cyphy saveConfigurationSet'));
+                    }
+                    if (queueList.length === 0) {
+                        deferred.resolve();
+                    } else {
+                        $q.all(queueList).then(function (cfgNodes) {
+                            var aaStr;
+                            for (i = 0; i < cfgNodes.length; i += 1) {
+                                aaStr = JSON.stringify(configurations[i].alternativeAssignments);
+                                cfgNodes[i].setAttribute('name', configurations[i].name,
+                                        'web-cyphy set name to ' + configurations[i].name);
+                                cfgNodes[i].setAttribute('AlternativeAssignments', aaStr,
+                                        'web-cyphy set AlternativeAssignments to ' + aaStr);
+                            }
+                            deferred.resolve();
+                        });
+                    }
+                });
+
+            return deferred.promise;
+        };
+
+        this.saveConfigurationSet = function (setName, setDesc, configurations, designNode, meta) {
+            var context = designNode.context,
+                i,
+                aaStr,
+                metaCfgId = meta.DesertConfiguration.getId(),
+                metaCfgSetId = meta.DesertConfigurationSet.getId(),
+                setId,
+                cfgId,
+                designId = designNode.getId(),
+                params = {
+                    parentId: designId,
+                    baseId: metaCfgSetId
+                };
+            setId = nodeService.createChild(context, params, 'web-cyphy saveConfigurationSet configSet saved.');
+            nodeService.setAttributes(context, setId, 'name', setName, 'web-cyphy set name to ' + setName);
+            if (setDesc) {
+                nodeService.setAttributes(context, setId, 'INFO', setDesc, 'web-cyphy set INFO to ' + setDesc);
+            }
+            params = {
+                parentId: setId,
+                baseId: metaCfgId
+            };
+            for (i = 0; i < configurations.length; i += 1) {
+                cfgId = nodeService.createChild(context, params, 'web-cyphy saveConfigurationSet config saved.');
+                aaStr = JSON.stringify(configurations[i].alternativeAssignments);
+                nodeService.setAttributes(context, cfgId, 'name', configurations[i].name,
+                        'web-cyphy set name to ' + configurations[i].name);
+                nodeService.setAttributes(context, cfgId, 'AlternativeAssignments', aaStr,
+                        'web-cyphy set AlternativeAssignments to ' + aaStr);
+            }
         };
 
         /**

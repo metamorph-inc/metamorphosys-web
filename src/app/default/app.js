@@ -36,9 +36,24 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 url: "/designSpace/:workspaceId/:designId",
                 templateUrl: "/default/templates/DesignSpace.html",
                 controller: "DesignSpaceController"
+            })
+            .state('testBench', {
+                url: "/testBench/:workspaceId/:testBenchId",
+                templateUrl: "/default/templates/TestBench.html",
+                controller: "TestBenchController"
             });
     })
-    .run(function ($state, dataStoreService, projectService) {
+    .controller('MainNavigatorController', function ($rootScope, $scope) {
+        'use strict';
+        $scope.navigator = {};
+        $scope.navigator.items = [{
+            id: 'root',
+            label: 'ADMEditor',
+            itemClass: 'cyphy-root'
+        }];
+        $rootScope.mainNavigator = $scope.navigator;
+    })
+    .run(function ($state, growl, dataStoreService, projectService) {
         'use strict';
         var connectionId = 'my-db-connection-id';
 
@@ -48,6 +63,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
                 return projectService.selectProject(connectionId, 'ADMEditor');
             })
             .catch(function (reason) {
+                growl.error('ADMEditor does not exist. Create and import it using the <a href="' +
+                    window.location.origin + '"> webgme interface</a>.');
                 console.error(reason);
             });
     });
@@ -56,3 +73,4 @@ var CyPhyApp = angular.module('CyPhyApp', [
 require('./views/Workspaces/WorkspacesController');
 require('./views/WorkspaceDetails/WorkspaceDetailsController');
 require('./views/DesignSpace/DesignSpaceController');
+require('./views/TestBench/TestBenchController');

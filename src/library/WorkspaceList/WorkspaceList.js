@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.components')
-    .controller('WorkspaceListController', function ($scope, growl, workspaceService, fileService) {
+    .controller('WorkspaceListController', function ($scope, $window, $location, $modal, growl, workspaceService, fileService) {
         'use strict';
         var self = this,
             items = [],
@@ -45,31 +45,20 @@ angular.module('cyphy.components')
             },
 
             itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
-                document.location.hash = '/workspaceDetails/' + item.id.replace(/\//g, '-');
+                $location.path('/workspaceDetails/' + item.id.replace(/\//g, '-'));
             },
 
             itemContextmenuRenderer: function (e, item) {
-                console.log('Contextmenu was triggered for node:', item);
-
                 return [
                     {
                         items: [
-
                             {
                                 id: 'openInEditor',
                                 label: 'Open in Editor',
                                 disabled: false,
-                                iconClass: 'glyphicon glyphicon-edit'
-                            },
-                            {
-                                id: 'duplicateWorkspace',
-                                label: 'Duplicate',
-                                disabled: false,
-                                iconClass: 'fa fa-copy copy-icon',
-                                actionData: {id: item.id},
-                                action: function (data) {
-                                    workspaceService.duplicateWorkspace(context, data.id);
+                                iconClass: 'glyphicon glyphicon-edit',
+                                action: function () {
+                                    $window.open('/?project=ADMEditor&activeObject=' + item.id, '_blank');
                                 }
                             },
                             {
@@ -77,9 +66,34 @@ angular.module('cyphy.components')
                                 label: 'Edit',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-pencil',
-                                actionData: {id: item.id},
+                                actionData: {
+                                    id: item.id,
+                                    description: item.description,
+                                    name: item.title
+                                },
                                 action: function (data) {
-                                    growl.warning('Not Implemented, id: ' + data.id);
+                                    var editContext = {
+                                            db: context.db,
+                                            regionId: context.regionId + '_watchWorkspaces'
+                                        },
+                                        modalInstance = $modal.open({
+                                            templateUrl: '/cyphy-components/templates/WorkspaceEdit.html',
+                                            controller: 'WorkspaceEditController',
+                                            resolve: { data: function () { return data; } }
+                                        });
+
+                                    modalInstance.result.then(function (editedData) {
+                                        var attrs = {
+                                            'name': editedData.name,
+                                            'INFO': editedData.description
+                                        };
+                                        workspaceService.setWorkspaceAttributes(editContext, data.id, attrs)
+                                            .then(function () {
+                                                console.log('Attribute updated');
+                                            });
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             },
                             {
@@ -87,25 +101,48 @@ angular.module('cyphy.components')
                                 label: 'Export as XME',
                                 disabled: false,
                                 iconClass: 'glyphicon glyphicon-share-alt',
-                                actionData: { id: item.id },
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    growl.info('Not Implemented, id: ' + data.id);
+                                    workspaceService.exportWorkspace(context, data.id)
+                                        .then(function (downloadUrl) {
+                                            growl.success('Workspace package for <a href="' + downloadUrl + '">' +
+                                                data.name + '</a> exported.');
+                                        })
+                                        .catch(function (reason) {
+                                            console.error(reason);
+                                            growl.error('Export failed, see console for details.');
+                                        });
                                 }
                             }
                         ]
                     },
                     {
-                        //label: 'Extra',
                         items: [
-
                             {
                                 id: 'delete',
                                 label: 'Delete',
                                 disabled: false,
-                                iconClass: 'fa fa-plus',
-                                actionData: { id: item.id },
+                                iconClass: 'glyphicon glyphicon-remove',
+                                actionData: { id: item.id, name: item.title },
                                 action: function (data) {
-                                    workspaceService.deleteWorkspace(context, data.id);
+                                    var modalInstance = $modal.open({
+                                        templateUrl: '/cyphy-components/templates/SimpleModal.html',
+                                        controller: 'SimpleModalController',
+                                        resolve: {
+                                            data: function () {
+                                                return {
+                                                    title: 'Delete Workspace',
+                                                    details: 'This will delete ' + data.name + ' from the project.'
+                                                };
+                                            }
+                                        }
+                                    });
+
+                                    modalInstance.result.then(function () {
+                                        workspaceService.deleteWorkspace(context, data.id);
+                                    }, function () {
+                                        console.log('Modal dismissed at: ' + new Date());
+                                    });
                                 }
                             }
                         ]
@@ -129,9 +166,9 @@ angular.module('cyphy.components')
                         var draggedItems = $event.dataTransfer.items,
                             i,
                             hasFile = false;
-                        console.warn(draggedItems);
+//                        console.warn(draggedItems);
                         if (draggedItems === null) {
-                            hasFile = true;
+                            hasFile = false;
                         } else {
                             for (i = 0; i < draggedItems.length; i += 1) {
                                 if (draggedItems[i].kind === 'file') {
@@ -156,16 +193,36 @@ angular.module('cyphy.components')
                     };
 
                     $scope.createItem = function (newItem) {
-                        var i;
-                        for (i = 0; i < $scope.files.length; i += 1) {
-                            console.log($scope.files[i]);
+                        var newItemContext = {
+                                db: context.db,
+                                regionId: context.regionId + '_watchWorkspaces'
+                            };
+                        if (!newItem || !newItem.name) {
+                            growl.warning('Provide a name');
+                            return;
                         }
-                        //workspaceService.createWorkspace(context, newItem);
-
-                        //$scope.newItem = {};
-
-                        //config.newItemForm.expanded = false; // this is how you close the form itself
-
+                        workspaceService.createWorkspace(newItemContext, newItem.name, newItem.description)
+                            .then(function (folderIds) {
+                                growl.success(newItem.name + ' created.');
+                                if ($scope.model.droppedFiles.length > 0) {
+                                    growl.info('Importing files..');
+                                    workspaceService.importFiles(newItemContext, folderIds, $scope.model.droppedFiles)
+                                        .then(function () {
+                                            growl.info('Finished importing files!', {ttl: 100});
+                                        }, function (reason) {
+                                            growl.error(reason);
+                                        }, function (info) {
+                                            growl[info.type](info.message);
+                                        })
+                                        .finally(function () {
+                                            config.newItemForm.expanded = false;
+                                            $scope.model.droppedFiles = [];
+                                        });
+                                } else {
+                                    config.newItemForm.expanded = false;
+                                    $scope.model.droppedFiles = [];
+                                }
+                            });
                     };
                 }
             },
@@ -321,6 +378,21 @@ angular.module('cyphy.components')
                     }
                 });
         });
+    })
+    .controller('WorkspaceEditController', function ($scope, $modalInstance, data) {
+        'use strict';
+        $scope.data = {
+            description: data.description,
+            name: data.name
+        };
+
+        $scope.ok = function () {
+            $modalInstance.close($scope.data);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     })
     .directive('workspaceList', function () {
         'use strict';

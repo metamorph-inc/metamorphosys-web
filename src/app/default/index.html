@@ -8,32 +8,39 @@
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/angular-growl/build/angular-growl.min.css">
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
     <link type="text/css" href="/extlib/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/adapt-strap/dist/adapt-strap.css"/>
     <!-- Include CSS isis-ui-components -->
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.css">
 
     <!-- Include CSS cyphy-components -->
     <link type="text/css" rel="stylesheet" href="/extlib/dist/cyphy-components.css">
+    <!-- Include App specific css-->
+    <link type="text/css" rel="stylesheet" href="/extlib/dist/default-app.css">
     <title></title>
 </head>
 <body>
 <div growl></div>
 <!--<a ui-sref="workspaces">State 1</a>-->
 <!--<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>-->
-
+<div data-ng-controller="MainNavigatorController" class="main-navigator-container">
+    <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
+</div>
 <div ui-view></div>
 
 <!-- Include library dependencies -->
 <script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/extlib/bower_components/jquery-ui/jquery-ui.min.js"></script>
-<script src="/extlib/bower_components/angular/angular.min.js"></script>
+<script src="/extlib/bower_components/angular/angular.js"></script>
 <script src="/extlib/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="/extlib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/extlib/bower_components//angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/extlib/bower_components/angular-ui-utils/ui-utils.min.js"></script>
+<script src="/extlib/bower_components/ng-grid/build/ng-grid.min.js"></script>
 
-<!-- Include WebGME libraries -->
+<!-- Include WebGME/WebCyphy libraries -->
 <!--  client -->
 <script src="/extlib/node_modules/webgme/dist/webgme.classes.build.js"></script>
+<script src="/extlib/dist/webcyphy.plugins.build.js"></script>
 <!--  angular module services-->
 <!--<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>-->
 <script src="/extlib/node_modules/ng-gme/dist/ng-gme.js"></script>
@@ -57,7 +64,7 @@
             waitCounter = 0,
             i,
             success,
-            usedClasses = ["Client"],
+            usedClasses = ["Client", "ExecutorClient"],
             interval = 200, // 100 milliseconds interval
             waitForLoadId = setInterval(function () {
                 if (window.WebGMEGlobal &&
@@ -96,6 +103,5 @@
         angular.bootstrap(document, ['CyPhyApp']);
     };
 </script>
-
 </body>
 </html>

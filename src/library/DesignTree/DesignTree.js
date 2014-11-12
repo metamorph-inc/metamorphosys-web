@@ -2,18 +2,16 @@
 
 /**
  * @author pmeijer / https://github.com/pmeijer
- * @author lattmann / https://github.com/lattmann
  */
 
 angular.module('cyphy.components')
-    .controller('DesignTreeController', function ($scope, $window, designService) {
+    .controller('DesignTreeController', function ($scope, $window, designService, desertService) {
         'use strict';
-        var self = this,
-            items = [],
-            context,
+        var context,
             config,
             treeData,
             rootNode,
+            avmIds = {},
             buildTreeStructure;
 
         console.log('DesignTreeController');
@@ -32,14 +30,6 @@ angular.module('cyphy.components')
         }
 
         config = {
-//            nodeClick: function ( e, node ) {
-//                console.log( 'Node was clicked:', node );
-//            },
-//
-//            nodeDblclick: function ( e, node ) {
-//                console.log( 'Node was double-clicked:', node );
-//            },
-
             nodeContextmenuRenderer: function (e, node) {
                 return [{
                     items: [{
@@ -53,11 +43,19 @@ angular.module('cyphy.components')
                         }
                     }]
                 }];
-            }
-
+            },
+            nodeClick: function ( e, node ) {
+                console.log( 'Node was clicked:', node, $scope );
+            },
+            disableManualSelection: true,
+            folderIconClass: 'fa fa-cubes'
+//            nodeDblclick: function ( e, node ) {
+//                console.log( 'Node was double-clicked:', node );
+//            },
 //            nodeExpanderClick: function ( e, node, isExpand ) {
 //                console.log( 'Expander was clicked for node:', node, isExpand );
 //            }
+
         };
 
         rootNode = {
@@ -80,6 +78,9 @@ angular.module('cyphy.components')
         };
         $scope.config = config;
         $scope.treeData = treeData;
+        $scope.$on('setSelectedNodes', function (event, data) {
+            $scope.config.state.selectedNodes = data;
+        });
 
         buildTreeStructure = function (container, parentTreeNode) {
             var key,
@@ -101,6 +102,7 @@ angular.module('cyphy.components')
             treeNode.id = container.id;
             treeNode.label = container.name;
             treeNode.extraInfo = container.type;
+            $scope.config.state.expandedNodes.push(treeNode.id);
             for (key in container.components) {
                 if (container.components.hasOwnProperty(key)) {
                     childData = container.components[key];
@@ -109,6 +111,11 @@ angular.module('cyphy.components')
                         label: childData.name
                     });
                     treeNode.childrenCount += 1;
+                    if (avmIds[childData.avmId]) {
+                        avmIds[childData.avmId].push(childData.id);
+                    } else {
+                        avmIds[childData.avmId] = [childData.id];
+                    }
                 }
             }
             for (key in container.subContainers) {
@@ -132,8 +139,14 @@ angular.module('cyphy.components')
                 console.warn(updateObject);
             })
                 .then(function (data) {
-                    var rootContainer = data.containers[data.rootId];
+                    var rootContainer = data.containers[data.rootId],
+                        desertInputData;
                     buildTreeStructure(rootContainer);
+                    $scope.$emit('designTreeLoaded', avmIds);
+                    // FIXME: This part is only here to reuse the data from watchDesignStructure.
+                    // TODO: Find a more suitable location.
+                    desertInputData = desertService.getDesertInputData(data);
+                    $scope.$emit('desertInputReady', desertInputData);
                 });
         });
     })

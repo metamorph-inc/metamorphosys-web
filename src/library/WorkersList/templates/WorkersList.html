@@ -1,0 +1,17 @@
+<div class="workers-list">
+    <ul class="workers-list-group">
+        <li class="workers-list-group-item" data-ng-repeat="worker in dataModel.workers">
+            <h3 class="worker-id">{{ worker.clientId }}</h3>
+            <ul class="worker-running-jobs-list">
+                <li class="worker-running-jobs-list-item" data-ng-repeat="job in worker.jobs">
+                    <span>{{job.status}} :: {{job.createTime}}</span>
+                </li>
+            </ul>
+            <!--<ul class="worker-label-list">-->
+                <!--<li class="worker-label-list-item" data-ng-repeat="label in worker.labels">-->
+                    <!--{{label}}-->
+                <!--</li>-->
+            <!--</ul>-->
+        </li>
+    </ul>
+</div>

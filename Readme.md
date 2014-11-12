@@ -10,9 +10,12 @@
 4. Install dependencies listed in [package.json](https://github.com/webgme/webgme-cyphy/blob/master/package.json)
  - From command line: `npm install`
  - [`install_script.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/install_script.cmd) will also install the dependencies
-5. In a separate process, run [`launch_database.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/launch_database.cmd) to start a Mongo database 
+5. Add dashboard files to the blob. 
+ - Run [`add_dashboard.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/add_dashboard.cmd)
+ - From command line: `node add_dir_to_blob.js blob-resources/dashboard`
+6. In a separate process, run [`launch_database.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/launch_database.cmd) to start a Mongo database 
  - Or: edit the [config.json](https://github.com/webgme/webgme-cyphy/blob/master/config.json) file to point the server to an existing mongoip - the default Mongo IP is 127.0.0.1
-6. Start the WebGME server 
+7. Start the WebGME server 
  - Run [`launch_app.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/launch_app.cmd)
  - From command line: `node app.js` or `npm start`
 

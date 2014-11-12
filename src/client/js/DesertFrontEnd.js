@@ -297,6 +297,7 @@ define(['xmljsonconverter'], function (Converter) {
         var self = this,
             artifact = self.blobClient.createArtifact('desert-input'),
             inputXml = self.jsonToXml.convertToString(desertSystem);
+        console.log('desertSystem', desertSystem);
         artifact.addFileAsSoftLink('desertInput.xml', inputXml, function (err, hash) {
             if (err) {
                 console.error('Could not add desert_input to artifact, err: ' + err);

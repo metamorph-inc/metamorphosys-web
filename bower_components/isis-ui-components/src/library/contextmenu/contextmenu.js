@@ -158,7 +158,7 @@ angular.module(
         };
 
         service.open = function ( triggerElement, contentTemplateUrl, aScope, position,
-          doNotAutocloseOnClick ) {
+          doNotAutocloseOnClick, menuCssClass) {
 
           var shellAngularElement = angular.element( $templateCache.get(
             '/isis-ui-components/templates/contextmenu.html' ) ),
@@ -178,6 +178,8 @@ angular.module(
             menuScope = aScope.$new();
 
             menuScope.contentTemplateUrl = contentTemplateUrl;
+            menuScope.menuCssClass = menuCssClass;
+
 
             body.append( shellAngularElement );
             menuDOMElement = $compile( shellAngularElement )( menuScope );
@@ -302,7 +304,8 @@ angular.module(
                 menuParentScope = options.menuParentScope || scope;
 
                 contextmenuService.open(
-                  event.target, options.contentTemplateUrl, menuParentScope, position, options.doNotAutoClose
+                  event.target, options.contentTemplateUrl, menuParentScope, position, options.doNotAutoClose,
+                  options.menuCssClass
                 );
 
               }

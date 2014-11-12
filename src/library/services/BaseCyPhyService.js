@@ -9,11 +9,11 @@
 
 
 angular.module('cyphy.services')
-    .service('baseCyPhyService', function ($q, nodeService) {
+    .service('baseCyPhyService', function ($q, $timeout, nodeService) {
         'use strict';
 
         /**
-         * Registers a watcher (controller) to the service. Callback function is called when nodes became available or
+         * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
          * @param {string} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
@@ -89,6 +89,10 @@ angular.module('cyphy.services')
          */
         this.setNodeAttributes = function (context, id, attrs) {
             var deferred = $q.defer();
+            if (Object.keys(attrs).length === 0) {
+                console.log('no attribute to update');
+                deferred.resolve();
+            }
             nodeService.loadNode(context, id)
                 .then(function (nodeObj) {
                     var key;
@@ -104,7 +108,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        /** TODO: Watch domainPorts inside Connectors and check if properties are derived.
+        /** TODO: Watch domainPorts inside Connectors
          *  Watches the interfaces (Properties, Connectors and DomainPorts) of a model.
          * @param {string} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
@@ -149,12 +153,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onPropertyUnload = function (id) {
                     delete data.properties[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 onConnectorUpdate = function (id) {
                     var newName = this.getAttribute('name'),
@@ -164,12 +172,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onConnectorUnload = function (id) {
                     delete data.connectors[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 onPortUpdate = function (id) {
                     var newName = this.getAttribute('name'),
@@ -189,12 +201,16 @@ angular.module('cyphy.services')
                         hadChanges = true;
                     }
                     if (hadChanges) {
-                        updateListener({id: id, type: 'update', data: data});
+                        $timeout(function () {
+                            updateListener({id: id, type: 'update', data: data});
+                        });
                     }
                 },
                 onPortUnload = function (id) {
                     delete data.ports[id];
-                    updateListener({id: id, type: 'unload', data: null});
+                    $timeout(function () {
+                        updateListener({id: id, type: 'unload', data: null});
+                    });
                 },
                 isPropertyDerived = function (node) {
                     return node.getCollectionPaths('dst').length > 0;
@@ -256,7 +272,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onPropertyUpdate);
                                     newChild.onUnload(onPropertyUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 } else if (newChild.isMetaTypeOf(meta.Connector)) {
                                     data.connectors[childId] = {
                                         id: childId,
@@ -265,7 +283,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onConnectorUpdate);
                                     newChild.onUnload(onConnectorUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                     ///queueList.push(childNode.loadChildren(childNode));
                                 } else if (newChild.isMetaTypeOf(meta.DomainPort)) {
                                     data.ports[childId] = {
@@ -276,7 +296,9 @@ angular.module('cyphy.services')
                                     };
                                     newChild.onUpdate(onPortUpdate);
                                     newChild.onUnload(onPortUnload);
-                                    updateListener({id: childId, type: 'load', data: data});
+                                    $timeout(function () {
+                                        updateListener({id: childId, type: 'load', data: data});
+                                    });
                                 }
                             });
 

@@ -14,7 +14,11 @@
   position: relative;
   *width: 180px;
   margin-top: -1px;
-  overflow: visible; }
+  overflow: visible;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
   .hierarchical-menu .menu-contents > li > a {
     display: block;
     padding: 3px 20px;
@@ -31,6 +35,14 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
     background-color: #e8e8e8;
     text-decoration: none; }
+  .hierarchical-menu .menu-contents a {
+    cursor: pointer; }
+  .hierarchical-menu .menu-contents .disabled {
+    opacity: .65; }
+    .hierarchical-menu .menu-contents .disabled a {
+      cursor: not-allowed; }
+      .hierarchical-menu .menu-contents .disabled a:hover {
+        background-color: transparent; }
   .hierarchical-menu .menu-contents li.divider {
     border-bottom: 1px dotted #ccc;
     margin: 1ex 0 0; }
