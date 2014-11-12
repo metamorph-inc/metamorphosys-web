@@ -468,7 +468,8 @@ define(['plugin/PluginConfig',
             self.core.setAttribute(newAcmPropertyNode, 'Unit', avmPropInfo['Value']['@Unit']);
         }
         self.core.setAttribute(newAcmPropertyNode, 'name', propName);
-        self.core.setAttribute(newAcmPropertyNode, 'ID', propId);
+        // This behaves like desktop GME importer, although the PrimitivePropertyInstance in adm files should reference the Property/@ID (but currently they refernece the Value/@ID)
+        self.core.setAttribute(newAcmPropertyNode, 'ID', avmPropInfo.Value['@ID']);
         self.core.setAttribute(newAcmPropertyNode, 'Value', avmValueInfo.value);
         self.core.setAttribute(newAcmPropertyNode, 'Minimum', avmValueInfo.min);
         self.core.setAttribute(newAcmPropertyNode, 'Maximum', avmValueInfo.max);

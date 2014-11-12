@@ -937,11 +937,6 @@ define([
                 }
             } else if (metaTypeName === 'Property') {
                 id = self.core.getAttribute(children[i], 'ID');
-                if (self.startsWith(id, 'property.')) {
-                    id = id.replace('property.', '');
-                } else if (self.startsWith(id, 'param.')) {
-                    id = id.replace('param.', '');
-                }
                 if (componentInstance.propertyIdInModel2ID[id]) {
                     self.valueFlowTargetID2Node[componentInstance.propertyIdInModel2ID[id]] = children[i];
                 } else {
