@@ -229,7 +229,7 @@ angular.module('cyphy.components')
         $scope.dragOverClass = function ($event) {
             var draggedItems = $event.dataTransfer.items,
                 hasFile = false;
-            console.warn(draggedItems);
+            //console.warn(draggedItems);
             hasFile = draggedItems && draggedItems.length === 1 && draggedItems[0].kind === 'file';
 
             return hasFile ? "bg-success dragover" : "bg-danger dragover";

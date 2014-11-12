@@ -29,16 +29,16 @@ angular.module('cyphy.services')
                             baseId: meta.ACMFolder.getId()
                         };
 
-                    wsNode.setAttribute('name', name, 'web-cyphy set name to ' + name);
+                    wsNode.setAttribute('name', name, '[WebCyPhy] - set name to ' + name);
                     if (desc) {
-                        wsNode.setAttribute('INFO', desc, 'web-cyphy set INFO to ' + desc);
+                        wsNode.setAttribute('INFO', desc, '[WebCyPhy] - set INFO to ' + desc);
                     }
 
-                    acmFolderId = nodeService.createChild(context, params);
+                    acmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AcmFolder');
                     params.baseId = meta.ADMFolder.getId();
-                    admFolderId = nodeService.createChild(context, params);
+                    admFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AdmFolder');
                     params.baseId = meta.ATMFolder.getId();
-                    atmFolderId = nodeService.createChild(context, params);
+                    atmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AtmFolder');
                     nodeService.loadNode(context, acmFolderId)
                         .then(function () {
                             return nodeService.loadNode(context, admFolderId);

@@ -103,7 +103,7 @@ angular.module('cyphy.services')
                         configurationPath: configurationId
                     }
                 };
-            console.log(JSON.stringify(config));
+            //console.log(JSON.stringify(config));
             pluginService.runPlugin(context, 'TestBenchRunner', config)
                 .then(function (result) {
                     var resultLight = {
