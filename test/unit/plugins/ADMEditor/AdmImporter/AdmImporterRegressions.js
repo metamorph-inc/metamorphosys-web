@@ -73,13 +73,25 @@ describe('AdmImporterRegressions', function () {
     });
 
     // Object.keys(Templates).forEach(function (acmFilename) {
-    ["ValueFlow.adm",
-    ].forEach(function(admFilename) {
-            it('regressions on ' + admFilename, function(done) {
-                    AdmImporterTestLib.runAdmImporterRegression(model, admFolder, AdmTemplates, admFilename, expect, function (err, container) {
-                        done(err);
+    function regression(admFilename, callback) {
+        it('regressions on ' + admFilename, function (done) {
+                AdmImporterTestLib.runAdmImporterRegression(model, admFolder, AdmTemplates, admFilename, expect, function (err, container) {
+                    AdmImporterTestLib.runAdmExporter(model.core, model.META, container, model.core._rootNode, expect, function (err, design) {
+                        if (err) {
+                            return done(err);
+                        }
+                        callback(design, done);
                     });
-                }
-            );
-        });
+                });
+            }
+        );
+    }
+
+    regression("ValueFlow.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        expect(RootContainer.Container.length).to.equal(1);
+        expect(RootContainer.ComponentInstance.length).to.equal(1);
+        done();
+    });
+
 });

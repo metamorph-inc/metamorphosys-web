@@ -708,7 +708,7 @@ define([
                         };
                     }
                 } else {
-                    self.logger.error('Unexpected property parent type, ' + parentType);
+                    self.logger.error('Unexpected property value type, ' + valueType);
                 }
                 containerData.Property.push(data);
             } else {
@@ -1075,7 +1075,7 @@ define([
             error = err ? error + err : error;
             counter.visits -= 1;
             if (counter.visits === 0) {
-                callback(error);
+                callback(error === '' ? undefined : error);
             }
         };
 
