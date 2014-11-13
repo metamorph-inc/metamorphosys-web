@@ -2,7 +2,7 @@
 <Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ComponentAssembly" DesignID="{8504b8d9-ef48-40f0-a0b0-410483ad8049}" xmlns="avm">
   <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ComponentAssembly" xmlns="">
     <Container xsi:type="q1:Compound" YPosition="196" XPosition="735" Name="ComponentAssembly">
-      <Property xsi:type="q1:PrimitiveProperty" Name="OutP2" OnDataSheet="true" ID="property.id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" XPosition="721" YPosition="343">
+      <Property xsi:type="q1:PrimitiveProperty" Name="OutP3" OnDataSheet="true" ID="property.id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" XPosition="721" YPosition="343">
         <Value ID="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" DimensionType="Scalar" Dimensions="" DataType="String">
           <ValueExpression xsi:type="q1:DerivedValue" ValueSource="5fb50551-57eb-4887-b971-87714f557597" />
         </Value>
@@ -35,14 +35,14 @@
         </PrimitivePropertyInstance>
       </ComponentInstance>
     </Container>
-    <Property xsi:type="q1:PrimitiveProperty" Name="Property" OnDataSheet="false" ID="property.id-3c589e20-ebf3-44a5-a092-8ef50191e51f" XPosition="112" YPosition="42">
+    <Property xsi:type="q1:PrimitiveProperty" Name="Property1" OnDataSheet="false" ID="property.id-3c589e20-ebf3-44a5-a092-8ef50191e51f" XPosition="112" YPosition="42">
       <Value ID="id-3c589e20-ebf3-44a5-a092-8ef50191e51f" DimensionType="Scalar" Dimensions="" DataType="String">
         <ValueExpression xsi:type="q1:FixedValue">
           <Value />
         </ValueExpression>
       </Value>
     </Property>
-    <Property xsi:type="q1:PrimitiveProperty" Name="Property" OnDataSheet="false" ID="property.id-74d0dff6-199e-44c2-aa05-8bdda2c37128" XPosition="1036" YPosition="245">
+    <Property xsi:type="q1:PrimitiveProperty" Name="Property2" OnDataSheet="false" ID="property.id-74d0dff6-199e-44c2-aa05-8bdda2c37128" XPosition="1036" YPosition="245">
       <Value ID="id-74d0dff6-199e-44c2-aa05-8bdda2c37128" DimensionType="Scalar" Dimensions="" DataType="String">
         <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" />
       </Value>

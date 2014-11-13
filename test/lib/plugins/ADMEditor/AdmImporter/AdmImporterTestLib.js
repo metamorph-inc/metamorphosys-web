@@ -47,7 +47,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
             });
             var callback_ = function (err) {
                 Object.keys(core._nodes).forEach(function (path) {
-                    delete core._nodes[path].guid;
+                    core._nodes[path].guid = core._nodes[path].path;
                 });
                 callback(err, importer.container);
             };
