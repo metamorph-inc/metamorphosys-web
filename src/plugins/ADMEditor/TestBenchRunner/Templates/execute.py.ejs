@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import shutil
+import errno
 import zipfile
 import logging
 import subprocess
@@ -358,6 +359,11 @@ def move_dashboard_files(new_dir):
 
 
 if __name__ == '__main__':
+    try:
+        shutil.rmtree('asdfsdf')
+    except OSError as e:
+        if e.errno != errno.ENOENT:
+            raise
     with zipfile.ZipFile('tbAsset.zip') as zippy:
         zippy.extractall('.')
     try:
