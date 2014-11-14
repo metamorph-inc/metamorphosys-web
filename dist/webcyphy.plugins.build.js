@@ -11714,7 +11714,7 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                             }
                         };
                     }
-                } else if (parentType === 'AVMComponentModel') {
+                } else if (valueType === 'Fixed') {
                     data['@ID'] = 'property.' + id;
                     if (valueSourceID) {
                         data.Value.ValueExpression = {
@@ -11733,7 +11733,7 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                     self.logger.error('Unexpected property value type, ' + valueType);
                 }
                 containerData.Property.push(data);
-            } else {
+            } else if (parentType === 'AVMComponentModel') {
                 id = self.core.getAttribute(node, 'ID');
                 data = {
                     "@IDinComponentModel": id,
@@ -11751,6 +11751,8 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                     };
                 }
                 containerData.PrimitivePropertyInstance.push(data);
+            } else {
+                self.logger.error('Unexpected parentType for property, ' + parentType);
             }
 
             callback(null);
