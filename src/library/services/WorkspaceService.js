@@ -24,33 +24,39 @@ angular.module('cyphy.services')
                     var acmFolderId,
                         admFolderId,
                         atmFolderId,
-                        params = {
-                            parentId: wsNode.getId(),
-                            baseId: meta.ACMFolder.getId()
+                        createFolderNodes = function () {
+                            var parentId = wsNode.getId(),
+                                baseId = meta.ACMFolder.getId();
+                            nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ACMFolder')
+                                .then(function (acmNode) {
+                                    acmFolderId = acmNode.getId();
+                                    baseId = meta.ADMFolder.getId();
+                                    return nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ADMFolder');
+                                })
+                                .then(function (admNode) {
+                                    admFolderId = admNode.getId();
+                                    baseId = meta.ATMFolder.getId();
+                                    return nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ATMFolder');
+                                })
+                                .then(function (atmNode) {
+                                    atmFolderId = atmNode.getId();
+                                    deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
+                                })
+                                .catch(function (reason) {
+                                    deferred.reject(reason);
+                                });
                         };
 
-                    wsNode.setAttribute('name', name, '[WebCyPhy] - set name to ' + name);
-                    if (desc) {
-                        wsNode.setAttribute('INFO', desc, '[WebCyPhy] - set INFO to ' + desc);
-                    }
-
-                    acmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AcmFolder');
-                    params.baseId = meta.ADMFolder.getId();
-                    admFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AdmFolder');
-                    params.baseId = meta.ATMFolder.getId();
-                    atmFolderId = nodeService.createChild(context, params, '[WebCyPhy] - create AtmFolder');
-                    nodeService.loadNode(context, acmFolderId)
+                    wsNode.setAttribute('name', name, '[WebCyPhy] - set name to ' + name)
                         .then(function () {
-                            return nodeService.loadNode(context, admFolderId);
-                        })
-                        .then(function () {
-                            return nodeService.loadNode(context, atmFolderId);
-                        })
-                        .then(function () {
-                            deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
-                        })
-                        .catch(function (reason) {
-                            deferred.reject(reason);
+                            if (desc) {
+                                wsNode.setAttribute('INFO', desc, '[WebCyPhy] - set INFO to ' + desc)
+                                    .then(function () {
+                                        createFolderNodes();
+                                    });
+                            } else {
+                                createFolderNodes();
+                            }
                         });
                 })
                 .catch(function (reason) {

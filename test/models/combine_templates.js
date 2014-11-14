@@ -55,13 +55,13 @@ var main = function () {
                 })();
             });
         },
-        content = {},
         fileName,
         i,
         templateContent;
 
     ['acm/unit', 'adm/unit'].forEach(function (dir) {
         walk(dir, function (err, results) {
+            var content = {};
             if (err) {
                 throw err;
             }

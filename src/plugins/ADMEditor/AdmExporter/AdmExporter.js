@@ -589,7 +589,7 @@ define([
                     if (parentMetaType === 'AVMComponentModel') {
                         //If parent of parent is alternative, then only add if parent is in AA.
                         if (self.shouldBeGenerated(parent)) {
-                            id = '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(connectedPort, 'ID');
+                            id = 'id-' + self.core.getGuid(parent) + '-' + self.core.getAttribute(connectedPort, 'ID');
                         }
                     } else if (parentMetaType === 'Container') {
                         //If parent of parent is alternative, then only add if parent is in AA.
@@ -708,7 +708,7 @@ define([
                         };
                     }
                 } else {
-                    self.logger.error('Unexpected property parent type, ' + parentType);
+                    self.logger.error('Unexpected property value type, ' + valueType);
                 }
                 containerData.Property.push(data);
             } else {
@@ -716,7 +716,7 @@ define([
                 data = {
                     "@IDinComponentModel": id,
                     "Value": {
-                        "@ID": '{' + self.core.getGuid(parent) + '}-' + id,
+                        "@ID": 'id-' + self.core.getGuid(parent) + '-' + id,
                         "@DimensionType": "Scalar",
                         "@Dimensions": "",
                         "@DataType": dataType
@@ -857,7 +857,7 @@ define([
                             parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
                             if (parentMetaType === 'AVMComponentModel') {
                                 if (self.shouldBeGenerated(valueSourceParent)) {
-                                    valueSourceId = '{' + self.core.getGuid(valueSourceParent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                                    valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                                 }
                             } else if (parentMetaType === 'Container') {
                                 //If parent of parent is alternative, then only add if parent is in AA.
@@ -926,7 +926,7 @@ define([
                     valueSourceParent = self.core.getParent(valueSource);
                     parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
                     if (parentMetaType === 'AVMComponentModel') {
-                        valueSourceId = '{' + self.core.getGuid(valueSourceParent) + '}-' + self.core.getAttribute(valueSource, 'ID');
+                        valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                     } else if (parentMetaType === 'Container') {
                         valueSourceId = self.core.getGuid(valueSource);
                     } else {
@@ -984,7 +984,7 @@ define([
                                 } else {
                                     // If parent of parent is alternative, then only add if parent is in AA.
                                     if (self.shouldBeGenerated(src)) {
-                                        srcId = '{' + self.core.getGuid(src) + '}-' + self.core.getAttribute(valueSourceNode, 'ID');
+                                        srcId = 'id-' + self.core.getGuid(src) + '-' + self.core.getAttribute(valueSourceNode, 'ID');
                                     }
                                 }
                             } else if (srcParentMetaType === 'Container') {
@@ -1075,7 +1075,7 @@ define([
             error = err ? error + err : error;
             counter.visits -= 1;
             if (counter.visits === 0) {
-                callback(error);
+                callback(error === '' ? undefined : error);
             }
         };
 
@@ -1169,7 +1169,7 @@ define([
             };
         } else if (parentType === 'AVMComponentModel') {
             data = {
-                "@ID": '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(node, 'ID'),
+                "@ID": 'id-' + self.core.getGuid(parent) + '-' + self.core.getAttribute(node, 'ID'),
                 "@IDinComponentModel": self.core.getAttribute(node, 'ID'),
                 "@ConnectorComposition": '',
                 "@ApplyJoinData": ''
@@ -1258,7 +1258,7 @@ define([
             }
         } else if (parentType === 'AVMComponentModel') {
             data = {
-                '@ID': '{' + self.core.getGuid(parent) + '}-' + self.core.getAttribute(node, 'ID'),
+                '@ID': 'id-' + self.core.getGuid(parent) + '-' + self.core.getAttribute(node, 'ID'),
                 '@PortMap': '',
                 '@IDinComponentModel': self.core.getAttribute(node, 'ID')
             };

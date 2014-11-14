@@ -95,14 +95,20 @@ angular.module('cyphy.services')
             }
             nodeService.loadNode(context, id)
                 .then(function (nodeObj) {
-                    var key;
-                    for (key in attrs) {
-                        if (attrs.hasOwnProperty(key)) {
-                            console.log('setNodeAttributes', key, attrs[key]);
-                            nodeObj.setAttribute(key, attrs[key], 'webCyPhy - setNodeAttributes');
-                        }
-                    }
-                    deferred.resolve();
+                    var keys = Object.keys(attrs),
+                        counter = keys.length,
+                        setAttr = function () {
+                            counter -= 1;
+                            nodeObj.setAttribute(keys[counter], attrs[keys[counter]], 'webCyPhy - setNodeAttributes')
+                                .then(function () {
+                                    if (counter <= 0) {
+                                        deferred.resolve();
+                                    } else {
+                                        setAttr();
+                                    }
+                                });
+                        };
+                    setAttr();
                 });
 
             return deferred.promise;

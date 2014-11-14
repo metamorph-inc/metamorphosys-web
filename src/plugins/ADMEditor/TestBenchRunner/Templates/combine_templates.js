@@ -78,5 +78,6 @@ var main = function () {
 };
 
 if (require.main === module) {
+    process.chdir(__dirname);
     main();
 }

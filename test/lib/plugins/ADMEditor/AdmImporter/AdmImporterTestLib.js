@@ -1,7 +1,32 @@
 /* global define,require */
-define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/AdmImporter'],
-    function(NodeMock, LoggerMock, AdmImporter) {
+define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/AdmImporter', 'plugin/AdmExporter/AdmExporter/AdmExporter'],
+    function(NodeMock, LoggerMock, AdmImporter, AdmExporter) {
         'use strict';
+        function runAdmExporter(core, META, design, root, expect, callback) {
+            var exporter = new AdmExporter();
+            exporter.initialize(new LoggerMock(), null);
+            exporter.configure({
+                'core': core,
+                'project': null, //project,
+                'projectName': 'testcore',
+                'branchName': 'master',
+                'branchHash': null,
+                'commitHash': 'commitHash',
+                'currentHash': 'currentHash',
+                'rootNode': root,
+                'activeNode': design,
+                'activeSelection': [],
+                'META': META
+            });
+            exporter.meta = META;
+            exporter.exploreDesign(design, false, function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                callback(err, exporter.admData);
+            });
+        }
+
         function runAdmImporter(Templates, admFilename, expect, core, root, admFolder, META, callback) {
             var adm = Templates[admFilename];
             expect(adm).to.not.equal(undefined, admFilename + " not found among Templates. (Did you run combine_templates.js?)");
@@ -22,7 +47,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
             });
             var callback_ = function (err) {
                 Object.keys(core._nodes).forEach(function (path) {
-                    delete core._nodes[path].guid;
+                    core._nodes[path].guid = core._nodes[path].path;
                 });
                 callback(err, importer.container);
             };
@@ -56,5 +81,6 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
         }
 
         return {runAdmImporterRegression: runAdmImporterRegression,
-            runAdmImporter: runAdmImporter };
+            runAdmImporter: runAdmImporter,
+            runAdmExporter: runAdmExporter};
     });

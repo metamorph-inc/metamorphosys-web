@@ -72,14 +72,43 @@ describe('AdmImporterRegressions', function () {
             });
     });
 
-    // Object.keys(Templates).forEach(function (acmFilename) {
-    ["ValueFlow.adm",
-    ].forEach(function(admFilename) {
-            it('regressions on ' + admFilename, function(done) {
-                    AdmImporterTestLib.runAdmImporterRegression(model, admFolder, AdmTemplates, admFilename, expect, function (err, container) {
-                        done(err);
+    function regression(admFilename, callback) {
+        it('regressions on ' + admFilename, function (done) {
+                AdmImporterTestLib.runAdmImporterRegression(model, admFolder, AdmTemplates, admFilename, expect, function (err, container) {
+                    AdmImporterTestLib.runAdmExporter(model.core, model.META, container, model.core._rootNode, expect, function (err, design) {
+                        if (err) {
+                            return done(err);
+                        }
+                        // require('fs').writeFileSync(admFilename + 'debug.json', JSON.stringify(design, null, 4), {encoding: 'utf-8'});
+                        callback(design, done);
                     });
+                });
+            }
+        );
+    }
+
+    function match(obj, selector) {
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (selector(obj[key], key, obj)) {
+                    return obj[key];
                 }
-            );
-        });
+            }
+        }
+        return null;
+    }
+
+    regression("ValueFlow.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        expect(RootContainer.Container.length).to.equal(1);
+        expect(RootContainer.ComponentInstance.length).to.equal(1);
+        expect(RootContainer.Container[0].ComponentInstance.length).to.equal(1);
+        expect(RootContainer.Container[0].ComponentInstance[0].PrimitivePropertyInstance
+                .filter( function (o) { return o['@IDinComponentModel'] === 'id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571'; })[0]
+                    .Value.ValueExpression['@ValueSource']).to
+            .equal(RootContainer.Container[0].Property.filter(function (p) { return p['@Name'] === 'OutP2'; })[0].Value['@ID']);
+
+        done();
+    });
+
 });
