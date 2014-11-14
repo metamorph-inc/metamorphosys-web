@@ -146,7 +146,12 @@ angular.module('CyPhyApp')
                 controller: 'SaveConfigurationSetController',
                 //size: size,
                 resolve: { data: function () {
-                    return {configurations: configurations, meta: meta, designNode: $scope.dataModels.design.node};
+                    return {
+                        configurations: configurations,
+                        meta: meta,
+                        context: context,
+                        designNode: $scope.dataModels.design.node
+                    };
                 } }
             });
             modalInstance.result.then(function (result) {
@@ -239,7 +244,8 @@ angular.module('CyPhyApp')
         'use strict';
         var configurations = data.configurations,
             meta = data.meta,
-            designNode = data.designNode;
+            designNode = data.designNode,
+            context = data.context;
         $scope.data = {
             description: null,
             name: null,
@@ -252,12 +258,18 @@ angular.module('CyPhyApp')
                 return;
             }
             growl.info('Saving configuration set ' + $scope.data.name + 'this may take a while...');
-            designService.saveConfigurationSet($scope.data.name, $scope.data.description, configurations,
-                designNode, meta)
+            designService.callSaveDesertConfigurations(context, $scope.data.name, $scope.data.description, configurations,
+                designNode.getId())
                 .then(function () {
                     growl.success('Configurations saved to ' + $scope.data.name);
                     $modalInstance.close($scope.data);
                 });
+//            designService.saveConfigurationSet($scope.data.name, $scope.data.description, configurations,
+//                designNode, meta)
+//                .then(function () {
+//                    growl.success('Configurations saved to ' + $scope.data.name);
+//                    $modalInstance.close($scope.data);
+//                });
         };
 
         $scope.cancel = function () {

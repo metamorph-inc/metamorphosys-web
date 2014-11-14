@@ -9,7 +9,8 @@ define('webcyphy.plugins',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',
         'plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',
-        'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard'
+        'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',
+        'plugin/SaveDesertConfigurations/SaveDesertConfigurations/SaveDesertConfigurations'
     ], function (Converters,
                  ExecutorClient,
                  AcmImporter,
@@ -18,7 +19,8 @@ define('webcyphy.plugins',
                  AdmExporter,
                  TestBenchRunner,
                  ExportWorkspace,
-                 GenerateDashboard) {
+                 GenerateDashboard,
+                 SaveDesertConfigurations) {
         'use strict';
         WebGMEGlobal.classes = WebGMEGlobal.classes || {};
         WebGMEGlobal.classes.ExecutorClient = ExecutorClient;
@@ -30,4 +32,5 @@ define('webcyphy.plugins',
         WebGMEGlobal.plugins.ExportWorkspace = ExportWorkspace;
         WebGMEGlobal.plugins.TestBenchRunner = TestBenchRunner;
         WebGMEGlobal.plugins.GenerateDashboard = GenerateDashboard;
+        WebGMEGlobal.plugins.SaveDesertConfigurations = SaveDesertConfigurations;
     });
