@@ -13690,6 +13690,7 @@ define('plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',['plugin/PluginC
             self.admExporter.core = self.core;
             self.admExporter.logger = self.logger;
             self.admExporter.result = self.result;
+            self.admExporter.rootNode = self.rootNode;
             self.logger.info('AdmExporter had not been initialized - created a new instance.');
         } else {
             self.admExporter.rootPath = null;
