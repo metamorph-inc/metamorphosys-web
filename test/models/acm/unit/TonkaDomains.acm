@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SchemaVersion="2.5" ID="2468d7c1-8632-4a8c-ba00-e1338d3ff4bd" Name="TonkaDomains" Version="" xmlns="avm">
+  <DomainModel xmlns:q1="spice" xsi:type="q1:SPICEModel" Author="" Notes="" XPosition="665" YPosition="91" Class="" xmlns="" />
+  <DomainModel xmlns:q2="systemc" xsi:type="q2:SystemCModel" Author="" Notes="" XPosition="322" YPosition="77" ModuleName="SystemCModel" xmlns="">
+    <SystemCPort ID="id-62bd3215-73fe-4ca3-97a5-6466df79f44b" PortMap="" Notes="" XPosition="84" Definition="" YPosition="154" Name="SystemCPort" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+    <Parameter XPosition="77" YPosition="49" ParamPosition="0" ParamName="">
+      <Value ID="id-6d4c988a-2208-41ad-9cee-ff390be50255">
+        <ValueExpression xmlns:q3="avm" xsi:type="q3:FixedValue">
+          <Value />
+        </ValueExpression>
+      </Value>
+    </Parameter>
+  </DomainModel>
+  <DomainModel xmlns:q4="rf" xsi:type="q4:RFModel" Author="" Notes="" XPosition="560" YPosition="231" Name="RFModel" Y="0" X="0" Rotation="r0" xmlns="" />
+  <Property xmlns:q5="avm" xsi:type="q5:PrimitiveProperty" Name="Property" OnDataSheet="false" ID="property.id-46709821-095d-44a3-9151-3726fb91e448" XPosition="77" YPosition="147" xmlns="">
+    <Value ID="id-46709821-095d-44a3-9151-3726fb91e448" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q5:FixedValue">
+        <Value />
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Connector ConnectorComposition="" ID="id-812b2575-0910-4f7f-b420-39fb196ab117" ApplyJoinData="" XPosition="301" YPosition="217" Notes="" Definition="" Name="Connector" xmlns="">
+    <Role xmlns:q6="rf" xsi:type="q6:RFPort" ID="id-562ba8a0-7070-4715-879b-fdfe804addfb" PortMap="" Notes="" XPosition="98" Definition="" YPosition="126" Name="RFPort" Directionality="in" NominalImpedance="50" />
+    <Role xmlns:q7="systemc" xsi:type="q7:SystemCPort" ID="id-8687369f-bc5e-4743-896f-2cad759e2753" PortMap="" Notes="" XPosition="98" Definition="" YPosition="336" Name="SystemCPort" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+    <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-e5d44cad-8cd0-4e16-b68b-4912659eebc3" PortMap="" Notes="" XPosition="98" Definition="" YPosition="238" Name="Pin" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+  </Connector>
+  <Classifications xmlns="" />
+</Component>
