@@ -18,12 +18,13 @@
 7. Start the WebGME server 
  - Run [`launch_app.cmd`](https://github.com/webgme/webgme-cyphy/blob/master/launch_app.cmd)
  - From command line: `node app.js` or `npm start`
+8. To set up a worker (needed for generating desert configurations, executing test benches etc.), follow the README.md at `/node_modules/webgme-domain-tools/executor_worker`.
 
 For more details, consult the [documentation](https://github.com/webgme/webgme-cyphy/blob/master/doc/CyPhy-WebGME.md).
 
 ## 2 ways to visualize models using WebCyPhy ##
 ### Option A ###
-__This interface is under development__. Visit [localhost:8855/extlib/src/client/](http://localhost:8855/extlib/src/client/) to open the domain-specific WebCyPhy UI. This option will automatically import the meta model as you visit the page and creates the 'ADMEditor project' 
+__This interface is under development__. Visit [localhost:8855/extlib/src/app/default/](http://localhost:8855/extlib/src/app/default/) to open the domain-specific WebCyPhy UI. This option requires that the 'ADMEditor' language exists in the database (if not it will link you to Option 1). This application reads and writes to and from the master branch.
 
 ### Option B ###
 Visit [localhost:8855](http://localhost:8855) to open the default WebGME editor

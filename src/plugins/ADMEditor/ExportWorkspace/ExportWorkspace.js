@@ -26,6 +26,7 @@ define(['plugin/PluginConfig',
         this.admExporter = null;
         this.artifact = null;
         this.addedAdms = {};
+        this.designNodes = [];
     };
 
     // Prototypal inheritance from PluginBase.
@@ -107,22 +108,30 @@ define(['plugin/PluginConfig',
                 callback(null, self.result);
                 return;
             }
-            self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
+            self.exportAdms(function (err) {
                 if (err) {
                     self.result.setSuccess(false);
-                    self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
+                    self.logger.error(err);
                     callback(null, self.result);
                     return;
                 }
-                self.artifact.save(function (err, hash) {
+                self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
                     if (err) {
                         self.result.setSuccess(false);
-                        callback(err, self.result);
+                        self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
+                        callback(null, self.result);
                         return;
                     }
-                    self.result.addArtifact(hash);
-                    self.result.setSuccess(true);
-                    callback(null, self.result);
+                    self.artifact.save(function (err, hash) {
+                        if (err) {
+                            self.result.setSuccess(false);
+                            callback(err, self.result);
+                            return;
+                        }
+                        self.result.addArtifact(hash);
+                        self.result.setSuccess(true);
+                        callback(null, self.result);
+                    });
                 });
             });
         });
@@ -149,28 +158,49 @@ define(['plugin/PluginConfig',
 
     ExportWorkspace.prototype.addAdm = function (node, callback) {
         var self = this;
-        self.initializeAdmExporter();
-        self.admExporter.exploreDesign(node, false, function (err) {
-            var jsonToXml = new Converter.Json2xml(),
-                designName,
-                filename,
-                admString;
-            if (err) {
-                callback('AdmExporter.exploreDesign failed with error: ' + err);
-                return;
-            }
-            designName = self.admExporter.admData['@Name'];
-            filename = 'adms/' + designName + '.adm';
-            admString = jsonToXml.convertToString({Design: self.admExporter.admData});
-            if (self.addedAdms[filename]) {
-                self.logger.warning(designName + ' occurs more than once, appending its guid to filename.');
-                filename = 'adms/' + designName + '__' + self.core.getGuid(node).replace(/[^\w]/gi, '_') + '.adm';
-            }
-            self.addedAdms[filename] = true;
-            self.artifact.addFile(filename, admString, function (err, hash) {
-                callback(err);
-            });
-        });
+        self.designNodes.push(node);
+        callback(null);
+    };
+
+    ExportWorkspace.prototype.exportAdms = function (callback) {
+        var self = this,
+            error = '',
+            counter = self.designNodes.length,
+            exportAdm = function () {
+                counter -= 1;
+                if (counter < 0) {
+                    callback(error);
+                    return;
+                }
+                self.initializeAdmExporter();
+                self.admExporter.exploreDesign(self.designNodes[counter], false, function (err) {
+                    var jsonToXml = new Converter.Json2xml(),
+                        designName,
+                        filename,
+                        admString;
+                    if (err) {
+                        error += 'AdmExporter.exploreDesign failed with error: ' + err;
+                        exportAdm();
+                        return;
+                    }
+                    designName = self.admExporter.admData['@Name'];
+                    filename = 'adms/' + designName + '.adm';
+                    admString = jsonToXml.convertToString({Design: self.admExporter.admData});
+                    if (self.addedAdms[filename]) {
+                        self.logger.warning(designName + ' occurs more than once, appending its guid to filename.');
+                        filename = 'adms/' + designName + '__' +
+                            self.core.getGuid(self.designNodes[counter]).replace(/[^\w]/gi, '_') + '.adm';
+                    }
+                    self.addedAdms[filename] = true;
+                    self.artifact.addFile(filename, admString, function (err, hash) {
+                        if (err) {
+                            error += 'Saving adm failed: ' + err;
+                        }
+                        exportAdm();
+                    });
+                });
+            };
+        exportAdm();
     };
 
     ExportWorkspace.prototype.addAtm = function (node, callback) {
@@ -261,6 +291,7 @@ define(['plugin/PluginConfig',
             self.admExporter.core = self.core;
             self.admExporter.logger = self.logger;
             self.admExporter.result = self.result;
+            self.admExporter.rootNode = self.rootNode;
             self.logger.info('AdmExporter had not been initialized - created a new instance.');
         } else {
             self.admExporter.rootPath = null;

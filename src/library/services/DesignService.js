@@ -880,6 +880,35 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
+        this.callSaveDesertConfigurations = function (context, setName, setDesc, configurations, designId) {
+            var deferred = $q.defer(),
+                config = {
+                    activeNode: designId,
+                    runOnServer: false,
+                    pluginConfig: {
+                        setData: angular.toJson({
+                            name: setName,
+                            description: setDesc || ''
+                        }),
+                        configurations: angular.toJson(configurations)
+                    }
+                };
+
+            pluginService.runPlugin(context, 'SaveDesertConfigurations', config)
+                .then(function (result) {
+                    if (result.success) {
+                        deferred.resolve();
+                    } else {
+                        deferred.reject();
+                    }
+                })
+                .catch(function (reason) {
+                    deferred.reject('Something went terribly wrong, ' + reason);
+                });
+
+            return deferred.promise;
+        };
+
         this.saveConfigurationSet = function (setName, setDesc, configurations, designNode, meta) {
             var deferred = $q.defer(),
                 context = designNode.context;

@@ -37,19 +37,20 @@ define(['plugin/PluginConfig',
         ];
 
         this.dashboardObject = {
-            "dashboard": "ed3320752e9598774183d92a0600b9c53d85d3c2",
-            "designs": {},
-            "designSpace": {
-                "name": null,
-                "data": null
+            dashboardHashLF: "ada66617178a84bc9d9b7d9a2510019e1e6ade06",
+            dashboardHashCRLF: "ed3320752e9598774183d92a0600b9c53d85d3c2",
+            designs: {},
+            designSpace: {
+                name: null,
+                data: null
             },
-            "requirements": "dummy requirements blob hash",
-            "results": {
-                "resultsMetaresultsJson": null,
-                "results": {}
+            requirements: "dummy requirements blob hash",
+            results: {
+                resultsMetaresultsJson: null,
+                results: {}
             },
-            "testBenches": {},
-            "manifestProjectJson": null
+            testBenches: {},
+            manifestProjectJson: null
         };
     };
 
@@ -248,46 +249,59 @@ define(['plugin/PluginConfig',
         filesToAdd["launch_SimpleHTTPServer.cmd"] = ejs.render(TEMPLATES['launch_SimpleHTTPServer.cmd.ejs']);
 
         dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
+            var addDashboardFiles;
             if (err) {
                 callback(err, null);
             }
 
             // add the dashboard package to the artifact
-            self.blobClient.getMetadata(self.dashboardObject.dashboard, function (err, dashboardMetadata) {
-                if (err) {
-                    var msg = "Could not add dashboard files from blob. Add them manually";
-                    self.createMessage(self.designSpaceNode, msg);
-                    dashboardArtifact.save(callback);
-                } else {
-                    var path,
-                        hashToAdd,
-                        mdContent = dashboardMetadata.content,
-                        hashCounter = Object.keys(dashboardMetadata.content).length,
-                        errors = '',
-                        addDashboardHashCounterCallback = function (err, addedHash) {
-                            if (err) {
-                                errors += err;
-                            }
-
-                            self.logger.info("Added hash to artifact: " + addedHash);
-
-                            hashCounter -= 1;
-                            if (hashCounter === 0) {
-                                if (errors) {
-                                    callback(errors, null);
-                                }
-
-                                dashboardArtifact.save(callback);
-                            }
-                        };
-
-                    for (path in mdContent) {
-                        if (mdContent.hasOwnProperty(path)) {
-                            hashToAdd = mdContent[path].content;
-
-                            dashboardArtifact.addObjectHash(path, hashToAdd, addDashboardHashCounterCallback);
+            addDashboardFiles = function (dashboardMetadata) {
+                var path,
+                    hashToAdd,
+                    mdContent = dashboardMetadata.content,
+                    hashCounter = Object.keys(dashboardMetadata.content).length,
+                    errors = '',
+                    addDashboardHashCounterCallback = function (err, addedHash) {
+                        if (err) {
+                            errors += err;
                         }
+
+                        self.logger.info("Added hash to artifact: " + addedHash);
+
+                        hashCounter -= 1;
+                        if (hashCounter === 0) {
+                            if (errors) {
+                                callback(errors, null);
+                            }
+
+                            dashboardArtifact.save(callback);
+                        }
+                    };
+
+                for (path in mdContent) {
+                    if (mdContent.hasOwnProperty(path)) {
+                        hashToAdd = mdContent[path].content;
+
+                        dashboardArtifact.addObjectHash(path, hashToAdd, addDashboardHashCounterCallback);
                     }
+                }
+            };
+
+            self.blobClient.getMetadata(self.dashboardObject.dashboardHashLF, function (err, dashboardMetadata) {
+                if (err) {
+                    self.logger.info('Could not find hash for dashboard LF ' + self.dashboardObject.dashboardHashLF);
+                    self.blobClient.getMetadata(self.dashboardObject.dashboardHashCRLF, function (err, dashboardMetadata) {
+                        if (err) {
+                            self.logger.info('Could not find hash for dashboard CRLF ' +
+                                self.dashboardObject.dashboardHashCRLF);
+                            self.createMessage(self.designSpaceNode, "Could not add dashboard files from blob. Add them manually");
+                            dashboardArtifact.save(callback);
+                        } else {
+                            addDashboardFiles(dashboardMetadata);
+                        }
+                    });
+                } else {
+                    addDashboardFiles(dashboardMetadata);
                 }
             });
         });

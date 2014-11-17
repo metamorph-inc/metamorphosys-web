@@ -11714,7 +11714,7 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                             }
                         };
                     }
-                } else if (parentType === 'AVMComponentModel') {
+                } else if (valueType === 'Fixed') {
                     data['@ID'] = 'property.' + id;
                     if (valueSourceID) {
                         data.Value.ValueExpression = {
@@ -11733,7 +11733,7 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                     self.logger.error('Unexpected property value type, ' + valueType);
                 }
                 containerData.Property.push(data);
-            } else {
+            } else if (parentType === 'AVMComponentModel') {
                 id = self.core.getAttribute(node, 'ID');
                 data = {
                     "@IDinComponentModel": id,
@@ -11751,6 +11751,8 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                     };
                 }
                 containerData.PrimitivePropertyInstance.push(data);
+            } else {
+                self.logger.error('Unexpected parentType for property, ' + parentType);
             }
 
             callback(null);
@@ -13455,6 +13457,7 @@ define('plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',['plugin/PluginC
         this.admExporter = null;
         this.artifact = null;
         this.addedAdms = {};
+        this.designNodes = [];
     };
 
     // Prototypal inheritance from PluginBase.
@@ -13536,22 +13539,30 @@ define('plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',['plugin/PluginC
                 callback(null, self.result);
                 return;
             }
-            self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
+            self.exportAdms(function (err) {
                 if (err) {
                     self.result.setSuccess(false);
-                    self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
+                    self.logger.error(err);
                     callback(null, self.result);
                     return;
                 }
-                self.artifact.save(function (err, hash) {
+                self.artifact.addFile('workspace.xme', ejs.render(TEMPLATES['workspace.xme.ejs']), function (err, hash) {
                     if (err) {
                         self.result.setSuccess(false);
-                        callback(err, self.result);
+                        self.createMessage(null, 'Could not add workspace.xme to artifact.', 'error');
+                        callback(null, self.result);
                         return;
                     }
-                    self.result.addArtifact(hash);
-                    self.result.setSuccess(true);
-                    callback(null, self.result);
+                    self.artifact.save(function (err, hash) {
+                        if (err) {
+                            self.result.setSuccess(false);
+                            callback(err, self.result);
+                            return;
+                        }
+                        self.result.addArtifact(hash);
+                        self.result.setSuccess(true);
+                        callback(null, self.result);
+                    });
                 });
             });
         });
@@ -13578,28 +13589,49 @@ define('plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',['plugin/PluginC
 
     ExportWorkspace.prototype.addAdm = function (node, callback) {
         var self = this;
-        self.initializeAdmExporter();
-        self.admExporter.exploreDesign(node, false, function (err) {
-            var jsonToXml = new Converter.Json2xml(),
-                designName,
-                filename,
-                admString;
-            if (err) {
-                callback('AdmExporter.exploreDesign failed with error: ' + err);
-                return;
-            }
-            designName = self.admExporter.admData['@Name'];
-            filename = 'adms/' + designName + '.adm';
-            admString = jsonToXml.convertToString({Design: self.admExporter.admData});
-            if (self.addedAdms[filename]) {
-                self.logger.warning(designName + ' occurs more than once, appending its guid to filename.');
-                filename = 'adms/' + designName + '__' + self.core.getGuid(node).replace(/[^\w]/gi, '_') + '.adm';
-            }
-            self.addedAdms[filename] = true;
-            self.artifact.addFile(filename, admString, function (err, hash) {
-                callback(err);
-            });
-        });
+        self.designNodes.push(node);
+        callback(null);
+    };
+
+    ExportWorkspace.prototype.exportAdms = function (callback) {
+        var self = this,
+            error = '',
+            counter = self.designNodes.length,
+            exportAdm = function () {
+                counter -= 1;
+                if (counter < 0) {
+                    callback(error);
+                    return;
+                }
+                self.initializeAdmExporter();
+                self.admExporter.exploreDesign(self.designNodes[counter], false, function (err) {
+                    var jsonToXml = new Converter.Json2xml(),
+                        designName,
+                        filename,
+                        admString;
+                    if (err) {
+                        error += 'AdmExporter.exploreDesign failed with error: ' + err;
+                        exportAdm();
+                        return;
+                    }
+                    designName = self.admExporter.admData['@Name'];
+                    filename = 'adms/' + designName + '.adm';
+                    admString = jsonToXml.convertToString({Design: self.admExporter.admData});
+                    if (self.addedAdms[filename]) {
+                        self.logger.warning(designName + ' occurs more than once, appending its guid to filename.');
+                        filename = 'adms/' + designName + '__' +
+                            self.core.getGuid(self.designNodes[counter]).replace(/[^\w]/gi, '_') + '.adm';
+                    }
+                    self.addedAdms[filename] = true;
+                    self.artifact.addFile(filename, admString, function (err, hash) {
+                        if (err) {
+                            error += 'Saving adm failed: ' + err;
+                        }
+                        exportAdm();
+                    });
+                });
+            };
+        exportAdm();
     };
 
     ExportWorkspace.prototype.addAtm = function (node, callback) {
@@ -13690,6 +13722,7 @@ define('plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',['plugin/PluginC
             self.admExporter.core = self.core;
             self.admExporter.logger = self.logger;
             self.admExporter.result = self.result;
+            self.admExporter.rootNode = self.rootNode;
             self.logger.info('AdmExporter had not been initialized - created a new instance.');
         } else {
             self.admExporter.rootPath = null;
@@ -13901,19 +13934,20 @@ define('plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',['plugin/P
         ];
 
         this.dashboardObject = {
-            "dashboard": "ed3320752e9598774183d92a0600b9c53d85d3c2",
-            "designs": {},
-            "designSpace": {
-                "name": null,
-                "data": null
+            dashboardHashLF: "ada66617178a84bc9d9b7d9a2510019e1e6ade06",
+            dashboardHashCRLF: "ed3320752e9598774183d92a0600b9c53d85d3c2",
+            designs: {},
+            designSpace: {
+                name: null,
+                data: null
             },
-            "requirements": "dummy requirements blob hash",
-            "results": {
-                "resultsMetaresultsJson": null,
-                "results": {}
+            requirements: "dummy requirements blob hash",
+            results: {
+                resultsMetaresultsJson: null,
+                results: {}
             },
-            "testBenches": {},
-            "manifestProjectJson": null
+            testBenches: {},
+            manifestProjectJson: null
         };
     };
 
@@ -14112,46 +14146,59 @@ define('plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',['plugin/P
         filesToAdd["launch_SimpleHTTPServer.cmd"] = ejs.render(TEMPLATES['launch_SimpleHTTPServer.cmd.ejs']);
 
         dashboardArtifact.addFiles(filesToAdd, function (err, fileHashes) {
+            var addDashboardFiles;
             if (err) {
                 callback(err, null);
             }
 
             // add the dashboard package to the artifact
-            self.blobClient.getMetadata(self.dashboardObject.dashboard, function (err, dashboardMetadata) {
-                if (err) {
-                    var msg = "Could not add dashboard files from blob. Add them manually";
-                    self.createMessage(self.designSpaceNode, msg);
-                    dashboardArtifact.save(callback);
-                } else {
-                    var path,
-                        hashToAdd,
-                        mdContent = dashboardMetadata.content,
-                        hashCounter = Object.keys(dashboardMetadata.content).length,
-                        errors = '',
-                        addDashboardHashCounterCallback = function (err, addedHash) {
-                            if (err) {
-                                errors += err;
-                            }
-
-                            self.logger.info("Added hash to artifact: " + addedHash);
-
-                            hashCounter -= 1;
-                            if (hashCounter === 0) {
-                                if (errors) {
-                                    callback(errors, null);
-                                }
-
-                                dashboardArtifact.save(callback);
-                            }
-                        };
-
-                    for (path in mdContent) {
-                        if (mdContent.hasOwnProperty(path)) {
-                            hashToAdd = mdContent[path].content;
-
-                            dashboardArtifact.addObjectHash(path, hashToAdd, addDashboardHashCounterCallback);
+            addDashboardFiles = function (dashboardMetadata) {
+                var path,
+                    hashToAdd,
+                    mdContent = dashboardMetadata.content,
+                    hashCounter = Object.keys(dashboardMetadata.content).length,
+                    errors = '',
+                    addDashboardHashCounterCallback = function (err, addedHash) {
+                        if (err) {
+                            errors += err;
                         }
+
+                        self.logger.info("Added hash to artifact: " + addedHash);
+
+                        hashCounter -= 1;
+                        if (hashCounter === 0) {
+                            if (errors) {
+                                callback(errors, null);
+                            }
+
+                            dashboardArtifact.save(callback);
+                        }
+                    };
+
+                for (path in mdContent) {
+                    if (mdContent.hasOwnProperty(path)) {
+                        hashToAdd = mdContent[path].content;
+
+                        dashboardArtifact.addObjectHash(path, hashToAdd, addDashboardHashCounterCallback);
                     }
+                }
+            };
+
+            self.blobClient.getMetadata(self.dashboardObject.dashboardHashLF, function (err, dashboardMetadata) {
+                if (err) {
+                    self.logger.info('Could not find hash for dashboard LF ' + self.dashboardObject.dashboardHashLF);
+                    self.blobClient.getMetadata(self.dashboardObject.dashboardHashCRLF, function (err, dashboardMetadata) {
+                        if (err) {
+                            self.logger.info('Could not find hash for dashboard CRLF ' +
+                                self.dashboardObject.dashboardHashCRLF);
+                            self.createMessage(self.designSpaceNode, "Could not add dashboard files from blob. Add them manually");
+                            dashboardArtifact.save(callback);
+                        } else {
+                            addDashboardFiles(dashboardMetadata);
+                        }
+                    });
+                } else {
+                    addDashboardFiles(dashboardMetadata);
                 }
             });
         });
@@ -14460,6 +14507,197 @@ define('plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',['plugin/P
 
     return GenerateDashboard;
 });
+/**
+* Generated by PluginGenerator from webgme on Fri Nov 14 2014 16:45:18 GMT-0600 (Central Standard Time).
+*/
+
+define('plugin/SaveDesertConfigurations/SaveDesertConfigurations/meta',[], function () {
+    
+    return {
+        'ACMFolder': '/1008889918/398267330',
+        'ADMEditorModelingLanguage': '/1008889918',
+        'ADMFolder': '/1008889918/755698918',
+        'AssemblyRoot': '/1008889918/1502717053',
+        'ATMFolder': '/1008889918/794302266',
+        'AVMComponentModel': '/1008889918/1998840078',
+        'AVMTestBenchModel': '/1008889918/1624079113',
+        'Connector': '/1008889918/1045980796',
+        'ConnectorComposition': '/1008889918/488584186',
+        'Container': '/1008889918/1993805430',
+        'CustomFormula': '/1008889918/1299690106',
+        'DesertConfiguration': '/1008889918/1949671222',
+        'DesertConfigurationSet': '/1008889918/206008088',
+        'DomainModel': '/1008889918/481954284',
+        'DomainPort': '/1008889918/126974487',
+        'FCO': '/1',
+        'Formula': '/1008889918/803021327',
+        'Metric': '/1008889918/1328879441',
+        'PortMap': '/1008889918/1474284259',
+        'Property': '/1008889918/34094492',
+        'Requirement': '/1008889918/1220837843',
+        'RequirementBase': '/1008889918/1010911100',
+        'RequirementCategory': '/1008889918/1598195376',
+        'RequirementsFolder': '/1008889918/1675023230',
+        'Result': '/1008889918/1368062975',
+        'Settings': '/1008889918/319211427',
+        'SimpleFormula': '/1008889918/711037118',
+        'Task': '/1008889918/91705197',
+        'Test': '/1008889918/1922772359',
+        'ValueFlowComposition': '/1008889918/756182296',
+        'Workflow': '/1008889918/891929219',
+        'WorkSpace': '/1008889918/1826321976',
+    };
+});
+/*globals define */
+
+/**
+* Generated by PluginGenerator from webgme on Fri Nov 14 2014 16:45:18 GMT-0600 (Central Standard Time).
+*/
+
+define('plugin/SaveDesertConfigurations/SaveDesertConfigurations/SaveDesertConfigurations',['plugin/PluginConfig',
+    'plugin/PluginBase',
+    'plugin/SaveDesertConfigurations/SaveDesertConfigurations/meta'], function (PluginConfig, PluginBase, MetaTypes) {
+    
+
+    /**
+    * Initializes a new instance of SaveDesertConfigurations.
+    * @class
+    * @augments {PluginBase}
+    * @classdesc This class represents the plugin SaveDesertConfigurations.
+    * @constructor
+    */
+    var SaveDesertConfigurations = function () {
+        // Call base class' constructor.
+        PluginBase.call(this);
+        this.meta = MetaTypes;
+    };
+
+    // Prototypal inheritance from PluginBase.
+    SaveDesertConfigurations.prototype = Object.create(PluginBase.prototype);
+    SaveDesertConfigurations.prototype.constructor = SaveDesertConfigurations;
+
+    /**
+    * Gets the name of the SaveDesertConfigurations.
+    * @returns {string} The name of the plugin.
+    * @public
+    */
+    SaveDesertConfigurations.prototype.getName = function () {
+        return "Save Desert Configurations";
+    };
+
+    /**
+    * Gets the semantic version (semver.org) of the SaveDesertConfigurations.
+    * @returns {string} The version of the plugin.
+    * @public
+    */
+    SaveDesertConfigurations.prototype.getVersion = function () {
+        return "0.1.0";
+    };
+
+    /**
+    * Gets the configuration structure for the SaveDesertConfigurations.
+    * The ConfigurationStructure defines the configuration for the plugin
+    * and will be used to populate the GUI when invoking the plugin from webGME.
+    * @returns {object} The version of the plugin.
+    * @public
+    */
+    SaveDesertConfigurations.prototype.getConfigStructure = function () {
+        return [
+            {
+                'name': 'setData',
+                'displayName': 'Configuration Set Data',
+                'description': '',
+                'value': '',
+                'valueType': 'string',
+                'readOnly': false
+            },
+            {
+                'name': 'configurations',
+                'displayName': 'Configurations',
+                'description': 'List of configurations.',
+                'value': '',
+                'valueType': 'string',
+                'readOnly': false
+            }
+        ];
+    };
+
+
+    /**
+    * Main function for the plugin to execute. This will perform the execution.
+    * Notes:
+    * - Always log with the provided logger.[error,warning,info,debug].
+    * - Do NOT put any user interaction logic UI, etc. inside this method.
+    * - callback always has to be called even if error happened.
+    *
+    * @param {function(string, plugin.PluginResult)} callback - the result callback
+    */
+    SaveDesertConfigurations.prototype.main = function (callback) {
+        // Use self to access core, project, result, logger etc from PluginBase.
+        // These are all instantiated at this point.
+        var self = this,
+            currentConfig = self.getCurrentConfig(),
+            setData,
+            setNode,
+            configurations;
+
+        if (!self.activeNode) {
+            self.createMessage(null, 'Active node is not present! This happens sometimes... Loading another model ' +
+                'and trying again will solve it most of times.', 'error');
+            callback('Active node is not present!', self.result);
+            return;
+        }
+
+        if (self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
+            self.createMessage(null, 'This plugin must be called from an Container.', 'error');
+            callback(null, self.result);
+            return;
+        }
+
+        self.updateMETA(self.meta);
+        setData = JSON.parse(currentConfig.setData);
+//        console.log(setData);
+        setNode = self.saveSetNode(self.activeNode, setData);
+
+        configurations = JSON.parse(currentConfig.configurations);
+//        console.log(configurations);
+        self.saveConfigurations(setNode, configurations);
+        self.result.setSuccess(true);
+        self.save('Configurations saved to model.', function (err) {
+            callback(null, self.result);
+        });
+
+    };
+
+    SaveDesertConfigurations.prototype.saveSetNode = function (containerNode, setData) {
+        var self = this,
+            setNode;
+        setNode = self.core.createNode({parent: containerNode, base: MetaTypes.DesertConfigurationSet });
+        self.core.setAttribute(setNode, 'name', setData.name);
+        if (setData.description) {
+            self.core.setAttribute(setNode, 'INFO', setData.description);
+        }
+
+        return setNode;
+    };
+
+    SaveDesertConfigurations.prototype.saveConfigurations = function (setNode, configurations) {
+        var self = this,
+            i,
+            configData,
+            configNode;
+        for (i = 0; i < configurations.length; i += 1) {
+            configData = configurations[i];
+            configNode = self.core.createNode({parent: setNode, base: MetaTypes.DesertConfiguration });
+            self.core.setAttribute(configNode, 'name', configData.name);
+            self.core.setAttribute(configNode, 'AlternativeAssignment', JSON.stringify(configData.alternativeAssignments));
+        }
+
+    };
+
+
+    return SaveDesertConfigurations;
+});
 /*globals define, WebGMEGlobal */
 define('webcyphy.plugins',
     [
@@ -14471,7 +14709,8 @@ define('webcyphy.plugins',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
         'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',
         'plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',
-        'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard'
+        'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',
+        'plugin/SaveDesertConfigurations/SaveDesertConfigurations/SaveDesertConfigurations'
     ], function (Converters,
                  ExecutorClient,
                  AcmImporter,
@@ -14480,7 +14719,8 @@ define('webcyphy.plugins',
                  AdmExporter,
                  TestBenchRunner,
                  ExportWorkspace,
-                 GenerateDashboard) {
+                 GenerateDashboard,
+                 SaveDesertConfigurations) {
         
         WebGMEGlobal.classes = WebGMEGlobal.classes || {};
         WebGMEGlobal.classes.ExecutorClient = ExecutorClient;
@@ -14492,6 +14732,7 @@ define('webcyphy.plugins',
         WebGMEGlobal.plugins.ExportWorkspace = ExportWorkspace;
         WebGMEGlobal.plugins.TestBenchRunner = TestBenchRunner;
         WebGMEGlobal.plugins.GenerateDashboard = GenerateDashboard;
+        WebGMEGlobal.plugins.SaveDesertConfigurations = SaveDesertConfigurations;
     });
 
 
