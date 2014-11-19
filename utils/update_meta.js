@@ -1,3 +1,4 @@
+/* global webGMEGlobal */
 var PATH = require('path');
 var cyphyRootDir = PATH.resolve(__dirname, '..');
 var fs = require('fs');
