@@ -111,4 +111,28 @@ describe('AdmImporterRegressions', function () {
         done();
     });
 
+    regression("PCBConstraints.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        var componentInstances = {};
+        RootContainer.ComponentInstance.forEach(function (comp) {
+            componentInstances[comp['@ID']] = comp;
+        });
+        var constrained = {};
+        RootContainer.ContainerFeature.forEach(function (constraint) {
+            constrained[componentInstances[constraint['@ConstraintTarget']]['@Name']] = constraint;
+        });
+        expect(constrained.C1a['@Rotation']).to.equal('r0');
+        expect(constrained.C1a['@X']).to.equal('1.1');
+        // expect(constrained.C2a['@LayerRange']).to.equal('Either'); is empty ok?
+        expect(constrained.C2b['@LayerRange']).to.equal('Top');
+        expect(constrained.C2c['@LayerRange']).to.equal('Bottom');
+        expect(constrained.C1c['@Rotation']).to.equal('r180');
+        expect(constrained.C2a['@XRangeMin']).to.equal('1.1');
+        expect(constrained.C2a['@XRangeMax']).to.equal('5.5');
+        expect(constrained.C2b['@XRangeMax']).to.equal('5.5');
+        expect(constrained.C3a1['@XOffset']).to.equal('5.1');
+
+
+        done();
+    });
 });

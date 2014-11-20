@@ -31,6 +31,7 @@ define([
         this.componentInstances = [];
 //        componentInstancesDataType = {
 //            node: {nodeObj},
+//            id: {str},
 //            connIdInModel2ID: {object},
 //            propertyIdInModel2ID: {object},
 //            portIdInModel2ID: {object},
@@ -196,7 +197,8 @@ define([
         ConnectorInstance: true,
         PortInstance: true,
         Role: true,
-        Port: true
+        Port: true,
+        ContainerFeature: true
     };
 
     /**
@@ -512,6 +514,14 @@ define([
             }
         }
 
+        if (containerData.ContainerFeature) {
+            var features = containerData.ContainerFeature;
+            for (i = 0; i < features.length; i += 1) {
+                self.createContainerFeature(features[i], container);
+                self.logger.info(indent + 'Created ContainerFeature : ' + features[i]['@xsi:type']);
+            }
+        }
+
         if (containerData.Connector) {
             connectorsData = containerData.Connector;
             for (i = 0; i < connectorsData.length; i += 1) {
@@ -605,6 +615,7 @@ define([
             }
             self.componentInstances.push({
                 node: component,
+                id: componentData["@ID"],
                 connIdInModel2ID: connIdInModel2ID,
                 propertyIdInModel2ID: propertyIdInModel2ID,
                 portIdInModel2ID: portIdInModel2ID
@@ -654,6 +665,54 @@ define([
         self.core.setRegistry(component, 'position', {
             x: parseInt(componentData['@XPosition'], 10),
             y: parseInt(componentData['@YPosition'], 10)
+        });
+    };
+
+    AdmImporter.prototype.createContainerFeature = function (featureData, parentNode) {
+        var self = this;
+        var feature;
+
+        if (['eda:RelativeLayoutConstraint', 'eda:ExactLayoutConstraint', 'eda:RangeLayoutConstraint'].indexOf(featureData['@xsi:type']) !== -1) {
+            var type = featureData['@xsi:type'].substr(4);
+            var componentInstance = self.componentInstances.filter(function (comp) {
+                return comp.id === featureData['@ConstraintTarget'];
+            })[0];
+            feature = self.core.createNode({parent: componentInstance.node, base: self.meta[type]});
+
+            var copyAttrIfSet = function (attrName, xform) {
+                if (!xform) {
+                    xform = function (attr) { return attr; };
+                }
+                if (featureData['@' + attrName]) {
+                    self.core.setAttribute(feature, attrName, xform(featureData['@' + attrName]));
+                }
+            };
+            if (type === 'RelativeLayoutConstraint') {
+                copyAttrIfSet('XOffset');
+                copyAttrIfSet('YOffset');
+                // TODO set pointer to @Origin
+            }
+            if (type === 'ExactLayoutConstraint') {
+                copyAttrIfSet('X');
+                copyAttrIfSet('Y');
+                copyAttrIfSet('Layer');
+                copyAttrIfSet('Rotation', function (val) { return val.substr(1); });
+            }
+            if (type === 'RangeLayoutConstraint') {
+                if (featureData['@XRangeMin'] && featureData['@XRangeMax']) {
+                    self.core.setAttribute(feature, 'XRange', featureData['@XRangeMin'] + "-" + featureData['@XRangeMax']);
+                }
+                if (featureData['@YRangeMin'] && featureData['@YRangeMax']) {
+                    self.core.setAttribute(feature, 'YRange', featureData['@YRangeMin'] + "-" + featureData['@YRangeMax']);
+                }
+                copyAttrIfSet('LayerRange');
+            }
+            self.core.setAttribute(feature, 'name', type);
+        }
+
+        self.core.setRegistry(feature, 'position', {
+            x: parseInt(featureData['@XPosition'], 10),
+            y: parseInt(featureData['@YPosition'], 10)
         });
     };
 

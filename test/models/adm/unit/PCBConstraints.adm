@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Assembly" DesignID="{7a09e8d7-52d2-45fe-a976-e0ec3ba60e7f}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="Assembly" xmlns="">
+    <ComponentInstance XPosition="161" YPosition="56" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{4fa76241-3308-4460-98fc-76d435907d1c}" Name="C1a" />
+    <ComponentInstance XPosition="161" YPosition="1141" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{6e0c21ee-2d3e-4d30-98ca-94c9931b3692}" Name="C3b2" />
+    <ComponentInstance XPosition="161" YPosition="637" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{f02cb09a-8678-42e1-ace1-6be18fd43e01}" Name="C2b" />
+    <ComponentInstance XPosition="161" YPosition="931" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{4197c2e9-3940-4dce-bf23-cbc6aa07e690}" Name="C3a2" />
+    <ComponentInstance XPosition="161" YPosition="1043" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{09abc939-b35d-430c-8468-a78d0dbc5728}" Name="C3b1" />
+    <ComponentInstance XPosition="161" YPosition="735" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{7560845a-4136-41c0-bcdd-43b21348e9e4}" Name="C2c" />
+    <ComponentInstance XPosition="161" YPosition="413" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{3fbf21ee-ec15-4fd9-bf5e-81bc446f6cbc}" Name="C1d" />
+    <ComponentInstance XPosition="161" YPosition="294" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{12694917-5eb2-4d67-8580-44fb70057de6}" Name="C1c" />
+    <ComponentInstance XPosition="161" YPosition="532" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{3b68f754-7153-4adb-9f09-715ae3000be6}" Name="C2a" />
+    <ComponentInstance XPosition="161" YPosition="161" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{b51e4131-2b15-4ca2-badb-d40cd27ebdcc}" Name="C1b" />
+    <ComponentInstance XPosition="161" YPosition="833" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{e027a928-42ad-488a-b96f-a937eb8b7c22}" Name="C3a1" />
+    <ContainerFeature xmlns:q2="eda" xsi:type="q2:RelativeLayoutConstraint" XPosition="364" YPosition="1050" XOffset="-5.1" YOffset="-10.2" ConstraintTarget="{09abc939-b35d-430c-8468-a78d0dbc5728}" Origin="{6e0c21ee-2d3e-4d30-98ca-94c9931b3692}" />
+    <ContainerFeature xmlns:q3="eda" xsi:type="q3:RelativeLayoutConstraint" XPosition="364" YPosition="840" XOffset="5.1" YOffset="10.2" ConstraintTarget="{e027a928-42ad-488a-b96f-a937eb8b7c22}" Origin="{4197c2e9-3940-4dce-bf23-cbc6aa07e690}" />
+    <ContainerFeature xmlns:q4="eda" xsi:type="q4:RangeLayoutConstraint" XPosition="364" YPosition="742" YRangeMin="5.5" YRangeMax="10.1" LayerRange="Bottom" ConstraintTarget="{7560845a-4136-41c0-bcdd-43b21348e9e4}" />
+    <ContainerFeature xmlns:q5="eda" xsi:type="q5:RangeLayoutConstraint" XPosition="364" YPosition="644" XRangeMin="1.1" XRangeMax="5.5" LayerRange="Top" ConstraintTarget="{f02cb09a-8678-42e1-ace1-6be18fd43e01}" />
+    <ContainerFeature xmlns:q6="eda" xsi:type="q6:RangeLayoutConstraint" XPosition="364" YPosition="539" XRangeMin="1.1" XRangeMax="5.5" YRangeMin="5.5" YRangeMax="10.1" ConstraintTarget="{3b68f754-7153-4adb-9f09-715ae3000be6}" />
+    <ContainerFeature xmlns:q7="eda" xsi:type="q7:ExactLayoutConstraint" XPosition="364" YPosition="420" X="1.1" Y="2.2" Layer="Bottom" Rotation="r270" ConstraintTarget="{3fbf21ee-ec15-4fd9-bf5e-81bc446f6cbc}" />
+    <ContainerFeature xmlns:q8="eda" xsi:type="q8:ExactLayoutConstraint" XPosition="364" YPosition="301" X="1.1" Y="2.2" Layer="Bottom" Rotation="r180" ConstraintTarget="{12694917-5eb2-4d67-8580-44fb70057de6}" />
+    <ContainerFeature xmlns:q9="eda" xsi:type="q9:ExactLayoutConstraint" XPosition="364" YPosition="63" X="1.1" Y="2.2" Rotation="r0" ConstraintTarget="{4fa76241-3308-4460-98fc-76d435907d1c}" />
+    <ContainerFeature xmlns:q10="eda" xsi:type="q10:ExactLayoutConstraint" XPosition="364" YPosition="168" X="1.1" Y="2.2" Layer="Bottom" Rotation="r90" ConstraintTarget="{b51e4131-2b15-4ca2-badb-d40cd27ebdcc}" />
+  </RootContainer>
+</Design>
