@@ -12,6 +12,10 @@ angular.module('cyphy.services')
         var self = this,
             watchers = {};
 
+        this.callCreateWorkspace = function (context, name, desc) {
+
+        };
+
         this.createWorkspace = function (context, name, desc) {
             var deferred = $q.defer(),
                 meta;

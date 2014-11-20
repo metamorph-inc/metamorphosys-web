@@ -322,16 +322,16 @@ if (typeof JSON !== 'object') {
 
 // Otherwise, iterate through all of the keys in the object.
 
-                    var properties = Object.prototype.getOwnPropertyNames(value);
+                    var properties = Object.getOwnPropertyNames(value);
                     properties.sort();
-                    for (k in properties) {
+                    properties.forEach(function (k) {
                         if (true || Object.prototype.hasOwnProperty.call(value, k)) {
                             v = str(k, value);
                             if (v) {
                                 partial.push(quote(k) + (gap ? ': ' : ':') + v);
                             }
                         }
-                    }
+                    });
                 }
 
 // Join all of the member texts together, separated with commas,

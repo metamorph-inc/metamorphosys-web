@@ -13,7 +13,7 @@
         </div>
     </div>
     <ul class="dropped-files">
-        <li class="dropped-file" ng-repeat="file in model.droppedFiles"> {{file.name}} {{file.size}}</li>
+        <li class="dropped-file" ng-repeat="file in model.droppedFiles"><span ng-class="file.icon"></span> {{file.name}} [{{file.size}}]</li>
     </ul>
     <div class="row form-footer">
         <div class="col-md-8">

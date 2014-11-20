@@ -192,6 +192,11 @@ angular.module('cyphy.services')
                 artie = blobClient.createArtifact('droppedFiles'),
                 addFile,
                 addedFiles = [],
+                fileExtensionToIcon = {
+                    'zip': 'fa fa-puzzle-piece',
+                    'adm': 'fa fa-cubes',
+                    'atm': 'glyphicon glyphicon-saved'
+                },
                 updateCounter = function () {
                     counter -= 1;
                     if (counter <= 0) {
@@ -215,7 +220,8 @@ angular.module('cyphy.services')
                             name: file.name,
                             type: fileExtension,
                             size: self.humanFileSize(file.size, true),
-                            url: blobClient.getDownloadURL(hash)
+                            url: blobClient.getDownloadURL(hash),
+                            icon: fileExtensionToIcon[fileExtension] || ''
                         });
                         updateCounter();
                     });
