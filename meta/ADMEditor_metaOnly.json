@@ -1537,8 +1537,7 @@
             "default": "Top",
             "enum": [
               "Top",
-              "Bottom",
-              "Either"
+              "Bottom"
             ]
           },
           "Rotation": {

@@ -1350,8 +1350,7 @@
                         "default": "Top",
                         "enum": [
                             "Top",
-                            "Bottom",
-                            "Either"
+                            "Bottom"
                         ],
                         "type": "string"
                     },
