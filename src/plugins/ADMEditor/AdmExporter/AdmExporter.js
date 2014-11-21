@@ -1077,15 +1077,49 @@ define([
     };
 //</editor-fold>
 
-    AdmExporter.prototype.addAssemblyRoot = function (node, parent, containerData, callback) {
-        var self = this,
-            i,
-            counter,
-            error = '',
-            componentIds = self.core.getMemberPaths(node, 'Selection'),
-            counterCallback = function (err, componentNode) {
+    AdmExporter.prototype.loadSetMembers = function(node, setName, callback) {
+        var self = this;
+        var pointedIds = self.core.getMemberPaths(node, setName);
+        var pointedNodes = [];
+        var error = '';
+
+
+        function getLoadCallback(i) {
+            return function(err, pointedNode) {
                 if (err) {
-                    error += 'Failed loading node from AssemblyRoot ' + err.toString();
+                    error += err;
+                }
+                pointedNodes[i] = pointedNode;
+                counter--;
+                if (counter === 0) {
+                    callback(error, pointedNodes, pointedIds);
+                    counter--;
+                }
+            };
+        }
+        var counter = pointedIds.length;
+        for (var i = 0; i < pointedIds.length; i += 1) {
+            if (self.startsWith(pointedIds[i], self.rootPath)) {
+                self.core.loadByPath(self.rootNode, pointedIds[i], getLoadCallback(i));
+            } else {
+                counter--;
+                pointedNodes[i] = null;
+                // self.logger.warning('AssemblyRoot selection is not within design, see path "' + componentIds[i] + '".');
+            }
+        }
+        if (counter === 0) {
+            callback(null, pointedNodes, pointedIds);
+            counter--;
+        }
+    };
+
+    AdmExporter.prototype.addAssemblyRoot = function (node, parent, containerData, callback) {
+        var self = this;
+        self.loadSetMembers(node, 'Selection', function (err, componentNodes, componentIds) {
+            for (var i = 0; i < componentNodes.length; i++) {
+                var componentNode = componentNodes[i];
+                if (err) {
+                    callback('Failed loading node from AssemblyRoot ' + err.toString());
                 } else if (componentNode) {
                     if (self.shouldBeGenerated(componentNode)) {
                         //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
@@ -1104,24 +1138,11 @@ define([
                     } else {
                         self.logger.info('Skipping AssemblyRoot Selection of "' + self.core.getPath(componentNode) + '".');
                     }
+                } else {
+                    self.logger.warning('AssemblyRoot selection is not within design, see path "' + componentIds[i] + '".');
                 }
-                counter -= 1;
-                if (counter <= 0) {
-                    callback(error);
-                }
-            };
-        counter = componentIds.length;
-        if (counter === 0) {
-            callback(null);
-        }
-        for (i = 0; i < componentIds.length; i += 1) {
-            if (self.startsWith(componentIds[i], self.rootPath)) {
-                self.core.loadByPath(self.rootNode, componentIds[i], counterCallback);
-            } else {
-                self.logger.warning('AssemblyRoot selection is not within design, see path "' + componentIds[i] + '".');
-                counterCallback(null, null);
             }
-        }
+        });
     };
 
     AdmExporter.prototype.visitAllChildrenFromRootContainer = function (rootNode, callback) {
