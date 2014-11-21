@@ -305,6 +305,8 @@ define([
             self.addDomainPort(node, parent, containerData, callback);
         } else if (nodeType === 'AssemblyRoot') {
             self.addAssemblyRoot(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.LayoutConstraint)) {
+            self.addLayoutConstraint(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -381,8 +383,6 @@ define([
                     self.addDomainPort(children[i], node, data, counterCallback);
                 } else if (self.isMetaTypeOf(children[i], self.meta.Property)) {
                     self.addProperty(children[i], node, data, counterCallback);
-                } else if (self.isMetaTypeOf(children[i], self.meta.LayoutConstraint)) {
-                    self.addLayoutConstraint(children[i], node, containerData, counterCallback);
                 } else {
                     counterCallback(null);
                 }
@@ -621,13 +621,13 @@ define([
     };
 //</editor-fold>
 
-    AdmExporter.prototype.addLayoutConstraint = function (node, parent, containerData, callback) {
+    AdmExporter.prototype.addLayoutConstraint = function (node, container, containerData, callback) {
         var self = this,
             pos = self.core.getRegistry(node, 'position'),
-            parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
-            type = self.core.getAttribute(self.getMetaType(node), 'name');
+            type = self.core.getAttribute(self.getMetaType(node), 'name'),
+            origin;
 
-        var addConstraintData = function (origin) {
+        var addConstraintData = function (targetNodes, targetIds) {
             var data = {
                 "@xmlns:eda" : "eda",
                 "@xsi:type": "eda:" + type,
@@ -646,7 +646,7 @@ define([
             if (type === 'RelativeLayoutConstraint') {
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
-                // TODO origin
+                data['@Origin'] = self.core.getGuid(origin);
             }
             if (type === 'RangeLayoutConstraint') {
                 copyAttrIfSet('LayerRange');
@@ -669,12 +669,31 @@ define([
                 copyAttrIfSet('Rotation', function (val) { return 'r' + val; });
                 copyAttrIfSet('Layer');
             }
-            data['@ConstraintTarget'] = self.core.getGuid(parent);
+
+            data['@ConstraintTarget'] = targetNodes
+                .filter(function (node) { return node; })
+                .map(function (node) { return self.core.getGuid(node); })
+                .join(' ');
 
             containerData.ContainerFeature.push(data);
             callback(null);
         };
-        addConstraintData();
+        this.loadSetMembers(node, 'ConstraintTarget', function (err, targetNodes, targetIds) {
+            if (err) {
+                return callback(err);
+            }
+            if (type === 'RelativeLayoutConstraint') {
+                self.core.loadPointer(node, 'Origin', function (err, o) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    origin = o;
+                    addConstraintData(targetNodes);
+                });
+            } else {
+                addConstraintData(targetNodes);
+            }
+        });
     };
 
 

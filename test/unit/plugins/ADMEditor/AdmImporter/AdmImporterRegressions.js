@@ -131,6 +131,8 @@ describe('AdmImporterRegressions', function () {
         expect(constrained.C2a['@XRangeMax']).to.equal('5.5');
         expect(constrained.C2b['@XRangeMax']).to.equal('5.5');
         expect(constrained.C3a1['@XOffset']).to.equal('5.1');
+        expect(componentInstances[constrained.C3a1['@Origin']]['@Name']).to.equal('C3a2');
+        expect(componentInstances[constrained.C3b1['@Origin']]['@Name']).to.equal('C3b2');
 
 
         done();
