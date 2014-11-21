@@ -2,14 +2,14 @@
   "bases": {},
   "root": {
     "path": "",
-    "guid": "005cb34a-7523-4940-a1e9-0cb530ba1005"
+    "guid": "1342c265-b0a3-58f6-2076-1f8496119c3a"
   },
   "relids": {
-    "005cb34a-7523-4940-a1e9-0cb530ba1005": null,
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": "1675023230",
     "07d79d42-e631-fb69-a1f7-25b044d94fbb": "319211427",
     "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": "711037118",
-    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "1008889918",
+    "1342c265-b0a3-58f6-2076-1f8496119c3a": null,
+    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "501604959",
     "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
     "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
     "2bc42bca-a9be-0f33-16a7-ea847e546b37": "34094492",
@@ -83,9 +83,128 @@
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {}
   },
   "nodes": {
-    "005cb34a-7523-4940-a1e9-0cb530ba1005": {
+    "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
       "attributes": {
-        "name": "ADMEditor"
+        "INFO": "Container of requirements.",
+        "name": "RequirementsFolder"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "children": {
+          "minItems": [
+            -1
+          ],
+          "maxItems": [
+            -1
+          ],
+          "items": [
+            "1deced2f-f026-ca87-711c-d8148b1dfd3c"
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "SVGIcon": "Folder.svg",
+        "color": "#66ffff",
+        "position": {
+          "x": 1229,
+          "y": 233
+        }
+      },
+      "sets": {}
+    },
+    "07d79d42-e631-fb69-a1f7-25b044d94fbb": {
+      "attributes": {
+        "INFO": "Settings for the test-bench.",
+        "IntervalLength": 0,
+        "NumberOfIntervals": 100,
+        "StartTime": 0,
+        "StopTime": 1,
+        "Tolerance": 0.00001,
+        "name": "Settings"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "IntervalLength": {
+            "default": 0,
+            "type": "float"
+          },
+          "NumberOfIntervals": {
+            "default": 100,
+            "type": "integer"
+          },
+          "StartTime": {
+            "default": 0,
+            "type": "float"
+          },
+          "StopTime": {
+            "default": 1,
+            "type": "float"
+          },
+          "Tolerance": {
+            "default": 0.00001,
+            "type": "float"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "SVGIcon": "Gear.svg",
+        "position": {
+          "x": 1026,
+          "y": 524
+        }
+      },
+      "sets": {}
+    },
+    "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {
+      "attributes": {
+        "INFO": "Simple mathematical operations.",
+        "Method": "Addition",
+        "name": "SimpleFormula"
+      },
+      "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+      "meta": {
+        "attributes": {
+          "Method": {
+            "default": "Addition",
+            "enum": [
+              "Addition",
+              "Multiplication",
+              "ArithmetricMean",
+              "GeometricMean",
+              "Maximum",
+              "Minimum"
+            ],
+            "type": "string"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e"
+      },
+      "registry": {
+        "SVGIcon": "Chemistry.svg",
+        "color": "#ffb366",
+        "isAbstract": false,
+        "position": {
+          "x": 484,
+          "y": 661
+        }
+      },
+      "sets": {}
+    },
+    "1342c265-b0a3-58f6-2076-1f8496119c3a": {
+      "attributes": {
+        "name": "ROOT"
       },
       "base": null,
       "meta": {
@@ -98,9 +217,7 @@
           ],
           "items": [
             "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-          ],
-          "min": "undefined",
-          "max": "undefined"
+          ]
         },
         "attributes": {
           "name": {
@@ -118,6 +235,16 @@
       "registry": {
         "MetaSheets": [
           {
+            "SetID": "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1",
+            "order": 0,
+            "title": "META"
+          },
+          {
+            "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
+            "order": 3,
+            "title": "AVM Component Model"
+          },
+          {
             "SetID": "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740",
             "order": 0,
             "title": "META"
@@ -126,21 +253,6 @@
             "SetID": "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5",
             "order": 1,
             "title": "Folders"
-          },
-          {
-            "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
-            "order": 2,
-            "title": "AVM Design Model"
-          },
-          {
-            "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
-            "order": 3,
-            "title": "AVM Component Model"
-          },
-          {
-            "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
-            "order": 4,
-            "title": "AVM Test bench Model"
           },
           {
             "SetID": "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6",
@@ -153,6 +265,16 @@
             "title": "Tests"
           },
           {
+            "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
+            "order": 2,
+            "title": "AVM Design Model"
+          },
+          {
+            "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
+            "order": 4,
+            "title": "AVM Test bench Model"
+          },
+          {
             "SetID": "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35",
             "order": 7,
             "title": "LayoutConstraints"
@@ -161,7 +283,8 @@
         "ProjectRegistry": {
           "FCO_ID": "/1"
         },
-        "validPlugins": "AtmExporter ExportWorkspace PluginGenerator AtmImporter GeneratePluginTests AcmImporter AdmImporter TestBenchRunner AdmExporter"
+        "usedAddOns": "ConstraintAddOn",
+        "validPlugins": ""
       },
       "sets": {
         "MetaAspectSet": [
@@ -526,6 +649,18 @@
             }
           }
         ],
+        "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1": [
+          {
+            "attributes": {},
+            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "registry": {
+              "position": {
+                "x": 100,
+                "y": 100
+              }
+            }
+          }
+        ],
         "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": [
           {
             "attributes": {},
@@ -609,6 +744,16 @@
           }
         ],
         "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": [
+          {
+            "attributes": {},
+            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "registry": {
+              "position": {
+                "x": 376,
+                "y": 138
+              }
+            }
+          },
           {
             "attributes": {},
             "guid": "3e223dbc-998f-e965-9d15-99085fd445ff",
@@ -1114,125 +1259,6 @@
         ]
       }
     },
-    "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
-      "attributes": {
-        "INFO": "Container of requirements.",
-        "name": "RequirementsFolder"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "children": {
-          "minItems": [
-            -1
-          ],
-          "maxItems": [
-            -1
-          ],
-          "items": [
-            "1deced2f-f026-ca87-711c-d8148b1dfd3c"
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "SVGIcon": "Folder.svg",
-        "color": "#66ffff",
-        "position": {
-          "x": 1229,
-          "y": 233
-        }
-      },
-      "sets": {}
-    },
-    "07d79d42-e631-fb69-a1f7-25b044d94fbb": {
-      "attributes": {
-        "INFO": "Settings for the test-bench.",
-        "IntervalLength": 0,
-        "NumberOfIntervals": 100,
-        "StartTime": 0,
-        "StopTime": 1,
-        "Tolerance": 0.00001,
-        "name": "Settings"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "IntervalLength": {
-            "default": 0,
-            "type": "float"
-          },
-          "NumberOfIntervals": {
-            "default": 100,
-            "type": "integer"
-          },
-          "StartTime": {
-            "default": 0,
-            "type": "float"
-          },
-          "StopTime": {
-            "default": 1,
-            "type": "float"
-          },
-          "Tolerance": {
-            "default": 0.00001,
-            "type": "float"
-          }
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "SVGIcon": "Gear.svg",
-        "position": {
-          "x": 1026,
-          "y": 524
-        }
-      },
-      "sets": {}
-    },
-    "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {
-      "attributes": {
-        "INFO": "Simple mathematical operations.",
-        "Method": "Addition",
-        "name": "SimpleFormula"
-      },
-      "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-      "meta": {
-        "attributes": {
-          "Method": {
-            "default": "Addition",
-            "enum": [
-              "Addition",
-              "Multiplication",
-              "ArithmetricMean",
-              "GeometricMean",
-              "Maximum",
-              "Minimum"
-            ],
-            "type": "string"
-          }
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e"
-      },
-      "registry": {
-        "SVGIcon": "Chemistry.svg",
-        "color": "#ffb366",
-        "isAbstract": false,
-        "position": {
-          "x": 484,
-          "y": 661
-        }
-      },
-      "sets": {}
-    },
     "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
       "attributes": {
         "name": "ADMEditorModelingLanguage"
@@ -1251,7 +1277,7 @@
           ]
         }
       },
-      "parent": "005cb34a-7523-4940-a1e9-0cb530ba1005",
+      "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
       "pointers": {
         "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
       },
@@ -1280,8 +1306,8 @@
             -1
           ],
           "items": [
-            "ab281360-2719-c4e0-c3c6-4eea03401141",
-            "1deced2f-f026-ca87-711c-d8148b1dfd3c"
+            "1deced2f-f026-ca87-711c-d8148b1dfd3c",
+            "ab281360-2719-c4e0-c3c6-4eea03401141"
           ]
         },
         "attributes": {
@@ -1451,6 +1477,7 @@
             -1,
             -1,
             -1,
+            -1,
             -1
           ],
           "maxItems": [
@@ -1464,19 +1491,21 @@
             -1,
             -1,
             -1,
+            -1,
             -1
           ],
           "items": [
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "f9f20885-6316-a7b6-2196-8299f45692ff",
-            "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "97a00dee-7375-3637-ec08-b62588d4d71d",
-            "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
-            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
             "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
+            "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "97a00dee-7375-3637-ec08-b62588d4d71d",
+            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
+            "f9f20885-6316-a7b6-2196-8299f45692ff",
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
+            "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
             "f0508110-9a11-3b6d-ea42-2193bf0485e0"
           ]
         },
@@ -1495,8 +1524,8 @@
           "NoValueFlow": [
             "cb92c02d-84cf-f104-938b-b7de6641f8e5",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5"
+            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34"
           ]
         }
       },
@@ -1524,31 +1553,31 @@
       "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
       "meta": {
         "attributes": {
-          "X": {
-            "type": "float",
-            "default": null
-          },
-          "Y": {
-            "type": "float",
-            "default": null
-          },
           "Layer": {
-            "type": "string",
             "default": "Top",
             "enum": [
               "Top",
               "Bottom"
-            ]
+            ],
+            "type": "string"
           },
           "Rotation": {
-            "type": "string",
             "default": "",
             "enum": [
               "0",
               "90",
               "180",
               "270"
-            ]
+            ],
+            "type": "string"
+          },
+          "X": {
+            "default": null,
+            "type": "float"
+          },
+          "Y": {
+            "default": null,
+            "type": "float"
           }
         }
       },
@@ -1562,7 +1591,9 @@
           "y": 258
         }
       },
-      "sets": {}
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
       "attributes": {
@@ -1698,14 +1729,30 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
       "attributes": {
         "name": "LayoutConstraint"
       },
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {},
+      "meta": {
+        "pointers": {
+          "ConstraintTarget": {
+            "items": [
+              "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+            ],
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              -1
+            ]
+          }
+        }
+      },
       "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
       "pointers": {
         "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
@@ -1716,7 +1763,9 @@
           "y": 163
         }
       },
-      "sets": {}
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "8b1e277e-0f88-a58b-4aff-51c74250671d": {
       "attributes": {
@@ -1735,8 +1784,8 @@
             -1
           ],
           "items": [
-            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "8b1e277e-0f88-a58b-4aff-51c74250671d"
+            "8b1e277e-0f88-a58b-4aff-51c74250671d",
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5"
           ]
         }
       },
@@ -1899,15 +1948,15 @@
             -1
           ],
           "items": [
-            "9001f172-4258-ceaa-86e9-f6e80b85853d",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "d5fc3678-2722-5112-c0bb-fa758f113246",
             "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
             "07d79d42-e631-fb69-a1f7-25b044d94fbb",
-            "f9f20885-6316-a7b6-2196-8299f45692ff"
+            "d5fc3678-2722-5112-c0bb-fa758f113246",
+            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "f9f20885-6316-a7b6-2196-8299f45692ff",
+            "9001f172-4258-ceaa-86e9-f6e80b85853d",
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37"
           ]
         },
         "attributes": {
@@ -1941,8 +1990,8 @@
         },
         "aspects": {
           "NoValueFlow": [
-            "d5fc3678-2722-5112-c0bb-fa758f113246",
             "2bc42bca-a9be-0f33-16a7-ea847e546b37",
+            "d5fc3678-2722-5112-c0bb-fa758f113246",
             "3317c9c6-6c44-1a06-a476-11f77d722b34"
           ]
         }
@@ -1985,8 +2034,8 @@
           "items": [
             "dd35b139-3346-08f0-013c-1e3a8a522f7f",
             "1f35a3aa-321d-359f-7838-242bc2d08ae5",
-            "0375e1c1-1217-7aa9-5e14-53c709a2abbe",
-            "8b1e277e-0f88-a58b-4aff-51c74250671d"
+            "8b1e277e-0f88-a58b-4aff-51c74250671d",
+            "0375e1c1-1217-7aa9-5e14-53c709a2abbe"
           ]
         }
       },
@@ -2020,8 +2069,8 @@
         "pointers": {
           "dst": {
             "items": [
-              "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-              "65dcb250-dcb6-4cad-4617-0518a9a37d2e"
+              "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+              "2bc42bca-a9be-0f33-16a7-ea847e546b37"
             ],
             "min": 1,
             "max": 1,
@@ -2181,11 +2230,9 @@
             -1,
             -1,
             -1,
-            -1,
             -1
           ],
           "maxItems": [
-            -1,
             -1,
             -1,
             -1,
@@ -2196,11 +2243,10 @@
           "items": [
             "f0508110-9a11-3b6d-ea42-2193bf0485e0",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
             "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
-            "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37"
+            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
+            "e9bd3f99-c925-8bc0-6bd5-15ac083d1028"
           ]
         },
         "attributes": {
@@ -2246,8 +2292,6 @@
     },
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
       "attributes": {
-        "INFO": "",
-        "ReadMe": "",
         "name": "FCO"
       },
       "base": null,
@@ -2255,28 +2299,24 @@
         "children": {
           "minItems": [],
           "maxItems": [],
-          "items": [],
-          "min": "undefined",
-          "max": "undefined"
+          "items": []
         },
         "attributes": {
-          "INFO": {
-            "default": "",
-            "type": "string"
-          },
-          "ReadMe": {
-            "default": "",
-            "type": "asset"
-          },
           "name": {
             "type": "string"
           }
         },
         "pointers": {},
         "aspects": {},
-        "constraints": {}
+        "constraints": {
+          "meta": {
+            "script": "function(core, node, callback) {\n    \"use strict\";\n    var error = null,\n        returnValue = {hasViolation:false,message:\"\"},\n        i,\n        neededChekings = 4,\n        meta = core.getJsonMeta(node),\n        typeIndexOfChild = function(typePathsArray,childNode){\n            var index = -1;\n\n            while(childNode && index === -1){\n                index = typePathsArray.indexOf(core.getPath(childNode));\n                childNode = core.getBase(childNode);\n            }\n\n            return index;\n        },\n        checkChildrenRules = function(){\n            var childCount = [],\n                index;\n            core.loadChildren(node,function(err,children){\n                if(err){\n                    returnValue.message += \"error during loading of node\\'s children\\n\";\n                    error = error || err;\n                    return checkingDone();\n                }\n\n                //global count check\n                //min\n                if(meta.children.min && meta.children.min !== -1){\n                    if(children.length < meta.children.min){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \"node hase fewer nodes than needed\\n\";\n                    }\n                }\n                //max\n                if(meta.children.max && meta.children.max !== -1){\n                    if(children.length > meta.children.max){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \"node hase more nodes than allowed\\n\";\n                    }\n                }\n\n                //typedCounts\n                for(i=0;i<meta.children.items.length;i++){\n                    childCount.push(0);\n                }\n                for(i=0;i<children.length;i++){\n                    index = typeIndexOfChild(meta.children.items,children[i]);\n                    if(index === -1 ){\n                        returnValue.hasViolation = true;\n                        returnValue.message += \"child \" + core.getGuid(children[i]) +\" is from prohibited type\\n\";\n                    }\n                    else {\n                        childCount[index]++;\n                    }\n                }\n                for(i=0;i<meta.children.items.length;i++){\n                    //min\n                    if(meta.children.minItems[i] !== -1){\n                        if(meta.children.minItems[i] > childCount[i]){\n                            returnValue.hasViolation = true;\n                            returnValue.message += \"too few type \"+ meta.children.items[i] +\" children\\n\";\n                        }\n                    }\n                    //max\n                    if(meta.children.maxItems[i] !== -1){\n                        if(meta.children.maxItems[i] < childCount[i]){\n                            returnValue.hasViolation = true;\n                            returnValue.message += \"too many type \"+ meta.children.items[i] +\" children\\n\";\n                        }\n                    }\n                }\n                return checkingDone();\n            });\n        },\n        checkPointerRules = function(){\n            //TODO currently there is no quantity check\n            var validNames = core.getValidPointerNames(node),\n                names = core.getPointerNames(node),\n                checkPointer = function(name){\n                    core.loadPointer(node,name,function(err,target){\n                        if(err || !target){\n                            error = error || err;\n                            returnValue.message += \"error during pointer \"+ name +\" load\\n\";\n                            return checkDone();\n                        }\n\n                        if(!core.isValidTargetOf(target,node,name)){\n                            returnValue.hasVialoation = true;\n                            returnValue.message += \"target of pointer \"+ name +\" is invalid\\n\";\n                        }\n                        return checkDone();\n                    });\n                },\n                checkDone = function(){\n                    if(--needs === 0){\n                        checkingDone();\n                    }\n                },\n                needs,i;\n            \n            needs = names.length;\n            if(needs > 0){\n                for(i=0;i<names.length;i++){\n                    if(validNames.indexOf(names[i]) === -1){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \" invalid pointer \"+ names[i] +\" has been found\\n\";\n                        checkDone();\n                    } else {\n                        checkPointer(names[i]);\n                    }\n\n                }\n            } else {\n                checkDone();\n            }\n\n        },\n        checkSetRules = function(){\n            //TODO this part is missing yet\n            checkingDone();\n        },\n        checkAttributeRules = function(){\n            var names = core.getAttributeNames(node),\n                validNames = core.getValidAttributeNames(node);\n            for(i=0;i<names.length;i++){\n                if(validNames.indexOf(names[i]) !== -1){\n                    if(!core.isValidAttributeValueOf(node,names[i],core.getAttribute(node,names[i]))){\n                        returnValue.hasViolation = true;\n                        returnValue.message += \"attribute \"+names[i]+\" has invalid value\\n\";\n                    }\n                }\n                else {\n                    returnValue.hasViolation = true;\n                    returnValue.message += \"node has an undefined attribute: \"+names[i];\n                }\n            }\n            checkingDone();\n        },\n        checkingDone = function(){\n            if(--neededChekings === 0){\n                callback(error,returnValue);\n            }\n        };\n\n    checkChildrenRules();\n    checkPointerRules();\n    checkSetRules();\n    checkAttributeRules();\n}",
+            "priority": 10,
+            "info": "this constraint will check all the meta rules defined to an object"
+          }
+        }
       },
-      "parent": "005cb34a-7523-4940-a1e9-0cb530ba1005",
+      "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
       "pointers": {
         "base": null
       },
@@ -2288,8 +2328,8 @@
         "isAbstract": false,
         "isPort": false,
         "position": {
-          "x": 1039,
-          "y": 141
+          "x": 100,
+          "y": 100
         }
       },
       "sets": {}
@@ -2692,12 +2732,12 @@
       "meta": {
         "attributes": {
           "XOffset": {
-            "type": "float",
-            "default": null
+            "default": null,
+            "type": "float"
           },
           "YOffset": {
-            "type": "float",
-            "default": null
+            "default": null,
+            "type": "float"
           }
         },
         "pointers": {
@@ -2727,7 +2767,9 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
       "attributes": {
@@ -2789,7 +2831,7 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "pointers": {
-          "src": {
+          "dst": {
             "items": [
               "f0508110-9a11-3b6d-ea42-2193bf0485e0"
             ],
@@ -2802,7 +2844,7 @@
               1
             ]
           },
-          "dst": {
+          "src": {
             "items": [
               "f0508110-9a11-3b6d-ea42-2193bf0485e0"
             ],
