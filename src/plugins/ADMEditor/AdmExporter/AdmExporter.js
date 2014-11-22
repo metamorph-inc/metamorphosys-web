@@ -305,6 +305,8 @@ define([
             self.addDomainPort(node, parent, containerData, callback);
         } else if (nodeType === 'AssemblyRoot') {
             self.addAssemblyRoot(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.LayoutConstraint)) {
+            self.addLayoutConstraint(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -618,6 +620,82 @@ define([
         }
     };
 //</editor-fold>
+
+    AdmExporter.prototype.addLayoutConstraint = function (node, container, containerData, callback) {
+        var self = this,
+            pos = self.core.getRegistry(node, 'position'),
+            type = self.core.getAttribute(self.getMetaType(node), 'name'),
+            origin;
+
+        var addConstraintData = function (targetNodes, targetIds) {
+            var data = {
+                "@xmlns:eda" : "eda",
+                "@xsi:type": "eda:" + type,
+                "@XPosition": Math.floor(pos.x),
+                "@YPosition": Math.floor(pos.y)
+            };
+            var copyAttrIfSet = function (attrName, xform) {
+                if (!xform) {
+                    xform = function (attr) { return attr; };
+                }
+                var val = self.core.getAttribute(node, attrName);
+                if (val !== undefined) {
+                    data['@' + attrName] = xform(val);
+                }
+            };
+            if (type === 'RelativeLayoutConstraint') {
+                copyAttrIfSet('XOffset');
+                copyAttrIfSet('YOffset');
+                data['@Origin'] = self.core.getGuid(origin);
+            }
+            if (type === 'RangeLayoutConstraint') {
+                copyAttrIfSet('LayerRange');
+                var setRange = function (xOrY) {
+                    var range = self.core.getAttribute(node, xOrY + 'Range');
+                    if (range !== undefined) {
+                        var match = /(-?\d*(?:\.\d*)?)-(-?\d*(?:\.\d*)?)/.exec(range);
+                        if (match) {
+                            data['@' + xOrY + 'RangeMin'] = match[1];
+                            data['@' + xOrY + 'RangeMax'] = match[2];
+                        }
+                    }
+                };
+                setRange('X');
+                setRange('Y');
+            }
+            if (type === 'ExactLayoutConstraint') {
+                copyAttrIfSet('X');
+                copyAttrIfSet('Y');
+                copyAttrIfSet('Rotation', function (val) { return 'r' + val; });
+                copyAttrIfSet('Layer');
+            }
+
+            data['@ConstraintTarget'] = targetNodes
+                .filter(function (node) { return node; })
+                .map(function (node) { return self.core.getGuid(node); })
+                .join(' ');
+
+            containerData.ContainerFeature.push(data);
+            callback(null);
+        };
+        this.loadSetMembers(node, 'ConstraintTarget', function (err, targetNodes, targetIds) {
+            if (err) {
+                return callback(err);
+            }
+            if (type === 'RelativeLayoutConstraint') {
+                self.core.loadPointer(node, 'Origin', function (err, o) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    origin = o;
+                    addConstraintData(targetNodes);
+                });
+            } else {
+                addConstraintData(targetNodes);
+            }
+        });
+    };
+
 
 //<editor-fold desc="=========================== Properties/ValueFlows ==========================">
     AdmExporter.prototype.addProperty = function (node, parent, containerData, callback) {
@@ -1160,7 +1238,8 @@ define([
                 "Connector": [],
                 "JoinData": [],
                 "Formula": [],
-                "ValueFlowMux": []
+                "ValueFlowMux": [],
+                "ContainerFeature": []
             };
 
         if (!isRoot) {
