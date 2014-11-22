@@ -693,7 +693,7 @@ define([
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 var origin = self.componentInstances.filter(function (ci) { return ci.id === featureData['@Origin']; });
-                if (origin) {
+                if (origin.length) {
                     self.core.setPointer(feature, 'Origin', origin[0].node);
                 } else {
                     self.createMessage(container, 'Could not find Origin ' + featureData['@Origin'], 'error');
