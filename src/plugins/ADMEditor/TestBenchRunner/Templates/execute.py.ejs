@@ -181,15 +181,23 @@ def import_design(mga_path, adm_file, testbench_config):
             testbench_id = testbench_mga.ID
             logger.debug('Found test-bench "{0}".'.format(testbench_mga.Name))
             logger.debug('Test-bench ID : {0}.'.format(testbench_id))
-            tlsut_mga = [o for o in testbench_mga.GetChildrenOfKind('TopLevelSystemUnderTest')][0]
-            logger.debug('TopLevelSystem under test {0} refers to :'.format(tlsut_mga.Name))
-            logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
+            tlsut_mga = [o for o in testbench_mga.GetChildrenOfKind('TopLevelSystemUnderTest')]
+            if tlsut_mga:
+                tlsut_mga = tlsut_mga[0]
+            else:
+                tlsut_role = testbench_mga.Meta.GetRoleByNameDisp('TopLevelSystemUnderTest')
+                tlsut_mga = testbench_mga.CreateChildObject(tlsut_role)
+            logger.debug('TopLevelSystem under test {0} name :'.format(tlsut_mga.Name))
+            if tlsut_mga.Referred:
+                logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
+            else:
+                logger.debug(' [null reference]')
         except pywintypes.com_error as err:
             logger.error(err.message)
             raise RuntimeError('Given test-bench not found or setup correctly.')
         ## Import the design.
         logger.debug('Calling CyPhyDesignImporter.ImportDesign.')
-        design_mga = design_importer.ImportDesignToDesignSpace(project, adm_file)
+        design_mga = design_importer.ImportDesignToDesignSpaceIfApplicable(project, adm_file)
         design_id = design_mga.ID
         logger.debug('Design imported:')
         logger.debug(' Name : {0}'.format(design_mga.Name))
