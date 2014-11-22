@@ -121,6 +121,42 @@ requirejs([
                         'src/plugins/ADMEditor/AtmImporter/meta.js'].forEach(function (f) {
                             fs.writeFileSync(PATH.resolve(cyphyRootDir, f), meta_js, {encoding: 'utf-8'});
                         });
+
+                    writeExampleModel();
+                });
+            });
+        });
+    }
+    function writeExampleModel() {
+        var pluginConfig = {};
+        pluginConfig.projectName = "TmpProject";
+        pluginConfig.branch = "master";
+        pluginConfig.pluginName = "MockModelGenerator";
+        pluginConfig.activeNode = "/1";
+        pluginConfig.activeSelection = undefined;
+        pluginConfig.pluginConfig = { timeOut: 0};
+        webGme.runPlugin.main(CONFIG, pluginConfig, function (err, result) {
+            if (err) {
+                fatal(err);
+            }
+            var blobClient = new BlobClient({
+                server: 'localhost',
+                serverPort: 8855,
+                httpsecure: false,
+                sessionId: undefined
+            });
+            blobClient.getArtifact(result.artifacts[0], function (err, data) {
+                if (err) {
+                    fatal(err);
+                }
+                blobClient.getSubObject(result.artifacts[0], 'test/models/TmpProject/META.js', function (err, res) {
+                    if (err) {
+                        fatal(err);
+                    }
+                    var meta_js = res.toString('utf8');
+                    ['test/models/AcmImporter/META.js'].forEach(function (f) {
+                            fs.writeFileSync(PATH.resolve(cyphyRootDir, f), meta_js, {encoding: 'utf-8'});
+                        });
                 });
             });
         });
