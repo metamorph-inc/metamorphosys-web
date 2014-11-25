@@ -1,7 +1,7 @@
 <div class="design-space-view">
-    <h1 class="main-header">Design Space - {{dataModels.design.name}}</h1>
+    <h1 class="main-view-header">Design Space - {{dataModels.design.name}}</h1>
     <div class="design-space-component-list col-lg-4">
-        <h3><span class="fa fa-puzzle-piece"></span>Used Components</h3>
+        <h3><span class="fa fa-puzzle-piece"></span> Used Components</h3>
         <component-list ng-if="state.designTreeLoaded && state.hasComponents"
                         connection-id="'my-db-connection-id'"
                         workspace-id=workspaceId
@@ -10,7 +10,7 @@
         <span ng-if="!state.hasComponents" class="component-list-load">No components in design..</span>
     </div>
     <div class="design-tree col-lg-4">
-        <h3><span class="fa fa-cubes"></span>Design Space Tree</h3>
+        <h3><span class="fa fa-cubes"></span> Design Space Tree</h3>
         <design-tree design-id="designId" connection-id="'my-db-connection-id'"></design-tree>
     </div>
     <div class="configurations-actions col-lg-4">

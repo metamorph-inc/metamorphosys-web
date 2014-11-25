@@ -11,3 +11,6 @@
     background-repeat: no-repeat; }
     .main-navigator-container .dropdown-navigator li.cyphy-root .label-container {
       padding-left: 46px; }
+
+h1.main-view-header {
+  padding: 0px 14px; }
