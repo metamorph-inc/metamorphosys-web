@@ -719,6 +719,9 @@ define([
             constraintTargets.forEach(function (componentInstance) {
                 self.core.addMember(feature, 'ConstraintTarget', componentInstance.node);
             });
+        } else {
+            self.createMessage(container, 'Unknown ContainerFeature type ' + featureData['@xsi:type'], 'error');
+            return;
         }
 
         self.core.setRegistry(feature, 'position', {
