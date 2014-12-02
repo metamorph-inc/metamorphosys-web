@@ -20,7 +20,8 @@
     "rextrast": {
         "executor": "./node_modules/webgme-domain-tools/src/rest/executor/Executor",
         "desert": "./src/rest/desert/Desert",
-        "serverinfo": "./src/rest/serverInfo/ServerInfo"
+        "serverinfo": "./src/rest/serverInfo/ServerInfo",
+        "copyproject": "./src/rest/copyproject/CopyProject"
     },
 
     "paths": {
