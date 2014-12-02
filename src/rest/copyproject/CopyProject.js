@@ -3,98 +3,111 @@
 config.json: "rextrast": { "copyproject": "./src/rest/copyproject/CopyProject", ...
 http://localhost:8855/rest/external/copyproject
  */
-define(['core/coreforplugins',
+define(['logManager',
+    'core/coreforplugins',
     'storage/serveruserstorage',
     'coreclient/serialization',
-], function (Core, Storage, Serialization) {
+], function (logManager, Core, Storage, Serialization) {
     "use strict";
 
+    var BSON_FILE = 'dump\\CyPhy\\Test375.bson';
+
+    var logger = logManager.create('REST-COPYPROJECT');
+    var mongodb = require('mongodb');
+    var BSONStream = require('bson-stream');
     var fs = require('fs');
-    var PATH = require('path');
-    //var cyphyRootDir = PATH.resolve(__dirname, '../../..');
-    var cyphyRootDir = PATH.resolve('.');
+    var child_process = require('child_process');
     var CONFIG = webGMEGlobal.getConfig();
 
+    var use_exec = undefined;
+
     function Copy(req, res, next) {
-        var projectName = "Test" + Math.floor(Math.random() * 10000);
+        var projectName = "Test_" + Math.floor(Math.random() * 100000);
         var fatal = function (err) {
             res.status(500).send(err);
         };
-        var storage = new Storage({'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase});
-        storage.openDatabase(function (err) {
-            if (err) {
-                return fatal(err);
-            }
-            fatal = function (err) {
-                storage.closeDatabase();
-                if (err) {
-                    res.status(500).send(err);
-                }
-            };
-            storage.openProject(projectName, function (err, project) {
-                if (err) {
-                    return fatal(err);
-                }
-                fatal = function (err) {
-                    project.closeProject();
-                    storage.closeDatabase();
-                    if (err) {
-                        res.status(500).send(err);
-                    }
-                };
-                var core = new Core(project),
-                    root = core.createNode({parent:null, base:null});
-                Serialization.import(core, root, JSON.parse(fs.readFileSync(PATH.resolve(cyphyRootDir, "meta/ADMEditor_metaOnly.json"), {encoding: 'utf-8'})), function(err) {
-                    if (err) {
-                        return storage.deleteProject(name, function() {
-                            return fatal(err);
-                        });
-                    }
+        var options = {'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase};
 
-                    core.persist(root, function(err) {});
-                    var rhash = core.getHash(root),
-                        chash = project.makeCommit([],rhash,"project imported",function(err){});
-                    project.getBranchHash("master","#hack",function(err, oldhash){
+        var copy = function () {
+            if (use_exec) {
+                var child = child_process.execFile('mongorestore', ['--host', options.host, '--port', options.port, '--db', options.database,
+                        '--collection', projectName, BSON_FILE ], function (err, stdout, stderr) {
+                    if (err) {
+                        return fatal(err);
+                    }
+                    // return fatal(stdout + "\n\n" + stderr);
+                    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+                    res.header("Pragma", "no-cache");
+                    res.redirect('/?project=' + projectName);
+                });
+            } else {
+                mongodb.MongoClient.connect("mongodb://" + options.host + ":" + options.port + "/" + options.database, {
+                    'w': 1,
+                    'native-parser': true,
+                    'auto_reconnect': true,
+                    'poolSize': 20,
+                    socketOptions: {keepAlive: 1}
+                }, function (err, db) {
+                    if (err) {
+                        return fatal(err);
+                    }
+                    fatal = function (err) {
+                        db.close();
                         if (err) {
-                            return fatal(err);
+                            res.status(500).send(err);
                         }
-                        project.setBranchHash("master", oldhash, chash, function (err) {
+                    };
+                    var rs = fs.createReadStream(BSON_FILE);
+                    db.createCollection(projectName, {}, function (err, collection) {
+                        var bsons = rs.pipe(new BSONStream());
+                        var pending = 1;
+                        var done = function (err) {
                             if (err) {
+                                done = function () {
+                                };
                                 return fatal(err);
                             }
-                            project.loadObject(chash, function (err, obj) {
-                                if (err) {
-                                    fatal(err);
-                                }
-                                core.loadRoot(obj.root, function (err, root) {
-                                    if (err) {
-                                        fatal(err);
-                                    }
-                                    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-                                    res.header("Pragma", "no-cache");
-                                    res.redirect('/?project=' + projectName);
-
-                                    project.closeProject();
-                                    storage.closeDatabase();
-                                });
+                            pending--;
+                            if (pending === 0) {
+                                res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+                                res.header("Pragma", "no-cache");
+                                res.redirect('/?project=' + projectName);
+                                db.close();
+                            }
+                        };
+                        bsons.on('data', function (obj) {
+                            pending++;
+                            collection.insert(obj, function (err) {
+                                done(err);
                             });
+                        });
+                        bsons.on('end', function (err) {
+                            done(err);
                         });
                     });
                 });
+            }
+        };
+        if (use_exec === undefined) {
+            child_process.execFile('mongorestore', ['--help'], function (err, stdout, stderr) {
+                if (err) {
+                    use_exec = false;
+                    logger.warning('mongorestore is unavailable (is it on the PATH?). Using slower node.js implementation');
+                } else {
+                    use_exec = true;
+                }
+                copy();
             });
-        });
+        } else {
+            copy();
+        }
     }
 
     var CopyProject = function (req, res, next) {
-        var config = webGMEGlobal.getConfig(),
-            url = req.url.split('/'),
-            handlers = {
-            };
+        var url = req.url.split('/');
 
         if (url.length === 2) {
             Copy(req, res, next);
-        } else if (handlers.hasOwnProperty(url[1])) {
-            handlers[url[1]](req, res, next);
         } else {
             res.send(404);
         }
