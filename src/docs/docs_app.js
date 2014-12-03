@@ -1,10 +1,10 @@
 /*globals angular, require, window, console */
 
 var components = [
-    {
-        name: 'WorkersList',
-        sources: [ 'demo.html', 'demo.js']
-    }
+//    {
+//        name: 'WorkersList',
+//        sources: [ 'demo.html', 'demo.js']
+//    }
 //    {
 //        name: 'WorkspaceList',
 //        sources: [ 'demo.html', 'demo.js']
@@ -31,7 +31,7 @@ require('chance');
 
 angular.module('gme.services', []);
 
-require('../library/WorkersList/docs/demo.js');
+//require('../library/WorkersList/docs/demo.js');
 //require('../library/WorkspaceList/docs/demo.js');
 //require('../library/ComponentList/docs/demo.js');
 //require('../library/DesignList/docs/demo.js');
