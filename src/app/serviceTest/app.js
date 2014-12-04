@@ -26,63 +26,79 @@ var CyPhyApp = angular.module('CyPhyApp', [
 //        });
 
         nodeService.on('my-db-connection-id', 'initialize', function (currentContext) {
-            var testContext = {
+            var logger,
+              testContext;
+
+            logger = function (info) {
+              console.warn(info);
+            };
+
+            testContext = {
                 db: 'my-db-connection-id',
                 regionId: 'TestRegion'
             };
             //pluginService.testRunPlugin(testContext);
-            workspaceService.watchWorkspaces(testContext, function (info) { console.warn(info); })
+            workspaceService.watchWorkspaces(testContext, logger)
                 .then(function (data) {
-                    var key;
+                    var runOnceAlready;
+
                     console.log('watchWorkspaces:', data);
-                    for (key in data.workspaces) {
-                        workspaceService.watchNumberOfComponents(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                console.log('watchNumberOfComponents:', data);
-                            });
-                        workspaceService.watchNumberOfDesigns(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                console.log('watchNumberOfDesigns:', data);
-                            });
-                        workspaceService.watchNumberOfTestBenches(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                console.log('watchNumberOfTestBenches:', data);
-                            });
-                        componentService.watchComponents(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                var cKey;
-                                console.log('watchComponents:', data);
-                                for (cKey in data.components) {
-                                    componentService.watchInterfaces(testContext, cKey, function (info) { console.warn(info); })
-                                        .then(function (data) {
-                                            console.log('watchComponentDetails:', data);
-                                    });
-                                }
-                            });
-                        designService.watchDesigns(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                var dKey;
-                                console.log('watchDesigns:', data);
-//                                for (cKey in data.components) {
-//                                    componentService.watchComponentDetails(testContext, cKey, function (info) { console.warn(info); })
-//                                        .then(function (data) {
-//                                            console.warn('watchComponentDetails:', data);
-//                                        });
-//                                }
-                            });
-                        testBenchService.watchTestBenches(testContext, key, function (info) { console.warn(info); })
-                            .then(function (data) {
-                                var dKey;
-                                console.warn('watchTestBenches:', data);
-//                                for (cKey in data.components) {
-//                                    componentService.watchComponentDetails(testContext, cKey, function (info) { console.warn(info); })
-//                                        .then(function (data) {
-//                                            console.warn('watchComponentDetails:', data);
-//                                        });
-//                                }
-                            });
-                        break; // Can only watch the above for one work-space (unless context is modified).
-                    }
+
+                    runOnceAlready = false;
+
+                    angular.foreEach(data.workspaces, function(v, key) {
+
+                        if (runOnceAlready === false) {
+
+                          workspaceService.watchNumberOfComponents(testContext, key, logger)
+                              .then(function (data) {
+                                  console.log('watchNumberOfComponents:', data);
+                              });
+                          workspaceService.watchNumberOfDesigns(testContext, key, logger)
+                              .then(function (data) {
+                                  console.log('watchNumberOfDesigns:', data);
+                              });
+                          workspaceService.watchNumberOfTestBenches(testContext, key, logger)
+                              .then(function (data) {
+                                  console.log('watchNumberOfTestBenches:', data);
+                              });
+                          componentService.watchComponents(testContext, key, logger)
+                              .then(function (data) {
+                                  console.log('watchComponents:', data);
+                                  angular.forEach (data.components, function(v, cKey) {
+                                      componentService.watchInterfaces(testContext, cKey, logger)
+                                          .then(function (data) {
+                                              console.log('watchComponentDetails:', data);
+                                      });
+                                  });
+                              });
+                          designService.watchDesigns(testContext, key, logger)
+                              .then(function (data) {
+                                  var dKey;
+                                  console.log('watchDesigns:', data);
+  //                                for (cKey in data.components) {
+  //                                    componentService.watchComponentDetails(testContext, cKey, logger)
+  //                                        .then(function (data) {
+  //                                            console.warn('watchComponentDetails:', data);
+  //                                        });
+  //                                }
+                              });
+                          testBenchService.watchTestBenches(testContext, key, logger)
+                              .then(function (data) {
+                                  var dKey;
+                                  console.warn('watchTestBenches:', data);
+  //                                for (cKey in data.components) {
+  //                                    componentService.watchComponentDetails(testContext, cKey, logger)
+  //                                        .then(function (data) {
+  //                                            console.warn('watchComponentDetails:', data);
+  //                                        });
+  //                                }
+                              });
+                        }
+                        //break; // Can only watch the above for one work-space (unless context is modified).
+
+                        runOnceAlready = true;
+                    });
                 });
         });
     });
