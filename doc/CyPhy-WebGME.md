@@ -71,6 +71,8 @@ Drag and drop the Wheel container from the project-tree onto the test-bench and 
 
 ![System under test](images/TestBench2.png "SystemUnderTest")
 
+Go up a level in the model hierarchy. You will see the TestBench you created. Drag-n-drop the design onto the pointer icon of the TestBench.
+
 Run the TestBenchRunner-plugin using the play button. As a first run, do not execute the test-bench. When it has finished you can look at the plugin-result and expand it. You should be provided with links to the generated artifacts. You can run the cmd-file on your machine, provided it has the META-tools installed.
 
 ![Test-bench artifacts](images/TestBench4.png "TestBenchArtifacts")
