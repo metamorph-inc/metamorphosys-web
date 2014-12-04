@@ -93,6 +93,15 @@ var argv = require('yargs').argv,
 require('process');
 require('path');
 
+function swallowError( error ) {
+
+  //If you want details of the error in the console
+  console.log( error.toString() );
+
+  this.emit( 'end' );
+}
+
+
 gulp.task('clean-build', function () {
     return gulp.src(buildPaths.root).pipe(clean());
 });
@@ -123,6 +132,7 @@ gulp.task('browserify-docs', function () {
         debug: debug
     })
         .bundle()
+        .on('error', swallowError)
         .pipe(source(libraryName + '-docs.js'))
         .pipe(gulp.dest(buildPaths.docsRoot));
 
@@ -204,6 +214,7 @@ gulp.task('browserify-library', function () {
         debug: debug
     })
         .bundle()
+        .on('error', swallowError)
         .pipe(source(libraryName + '.js'))
         .pipe(gulp.dest(buildPaths.scripts));
 
