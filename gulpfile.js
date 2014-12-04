@@ -420,7 +420,7 @@ gulp.task('refresh-server', function () {
 });
 
 
-gulp.task('register-watchers', function (cb) {
+gulp.task('register-watchers', ['compile-all'], function (cb) {
     var i,
         registerAppWatchers;
 
