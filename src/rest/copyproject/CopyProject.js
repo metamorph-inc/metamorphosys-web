@@ -21,10 +21,10 @@ define(['logManager',
 
     var use_exec = undefined;
 
-    function Copy(req, res, next) {
+    function Copy(req, res, callback) {
         var projectName = "Test_" + Math.floor(Math.random() * 100000);
         var fatal = function (err) {
-            res.status(500).send(err);
+            callback(err);
         };
         var options = {'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase};
 
@@ -36,9 +36,7 @@ define(['logManager',
                         return fatal(err);
                     }
                     // return fatal(stdout + "\n\n" + stderr);
-                    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-                    res.header("Pragma", "no-cache");
-                    res.redirect('/?project=' + projectName);
+                    callback(null, projectName);
                 });
             } else {
                 mongodb.MongoClient.connect("mongodb://" + options.host + ":" + options.port + "/" + options.database, {
@@ -54,7 +52,7 @@ define(['logManager',
                     fatal = function (err) {
                         db.close();
                         if (err) {
-                            res.status(500).send(err);
+                            callback(err);
                         }
                     };
                     var rs = fs.createReadStream(BSON_FILE);
@@ -69,9 +67,7 @@ define(['logManager',
                             }
                             pending--;
                             if (pending === 0) {
-                                res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-                                res.header("Pragma", "no-cache");
-                                res.redirect('/?project=' + projectName);
+                                callback(null, projectName);
                                 db.close();
                             }
                         };
@@ -106,8 +102,22 @@ define(['logManager',
     var CopyProject = function (req, res, next) {
         var url = req.url.split('/');
 
-        if (url.length === 2) {
-            Copy(req, res, next);
+        if (req.url === '/') {
+            Copy(req, res, function (err, projectName) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+                res.header("Pragma", "no-cache");
+                res.redirect('/?project=' + projectName);
+            });
+        } else if (url.length === 2 && url[1] === 'noredirect') {
+            Copy(req, res, function (err, projectName) {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                res.status(200).send(projectName);
+            });
         } else {
             res.send(404);
         }
