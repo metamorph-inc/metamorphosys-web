@@ -1,7 +1,5 @@
 <li title="{{ node.label }}"
-    data-ng-class="{ 'expanded': isNodeExpanded(node),
-     'active-node': config.state.activeNode === node.id,
-     'selected-node': isNodeSelected(node)}">
+    data-ng-class="getNodeClass(node)">
 
     <tree-navigator-node-label></tree-navigator-node-label>
 

@@ -11,7 +11,7 @@ require( './itemList/itemList.js' );
 require( './searchBox/searchBox.js' );
 require( './valueWidgets/valueWidgets.js' );
 require( './decisionTable/decisionTable.js' );
-
+require( './taxonomyTerms/taxonomyTerms.js' );
 
 angular.module( 'isis.ui.components', [
   'isis.ui.components.templates',
