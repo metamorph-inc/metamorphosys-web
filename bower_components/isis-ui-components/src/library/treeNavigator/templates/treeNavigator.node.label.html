@@ -28,7 +28,6 @@
     <span data-ng-if="node.extraInfo"
           class="node-extra-info">{{ node.extraInfo }}</span>
     </span>
-    <i data-ng-if="node.childrenCount && config.folderIconClass || node.iconClass || config.nodeIconClass"
-       data-ng-class="node.childrenCount && config.folderIconClass || node.iconClass || config.nodeIconClass"></i>
-
+    <i data-ng-if="node.childrenCount && config.folderIconClass"
+       data-ng-class="node.childrenCount && config.folderIconClass"></i>
 </div>

@@ -11,7 +11,8 @@ angular.module(
     'isis.ui.itemList.newItem',
     'isis.ui.itemList.filter',
     'isis.ui.itemList.itemGroup',
-    'isis.ui.contextmenu'
+    'isis.ui.contextmenu',
+    'isis.ui.taxonomyTerms'
   ]
 )
   .controller(

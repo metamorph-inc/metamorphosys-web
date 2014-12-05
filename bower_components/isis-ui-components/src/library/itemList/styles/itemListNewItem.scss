@@ -1,7 +1,7 @@
 .create-new-item {
 
   accordion > .panel-group > .panel {
-    border-radius: 1ex;
+    border-radius: 4px;
     overflow: hidden;
     background-clip: border-box;
   }
@@ -22,7 +22,7 @@
   a {
     text-decoration: none;
     padding: .75ex 1ex;
-    display: inline-block;
+    display: block;
   }
 
   form .row {

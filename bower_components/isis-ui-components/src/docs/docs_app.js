@@ -55,11 +55,11 @@ window.Showdown = require( 'showdown' );
 require( 'angular-markdown-directive' );
 
 require( 'codemirror-css' );
-window.CodeMirror = require( 'code-mirror' );
+window.CodeMirror = require( 'codemirror' );
 
-require( 'code-mirror/mode/htmlmixed' );
-require( 'code-mirror/mode/xml' );
-require( 'code-mirror/mode/javascript' );
+require( 'codemirror/mode/htmlmixed/htmlmixed' );
+require( 'codemirror/mode/xml/xml' );
+require( 'codemirror/mode/javascript/javascript' );
 
 require( 'angular-ui-codemirror' );
 require( 'ng-grid' );

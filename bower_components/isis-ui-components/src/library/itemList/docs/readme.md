@@ -17,7 +17,12 @@ the following properties:
     - toolTip: {string},
     - iconClass: {string}.
 * `details`: {string},
-* `detailsTemplateUrl`: {string}.
+* `headerTemplateUrl`: {string},
+* `detailsTemplateUrl`: {string},
+* `taxonomyTerms`: {Array of objects with the following properties}:
+    - id: {string}
+    - name: {string}
+    - url: {string}
 
 The following options are allowed in `config`:
 

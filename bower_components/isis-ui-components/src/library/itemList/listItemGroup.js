@@ -21,8 +21,10 @@ angular.module(
         templateUrl: '/isis-ui-components/templates/listItemGroup.html',
         link: function ( scope, element ) {
 
+          var listElement = element.find('>ul' );
+
           if ( scope.listData && scope.config && scope.config.sortable === true ) {
-            element.attr( 'ui-sortable', 'sortableOptions' );
+            listElement.attr( 'ui-sortable', 'sortableOptions' );
             element.attr( 'ng-model', 'listData.items' );
             $compile( element )( scope );
           }

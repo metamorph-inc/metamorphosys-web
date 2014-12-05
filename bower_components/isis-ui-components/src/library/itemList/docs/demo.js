@@ -149,6 +149,19 @@ demoApp.controller( 'ItemListDemoController', function ( $scope ) {
       cssClass: 'my-item',
       toolTip: 'Open item',
       description: 'This is description here',
+      headerTemplateUrl: Math.random() > 0.5 ? '/library/itemList/docs/headerTemplate.html' : undefined,
+      taxonomyTerms: [
+        {
+          id: 'tag1',
+          name: 'Tag A',
+          url: 'http://vanderbilt.edu'
+        },
+        {
+          id: 'tag2',
+          name: 'Tag B',
+          url: 'http://vanderbilt.edu'
+        }
+      ],
       lastUpdated: {
         time: Date.now(),
         user: 'N/A'
