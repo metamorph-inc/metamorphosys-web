@@ -11,23 +11,26 @@
     <!-- Include CSS isis-ui-components -->
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.css">
 
-    <!-- Include CSS cyphy-components -->
+    <!-- Include other cyphy-components -->
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/angular-growl/build/angular-growl.min.css">
 
     <title>MMS App</title>
 </head>
 <body>
-
+<div growl></div>
 <!-- TODO: add your html here -->
-<div data-ng-include="'/sample/templates/MyView.html'"></div>
+<div data-ng-include="'/mmsApp/templates/editor.html'"></div>
 
 <!-- Include library dependencies -->
 <script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/extlib/bower_components/jquery-ui/jquery-ui.min.js"></script>
-<script src="/extlib/bower_components/angular/angular.min.js"></script>
+<script src="/extlib/bower_components/angular/angular.js"></script>
 <script src="/extlib/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="/extlib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/extlib/bower_components//angular-bootstrap/ui-bootstrap-tpls.js"></script>
-
+<script src="/extlib/bower_components/angular-ui-utils/ui-utils.min.js"></script>
+<script src="/extlib/bower_components/ng-grid/build/ng-grid.min.js"></script>
+<script src="/extlib/bower_components/angular-ui-utils/ui-utils.min.js"></script>
 
 <!-- Include WebGME libraries -->
 <!--  client -->

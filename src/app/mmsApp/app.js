@@ -16,5 +16,4 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     });
 
-// TODO: require all of your controllers
-require('./views/MyView/MyViewController');
+require('./controllers/sampleController.js');

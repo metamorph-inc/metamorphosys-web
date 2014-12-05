@@ -1,21 +1,19 @@
 /*globals angular, console */
 
 angular.module('CyPhyApp')
-    .controller('MyViewController', function ($scope, DataStoreService, ProjectService) {
+    .controller('SampleController', function ($scope, dataStoreService, projectService) {
         'use strict';
-
-        console.log('MyViewController');
 
         $scope.model = {
             name: 'listing projects [set from controller]',
             projectIds: []
         };
 
-        DataStoreService.connectToDatabase('my-db-connection-id', {host: window.location.basename})
+        dataStoreService.connectToDatabase('my-db-connection-id', {host: window.location.basename})
             .then(function () {
                 console.log('connected');
 
-                ProjectService.getProjects('my-db-connection-id')
+                projectService.getProjects('my-db-connection-id')
                     .then(function (projectIds) {
                         $scope.model.projectIds = projectIds;
                     })
