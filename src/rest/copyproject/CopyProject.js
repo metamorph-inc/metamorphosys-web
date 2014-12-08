@@ -10,7 +10,7 @@ define(['logManager',
 ], function (logManager, Core, Storage, Serialization) {
     "use strict";
 
-    var BSON_FILE = 'dump\\CyPhy\\Test375.bson';
+    var BSON_FILE = 'dump\\CyPhy\\NkLabsPrototype.bson';
 
     var logger = logManager.create('REST-COPYPROJECT');
     var mongodb = require('mongodb');
