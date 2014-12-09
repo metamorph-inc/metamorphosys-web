@@ -421,7 +421,7 @@ define([
     AdmExporter.prototype.addDomainPort = function (node, parent, containerData, callback) {
         var self = this,
             parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
-            data = self.getDomainP(node, parent);
+            data = self.getDomainPortData(node, parent);
 
         if (parentType === 'Container') {
             containerData.Port.push(data);
