@@ -18,8 +18,7 @@ define(['logManager',
         fs = require('fs'),
         child_process = require('child_process'),
         CONFIG = webGMEGlobal.getConfig(),
-
-        use_exec = undefined;
+        use_exec;
 
     function Copy(req, res, callback) {
         var projectName = "Test_" + Math.floor(Math.random() * 100000);
