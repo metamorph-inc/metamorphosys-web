@@ -20,8 +20,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
   var selectProject;
 
   selectProject = {
-    load: function (
-      $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService) {
+    load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService) {
       var
         connectionId,
         deferred;
@@ -37,7 +36,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
         .then(function () {
           return projectService.selectProject(connectionId, $stateParams.projectId);
         })
-        .then(function(projectId) {
+        .then(function (projectId) {
           $rootScope.projectId = projectId;
           $rootScope.loading = false;
           deferred.resolve(projectId);
@@ -61,7 +60,8 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     .state('project', {
       url: '/project/:projectId',
       templateUrl: '/mmsApp/templates/editor.html',
-      resolve: selectProject
+      resolve: selectProject,
+      controller: 'ProjectViewController'
     })
     .state('noProject', {
       url: '/noProject',
@@ -75,16 +75,46 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     });
 });
 
-CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope) {
-  $scope.navigator = {};
-  $scope.navigator.items = [
-    {
-      id: 'root',
-      label: 'MMS App',
-      itemClass: 'cyphy-root'
+CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
+
+  var defaultNavigatorItems;
+
+  defaultNavigatorItems = [
+      {
+        id: 'root',
+        label: 'MMS App',
+        itemClass: 'cyphy-root'
+      }
+    ];
+
+  $scope.navigator = {
+    separator: true,
+    items: angular.copy(defaultNavigatorItems, [])
+  };
+
+  $rootScope.$watch('projectId', function(projectId) {
+
+    if (projectId) {
+
+      $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
+      $scope.navigator.items.push({
+        id: 'project',
+        label: projectId,
+        action: function() {
+          $window.open('/?project=' + projectId);
+        }
+      });
+
+    } else {
+      $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
     }
-  ];
-  $rootScope.mainNavigator = $scope.navigator;
+
+  });
+
+});
+
+CyPhyApp.controller('ProjectViewController', function () {
+
 });
 
 CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
