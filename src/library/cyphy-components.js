@@ -44,5 +44,7 @@ require('./ConfigurationSetSelector/ConfigurationSetSelector');
 
 require('./WorkersList/WorkersList');
 
+require('./componentBrowser/componentBrowser');
+
 
 
