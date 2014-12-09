@@ -1,3 +1,31 @@
 .mms-app {
+  font-family: 'Titillium Web', sans-serif;
+}
 
+.main-navigator-container {
+  .dropdown-navigator {
+    background: linear-gradient(#fff, #eee);
+    border-bottom: 1px solid #ddd;
+    color: #222;
+
+    > li {
+      transition: background-color 200ms;
+    }
+
+    > li:not(.separator):hover {
+      background-color: #ddd;
+    }
+
+    li.cyphy-root{
+      background-image: url(./images/mms-icon.png);
+      background-position: 8px 3px;
+      background-repeat: no-repeat;
+      .label-container {
+        padding-left: 46px;
+      }
+    }
+  }
+}
+h1.main-view-header {
+  padding: 0px 14px;
 }

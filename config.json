@@ -5,7 +5,7 @@
 
     "mongodatabase": "CyPhy",
 
-    "debug": false,
+    "debug": true,
 
     "decoratorpaths": ["./src/decorators"],
 
