@@ -6,24 +6,25 @@ http://localhost:8855/rest/external/copyproject
 define(['logManager',
     'core/coreforplugins',
     'storage/serveruserstorage',
-    'coreclient/serialization',
+    'coreclient/serialization'
 ], function (logManager, Core, Storage, Serialization) {
     "use strict";
 
-    var BSON_FILE = 'dump\\CyPhy\\NkLabsPrototype.bson';
+    var path = require('path'),
+        BSON_FILE = path.join('dump', 'CyPhy', 'NkLabsPrototype.bson'),
+        logger = logManager.create('REST-COPYPROJECT'),
+        mongodb = require('mongodb'),
+        BSONStream = require('bson-stream'),
+        fs = require('fs'),
+        child_process = require('child_process'),
+        CONFIG = webGMEGlobal.getConfig(),
 
-    var logger = logManager.create('REST-COPYPROJECT');
-    var mongodb = require('mongodb');
-    var BSONStream = require('bson-stream');
-    var fs = require('fs');
-    var child_process = require('child_process');
-    var CONFIG = webGMEGlobal.getConfig();
-
-    var use_exec = undefined;
+        use_exec = undefined;
 
     function Copy(req, res, callback) {
         var projectName = "Test_" + Math.floor(Math.random() * 100000);
         var fatal = function (err) {
+            console.log(err);
             callback(err);
         };
         var options = {'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase};
