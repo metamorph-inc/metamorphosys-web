@@ -27,6 +27,14 @@
 </div>
 <div ui-view></div>
 
+<div class="loading-cover"
+     ng-if="loading"
+        ><div class="loading-message">Loading...</div></div>
+
+<div class="processing-cover"
+     ng-if="processing"
+        ></div>
+
 <!-- Include library dependencies -->
 <script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/extlib/bower_components/jquery-ui/jquery-ui.min.js"></script>
