@@ -16,14 +16,52 @@ var CyPhyApp = angular.module('CyPhyApp', [
 ]);
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
-  // For any unmatched url, redirect to /workspaces
+
+  var selectProject;
+
+  selectProject = {
+    load: function (
+      $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService) {
+      var
+        connectionId,
+        deferred;
+
+      $rootScope.mainDbConnectionId = 'mms-main-db-connection-id';
+
+      connectionId = $rootScope.mainDbConnectionId;
+      deferred = $q.defer();
+
+      $rootScope.loading = true;
+
+      dataStoreService.connectToDatabase(connectionId, {host: window.location.basename})
+        .then(function () {
+          return projectService.selectProject(connectionId, $stateParams.projectId);
+        })
+        .then(function(projectId) {
+          $rootScope.projectId = projectId;
+          $rootScope.loading = false;
+          deferred.resolve(projectId);
+        })
+        .catch(function (reason) {
+          $rootScope.loading = false;
+          $log.debug('Opening project errored:', $stateParams.projectId, reason);
+          $state.go('404', {
+            projectId: $stateParams.projectId
+          });
+        });
+
+      return deferred.promise;
+    }
+  };
+
   $urlRouterProvider.otherwise('/noProject');
-  //
-  // Now set up the states
+
+
   $stateProvider
     .state('project', {
       url: '/project/:projectId',
-      templateUrl: '/mmsApp/templates/editor.html'
+      templateUrl: '/mmsApp/templates/editor.html',
+      resolve: selectProject
     })
     .state('noProject', {
       url: '/noProject',
@@ -54,14 +92,14 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
   $scope.projectId = $stateParams.projectId;
   $scope.errored = false;
 
-  $scope.startNewProject = function() {
+  $scope.startNewProject = function () {
 
     $rootScope.processing = true;
 
     $log.debug('New project creation');
 
     $http.get('/rest/external/copyproject/noredirect').
-      success(function(data) {
+      success(function (data) {
 
         $rootScope.processing = false;
         $log.debug('New project creation successful', data);
@@ -70,7 +108,7 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
         });
 
       }).
-      error(function(data, status) {
+      error(function (data, status) {
 
         $log.debug('New project creation failed', status);
         $rootScope.processing = false;
