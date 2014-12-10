@@ -1086,7 +1086,9 @@ define([
         }
         srcParent = self.core.getParent(srcNode);
         dstParent = self.core.getParent(dstNode);
-        if (srcParent === dstParent) {
+        if (srcParent === dstParent && self.isMetaTypeOf(srcParent, self.META.Connector)) {
+            parent = self.core.getParent(srcParent);
+        } else if (srcParent === dstParent) {
             parent = srcParent;
         } else {
             srcDepth = self.core.getPath(srcParent).split('/').length;

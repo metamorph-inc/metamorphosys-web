@@ -104,9 +104,21 @@ describe('AdmImporterRegressions', function () {
         expect(RootContainer.ComponentInstance.length).to.equal(1);
         expect(RootContainer.Container[0].ComponentInstance.length).to.equal(1);
         expect(RootContainer.Container[0].ComponentInstance[0].PrimitivePropertyInstance
-                .filter( function (o) { return o['@IDinComponentModel'] === 'id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571'; })[0]
-                    .Value.ValueExpression['@ValueSource']).to
-            .equal(RootContainer.Container[0].Property.filter(function (p) { return p['@Name'] === 'OutP2'; })[0].Value['@ID']);
+            .filter(function (o) {
+                return o['@IDinComponentModel'] === 'id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571';
+            })[0]
+            .Value.ValueExpression['@ValueSource']).to
+            .equal(RootContainer.Container[0].Property.filter(function (p) {
+                return p['@Name'] === 'OutP2';
+            })[0].Value['@ID']);
+
+        done();
+    });
+
+    regression("ConnectorSelfConn.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        expect(RootContainer.Connector.length).to.equal(1);
+        expect(RootContainer.Connector[0].Role[0]['@PortMap']).to.equal(RootContainer.Connector[0].Role[1]['@ID']);
 
         done();
     });
