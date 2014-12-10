@@ -395,6 +395,7 @@ define([
         self.logger.info('visitComponentsRec at node "' + name + '" acmCounter is:   ' + self.acmCounter.toString());
         if (self.acmCounter <= 0) {
             callback(null);
+            return;
         }
         self.core.loadChildren(node, function (err, children) {
             var i,
@@ -1164,7 +1165,9 @@ define([
         }
         srcParent = self.core.getParent(srcNode);
         dstParent = self.core.getParent(dstNode);
-        if (srcParent === dstParent) {
+        if (srcParent === dstParent && self.isMetaTypeOf(srcParent, self.META.Connector)) {
+            parent = self.core.getParent(srcParent);
+        } else if (srcParent === dstParent) {
             parent = srcParent;
         } else {
             srcDepth = self.core.getPath(srcParent).split('/').length;

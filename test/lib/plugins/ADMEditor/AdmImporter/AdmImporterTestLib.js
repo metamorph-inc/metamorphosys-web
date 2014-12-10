@@ -49,7 +49,9 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
                 Object.keys(core._nodes).forEach(function (path) {
                     core._nodes[path].guid = core._nodes[path].path;
                 });
-                callback(err, importer.container);
+                var old_callback = callback;
+                callback = function () { throw new Error("Callback called twice"); };
+                old_callback(err, importer.container);
             };
             importer.innerMain(adm, callback_, callback_);
         }
