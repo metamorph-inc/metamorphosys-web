@@ -473,9 +473,21 @@ define([
                 callback(null);
             }
             for (i = 0; i < children.length; i += 1) {
-                roleData = self.getDomainPortData(children[i], connectorNode);
-                domainConnectors.push(roleData);
-                self.getConnectionString(children[i], getCounterCallback(roleData));
+                if (self.isMetaTypeOf(children[i], self.META.DomainPort)) {
+                    roleData = self.getDomainPortData(children[i], connectorNode);
+                    domainConnectors.push(roleData);
+                    self.getConnectionString(children[i], getCounterCallback(roleData));
+                } else if (self.isMetaTypeOf(children[i], self.META.PortMap)) {
+                    // TODO
+                    if (--counter === 0) {
+                        callback(error);
+                    }
+                } else {
+                    self.logger.error("Unexpected '" + self.getMetaType(children[i]) + "' in Connector '" + core.getAttribute("name", connectorNode));
+                    if (--counter === 0) {
+                        callback(error);
+                    }
+                }
             }
         });
     };
