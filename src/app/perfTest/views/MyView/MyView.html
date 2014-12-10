@@ -1,0 +1,7 @@
+<div data-ng-controller="MyViewController">
+    <h1>My view is here <small>{{ model.name }}</small></h1>
+    <h4>List of projects in this deployment</h4>
+    <ul>
+        <li data-ng-repeat="projectId in model.projectIds">{{ projectId }}</li>
+    </ul>
+</div>
