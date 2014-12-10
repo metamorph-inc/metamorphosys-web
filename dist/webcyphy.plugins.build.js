@@ -9829,6 +9829,7 @@ define('plugin/AdmImporter/AdmImporter/AdmImporter',[
         self.logger.info('visitComponentsRec at node "' + name + '" acmCounter is:   ' + self.acmCounter.toString());
         if (self.acmCounter <= 0) {
             callback(null);
+            return;
         }
         self.core.loadChildren(node, function (err, children) {
             var i,
@@ -10598,7 +10599,9 @@ define('plugin/AdmImporter/AdmImporter/AdmImporter',[
         }
         srcParent = self.core.getParent(srcNode);
         dstParent = self.core.getParent(dstNode);
-        if (srcParent === dstParent) {
+        if (srcParent === dstParent && self.isMetaTypeOf(srcParent, self.META.Connector)) {
+            parent = self.core.getParent(srcParent);
+        } else if (srcParent === dstParent) {
             parent = srcParent;
         } else {
             srcDepth = self.core.getPath(srcParent).split('/').length;
@@ -11552,7 +11555,7 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
     AdmExporter.prototype.addDomainPort = function (node, parent, containerData, callback) {
         var self = this,
             parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
-            data = self.getDomainP(node, parent);
+            data = self.getDomainPortData(node, parent);
 
         if (parentType === 'Container') {
             containerData.Port.push(data);
@@ -11606,9 +11609,21 @@ define('plugin/AdmExporter/AdmExporter/AdmExporter',[
                 callback(null);
             }
             for (i = 0; i < children.length; i += 1) {
-                roleData = self.getDomainPortData(children[i], connectorNode);
-                domainConnectors.push(roleData);
-                self.getConnectionString(children[i], getCounterCallback(roleData));
+                if (self.isMetaTypeOf(children[i], self.META.DomainPort)) {
+                    roleData = self.getDomainPortData(children[i], connectorNode);
+                    domainConnectors.push(roleData);
+                    self.getConnectionString(children[i], getCounterCallback(roleData));
+                } else if (self.isMetaTypeOf(children[i], self.META.PortMap)) {
+                    // TODO
+                    if (--counter === 0) {
+                        callback(error);
+                    }
+                } else {
+                    self.logger.error("Unexpected '" + self.getMetaType(children[i]) + "' in Connector '" + core.getAttribute("name", connectorNode));
+                    if (--counter === 0) {
+                        callback(error);
+                    }
+                }
             }
         });
     };
