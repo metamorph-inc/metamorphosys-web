@@ -86,6 +86,7 @@ var argv = require('yargs').argv,
     refresh = require('gulp-livereload'),
     lrserver = require('tiny-lr')(),
     prettify = require('gulp-js-prettify'),
+    shell = require('gulp-shell'),
     exec = require('child_process').exec;
 
 // Utility tasks
@@ -364,11 +365,7 @@ for (i = 0; i < applications.length; i += 1) {
     registerAppTasks(applications[i]);
 }
 
-gulp.task('rjs-build', function () {
-    exec('node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js', function () {
-        console.log('Done requireJS build!');
-    });
-});
+gulp.task('rjs-build', shell.task(['node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js']));
 
 gulp.task('compile-all', function (cb) {
     runSequence('clean-build', [
@@ -475,7 +472,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 });
 
 // Dev task
-gulp.task('dev', [ 'compile-all' ], function (cb) {
+gulp.task('dev', function (cb) {
 
     runSequence('start-server', 'register-watchers', cb);
 
