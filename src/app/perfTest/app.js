@@ -70,7 +70,7 @@ angular.module('CyPhyApp')
                     return project;
                 }, TIMEOUT);
             }).then(function () {
-                return branchService.createBranch(databaseId, "branch" + (Math.random() * 10000 | 0), '#22e1068eaacd75a6ab4f2588bf7b9f530d8b9c13');
+                return branchService.createBranch(databaseId, "branch" + (Math.random() * 10000 | 0), '#b1b8c03f41344f3465fd1a6f82f436989bafc48f');
             }).then(function (branchId) {
                 return $timeout(function () {
                     return branchId;
