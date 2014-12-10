@@ -392,6 +392,7 @@ define([
         self.logger.info('visitComponentsRec at node "' + name + '" acmCounter is:   ' + self.acmCounter.toString());
         if (self.acmCounter <= 0) {
             callback(null);
+            return;
         }
         self.core.loadChildren(node, function (err, children) {
             var i,
