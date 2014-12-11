@@ -10,10 +10,7 @@
     "webgme": "https://github.com/webgme/webgme/tarball/master",
     "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
     "requirejs": "=2.1.11",
-    "unzip": "=0.1.8",
-    "minimatch": "=0.3.0",
     "winreg": "=0.0.12",
-    "nedb": "=0.10.5",
     "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
   },
   "devDependencies": {
