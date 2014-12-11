@@ -1364,6 +1364,8 @@ define([
                     '@xmlns:q1': 'rf',
                     '@xsi:type': 'q1:RFPort',
                 };
+            } else {
+                throw new Error("Unknown type '" + typeName + "'");
             }
             for (attr in attributes) {
                 if (attributes.hasOwnProperty(attr)) {
