@@ -1,3 +1,4 @@
+/*globals process, __dirname */
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
  *
@@ -67,9 +68,10 @@ var main = function () {
 
         console.info(content);
         templateContent = '';
+        templateContent += '/* global define,require */\r\n';
         templateContent += '/* Generated file based on ejs templates */\r\n';
         templateContent += 'define([], function() {\r\n';
-        templateContent += '    return ' + JSON.stringify(content, null, 4);
+        templateContent += '    return ' + JSON.stringify(content, null, 4) + ';';
         templateContent += '});';
 
         fs.writeFileSync('Templates.js', templateContent);
@@ -78,5 +80,6 @@ var main = function () {
 };
 
 if (require.main === module) {
+    process.chdir(__dirname);
     main();
 }
