@@ -368,7 +368,7 @@ def move_dashboard_files(new_dir):
 
 if __name__ == '__main__':
     try:
-        shutil.rmtree('asdfsdf')
+        shutil.rmtree('results')
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
