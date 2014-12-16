@@ -1,4 +1,4 @@
-/*globals angular, console, document, require*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,7 +8,7 @@
 angular.module('cyphy.components')
     .controller('ComponentListController', function ($scope, $window, $modal, growl, componentService, fileService) {
         'use strict';
-        var self = this,
+        var
             items = [],             // Items that are passed to the item-list ui-component.
             componentItems = {},    // Same items are stored in a dictionary.
             serviceData2ListItem,
@@ -151,7 +151,7 @@ angular.module('cyphy.components')
                 ];
             },
 
-            detailsRenderer: function (item) {
+            detailsRenderer: function (/*item*/) {
                 //                item.details = 'My details are here now!';
             },
 

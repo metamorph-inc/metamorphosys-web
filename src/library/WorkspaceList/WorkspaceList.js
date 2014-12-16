@@ -1,4 +1,4 @@
-/*globals angular, console, document*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,7 +8,7 @@
 angular.module('cyphy.components')
     .controller('WorkspaceListController', function ($scope, $window, $location, $modal, growl, workspaceService, fileService) {
         'use strict';
-        var self = this,
+        var
             items = [],
             workspaceItems = {},
             config,
@@ -150,7 +150,7 @@ angular.module('cyphy.components')
                 ];
             },
 
-            detailsRenderer: function (item) {
+            detailsRenderer: function (/*item*/) {
                 //                item.details = 'My details are here now!';
             },
 
@@ -178,7 +178,7 @@ angular.module('cyphy.components')
                             }
                         }
 
-                        return hasFile ? "bg-success dragover" : "bg-danger dragover";
+                        return hasFile ? 'bg-success dragover' : 'bg-danger dragover';
                     };
 
                     $scope.onDroppedFiles = function ($files) {

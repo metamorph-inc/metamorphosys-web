@@ -1,4 +1,4 @@
-/*globals angular, console, document, require*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer

@@ -1,4 +1,4 @@
-/*globals angular, console, document, require*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -6,17 +6,15 @@
  */
 
 angular.module('cyphy.components')
-    .controller('DesignListController', function ($scope, $window, $location, $modal, designService, growl) {
+    .controller('DesignListController', function ($scope, $window, $location, $modal, designService) {
         'use strict';
-        var self = this,
+        var
             items = [],             // Items that are passed to the item-list ui-component.
             designItems = {},       // Same items are stored in a dictionary.
             serviceData2ListItem,
             config,
             addConfigurationWatcher,
-            context,
-            itemClickFn,
-            itemClickTip;
+            context;
 
         console.log('DesignListController');
         this.getConnectionId = function () {
@@ -47,7 +45,7 @@ angular.module('cyphy.components')
 
             // Event handlers
 
-            itemSort: function (jQEvent, ui) {
+            itemSort: function (/*jQEvent, ui*/) {
                 //console.log('Sort happened', jQEvent, ui);
             },
 
@@ -130,7 +128,7 @@ angular.module('cyphy.components')
                 ];
             },
 
-            detailsRenderer: function (item) {
+            detailsRenderer: function (/*item*/) {
                 //                item.details = 'My details are here now!';
             },
 

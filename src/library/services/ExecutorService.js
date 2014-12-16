@@ -1,4 +1,4 @@
-/*globals angular, WebGMEGlobal, console*/
+/*globals angular, WebGMEGlobal*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
