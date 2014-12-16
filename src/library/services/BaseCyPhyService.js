@@ -8,8 +8,8 @@
  */
 
 
-angular.module('cyphy.services')
-    .service('baseCyPhyService', function ($q, $timeout, nodeService) {
+angular.module( 'cyphy.services' )
+    .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
 
         /**
@@ -21,19 +21,19 @@ angular.module('cyphy.services')
          * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
          */
-        this.registerWatcher = function (watchers, parentContext, fn) {
-            nodeService.on(parentContext.db, 'initialize', function () {
+        this.registerWatcher = function ( watchers, parentContext, fn ) {
+            nodeService.on( parentContext.db, 'initialize', function () {
                 // This should be enough, the regions will be cleaned up in nodeService.
-                watchers[parentContext.regionId] = {};
-                fn(false);
-            });
-            nodeService.on(parentContext.db, 'destroy', function () {
+                watchers[ parentContext.regionId ] = {};
+                fn( false );
+            } );
+            nodeService.on( parentContext.db, 'destroy', function () {
                 // This should be enough, the regions should be cleaned up in nodeService.
-                if (watchers[parentContext.regionId]) {
-                    delete watchers[parentContext.regionId];
+                if ( watchers[ parentContext.regionId ] ) {
+                    delete watchers[ parentContext.regionId ];
                 }
-                fn(true);
-            });
+                fn( true );
+            } );
         };
 
         /**
@@ -42,19 +42,19 @@ angular.module('cyphy.services')
          * @param {object} parentContext - context of controller.
          * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          */
-        this.cleanUpAllRegions = function (watchers, parentContext) {
+        this.cleanUpAllRegions = function ( watchers, parentContext ) {
             var childWatchers,
                 key;
-            if (watchers[parentContext.regionId]) {
-                childWatchers = watchers[parentContext.regionId];
-                for (key in childWatchers) {
-                    if (childWatchers.hasOwnProperty(key)) {
-                        nodeService.cleanUpRegion(childWatchers[key].db, childWatchers[key].regionId);
+            if ( watchers[ parentContext.regionId ] ) {
+                childWatchers = watchers[ parentContext.regionId ];
+                for ( key in childWatchers ) {
+                    if ( childWatchers.hasOwnProperty( key ) ) {
+                        nodeService.cleanUpRegion( childWatchers[ key ].db, childWatchers[ key ].regionId );
                     }
                 }
-                delete watchers[parentContext.regionId];
+                delete watchers[ parentContext.regionId ];
             } else {
-                console.log('Nothing to clean-up..');
+                console.log( 'Nothing to clean-up..' );
             }
         };
 
@@ -66,16 +66,16 @@ angular.module('cyphy.services')
          * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          * @param {string} regionId - Region id of the spawned region that should be deleted.
          */
-        this.cleanUpRegion = function (watchers, parentContext, regionId) {
-            if (watchers[parentContext.regionId]) {
-                if (watchers[parentContext.regionId][regionId]) {
-                    nodeService.cleanUpRegion(parentContext.db, regionId);
-                    delete watchers[parentContext.regionId][regionId];
+        this.cleanUpRegion = function ( watchers, parentContext, regionId ) {
+            if ( watchers[ parentContext.regionId ] ) {
+                if ( watchers[ parentContext.regionId ][ regionId ] ) {
+                    nodeService.cleanUpRegion( parentContext.db, regionId );
+                    delete watchers[ parentContext.regionId ][ regionId ];
                 } else {
-                    console.log('Nothing to clean-up..');
+                    console.log( 'Nothing to clean-up..' );
                 }
             } else {
-                console.log('Cannot clean-up region since parentContext is not registered..', parentContext);
+                console.log( 'Cannot clean-up region since parentContext is not registered..', parentContext );
             }
         };
 
@@ -87,29 +87,31 @@ angular.module('cyphy.services')
          * @param {string} id - Path to node.
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
-        this.setNodeAttributes = function (context, id, attrs) {
+        this.setNodeAttributes = function ( context, id, attrs ) {
             var deferred = $q.defer();
-            if (Object.keys(attrs).length === 0) {
-                console.log('no attribute to update');
+            if ( Object.keys( attrs )
+                .length === 0 ) {
+                console.log( 'no attribute to update' );
                 deferred.resolve();
             }
-            nodeService.loadNode(context, id)
-                .then(function (nodeObj) {
-                    var keys = Object.keys(attrs),
+            nodeService.loadNode( context, id )
+                .then( function ( nodeObj ) {
+                    var keys = Object.keys( attrs ),
                         counter = keys.length,
                         setAttr = function () {
                             counter -= 1;
-                            nodeObj.setAttribute(keys[counter], attrs[keys[counter]], 'webCyPhy - setNodeAttributes')
-                                .then(function () {
-                                    if (counter <= 0) {
+                            nodeObj.setAttribute( keys[ counter ], attrs[ keys[ counter ] ],
+                                'webCyPhy - setNodeAttributes' )
+                                .then( function () {
+                                    if ( counter <= 0 ) {
                                         deferred.resolve();
                                     } else {
                                         setAttr();
                                     }
-                                });
+                                } );
                         };
                     setAttr();
-                });
+                } );
 
             return deferred.promise;
         };
@@ -122,7 +124,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - invoked when there are (filtered) changes in data.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchInterfaces = function (watchers, parentContext, id, updateListener) {
+        this.watchInterfaces = function ( watchers, parentContext, id, updateListener ) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchInterfaces_' + id,
                 context = {
@@ -134,192 +136,232 @@ angular.module('cyphy.services')
                     id: id,
                     properties: {}, //property:  {id: <string>, name: <string>, dataType: <string>, valueType <string>, derived <boolean>}
                     connectors: {}, //connector: {id: <string>, name: <string>, domainPorts: <object> }
-                    ports: {}       //port:      {id: <string>, name: <string>, type: <string>, class: <string> }
+                    ports: {} //port:      {id: <string>, name: <string>, type: <string>, class: <string> }
                 },
-                onPropertyUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        newDataType = this.getAttribute('DataType'),
-                        newValueType = this.getAttribute('ValueType'),
-                        newDerived = isPropertyDerived(this),
+                onPropertyUpdate = function ( id ) {
+                    var newName = this.getAttribute( 'name' ),
+                        newDataType = this.getAttribute( 'DataType' ),
+                        newValueType = this.getAttribute( 'ValueType' ),
+                        newDerived = isPropertyDerived( this ),
                         hadChanges = false;
-                    if (newName !== data.properties[id].name) {
-                        data.properties[id].name = newName;
+                    if ( newName !== data.properties[ id ].name ) {
+                        data.properties[ id ].name = newName;
                         hadChanges = true;
                     }
-                    if (newDataType !== data.properties[id].dataType) {
-                        data.properties[id].dataType = newDataType;
+                    if ( newDataType !== data.properties[ id ].dataType ) {
+                        data.properties[ id ].dataType = newDataType;
                         hadChanges = true;
                     }
-                    if (newValueType !== data.properties[id].valueType) {
-                        data.properties[id].valueType = newValueType;
+                    if ( newValueType !== data.properties[ id ].valueType ) {
+                        data.properties[ id ].valueType = newValueType;
                         hadChanges = true;
                     }
-                    if (newDerived !== data.properties[id].derived) {
-                        data.properties[id].derived = newDerived;
+                    if ( newDerived !== data.properties[ id ].derived ) {
+                        data.properties[ id ].derived = newDerived;
                         hadChanges = true;
                     }
-                    if (hadChanges) {
-                        $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data});
-                        });
+                    if ( hadChanges ) {
+                        $timeout( function () {
+                            updateListener( {
+                                id: id,
+                                type: 'update',
+                                data: data
+                            } );
+                        } );
                     }
                 },
-                onPropertyUnload = function (id) {
-                    delete data.properties[id];
-                    $timeout(function () {
-                        updateListener({id: id, type: 'unload', data: null});
-                    });
+                onPropertyUnload = function ( id ) {
+                    delete data.properties[ id ];
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            type: 'unload',
+                            data: null
+                        } );
+                    } );
                 },
-                onConnectorUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
+                onConnectorUpdate = function ( id ) {
+                    var newName = this.getAttribute( 'name' ),
                         hadChanges = false;
-                    if (newName !== data.connectors[id].name) {
-                        data.connectors[id].name = newName;
+                    if ( newName !== data.connectors[ id ].name ) {
+                        data.connectors[ id ].name = newName;
                         hadChanges = true;
                     }
-                    if (hadChanges) {
-                        $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data});
-                        });
+                    if ( hadChanges ) {
+                        $timeout( function () {
+                            updateListener( {
+                                id: id,
+                                type: 'update',
+                                data: data
+                            } );
+                        } );
                     }
                 },
-                onConnectorUnload = function (id) {
-                    delete data.connectors[id];
-                    $timeout(function () {
-                        updateListener({id: id, type: 'unload', data: null});
-                    });
+                onConnectorUnload = function ( id ) {
+                    delete data.connectors[ id ];
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            type: 'unload',
+                            data: null
+                        } );
+                    } );
                 },
-                onPortUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        newType = this.getAttribute('Type'),
-                        newClass = this.getAttribute('Class'),
+                onPortUpdate = function ( id ) {
+                    var newName = this.getAttribute( 'name' ),
+                        newType = this.getAttribute( 'Type' ),
+                        newClass = this.getAttribute( 'Class' ),
                         hadChanges = false;
-                    if (newName !== data.ports[id].name) {
-                        data.ports[id].name = newName;
+                    if ( newName !== data.ports[ id ].name ) {
+                        data.ports[ id ].name = newName;
                         hadChanges = true;
                     }
-                    if (newType !== data.ports[id].dataType) {
-                        data.ports[id].type = newType;
+                    if ( newType !== data.ports[ id ].dataType ) {
+                        data.ports[ id ].type = newType;
                         hadChanges = true;
                     }
-                    if (newClass !== data.ports[id].class) {
-                        data.ports[id].class = newClass;
+                    if ( newClass !== data.ports[ id ].class ) {
+                        data.ports[ id ].class = newClass;
                         hadChanges = true;
                     }
-                    if (hadChanges) {
-                        $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data});
-                        });
+                    if ( hadChanges ) {
+                        $timeout( function () {
+                            updateListener( {
+                                id: id,
+                                type: 'update',
+                                data: data
+                            } );
+                        } );
                     }
                 },
-                onPortUnload = function (id) {
-                    delete data.ports[id];
-                    $timeout(function () {
-                        updateListener({id: id, type: 'unload', data: null});
-                    });
+                onPortUnload = function ( id ) {
+                    delete data.ports[ id ];
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            type: 'unload',
+                            data: null
+                        } );
+                    } );
                 },
-                isPropertyDerived = function (node) {
-                    return node.getCollectionPaths('dst').length > 0;
+                isPropertyDerived = function ( node ) {
+                    return node.getCollectionPaths( 'dst' )
+                        .length > 0;
                 };
 
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, id)
-                    .then(function (modelNode) {
-                        modelNode.loadChildren().then(function (children) {
-                            var i,
-                                childId,
-                                queueList = [],
-                                childNode;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                childId = childNode.getId();
-                                if (childNode.isMetaTypeOf(meta.Property)) {
-                                    data.properties[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        dataType: childNode.getAttribute('DataType'),
-                                        valueType: childNode.getAttribute('ValueType'),
-                                        derived: isPropertyDerived(childNode)
-                                    };
-                                    childNode.onUpdate(onPropertyUpdate);
-                                    childNode.onUnload(onPropertyUnload);
-                                } else if (childNode.isMetaTypeOf(meta.Connector)) {
-                                    data.connectors[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        domainPorts: {}
-                                    };
-                                    childNode.onUpdate(onConnectorUpdate);
-                                    childNode.onUnload(onConnectorUnload);
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                } else if (childNode.isMetaTypeOf(meta.DomainPort)) {
-                                    data.ports[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        type: childNode.getAttribute('Type'),
-                                        class: childNode.getAttribute('Class')
-                                    };
-                                    childNode.onUpdate(onPortUpdate);
-                                    childNode.onUnload(onPortUnload);
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                }
-                            }
-                            modelNode.onNewChildLoaded(function (newChild) {
-                                childId = newChild.getId();
-                                if (newChild.isMetaTypeOf(meta.Property)) {
-                                    data.properties[childId] = {
-                                        id: childId,
-                                        name: newChild.getAttribute('name'),
-                                        dataType: newChild.getAttribute('DataType'),
-                                        valueType: newChild.getAttribute('ValueType'),
-                                        derived: isPropertyDerived(newChild)
-                                    };
-                                    newChild.onUpdate(onPropertyUpdate);
-                                    newChild.onUnload(onPropertyUnload);
-                                    $timeout(function () {
-                                        updateListener({id: childId, type: 'load', data: data});
-                                    });
-                                } else if (newChild.isMetaTypeOf(meta.Connector)) {
-                                    data.connectors[childId] = {
-                                        id: childId,
-                                        name: newChild.getAttribute('name'),
-                                        domainPorts: {}
-                                    };
-                                    newChild.onUpdate(onConnectorUpdate);
-                                    newChild.onUnload(onConnectorUnload);
-                                    $timeout(function () {
-                                        updateListener({id: childId, type: 'load', data: data});
-                                    });
-                                    ///queueList.push(childNode.loadChildren(childNode));
-                                } else if (newChild.isMetaTypeOf(meta.DomainPort)) {
-                                    data.ports[childId] = {
-                                        id: childId,
-                                        name: childNode.getAttribute('name'),
-                                        type: childNode.getAttribute('Type'),
-                                        class: childNode.getAttribute('Class')
-                                    };
-                                    newChild.onUpdate(onPortUpdate);
-                                    newChild.onUnload(onPortUnload);
-                                    $timeout(function () {
-                                        updateListener({id: childId, type: 'load', data: data});
-                                    });
-                                }
-                            });
+            watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
+            watchers[ parentContext.regionId ][ context.regionId ] = context;
+            nodeService.getMetaNodes( context )
+                .then( function ( meta ) {
+                    nodeService.loadNode( context, id )
+                        .then( function ( modelNode ) {
+                            modelNode.loadChildren()
+                                .then( function ( children ) {
+                                    var i,
+                                        childId,
+                                        queueList = [],
+                                        childNode;
+                                    for ( i = 0; i < children.length; i += 1 ) {
+                                        childNode = children[ i ];
+                                        childId = childNode.getId();
+                                        if ( childNode.isMetaTypeOf( meta.Property ) ) {
+                                            data.properties[ childId ] = {
+                                                id: childId,
+                                                name: childNode.getAttribute( 'name' ),
+                                                dataType: childNode.getAttribute( 'DataType' ),
+                                                valueType: childNode.getAttribute( 'ValueType' ),
+                                                derived: isPropertyDerived( childNode )
+                                            };
+                                            childNode.onUpdate( onPropertyUpdate );
+                                            childNode.onUnload( onPropertyUnload );
+                                        } else if ( childNode.isMetaTypeOf( meta.Connector ) ) {
+                                            data.connectors[ childId ] = {
+                                                id: childId,
+                                                name: childNode.getAttribute( 'name' ),
+                                                domainPorts: {}
+                                            };
+                                            childNode.onUpdate( onConnectorUpdate );
+                                            childNode.onUnload( onConnectorUnload );
+                                            ///queueList.push(childNode.loadChildren(childNode));
+                                        } else if ( childNode.isMetaTypeOf( meta.DomainPort ) ) {
+                                            data.ports[ childId ] = {
+                                                id: childId,
+                                                name: childNode.getAttribute( 'name' ),
+                                                type: childNode.getAttribute( 'Type' ),
+                                                class: childNode.getAttribute( 'Class' )
+                                            };
+                                            childNode.onUpdate( onPortUpdate );
+                                            childNode.onUnload( onPortUnload );
+                                            ///queueList.push(childNode.loadChildren(childNode));
+                                        }
+                                    }
+                                    modelNode.onNewChildLoaded( function ( newChild ) {
+                                        childId = newChild.getId();
+                                        if ( newChild.isMetaTypeOf( meta.Property ) ) {
+                                            data.properties[ childId ] = {
+                                                id: childId,
+                                                name: newChild.getAttribute( 'name' ),
+                                                dataType: newChild.getAttribute( 'DataType' ),
+                                                valueType: newChild.getAttribute( 'ValueType' ),
+                                                derived: isPropertyDerived( newChild )
+                                            };
+                                            newChild.onUpdate( onPropertyUpdate );
+                                            newChild.onUnload( onPropertyUnload );
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: childId,
+                                                    type: 'load',
+                                                    data: data
+                                                } );
+                                            } );
+                                        } else if ( newChild.isMetaTypeOf( meta.Connector ) ) {
+                                            data.connectors[ childId ] = {
+                                                id: childId,
+                                                name: newChild.getAttribute( 'name' ),
+                                                domainPorts: {}
+                                            };
+                                            newChild.onUpdate( onConnectorUpdate );
+                                            newChild.onUnload( onConnectorUnload );
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: childId,
+                                                    type: 'load',
+                                                    data: data
+                                                } );
+                                            } );
+                                            ///queueList.push(childNode.loadChildren(childNode));
+                                        } else if ( newChild.isMetaTypeOf( meta.DomainPort ) ) {
+                                            data.ports[ childId ] = {
+                                                id: childId,
+                                                name: childNode.getAttribute( 'name' ),
+                                                type: childNode.getAttribute( 'Type' ),
+                                                class: childNode.getAttribute( 'Class' )
+                                            };
+                                            newChild.onUpdate( onPortUpdate );
+                                            newChild.onUnload( onPortUnload );
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: childId,
+                                                    type: 'load',
+                                                    data: data
+                                                } );
+                                            } );
+                                        }
+                                    } );
 
-                            if (queueList.length === 0) {
-                                deferred.resolve(data);
-                            } else {
-                                $q.all(queueList).then(function () {
-                                    deferred.resolve(data);
-                                });
-                            }
-                        });
-                    });
-            });
+                                    if ( queueList.length === 0 ) {
+                                        deferred.resolve( data );
+                                    } else {
+                                        $q.all( queueList )
+                                            .then( function () {
+                                                deferred.resolve( data );
+                                            } );
+                                    }
+                                } );
+                        } );
+                } );
 
             return deferred.promise;
         };
 
-    });
+    } );

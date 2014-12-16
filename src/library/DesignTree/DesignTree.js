@@ -4,8 +4,8 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.components')
-    .controller('DesignTreeController', function ($scope, $window, designService, desertService) {
+angular.module( 'cyphy.components' )
+    .controller( 'DesignTreeController', function ( $scope, $window, designService, desertService ) {
         'use strict';
         var context,
             config,
@@ -14,47 +14,50 @@ angular.module('cyphy.components')
             avmIds = {},
             buildTreeStructure;
 
-        console.log('DesignTreeController');
+        console.log( 'DesignTreeController' );
 
         // Check for valid connectionId and register clean-up on destroy event.
-        if ($scope.connectionId && angular.isString($scope.connectionId)) {
+        if ( $scope.connectionId && angular.isString( $scope.connectionId ) ) {
             context = {
                 db: $scope.connectionId,
-                regionId: 'DesignTreeController_' + (new Date()).toISOString()
+                regionId: 'DesignTreeController_' + ( new Date() )
+                    .toISOString()
             };
-            $scope.$on('$destroy', function () {
-                designService.cleanUpAllRegions(context);
-            });
+            $scope.$on( '$destroy', function () {
+                designService.cleanUpAllRegions( context );
+            } );
         } else {
-            throw new Error('connectionId must be defined and it must be a string');
+            throw new Error( 'connectionId must be defined and it must be a string' );
         }
 
         config = {
-            nodeContextmenuRenderer: function (e, node) {
-                return [{
-                    items: [{
+            nodeContextmenuRenderer: function ( e, node ) {
+                return [ {
+                    items: [ {
                         id: 'create',
                         label: 'Open in Editor',
                         disabled: false,
                         iconClass: 'glyphicon glyphicon-edit',
-                        actionData: {id: node.id},
-                        action: function (data) {
-                            $window.open('/?project=ADMEditor&activeObject=' + data.id, '_blank');
+                        actionData: {
+                            id: node.id
+                        },
+                        action: function ( data ) {
+                            $window.open( '/?project=ADMEditor&activeObject=' + data.id, '_blank' );
                         }
-                    }]
-                }];
+                    } ]
+                } ];
             },
             nodeClick: function ( e, node ) {
                 console.log( 'Node was clicked:', node, $scope );
             },
             disableManualSelection: true,
             folderIconClass: 'fa fa-cubes'
-//            nodeDblclick: function ( e, node ) {
-//                console.log( 'Node was double-clicked:', node );
-//            },
-//            nodeExpanderClick: function ( e, node, isExpand ) {
-//                console.log( 'Expander was clicked for node:', node, isExpand );
-//            }
+            //            nodeDblclick: function ( e, node ) {
+            //                console.log( 'Node was double-clicked:', node );
+            //            },
+            //            nodeExpanderClick: function ( e, node, isExpand ) {
+            //                console.log( 'Expander was clicked for node:', node, isExpand );
+            //            }
 
         };
 
@@ -78,15 +81,15 @@ angular.module('cyphy.components')
         };
         $scope.config = config;
         $scope.treeData = treeData;
-        $scope.$on('setSelectedNodes', function (event, data) {
+        $scope.$on( 'setSelectedNodes', function ( event, data ) {
             $scope.config.state.selectedNodes = data;
-        });
+        } );
 
-        buildTreeStructure = function (container, parentTreeNode) {
+        buildTreeStructure = function ( container, parentTreeNode ) {
             var key,
                 childData,
                 treeNode;
-            if (parentTreeNode) {
+            if ( parentTreeNode ) {
                 treeNode = {
                     id: null,
                     label: null,
@@ -94,7 +97,7 @@ angular.module('cyphy.components')
                     children: [],
                     childrenCount: 0
                 };
-                parentTreeNode.children.push(treeNode);
+                parentTreeNode.children.push( treeNode );
                 parentTreeNode.childrenCount += 1;
             } else {
                 treeNode = rootNode;
@@ -102,55 +105,55 @@ angular.module('cyphy.components')
             treeNode.id = container.id;
             treeNode.label = container.name;
             treeNode.extraInfo = container.type;
-            $scope.config.state.expandedNodes.push(treeNode.id);
-            for (key in container.components) {
-                if (container.components.hasOwnProperty(key)) {
-                    childData = container.components[key];
-                    treeNode.children.push({
+            $scope.config.state.expandedNodes.push( treeNode.id );
+            for ( key in container.components ) {
+                if ( container.components.hasOwnProperty( key ) ) {
+                    childData = container.components[ key ];
+                    treeNode.children.push( {
                         id: childData.id,
                         label: childData.name
-                    });
+                    } );
                     treeNode.childrenCount += 1;
-                    if (avmIds[childData.avmId]) {
-                        avmIds[childData.avmId].push(childData.id);
+                    if ( avmIds[ childData.avmId ] ) {
+                        avmIds[ childData.avmId ].push( childData.id );
                     } else {
-                        avmIds[childData.avmId] = [childData.id];
+                        avmIds[ childData.avmId ] = [ childData.id ];
                     }
                 }
             }
-            for (key in container.subContainers) {
-                if (container.subContainers.hasOwnProperty(key)) {
-                    childData = container.subContainers[key];
-                    buildTreeStructure(childData, treeNode);
+            for ( key in container.subContainers ) {
+                if ( container.subContainers.hasOwnProperty( key ) ) {
+                    childData = container.subContainers[ key ];
+                    buildTreeStructure( childData, treeNode );
                 }
             }
         };
 
-        designService.registerWatcher(context, function (destroyed) {
-            if (destroyed) {
-                console.warn('destroy event raised');
+        designService.registerWatcher( context, function ( destroyed ) {
+            if ( destroyed ) {
+                console.warn( 'destroy event raised' );
                 // Data not (yet) avaliable.
                 // TODO: display this to the user.
                 return;
             }
-            console.info('initialize event raised');
+            console.info( 'initialize event raised' );
 
-            designService.watchDesignStructure(context, $scope.designId, function (updateObject) {
-                console.warn(updateObject);
-            })
-                .then(function (data) {
-                    var rootContainer = data.containers[data.rootId],
+            designService.watchDesignStructure( context, $scope.designId, function ( updateObject ) {
+                console.warn( updateObject );
+            } )
+                .then( function ( data ) {
+                    var rootContainer = data.containers[ data.rootId ],
                         desertInputData;
-                    buildTreeStructure(rootContainer);
-                    $scope.$emit('designTreeLoaded', avmIds);
+                    buildTreeStructure( rootContainer );
+                    $scope.$emit( 'designTreeLoaded', avmIds );
                     // FIXME: This part is only here to reuse the data from watchDesignStructure.
                     // TODO: Find a more suitable location.
-                    desertInputData = desertService.getDesertInputData(data);
-                    $scope.$emit('desertInputReady', desertInputData);
-                });
-        });
-    })
-    .directive('designTree', function () {
+                    desertInputData = desertService.getDesertInputData( data );
+                    $scope.$emit( 'desertInputReady', desertInputData );
+                } );
+        } );
+    } )
+    .directive( 'designTree', function () {
         'use strict';
         return {
             restrict: 'E',
@@ -162,4 +165,4 @@ angular.module('cyphy.components')
             templateUrl: '/cyphy-components/templates/DesignTree.html',
             controller: 'DesignTreeController'
         };
-    });
+    } );

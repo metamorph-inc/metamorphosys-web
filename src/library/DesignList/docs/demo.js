@@ -1,11 +1,11 @@
 /*globals console, angular, Chance*/
 
-var demoApp = angular.module('cyphy.ui.DesignList.demo', [
+var demoApp = angular.module( 'cyphy.ui.DesignList.demo', [
     'cyphy.components',
     'cyphy.components.templates'
-]);
+] );
 
-demoApp.service('designService', function () {
+demoApp.service( 'designService', function () {
     'use strict';
 
-});
+} );

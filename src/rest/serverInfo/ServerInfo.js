@@ -3,9 +3,10 @@
  * Created by pmeijer on 8/4/2014.
  */
 
-var os = require('os');
-define(['logManager',
-    'child_process'], function (logManager, child_process) {
+var os = require( 'os' );
+define( [ 'logManager',
+    'child_process'
+], function ( logManager, child_process ) {
     'use strict';
 
     var serverInfoRestInit,
@@ -14,11 +15,11 @@ define(['logManager',
         serverInfoRestNpm,
         serverInfoRestAll,
         setup,
-        logger = logManager.create('REST-SERVER-INFO');
+        logger = logManager.create( 'REST-SERVER-INFO' );
 
-    serverInfoRestInit = function (req, res, next) {
+    serverInfoRestInit = function ( req, res, next ) {
         var config = webGMEGlobal.getConfig(),
-            url = req.url.split('/'),
+            url = req.url.split( '/' ),
             handlers = {
                 os: serverInfoRestOS,
                 node: serverInfoRestNode,
@@ -26,19 +27,19 @@ define(['logManager',
                 all: serverInfoRestAll
             };
 
-        logger.debug('Version info request');
+        logger.debug( 'Version info request' );
 
-        if (handlers.hasOwnProperty(url[1])) {
-            handlers[url[1]](req, res, next);
+        if ( handlers.hasOwnProperty( url[ 1 ] ) ) {
+            handlers[ url[ 1 ] ]( req, res, next );
         } else {
-            res.send(500);
+            res.send( 500 );
         }
     };
 
-    serverInfoRestOS = function (req, res, next, doReturn) {
+    serverInfoRestOS = function ( req, res, next, doReturn ) {
         var info;
-        if (req.originalMethod !== 'GET') {
-            return res.send(405);
+        if ( req.originalMethod !== 'GET' ) {
+            return res.send( 405 );
         }
 
         info = {
@@ -52,73 +53,73 @@ define(['logManager',
             freemem: os.freemem(),
             cpus: os.cpus()
         };
-        if (doReturn) {
+        if ( doReturn ) {
             return info;
         }
 
-        res.send(JSON.stringify(info, null, 4));
+        res.send( JSON.stringify( info, null, 4 ) );
     };
 
-    serverInfoRestNode = function (req, res, next, doReturn) {
+    serverInfoRestNode = function ( req, res, next, doReturn ) {
         var url,
             info;
-        if (req.originalMethod !== 'GET') {
-            return res.send(405);
+        if ( req.originalMethod !== 'GET' ) {
+            return res.send( 405 );
         }
         info = {
             version: process.version
         };
-        if (doReturn) {
+        if ( doReturn ) {
             return info;
         }
 
-        res.send(JSON.stringify(info, null, 4));
+        res.send( JSON.stringify( info, null, 4 ) );
     };
 
-    serverInfoRestNpm = function (req, res, next, doReturn) {
+    serverInfoRestNpm = function ( req, res, next, doReturn ) {
         var url,
             cmd = 'npm list -json -depth=0';
-        if (req.originalMethod !== 'GET') {
-            return res.send(405);
+        if ( req.originalMethod !== 'GET' ) {
+            return res.send( 405 );
         }
-        child_process.exec(cmd, function (error, stdout, stderr) {
-            logger.debug('stdout :' + stdout);
-            if (stderr) {
-                logger.error('stderr :' + stderr);
-                if (doReturn) {
-                    return doReturn('ERROR');
+        child_process.exec( cmd, function ( error, stdout, stderr ) {
+            logger.debug( 'stdout :' + stdout );
+            if ( stderr ) {
+                logger.error( 'stderr :' + stderr );
+                if ( doReturn ) {
+                    return doReturn( 'ERROR' );
                 }
-                res.send(500);
+                res.send( 500 );
             }
-            if (error) {
-                logger.error('Npm info return with error :' + error.toString());
-                if (doReturn) {
-                    return doReturn('ERROR');
+            if ( error ) {
+                logger.error( 'Npm info return with error :' + error.toString() );
+                if ( doReturn ) {
+                    return doReturn( 'ERROR' );
                 }
-                res.send(500);
+                res.send( 500 );
             }
-            if (doReturn) {
-                return doReturn(JSON.parse(stdout));
+            if ( doReturn ) {
+                return doReturn( JSON.parse( stdout ) );
             }
-            res.send(stdout);
-        });
+            res.send( stdout );
+        } );
     };
 
-    serverInfoRestAll = function (req, res, next) {
+    serverInfoRestAll = function ( req, res, next ) {
         var url,
             info,
             npmInfo;
-        if (req.originalMethod !== 'GET') {
-            return res.send(405);
+        if ( req.originalMethod !== 'GET' ) {
+            return res.send( 405 );
         }
         info = {
-            os: serverInfoRestOS(req, res, next, true),
-            node: serverInfoRestNode(req, res, next, true)
+            os: serverInfoRestOS( req, res, next, true ),
+            node: serverInfoRestNode( req, res, next, true )
         };
-        serverInfoRestNpm(req, res, next, function (npmInfo) {
+        serverInfoRestNpm( req, res, next, function ( npmInfo ) {
             info.npm = npmInfo;
-            res.send(JSON.stringify(info, null, 4));
-        });
+            res.send( JSON.stringify( info, null, 4 ) );
+        } );
     };
 
     setup = function () {
@@ -126,4 +127,4 @@ define(['logManager',
     };
 
     return setup();
-});
+} );

@@ -2,10 +2,10 @@
  * Created by J on 11/6/2014.
  */
 
-define([], function () {
+define( [], function () {
     'use strict';
 
-    function manifestProjectJson(cyPhyProjectName) {
+    function manifestProjectJson( cyPhyProjectName ) {
         return {
             Project: {
                 Components: [],
@@ -37,17 +37,18 @@ define([], function () {
         };
     }
 
-    function resultMetaresult(designID, testbenchName, timeStamp, summaryPath) {
+    function resultMetaresult( designID, testbenchName, timeStamp, summaryPath ) {
         return {
             "Design": null,
             "DesignID": '{' + designID + '}' || "{aaabbbccc111222333}",
             "TestBench": testbenchName + ".testbench.json" || "some testbench",
             "Time": timeStamp,
-            "Summary": "./" + summaryPath + "/testbench_manifest.json" || "random dir name / testbench manifest destiny"
+            "Summary": "./" + summaryPath + "/testbench_manifest.json" ||
+                "random dir name / testbench manifest destiny"
         };
     }
 
-    function testbenchJson(name) {
+    function testbenchJson( name ) {
         return {
             $id: "1",
             Name: name || "SinusInput",
@@ -57,9 +58,9 @@ define([], function () {
         };
     }
 
-    function testbenchMetric(name, value, unit, id) {
+    function testbenchMetric( name, value, unit, id ) {
         return {
-            $id: id || Math.round(1000*Math.random()),
+            $id: id || Math.round( 1000 * Math.random() ),
             Requirement: null,
             Name: name || "DefaultName (dashboardTypes.js line 87)",
             Unit: unit || "Unitless",
@@ -67,9 +68,9 @@ define([], function () {
         };
     }
 
-    function testbenchParameter(name, value, unit, id) {
+    function testbenchParameter( name, value, unit, id ) {
         return {
-            $id: id || Math.round(1000*Math.random()),
+            $id: id || Math.round( 1000 * Math.random() ),
             Name: name || "DefaultName (dashboardTypes.js line 87)",
             Unit: unit || "Unitless",
             Value: value || null
@@ -79,11 +80,11 @@ define([], function () {
     function requirementsJson() {
         return {
             name: "Undefined",
-            children: [ ]
+            children: []
         };
     }
 
-    function testbenchManifest(designID, designName, testbenchName) {
+    function testbenchManifest( designID, designName, testbenchName ) {
         return {
             "Status": "OK",
             "CopyTestResults": false,
@@ -102,14 +103,14 @@ define([], function () {
         };
     }
 
-return {
-    manifestProjectJson: manifestProjectJson,
-    resultsMetaresultsJson: resultsMetaresultsJson,
-    resultMetaresult: resultMetaresult,
-    testbenchJson: testbenchJson,
-    testbenchMetric: testbenchMetric,
-    requirementsJson: requirementsJson,
-    testbenchParameter: testbenchParameter
-};
+    return {
+        manifestProjectJson: manifestProjectJson,
+        resultsMetaresultsJson: resultsMetaresultsJson,
+        resultMetaresult: resultMetaresult,
+        testbenchJson: testbenchJson,
+        testbenchMetric: testbenchMetric,
+        requirementsJson: requirementsJson,
+        testbenchParameter: testbenchParameter
+    };
 
-});
+} );

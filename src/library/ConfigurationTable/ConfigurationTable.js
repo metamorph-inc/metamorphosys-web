@@ -4,8 +4,8 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.components')
-    .controller('ConfigurationTableController', function ($scope) {
+angular.module( 'cyphy.components' )
+    .controller( 'ConfigurationTableController', function ( $scope ) {
         'use strict';
         $scope.dataModel = {
             changeInfo: [],
@@ -14,23 +14,21 @@ angular.module('cyphy.components')
             setName: $scope.setName
         };
 
-        $scope.tableColumnDefinition = [
-            {
-                columnHeaderDisplayName: 'Name',
-                templateUrl: 'tableCell.html',
-                sortKey: 'name'
-            }
-        ];
+        $scope.tableColumnDefinition = [ {
+            columnHeaderDisplayName: 'Name',
+            templateUrl: 'tableCell.html',
+            sortKey: 'name'
+        } ];
 
-        $scope.$on('exposeSelection', function (event, type) {
-            $scope.$emit('selectionExposed', $scope.dataModel.selected, type);
-        });
+        $scope.$on( 'exposeSelection', function ( event, type ) {
+            $scope.$emit( 'selectionExposed', $scope.dataModel.selected, type );
+        } );
 
-        $scope.cfgClicked = function (cfg) {
-            $scope.$emit('configurationClicked', cfg);
+        $scope.cfgClicked = function ( cfg ) {
+            $scope.$emit( 'configurationClicked', cfg );
         };
-    })
-    .directive('configurationTable', function () {
+    } )
+    .directive( 'configurationTable', function () {
         'use strict';
         return {
             restrict: 'E',
@@ -42,4 +40,4 @@ angular.module('cyphy.components')
             templateUrl: '/cyphy-components/templates/ConfigurationTable.html',
             controller: 'ConfigurationTableController'
         };
-    });
+    } );

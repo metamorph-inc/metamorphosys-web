@@ -5,10 +5,10 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-define([], function () {
+define( [], function () {
     'use strict';
 
-    var MainNavigatorController = function ($scope) {
+    var MainNavigatorController = function ( $scope ) {
         var firstMenu,
             self = this;
         self.$scope = $scope;
@@ -18,10 +18,9 @@ define([], function () {
             itemClass: 'cyphy-root'
         };
 
-        $scope.mainNavigator.items = [firstMenu];
+        $scope.mainNavigator.items = [ firstMenu ];
         $scope.navigator = $scope.mainNavigator;
     };
 
     return MainNavigatorController;
-});
-
+} );

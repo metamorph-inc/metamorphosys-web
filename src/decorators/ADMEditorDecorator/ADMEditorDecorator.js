@@ -5,19 +5,20 @@
  */
 
 
-define(['js/Decorators/DecoratorBase',
+define( [ 'js/Decorators/DecoratorBase',
     './DiagramDesigner/ADMEditorDecorator.DiagramDesignerWidget',
-    './PartBrowser/ADMEditorDecorator.PartBrowserWidget'], function (DecoratorBase,
-        ADMEditorDecoratorDiagramDesignerWidget,
-        ADMEditorDecoratorPartBrowserWidget
-    ) {
+    './PartBrowser/ADMEditorDecorator.PartBrowserWidget'
+], function ( DecoratorBase,
+    ADMEditorDecoratorDiagramDesignerWidget,
+    ADMEditorDecoratorPartBrowserWidget
+) {
     'use strict';
 
     /**
-    * A module representing a decorator for the ADMEditor Modeling Language.
-    * @exports ADMEditorDecorator
-    * @version 1.0
-    */
+     * A module representing a decorator for the ADMEditor Modeling Language.
+     * @exports ADMEditorDecorator
+     * @version 1.0
+     */
     var ADMEditorDecorator,
         __parent__ = DecoratorBase,
         __parent_proto__ = DecoratorBase.prototype,
@@ -28,15 +29,17 @@ define(['js/Decorators/DecoratorBase',
      * @constructor
      * @param {object} params Parameters for this object.
      */
-    ADMEditorDecorator = function (params) {
-        var opts = _.extend({"loggerName": this.DECORATORID}, params);
+    ADMEditorDecorator = function ( params ) {
+        var opts = _.extend( {
+            "loggerName": this.DECORATORID
+        }, params );
 
-        __parent__.apply(this, [opts]);
+        __parent__.apply( this, [ opts ] );
 
-        this.logger.debug("ADMEditorDecorator ctor");
+        this.logger.debug( "ADMEditorDecorator ctor" );
     };
 
-    _.extend(ADMEditorDecorator.prototype, __parent_proto__);
+    _.extend( ADMEditorDecorator.prototype, __parent_proto__ );
     ADMEditorDecorator.prototype.DECORATORID = DECORATOR_ID;
 
     /*********************** OVERRIDE DecoratorBase MEMBERS **************************/
@@ -48,9 +51,11 @@ define(['js/Decorators/DecoratorBase',
      * @see ADMEditorDecoratorPartBrowserWidget:ADMEditorDecoratorPartBrowserWidget
      */
     ADMEditorDecorator.prototype.initializeSupportedWidgetMap = function () {
-        this.supportedWidgetMap = {'DiagramDesigner': ADMEditorDecoratorDiagramDesignerWidget,
-                                   'PartBrowser': ADMEditorDecoratorPartBrowserWidget};
+        this.supportedWidgetMap = {
+            'DiagramDesigner': ADMEditorDecoratorDiagramDesignerWidget,
+            'PartBrowser': ADMEditorDecoratorPartBrowserWidget
+        };
     };
 
     return ADMEditorDecorator;
-});
+} );

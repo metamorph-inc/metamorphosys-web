@@ -2,15 +2,15 @@
  * Created by pmeijer on 6/23/2014.
  */
 
-var isNode = (typeof window === 'undefined');
+var isNode = ( typeof window === 'undefined' );
 
-define([], function () {
+define( [], function () {
     'use strict';
     var DesertClient = function () {
         var config;
         //console.log(isNode);
 
-        if (isNode) {
+        if ( isNode ) {
             config = webGMEGlobal.getConfig();
             this.server = '127.0.0.1';
             this.serverPort = config.port;
@@ -18,16 +18,16 @@ define([], function () {
 
             this._clientSession = null; // parameters.sessionId;;
 
-            this.http = this.httpsecure ? require('https') : require('http'); // or https
+            this.http = this.httpsecure ? require( 'https' ) : require( 'http' ); // or https
         }
 
         // TODO: TOKEN???
         this.executorUrl = '/rest/external/desert/';
     };
 
-    DesertClient.prototype.getInfoURL = function (hash) {
+    DesertClient.prototype.getInfoURL = function ( hash ) {
         var metadataBase = this.executorUrl + 'info';
-        if (hash) {
+        if ( hash ) {
             return metadataBase + '/' + hash;
         } else {
             return metadataBase;
@@ -35,53 +35,53 @@ define([], function () {
     };
 
 
-    DesertClient.prototype.getCreateURL = function (hash) {
+    DesertClient.prototype.getCreateURL = function ( hash ) {
         var metadataBase = this.executorUrl + 'create';
-        if (hash) {
+        if ( hash ) {
             return metadataBase + '/' + hash;
         } else {
             return metadataBase;
         }
     };
 
-    DesertClient.prototype.createJob = function (hash, callback) {
-        this.sendHttpRequest('POST', this.getCreateURL(hash), function (err, response) {
-            if (err) {
-                return callback(err);
+    DesertClient.prototype.createJob = function ( hash, callback ) {
+        this.sendHttpRequest( 'POST', this.getCreateURL( hash ), function ( err, response ) {
+            if ( err ) {
+                return callback( err );
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
 
-    DesertClient.prototype.getInfo = function (hash, callback) {
+    DesertClient.prototype.getInfo = function ( hash, callback ) {
 
-        this.sendHttpRequest('GET', this.getInfoURL(hash), function (err, response) {
-            if (err) {
-                callback(err);
+        this.sendHttpRequest( 'GET', this.getInfoURL( hash ), function ( err, response ) {
+            if ( err ) {
+                callback( err );
                 return;
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
-    DesertClient.prototype.getAllInfo = function (callback) {
+    DesertClient.prototype.getAllInfo = function ( callback ) {
 
-        this.sendHttpRequest('GET', this.getInfoURL(), function (err, response) {
-            if (err) {
-                callback(err);
+        this.sendHttpRequest( 'GET', this.getInfoURL(), function ( err, response ) {
+            if ( err ) {
+                callback( err );
                 return;
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
-    DesertClient.prototype.sendHttpRequest = function (method, url, callback) {
+    DesertClient.prototype.sendHttpRequest = function ( method, url, callback ) {
 
-        if (isNode) {
+        if ( isNode ) {
             var options = {
                 hostname: this.server,
                 port: this.serverPort,
@@ -89,16 +89,16 @@ define([], function () {
                 method: method
             };
 
-            this._sendHttpRequestWithContent(options, null, callback);
+            this._sendHttpRequestWithContent( options, null, callback );
 
         } else {
             var oReq = new XMLHttpRequest();
-            oReq.open(method, url, true);
-            oReq.onload = function (oEvent) {
+            oReq.open( method, url, true );
+            oReq.onload = function ( oEvent ) {
                 // Uploaded.
                 var response = oEvent.target.response;
                 // TODO: handle error
-                callback(null, response);
+                callback( null, response );
             };
 
             // data is a file object or blob
@@ -106,61 +106,61 @@ define([], function () {
         }
     };
 
-    DesertClient.prototype._ensureAuthenticated = function (options, callback) {
+    DesertClient.prototype._ensureAuthenticated = function ( options, callback ) {
         //this function enables the session of the client to be authenticated
         //TODO currently this user does not have a session, so it has to upgrade the options always!!!
-//        if (options.headers) {
-//            options.headers.webgmeclientsession = this._clientSession;
-//        } else {
-//            options.headers = {
-//                'webgmeclientsession': this._clientSession
-//            }
-//        }
-        callback(null, options);
+        //        if (options.headers) {
+        //            options.headers.webgmeclientsession = this._clientSession;
+        //        } else {
+        //            options.headers = {
+        //                'webgmeclientsession': this._clientSession
+        //            }
+        //        }
+        callback( null, options );
     };
 
-    DesertClient.prototype._sendHttpRequestWithContent = function (options, data, callback) {
+    DesertClient.prototype._sendHttpRequestWithContent = function ( options, data, callback ) {
         var self = this;
-        self._ensureAuthenticated(options, function (err, updatedOptions) {
-            if (err) {
-                callback(err);
+        self._ensureAuthenticated( options, function ( err, updatedOptions ) {
+            if ( err ) {
+                callback( err );
             } else {
-                self.__sendHttpRequestWithContent(updatedOptions, data, callback);
+                self.__sendHttpRequestWithContent( updatedOptions, data, callback );
             }
-        });
+        } );
     };
 
-    DesertClient.prototype.__sendHttpRequestWithContent = function (options, data, callback) {
+    DesertClient.prototype.__sendHttpRequestWithContent = function ( options, data, callback ) {
         // TODO: use the http or https
-        var req = this.http.request(options, function (res) {
+        var req = this.http.request( options, function ( res ) {
             //    console.log('STATUS: ' + res.statusCode);
             //    console.log('HEADERS: ' + JSON.stringify(res.headers));
             //    res.setEncoding('utf8');
             var d = '';
-            res.on('data', function (chunk) {
+            res.on( 'data', function ( chunk ) {
                 d += chunk;
-            });
+            } );
 
-            res.on('end', function () {
-                if (res.statusCode === 200) {
-                    callback(null, d);
+            res.on( 'end', function () {
+                if ( res.statusCode === 200 ) {
+                    callback( null, d );
                 } else {
-                    callback(res.statusCode, d);
+                    callback( res.statusCode, d );
                 }
-            });
-        });
+            } );
+        } );
 
-        req.on('error', function (e) {
-            callback(e);
-        });
+        req.on( 'error', function ( e ) {
+            callback( e );
+        } );
 
-        if (data) {
+        if ( data ) {
             // write data to request body
-            req.write(data);
+            req.write( data );
         }
 
         req.end();
     };
 
     return DesertClient;
-});
+} );

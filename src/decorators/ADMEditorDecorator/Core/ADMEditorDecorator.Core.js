@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2013 Vanderbilt University, All rights reserved.
- * 
+ *
  */
 
 
-define(['js/Constants',
+define( [ 'js/Constants',
     'js/Utils/METAAspectHelper',
     'js/NodePropertyNames',
     'js/RegistryKeys',
@@ -12,23 +12,24 @@ define(['js/Constants',
     './ADMEditor.META',
     './ADMEditorDecorator.Constants',
     'text!./ADMEditorDecorator.html',
-    'text!../default.svg'], function (CONSTANTS,
-        METAAspectHelper,
-        nodePropertyNames,
-        REGISTRY_KEYS,
-        ADMEditorBase,
-        ADMEditorMETA,
-        ADConstants,
-        ADMEditorDecoratorTemplate,
-        DefaultSvgTemplate
-    ) {
+    'text!../default.svg'
+], function ( CONSTANTS,
+    METAAspectHelper,
+    nodePropertyNames,
+    REGISTRY_KEYS,
+    ADMEditorBase,
+    ADMEditorMETA,
+    ADConstants,
+    ADMEditorDecoratorTemplate,
+    DefaultSvgTemplate
+) {
     'use strict';
 
     /**
-    * A module representing core decorator functionality for the ADMEditorModelingLanguage.
-    * @exports ADMEditorDecoratorCore
-    * @version 1.0
-    */
+     * A module representing core decorator functionality for the ADMEditorModelingLanguage.
+     * @exports ADMEditorDecoratorCore
+     * @version 1.0
+     */
     var ADMEditorDecoratorCore,
         SVG_ICON_PATH = "/decorators/ADMEditorDecorator/Icons/";
 
@@ -44,7 +45,7 @@ define(['js/Constants',
      * @type {*|jQuery|HTMLElement}
      * @private
      */
-    var errorSVGBase = $(DefaultSvgTemplate);
+    var errorSVGBase = $( DefaultSvgTemplate );
 
     /**
      * ID list of meta types.
@@ -53,27 +54,29 @@ define(['js/Constants',
      */
     var _metaAspectTypes = ADMEditorMETA.META_TYPES;
 
-    for (var m in _metaAspectTypes) {
+    for ( var m in _metaAspectTypes ) {
         // TODO: use the right code to do this
-        if (_metaAspectTypes.hasOwnProperty(m)) {
+        if ( _metaAspectTypes.hasOwnProperty( m ) ) {
 
             // get the svg's url on the server for this META type
             var svg_resource_url = SVG_ICON_PATH + m + ".svg";
 
             // get the svg from the server in SYNC mode, may take some time
-            $.ajax(svg_resource_url, {'async': false})
-                .done(function ( data ) {
+            $.ajax( svg_resource_url, {
+                'async': false
+            } )
+                .done( function ( data ) {
 
                     // TODO: console.debug('Successfully downloaded: ' + svg_resource_url + ' for ' + metaType);
                     // downloaded successfully
                     // cache the downloaded content
-                    svgCache[m] = $(data.childNodes[0]);
-                })
-                .fail(function () {
+                    svgCache[ m ] = $( data.childNodes[ 0 ] );
+                } )
+                .fail( function () {
 
                     // download failed for this type
                     // TODO: console.warning('Failed to download: ' + svg_resource_url);
-                });
+                } );
         }
     }
 
@@ -81,25 +84,26 @@ define(['js/Constants',
      * Creates a new instance of ADMEditorDecoratorCore.
      * @constructor
      */
-    ADMEditorDecoratorCore = function () {
-    };
+    ADMEditorDecoratorCore = function () {};
 
     /**
      * Represents the base element that would be inserted into the DOM.
      */
-    ADMEditorDecoratorCore.prototype.$DOMBase = (function () {
-        var el = $(ADMEditorDecoratorTemplate);
+    ADMEditorDecoratorCore.prototype.$DOMBase = ( function () {
+        var el = $( ADMEditorDecoratorTemplate );
         //use the same HTML template as the DefaultDecorator.DiagramDesignerWidget
         //but remove the connector DOM elements since they are not needed in the PartBrowser
         //el.find('div.name').remove();
         return el;
-    })();
+    } )();
 
     /**** Override from *.WidgetDecoratorBase ****/
     ADMEditorDecoratorCore.prototype.getTerritoryQuery = function () {
         var territoryRule = {};
 
-        territoryRule[this._metaInfo[CONSTANTS.GME_ID]] = { "children": 1 };
+        territoryRule[ this._metaInfo[ CONSTANTS.GME_ID ] ] = {
+            "children": 1
+        };
 
         return territoryRule;
     };
@@ -110,11 +114,11 @@ define(['js/Constants',
      * @param params.connectors {boolean} True if connectors have to be rendered otherwise false.
      * @private
      */
-    ADMEditorDecoratorCore.prototype._initializeDecorator = function (params) {
+    ADMEditorDecoratorCore.prototype._initializeDecorator = function ( params ) {
         this.$name = undefined;
 
         this._displayConnectors = false;
-        if (params && params.connectors) {
+        if ( params && params.connectors ) {
             this._displayConnectors = params.connectors;
         }
     };
@@ -124,14 +128,14 @@ define(['js/Constants',
      * @param gmeID {string} An ID of the GME object.
      * @returns {*|jQuery|HTMLElement} SVG element that should be displayed.
      */
-    ADMEditorDecoratorCore.prototype.getSVGByMetaType = function (gmeID) {
+    ADMEditorDecoratorCore.prototype.getSVGByMetaType = function ( gmeID ) {
         var ADMEditorClassNames,
             ADMEditorClassName,
             returnSVG,
             len;
 
         // get all META types for the given GME object including inheritance in the meta model
-        ADMEditorClassNames = METAAspectHelper.getMETATypesOf(gmeID);
+        ADMEditorClassNames = METAAspectHelper.getMETATypesOf( gmeID );
 
         // reverse the list since the iteration is backwards in the while loop
         ADMEditorClassNames.reverse();
@@ -140,22 +144,22 @@ define(['js/Constants',
         len = ADMEditorClassNames.length;
 
         // iterate through the list from the last element to the first one
-        while (len--) {
+        while ( len-- ) {
             // get current the META type name
-            ADMEditorClassName = ADMEditorClassNames[len];
+            ADMEditorClassName = ADMEditorClassNames[ len ];
 
-            if (ADMEditorClassName === undefined || ADMEditorClassName === null || ADMEditorClassName === "") {
+            if ( ADMEditorClassName === undefined || ADMEditorClassName === null || ADMEditorClassName === "" ) {
                 // if the META type name is invalid return with an error SVG
                 returnSVG = errorSVGBase.clone();
-            } else if (ADMEditorClassName != "Action"){
+            } else if ( ADMEditorClassName != "Action" ) {
                 // META type name is valid
-                if (svgCache[ADMEditorClassName]) {
-                    returnSVG = svgCache[ADMEditorClassName].clone();
+                if ( svgCache[ ADMEditorClassName ] ) {
+                    returnSVG = svgCache[ ADMEditorClassName ].clone();
                 }
             }
         }
 
-        if (returnSVG === undefined) {
+        if ( returnSVG === undefined ) {
             // if svg is not defined use the default error svg
             returnSVG = errorSVGBase.clone();
         }
@@ -176,7 +180,7 @@ define(['js/Constants',
      * @param searchDesc {string} Search description or query.
      * @returns {boolean} True if this object satisfies the search condition.
      */
-    ADMEditorDecoratorCore.prototype.doSearch = function (searchDesc) {
+    ADMEditorDecoratorCore.prototype.doSearch = function ( searchDesc ) {
         //TODO: correct implementation needed
         return false;
     };
@@ -187,38 +191,43 @@ define(['js/Constants',
      */
     ADMEditorDecoratorCore.prototype._renderContent = function () {
         var self = this,
-            gmeID = self._metaInfo[CONSTANTS.GME_ID],
+            gmeID = self._metaInfo[ CONSTANTS.GME_ID ],
             META_TYPES = ADMEditorMETA.META_TYPES;
 
         // meta type of the rendered object
-        self._metaType = METAAspectHelper.getMETATypesOf(gmeID)[0];
+        self._metaType = METAAspectHelper.getMETATypesOf( gmeID )[ 0 ];
 
-        if (DEBUG) {
+        if ( DEBUG ) {
             //render GME-ID in the DOM, for debugging
-            self.$el.attr({"data-id": gmeID});
+            self.$el.attr( {
+                "data-id": gmeID
+            } );
         }
 
         // setting the name of component
-        self.skinParts.$name = self.$el.find('.name');
+        self.skinParts.$name = self.$el.find( '.name' );
 
         //empty out SVG container
-        self.$el.find('.svg-container').empty();
+        self.$el.find( '.svg-container' )
+            .empty();
 
         //figure out the necessary SVG based on children type
-        self.skinParts.$svg = self.getSVGByMetaType(gmeID);
+        self.skinParts.$svg = self.getSVGByMetaType( gmeID );
 
-        if (self.skinParts.$svg) {
+        if ( self.skinParts.$svg ) {
             //this.skinParts.$svg.append(this._ADMEditorDecoratorCore.getPortSVG());
-            self.$el.find('.svg-container').append(self.skinParts.$svg);
+            self.$el.find( '.svg-container' )
+                .append( self.skinParts.$svg );
             //render the connectors
-            self.skinParts.$connectorContainer = self.$el.find('.connector-container');
+            self.skinParts.$connectorContainer = self.$el.find( '.connector-container' );
             self.skinParts.$connectorContainer.empty();
         } else {
             // append error svg if the svg does not exist for this element
-            self.$el.find('.svg-container').append(self.getErrorSVG());
+            self.$el.find( '.svg-container' )
+                .append( self.getErrorSVG() );
         }
 
-        _.extend(self, new ADMEditorBase());
+        _.extend( self, new ADMEditorBase() );
 
         // call the type specific renderer
         self._renderMetaTypeSpecificParts();
@@ -234,7 +243,7 @@ define(['js/Constants',
     ADMEditorDecoratorCore.prototype.update = function () {
         // internal update function
         this._update();
-        if (this._displayConnectors) {
+        if ( this._displayConnectors ) {
             // initializes the connectors if they have to be displayed.
             this.initializeConnectors();
         }
@@ -253,36 +262,53 @@ define(['js/Constants',
 
     ADMEditorDecoratorCore.prototype._updateColors = function () {
         this._getNodeColorsFromRegistry();
-        if (this.fillColor) {
-            this.skinParts.$svg.find('path').attr('fill', this.fillColor);
-            this.skinParts.$svg.find('ellipse').attr('fill', this.fillColor);
-            this.skinParts.$svg.find('rect').attr('fill', this.fillColor);
+        if ( this.fillColor ) {
+            this.skinParts.$svg.find( 'path' )
+                .attr( 'fill', this.fillColor );
+            this.skinParts.$svg.find( 'ellipse' )
+                .attr( 'fill', this.fillColor );
+            this.skinParts.$svg.find( 'rect' )
+                .attr( 'fill', this.fillColor );
         } else {
-            this.$el.css({'background-color': ''});
+            this.$el.css( {
+                'background-color': ''
+            } );
         }
 
-        if (this.borderColor) {
-            this.skinParts.$svg.css({'border-color': this.borderColor,
-                          'box-shadow': '0px 0px 7px 0px ' + this.borderColor + ' inset'});
-            this.skinParts.$name.css({'border-color': this.borderColor});
+        if ( this.borderColor ) {
+            this.skinParts.$svg.css( {
+                'border-color': this.borderColor,
+                'box-shadow': '0px 0px 7px 0px ' + this.borderColor + ' inset'
+            } );
+            this.skinParts.$name.css( {
+                'border-color': this.borderColor
+            } );
         } else {
-            this.$el.css({'border-color': '',
-                'box-shadow': ''});
-            this.skinParts.$name.css({'border-color': ''});
+            this.$el.css( {
+                'border-color': '',
+                'box-shadow': ''
+            } );
+            this.skinParts.$name.css( {
+                'border-color': ''
+            } );
         }
 
-        if (this.textColor) {
-            this.$el.css({'color': this.textColor});
+        if ( this.textColor ) {
+            this.$el.css( {
+                'color': this.textColor
+            } );
         } else {
-            this.$el.css({'color': ''});
+            this.$el.css( {
+                'color': ''
+            } );
         }
     };
 
     ADMEditorDecoratorCore.prototype._getNodeColorsFromRegistry = function () {
-        var objID = this._metaInfo[CONSTANTS.GME_ID];
-        this.fillColor = this.preferencesHelper.getRegistry(objID, REGISTRY_KEYS.COLOR, true);
-        this.borderColor = this.preferencesHelper.getRegistry(objID, REGISTRY_KEYS.BORDER_COLOR, true);
-        this.textColor = this.preferencesHelper.getRegistry(objID, REGISTRY_KEYS.TEXT_COLOR, true);
+        var objID = this._metaInfo[ CONSTANTS.GME_ID ];
+        this.fillColor = this.preferencesHelper.getRegistry( objID, REGISTRY_KEYS.COLOR, true );
+        this.borderColor = this.preferencesHelper.getRegistry( objID, REGISTRY_KEYS.BORDER_COLOR, true );
+        this.textColor = this.preferencesHelper.getRegistry( objID, REGISTRY_KEYS.TEXT_COLOR, true );
     };
 
     /**
@@ -292,21 +318,22 @@ define(['js/Constants',
     ADMEditorDecoratorCore.prototype._updateName = function () {
         // initialize local variables
         var control = this._control,
-            gmeID = this._metaInfo[CONSTANTS.GME_ID],
-            name = (control._client.getNode(gmeID)).getAttribute(nodePropertyNames.Attributes.name), 
+            gmeID = this._metaInfo[ CONSTANTS.GME_ID ],
+            name = ( control._client.getNode( gmeID ) )
+                .getAttribute( nodePropertyNames.Attributes.name ),
             META_TYPES = ADMEditorMETA.META_TYPES;
-        if (this._metaType === 'Connector') {
+        if ( this._metaType === 'Connector' ) {
             // Don't put the name on the canvas.
-        } else if (this.skinParts.$name) {
+        } else if ( this.skinParts.$name ) {
             // if name exists
-            if (name.indexOf('!') === 0) {
+            if ( name.indexOf( '!' ) === 0 ) {
                 // if name startswith '!' that means the text has to have an overline
-                this.skinParts.$name.text(name.slice(1));
-                this.skinParts.$name.css('text-decoration', 'overline');
+                this.skinParts.$name.text( name.slice( 1 ) );
+                this.skinParts.$name.css( 'text-decoration', 'overline' );
             } else {
                 // normal text
-                this.skinParts.$name.text(name);
-                this.skinParts.$name.css('text-decoration', 'none');
+                this.skinParts.$name.text( name );
+                this.skinParts.$name.css( 'text-decoration', 'none' );
             }
         }
     };
@@ -334,7 +361,7 @@ define(['js/Constants',
      * @param portId {string} GME ID for getting notification about this object.
      * @private
      */
-    ADMEditorDecoratorCore.prototype._registerForNotification = function(portId) {
+    ADMEditorDecoratorCore.prototype._registerForNotification = function ( portId ) {
 
     };
 
@@ -343,9 +370,9 @@ define(['js/Constants',
      * @param portId {string} GME ID for getting notification about this object.
      * @private
      */
-    ADMEditorDecoratorCore.prototype._unregisterForNotification = function(portId) {
+    ADMEditorDecoratorCore.prototype._unregisterForNotification = function ( portId ) {
 
     };
 
     return ADMEditorDecoratorCore;
-});
+} );

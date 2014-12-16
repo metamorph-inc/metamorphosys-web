@@ -4,8 +4,8 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.components')
-    .controller('SimpleModalController', function ($scope, $modalInstance, data) {
+angular.module( 'cyphy.components' )
+    .controller( 'SimpleModalController', function ( $scope, $modalInstance, data ) {
         'use strict';
         $scope.data = {
             title: data.title,
@@ -17,6 +17,6 @@ angular.module('cyphy.components')
         };
 
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $modalInstance.dismiss( 'cancel' );
         };
-    });
+    } );

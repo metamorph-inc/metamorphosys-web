@@ -12,8 +12,10 @@ var DEBUG = false,
     _jqueryUIVersion = '1.10.4',
     _bootsrapVersion = '3.1.1';
 
-var WebGMEGlobal = { 'version': 'x',    //will be set from Node's package.json
-    'SUPPORTS_TOUCH': 'ontouchstart' in window || navigator.msMaxTouchPoints }; //touch device detection}
+var WebGMEGlobal = {
+    'version': 'x', //will be set from Node's package.json
+    'SUPPORTS_TOUCH': 'ontouchstart' in window || navigator.msMaxTouchPoints
+}; //touch device detection}
 
 // configure require path and modules
 require.config( {
@@ -51,7 +53,7 @@ require.config( {
         'superagent': 'lib/superagent/superagent',
 
         //RaphaelJS family
-        'eve': 'lib/raphael/eve',   //needed because of raphael.core.js uses require with 'eve'
+        'eve': 'lib/raphael/eve', //needed because of raphael.core.js uses require with 'eve'
         'raphaeljs': 'lib/raphael/raphael.amd',
         'raphael_core': 'lib/raphael/raphael.core',
         'raphael_svg': 'lib/raphael/raphael.svg_fixed',
@@ -88,24 +90,24 @@ require.config( {
 
     shim: {
 
-        'angular-route': ['angular'],
-        'angular-route-styles': ['angular'],
-        'angular-ui-bootstrap': ['angular'],
+        'angular-route': [ 'angular' ],
+        'angular-route-styles': [ 'angular' ],
+        'angular-ui-bootstrap': [ 'angular' ],
 
-        'jquery-ui': ['jquery'],
-        'jquery-ui-iPad': ['jquery', 'jquery-ui'],
+        'jquery-ui': [ 'jquery' ],
+        'jquery-ui-iPad': [ 'jquery', 'jquery-ui' ],
 
         'bootstrap': [
             'jquery',
-                'css!lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap.min.css',
-                'css!lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap-theme.min.css'
+            'css!lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap.min.css',
+            'css!lib/bootstrap/' + _bootsrapVersion + '/css/bootstrap-theme.min.css'
         ],
 
-        'backbone': ['underscore'],
-        'clientUtil': ['jquery'],
-        'jquery-WebGME': ['bootstrap'],
-        'jquery-dataTables': ['jquery'],
-        'jquery-dataTables-bootstrapped': ['jquery-dataTables'],
+        'backbone': [ 'underscore' ],
+        'clientUtil': [ 'jquery' ],
+        'jquery-WebGME': [ 'bootstrap' ],
+        'jquery-dataTables': [ 'jquery' ],
+        'jquery-dataTables-bootstrapped': [ 'jquery-dataTables' ],
         'js/WebGME': [
             'jquery-WebGME',
             'css!/css/main.css',
@@ -113,17 +115,17 @@ require.config( {
             //'css!/fonts/font-awesome/css/font-awesome.min.css',
             'css!/fonts/webgme-icons/style.css'
         ],
-        'jquery-csszoom': ['jquery-ui'],
-        'jquery-spectrum': ['jquery'],
-        'raphael_svg': ['raphael_core'],
-        'raphael_vml': ['raphael_core'],
+        'jquery-csszoom': [ 'jquery-ui' ],
+        'jquery-spectrum': [ 'jquery' ],
+        'raphael_svg': [ 'raphael_core' ],
+        'raphael_vml': [ 'raphael_core' ],
 
         // Extra shims for angular
-        'angular': ['moment', 'angular-file-upload-shim'],
-        'angular-moment-js': ['angular'],
-        'angular-file-upload': ['angular'],
-        'angular-animate': ['angular'],
-        'angular-growl': ['angular', 'angular-animate']
+        'angular': [ 'moment', 'angular-file-upload-shim' ],
+        'angular-moment-js': [ 'angular' ],
+        'angular-file-upload': [ 'angular' ],
+        'angular-animate': [ 'angular' ],
+        'angular-growl': [ 'angular', 'angular-animate' ]
     }
 } );
 
@@ -142,8 +144,9 @@ require(
         'clientUtil',
         'bin/getconfig'
     ],
-    function ( domReady, jQuery, jQueryUi, jQueryUiiPad, jqueryWebGME, jqueryDataTables, bootstrap, underscore, backbone,
-               util, CONFIG ) {
+    function ( domReady, jQuery, jQueryUi, jQueryUiiPad, jqueryWebGME, jqueryDataTables, bootstrap, underscore,
+        backbone,
+        util, CONFIG ) {
 
         'use strict';
 
@@ -153,7 +156,8 @@ require(
                 DEBUG = CONFIG.debug;
             }
 
-            var d = util.getURLParameterByName( 'debug' ).toLowerCase();
+            var d = util.getURLParameterByName( 'debug' )
+                .toLowerCase();
             if ( d === 'true' ) {
                 DEBUG = true;
             }
@@ -166,7 +170,7 @@ require(
                 for ( var i = 0; i < keys.length; i += 1 ) {
 
                     // assume this is a relative path from the current working directory
-                    CONFIG.paths[keys[i]] = 'extlib/' + CONFIG.paths[keys[i]];
+                    CONFIG.paths[ keys[ i ] ] = 'extlib/' + CONFIG.paths[ keys[ i ] ];
                 }
 
                 // update client config to route the external lib requests
@@ -207,21 +211,25 @@ require(
                     'cyphy-components-templates': CONFIG.paths.cyphyDist + '/cyphy-components-templates'
                 },
                 shim: {
-                    'angular-moment-js': ['angular', 'moment'],
-                    '../../bower_components/isis-ui-components/dist/isis-ui-components.js': ['angular-moment-js'],
-                    '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': ['angular'],
-                    'gme-services': ['angular'],
-                    'CyPhyApp/js/services/CyPhyServices': ['angular'],
-                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations': ['angular'],
+                    'angular-moment-js': [ 'angular', 'moment' ],
+                    '../../bower_components/isis-ui-components/dist/isis-ui-components.js': [
+                        'angular-moment-js'
+                    ],
+                    '../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js': [
+                        'angular'
+                    ],
+                    'gme-services': [ 'angular' ],
+                    'CyPhyApp/js/services/CyPhyServices': [ 'angular' ],
+                    'CyPhyApp/app/DesertConfigurations/DesertConfigurations': [ 'angular' ],
 
                     // They depend on angular
-                    'cyphy-components': ['angular'],
-                    'cyphy-components-templates': ['angular']
+                    'cyphy-components': [ 'angular' ],
+                    'cyphy-components-templates': [ 'angular' ]
                 }
             } );
 
             // extlib paths are set now we can require our client
-            require( ['angular',
+            require( [ 'angular',
                     'angular-route',
                     'angular-route-styles',
                     'angular-ui-bootstrap',
@@ -254,28 +262,40 @@ require(
                     'css!CyPhyApp/styles/cyphy.css'
 
                 ],
-                function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL, SmartClient,
-                           MainNavigatorController, ServerInfoController ) {
+                function ( ng, ngRoute, ngRouteStyles, uiBootstrap, moments, angularMoment, ADMMETAMODEL,
+                    SmartClient,
+                    MainNavigatorController, ServerInfoController ) {
                     // download angular and all plugins
                     // create app
-                    var WebGMEApp = angular.module( 'WebGMEApp',
-                        ['ngRoute', 'routeStyles', 'angular-moment', 'ui.bootstrap',
-                            'angularFileUpload', 'angular-growl', 'ngAnimate',
-                            'isis.ui.components', 'cyphy.ui.desertConfigurations',
-                            'gme.services', 'cyphy.services', 'cyphy.components', 'cyphy.services.old'
-                        ] ).run(function($rootScope, DataStoreService, BranchService) {
-                            $rootScope.mainNavigator = { };
+                    var WebGMEApp = angular.module( 'WebGMEApp', [ 'ngRoute', 'routeStyles', 'angular-moment',
+                        'ui.bootstrap',
+                        'angularFileUpload', 'angular-growl', 'ngAnimate',
+                        'isis.ui.components', 'cyphy.ui.desertConfigurations',
+                        'gme.services', 'cyphy.services', 'cyphy.components', 'cyphy.services.old'
+                    ] )
+                        .run( function ( $rootScope, DataStoreService, BranchService ) {
+                            $rootScope.mainNavigator = {};
                             $rootScope.appIsLoading = false;
-                            DataStoreService.selectBranch({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'})
-                                .then(function () {
-                                    console.log('Branch selected...');
-                                }).catch(function (reason) {
-                                    console.error(reason);
-                                });
-                            BranchService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
-                                console.log('BranchService initialized..');
-                            });
-                        });
+                            DataStoreService.selectBranch( {
+                                db: 'my-db-connection-id',
+                                projectId: 'ADMEditor',
+                                branchId: 'master'
+                            } )
+                                .then( function () {
+                                    console.log( 'Branch selected...' );
+                                } )
+                                .
+                            catch ( function ( reason ) {
+                                console.error( reason );
+                            } );
+                            BranchService.on( {
+                                db: 'my-db-connection-id',
+                                projectId: 'ADMEditor',
+                                branchId: 'master'
+                            }, 'initialize', function ( currentContext ) {
+                                console.log( 'BranchService initialized..' );
+                            } );
+                        } );
 
                     WebGMEGlobal.WebGMEApp = WebGMEApp;
 
@@ -299,8 +319,10 @@ require(
                                 'CyPhyApp/app/WorkspaceDetails/WorkspaceDetailsController',
                                 'CyPhyApp/app/DesignSpace/DesignSpaceController',
                                 'CyPhyApp/app/TestBench/TestBenchController',
-                                'CyPhyApp/app/Workers/WorkersController'],
-                            function ( WorkspaceController, WorkspaceDetailsController, DesignSpaceController, TestBenchController, WorkersController ) {
+                                'CyPhyApp/app/Workers/WorkersController'
+                            ],
+                            function ( WorkspaceController, WorkspaceDetailsController, DesignSpaceController,
+                                TestBenchController, WorkersController ) {
                                 // configure app
 
                                 WebGMEApp.filter( 'orderObjectBy', function () {
@@ -310,7 +332,7 @@ require(
                                             filtered.push( item );
                                         } );
                                         filtered.sort( function ( a, b ) {
-                                            return (a[field] > b[field] ? 1 : -1);
+                                            return ( a[ field ] > b[ field ] ? 1 : -1 );
                                         } );
                                         if ( reverse ) {
                                             filtered.reverse();
@@ -324,48 +346,62 @@ require(
                                 WebGMEApp.controller( 'DesignSpaceController', DesignSpaceController );
                                 WebGMEApp.controller( 'WorkersController', WorkersController );
                                 WebGMEApp.controller( 'TestBenchController', TestBenchController );
-                                WebGMEApp.config( ['growlProvider', function ( growlProvider ) {
-                                    growlProvider.globalTimeToLive( {success: 5000, error: -1, warning: 20000, info: 5000} );
-                                }] );
-                                WebGMEApp.config( ['$routeProvider',
+                                WebGMEApp.config( [ 'growlProvider',
+                                    function ( growlProvider ) {
+                                        growlProvider.globalTimeToLive( {
+                                            success: 5000,
+                                            error: -1,
+                                            warning: 20000,
+                                            info: 5000
+                                        } );
+                                    }
+                                ] );
+                                WebGMEApp.config( [ '$routeProvider',
                                     function ( $routeProvider ) {
                                         $routeProvider.
-                                            when( '/workspace', {
-                                                templateUrl: 'app/workspace/views/WorkspaceView.html',
-                                                css: 'app/workspace/styles/Workspace.css',
-                                                controller: 'WorkspaceController'
-                                            } ).
-                                            when( '/workspaceList', {
-                                                template: '<div></div>',
-                                                controller: 'WorkspaceListController'
-                                            }).
-                                            when( '/workspaceDetails/:id*', {
-                                                templateUrl: 'app/WorkspaceDetails/views/WorkspaceDetailsView.html',
-                                                css: 'app/WorkspaceDetails/styles/WorkspaceDetails.css',
-                                                controller: 'WorkspaceDetailsController'
-                                            } ).
-                                            when( '/designSpace/:id*', {
-                                                templateUrl: 'app/DesignSpace/views/DesignSpaceView.html',
-                                                css: 'app/DesignSpace/styles/DesignSpace.css',
-                                                controller: 'DesignSpaceController'
-                                            } ).
-                                            when( '/workers', {
-                                                templateUrl: 'app/Workers/views/WorkersView.html',
-                                                css: 'app/Workers/styles/Workers.css',
-                                                controller: 'WorkersController'
-                                            } ).
-                                            when( '/testBench/:id*', {
-                                                templateUrl: 'app/TestBench/views/TestBenchView.html',
-                                                css: 'app/TestBench/styles/TestBench.css',
-                                                controller: 'TestBenchController'
-                                            } ).
-                                            otherwise( {
-                                                redirectTo: '/workspace'
-                                            } );
-                                    }] );
+                                        when( '/workspace', {
+                                            templateUrl: 'app/workspace/views/WorkspaceView.html',
+                                            css: 'app/workspace/styles/Workspace.css',
+                                            controller: 'WorkspaceController'
+                                        } )
+                                            .
+                                        when( '/workspaceList', {
+                                            template: '<div></div>',
+                                            controller: 'WorkspaceListController'
+                                        } )
+                                            .
+                                        when( '/workspaceDetails/:id*', {
+                                            templateUrl: 'app/WorkspaceDetails/views/WorkspaceDetailsView.html',
+                                            css: 'app/WorkspaceDetails/styles/WorkspaceDetails.css',
+                                            controller: 'WorkspaceDetailsController'
+                                        } )
+                                            .
+                                        when( '/designSpace/:id*', {
+                                            templateUrl: 'app/DesignSpace/views/DesignSpaceView.html',
+                                            css: 'app/DesignSpace/styles/DesignSpace.css',
+                                            controller: 'DesignSpaceController'
+                                        } )
+                                            .
+                                        when( '/workers', {
+                                            templateUrl: 'app/Workers/views/WorkersView.html',
+                                            css: 'app/Workers/styles/Workers.css',
+                                            controller: 'WorkersController'
+                                        } )
+                                            .
+                                        when( '/testBench/:id*', {
+                                            templateUrl: 'app/TestBench/views/TestBenchView.html',
+                                            css: 'app/TestBench/styles/TestBench.css',
+                                            controller: 'TestBenchController'
+                                        } )
+                                            .
+                                        otherwise( {
+                                            redirectTo: '/workspace'
+                                        } );
+                                    }
+                                ] );
 
                                 // Add app to the document
-                                angular.bootstrap( document, ['WebGMEApp'] );
+                                angular.bootstrap( document, [ 'WebGMEApp' ] );
                             } );
 
                     } );
@@ -376,8 +412,7 @@ require(
                     }
                 }
 
-            )
-            ;
+            );
         } );
     }
 );

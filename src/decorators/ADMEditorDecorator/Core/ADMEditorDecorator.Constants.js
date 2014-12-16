@@ -4,7 +4,7 @@
  */
 
 
-define([], function () {
+define( [], function () {
     "use strict";
     return {
         TOP_PORT_CLASS: "top-port",
@@ -19,4 +19,4 @@ define([], function () {
         NAME_DIV_FIXTURE: 6,
         BAR_WIDTH: "Width"
     };
-});
+} );

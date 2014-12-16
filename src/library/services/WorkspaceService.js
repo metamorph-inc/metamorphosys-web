@@ -6,71 +6,80 @@
  */
 
 
-angular.module('cyphy.services')
-    .service('workspaceService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, fileService) {
+angular.module( 'cyphy.services' )
+    .service( 'workspaceService', function ( $q, $timeout, nodeService, baseCyPhyService, pluginService, fileService ) {
         'use strict';
         var self = this,
             watchers = {};
 
-        this.callCreateWorkspace = function (/*context, name, desc*/) {
+        this.callCreateWorkspace = function ( /*context, name, desc*/) {
 
         };
 
-        this.createWorkspace = function (context, name, desc) {
+        this.createWorkspace = function ( context, name, desc ) {
             var deferred = $q.defer(),
                 meta;
-            nodeService.getMetaNodes(context)
-                .then(function (metaNodes) {
+            nodeService.getMetaNodes( context )
+                .then( function ( metaNodes ) {
                     meta = metaNodes;
-                    return nodeService.createNode(context, '', meta.WorkSpace, '[WebCyPhy] - WorkspaceService.createWorkspace');
-                })
-                .then(function (wsNode) {
+                    return nodeService.createNode( context, '', meta.WorkSpace,
+                        '[WebCyPhy] - WorkspaceService.createWorkspace' );
+                } )
+                .then( function ( wsNode ) {
                     var acmFolderId,
                         admFolderId,
                         atmFolderId,
                         createFolderNodes = function () {
                             var parentId = wsNode.getId(),
                                 baseId = meta.ACMFolder.getId();
-                            nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ACMFolder')
-                                .then(function (acmNode) {
+                            nodeService.createNode( context, parentId, baseId, '[WebCyPhy] - create ACMFolder' )
+                                .then( function ( acmNode ) {
                                     acmFolderId = acmNode.getId();
                                     baseId = meta.ADMFolder.getId();
-                                    return nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ADMFolder');
-                                })
-                                .then(function (admNode) {
+                                    return nodeService.createNode( context, parentId, baseId,
+                                        '[WebCyPhy] - create ADMFolder' );
+                                } )
+                                .then( function ( admNode ) {
                                     admFolderId = admNode.getId();
                                     baseId = meta.ATMFolder.getId();
-                                    return nodeService.createNode(context, parentId, baseId, '[WebCyPhy] - create ATMFolder');
-                                })
-                                .then(function (atmNode) {
+                                    return nodeService.createNode( context, parentId, baseId,
+                                        '[WebCyPhy] - create ATMFolder' );
+                                } )
+                                .then( function ( atmNode ) {
                                     atmFolderId = atmNode.getId();
-                                    deferred.resolve({ acm: acmFolderId, adm: admFolderId, atm: atmFolderId });
-                                })
-                                .catch(function (reason) {
-                                    deferred.reject(reason);
-                                });
+                                    deferred.resolve( {
+                                        acm: acmFolderId,
+                                        adm: admFolderId,
+                                        atm: atmFolderId
+                                    } );
+                                } )
+                                .
+                            catch ( function ( reason ) {
+                                deferred.reject( reason );
+                            } );
                         };
 
-                    wsNode.setAttribute('name', name, '[WebCyPhy] - set name to ' + name)
-                        .then(function () {
-                            if (desc) {
-                                wsNode.setAttribute('INFO', desc, '[WebCyPhy] - set INFO to ' + desc)
-                                    .then(function () {
+                    wsNode.setAttribute( 'name', name, '[WebCyPhy] - set name to ' + name )
+                        .then( function () {
+                            if ( desc ) {
+                                wsNode.setAttribute( 'INFO', desc, '[WebCyPhy] - set INFO to ' + desc )
+                                    .then( function () {
                                         createFolderNodes();
-                                    });
+                                    } );
                             } else {
                                 createFolderNodes();
                             }
-                        });
-                })
-                .catch(function (reason) {
-                    deferred.reject(reason);
-                });
+                        } );
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( reason );
+            } );
 
             return deferred.promise;
         };
 
-        this.importFiles = function (context, folderIds, files) {
+        this.importFiles = function ( context, folderIds, files ) {
             var deferred = $q.defer(),
                 i,
                 counter,
@@ -87,9 +96,9 @@ angular.module('cyphy.services')
 
             importAcmRec = function () {
                 counter -= 1;
-                if (counter >= 0) {
-                    self.callAcmImporter(context, folderIds.acm, fs.acms[counter])
-                        .then(getNotify(fs.acms[counter], 'acm'), getNotify(fs.acms[counter]), 'acm');
+                if ( counter >= 0 ) {
+                    self.callAcmImporter( context, folderIds.acm, fs.acms[ counter ] )
+                        .then( getNotify( fs.acms[ counter ], 'acm' ), getNotify( fs.acms[ counter ] ), 'acm' );
                 } else {
                     total = fs.adms.length;
                     counter = total;
@@ -98,9 +107,9 @@ angular.module('cyphy.services')
             };
             importAdmRec = function () {
                 counter -= 1;
-                if (counter >= 0) {
-                    self.callAdmImporter(context, folderIds.adm, fs.adms[counter])
-                        .then(getNotify(fs.adms[counter], 'adm'), getNotify(fs.adms[counter]), 'adm');
+                if ( counter >= 0 ) {
+                    self.callAdmImporter( context, folderIds.adm, fs.adms[ counter ] )
+                        .then( getNotify( fs.adms[ counter ], 'adm' ), getNotify( fs.adms[ counter ] ), 'adm' );
                 } else {
                     total = fs.atms.length;
                     counter = total;
@@ -109,48 +118,54 @@ angular.module('cyphy.services')
             };
             importAtmRec = function () {
                 counter -= 1;
-                if (counter >= 0) {
-                    self.callAtmImporter(context, folderIds.atm, fs.atms[counter])
-                        .then(getNotify(fs.atms[counter], 'atm'), getNotify(fs.atms[counter], 'atm'));
+                if ( counter >= 0 ) {
+                    self.callAtmImporter( context, folderIds.atm, fs.atms[ counter ] )
+                        .then( getNotify( fs.atms[ counter ], 'atm' ), getNotify( fs.atms[ counter ], 'atm' ) );
                 } else {
                     deferred.resolve();
                 }
             };
-            getNotify = function (fInfo, type) {
-                return function (result) {
-                    if (angular.isString(result) === false && result.success === true) {
-                        deferred.notify({type: 'success', message: '<a href="' + fInfo.url + '">' + fInfo.name +
-                            '</a>' + ' imported. ' + '[' + (total - counter) + '/' + total + ']'});
+            getNotify = function ( fInfo, type ) {
+                return function ( result ) {
+                    if ( angular.isString( result ) === false && result.success === true ) {
+                        deferred.notify( {
+                            type: 'success',
+                            message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                                '</a>' + ' imported. ' + '[' + ( total - counter ) + '/' + total + ']'
+                        } );
                     } else {
-                        deferred.notify({type: 'error', message: '<a href="' + fInfo.url + '">' + fInfo.name +
-                            '</a>' + ' failed to be imported, see console details.' +
-                            '[' + (total - counter) + '/' + total + ']'});
-                        if (angular.isString(result)) {
-                            console.error(result);
+                        deferred.notify( {
+                            type: 'error',
+                            message: '<a href="' + fInfo.url + '">' + fInfo.name +
+                                '</a>' + ' failed to be imported, see console details.' +
+                                '[' + ( total - counter ) + '/' + total + ']'
+                        } );
+                        if ( angular.isString( result ) ) {
+                            console.error( result );
                         } else {
-                            console.error(angular.toJson(result.messages, true));
+                            console.error( angular.toJson( result.messages, true ) );
                         }
                     }
-                    if (type === 'acm') {
+                    if ( type === 'acm' ) {
                         importAcmRec();
-                    } else if (type === 'adm') {
+                    } else if ( type === 'adm' ) {
                         importAdmRec();
-                    } else if (type === 'atm') {
+                    } else if ( type === 'atm' ) {
                         importAtmRec();
                     } else {
-                        deferred.reject('Unexpected import type ' + type);
+                        deferred.reject( 'Unexpected import type ' + type );
                     }
                 };
             };
             // hash: "3636ead0785ca166f3b11193c4b2e5a670801eb1" name: "Damper.zip" size: "1.4 kB" type: "zip"
             // url: "/rest/blob/download/3636ead0785ca166f3b11193c4b2e5a670801eb1"
-            for (i = 0; i < files.length; i += 1) {
-                if (files[i].type === 'zip') {
-                    fs.acms.push(files[i]);
-                } else if (files[i].type === 'adm') {
-                    fs.adms.push(files[i]);
-                } else if (files[i].type === 'atm') {
-                    fs.atms.push(files[i]);
+            for ( i = 0; i < files.length; i += 1 ) {
+                if ( files[ i ].type === 'zip' ) {
+                    fs.acms.push( files[ i ] );
+                } else if ( files[ i ].type === 'adm' ) {
+                    fs.adms.push( files[ i ] );
+                } else if ( files[ i ].type === 'atm' ) {
+                    fs.atms.push( files[ i ] );
                 }
             }
 
@@ -161,7 +176,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        this.callAcmImporter = function (context, folderId, fileInfo) {
+        this.callAcmImporter = function ( context, folderId, fileInfo ) {
             var deferred = $q.defer(),
                 config = {
                     activeNode: folderId,
@@ -172,20 +187,21 @@ angular.module('cyphy.services')
                     }
                 };
 
-            pluginService.runPlugin(context, 'AcmImporter', config)
-                .then(function (result) {
+            pluginService.runPlugin( context, 'AcmImporter', config )
+                .then( function ( result ) {
                     //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ACM Importer",
                     // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
-                    deferred.resolve(result);
-                })
-                .catch(function (reason) {
-                    deferred.reject('Something went terribly wrong, ' + reason);
-                });
+                    deferred.resolve( result );
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( 'Something went terribly wrong, ' + reason );
+            } );
 
             return deferred.promise;
         };
 
-        this.callAdmImporter = function (context, folderId, fileInfo) {
+        this.callAdmImporter = function ( context, folderId, fileInfo ) {
             var deferred = $q.defer(),
                 config = {
                     activeNode: folderId,
@@ -195,20 +211,21 @@ angular.module('cyphy.services')
                     }
                 };
 
-            pluginService.runPlugin(context, 'AdmImporter', config)
-                .then(function (result) {
+            pluginService.runPlugin( context, 'AdmImporter', config )
+                .then( function ( result ) {
                     //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
                     // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
-                    deferred.resolve(result);
-                })
-                .catch(function (reason) {
-                    deferred.reject('Something went terribly wrong, ' + reason);
-                });
+                    deferred.resolve( result );
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( 'Something went terribly wrong, ' + reason );
+            } );
 
             return deferred.promise;
         };
 
-        this.callAtmImporter = function (context, folderId, fileInfo) {
+        this.callAtmImporter = function ( context, folderId, fileInfo ) {
             var deferred = $q.defer(),
                 config = {
                     activeNode: folderId,
@@ -218,15 +235,16 @@ angular.module('cyphy.services')
                     }
                 };
 
-            pluginService.runPlugin(context, 'AtmImporter', config)
-                .then(function (result) {
+            pluginService.runPlugin( context, 'AtmImporter', config )
+                .then( function ( result ) {
                     //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ATM Importer",
                     // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
-                    deferred.resolve(result);
-                })
-                .catch(function (reason) {
-                    deferred.reject('Something went terribly wrong, ' + reason);
-                });
+                    deferred.resolve( result );
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( 'Something went terribly wrong, ' + reason );
+            } );
 
             return deferred.promise;
         };
@@ -238,32 +256,33 @@ angular.module('cyphy.services')
          * @param {string} workspaceId
          * @returns {Promise} - resolves to download url if successful.
          */
-        this.exportWorkspace = function (context, workspaceId) {
+        this.exportWorkspace = function ( context, workspaceId ) {
             var deferred = $q.defer(),
                 config = {
                     activeNode: workspaceId,
                     runOnServer: false,
-                    pluginConfig: { }
+                    pluginConfig: {}
                 };
 
-            pluginService.runPlugin(context, 'ExportWorkspace', config)
-                .then(function (result) {
+            pluginService.runPlugin( context, 'ExportWorkspace', config )
+                .then( function ( result ) {
                     //"{"success":true,"messages":[],"artifacts":[],"pluginName":"ADM Importer",
                     // "startTime":"2014-11-08T02:51:21.383Z","finishTime":"2014-11-08T02:51:21.939Z","error":null}"
-                    if (result.success) {
-                        console.log(result);
-                        deferred.resolve(fileService.getDownloadUrl(result.artifacts[0]));
+                    if ( result.success ) {
+                        console.log( result );
+                        deferred.resolve( fileService.getDownloadUrl( result.artifacts[ 0 ] ) );
                     } else {
-                        if (result.error) {
-                            deferred.reject(result.error + ' messages: ' + angular.toJson(result.messages));
+                        if ( result.error ) {
+                            deferred.reject( result.error + ' messages: ' + angular.toJson( result.messages ) );
                         } else {
-                            deferred.reject(angular.toJson(result.messages));
+                            deferred.reject( angular.toJson( result.messages ) );
                         }
                     }
-                })
-                .catch(function (reason) {
-                    deferred.reject('Something went terribly wrong ' + reason);
-                });
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( 'Something went terribly wrong ' + reason );
+            } );
 
             return deferred.promise;
 
@@ -277,8 +296,8 @@ angular.module('cyphy.services')
          * @param {string} workspaceId - Path to workspace.
          * @param {object} attrs - Keys are names of attributes and values are the wanted value.
          */
-        this.setWorkspaceAttributes = function (context, workspaceId, attrs) {
-            return baseCyPhyService.setNodeAttributes(context, workspaceId, attrs);
+        this.setWorkspaceAttributes = function ( context, workspaceId, attrs ) {
+            return baseCyPhyService.setNodeAttributes( context, workspaceId, attrs );
         };
 
         /**
@@ -288,9 +307,9 @@ angular.module('cyphy.services')
          * @param {string} workspaceId - Path to workspace.
          * @param [msg] - Commit message.
          */
-        this.deleteWorkspace = function (context, workspaceId, msg) {
+        this.deleteWorkspace = function ( context, workspaceId, msg ) {
             var message = msg || 'WorkspaceService.deleteWorkspace ' + workspaceId;
-            nodeService.destroyNode(context, workspaceId, message);
+            nodeService.destroyNode( context, workspaceId, message );
         };
 
         // TODO: make sure the methods below gets resolved at error too.
@@ -300,7 +319,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - called on (filtered) changes in data-base. Data is an object in data.workspaces.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchWorkspaces = function (parentContext, updateListener) {
+        this.watchWorkspaces = function ( parentContext, updateListener ) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchWorkspaces',
                 context = {
@@ -311,72 +330,86 @@ angular.module('cyphy.services')
                     regionId: regionId,
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
                 },
-                onUpdate = function (id) {
-                    var newName = this.getAttribute('name'),
-                        newDesc = this.getAttribute('INFO'),
+                onUpdate = function ( id ) {
+                    var newName = this.getAttribute( 'name' ),
+                        newDesc = this.getAttribute( 'INFO' ),
                         hadChanges = false;
-                    if (newName !== data.workspaces[id].name) {
-                        data.workspaces[id].name = newName;
+                    if ( newName !== data.workspaces[ id ].name ) {
+                        data.workspaces[ id ].name = newName;
                         hadChanges = true;
                     }
-                    if (newDesc !== data.workspaces[id].description) {
-                        data.workspaces[id].description = newDesc;
+                    if ( newDesc !== data.workspaces[ id ].description ) {
+                        data.workspaces[ id ].description = newDesc;
                         hadChanges = true;
                     }
-                    if (hadChanges) {
-                        $timeout(function () {
-                            updateListener({id: id, type: 'update', data: data.workspaces[id]});
-                        });
+                    if ( hadChanges ) {
+                        $timeout( function () {
+                            updateListener( {
+                                id: id,
+                                type: 'update',
+                                data: data.workspaces[ id ]
+                            } );
+                        } );
                     }
                 },
-                onUnload = function (id) {
-                    delete data.workspaces[id];
-                    $timeout(function () {
-                        updateListener({id: id, type: 'unload', data: null});
-                    });
+                onUnload = function ( id ) {
+                    delete data.workspaces[ id ];
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            type: 'unload',
+                            data: null
+                        } );
+                    } );
                 };
 
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, '')
-                    .then(function (rootNode) {
-                        rootNode.loadChildren().then(function (children) {
-                            var i,
-                                childNode,
-                                wsId;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                if (childNode.isMetaTypeOf(meta.WorkSpace)) {
-                                    wsId = childNode.getId();
-                                    data.workspaces[wsId] = {
-                                        id: wsId,
-                                        name: childNode.getAttribute('name'),
-                                        description: childNode.getAttribute('INFO')
-                                    };
-                                    childNode.onUpdate(onUpdate);
-                                    childNode.onUnload(onUnload);
-                                }
-                            }
-                            rootNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.WorkSpace)) {
-                                    wsId = newChild.getId();
-                                    data.workspaces[wsId] = {
-                                        id: wsId,
-                                        name: newChild.getAttribute('name'),
-                                        description: newChild.getAttribute('INFO')
-                                    };
-                                    newChild.onUpdate(onUpdate);
-                                    newChild.onUnload(onUnload);
-                                    $timeout(function () {
-                                        updateListener({id: wsId, type: 'load', data: data.workspaces[wsId]});
-                                    });
-                                }
-                            });
-                            deferred.resolve(data);
-                        });
-                    });
-            });
+            watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
+            watchers[ parentContext.regionId ][ context.regionId ] = context;
+            nodeService.getMetaNodes( context )
+                .then( function ( meta ) {
+                    nodeService.loadNode( context, '' )
+                        .then( function ( rootNode ) {
+                            rootNode.loadChildren()
+                                .then( function ( children ) {
+                                    var i,
+                                        childNode,
+                                        wsId;
+                                    for ( i = 0; i < children.length; i += 1 ) {
+                                        childNode = children[ i ];
+                                        if ( childNode.isMetaTypeOf( meta.WorkSpace ) ) {
+                                            wsId = childNode.getId();
+                                            data.workspaces[ wsId ] = {
+                                                id: wsId,
+                                                name: childNode.getAttribute( 'name' ),
+                                                description: childNode.getAttribute( 'INFO' )
+                                            };
+                                            childNode.onUpdate( onUpdate );
+                                            childNode.onUnload( onUnload );
+                                        }
+                                    }
+                                    rootNode.onNewChildLoaded( function ( newChild ) {
+                                        if ( newChild.isMetaTypeOf( meta.WorkSpace ) ) {
+                                            wsId = newChild.getId();
+                                            data.workspaces[ wsId ] = {
+                                                id: wsId,
+                                                name: newChild.getAttribute( 'name' ),
+                                                description: newChild.getAttribute( 'INFO' )
+                                            };
+                                            newChild.onUpdate( onUpdate );
+                                            newChild.onUnload( onUnload );
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: wsId,
+                                                    type: 'load',
+                                                    data: data.workspaces[ wsId ]
+                                                } );
+                                            } );
+                                        }
+                                    } );
+                                    deferred.resolve( data );
+                                } );
+                        } );
+                } );
 
             return deferred.promise;
         };
@@ -388,7 +421,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchNumberOfComponents = function (parentContext, workspaceId, updateListener) {
+        this.watchNumberOfComponents = function ( parentContext, workspaceId, updateListener ) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchNumberOfComponents_' + workspaceId,
                 context = {
@@ -399,89 +432,112 @@ angular.module('cyphy.services')
                     regionId: regionId,
                     count: 0
                 },
-                watchFromFolderRec = function (folderNode, meta) {
+                watchFromFolderRec = function ( folderNode, meta ) {
                     var recDeferred = $q.defer();
-                    folderNode.loadChildren().then(function (children) {
-                        var i,
-                            queueList = [],
-                            childNode,
-                            onUnload = function (id) {
-                                data.count -= 1;
-                                $timeout(function () {
-                                    updateListener({id: id, type: 'unload', data: data.count});
-                                });
-                            };
-                        for (i = 0; i < children.length; i += 1) {
-                            childNode = children[i];
-                            if (childNode.isMetaTypeOf(meta.ACMFolder)) {
-                                queueList.push(watchFromFolderRec(childNode, meta));
-                            } else if (childNode.isMetaTypeOf(meta.AVMComponentModel)) {
-                                data.count += 1;
-                                childNode.onUnload(onUnload);
+                    folderNode.loadChildren()
+                        .then( function ( children ) {
+                            var i,
+                                queueList = [],
+                                childNode,
+                                onUnload = function ( id ) {
+                                    data.count -= 1;
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: id,
+                                            type: 'unload',
+                                            data: data.count
+                                        } );
+                                    } );
+                                };
+                            for ( i = 0; i < children.length; i += 1 ) {
+                                childNode = children[ i ];
+                                if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                    queueList.push( watchFromFolderRec( childNode, meta ) );
+                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                    data.count += 1;
+                                    childNode.onUnload( onUnload );
+                                }
                             }
-                        }
 
-                        folderNode.onNewChildLoaded(function (newChild) {
-                            if (newChild.isMetaTypeOf(meta.ACMFolder)) {
-                                watchFromFolderRec(newChild, meta).then(function () {
-                                    $timeout(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                    });
-                                });
-                            } else if (newChild.isMetaTypeOf(meta.AVMComponentModel)) {
-                                data.count += 1;
-                                newChild.onUnload(onUnload);
-                                $timeout(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                });
-                            }
-                        });
-                        if (queueList.length === 0) {
-                            recDeferred.resolve();
-                        } else {
-                            $q.all(queueList).then(function () {
+                            folderNode.onNewChildLoaded( function ( newChild ) {
+                                if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                    watchFromFolderRec( newChild, meta )
+                                        .then( function () {
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: newChild.getId(),
+                                                    type: 'load',
+                                                    data: data.count
+                                                } );
+                                            } );
+                                        } );
+                                } else if ( newChild.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                    data.count += 1;
+                                    newChild.onUnload( onUnload );
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: newChild.getId(),
+                                            type: 'load',
+                                            data: data.count
+                                        } );
+                                    } );
+                                }
+                            } );
+                            if ( queueList.length === 0 ) {
                                 recDeferred.resolve();
-                            });
-                        }
-                    });
+                            } else {
+                                $q.all( queueList )
+                                    .then( function () {
+                                        recDeferred.resolve();
+                                    } );
+                            }
+                        } );
 
                     return recDeferred.promise;
                 };
 
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, workspaceId)
-                    .then(function (workspaceNode) {
-                        workspaceNode.loadChildren().then(function (children) {
-                            var i,
-                                queueList = [],
-                                childNode;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                if (childNode.isMetaTypeOf(meta.ACMFolder)) {
-                                    queueList.push(watchFromFolderRec(childNode, meta));
-                                }
-                            }
-                            workspaceNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.ACMFolder)) {
-                                    watchFromFolderRec(newChild, meta).then(function () {
-                                        $timeout(function () {
-                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                        });
-                                    });
-                                }
-                            });
-                            if (queueList.length === 0) {
-                                deferred.resolve(data);
-                            } else {
-                                $q.all(queueList).then(function () {
-                                    deferred.resolve(data);
-                                });
-                            }
-                        });
-                    });
-            });
+            watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
+            watchers[ parentContext.regionId ][ context.regionId ] = context;
+            nodeService.getMetaNodes( context )
+                .then( function ( meta ) {
+                    nodeService.loadNode( context, workspaceId )
+                        .then( function ( workspaceNode ) {
+                            workspaceNode.loadChildren()
+                                .then( function ( children ) {
+                                    var i,
+                                        queueList = [],
+                                        childNode;
+                                    for ( i = 0; i < children.length; i += 1 ) {
+                                        childNode = children[ i ];
+                                        if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                            queueList.push( watchFromFolderRec( childNode, meta ) );
+                                        }
+                                    }
+                                    workspaceNode.onNewChildLoaded( function ( newChild ) {
+                                        if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                            watchFromFolderRec( newChild, meta )
+                                                .then( function () {
+                                                    $timeout( function () {
+                                                        updateListener( {
+                                                            id: newChild.getId(),
+                                                            type: 'load',
+                                                            data: data.count
+                                                        } );
+                                                    } );
+                                                } );
+                                        }
+                                    } );
+                                    if ( queueList.length === 0 ) {
+                                        deferred.resolve( data );
+                                    } else {
+                                        $q.all( queueList )
+                                            .then( function () {
+                                                deferred.resolve( data );
+                                            } );
+                                    }
+                                } );
+                        } );
+                } );
 
             return deferred.promise;
         };
@@ -493,7 +549,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchNumberOfDesigns = function (parentContext, workspaceId, updateListener) {
+        this.watchNumberOfDesigns = function ( parentContext, workspaceId, updateListener ) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchNumberOfDesigns_' + workspaceId,
                 context = {
@@ -504,92 +560,115 @@ angular.module('cyphy.services')
                     regionId: regionId,
                     count: 0
                 },
-                watchFromFolderRec = function (folderNode, meta) {
+                watchFromFolderRec = function ( folderNode, meta ) {
                     var recDeferred = $q.defer();
-                    folderNode.loadChildren().then(function (children) {
-                        var i,
-                            queueList = [],
-                            childNode,
-                            onUnload = function (id) {
-                                data.count -= 1;
-                                $timeout(function () {
-                                    updateListener({id: id, type: 'unload', data: data.count});
-                                });
-                            };
-                        for (i = 0; i < children.length; i += 1) {
-                            childNode = children[i];
-                            if (childNode.isMetaTypeOf(meta.ADMFolder)) {
-                                queueList.push(watchFromFolderRec(childNode, meta));
-                            } else if (childNode.isMetaTypeOf(meta.Container)) {
-                                data.count += 1;
-                                childNode.onUnload(onUnload);
+                    folderNode.loadChildren()
+                        .then( function ( children ) {
+                            var i,
+                                queueList = [],
+                                childNode,
+                                onUnload = function ( id ) {
+                                    data.count -= 1;
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: id,
+                                            type: 'unload',
+                                            data: data.count
+                                        } );
+                                    } );
+                                };
+                            for ( i = 0; i < children.length; i += 1 ) {
+                                childNode = children[ i ];
+                                if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                    queueList.push( watchFromFolderRec( childNode, meta ) );
+                                } else if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                    data.count += 1;
+                                    childNode.onUnload( onUnload );
+                                }
                             }
-                        }
 
-                        folderNode.onNewChildLoaded(function (newChild) {
-                            if (newChild.isMetaTypeOf(meta.ADMFolder)) {
-                                watchFromFolderRec(newChild, meta).then(function () {
-                                    $timeout(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                    });
-                                });
-                            } else if (newChild.isMetaTypeOf(meta.Container)) {
-                                data.count += 1;
-                                newChild.onUnload(onUnload);
-                                $timeout(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                });
-                            }
-                        });
-                        if (queueList.length === 0) {
-                            recDeferred.resolve();
-                        } else {
-                            $q.all(queueList).then(function () {
+                            folderNode.onNewChildLoaded( function ( newChild ) {
+                                if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                    watchFromFolderRec( newChild, meta )
+                                        .then( function () {
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: newChild.getId(),
+                                                    type: 'load',
+                                                    data: data.count
+                                                } );
+                                            } );
+                                        } );
+                                } else if ( newChild.isMetaTypeOf( meta.Container ) ) {
+                                    data.count += 1;
+                                    newChild.onUnload( onUnload );
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: newChild.getId(),
+                                            type: 'load',
+                                            data: data.count
+                                        } );
+                                    } );
+                                }
+                            } );
+                            if ( queueList.length === 0 ) {
                                 recDeferred.resolve();
-                            });
-                        }
-                    });
+                            } else {
+                                $q.all( queueList )
+                                    .then( function () {
+                                        recDeferred.resolve();
+                                    } );
+                            }
+                        } );
 
                     return recDeferred.promise;
                 };
 
-            if (watchers.hasOwnProperty(parentContext.regionId) === false) {
-                console.error(parentContext.regionId + ' is not a registered watcher! ' +
-                    'Use "this.registerWatcher" before trying to access Node Objects.');
+            if ( watchers.hasOwnProperty( parentContext.regionId ) === false ) {
+                console.error( parentContext.regionId + ' is not a registered watcher! ' +
+                    'Use "this.registerWatcher" before trying to access Node Objects.' );
             }
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, workspaceId)
-                    .then(function (workspaceNode) {
-                        workspaceNode.loadChildren().then(function (children) {
-                            var i,
-                                queueList = [],
-                                childNode;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                if (childNode.isMetaTypeOf(meta.ADMFolder)) {
-                                    queueList.push(watchFromFolderRec(childNode, meta));
-                                }
-                            }
-                            workspaceNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.ADMFolder)) {
-                                    watchFromFolderRec(newChild, meta).then(function () {
-                                        $timeout(function () {
-                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                        });
-                                    });
-                                }
-                            });
-                            if (queueList.length === 0) {
-                                deferred.resolve(data);
-                            } else {
-                                $q.all(queueList).then(function () {
-                                    deferred.resolve(data);
-                                });
-                            }
-                        });
-                    });
-            });
+            watchers[ parentContext.regionId ][ context.regionId ] = context;
+            nodeService.getMetaNodes( context )
+                .then( function ( meta ) {
+                    nodeService.loadNode( context, workspaceId )
+                        .then( function ( workspaceNode ) {
+                            workspaceNode.loadChildren()
+                                .then( function ( children ) {
+                                    var i,
+                                        queueList = [],
+                                        childNode;
+                                    for ( i = 0; i < children.length; i += 1 ) {
+                                        childNode = children[ i ];
+                                        if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                            queueList.push( watchFromFolderRec( childNode, meta ) );
+                                        }
+                                    }
+                                    workspaceNode.onNewChildLoaded( function ( newChild ) {
+                                        if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                            watchFromFolderRec( newChild, meta )
+                                                .then( function () {
+                                                    $timeout( function () {
+                                                        updateListener( {
+                                                            id: newChild.getId(),
+                                                            type: 'load',
+                                                            data: data.count
+                                                        } );
+                                                    } );
+                                                } );
+                                        }
+                                    } );
+                                    if ( queueList.length === 0 ) {
+                                        deferred.resolve( data );
+                                    } else {
+                                        $q.all( queueList )
+                                            .then( function () {
+                                                deferred.resolve( data );
+                                            } );
+                                    }
+                                } );
+                        } );
+                } );
 
             return deferred.promise;
         };
@@ -601,7 +680,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - called on (filtered) changes in data-base. Data is the updated data.count.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchNumberOfTestBenches = function (parentContext, workspaceId, updateListener) {
+        this.watchNumberOfTestBenches = function ( parentContext, workspaceId, updateListener ) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchNumberOfTestBenches_' + workspaceId,
                 context = {
@@ -612,89 +691,112 @@ angular.module('cyphy.services')
                     regionId: regionId,
                     count: 0
                 },
-                watchFromFolderRec = function (folderNode, meta) {
+                watchFromFolderRec = function ( folderNode, meta ) {
                     var recDeferred = $q.defer();
-                    folderNode.loadChildren().then(function (children) {
-                        var i,
-                            queueList = [],
-                            childNode,
-                            onUnload = function (id) {
-                                data.count -= 1;
-                                $timeout(function () {
-                                    updateListener({id: id, type: 'unload', data: data.count});
-                                });
-                            };
-                        for (i = 0; i < children.length; i += 1) {
-                            childNode = children[i];
-                            if (childNode.isMetaTypeOf(meta.ATMFolder)) {
-                                queueList.push(watchFromFolderRec(childNode, meta));
-                            } else if (childNode.isMetaTypeOf(meta.AVMTestBenchModel)) {
-                                data.count += 1;
-                                childNode.onUnload(onUnload);
+                    folderNode.loadChildren()
+                        .then( function ( children ) {
+                            var i,
+                                queueList = [],
+                                childNode,
+                                onUnload = function ( id ) {
+                                    data.count -= 1;
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: id,
+                                            type: 'unload',
+                                            data: data.count
+                                        } );
+                                    } );
+                                };
+                            for ( i = 0; i < children.length; i += 1 ) {
+                                childNode = children[ i ];
+                                if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                    queueList.push( watchFromFolderRec( childNode, meta ) );
+                                } else if ( childNode.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                    data.count += 1;
+                                    childNode.onUnload( onUnload );
+                                }
                             }
-                        }
 
-                        folderNode.onNewChildLoaded(function (newChild) {
-                            if (newChild.isMetaTypeOf(meta.ATMFolder)) {
-                                watchFromFolderRec(newChild, meta).then(function () {
-                                    $timeout(function () {
-                                        updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                    });
-                                });
-                            } else if (newChild.isMetaTypeOf(meta.AVMTestBenchModel)) {
-                                data.count += 1;
-                                newChild.onUnload(onUnload);
-                                $timeout(function () {
-                                    updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                });
-                            }
-                        });
-                        if (queueList.length === 0) {
-                            recDeferred.resolve();
-                        } else {
-                            $q.all(queueList).then(function () {
+                            folderNode.onNewChildLoaded( function ( newChild ) {
+                                if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                    watchFromFolderRec( newChild, meta )
+                                        .then( function () {
+                                            $timeout( function () {
+                                                updateListener( {
+                                                    id: newChild.getId(),
+                                                    type: 'load',
+                                                    data: data.count
+                                                } );
+                                            } );
+                                        } );
+                                } else if ( newChild.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                    data.count += 1;
+                                    newChild.onUnload( onUnload );
+                                    $timeout( function () {
+                                        updateListener( {
+                                            id: newChild.getId(),
+                                            type: 'load',
+                                            data: data.count
+                                        } );
+                                    } );
+                                }
+                            } );
+                            if ( queueList.length === 0 ) {
                                 recDeferred.resolve();
-                            });
-                        }
-                    });
+                            } else {
+                                $q.all( queueList )
+                                    .then( function () {
+                                        recDeferred.resolve();
+                                    } );
+                            }
+                        } );
 
                     return recDeferred.promise;
                 };
 
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context).then(function (meta) {
-                nodeService.loadNode(context, workspaceId)
-                    .then(function (workspaceNode) {
-                        workspaceNode.loadChildren().then(function (children) {
-                            var i,
-                                queueList = [],
-                                childNode;
-                            for (i = 0; i < children.length; i += 1) {
-                                childNode = children[i];
-                                if (childNode.isMetaTypeOf(meta.ATMFolder)) {
-                                    queueList.push(watchFromFolderRec(childNode, meta));
-                                }
-                            }
-                            workspaceNode.onNewChildLoaded(function (newChild) {
-                                if (newChild.isMetaTypeOf(meta.ATMFolder)) {
-                                    watchFromFolderRec(newChild, meta).then(function () {
-                                        $timeout(function () {
-                                            updateListener({id: newChild.getId(), type: 'load', data: data.count});
-                                        });
-                                    });
-                                }
-                            });
-                            if (queueList.length === 0) {
-                                deferred.resolve(data);
-                            } else {
-                                $q.all(queueList).then(function () {
-                                    deferred.resolve(data);
-                                });
-                            }
-                        });
-                    });
-            });
+            watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
+            watchers[ parentContext.regionId ][ context.regionId ] = context;
+            nodeService.getMetaNodes( context )
+                .then( function ( meta ) {
+                    nodeService.loadNode( context, workspaceId )
+                        .then( function ( workspaceNode ) {
+                            workspaceNode.loadChildren()
+                                .then( function ( children ) {
+                                    var i,
+                                        queueList = [],
+                                        childNode;
+                                    for ( i = 0; i < children.length; i += 1 ) {
+                                        childNode = children[ i ];
+                                        if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                            queueList.push( watchFromFolderRec( childNode, meta ) );
+                                        }
+                                    }
+                                    workspaceNode.onNewChildLoaded( function ( newChild ) {
+                                        if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                            watchFromFolderRec( newChild, meta )
+                                                .then( function () {
+                                                    $timeout( function () {
+                                                        updateListener( {
+                                                            id: newChild.getId(),
+                                                            type: 'load',
+                                                            data: data.count
+                                                        } );
+                                                    } );
+                                                } );
+                                        }
+                                    } );
+                                    if ( queueList.length === 0 ) {
+                                        deferred.resolve( data );
+                                    } else {
+                                        $q.all( queueList )
+                                            .then( function () {
+                                                deferred.resolve( data );
+                                            } );
+                                    }
+                                } );
+                        } );
+                } );
 
             return deferred.promise;
         };
@@ -702,25 +804,25 @@ angular.module('cyphy.services')
         /**
          * See baseCyPhyService.cleanUpAllRegions.
          */
-        this.cleanUpAllRegions = function (parentContext) {
-            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
+        this.cleanUpAllRegions = function ( parentContext ) {
+            baseCyPhyService.cleanUpAllRegions( watchers, parentContext );
         };
 
         /**
          * See baseCyPhyService.cleanUpRegion.
          */
-        this.cleanUpRegion = function (parentContext, regionId) {
-            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
+        this.cleanUpRegion = function ( parentContext, regionId ) {
+            baseCyPhyService.cleanUpRegion( watchers, parentContext, regionId );
         };
 
         /**
          * See baseCyPhyService.registerWatcher.
          */
-        this.registerWatcher = function (parentContext, fn) {
-            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
+        this.registerWatcher = function ( parentContext, fn ) {
+            baseCyPhyService.registerWatcher( watchers, parentContext, fn );
         };
 
-        this.logContext = function (context) {
-            nodeService.logContext(context);
+        this.logContext = function ( context ) {
+            nodeService.logContext( context );
         };
-    });
+    } );

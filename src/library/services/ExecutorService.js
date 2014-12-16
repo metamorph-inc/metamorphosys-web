@@ -4,47 +4,47 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.services')
-    .service('executorService', function ($q) {
+angular.module( 'cyphy.services' )
+    .service( 'executorService', function ( $q ) {
         'use strict';
         var executorClient = new WebGMEGlobal.classes.ExecutorClient();
 
-        this.createJob = function (jobData) {
+        this.createJob = function ( jobData ) {
             var deferred = $q.defer();
-            executorClient.createJob(jobData, function (err, jobInfo) {
-                if (err) {
-                    deferred.reject(err);
+            executorClient.createJob( jobData, function ( err, jobInfo ) {
+                if ( err ) {
+                    deferred.reject( err );
                 } else {
-                    deferred.resolve(jobInfo);
+                    deferred.resolve( jobInfo );
                 }
-            });
+            } );
 
             return deferred.promise;
         };
 
-        this.getInfo = function (jobHash) {
+        this.getInfo = function ( jobHash ) {
             var deferred = $q.defer();
-            executorClient.getInfo(jobHash, function (err, jobInfo) {
-                if (err) {
-                    deferred.reject(err);
+            executorClient.getInfo( jobHash, function ( err, jobInfo ) {
+                if ( err ) {
+                    deferred.reject( err );
                 } else {
-                    deferred.resolve(jobInfo);
+                    deferred.resolve( jobInfo );
                 }
-            });
+            } );
 
             return deferred.promise;
         };
 
         this.getWorkersInfo = function () {
             var deferred = $q.defer();
-            executorClient.getWorkersInfo(function (err, response) {
-                if (err) {
-                    deferred.reject(err);
+            executorClient.getWorkersInfo( function ( err, response ) {
+                if ( err ) {
+                    deferred.reject( err );
                 } else {
-                    deferred.resolve(response);
+                    deferred.resolve( response );
                 }
-            });
+            } );
 
             return deferred.promise;
         };
-    });
+    } );

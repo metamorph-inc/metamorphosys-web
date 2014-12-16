@@ -6,12 +6,12 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.services')
-    .service('desertService', function ($q, $interval, fileService, executorService) {
+angular.module( 'cyphy.services' )
+    .service( 'desertService', function ( $q, $interval, fileService, executorService ) {
         'use strict';
         var self = this,
             CMDSTR,
-            xmlToJson = new WebGMEGlobal.classes.Converters.Xml2json({
+            xmlToJson = new WebGMEGlobal.classes.Converters.Xml2json( {
                 skipWSText: true,
                 arrayElements: {
                     Configuration: true,
@@ -19,126 +19,134 @@ angular.module('cyphy.services')
                     NaturalMember: true,
                     AlternativeAssignment: true
                 }
-            }),
+            } ),
             jsonToXml = new WebGMEGlobal.classes.Converters.Json2xml();
 
-        this.calculateConfigurations = function (desertInput) {
+        this.calculateConfigurations = function ( desertInput ) {
             var deferred = $q.defer();
 
-            if ((desertInput.desertSystem && angular.isObject(desertInput.desertSystem) &&
-                angular.isObject(desertInput.idMap)) === false) {
-                deferred.reject('desertInput must contain a desertSystem and idMap object!');
+            if ( ( desertInput.desertSystem && angular.isObject( desertInput.desertSystem ) &&
+                angular.isObject( desertInput.idMap ) ) === false ) {
+                deferred.reject( 'desertInput must contain a desertSystem and idMap object!' );
                 return deferred.promise;
             }
 
-            self.saveDesertInput(desertInput.desertSystem)
-                .then(function (inputHash) {
-                    console.log('Saved desertInput', fileService.getDownloadUrl(inputHash));
-                    return self.createAndRunJob(inputHash);
-                })
-                .then(function (jobInfo) {
-                    console.log('Job succeeded final jobInfo', jobInfo);
-                    return self.extractConfigurations(jobInfo, desertInput.idMap);
-                })
-                .then(function (configurations) {
-                    deferred.resolve(configurations);
-                })
-                .catch(function (err) {
-                    deferred.reject('Calculating configurations failed, err: ' + err.toString());
-                });
+            self.saveDesertInput( desertInput.desertSystem )
+                .then( function ( inputHash ) {
+                    console.log( 'Saved desertInput', fileService.getDownloadUrl( inputHash ) );
+                    return self.createAndRunJob( inputHash );
+                } )
+                .then( function ( jobInfo ) {
+                    console.log( 'Job succeeded final jobInfo', jobInfo );
+                    return self.extractConfigurations( jobInfo, desertInput.idMap );
+                } )
+                .then( function ( configurations ) {
+                    deferred.resolve( configurations );
+                } )
+                .
+            catch ( function ( err ) {
+                deferred.reject( 'Calculating configurations failed, err: ' + err.toString() );
+            } );
 
             return deferred.promise;
         };
 
-        this.saveDesertInput = function (desertSystem) {
+        this.saveDesertInput = function ( desertSystem ) {
             var deferred = $q.defer(),
                 artifact,
                 xmlString;
 
-            artifact = fileService.createArtifact('desert-input');
-            xmlString = jsonToXml.convertToString(desertSystem);
+            artifact = fileService.createArtifact( 'desert-input' );
+            xmlString = jsonToXml.convertToString( desertSystem );
 
-            fileService.addFileAsSoftLinkToArtifact(artifact, 'desertInput.xml', xmlString)
-                .then(function () {
-                    var execConfig = JSON.stringify({
-                            cmd: 'run_desert.cmd',
-                            resultArtifacts: [
-                                { name: 'all', resultPatterns: [] }
-                            ]
-                        }, null, 4),
+            fileService.addFileAsSoftLinkToArtifact( artifact, 'desertInput.xml', xmlString )
+                .then( function () {
+                    var execConfig = JSON.stringify( {
+                        cmd: 'run_desert.cmd',
+                        resultArtifacts: [ {
+                            name: 'all',
+                            resultPatterns: []
+                        } ]
+                    }, null, 4 ),
                         filesToAdd = {
                             'executor_config.json': execConfig,
                             'run_desert.cmd': CMDSTR
                         };
-                    return fileService.addFilesToArtifact(artifact, filesToAdd);
-                })
-                .then(function () {
-                    return fileService.saveArtifact(artifact);
-                })
-                .then(function (artieHash) {
-                    deferred.resolve(artieHash);
-                })
-                .catch(function (reason) {
-                    deferred.reject('Could not save DesertInput to blob, err: "' + reason + '"');
-                });
+                    return fileService.addFilesToArtifact( artifact, filesToAdd );
+                } )
+                .then( function () {
+                    return fileService.saveArtifact( artifact );
+                } )
+                .then( function ( artieHash ) {
+                    deferred.resolve( artieHash );
+                } )
+                .
+            catch ( function ( reason ) {
+                deferred.reject( 'Could not save DesertInput to blob, err: "' + reason + '"' );
+            } );
 
             return deferred.promise;
         };
 
-        this.createAndRunJob = function (inputHash) {
+        this.createAndRunJob = function ( inputHash ) {
             var deferred = $q.defer();
-            executorService.createJob({hash: inputHash, labels: []})
-                .then(function () {
+            executorService.createJob( {
+                hash: inputHash,
+                labels: []
+            } )
+                .then( function () {
                     var stop;
-                    stop = $interval(function () {
-                        executorService.getInfo(inputHash)
-                            .then(function (jobInfo) {
-                                console.info(JSON.stringify(jobInfo, null, 4));
-                                if (jobInfo.status === 'CREATED' || jobInfo.status === 'RUNNING') {
+                    stop = $interval( function () {
+                        executorService.getInfo( inputHash )
+                            .then( function ( jobInfo ) {
+                                console.info( JSON.stringify( jobInfo, null, 4 ) );
+                                if ( jobInfo.status === 'CREATED' || jobInfo.status === 'RUNNING' ) {
                                     return;
                                 }
-                                $interval.cancel(stop);
-                                if (jobInfo.status === 'SUCCESS') {
-                                    deferred.resolve(jobInfo);
+                                $interval.cancel( stop );
+                                if ( jobInfo.status === 'SUCCESS' ) {
+                                    deferred.resolve( jobInfo );
                                 } else {
-                                    deferred.reject(JSON.stringify(jobInfo, null, 4));
+                                    deferred.reject( JSON.stringify( jobInfo, null, 4 ) );
                                 }
-                            })
-                            .catch(function (err) {
-                                $interval.cancel(stop);
-                                deferred.reject('Could not obtain jobInfo for desert' + err);
-                            });
-                    }, 200);
-                })
-                .catch(function (err) {
-                    deferred.reject('Could not create job' + err);
-                });
+                            } )
+                            .
+                        catch ( function ( err ) {
+                            $interval.cancel( stop );
+                            deferred.reject( 'Could not obtain jobInfo for desert' + err );
+                        } );
+                    }, 200 );
+                } )
+                .
+            catch ( function ( err ) {
+                deferred.reject( 'Could not create job' + err );
+            } );
 
             return deferred.promise;
         };
 
-        this.extractConfigurations = function (jobInfo, idMap) {
+        this.extractConfigurations = function ( jobInfo, idMap ) {
             var deferred = $q.defer();
-            if ((jobInfo.resultHashes && jobInfo.resultHashes.all) === false) {
-                deferred.reject('JobInfo did not contain resultHashes.all');
+            if ( ( jobInfo.resultHashes && jobInfo.resultHashes.all ) === false ) {
+                deferred.reject( 'JobInfo did not contain resultHashes.all' );
                 return deferred.promise;
             }
-            fileService.getMetadata(jobInfo.resultHashes.all)
-                .then(function (metadata) {
-//                    // TODO: Deal with configs when there's constraints
-//                    if (!metadata.content.hasOwnProperty('desertInput_configs.xml')) {
-//                        deferred.reject('Desert did not generate a "desertInput_configs.xml".');
-//                        return;
-//                    }
-                    if (!metadata.content.hasOwnProperty('desertInput_back.xml')) {
-                        deferred.reject('Desert did not generate a desertInput_back.xml.');
+            fileService.getMetadata( jobInfo.resultHashes.all )
+                .then( function ( metadata ) {
+                    //                    // TODO: Deal with configs when there's constraints
+                    //                    if (!metadata.content.hasOwnProperty('desertInput_configs.xml')) {
+                    //                        deferred.reject('Desert did not generate a "desertInput_configs.xml".');
+                    //                        return;
+                    //                    }
+                    if ( !metadata.content.hasOwnProperty( 'desertInput_back.xml' ) ) {
+                        deferred.reject( 'Desert did not generate a desertInput_back.xml.' );
                         return;
                     }
 
-                    return fileService.getObject(metadata.content['desertInput_back.xml'].content);
-                })
-                .then(function (content) {
-                    var desertObject = xmlToJson.convertFromBuffer(content),
+                    return fileService.getObject( metadata.content[ 'desertInput_back.xml' ].content );
+                } )
+                .then( function ( content ) {
+                    var desertObject = xmlToJson.convertFromBuffer( content ),
                         desertBackSystem,
                         j,
                         k,
@@ -149,132 +157,120 @@ angular.module('cyphy.services')
                         configurations = [],
                         elemIdToPath = {};
 
-                    if (desertObject instanceof Error) {
-                        deferred.reject('Output desert XML not valid xml, err: ' + desertObject.message);
+                    if ( desertObject instanceof Error ) {
+                        deferred.reject( 'Output desert XML not valid xml, err: ' + desertObject.message );
                         return;
                     }
                     desertBackSystem = desertObject.DesertBackSystem;
 
-                    if (desertBackSystem.Element) {
-                        for (j = 0; j < desertBackSystem.Element.length; j += 1) {
-                            elem = desertBackSystem.Element[j];
-                            elemIdToPath[elem['@_id']] = idMap[elem['@externalID']];
+                    if ( desertBackSystem.Element ) {
+                        for ( j = 0; j < desertBackSystem.Element.length; j += 1 ) {
+                            elem = desertBackSystem.Element[ j ];
+                            elemIdToPath[ elem[ '@_id' ] ] = idMap[ elem[ '@externalID' ] ];
                         }
                     }
-                    for (j = 0; j < desertBackSystem.Configuration.length; j += 1) {
-                        cfg = desertBackSystem.Configuration[j];
-                        configurations.push({
-                            name: cfg['@name'],
-                            id: cfg['@id'],
+                    for ( j = 0; j < desertBackSystem.Configuration.length; j += 1 ) {
+                        cfg = desertBackSystem.Configuration[ j ];
+                        configurations.push( {
+                            name: cfg[ '@name' ],
+                            id: cfg[ '@id' ],
                             alternativeAssignments: []
-                        });
-                        config = configurations[configurations.length - 1];
-                        if (cfg.AlternativeAssignment) {
-                            for (k = 0; k < cfg.AlternativeAssignment.length; k += 1) {
-                                altAss = cfg.AlternativeAssignment[k];
-                                config.alternativeAssignments.push({
-                                    selectedAlternative: elemIdToPath[altAss['@alternative_end_']],
-                                    alternativeOf: elemIdToPath[altAss['@alternative_of_end_']]
-                                });
+                        } );
+                        config = configurations[ configurations.length - 1 ];
+                        if ( cfg.AlternativeAssignment ) {
+                            for ( k = 0; k < cfg.AlternativeAssignment.length; k += 1 ) {
+                                altAss = cfg.AlternativeAssignment[ k ];
+                                config.alternativeAssignments.push( {
+                                    selectedAlternative: elemIdToPath[ altAss[ '@alternative_end_' ] ],
+                                    alternativeOf: elemIdToPath[ altAss[ '@alternative_of_end_' ] ]
+                                } );
                             }
                         }
                     }
-                    deferred.resolve(configurations);
-                });
+                    deferred.resolve( configurations );
+                } );
 
             return deferred.promise;
         };
 
-        this.calculateConfigurationsDummy = function (/*desertInput*/) {
+        this.calculateConfigurationsDummy = function ( /*desertInput*/) {
             var deferred = $q.defer(),
-                configurations = [
-                    {
-                        id: 1,
-                        name: 'Conf. no: 1',
-                        alternativeAssignments: [
-                            {
-                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/91073815',
-                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        name: 'Conf. no: 2',
-                        alternativeAssignments: [
-                            {
-                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1433471789',
-                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
-                            }
-                        ]
-                    },
-                    {
-                        id: 3,
-                        name: 'Conf. no: 3',
-                        alternativeAssignments: [
-                            {
-                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1493907264',
-                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
-                            }
-                        ]
-                    },
-                    {
-                        id: 4,
-                        name: 'Conf. no: 4',
-                        alternativeAssignments: [
-                            {
-                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1767521621',
-                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
-                            }
-                        ]
-                    }
-                ];
+                configurations = [ {
+                    id: 1,
+                    name: 'Conf. no: 1',
+                    alternativeAssignments: [ {
+                        selectedAlternative: '/2130017834/542571494/1646059422/564312148/91073815',
+                        alternativeOf: '/2130017834/542571494/1646059422/564312148'
+                    } ]
+                }, {
+                    id: 2,
+                    name: 'Conf. no: 2',
+                    alternativeAssignments: [ {
+                        selectedAlternative: '/2130017834/542571494/1646059422/564312148/1433471789',
+                        alternativeOf: '/2130017834/542571494/1646059422/564312148'
+                    } ]
+                }, {
+                    id: 3,
+                    name: 'Conf. no: 3',
+                    alternativeAssignments: [ {
+                        selectedAlternative: '/2130017834/542571494/1646059422/564312148/1493907264',
+                        alternativeOf: '/2130017834/542571494/1646059422/564312148'
+                    } ]
+                }, {
+                    id: 4,
+                    name: 'Conf. no: 4',
+                    alternativeAssignments: [ {
+                        selectedAlternative: '/2130017834/542571494/1646059422/564312148/1767521621',
+                        alternativeOf: '/2130017834/542571494/1646059422/564312148'
+                    } ]
+                } ];
 
-            deferred.resolve(configurations);
+            deferred.resolve( configurations );
             return deferred.promise;
         };
 
-        this.getDesertInputData = function (designStructureData) {
+        this.getDesertInputData = function ( designStructureData ) {
             var desertSystem,
                 idMap = {},
                 idCounter = 4,
-                rootContainer = designStructureData.containers[designStructureData.rootId],
-                populateDataRec = function (container, element) {
+                rootContainer = designStructureData.containers[ designStructureData.rootId ],
+                populateDataRec = function ( container, element ) {
                     var key,
                         childData,
                         id;
 
-                    for (key in container.components) {
-                        if (container.components.hasOwnProperty(key)) {
-                            childData = container.components[key];
+                    for ( key in container.components ) {
+                        if ( container.components.hasOwnProperty( key ) ) {
+                            childData = container.components[ key ];
                             idCounter += 1;
                             id = idCounter.toString();
-                            idMap[id] = childData.id;
-                            element.Element.push({
+                            idMap[ id ] = childData.id;
+                            element.Element.push( {
                                 '@_id': 'id' + id,
                                 '@decomposition': 'false',
                                 '@externalID': id,
                                 '@id': id,
                                 '@name': childData.name,
                                 'Element': []
-                            });
+                            } );
                         }
                     }
-                    for (key in container.subContainers) {
-                        if (container.subContainers.hasOwnProperty(key)) {
-                            childData = container.subContainers[key];
+                    for ( key in container.subContainers ) {
+                        if ( container.subContainers.hasOwnProperty( key ) ) {
+                            childData = container.subContainers[ key ];
                             idCounter += 1;
                             id = idCounter.toString();
-                            idMap[id] = childData.id;
-                            element.Element.push({
+                            idMap[ id ] = childData.id;
+                            element.Element.push( {
                                 '@_id': 'id' + id,
-                                '@decomposition': (childData.type === 'Compound').toString(),
+                                '@decomposition': ( childData.type === 'Compound' )
+                                    .toString(),
                                 '@externalID': id,
                                 '@id': id,
                                 '@name': childData.name,
                                 'Element': []
-                            });
-                            populateDataRec(childData, element.Element[element.Element.length - 1]);
+                            } );
+                            populateDataRec( childData, element.Element[ element.Element.length - 1 ] );
                         }
                     }
                 };
@@ -301,22 +297,23 @@ angular.module('cyphy.services')
                         '@externalID': '3',
                         '@id': '3',
                         '@name': 'DesignSpace',
-                        'Element': [
-                            {
-                                '@_id': 'id4',
-                                '@decomposition': 'true',
-                                '@externalID': '4',
-                                '@id': '4',
-                                '@name': rootContainer.name,
-                                'Element': []
-                            }
-                        ]
+                        'Element': [ {
+                            '@_id': 'id4',
+                            '@decomposition': 'true',
+                            '@externalID': '4',
+                            '@id': '4',
+                            '@name': rootContainer.name,
+                            'Element': []
+                        } ]
                     }
                 }
             };
-            populateDataRec(rootContainer, desertSystem.DesertSystem.Space.Element[0]);
+            populateDataRec( rootContainer, desertSystem.DesertSystem.Space.Element[ 0 ] );
 
-            return { desertSystem: desertSystem, idMap: idMap };
+            return {
+                desertSystem: desertSystem,
+                idMap: idMap
+            };
         };
 
         CMDSTR = [
@@ -346,5 +343,6 @@ angular.module('cyphy.services')
             'ECHO "See Error Log: _FAILED.txt"',
             'EXIT /b %QUERY_ERRORLEVEL%',
             ')',
-            'popd'].join('\n');
-    });
+            'popd'
+        ].join( '\n' );
+    } );

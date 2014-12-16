@@ -6,25 +6,26 @@
 
 "use strict";
 
-define(['js/Constants',
+define( [ 'js/Constants',
     'js/Utils/METAAspectHelper',
     'js/NodePropertyNames',
     'js/Widgets/DiagramDesigner/DiagramDesignerWidget.DecoratorBase',
     '../Core/ADMEditorDecorator.Core.js',
     '../Core/ADMEditorDecorator.Constants',
     'js/Widgets/DiagramDesigner/DiagramDesignerWidget.Constants',
-    'css!./ADMEditorDecorator.DiagramDesignerWidget'], function (CONSTANTS,
-                                                       METAAspectHelper,
-                                                       nodePropertyNames,
-                                                       DiagramDesignerWidgetDecoratorBase,
-                                                       ADMEditorDecoratorCore,
-                                                       ADMEditorDecoratorConstants,
-                                                       DiagramDesignerWidgetConstants) {
+    'css!./ADMEditorDecorator.DiagramDesignerWidget'
+], function ( CONSTANTS,
+    METAAspectHelper,
+    nodePropertyNames,
+    DiagramDesignerWidgetDecoratorBase,
+    ADMEditorDecoratorCore,
+    ADMEditorDecoratorConstants,
+    DiagramDesignerWidgetConstants ) {
     /**
-    * A module representing DiagramDesignerWidget specific functionality for the ADMEditorModelingLanguage.
-    * @exports ADMEditorDecoratorDiagramDesignerWidget
-    * @version 1.0
-    */
+     * A module representing DiagramDesignerWidget specific functionality for the ADMEditorModelingLanguage.
+     * @exports ADMEditorDecoratorDiagramDesignerWidget
+     * @version 1.0
+     */
     var ADMEditorDecoratorDiagramDesignerWidget,
         DECORATOR_ID = "ADMEditorDecoratorDiagramDesignerWidget";
 
@@ -33,19 +34,21 @@ define(['js/Constants',
      * @param options {object} options for initialization
      * @constructor
      */
-    ADMEditorDecoratorDiagramDesignerWidget = function (options) {
-        var opts = _.extend( {}, options);
+    ADMEditorDecoratorDiagramDesignerWidget = function ( options ) {
+        var opts = _.extend( {}, options );
 
-        DiagramDesignerWidgetDecoratorBase.apply(this, [opts]);
+        DiagramDesignerWidgetDecoratorBase.apply( this, [ opts ] );
 
         // this widget supports connectors and connections
-        this._initializeDecorator({"connectors": true});
+        this._initializeDecorator( {
+            "connectors": true
+        } );
 
-        this.logger.debug("ADMEditorDecoratorDiagramDesignerWidget ctor");
+        this.logger.debug( "ADMEditorDecoratorDiagramDesignerWidget ctor" );
     };
 
-    _.extend(ADMEditorDecoratorDiagramDesignerWidget.prototype, DiagramDesignerWidgetDecoratorBase.prototype);
-    _.extend(ADMEditorDecoratorDiagramDesignerWidget.prototype, ADMEditorDecoratorCore.prototype);
+    _.extend( ADMEditorDecoratorDiagramDesignerWidget.prototype, DiagramDesignerWidgetDecoratorBase.prototype );
+    _.extend( ADMEditorDecoratorDiagramDesignerWidget.prototype, ADMEditorDecoratorCore.prototype );
 
     ADMEditorDecoratorDiagramDesignerWidget.prototype.DECORATORID = DECORATOR_ID;
 
@@ -61,24 +64,27 @@ define(['js/Constants',
         this._hideName = false;
         this._renderContent();
 
-        if ((this._metaType === METAAspectHelper.isMETAType(META_TYPES.ADMEditorBase)) &&
-            (METAAspectHelper.getMETATypesOf(this._gmeID)[0] !== this._gmeID)) {
+        if ( ( this._metaType === METAAspectHelper.isMETAType( META_TYPES.ADMEditorBase ) ) &&
+            ( METAAspectHelper.getMETATypesOf( this._gmeID )[ 0 ] !== this._gmeID ) ) {
 
             this.$name.remove();
         } else {
             // set name editable on double-click
-            if (this.$name) {
-                this.$name.on("dblclick.editOnDblClick", null, function (event) {
-                    if (self.hostDesignerItem.canvas.getIsReadOnlyMode() !== true) {
+            if ( this.$name ) {
+                this.$name.on( "dblclick.editOnDblClick", null, function ( event ) {
+                    if ( self.hostDesignerItem.canvas.getIsReadOnlyMode() !== true ) {
                         self.hostDesignerItem.canvas.selectNone();
-                        $(this).editInPlace({"class": "",
-                            "onChange": function (oldValue, newValue) {
-                                self._onNodeTitleChanged(oldValue, newValue);
-                            }});
+                        $( this )
+                            .editInPlace( {
+                                "class": "",
+                                "onChange": function ( oldValue, newValue ) {
+                                    self._onNodeTitleChanged( oldValue, newValue );
+                                }
+                            } );
                     }
                     event.stopPropagation();
                     event.preventDefault();
-                });
+                } );
             }
         }
     };
@@ -87,8 +93,8 @@ define(['js/Constants',
      * Shows all source connectors.
      * @param params {String[]} Registered connector IDs to show.
      */
-    ADMEditorDecoratorDiagramDesignerWidget.prototype.showSourceConnectors = function (params) {
-        this.logger.debug('showSourceConnectors: ' + JSON.stringify(params));
+    ADMEditorDecoratorDiagramDesignerWidget.prototype.showSourceConnectors = function ( params ) {
+        this.logger.debug( 'showSourceConnectors: ' + JSON.stringify( params ) );
         this.$sourceConnectors.show();
     };
 
@@ -103,8 +109,8 @@ define(['js/Constants',
      * Shows all end (destination) connectors.
      * @param params {String[]} Registered connector IDs to show.
      */
-    ADMEditorDecoratorDiagramDesignerWidget.prototype.showEndConnectors = function (params) {
-        this.logger.debug('showEndConnectors: ' + JSON.stringify(params));
+    ADMEditorDecoratorDiagramDesignerWidget.prototype.showEndConnectors = function ( params ) {
+        this.logger.debug( 'showEndConnectors: ' + JSON.stringify( params ) );
 
         // TODO: elements from same ADMEditor domain could be connected
         this.$endConnectors.show();
@@ -123,8 +129,8 @@ define(['js/Constants',
     ADMEditorDecoratorDiagramDesignerWidget.prototype.initializeConnectors = function () {
 
         //find connectors
-        this.$sourceConnectors = this.$el.find('.' + DiagramDesignerWidgetConstants.CONNECTOR_CLASS);
-        this.$endConnectors = this.$el.find('.' + DiagramDesignerWidgetConstants.CONNECTOR_CLASS);
+        this.$sourceConnectors = this.$el.find( '.' + DiagramDesignerWidgetConstants.CONNECTOR_CLASS );
+        this.$endConnectors = this.$el.find( '.' + DiagramDesignerWidgetConstants.CONNECTOR_CLASS );
 
         // hide all connectors by default
         this.hideSourceConnectors();
@@ -133,23 +139,23 @@ define(['js/Constants',
 
 
     /**** Override from ModelDecoratorCore ****/
-    ADMEditorDecoratorDiagramDesignerWidget.prototype._registerForNotification = function(portId) {
-        var partId = this._metaInfo[CONSTANTS.GME_ID];
+    ADMEditorDecoratorDiagramDesignerWidget.prototype._registerForNotification = function ( portId ) {
+        var partId = this._metaInfo[ CONSTANTS.GME_ID ];
 
-        this._control.registerComponentIDForPartID(portId, partId);
+        this._control.registerComponentIDForPartID( portId, partId );
     };
 
 
     /**** Override from ModelDecoratorCore ****/
-    ADMEditorDecoratorDiagramDesignerWidget.prototype._unregisterForNotification = function(portId) {
-        var partId = this._metaInfo[CONSTANTS.GME_ID];
+    ADMEditorDecoratorDiagramDesignerWidget.prototype._unregisterForNotification = function ( portId ) {
+        var partId = this._metaInfo[ CONSTANTS.GME_ID ];
 
-        this._control.unregisterComponentIDFromPartID(portId, partId);
+        this._control.unregisterComponentIDFromPartID( portId, partId );
     };
 
-    ADMEditorDecoratorDiagramDesignerWidget.prototype.notifyComponentEvent = function (componentList) {
+    ADMEditorDecoratorDiagramDesignerWidget.prototype.notifyComponentEvent = function ( componentList ) {
         this.update();
     };
 
     return ADMEditorDecoratorDiagramDesignerWidget;
-});
+} );

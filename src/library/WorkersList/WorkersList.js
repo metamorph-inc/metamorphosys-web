@@ -4,8 +4,8 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.components')
-    .controller('WorkersListController', function ($scope, $interval, growl, executorService) {
+angular.module( 'cyphy.components' )
+    .controller( 'WorkersListController', function ( $scope, $interval, growl, executorService ) {
         'use strict';
         var intervalPromise = null,
             consecutiveErrors = 0,
@@ -13,40 +13,40 @@ angular.module('cyphy.components')
         $scope.dataModel = {
             workers: null
         };
-        $scope.$on('$destroy', function () {
-            if (intervalPromise && $interval.cancel(intervalPromise)) {
-                console.log('Workers interval cancelled');
+        $scope.$on( '$destroy', function () {
+            if ( intervalPromise && $interval.cancel( intervalPromise ) ) {
+                console.log( 'Workers interval cancelled' );
             } else {
-                console.error('Could not cancel WorkersInterval.');
-                console.error(intervalPromise);
+                console.error( 'Could not cancel WorkersInterval.' );
+                console.error( intervalPromise );
             }
-        });
+        } );
 
-        intervalPromise = $interval(function () {
+        intervalPromise = $interval( function () {
             executorService.getWorkersInfo()
-                .then(function (responce) {
+                .then( function ( responce ) {
                     consecutiveErrors = 0;
                     $scope.dataModel.workers = responce;
-                })
-                .catch(function (err) {
-                    console.error(err);
-                    consecutiveErrors += 1;
-                    if (consecutiveErrors >= maxConsecutiveErrors) {
-                        $interval.cancel(intervalPromise);
-                        growl.error('Workers did not respond after ' + maxConsecutiveErrors + ' requests.');
-                        intervalPromise = null;
-                    }
-                });
-        }, 1000);
-    })
-    .directive('workersList', function () {
+                } )
+                .
+            catch ( function ( err ) {
+                console.error( err );
+                consecutiveErrors += 1;
+                if ( consecutiveErrors >= maxConsecutiveErrors ) {
+                    $interval.cancel( intervalPromise );
+                    growl.error( 'Workers did not respond after ' + maxConsecutiveErrors + ' requests.' );
+                    intervalPromise = null;
+                }
+            } );
+        }, 1000 );
+    } )
+    .directive( 'workersList', function () {
         'use strict';
         return {
             restrict: 'E',
-            scope: {
-            },
+            scope: {},
             replace: true,
             templateUrl: '/cyphy-components/templates/WorkersList.html',
             controller: 'WorkersListController'
         };
-    });
+    } );
