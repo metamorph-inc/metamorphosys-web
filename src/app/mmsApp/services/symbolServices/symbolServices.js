@@ -17,6 +17,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     };
 
     this.$get = [
+
         function () {
 
             var SymbolManager;
