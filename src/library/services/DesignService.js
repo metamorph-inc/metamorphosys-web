@@ -149,7 +149,7 @@ angular.module('cyphy.services')
                         artifactsHtml: '',
                         messages: result.messages
                     };
-                    console.log("Result", result);
+                    console.log('Result', result);
                     pluginService.getPluginArtifactsHtml(result.artifacts)
                         .then(function (artifactsHtml) {
                             resultLight.artifactsHtml = artifactsHtml;
@@ -507,7 +507,7 @@ angular.module('cyphy.services')
          * @param {function} updateListener - invoked when there are (filtered) changes in data.
          * @returns {Promise} - Returns data when resolved.
          */
-        this.watchDesignStructure = function (parentContext, designId, updateListener) {
+        this.watchDesignStructure = function (parentContext, designId) {
             var deferred = $q.defer(),
                 regionId = parentContext.regionId + '_watchDesignStructure_' + designId,
                 context = {
@@ -537,9 +537,6 @@ angular.module('cyphy.services')
                         var i,
                             queueList = [],
                             childNode,
-                            onUnload = function (id) {
-                                //updateListener({id: id, type: 'unload', data: data.count});
-                            },
                             container = {
                                 id: containerNode.getId(),
                                 name: containerNode.getAttribute('name'),

@@ -12,7 +12,7 @@ angular.module('cyphy.services')
         var self = this,
             watchers = {};
 
-        this.callCreateWorkspace = function (context, name, desc) {
+        this.callCreateWorkspace = function (/*context, name, desc*/) {
 
         };
 

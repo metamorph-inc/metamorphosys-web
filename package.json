@@ -11,11 +11,8 @@
     "webgme": "https://github.com/webgme/webgme/tarball/master",
     "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
     "requirejs": "=2.1.11",
-    "unzip": "=0.1.8",
-    "minimatch": "=0.3.0",
     "winreg": "=0.0.12",
-    "nedb": "=0.10.5",
-	"ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
+    "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
   },
   "devDependencies": {
     "angular-markdown-directive": "^0.3.0",
@@ -37,6 +34,7 @@
     "gulp-livereload": "^2.1.1",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.3",
+    "gulp-shell": "^0.2.11",
     "istanbul": ">=0.2.6",
     "jslint": ">=0.3.0",
     "mocha": ">=1.17.1",

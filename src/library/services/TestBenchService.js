@@ -76,7 +76,7 @@ angular.module('cyphy.services')
             nodeService.destroyNode(context, testBenchId, message);
         };
 
-        this.exportTestBench = function (testBenchId) {
+        this.exportTestBench = function (/*testBenchId*/) {
             throw new Error('Not implemented.');
         };
 
@@ -111,7 +111,7 @@ angular.module('cyphy.services')
                         artifactsHtml: '',
                         messages: result.messages
                     };
-                    console.log("Result", result);
+                    console.log('Result', result);
                     pluginService.getPluginArtifactsHtml(result.artifacts)
                         .then(function (artifactsHtml) {
                             resultLight.artifactsHtml = artifactsHtml;

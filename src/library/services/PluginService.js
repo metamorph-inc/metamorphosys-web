@@ -1,4 +1,4 @@
-/*globals angular, WebGMEGlobal, console*/
+/*globals angular, WebGMEGlobal*/
 
 
 /**

@@ -1,4 +1,4 @@
-/*globals angular, console, document, require*/
+/*globals angular, console*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -8,7 +8,7 @@
 angular.module('cyphy.components')
     .controller('TestBenchListController', function ($scope, $window, $location, $modal, growl, testBenchService) {
         'use strict';
-        var self = this,
+        var 
             items = [],             // Items that are passed to the item-list ui-component.
             testBenchItems = {},    // Same items are stored in a dictionary.
             serviceData2ListItem,
@@ -108,7 +108,7 @@ angular.module('cyphy.components')
                 ];
             },
 
-            detailsRenderer: function (item) {
+            detailsRenderer: function (/*item*/) {
                 //                item.details = 'My details are here now!';
             },
 
@@ -221,18 +221,18 @@ angular.module('cyphy.components')
                 .then(function (metadata) {
                     fileInfo.name = metadata.name;
                 })
-                .catch(function (err) {
+                .catch(function () {
                     console.error('Could not get meta-data for hash', fileInfo.hash);
                 });
         }
 
         $scope.dragOverClass = function ($event) {
             var draggedItems = $event.dataTransfer.items,
-                hasFile = false;
+                hasFile;
             //console.warn(draggedItems);
             hasFile = draggedItems && draggedItems.length === 1 && draggedItems[0].kind === 'file';
 
-            return hasFile ? "bg-success dragover" : "bg-danger dragover";
+            return hasFile ? 'bg-success dragover' : 'bg-danger dragover';
         };
 
         $scope.onDroppedFiles = function ($files) {

@@ -1,11 +1,11 @@
-/*globals angular, console, document, require*/
+/*globals angular*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
  */
 
 angular.module('cyphy.components')
-    .controller('ConfigurationTableController', function ($scope, growl) {
+    .controller('ConfigurationTableController', function ($scope) {
         'use strict';
         $scope.dataModel = {
             changeInfo: [],

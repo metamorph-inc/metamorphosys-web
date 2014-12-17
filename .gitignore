@@ -20,3 +20,5 @@ mongodatabase/*
 coverage
 dump
 *.stackdump
+v8.log
+npm-shrinkwrap.json

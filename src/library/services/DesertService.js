@@ -59,7 +59,7 @@ angular.module('cyphy.services')
             xmlString = jsonToXml.convertToString(desertSystem);
 
             fileService.addFileAsSoftLinkToArtifact(artifact, 'desertInput.xml', xmlString)
-                .then(function (hash) {
+                .then(function () {
                     var execConfig = JSON.stringify({
                             cmd: 'run_desert.cmd',
                             resultArtifacts: [
@@ -72,7 +72,7 @@ angular.module('cyphy.services')
                         };
                     return fileService.addFilesToArtifact(artifact, filesToAdd);
                 })
-                .then(function (hashes) {
+                .then(function () {
                     return fileService.saveArtifact(artifact);
                 })
                 .then(function (artieHash) {
@@ -185,47 +185,46 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        this.calculateConfigurationsDummy = function (desertInput) {
+        this.calculateConfigurationsDummy = function (/*desertInput*/) {
             var deferred = $q.defer(),
-                inputArtifact,
                 configurations = [
                     {
                         id: 1,
-                        name: "Conf. no: 1",
+                        name: 'Conf. no: 1',
                         alternativeAssignments: [
                             {
-                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/91073815",
-                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/91073815',
+                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
                             }
                         ]
                     },
                     {
                         id: 2,
-                        name: "Conf. no: 2",
+                        name: 'Conf. no: 2',
                         alternativeAssignments: [
                             {
-                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1433471789",
-                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1433471789',
+                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
                             }
                         ]
                     },
                     {
                         id: 3,
-                        name: "Conf. no: 3",
+                        name: 'Conf. no: 3',
                         alternativeAssignments: [
                             {
-                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1493907264",
-                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1493907264',
+                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
                             }
                         ]
                     },
                     {
                         id: 4,
-                        name: "Conf. no: 4",
+                        name: 'Conf. no: 4',
                         alternativeAssignments: [
                             {
-                                selectedAlternative: "/2130017834/542571494/1646059422/564312148/1767521621",
-                                alternativeOf: "/2130017834/542571494/1646059422/564312148"
+                                selectedAlternative: '/2130017834/542571494/1646059422/564312148/1767521621',
+                                alternativeOf: '/2130017834/542571494/1646059422/564312148'
                             }
                         ]
                     }
