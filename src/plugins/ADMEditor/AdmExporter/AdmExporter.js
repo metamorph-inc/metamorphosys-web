@@ -1180,35 +1180,40 @@ define( [
     AdmExporter.prototype.addAssemblyRoot = function ( node, parent, containerData, callback ) {
         var self = this;
         self.loadSetMembers( node, 'Selection', function ( err, componentNodes, componentIds ) {
-            for ( var i = 0; i < componentNodes.length; i++ ) {
-                var componentNode = componentNodes[ i ];
-                if ( err ) {
-                    callback( 'Failed loading node from AssemblyRoot ' + err.toString() );
-                } else if ( componentNode ) {
-                    if ( self.shouldBeGenerated( componentNode ) ) {
-                        //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
-                        if ( self.admData.DomainFeature ) {
-                            // TODO: Append the selection here when format updated.
-                            self.logger.warning(
-                                'Only one AssemblyRoot can be exported, an arbitrary selection will be made!' );
-                            self.admData.DomainFeature[ '@AssemblyRootComponentInstance' ] = self.core.getGuid(
-                                componentNode );
+            var componentNode,
+                i;
+            if (err) {
+                callback('Failed loading node from AssemblyRoot ' + err.toString());
+            } else {
+                for (i = 0; i < componentNodes.length; i++) {
+                    componentNode = componentNodes[ i ];
+                    if (componentNode) {
+                        if (self.shouldBeGenerated(componentNode)) {
+                            //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
+                            if (self.admData.DomainFeature) {
+                                // TODO: Append the selection here when format updated.
+                                self.logger.warning(
+                                    'Only one AssemblyRoot can be exported, an arbitrary selection will be made!');
+                                self.admData.DomainFeature[ '@AssemblyRootComponentInstance' ] = self.core.getGuid(
+                                    componentNode);
+                            } else {
+                                self.admData.DomainFeature = {
+                                    '@xmlns:q1': 'cad',
+                                    '@xmlns': '',
+                                    '@xsi:type': 'q1:AssemblyRoot',
+                                    '@AssemblyRootComponentInstance': self.core.getGuid(componentNode)
+                                };
+                            }
                         } else {
-                            self.admData.DomainFeature = {
-                                '@xmlns:q1': 'cad',
-                                '@xmlns': '',
-                                '@xsi:type': 'q1:AssemblyRoot',
-                                '@AssemblyRootComponentInstance': self.core.getGuid( componentNode )
-                            };
+                            self.logger.info('Skipping AssemblyRoot Selection of "' + self.core.getPath(
+                                componentNode) + '".');
                         }
                     } else {
-                        self.logger.info( 'Skipping AssemblyRoot Selection of "' + self.core.getPath(
-                            componentNode ) + '".' );
+                        self.logger.warning('AssemblyRoot selection is not within design, see path "' +
+                            componentIds[ i ] + '".');
                     }
-                } else {
-                    self.logger.warning( 'AssemblyRoot selection is not within design, see path "' +
-                        componentIds[ i ] + '".' );
                 }
+                callback(null);
             }
         } );
     };
