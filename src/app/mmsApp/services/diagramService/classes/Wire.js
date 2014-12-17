@@ -2,74 +2,77 @@
 
 'use strict';
 
-var Wire = function (descriptor) {
+var Wire = function ( descriptor ) {
 
-  angular.extend(this, descriptor);
+    angular.extend( this, descriptor );
 
-  this.segments = [];
+    this.segments = [];
 
 };
 
-Wire.prototype.isInViewPort = function (viewPort, padding) {
+Wire.prototype.isInViewPort = function ( viewPort, padding ) {
 
-  var j,
-    shouldBeVisible,
-  segment;
+    var j,
+        shouldBeVisible,
+        segment;
 
-  padding = padding || {x: 0, y: 0};
+    padding = padding || {
+        x: 0,
+        y: 0
+    };
 
-  shouldBeVisible = false;
+    shouldBeVisible = false;
 
-  if ( this.routerType === 'ElbowRouter') {
+    if ( this.routerType === 'ElbowRouter' ) {
 
-    if (angular.isArray(this.segments)) {
+        if ( angular.isArray( this.segments ) ) {
 
-      for (j=0; j < this.segments.length && !shouldBeVisible; j++) {
+            for ( j = 0; j < this.segments.length && !shouldBeVisible; j++ ) {
 
-        segment = this.segments[j];
+                segment = this.segments[ j ];
 
-        if (segment.orientation === 'vertical') {
+                if ( segment.orientation === 'vertical' ) {
 
-          if ( segment.x1 >= ( viewPort.left + padding.x ) &&
-            segment.x1 <= ( viewPort.right - padding.x )) {
-            shouldBeVisible = true;
-          }
+                    if ( segment.x1 >= ( viewPort.left + padding.x ) &&
+                        segment.x1 <= ( viewPort.right - padding.x ) ) {
+                        shouldBeVisible = true;
+                    }
 
-        } else {
+                } else {
 
-          if ( segment.y1 >= ( viewPort.top + padding.y ) &&
-          segment.y1 <= ( viewPort.bottom - padding.y )) {
-            shouldBeVisible = true;
-          }
+                    if ( segment.y1 >= ( viewPort.top + padding.y ) &&
+                        segment.y1 <= ( viewPort.bottom - padding.y ) ) {
+                        shouldBeVisible = true;
+                    }
+
+                }
+
+            }
 
         }
 
-      }
-
+    } else {
+        shouldBeVisible = true;
     }
 
-  } else {
-    shouldBeVisible = true;
-  }
-
-  return shouldBeVisible;
+    return shouldBeVisible;
 
 };
 
-Wire.prototype.getEndPositions = function() {
+Wire.prototype.getEndPositions = function () {
 
-  var port1Position,
-    port2Position;
+    var port1Position,
+        port2Position;
 
-  port1Position = this.end1.port.getGridPosition();
-  port2Position = this.end2.port.getGridPosition();
+    port1Position = this.end1.port.getGridPosition();
+    port2Position = this.end2.port.getGridPosition();
 
-  return {
+    return {
 
-    end1: port1Position,
-    end2: port2Position
+        end1: port1Position,
+        end2: port2Position
 
-  };
+    };
 
 };
 

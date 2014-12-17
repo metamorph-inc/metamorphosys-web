@@ -4,462 +4,467 @@
 
 // Move this to GME eventually
 
-angular.module('mms.designVisualization.diagramService', [
-  'mms.designVisualization.symbolServices'
-])
-.config(['symbolManagerProvider', function (symbolManagerProvider) {
+angular.module( 'mms.designVisualization.diagramService', [
+    'mms.designVisualization.symbolServices'
+] )
+    .config( [ 'symbolManagerProvider',
+        function ( symbolManagerProvider ) {
 
-  var randomSymbolGenerator,
-  kinds = 7;
+            var randomSymbolGenerator,
+                kinds = 7;
 
-  randomSymbolGenerator = function (count) {
+            randomSymbolGenerator = function ( count ) {
 
-    var i,
-    portCount,
-    symbol,
-    makeARandomSymbol,
-    makeSomePorts,
-    minPorts = 6,
-    maxPorts = 30,
-    portWireLength = 20,
+                var i,
+                    portCount,
+                    symbol,
+                    makeARandomSymbol,
+                    makeSomePorts,
+                    minPorts = 6,
+                    maxPorts = 30,
+                    portWireLength = 20,
 
-    spreadPortsAlongSide;
+                    spreadPortsAlongSide;
 
-    spreadPortsAlongSide = function (somePorts, side, width, height) {
-      var offset = 2 * portWireLength;
+                spreadPortsAlongSide = function ( somePorts, side, width, height ) {
+                    var offset = 2 * portWireLength;
 
-      angular.forEach(somePorts, function (aPort) {
+                    angular.forEach( somePorts, function ( aPort ) {
 
-        switch (side) {
+                        switch ( side ) {
 
-          case 'top':
-            aPort.x = offset;
-            aPort.y = 0;
-            aPort.wireAngle = -90;
+                        case 'top':
+                            aPort.x = offset;
+                            aPort.y = 0;
+                            aPort.wireAngle = -90;
 
-            offset += width / (somePorts.length + 2);
+                            offset += width / ( somePorts.length + 2 );
 
-            break;
+                            break;
 
-          case 'right':
-            aPort.x = width;
-            aPort.y = offset;
-            aPort.wireAngle = 0;
+                        case 'right':
+                            aPort.x = width;
+                            aPort.y = offset;
+                            aPort.wireAngle = 0;
 
-            offset += height / (somePorts.length + 2);
+                            offset += height / ( somePorts.length + 2 );
 
-            break;
+                            break;
 
-          case 'bottom':
-            aPort.x = offset;
-            aPort.y = height;
-            aPort.wireAngle = 90;
+                        case 'bottom':
+                            aPort.x = offset;
+                            aPort.y = height;
+                            aPort.wireAngle = 90;
 
-            offset += width / (somePorts.length + 2);
+                            offset += width / ( somePorts.length + 2 );
 
-            break;
+                            break;
 
-          case 'left':
-            aPort.x = 0;
-            aPort.y = offset;
-            aPort.wireAngle = 180;
+                        case 'left':
+                            aPort.x = 0;
+                            aPort.y = offset;
+                            aPort.wireAngle = 180;
 
-            offset += height / (somePorts.length + 2);
+                            offset += height / ( somePorts.length + 2 );
 
-            break;
+                            break;
+
+                        }
+
+                    } );
+
+                };
+
+
+                makeSomePorts = function ( countOfPorts ) {
+
+                    var ports = [],
+                        port,
+                        placement,
+                        i,
+                        top = [],
+                        right = [],
+                        bottom = [],
+                        left = [],
+                        width, height,
+                        sides = [ top, right, bottom, left ],
+                        portSpacing = 20,
+                        minWidth = 140,
+                        minHeight = 80;
+
+                    for ( i = 0; i < countOfPorts; i++ ) {
+
+                        port = {
+                            id: 'p_' + i,
+                            label: 'Port-' + i,
+                            wireLeadIn: 20
+                        };
+
+                        placement = Math.round( Math.random() * 3 );
+
+                        sides[ placement ].push( port );
+                    }
+
+                    width = Math.max(
+                        portSpacing * top.length + 4 * portWireLength,
+                        portSpacing * bottom.length + 4 * portWireLength,
+                        minWidth
+                    );
+
+                    height = Math.max(
+                        portSpacing * left.length + 4 * portWireLength,
+                        portSpacing * right.length + 4 * portWireLength,
+                        minHeight
+                    );
+
+                    spreadPortsAlongSide( top, 'top', width, height );
+                    spreadPortsAlongSide( right, 'right', width, height );
+                    spreadPortsAlongSide( bottom, 'bottom', width, height );
+                    spreadPortsAlongSide( left, 'left', width, height );
+
+
+                    ports = ports.concat( top )
+                        .concat( right )
+                        .concat( bottom )
+                        .concat( left );
+
+                    return {
+                        ports: ports,
+                        width: width,
+                        height: height
+                    };
+
+                };
+
+                makeARandomSymbol = function ( idPostfix, countOfPorts ) {
+
+                    var portsAndSizes = makeSomePorts( countOfPorts );
+
+                    var symbol = {
+                        type: 'random_' + idPostfix,
+                        symbolComponent: 'box',
+                        svgDecoration: null,
+                        labelPrefix: 'RND_' + countOfPorts + '_' + idPostfix + ' ',
+                        labelPosition: {
+                            x: portWireLength + 10,
+                            y: portWireLength + 20
+                        },
+                        portWireLength: portWireLength,
+                        width: portsAndSizes.width,
+                        height: portsAndSizes.height,
+                        ports: portsAndSizes.ports,
+                        boxHeight: portsAndSizes.height - 2 * portWireLength,
+                        boxWidth: portsAndSizes.width - 2 * portWireLength
+                    };
+
+                    //      debugger;
+
+                    return symbol;
+
+                };
+
+                for ( i = 0; i < count; i++ ) {
+
+                    portCount = Math.max(
+                        Math.floor( Math.random() * maxPorts ),
+                        minPorts
+                    );
+
+                    symbol = makeARandomSymbol( i, portCount );
+
+                    symbolManagerProvider.registerSymbol( symbol );
+
+                }
+
+            };
+
+            randomSymbolGenerator( kinds );
 
         }
+    ] )
+    .service( 'diagramService', [
+        '$q',
+        '$timeout',
+        'symbolManager',
+        'wiringService',
+        function ( $q, $timeout, symbolManager, wiringService ) {
 
-      });
+            var
+            self = this,
+                components = [],
+                componentsById = {},
 
-    };
+                wires = [],
+                wiresById = {},
+                wiresByComponentId = {},
 
+                symbolTypes,
 
-    makeSomePorts = function (countOfPorts) {
+                registerWireForEnds,
 
-      var ports = [],
-      port,
-      placement,
-      i,
-      top = [],
-      right = [],
-      bottom = [],
-      left = [],
-      width, height,
-      sides = [top, right, bottom, left],
-      portSpacing = 20,
-      minWidth = 140,
-      minHeight = 80;
+                DiagramComponent = require( './classes/DiagramComponent.js' ),
+                ComponentPort = require( './classes/ComponentPort' ),
+                Wire = require( './classes/Wire.js' );
 
-      for (i = 0; i < countOfPorts; i++) {
+            symbolTypes = symbolManager.getAvailableSymbols();
 
-        port = {
-          id: 'p_' + i,
-          label: 'Port-' + i,
-          wireLeadIn: 20
-        };
+            this.generateDummyDiagram = function ( countOfBoxes, countOfWires, canvasWidth, canvasHeight ) {
 
-        placement = Math.round(Math.random() * 3);
+                var i, id,
+                    countOfTypes,
+                    symbol,
+                    typeId,
+                    type,
+                    x,
+                    y,
+                    symbolTypeIds,
+                    component1,
+                    component2,
+                    port1,
+                    port2,
+                    createdPorts,
+                    newDiagramComponent,
 
-        sides[placement].push(port);
-      }
+                    portCreator,
 
-      width = Math.max(
-      portSpacing * top.length + 4 * portWireLength,
-      portSpacing * bottom.length + 4 * portWireLength,
-      minWidth
-      );
+                    wire;
 
-      height = Math.max(
-      portSpacing * left.length + 4 * portWireLength,
-      portSpacing * right.length + 4 * portWireLength,
-      minHeight
-      );
+                portCreator = function ( componentId, ports ) {
 
-      spreadPortsAlongSide(top, 'top', width, height);
-      spreadPortsAlongSide(right, 'right', width, height);
-      spreadPortsAlongSide(bottom, 'bottom', width, height);
-      spreadPortsAlongSide(left, 'left', width, height);
+                    var portInstance,
+                        portInstances,
+                        portMapping;
 
+                    portInstances = [];
+                    portMapping = {};
 
-      ports = ports.concat(top).concat(right).concat(bottom).concat(left);
+                    angular.forEach( ports, function ( port ) {
 
-      return {
-        ports: ports,
-        width: width,
-        height: height
-      };
+                        portInstance = new ComponentPort( {
+                            id: componentId + '_' + port.id,
+                            portSymbol: port
+                        } );
 
-    };
+                        portInstances.push( portInstance );
 
-    makeARandomSymbol = function (idPostfix, countOfPorts) {
+                        portMapping[ port.id ] = portInstance.id;
+                    } );
 
-      var portsAndSizes = makeSomePorts(countOfPorts);
+                    return {
+                        portInstances: portInstances,
+                        portMapping: portMapping
+                    };
 
-      var symbol = {
-        type: 'random_' + idPostfix,
-        symbolComponent: 'box',
-        svgDecoration: null,
-        labelPrefix: 'RND_' + countOfPorts + '_' + idPostfix + ' ',
-        labelPosition: {
-          x: portWireLength + 10,
-          y: portWireLength + 20
-        },
-        portWireLength: portWireLength,
-        width: portsAndSizes.width,
-        height: portsAndSizes.height,
-        ports: portsAndSizes.ports,
-        boxHeight: portsAndSizes.height - 2 * portWireLength,
-        boxWidth: portsAndSizes.width - 2 * portWireLength
-      };
+                };
 
-//      debugger;
+                symbolTypeIds = Object.keys( symbolTypes );
 
-      return symbol;
+                countOfTypes = symbolTypeIds.length;
 
-    };
+                components = [];
+                componentsById = {};
 
-    for (i = 0; i < count; i++) {
+                for ( i = 0; i < countOfBoxes; i++ ) {
 
-      portCount = Math.max(
-      Math.floor(Math.random() * maxPorts),
-      minPorts
-      );
+                    typeId = symbolTypeIds[ Math.floor( Math.random() * countOfTypes ) ];
+                    type = symbolTypes[ typeId ];
 
-      symbol = makeARandomSymbol(i, portCount);
+                    x = Math.round( Math.random() * ( canvasWidth - 1 ) );
+                    y = Math.round( Math.random() * ( canvasHeight - 1 ) );
 
-      symbolManagerProvider.registerSymbol(symbol);
+                    id = 'component_' + typeId + '_' + i;
 
-    }
+                    symbol = symbolManager.getSymbol( typeId );
 
-  };
+                    createdPorts = portCreator( id, symbol.ports );
 
-  randomSymbolGenerator(kinds);
+                    newDiagramComponent = new DiagramComponent( {
+                        id: id,
+                        label: type.labelPrefix + i,
+                        x: x,
+                        y: y,
+                        z: i,
+                        rotation: Math.floor( Math.random() * 40 ) * 90,
+                        scaleX: 1, //[1, -1][Math.round(Math.random())],
+                        scaleY: 1, //[1, -1][Math.round(Math.random())],
+                        symbol: symbol,
+                        nonSelectable: false,
+                        locationLocked: false,
+                        draggable: true
 
-}])
-.service('diagramService', [
-  '$q',
-  '$timeout',
-  'symbolManager',
-  'wiringService',
-  function ($q, $timeout, symbolManager, wiringService) {
+                        //          symbolConfig: {
+                        //            x: 'x',
+                        //            y: 'y',
+                        //            label: 'label',
+                        //            rotation: 'rotation',
+                        //            scaleX: 'scaleX',
+                        //            scaleY: 'scaleY',
+                        //            ports: 'portInstances',
+                        //            portMapping: createdPorts.portMapping
+                        //          }
+                    } );
 
-    var
-    self = this,
-    components = [],
-    componentsById = {},
+                    newDiagramComponent.registerPortInstances( createdPorts.portInstances );
 
-    wires = [],
-    wiresById = {},
-    wiresByComponentId = {},
+                    newDiagramComponent.updateTransformationMatrix();
 
-    symbolTypes,
+                    self.addComponent( newDiagramComponent );
 
-    registerWireForEnds,
+                }
 
-    DiagramComponent = require('./classes/DiagramComponent.js'),
-    ComponentPort = require('./classes/ComponentPort'),
-    Wire = require('./classes/Wire.js');
+                wires = [];
+                wiresById = {};
 
-    symbolTypes = symbolManager.getAvailableSymbols();
+                for ( i = 0; i < countOfWires; i++ ) {
 
-    this.generateDummyDiagram = function (countOfBoxes, countOfWires, canvasWidth, canvasHeight) {
+                    id = 'wire_' + i;
 
-      var i, id,
-      countOfTypes,
-      symbol,
-      typeId,
-      type,
-      x,
-      y,
-      symbolTypeIds,
-      component1,
-      component2,
-      port1,
-      port2,
-      createdPorts,
-      newDiagramComponent,
+                    component1 = components.getRandomElement();
 
-      portCreator,
+                    port1 = component1.portInstances.getRandomElement();
+                    port2 = undefined;
 
-      wire;
+                    while ( !angular.isDefined( port2 ) || port1 === port2 ) {
 
-      portCreator = function(componentId, ports) {
+                        component2 = components.getRandomElement();
+                        port2 = component2.portInstances.getRandomElement();
+                    }
 
-        var portInstance,
-          portInstances,
-          portMapping;
+                    wire = new Wire( {
+                        id: id,
+                        end1: {
+                            component: component1,
+                            port: port1
+                        },
+                        end2: {
+                            component: component2,
+                            port: port2
+                        }
+                    } );
 
-        portInstances = [];
-        portMapping = {};
+                    wiringService.routeWire( wire, 'ElbowRouter' );
 
-        angular.forEach(ports, function(port) {
+                    self.addWire( wire );
 
-          portInstance = new ComponentPort({
-            id: componentId + '_' + port.id,
-            portSymbol: port
-          });
+                }
 
-          portInstances.push(portInstance);
+            };
 
-          portMapping[port.id] = portInstance.id;
-        });
+            this.addComponent = function ( aDiagramComponent ) {
 
-        return {
-          portInstances: portInstances,
-          portMapping: portMapping
-        };
+                if ( angular.isObject( aDiagramComponent ) && !angular.isDefined( componentsById[ aDiagramComponent
+                    .id ] ) ) {
 
-      };
+                    componentsById[ aDiagramComponent.id ] = aDiagramComponent;
+                    components.push( aDiagramComponent );
 
-      symbolTypeIds = Object.keys(symbolTypes);
+                }
 
-      countOfTypes = symbolTypeIds.length;
+            };
 
-      components = [];
-      componentsById = {};
+            registerWireForEnds = function ( wire ) {
 
-      for (i = 0; i < countOfBoxes; i++) {
+                var componentId;
 
-        typeId = symbolTypeIds[Math.floor(Math.random() * countOfTypes)];
-        type = symbolTypes[typeId];
+                componentId = wire.end1.component.id;
 
-        x = Math.round(Math.random() * (canvasWidth - 1));
-        y = Math.round(Math.random() * (canvasHeight - 1));
+                wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
 
-        id = 'component_' + typeId + '_' + i;
+                if ( wiresByComponentId[ componentId ].indexOf( wire ) === -1 ) {
+                    wiresByComponentId[ componentId ].push( wire );
+                }
 
-        symbol = symbolManager.getSymbol(typeId);
+                componentId = wire.end2.component.id;
 
-        createdPorts = portCreator(id, symbol.ports);
+                wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
 
-        newDiagramComponent = new DiagramComponent({
-          id: id,
-          label: type.labelPrefix + i,
-          x: x,
-          y: y,
-          z: i,
-          rotation: Math.floor(Math.random() * 40) * 90,
-          scaleX: 1, //[1, -1][Math.round(Math.random())],
-          scaleY: 1, //[1, -1][Math.round(Math.random())],
-          symbol: symbol,
-          nonSelectable: false,
-          locationLocked: false,
-          draggable: true
+                if ( wiresByComponentId[ componentId ].indexOf( wire ) === -1 ) {
+                    wiresByComponentId[ componentId ].push( wire );
+                }
 
-//          symbolConfig: {
-//            x: 'x',
-//            y: 'y',
-//            label: 'label',
-//            rotation: 'rotation',
-//            scaleX: 'scaleX',
-//            scaleY: 'scaleY',
-//            ports: 'portInstances',
-//            portMapping: createdPorts.portMapping
-//          }
-        }
-        );
+            };
 
-        newDiagramComponent.registerPortInstances(createdPorts.portInstances);
+            this.addWire = function ( aWire ) {
 
-        newDiagramComponent.updateTransformationMatrix();
+                if ( angular.isObject( aWire ) && !angular.isDefined( wiresById[ aWire.id ] ) ) {
 
-        self.addComponent(newDiagramComponent);
+                    wiresById[ aWire.id ] = aWire;
+                    wires.push( aWire );
 
-      }
+                    registerWireForEnds( aWire );
 
-      wires = [];
-      wiresById = {};
+                }
 
-      for (i = 0; i < countOfWires; i++) {
+            };
 
-        id = 'wire_' + i;
+            this.getWiresForComponents = function ( components ) {
 
-        component1 = components.getRandomElement();
+                var setOfWires = [];
 
-        port1 = component1.portInstances.getRandomElement();
-        port2 = undefined;
+                angular.forEach( components, function ( component ) {
 
-        while (!angular.isDefined(port2) || port1 === port2) {
+                    angular.forEach( wiresByComponentId[ component.id ], function ( wire ) {
 
-          component2 = components.getRandomElement();
-          port2 = component2.portInstances.getRandomElement();
-        }
+                        if ( setOfWires.indexOf( wire ) === -1 ) {
+                            setOfWires.push( wire );
+                        }
+                    } );
 
-        wire = new Wire({
-          id: id,
-          end1: {
-            component: component1,
-            port: port1
-          },
-          end2: {
-            component: component2,
-            port: port2
-          }
-        });
+                } );
 
-        wiringService.routeWire(wire, 'ElbowRouter');
+                return setOfWires;
 
-        self.addWire(wire);
+            };
 
-      }
+            this.getDiagram = function () {
 
-    };
+                return {
+                    components: componentsById,
+                    wires: wiresById,
+                    config: {
+                        editable: true,
+                        disallowSelection: false
+                    }
+                };
 
-    this.addComponent = function (aDiagramComponent) {
+            };
 
-      if (angular.isObject(aDiagramComponent) && !angular.isDefined(componentsById[ aDiagramComponent.id ])) {
+            this.getHighestZ = function () {
 
-        componentsById[ aDiagramComponent.id ] = aDiagramComponent;
-        components.push(aDiagramComponent);
+                var i,
+                    component,
+                    z;
 
-      }
+                for ( i = 0; i < components.length; i++ ) {
 
-    };
+                    component = components[ i ];
 
-    registerWireForEnds = function(wire) {
+                    if ( !isNaN( component.z ) ) {
 
-      var componentId;
+                        if ( isNaN( z ) ) {
+                            z = component.z;
+                        } else {
 
-      componentId = wire.end1.component.id;
+                            if ( z < component.z ) {
+                                z = component.z;
+                            }
 
-      wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
+                        }
 
-      if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
-        wiresByComponentId[ componentId ].push(wire);
-      }
+                    }
+                }
 
-      componentId = wire.end2.component.id;
+                if ( isNaN( z ) ) {
+                    z = -1;
+                }
 
-      wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
+                return z;
 
-      if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
-        wiresByComponentId[ componentId ].push(wire);
-      }
+            };
 
-    };
-    
-    this.addWire = function(aWire) {
-      
-      if (angular.isObject(aWire) && !angular.isDefined(wiresById[ aWire.id ])) {
-
-        wiresById[ aWire.id ] = aWire;
-        wires.push(aWire);
-
-        registerWireForEnds(aWire);
-
-      }
-
-    };
-
-    this.getWiresForComponents = function(components) {
-
-      var setOfWires = [];
-
-      angular.forEach(components, function(component) {
-
-        angular.forEach(wiresByComponentId[component.id], function(wire) {
-
-          if (setOfWires.indexOf(wire) === -1) {
-            setOfWires.push(wire);
-          }
-        });
-
-      });
-
-      return setOfWires;
-
-    };
-
-    this.getDiagram = function () {
-
-      return {
-        components: componentsById,
-        wires: wiresById,
-        config: {
-          editable: true,
-          disallowSelection: false
-        }
-      };
-
-    };
-
-    this.getHighestZ = function() {
-
-      var i,
-        component,
-        z;
-
-      for (i=0; i<components.length; i++) {
-
-        component = components[i];
-
-        if (!isNaN(component.z)) {
-
-          if (isNaN(z)) {
-            z = component.z;
-          } else {
-
-            if (z < component.z) {
-              z = component.z;
-            }
-
-          }
+            //this.generateDummyDiagram(2000, 500, 10000, 10000);
+            //this.generateDummyDiagram(1000, 2000, 10000, 10000);
+            this.generateDummyDiagram( 10, 2, 1200, 1200 );
 
         }
-      }
-
-      if (isNaN(z)) {
-        z = -1;
-      }
-
-      return z;
-
-    };
-
-    //this.generateDummyDiagram(2000, 500, 10000, 10000);
-    //this.generateDummyDiagram(1000, 2000, 10000, 10000);
-    this.generateDummyDiagram(10, 2, 1200, 1200);
-
-  }
-]);
+    ] );

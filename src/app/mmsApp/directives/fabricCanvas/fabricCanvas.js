@@ -4,89 +4,94 @@
 
 // Move this to GME eventually
 
-angular.module('mms.designVisualization.fabricCanvas', [
-])
-.controller('FabricCanvasController', function () {
+angular.module( 'mms.designVisualization.fabricCanvas', [] )
+    .controller( 'FabricCanvasController', function () {
 
-})
-.directive('fabricCanvas', [
-  '$log',
-  'diagramService',
-  function ($log, diagramService) {
+    } )
+    .directive( 'fabricCanvas', [
+        '$log',
+        'diagramService',
+        function ( $log, diagramService ) {
 
-    return {
+            return {
 
-      scope: {
-      },
-      controller: 'FabricCanvasController',
-      require: '^diagramContainer',
-      restrict: 'E',
-      replace: true,
-      templateUrl: '/mmsApp/templates/fabricCanvas.html',
-      link: function (scope, element, attributes, diagramContainerCtrl) {
+                scope: {},
+                controller: 'FabricCanvasController',
+                require: '^diagramContainer',
+                restrict: 'E',
+                replace: true,
+                templateUrl: '/mmsApp/templates/fabricCanvas.html',
+                link: function ( scope, element, attributes, diagramContainerCtrl ) {
 
-        var
-        canvas,
-        renderDiagram;
+                    var
+                    canvas,
+                        renderDiagram;
 
-        scope.id = diagramContainerCtrl.getId() + 'fabric-canvas';
+                    scope.id = diagramContainerCtrl.getId() + 'fabric-canvas';
 
-        canvas = new fabric.Canvas(scope.id);
+                    canvas = new fabric.Canvas( scope.id );
 
-        canvas.setBackgroundColor('rgba(255, 73, 64, 0.6)');
+                    canvas.setBackgroundColor( 'rgba(255, 73, 64, 0.6)' );
 
-        renderDiagram = function () {
+                    renderDiagram = function () {
 
-          if (angular.isObject(scope.diagramData)) {
+                        if ( angular.isObject( scope.diagramData ) ) {
 
-            if (angular.isArray(scope.diagramData.symbols)) {
+                            if ( angular.isArray( scope.diagramData.symbols ) ) {
 
-              angular.forEach(scope.diagramData.symbols, function (symbol) {
+                                angular.forEach( scope.diagramData.symbols, function ( symbol ) {
 
-                diagramService.getSVGForSymbolType(symbol.type).then(function (object) {
+                                    diagramService.getSVGForSymbolType( symbol.type )
+                                        .then( function ( object ) {
 
-                  var svgObject;
+                                            var svgObject;
 
-                  svgObject = object.set({ left: symbol.x, top: symbol.y, angle: 0 });
+                                            svgObject = object.set( {
+                                                left: symbol.x,
+                                                top: symbol.y,
+                                                angle: 0
+                                            } );
 
-//                  canvas.add(svgObject);
+                                            //                  canvas.add(svgObject);
 
-                  var rect = new fabric.Rect({
-                    left: 100,
-                    top: 50,
-                    width: 100,
-                    height: 100,
-                    fill: 'green',
-                    angle: 20,
-                    padding: 10
-                  });
+                                            var rect = new fabric.Rect( {
+                                                left: 100,
+                                                top: 50,
+                                                width: 100,
+                                                height: 100,
+                                                fill: 'green',
+                                                angle: 20,
+                                                padding: 10
+                                            } );
 
-                  canvas.add(rect);
+                                            canvas.add( rect );
 
-  //                $log.debug('e', svgObject);
+                                            //                $log.debug('e', svgObject);
 
-                  canvas.renderAll();
+                                            canvas.renderAll();
 
-                });
+                                        } );
 
-              });
+                                } );
 
-            }
+                            }
 
-          }
+                        }
 
-          canvas.clear().renderAll();
+                        canvas.clear()
+                            .renderAll();
 
-        };
+                    };
 
-        scope.$watch(diagramContainerCtrl.getDiagramData, function (value) {
-          $log.debug('DiagramData is ', value);
-          scope.diagramData = value;
-          renderDiagram();
+                    scope.$watch( diagramContainerCtrl.getDiagramData, function ( value ) {
+                        $log.debug( 'DiagramData is ', value );
+                        scope.diagramData = value;
+                        renderDiagram();
 
-        });
+                    } );
 
-      }
+                }
 
-    };
-  }]);
+            };
+        }
+    ] );

@@ -4,20 +4,19 @@
 
 // Move this to GME eventually
 
-angular.module('mms.designVisualization.drawingCanvas', [
-])
-.directive('drawingCanvas',
-function () {
+angular.module( 'mms.designVisualization.drawingCanvas', [] )
+    .directive( 'drawingCanvas',
+        function () {
 
-  return {
+            return {
 
-    scope: {
-      id: '@'
-    },
-    restrict: 'E',
-    replace: true,
-    transclude: true,
-    templateUrl: '/mmsApp/templates/drawingCanvas.html'
+                scope: {
+                    id: '@'
+                },
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: '/mmsApp/templates/drawingCanvas.html'
 
-  };
-});
+            };
+        } );

@@ -3,20 +3,19 @@
 'use strict';
 
 angular.module(
-'mms.designVisualization.componentWire.segment',
-[]
+    'mms.designVisualization.componentWire.segment', []
 )
 
 .directive(
-'componentWireSegment',
+    'componentWireSegment',
 
-function () {
+    function () {
 
-  return {
-    restrict: 'E',
-    replace: true,
-    templateUrl: '/mmsApp/templates/componentWireSegment.html',
-    templateNamespace: 'SVG'
-  };
-}
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/mmsApp/templates/componentWireSegment.html',
+            templateNamespace: 'SVG'
+        };
+    }
 );

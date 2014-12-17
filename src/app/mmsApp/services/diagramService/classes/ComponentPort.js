@@ -2,36 +2,36 @@
 
 'use strict';
 
-var glMatrix = require('glMatrix');
+var glMatrix = require( 'glMatrix' );
 
-var ComponentPort = function (descriptor) {
+var ComponentPort = function ( descriptor ) {
 
-  angular.extend(this, descriptor);
+    angular.extend( this, descriptor );
 
 };
 
-ComponentPort.prototype.getGridPosition = function() {
+ComponentPort.prototype.getGridPosition = function () {
 
-  var position,
-    positionVector;
+    var position,
+        positionVector;
 
-  if (angular.isObject(this.portSymbol) && angular.isObject(this.parentComponent)) {
+    if ( angular.isObject( this.portSymbol ) && angular.isObject( this.parentComponent ) ) {
 
-    positionVector = glMatrix.vec2.create();
-    glMatrix.vec2.set(positionVector, this.portSymbol.x, this.portSymbol.y);
+        positionVector = glMatrix.vec2.create();
+        glMatrix.vec2.set( positionVector, this.portSymbol.x, this.portSymbol.y );
 
-    glMatrix.vec2.transformMat3(positionVector, positionVector, this.parentComponent.getTransformationMatrix());
+        glMatrix.vec2.transformMat3( positionVector, positionVector, this.parentComponent.getTransformationMatrix() );
 
-    position = {
+        position = {
 
-      x: positionVector[0],
-      y: positionVector[1]
+            x: positionVector[ 0 ],
+            y: positionVector[ 1 ]
 
-    };
+        };
 
-  }
+    }
 
-  return position;
+    return position;
 
 };
 

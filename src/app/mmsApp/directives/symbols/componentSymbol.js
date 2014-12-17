@@ -2,167 +2,167 @@
 
 'use strict';
 
-require('../../services/symbolServices/symbolServices.js');
-require('../port/port.js');
+require( '../../services/symbolServices/symbolServices.js' );
+require( '../port/port.js' );
 
-require('./resistor/resistor.js');
-require('./jFetP/jFetP.js');
-require('./opAmp/opAmp.js');
-require('./diode/diode.js');
-require('./capacitor/capacitor.js');
-require('./inductor/inductor.js');
+require( './resistor/resistor.js' );
+require( './jFetP/jFetP.js' );
+require( './opAmp/opAmp.js' );
+require( './diode/diode.js' );
+require( './capacitor/capacitor.js' );
+require( './inductor/inductor.js' );
 
-require('./box/box.js');
+require( './box/box.js' );
 
 var symbolsModule = angular.module(
-'mms.designVisualization.symbols',
-[
-  'mms.designVisualization.symbolServices',
+    'mms.designVisualization.symbols', [
+        'mms.designVisualization.symbolServices',
 
-  'mms.designVisualization.port',
+        'mms.designVisualization.port',
 
-  'mms.designVisualization.symbols.resistor',
-  'mms.designVisualization.symbols.jFetP',
-  'mms.designVisualization.symbols.opAmp',
-  'mms.designVisualization.symbols.diode',
-  'mms.designVisualization.symbols.capacitor',
-  'mms.designVisualization.symbols.inductor',
+        'mms.designVisualization.symbols.resistor',
+        'mms.designVisualization.symbols.jFetP',
+        'mms.designVisualization.symbols.opAmp',
+        'mms.designVisualization.symbols.diode',
+        'mms.designVisualization.symbols.capacitor',
+        'mms.designVisualization.symbols.inductor',
 
-  'mms.designVisualization.symbols.box'
+        'mms.designVisualization.symbols.box'
 
-]);
+    ] );
 
 symbolsModule.controller(
-'SymbolController', function($scope) {
+    'SymbolController', function ( $scope ) {
 
-  $scope.getSymbolTransform = function() {
+        $scope.getSymbolTransform = function () {
 
-    var transformString;
+            var transformString;
 
-//    transformString = 'translate(' + $scope.component.x + ',' + $scope.component.y + ') ';
-//    transformString +=
-//      'rotate(' + $scope.component.rotation + ' ' + $scope.component.symbol.width/2 + ' ' + $scope.component.symbol.height/2  + ') ';
-//    //transformString += 'scale(' + $scope.component.scaleX + ',' + $scope.component.scaleY + ') ';
-//
-//    console.log($scope.component.getTransformationMatrix().join(', '));
+            //    transformString = 'translate(' + $scope.component.x + ',' + $scope.component.y + ') ';
+            //    transformString +=
+            //      'rotate(' + $scope.component.rotation + ' ' + $scope.component.symbol.width/2 + ' ' + $scope.component.symbol.height/2  + ') ';
+            //    //transformString += 'scale(' + $scope.component.scaleX + ',' + $scope.component.scaleY + ') ';
+            //
+            //    console.log($scope.component.getTransformationMatrix().join(', '));
 
-    transformString = 'matrix(' + $scope.component.getSVGTransformationString() + ')';
+            transformString = 'matrix(' + $scope.component.getSVGTransformationString() + ')';
 
-    return transformString;
-  };
+            return transformString;
+        };
 
-});
+    } );
 
 symbolsModule.directive(
-'componentSymbol',
+    'componentSymbol',
 
-function ($compile) {
+    function ( $compile ) {
 
-  return {
-    scope: {
-      component: '=',
-      test: '=',
-      page: '=',
-      instance: '='
-    },
-    restrict: 'E',
-    replace: true,
-    controller: 'SymbolController',
-    templateUrl: '/mmsApp/templates/componentSymbol.html',
-    templateNamespace: 'SVG',
-    require: ['^svgDiagram', '^diagramContainer'],
-    link: function (scope, element, attributes, controllers) {
+        return {
+            scope: {
+                component: '=',
+                test: '=',
+                page: '=',
+                instance: '='
+            },
+            restrict: 'E',
+            replace: true,
+            controller: 'SymbolController',
+            templateUrl: '/mmsApp/templates/componentSymbol.html',
+            templateNamespace: 'SVG',
+            require: [ '^svgDiagram', '^diagramContainer' ],
+            link: function ( scope, element, attributes, controllers ) {
 
-      var templateStr,
-      template,
+                var templateStr,
+                    template,
 
-      diagramContainerController,
-      svgDiagramController,
+                    diagramContainerController,
+                    svgDiagramController,
 
-      $el,
-      compiledSymbol,
-      symbolComponent;
+                    $el,
+                    compiledSymbol,
+                    symbolComponent;
 
-      svgDiagramController = controllers[0];
-      diagramContainerController = controllers[1];
+                svgDiagramController = controllers[ 0 ];
+                diagramContainerController = controllers[ 1 ];
 
-      scope.portsVisible = function() {
-        return true;
-      };
+                scope.portsVisible = function () {
+                    return true;
+                };
 
-      scope.detailsVisible = function() {
-        return diagramContainerController.getZoomLevel() > 1;
-      };
+                scope.detailsVisible = function () {
+                    return diagramContainerController.getZoomLevel() > 1;
+                };
 
-      scope.getCssClass = function() {
+                scope.getCssClass = function () {
 
-        var result;
+                    var result;
 
-        result = scope.component.symbol.type;
+                    result = scope.component.symbol.type;
 
-        if (diagramContainerController.isComponentSelected(scope.component)) {
-          result += ' selected';
-        }
+                    if ( diagramContainerController.isComponentSelected( scope.component ) ) {
+                        result += ' selected';
+                    }
 
-        return result;
+                    return result;
 
-      };
+                };
 
-      // Interactions
+                // Interactions
 
-      scope.onClick = function($event) {
-        svgDiagramController.onComponentClick(scope.component, $event);
-      };
+                scope.onClick = function ( $event ) {
+                    svgDiagramController.onComponentClick( scope.component, $event );
+                };
 
-      scope.onMouseDown = function($event) {
-        svgDiagramController.onComponentMouseDown(scope.component, $event);
-      };
+                scope.onMouseDown = function ( $event ) {
+                    svgDiagramController.onComponentMouseDown( scope.component, $event );
+                };
 
-      symbolComponent = scope.component.symbol.symbolComponent || 'generic-svg';
-      
-      compiledSymbol = diagramContainerController.getCompiledDirective(symbolComponent);
+                symbolComponent = scope.component.symbol.symbolComponent || 'generic-svg';
 
-      if (!angular.isFunction(compiledSymbol)) {
+                compiledSymbol = diagramContainerController.getCompiledDirective( symbolComponent );
 
-        templateStr = '<' + symbolComponent + '>' +
-        '</' + symbolComponent + '>';
+                if ( !angular.isFunction( compiledSymbol ) ) {
 
-        template = angular.element(templateStr);
+                    templateStr = '<' + symbolComponent + '>' +
+                        '</' + symbolComponent + '>';
 
-        compiledSymbol = $compile(template);
+                    template = angular.element( templateStr );
 
-        diagramContainerController.setCompiledDirective(symbolComponent, compiledSymbol);
+                    compiledSymbol = $compile( template );
 
-      }
+                    diagramContainerController.setCompiledDirective( symbolComponent, compiledSymbol );
 
-      $el = $(element);
+                }
 
-      compiledSymbol(scope, function(clonedElement){
-        $el.find('.symbol-placeholder').replaceWith(clonedElement);
-      });
+                $el = $( element );
 
-      svgDiagramController.registerComponentElement(scope.component.id, $el);
+                compiledSymbol( scope, function ( clonedElement ) {
+                    $el.find( '.symbol-placeholder' )
+                        .replaceWith( clonedElement );
+                } );
 
-      scope.$on('$destroy', function(){
-        svgDiagramController.unregisterComponentElement(scope.component.id);
-      });
+                svgDiagramController.registerComponentElement( scope.component.id, $el );
 
+                scope.$on( '$destroy', function () {
+                    svgDiagramController.unregisterComponentElement( scope.component.id );
+                } );
+
+            }
+        };
     }
-  };
-}
 );
 
 symbolsModule.directive(
-'genericSvg',
+    'genericSvg',
 
-function () {
+    function () {
 
-  return {
-    scope: false,
-    restrict: 'E',
-    replace: true,
-    templateUrl: '/mmsApp/templates/genericSvg.html',
-    templateNamespace: 'SVG'
-  };
-}
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateUrl: '/mmsApp/templates/genericSvg.html',
+            templateNamespace: 'SVG'
+        };
+    }
 );

@@ -2,42 +2,42 @@
 
 'use strict';
 
-var SimpleRouter = function() {
+var SimpleRouter = function () {
 
-  this.makeSegments = function(points) {
+    this.makeSegments = function ( points ) {
 
-    var i,
-      point1, point2,
-      segments;
+        var i,
+            point1, point2,
+            segments;
 
-    if (angular.isArray(points) && points.length >= 2) {
+        if ( angular.isArray( points ) && points.length >= 2 ) {
 
-      segments = [];
+            segments = [];
 
-      for (i=0; i<points.length-1; i++) {
+            for ( i = 0; i < points.length - 1; i++ ) {
 
-        point1 = points[i];
-        point2 = points[i+1];
+                point1 = points[ i ];
+                point2 = points[ i + 1 ];
 
-        segments.push({
+                segments.push( {
 
-          type: 'line',
+                    type: 'line',
 
-          x1: point1.x,
-          y1: point1.y,
+                    x1: point1.x,
+                    y1: point1.y,
 
-          x2: point2.x,
-          y2: point2.y
+                    x2: point2.x,
+                    y2: point2.y
 
-        });
+                } );
 
-      }
+            }
 
-    }
+        }
 
-    return segments;
+        return segments;
 
-  };
+    };
 
 };
 
