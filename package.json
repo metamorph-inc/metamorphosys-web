@@ -56,7 +56,9 @@
     "showdown": "./vendor/showdown_for_browserify.js",
     "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
     "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
-    "chance": "./bower_components/chance/chance.js"
+    "chance": "./bower_components/chance/chance.js",
+    "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
+    "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js"
   },
   "browserify-shim": {
     "showdown": "Showdown"

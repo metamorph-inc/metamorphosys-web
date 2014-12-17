@@ -1,0 +1,8 @@
+<div class="diagram-container unselectable"
+    data-ng-class="getCssClass()">{{customId}}
+    Visible area: {{visibleArea}} Zoom level: {{zoomLevel}}
+    <panzoomwidget panzoom-id="panzoomId" class="panzoom-widget"></panzoomwidget>
+    <panzoom id="panzoomId" config="panzoomConfig" model="panzoomModel" class="canvas-zoomer">
+        <drawing-canvas ng-attr-id="{{id}}-drawing-canvas"><ng-transclude></ng-transclude></drawing-canvas>
+    </panzoom>
+</div>

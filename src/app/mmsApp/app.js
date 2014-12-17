@@ -15,6 +15,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
   'cyphy.mmsApp.templates'
 ]);
 
+require('./utils.js');
+
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
   var selectProject;

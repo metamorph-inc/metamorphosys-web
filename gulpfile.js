@@ -284,7 +284,7 @@ registerAppTasks = function (appName) {
     var appSources = ['./src/app/' + appName + '/**/*.js'],
         appModuleScript = './src/app/' + appName + '/app.js',
 
-        appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+        appTemplates = ['src/app/' + appName + '/**/*.html'],
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
         appStyles = ['src/app/' + appName + '/**/*.scss'];
@@ -454,7 +454,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         var appSources = ['./src/app/' + appName + '/**/*.js'],
             appModuleScript = './src/app/' + appName + '/app.js',
 
-            appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+            appTemplates = ['src/app/' + appName + '/**/*.html'],
             appTemplateModule = 'cyphy.' + appName + '.templates',
 
             appStyles = ['src/app/' + appName + '/**/*.scss'];
