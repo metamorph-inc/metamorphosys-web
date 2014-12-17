@@ -1,6 +1,6 @@
 /*globals angular, console*/
 
-var CyPhyApp = angular.module('CyPhyApp', [
+var CyPhyApp = angular.module( 'CyPhyApp', [
     'ui.router',
 
     'gme.services',
@@ -11,10 +11,10 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     // app specific templates
     'cyphy.sample.templates'
-])
-    .run(function () {
+] )
+    .run( function () {
 
-    });
+    } );
 
 // TODO: require all of your controllers
-require('./views/MyView/MyViewController');
+require( './views/MyView/MyViewController' );

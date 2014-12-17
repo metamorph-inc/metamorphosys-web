@@ -7,15 +7,15 @@
  * Created by pmeijer on 6/23/2014.
  */
 
-var isNode = (typeof window === 'undefined');
+var isNode = ( typeof window === 'undefined' );
 
-define([], function () {
+define( [], function () {
     'use strict';
     var ServerInfoClient = function () {
         var config;
         //console.log(isNode);
 
-        if (isNode) {
+        if ( isNode ) {
             config = webGMEGlobal.getConfig();
             this.server = '127.0.0.1';
             this.serverPort = config.port;
@@ -23,7 +23,7 @@ define([], function () {
 
             this._clientSession = null; // parameters.sessionId;;
 
-            this.http = this.httpsecure ? require('https') : require('http'); // or https
+            this.http = this.httpsecure ? require( 'https' ) : require( 'http' ); // or https
         }
 
         // TODO: TOKEN???
@@ -31,41 +31,41 @@ define([], function () {
     };
 
 
-    ServerInfoClient.prototype.os = function (callback) {
-        this.sendHttpRequest('GET', this.versionInfoUrl + 'os', function (err, response) {
-            if (err) {
-                return callback(err);
+    ServerInfoClient.prototype.os = function ( callback ) {
+        this.sendHttpRequest( 'GET', this.versionInfoUrl + 'os', function ( err, response ) {
+            if ( err ) {
+                return callback( err );
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
-    ServerInfoClient.prototype.node = function (callback) {
-        this.sendHttpRequest('GET', this.versionInfoUrl + 'node', function (err, response) {
-            if (err) {
-                return callback(err);
+    ServerInfoClient.prototype.node = function ( callback ) {
+        this.sendHttpRequest( 'GET', this.versionInfoUrl + 'node', function ( err, response ) {
+            if ( err ) {
+                return callback( err );
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
-    ServerInfoClient.prototype.npm = function (callback) {
+    ServerInfoClient.prototype.npm = function ( callback ) {
 
-        this.sendHttpRequest('GET', this.versionInfoUrl + 'npm', function (err, response) {
-            if (err) {
-                return callback(err);
+        this.sendHttpRequest( 'GET', this.versionInfoUrl + 'npm', function ( err, response ) {
+            if ( err ) {
+                return callback( err );
             }
 
-            callback(null, JSON.parse(response));
-        });
+            callback( null, JSON.parse( response ) );
+        } );
     };
 
-    ServerInfoClient.prototype.sendHttpRequest = function (method, url, callback) {
+    ServerInfoClient.prototype.sendHttpRequest = function ( method, url, callback ) {
         var options,
             oReq;
-        if (isNode) {
+        if ( isNode ) {
             options = {
                 hostname: this.server,
                 port: this.serverPort,
@@ -73,16 +73,16 @@ define([], function () {
                 method: method
             };
 
-            this._sendHttpRequestWithContent(options, null, callback);
+            this._sendHttpRequestWithContent( options, null, callback );
 
         } else {
             oReq = new XMLHttpRequest();
-            oReq.open(method, url, true);
-            oReq.onload = function (oEvent) {
+            oReq.open( method, url, true );
+            oReq.onload = function ( oEvent ) {
                 // Uploaded.
                 var response = oEvent.target.response;
                 // TODO: handle error
-                callback(null, response);
+                callback( null, response );
             };
 
             // data is a file object or blob
@@ -90,61 +90,61 @@ define([], function () {
         }
     };
 
-    ServerInfoClient.prototype._ensureAuthenticated = function (options, callback) {
+    ServerInfoClient.prototype._ensureAuthenticated = function ( options, callback ) {
         //this function enables the session of the client to be authenticated
         //TODO currently this user does not have a session, so it has to upgrade the options always!!!
-//        if (options.headers) {
-//            options.headers.webgmeclientsession = this._clientSession;
-//        } else {
-//            options.headers = {
-//                'webgmeclientsession': this._clientSession
-//            }
-//        }
-        callback(null, options);
+        //        if (options.headers) {
+        //            options.headers.webgmeclientsession = this._clientSession;
+        //        } else {
+        //            options.headers = {
+        //                'webgmeclientsession': this._clientSession
+        //            }
+        //        }
+        callback( null, options );
     };
 
-    ServerInfoClient.prototype._sendHttpRequestWithContent = function (options, data, callback) {
+    ServerInfoClient.prototype._sendHttpRequestWithContent = function ( options, data, callback ) {
         var self = this;
-        self._ensureAuthenticated(options, function (err, updatedOptions) {
-            if (err) {
-                callback(err);
+        self._ensureAuthenticated( options, function ( err, updatedOptions ) {
+            if ( err ) {
+                callback( err );
             } else {
-                self.__sendHttpRequestWithContent(updatedOptions, data, callback);
+                self.__sendHttpRequestWithContent( updatedOptions, data, callback );
             }
-        });
+        } );
     };
 
-    ServerInfoClient.prototype.__sendHttpRequestWithContent = function (options, data, callback) {
+    ServerInfoClient.prototype.__sendHttpRequestWithContent = function ( options, data, callback ) {
         // TODO: use the http or https
-        var req = this.http.request(options, function (res) {
+        var req = this.http.request( options, function ( res ) {
             //    console.log('STATUS: ' + res.statusCode);
             //    console.log('HEADERS: ' + JSON.stringify(res.headers));
             //    res.setEncoding('utf8');
             var d = '';
-            res.on('data', function (chunk) {
+            res.on( 'data', function ( chunk ) {
                 d += chunk;
-            });
+            } );
 
-            res.on('end', function () {
-                if (res.statusCode === 200) {
-                    callback(null, d);
+            res.on( 'end', function () {
+                if ( res.statusCode === 200 ) {
+                    callback( null, d );
                 } else {
-                    callback(res.statusCode, d);
+                    callback( res.statusCode, d );
                 }
-            });
-        });
+            } );
+        } );
 
-        req.on('error', function (e) {
-            callback(e);
-        });
+        req.on( 'error', function ( e ) {
+            callback( e );
+        } );
 
-        if (data) {
+        if ( data ) {
             // write data to request body
-            req.write(data);
+            req.write( data );
         }
 
         req.end();
     };
 
     return ServerInfoClient;
-});
+} );

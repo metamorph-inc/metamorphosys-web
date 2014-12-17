@@ -1,7 +1,7 @@
-
-define([
+define( [
     'logManager',
-    'css!./styles/ProjectAnalyzerWidget.css'], function (logManager) {
+    'css!./styles/ProjectAnalyzerWidget.css'
+], function ( logManager ) {
 
     "use strict";
 
@@ -9,8 +9,8 @@ define([
         PROJECT_ANALYZER_CLASS = "project-analyzer",
         i = 0;
 
-    ProjectAnalyzerWidget = function (container, params) {
-        this._logger = logManager.create("ProjectAnalyzerWidget");
+    ProjectAnalyzerWidget = function ( container, params ) {
+        this._logger = logManager.create( "ProjectAnalyzerWidget" );
 
         this._el = container;
 
@@ -19,7 +19,7 @@ define([
 
         this._initialize();
 
-        this._logger.debug("ProjectAnalyzerWidget ctor finished");
+        this._logger.debug( "ProjectAnalyzerWidget ctor finished" );
     };
 
     ProjectAnalyzerWidget.MESSAGES = {
@@ -38,19 +38,19 @@ define([
         this._height = height;
 
         //set Widget title
-        this._el.addClass(PROJECT_ANALYZER_CLASS);
+        this._el.addClass( PROJECT_ANALYZER_CLASS );
 
-        this.showError(ProjectAnalyzerWidget.MESSAGES.OPEN_A_PROJECT);
+        this.showError( ProjectAnalyzerWidget.MESSAGES.OPEN_A_PROJECT );
     };
 
-    ProjectAnalyzerWidget.prototype.showError = function (msg) {
+    ProjectAnalyzerWidget.prototype.showError = function ( msg ) {
         this._error = msg;
         this._link = null;
 
         this.update();
     };
 
-    ProjectAnalyzerWidget.prototype.showLink = function (urlLink) {
+    ProjectAnalyzerWidget.prototype.showLink = function ( urlLink ) {
         this._error = null;
         this._link = urlLink;
 
@@ -60,22 +60,26 @@ define([
     ProjectAnalyzerWidget.prototype.update = function () {
         this.clear();
 
-        if (this._link) {
-            $('<iframe src="' + this._link + '" width="' + this._width +'" height="' + this._height + '"></iframe>').appendTo(this._el);
+        if ( this._link ) {
+            $( '<iframe src="' + this._link + '" width="' + this._width + '" height="' + this._height +
+                '"></iframe>' )
+                .appendTo( this._el );
         } else {
             this._error = this._error || ProjectAnalyzerWidget.MESSAGES.ERROR_TEXT_IS_NOT_SET;
 
-            $('<div class="alert warning">' + this._error + '</div>').appendTo(this._el);
+            $( '<div class="alert warning">' + this._error + '</div>' )
+                .appendTo( this._el );
         }
     };
 
 
     ProjectAnalyzerWidget.prototype.clear = function () {
-        this._el.children().remove();
+        this._el.children()
+            .remove();
     };
 
 
-    ProjectAnalyzerWidget.prototype.onWidgetContainerResize = function (width, height) {
+    ProjectAnalyzerWidget.prototype.onWidgetContainerResize = function ( width, height ) {
         //call our own resize handler
         this._width = width;
         this._height = height;
@@ -87,11 +91,9 @@ define([
         this.clear();
     };
 
-    ProjectAnalyzerWidget.prototype.onActivate = function () {
-    };
+    ProjectAnalyzerWidget.prototype.onActivate = function () {};
 
-    ProjectAnalyzerWidget.prototype.onDeactivate = function () {
-    };
+    ProjectAnalyzerWidget.prototype.onDeactivate = function () {};
 
     return ProjectAnalyzerWidget;
-});
+} );

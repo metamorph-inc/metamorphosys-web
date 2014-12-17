@@ -1,6 +1,6 @@
 /*globals angular, console, window, require*/
 
-var CyPhyApp = angular.module('CyPhyApp', [
+var CyPhyApp = angular.module( 'CyPhyApp', [
     'ui.router',
 
     'gme.services',
@@ -11,66 +11,69 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     // app specific templates
     'cyphy.default.templates'
-])
-    .config(function ($stateProvider, $urlRouterProvider) {
+] )
+    .config( function ( $stateProvider, $urlRouterProvider ) {
         'use strict';
         // For any unmatched url, redirect to /workspaces
-        $urlRouterProvider.otherwise('/workspaces');
+        $urlRouterProvider.otherwise( '/workspaces' );
         //
         // Now set up the states
         $stateProvider
-            .state('index', {
+            .state( 'index', {
                 url: "/index"
-            })
-            .state('workspaces', {
+            } )
+            .state( 'workspaces', {
                 url: "/workspaces",
                 templateUrl: "/default/templates/Workspaces.html",
                 controller: "WorkspacesController"
-            })
-            .state('workspaceDetails', {
+            } )
+            .state( 'workspaceDetails', {
                 url: "/workspaceDetails/:workspaceId",
                 templateUrl: "/default/templates/WorkspaceDetails.html",
                 controller: "WorkspaceDetailsController"
-            })
-            .state('designSpace', {
+            } )
+            .state( 'designSpace', {
                 url: "/designSpace/:workspaceId/:designId",
                 templateUrl: "/default/templates/DesignSpace.html",
                 controller: "DesignSpaceController"
-            })
-            .state('testBench', {
+            } )
+            .state( 'testBench', {
                 url: "/testBench/:workspaceId/:testBenchId",
                 templateUrl: "/default/templates/TestBench.html",
                 controller: "TestBenchController"
-            });
-    })
-    .controller('MainNavigatorController', function ($rootScope, $scope) {
+            } );
+    } )
+    .controller( 'MainNavigatorController', function ( $rootScope, $scope ) {
         'use strict';
         $scope.navigator = {};
-        $scope.navigator.items = [{
+        $scope.navigator.items = [ {
             id: 'root',
             label: 'ADMEditor',
             itemClass: 'cyphy-root'
-        }];
+        } ];
         $rootScope.mainNavigator = $scope.navigator;
-    })
-    .run(function ($state, growl, dataStoreService, projectService) {
+    } )
+    .run( function ( $state, growl, dataStoreService, projectService ) {
         'use strict';
         var connectionId = 'my-db-connection-id';
 
-        dataStoreService.connectToDatabase(connectionId, {host: window.location.basename})
-            .then(function () {
+        dataStoreService.connectToDatabase( connectionId, {
+            host: window.location.basename
+        } )
+            .then( function () {
                 // select default project and branch (master)
-                return projectService.selectProject(connectionId, 'ADMEditor');
-            })
-            .catch(function (reason) {
-                growl.error('ADMEditor does not exist. Create and import it using the <a href="' +
-                    window.location.origin + '"> webgme interface</a>.');
-                console.error(reason);
-            });
-    });
+                return projectService.selectProject( connectionId, 'ADMEditor' );
+            } )
+            .
+        catch ( function ( reason ) {
+            growl.error( 'ADMEditor does not exist. Create and import it using the <a href="' +
+                window.location.origin + '"> webgme interface</a>.' );
+            console.error( reason );
+        } );
+    } );
 
 
-require('./views/Workspaces/WorkspacesController');
-require('./views/WorkspaceDetails/WorkspaceDetailsController');
-require('./views/DesignSpace/DesignSpaceController');
-require('./views/TestBench/TestBenchController');
+require( './views/Workspaces/WorkspacesController' );
+require( './views/WorkspaceDetails/WorkspaceDetailsController' );
+require( './views/DesignSpace/DesignSpaceController' );
+require( './views/TestBench/TestBenchController' );

@@ -4,13 +4,13 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
-angular.module('cyphy.services', ['gme.services']);
-require('./BaseCyPhyService');
-require('./PluginService');
-require('./FileService');
-require('./ExecutorService');
-require('./WorkspaceService');
-require('./ComponentService');
-require('./DesignService');
-require('./TestBenchService');
-require('./DesertService');
+angular.module( 'cyphy.services', [ 'gme.services' ] );
+require( './BaseCyPhyService' );
+require( './PluginService' );
+require( './FileService' );
+require( './ExecutorService' );
+require( './WorkspaceService' );
+require( './ComponentService' );
+require( './DesignService' );
+require( './TestBenchService' );
+require( './DesertService' );
