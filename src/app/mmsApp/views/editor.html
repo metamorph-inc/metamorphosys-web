@@ -1,14 +1,15 @@
-<div class="editor-container">
-    <div class="grid-holder">
+<div class="editor-container" layout="row">
+    <div class="grid-holder" flex="80">
 
         <diagram-container ng-attr-id="svg-container" diagram="diagram">
             <svg-diagram></svg-diagram>
         </diagram-container>
 
     </div>
-    <div class="component-browser-container">
+    <div class="component-browser-container" flex="20">
         <component-browser
                 data-workspace-id="'/1/2/3/4/5/6'"
                 data-connection-id="'my-db-connection-id'"></component-browser>
+        <md-progress-circular class="md-hue-2" md-mode="indeterminate"></md-progress-circular>
     </div>
 </div>

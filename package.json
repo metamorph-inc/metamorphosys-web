@@ -59,7 +59,8 @@
     "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
     "chance": "./bower_components/chance/chance.js",
     "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
-    "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js"
+    "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
+    "ui-layout": "./bower_components/angular-ui-layout/ui-layout.min.js"
   },
   "browserify-shim": {
     "showdown": "Showdown"
