@@ -12,8 +12,30 @@ var CyPhyApp = angular.module('CyPhyApp', [
   'cyphy.components',
 
   // app specific templates
-  'cyphy.mmsApp.templates'
+  'cyphy.mmsApp.templates',
+
+  'ui.bootstrap',
+
+  'mms.designVisualization.wiringService',
+  'mms.designVisualization.diagramService',
+
+  'mms.designVisualization.diagramContainer',
+  'mms.designVisualization.fabricCanvas',
+  'mms.designVisualization.svgDiagram',
+  'mms.designVisualization.symbols'
 ]);
+
+require('./utils.js');
+
+require('./services/diagramService/diagramService.js');
+require('./services/gridService/gridService.js');
+require('./services/wiringService/wiringService.js');
+
+require('./directives/diagramContainer/diagramContainer.js');
+require('./directives/fabricCanvas/fabricCanvas.js');
+require('./directives/svgDiagram/svgDiagram.js');
+
+require('./directives/symbols/componentSymbol.js');
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -113,7 +135,11 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('ProjectViewController', function () {
+CyPhyApp.controller('ProjectViewController', function ($scope, diagramService, $log) {
+
+  $scope.diagram = diagramService.getDiagram();
+
+  $log.debug('Diagram:', $scope.diagram);
 
 });
 

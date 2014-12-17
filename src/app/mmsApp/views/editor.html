@@ -1,7 +1,10 @@
 <div class="editor-container">
     <div class="grid-placeholder">
-        <!--<h2>Grid comes here </h2>-->
-        <iframe class="mocked-visualizer-container" src="/extlib/bower_components/visualization-experiments/dist/index.html"></iframe>
+
+        <diagram-container ng-attr-id="svg-container" diagram="diagram">
+            <svg-diagram></svg-diagram>
+        </diagram-container>
+
     </div>
     <div class="component-browser-container">
         <component-browser

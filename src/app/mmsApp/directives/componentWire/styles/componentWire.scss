@@ -1,0 +1,21 @@
+.new-wire-line {
+  stroke-width: 1;
+  stroke: #000066;
+}
+
+.component-wire {
+
+  .component-wire-segment {
+
+    stroke-width: 1;
+    stroke: #000066;
+
+
+    &:hover {
+      stroke: #ff7100;
+      cursor: pointer;
+    }
+
+  }
+
+}
