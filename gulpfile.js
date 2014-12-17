@@ -86,8 +86,7 @@ var argv = require('yargs').argv,
     refresh = require('gulp-livereload'),
     lrserver = require('tiny-lr')(),
     prettify = require('gulp-js-prettify'),
-    shell = require('gulp-shell'),
-    exec = require('child_process').exec;
+    shell = require('gulp-shell');
 
 // Utility tasks
 
@@ -95,11 +94,10 @@ require('process');
 require('path');
 
 function swallowError( error ) {
+    //If you want details of the error in the console
+    console.log( error.toString() );
 
-  //If you want details of the error in the console
-  console.log( error.toString() );
-
-  this.emit( 'end' );
+    this.emit( 'end' );
 }
 
 
