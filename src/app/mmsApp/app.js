@@ -2,7 +2,7 @@
 
 'use strict';
 
-var CyPhyApp = angular.module( 'CyPhyApp', [
+var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
 
     'gme.services',
@@ -24,28 +24,28 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
     'mms.designVisualization.svgDiagram',
     'mms.designVisualization.symbols',
     'ngMaterial'
-] );
+]);
 
-require( './utils.js' );
+require('./utils.js');
 
-require( './services/diagramService/diagramService.js' );
-require( './services/gridService/gridService.js' );
-require( './services/wiringService/wiringService.js' );
+require('./services/diagramService/diagramService.js');
+require('./services/gridService/gridService.js');
+require('./services/wiringService/wiringService.js');
 
-require( './directives/diagramContainer/diagramContainer.js' );
-require( './directives/fabricCanvas/fabricCanvas.js' );
-require( './directives/svgDiagram/svgDiagram.js' );
+require('./directives/diagramContainer/diagramContainer.js');
+require('./directives/fabricCanvas/fabricCanvas.js');
+require('./directives/svgDiagram/svgDiagram.js');
 
-require( './directives/symbols/componentSymbol.js' );
+require('./directives/symbols/componentSymbol.js');
 
-CyPhyApp.config( function ( $stateProvider, $urlRouterProvider ) {
+CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
     var selectProject;
 
     selectProject = {
-        load: function ( $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService ) {
+        load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService) {
             var
-            connectionId,
+                connectionId,
                 deferred;
 
             $rootScope.mainDbConnectionId = 'mms-main-db-connection-id';
@@ -55,97 +55,140 @@ CyPhyApp.config( function ( $stateProvider, $urlRouterProvider ) {
 
             $rootScope.loading = true;
 
-            dataStoreService.connectToDatabase( connectionId, {
+            dataStoreService.connectToDatabase(connectionId, {
                 host: window.location.basename
-            } )
-                .then( function () {
-                    return projectService.selectProject( connectionId, $stateParams.projectId );
-                } )
-                .then( function ( projectId ) {
+            })
+                .then(function () {
+                    return projectService.selectProject(connectionId, $stateParams.projectId);
+                })
+                .then(function (projectId) {
+
+                    var wsContext;
+
                     $rootScope.projectId = projectId;
                     $rootScope.loading = false;
-                    deferred.resolve( projectId );
-                } )
-                .
-            catch ( function ( reason ) {
-                $rootScope.loading = false;
-                $log.debug( 'Opening project errored:', $stateParams.projectId, reason );
-                $state.go( '404', {
-                    projectId: $stateParams.projectId
-                } );
-            } );
 
-            return deferred.promise;
-        }
-    };
+                    wsContext = {
+                        db: $rootScope.mainDbConnectionId,
+                        regionId: 'WorkspaceListController_' + ( new Date() )
+                            .toISOString()
+                    };
+                    //$scope.$on( '$destroy', function () {
+                    //    workspaceService.cleanUpAllRegions( context );
+                    //} );
 
-    $urlRouterProvider.otherwise( '/noProject' );
+
+                    workspaceService.registerWatcher(wsContext, function (destroyed) {
+
+                        console.info('WorkspaceListController - initialize event raised');
+                        workspaceService.watchWorkspaces(wsContext, function (updateObject) {
+                            var index;
+
+                            if (updateObject.type === 'load') {
+                                console.log('load', updateObject);
+                            } else if (updateObject.type === 'update') {
+                                console.log('update', updateObject);
+                            } else if (updateObject.type === 'unload') {
+                                console.log('unload', updateObject);
+                            } else {
+                                throw new Error(updateObject);
+
+                            }
+
+                        }).then(function (data) {
+                                var workspaceId;
+
+                                for (workspaceId in data.workspaces) {
+                                    if (data.workspaces.hasOwnProperty(workspaceId)) {
+                                    }
+                                }
+                            });
+                        });
+
+
+                        deferred.resolve(projectId);
+                    })
+                        .
+                        catch(function (reason) {
+                        $rootScope.loading = false;
+                        $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                        $state.go('404', {
+                            projectId: $stateParams.projectId
+                        });
+                    });
+
+                    return deferred.promise;
+                }
+        };
+
+    $urlRouterProvider.otherwise('/noProject');
 
 
     $stateProvider
-        .state( 'project', {
+        .state('project', {
             url: '/project/:projectId',
             templateUrl: '/mmsApp/templates/editor.html',
             resolve: selectProject,
             controller: 'ProjectViewController'
-        } )
-        .state( 'noProject', {
+        })
+        .state('noProject', {
             url: '/noProject',
             templateUrl: '/mmsApp/templates/noProjectSpecified.html',
             controller: 'NoProjectController'
-        } )
-        .state( '404', {
+        })
+        .state('404', {
             url: '/404/:projectId',
             controller: 'NoProjectController',
             templateUrl: '/mmsApp/templates/404.html'
-        } );
-} );
+        });
+});
 
-CyPhyApp.controller( 'MainNavigatorController', function ( $rootScope, $scope, $window ) {
+CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
 
     var defaultNavigatorItems;
 
-    defaultNavigatorItems = [ {
+    defaultNavigatorItems = [{
         id: 'root',
         label: 'MMS App',
         itemClass: 'cyphy-root'
-    } ];
+    }];
 
     $scope.navigator = {
         separator: true,
-        items: angular.copy( defaultNavigatorItems, [] )
+        items: angular.copy(defaultNavigatorItems, [])
     };
 
-    $rootScope.$watch( 'projectId', function ( projectId ) {
+    $rootScope.$watch('projectId', function (projectId) {
 
-        if ( projectId ) {
+        if (projectId) {
 
-            $scope.navigator.items = angular.copy( defaultNavigatorItems, [] );
-            $scope.navigator.items.push( {
+            $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
+            $scope.navigator.items.push({
                 id: 'project',
                 label: projectId,
                 action: function () {
-                    $window.open( '/?project=' + projectId );
+                    $window.open('/?project=' + projectId);
                 }
-            } );
+            });
 
         } else {
-            $scope.navigator.items = angular.copy( defaultNavigatorItems, [] );
+            $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
         }
 
-    } );
+    });
 
-} );
+});
 
-CyPhyApp.controller( 'ProjectViewController', function ( $scope, diagramService, $log ) {
+CyPhyApp.controller('ProjectViewController', function ($scope, $rootScope, diagramService, $log) {
 
     $scope.diagram = diagramService.getDiagram();
 
-    $log.debug( 'Diagram:', $scope.diagram );
 
-} );
+    $log.debug('Diagram:', $scope.diagram);
 
-CyPhyApp.controller( 'NoProjectController', function ( $rootScope, $scope, $stateParams, $http, $log, $state, growl ) {
+});
+
+CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
@@ -154,31 +197,31 @@ CyPhyApp.controller( 'NoProjectController', function ( $rootScope, $scope, $stat
 
         $rootScope.processing = true;
 
-        $log.debug( 'New project creation' );
+        $log.debug('New project creation');
 
-        $http.get( '/rest/external/copyproject/noredirect' )
+        $http.get('/rest/external/copyproject/noredirect')
             .
-        success( function ( data ) {
+            success(function (data) {
 
-            $rootScope.processing = false;
-            $log.debug( 'New project creation successful', data );
-            $state.go( 'project', {
-                projectId: data
-            } );
+                $rootScope.processing = false;
+                $log.debug('New project creation successful', data);
+                $state.go('project', {
+                    projectId: data
+                });
 
-        } )
+            })
             .
-        error( function ( data, status ) {
+            error(function (data, status) {
 
-            $log.debug( 'New project creation failed', status );
-            $rootScope.processing = false;
-            growl.error( 'An error occured while project creation. Please retry later.' );
+                $log.debug('New project creation failed', status);
+                $rootScope.processing = false;
+                growl.error('An error occured while project creation. Please retry later.');
 
-        } );
+            });
 
     };
 
-} );
+});
 
 
 //CyPhyApp.run(function ($state, growl, dataStoreService, projectService) {
