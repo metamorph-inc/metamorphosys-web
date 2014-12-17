@@ -86,7 +86,10 @@ var argv = require('yargs').argv,
     refresh = require('gulp-livereload'),
     lrserver = require('tiny-lr')(),
     prettify = require('gulp-js-prettify'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    svgstore = require('gulp-svgstore'),
+    svgmin = require('gulp-svgmin');
+
 
 // Utility tasks
 
@@ -287,7 +290,11 @@ registerAppTasks = function (appName) {
         appTemplates = ['src/app/' + appName + '/**/*.html'],
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
-        appStyles = ['src/app/' + appName + '/**/*.scss'];
+        appStyles = ['src/app/' + appName + '/**/*.scss'],
+
+        appSvgSymbols = ['src/app/' + appName + '/**/*.svg'];
+
+
     gulp.task('lint-' + appName + '-app', function () {
 
         console.log('Linting ' + appName + '-app...');
@@ -296,6 +303,13 @@ registerAppTasks = function (appName) {
             .pipe(jshint())
             .pipe(jshint.reporter('default'));
 
+    });
+
+    gulp.task('generate-svg-map-' + appName + '-app', function () {
+      return gulp.src( appSvgSymbols )
+      .pipe(svgmin())
+      .pipe(svgstore({ fileName: 'symbols.svg', prefix: 'icon-' }))
+      .pipe(gulp.dest( buildPaths.images ));
     });
 
     gulp.task('browserify-' + appName + '-app', function () {
@@ -350,7 +364,11 @@ registerAppTasks = function (appName) {
     });
 
     gulp.task('compile-' + appName + '-app',
-        [ 'lint-' + appName + '-app', 'browserify-' + appName + '-app', 'compile-' + appName + '-app-templates', 'compile-' + appName + '-app-styles'],
+        [ 'lint-' + appName + '-app',
+          'generate-svg-map-' + appName + '-app',
+          'browserify-' + appName + '-app',
+          'compile-' + appName + '-app-templates',
+          'compile-' + appName + '-app-styles'],
         function () {
             console.log('Compiling ' + appName + '-app scripts...');
         });

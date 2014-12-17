@@ -25,7 +25,7 @@ function () {
     controller: 'PortController',
     restrict: 'E',
     replace: true,
-    templateUrl: '/designVisualization/templates/port.html',
+    templateUrl: '/mmsApp/templates/port.html',
     templateNamespace: 'SVG',
     require: ['^svgDiagram', '^diagramContainer'],
     link: function(scope, element, attributes, controllers) {

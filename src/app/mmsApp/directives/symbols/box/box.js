@@ -58,7 +58,7 @@ function () {
     restrict: 'E',
     replace: true,
     controller: 'BoxController',
-    templateUrl: '/designVisualization/templates/box.html',
+    templateUrl: '/mmsApp/templates/box.html',
     templateNamespace: 'SVG'
   };
 });

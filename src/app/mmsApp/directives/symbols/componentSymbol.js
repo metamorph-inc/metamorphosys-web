@@ -68,7 +68,7 @@ function ($compile) {
     restrict: 'E',
     replace: true,
     controller: 'SymbolController',
-    templateUrl: '/designVisualization/templates/componentSymbol.html',
+    templateUrl: '/mmsApp/templates/componentSymbol.html',
     templateNamespace: 'SVG',
     require: ['^svgDiagram', '^diagramContainer'],
     link: function (scope, element, attributes, controllers) {
@@ -161,7 +161,7 @@ function () {
     scope: false,
     restrict: 'E',
     replace: true,
-    templateUrl: '/designVisualization/templates/genericSvg.html',
+    templateUrl: '/mmsApp/templates/genericSvg.html',
     templateNamespace: 'SVG'
   };
 }

@@ -45,7 +45,7 @@ function () {
     controller: 'ComponentWireController',
     restrict: 'E',
     replace: true,
-    templateUrl: '/designVisualization/templates/componentWire.html',
+    templateUrl: '/mmsApp/templates/componentWire.html',
     templateNamespace: 'SVG'
   };
 }

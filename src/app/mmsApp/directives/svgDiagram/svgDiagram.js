@@ -481,7 +481,7 @@ angular.module('mms.designVisualization.svgDiagram', [
       restrict: 'E',
       scope: false,
       replace: true,
-      templateUrl: '/designVisualization/templates/svgDiagram.html',
+      templateUrl: '/mmsApp/templates/svgDiagram.html',
       link: function (scope, element, attributes, diagramContainerController) {
 
         var id;

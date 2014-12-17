@@ -121,7 +121,7 @@ angular.module('mms.designVisualization.diagramContainer', [
       restrict: 'E',
       replace: true,
       transclude: true,
-      templateUrl: '/designVisualization/templates/diagramContainer.html',
+      templateUrl: '/mmsApp/templates/diagramContainer.html',
       link: function (scope, element) {
 
         scope.canvasWidth = $(element).outerWidth();

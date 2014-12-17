@@ -17,7 +17,7 @@ function () {
     restrict: 'E',
     replace: true,
     transclude: true,
-    templateUrl: '/designVisualization/templates/drawingCanvas.html'
+    templateUrl: '/mmsApp/templates/drawingCanvas.html'
 
   };
 });

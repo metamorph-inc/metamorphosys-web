@@ -21,7 +21,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
   'mms.designVisualization.diagramContainer',
   'mms.designVisualization.fabricCanvas',
-  'mms.designVisualization.svgDiagram'
+  'mms.designVisualization.svgDiagram',
+  'mms.designVisualization.symbols'
 ]);
 
 require('./utils.js');

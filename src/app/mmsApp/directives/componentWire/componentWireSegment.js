@@ -15,7 +15,7 @@ function () {
   return {
     restrict: 'E',
     replace: true,
-    templateUrl: '/designVisualization/templates/componentWireSegment.html',
+    templateUrl: '/mmsApp/templates/componentWireSegment.html',
     templateNamespace: 'SVG'
   };
 }

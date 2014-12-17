@@ -22,7 +22,7 @@ angular.module('mms.designVisualization.fabricCanvas', [
       require: '^diagramContainer',
       restrict: 'E',
       replace: true,
-      templateUrl: '/designVisualization/templates/fabricCanvas.html',
+      templateUrl: '/mmsApp/templates/fabricCanvas.html',
       link: function (scope, element, attributes, diagramContainerCtrl) {
 
         var
