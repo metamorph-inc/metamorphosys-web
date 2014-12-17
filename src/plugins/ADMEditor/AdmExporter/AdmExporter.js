@@ -1096,38 +1096,40 @@ define( [
         self.loadSetMembers( node, 'Selection', function ( err, componentNodes, componentIds ) {
             var componentNode,
                 i;
-            if (err) {
-                callback('Failed loading node from AssemblyRoot ' + err.toString());
+            if ( err ) {
+                callback( 'Failed loading node from AssemblyRoot ' + err.toString() );
             } else {
-                for (i = 0; i < componentNodes.length; i++) {
+                for ( i = 0; i < componentNodes.length; i++ ) {
                     componentNode = componentNodes[ i ];
-                    if (componentNode) {
-                        if (self.shouldBeGenerated(componentNode)) {
-                            //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
-                            if (self.admData.DomainFeature) {
+                    if ( componentNode ) {
+                        if ( self.shouldBeGenerated( componentNode ) ) {
+                            //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot"
+                            // AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
+                            if ( self.admData.DomainFeature ) {
                                 // TODO: Append the selection here when format updated.
                                 self.logger.warning(
-                                    'Only one AssemblyRoot can be exported, an arbitrary selection will be made!');
+                                    'Only one AssemblyRoot can be exported, an arbitrary selection will be made!'
+                                );
                                 self.admData.DomainFeature[ '@AssemblyRootComponentInstance' ] = self.core.getGuid(
-                                    componentNode);
+                                    componentNode );
                             } else {
                                 self.admData.DomainFeature = {
                                     '@xmlns:q1': 'cad',
                                     '@xmlns': '',
                                     '@xsi:type': 'q1:AssemblyRoot',
-                                    '@AssemblyRootComponentInstance': self.core.getGuid(componentNode)
+                                    '@AssemblyRootComponentInstance': self.core.getGuid( componentNode )
                                 };
                             }
                         } else {
-                            self.logger.info('Skipping AssemblyRoot Selection of "' + self.core.getPath(
-                                componentNode) + '".');
+                            self.logger.info( 'Skipping AssemblyRoot Selection of "' + self.core.getPath(
+                                componentNode ) + '".' );
                         }
                     } else {
-                        self.logger.warning('AssemblyRoot selection is not within design, see path "' +
-                            componentIds[ i ] + '".');
+                        self.logger.warning( 'AssemblyRoot selection is not within design, see path "' +
+                            componentIds[ i ] + '".' );
                     }
                 }
-                callback(null);
+                callback( null );
             }
         } );
     };

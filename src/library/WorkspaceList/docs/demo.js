@@ -1,4 +1,4 @@
-/*globals console, angular, Chance, setTimeout*/
+/*globals console, angular, Chance*/
 
 var demoApp = angular.module( 'cyphy.ui.WorkspaceList.demo', [
     'cyphy.components',
@@ -21,6 +21,7 @@ demoApp.service( 'WorkspaceService', function ( $q, $timeout ) {
     };
 
     this.deleteWorkspace = function ( context, workspaceId, msg ) {
+        console.log( msg );
         $timeout( function () {
             workspaceUpdateListener( {
                 id: workspaceId,
@@ -140,11 +141,11 @@ demoApp.service( 'WorkspaceService', function ( $q, $timeout ) {
     };
 
     this.cleanUpRegion = function ( parentContext, regionId ) {
-        console.log( 'cleanUpRegion' );
+        console.log( 'cleanUpRegion', parentContext, regionId );
     };
 
     this.cleanUpAllRegions = function ( parentContext ) {
-        console.log( 'cleanUpAllRegions' );
+        console.log( 'cleanUpAllRegions', parentContext );
     };
 
     this.registerWatcher = function ( parentContext, fn ) {
@@ -156,6 +157,7 @@ demoApp.service( 'FileService', function ( $q ) {
     'use strict';
 
     this.getDownloadUrl = function ( hash ) {
+        console.log( hash );
         return null;
     };
 
@@ -163,6 +165,7 @@ demoApp.service( 'FileService', function ( $q ) {
         var deferred = $q.defer(),
             addedFiles = [],
             i;
+        console.log( validExtensions );
         for ( i = 0; i < files.length; i += 1 ) {
             addedFiles.push( {
                 hash: '',

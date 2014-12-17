@@ -1,6 +1,6 @@
-/*globals console, angular, Chance*/
+/*globals angular*/
 
-var demoApp = angular.module( 'cyphy.ui.ComponentList.demo', [
+angular.module( 'cyphy.ui.ComponentList.demo', [
     'cyphy.components',
     'cyphy.components.templates'
 ] );

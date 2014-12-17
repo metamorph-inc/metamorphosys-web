@@ -1,11 +1,11 @@
-/*globals angular, console, setTimeout*/
+/*globals angular, console*/
 
-var CyPhyApp = angular.module( 'CyPhyApp', [
+angular.module( 'CyPhyApp', [
     'gme.services',
     'cyphy.components'
 ] )
     .run( function ( dataStoreService, projectService, branchService, nodeService, workspaceService, componentService,
-        designService, testBenchService, pluginService ) {
+        designService, testBenchService ) {
         'use strict';
         dataStoreService.connectToDatabase( 'my-db-connection-id', {
             host: window.location.basename
@@ -30,7 +30,7 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
         //            console.log('branchService initialized..');
         //        });
 
-        nodeService.on( 'my-db-connection-id', 'initialize', function ( currentContext ) {
+        nodeService.on( 'my-db-connection-id', 'initialize', function ( /*currentContext*/) {
             var logger,
                 testContext;
 
@@ -80,7 +80,6 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
                                 } );
                             designService.watchDesigns( testContext, key, logger )
                                 .then( function ( data ) {
-                                    var dKey;
                                     console.log( 'watchDesigns:', data );
                                     //                                for (cKey in data.components) {
                                     //                                    componentService.watchComponentDetails(testContext, cKey, logger)
@@ -91,7 +90,6 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
                                 } );
                             testBenchService.watchTestBenches( testContext, key, logger )
                                 .then( function ( data ) {
-                                    var dKey;
                                     console.warn( 'watchTestBenches:', data );
                                     //                                for (cKey in data.components) {
                                     //                                    componentService.watchComponentDetails(testContext, cKey, logger)
