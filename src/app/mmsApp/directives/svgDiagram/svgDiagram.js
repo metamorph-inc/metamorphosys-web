@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, $*/
 
 'use strict';
 
@@ -10,54 +10,54 @@ angular.module( 'mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire'
 ] )
-    .controller( 'SVGDiagramController', function ( $scope, $log, diagramService, wiringService, gridService ) {
+    .controller( 'SVGDiagramController', function (
+        $scope, $log, diagramService, wiringService, gridService, $window
+    ) {
 
-        var possibbleDragTargetsDescriptor,
-            startDrag,
-            finishDrag,
+        var
 
-            possibleWireStart,
+            ComponentSelectionHandler = require('./classes/ComponentSelectionHandler'),
+            componentSelectionHandler,
+
+            ComponentDragHandler = require('./classes/ComponentDragHandler'),
+            componentDragHandler,
+
             startWire,
             finishWire,
             cancelWire,
-
-            moveComponentElementToFront,
-
-            getOffsetToMouse,
 
             Wire = require( '../../services/diagramService/classes/Wire.js' ),
 
             addCornerToNewWireLine,
 
-            componentElements;
+            componentElements,
 
+            $$window;
 
-        getOffsetToMouse = function ( $event ) {
+        $$window = $($window);
 
-            var offset;
+        componentDragHandler = new ComponentDragHandler(
+            $scope,
+            diagramService,
+            wiringService,
+            $log,
+            $scope.elementOffset
+        );
 
-            offset = {
-                x: $event.pageX - $scope.elementOffset.left,
-                y: $event.pageY - $scope.elementOffset.top
+        componentSelectionHandler = new ComponentSelectionHandler(
+            $scope,
+            diagramService,
+            gridService,
+            $log,
+            $scope.elementOffset
+        );
+
+        startWire = function (component, port) {
+
+            $scope.wireStart = {
+                component: component,
+                port: port
             };
-
-            return offset;
-
-        };
-
-        startDrag = function () {
-
-            $scope.dragTargetsDescriptor = possibbleDragTargetsDescriptor;
-            possibbleDragTargetsDescriptor = null;
-
-            $log.debug( 'Dragging', $scope.dragTargetsDescriptor );
-
-        };
-
-        startWire = function () {
-
-            $scope.wireStart = possibleWireStart;
-            possibleWireStart = null;
 
             $log.debug( 'Starting wire', $scope.wireStart );
 
@@ -119,25 +119,14 @@ angular.module( 'mms.designVisualization.svgDiagram', [
         };
 
         cancelWire = function () {
+            $scope.newWireLine = null;
             $scope.wireStart = null;
         };
 
-        finishDrag = function () {
 
-            $scope.dragTargetsDescriptor = null;
+        $scope.onMouseUp = function ($event) {
 
-            $log.debug( 'Finish dragging' );
-
-        };
-
-        $scope.onMouseUp = function () {
-            //      if ($scope.dragTargetsDescriptor) {
-            //        //finishDrag();
-            //      }
-        };
-
-
-        $scope.onClick = function ( $event ) {
+            componentDragHandler.onMouseUp($event);
 
             if ( $scope.wireStart ) {
 
@@ -151,46 +140,21 @@ angular.module( 'mms.designVisualization.svgDiagram', [
 
         };
 
+
+        $scope.onClick = function ( $event ) {
+        };
+
         $scope.onMouseMove = function ( $event ) {
 
-            var offset;
 
             // Dragging
 
-            if ( possibbleDragTargetsDescriptor ) {
-                startDrag();
-            }
-
-            if ( $scope.dragTargetsDescriptor ) {
-
-                angular.forEach( $scope.dragTargetsDescriptor.targets, function ( target ) {
-
-                    //console.log($event.offsetY, target.deltaToCursor.y);
-
-                    offset = getOffsetToMouse( $event );
-
-                    target.component.setPosition(
-                        offset.x + target.deltaToCursor.x,
-                        offset.y + target.deltaToCursor.y
-                    );
-
-                } );
-
-                angular.forEach( $scope.dragTargetsDescriptor.affectedWires, function ( wire ) {
-
-                    wiringService.adjustWireEndSegments( wire );
-
-                } );
-
-            }
+            componentDragHandler.onMouseMove($event);
 
             // Wire drawing
 
-            if ( possibleWireStart ) {
-                startWire();
-            }
-
             if ( $scope.wireStart ) {
+
 
                 $scope.newWireLine = $scope.newWireLine || {};
                 $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
@@ -238,107 +202,33 @@ angular.module( 'mms.designVisualization.svgDiagram', [
             } ]
         } ];
 
-        moveComponentElementToFront = function ( componentId ) {
 
-            var z,
-                component,
-                needsTobeReordered;
-
-            needsTobeReordered = false;
-
-            z = diagramService.getHighestZ();
-            component = $scope.diagram.components[ componentId ];
-
-            if ( isNaN( component.z ) ) {
-                component.z = z;
-                needsTobeReordered = true;
-            } else {
-                if ( component.z < z ) {
-                    component.z = z + 1;
-                    needsTobeReordered = true;
-                }
-            }
-
-            if ( needsTobeReordered ) {
-                gridService.reorderVisibleComponents( $scope.id );
-            }
-
+        $scope.onMouseLeave = function($event) {
+           componentDragHandler.onMouseLeave($event);
         };
+
+        $$window.blur(function($event) {
+           componentDragHandler.onWindowBlur($event);
+        });
+
 
         // Interactions with components
 
-        this.toggleComponentSelected = function ( component, $event ) {
+        this.onComponentMouseUp = function ( component, $event ) {
 
-            var index;
+            if (!componentDragHandler.dragging) {
 
-            if ( angular.isObject( component ) && !this.disallowSelection() && component.nonSelectable !== true ) {
-
-                index = $scope.diagram.state.selectedComponentIds.indexOf( component.id );
-
-                if ( index > -1 ) {
-
-                    $scope.diagram.state.selectedComponentIds.splice( index, 1 );
-
-                } else {
-
-                    if ( $scope.diagram.state.selectedComponentIds.length > 0 &&
-                        $scope.diagram.config.multiSelect !== true &&
-                        $event.shiftKey !== true ) {
-
-                        angular.forEach( $scope.diagram.state.selectedComponentIds, function ( componentId ) {
-                            $scope.diagram.components[ componentId ].selected = false;
-                        } );
-                        $scope.diagram.state.selectedComponentIds = [];
-                    }
-
-                    $scope.diagram.state.selectedComponentIds.push( component.id );
-
-                    moveComponentElementToFront( component.id );
-
-                }
-
-            }
-
-        };
-
-        this.onComponentClick = function ( component, $event ) {
-
-            possibbleDragTargetsDescriptor = null;
-
-            if ( $scope.dragTargetsDescriptor ) {
-                finishDrag();
+                componentSelectionHandler.onComponentMouseUp(component, $event);
                 $event.stopPropagation();
+
+                componentDragHandler.onComponentMouseUp(component, $event);
+
             } else {
-                this.toggleComponentSelected( component, $event );
-                $event.stopPropagation();
+                componentDragHandler.onComponentMouseUp(component, $event);
             }
-
         };
 
         this.onPortMouseDown = function ( component, port, $event ) {
-
-            if ( !$scope.wireStart ) {
-                possibleWireStart = {
-                    component: component,
-                    port: port
-                };
-            }
-
-            $event.stopPropagation();
-
-        };
-
-        this.onPortMouseUp = function ( component, port, $event ) {
-
-            $event.stopPropagation();
-
-        };
-
-        this.onPortClick = function ( component, port, $event ) {
-
-            if ( possibbleDragTargetsDescriptor ) {
-                possibbleDragTargetsDescriptor = null;
-            }
 
             if ( $scope.wireStart ) {
 
@@ -350,23 +240,36 @@ angular.module( 'mms.designVisualization.svgDiagram', [
                     cancelWire();
                 }
 
+            } else {
+
+                startWire(component, port);
+                $event.stopPropagation();
+
             }
+
+        };
+
+        this.onPortMouseUp = function ( component, port, $event ) {
+
+            $event.stopPropagation();
+
+        };
+
+        this.onPortClick = function ( component, port, $event ) {
+
+            $event.stopPropagation();
 
         };
 
         this.onComponentMouseDown = function ( component, $event ) {
 
-            var componentsToDrag,
-                getDragDescriptor,
-                wires;
+            var wires;
 
             if ( $event.which === 3 ) {
 
                 component.rotate( 90 );
 
                 wires = diagramService.getWiresForComponents( component );
-
-                console.log( component );
 
                 angular.forEach( wires, function ( wire ) {
                     wiringService.adjustWireEndSegments( wire );
@@ -377,64 +280,8 @@ angular.module( 'mms.designVisualization.svgDiagram', [
 
             } else {
 
-                componentsToDrag = [];
+                componentDragHandler.onComponentMouseDown(component, $event);
 
-                getDragDescriptor = function ( component ) {
-
-                    var offset = getOffsetToMouse( $event );
-
-                    return {
-                        component: component,
-                        originalPosition: {
-                            x: component.x,
-                            y: component.y
-                        },
-                        deltaToCursor: {
-                            x: component.x - offset.x,
-                            y: component.y - offset.y
-                        }
-                    };
-
-                };
-
-                if ( this.isEditable() &&
-                    component.nonSelectable !== true &&
-                    component.locationLocked !== true ) {
-
-                    $event.stopPropagation();
-
-                    possibbleDragTargetsDescriptor = {
-                        targets: [ getDragDescriptor( component ) ]
-                    };
-
-                    componentsToDrag.push( component );
-
-                    if ( $scope.diagram.state.selectedComponentIds.indexOf( component.id ) > -1 ) {
-
-                        // Drag along other selected components
-
-                        angular.forEach( $scope.diagram.state.selectedComponentIds, function ( selectedComponentId ) {
-
-                            var selectedComponent;
-
-                            if ( component.id !== selectedComponentId ) {
-
-                                selectedComponent = $scope.diagram.components[ selectedComponentId ];
-
-                                possibbleDragTargetsDescriptor.targets.push( getDragDescriptor(
-                                    selectedComponent ) );
-
-                                componentsToDrag.push( selectedComponent );
-
-                            }
-
-                        } );
-                    }
-
-                    possibbleDragTargetsDescriptor.affectedWires = diagramService.getWiresForComponents(
-                        componentsToDrag );
-
-                }
             }
         };
 

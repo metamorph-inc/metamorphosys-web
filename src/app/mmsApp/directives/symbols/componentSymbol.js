@@ -109,8 +109,8 @@ symbolsModule.directive(
 
                 // Interactions
 
-                scope.onClick = function ( $event ) {
-                    svgDiagramController.onComponentClick( scope.component, $event );
+                scope.onMouseUp = function ( $event ) {
+                    svgDiagramController.onComponentMouseUp( scope.component, $event );
                 };
 
                 scope.onMouseDown = function ( $event ) {
