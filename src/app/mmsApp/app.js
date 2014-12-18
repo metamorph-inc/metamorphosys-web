@@ -43,7 +43,8 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     var selectProject;
 
     selectProject = {
-        load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService) {
+        load: function (
+            $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, $timeout) {
             var
                 connectionId,
                 deferred;
@@ -59,67 +60,87 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                 host: window.location.basename
             })
                 .then(function () {
-                    return projectService.selectProject(connectionId, $stateParams.projectId);
-                })
-                .then(function (projectId) {
+                    var projectId = $timeout(function(){
+                        projectService.selectProject(connectionId, $stateParams.projectId);
+
+                        console.log('timing out');
+                    });
 
                     var wsContext;
+
+                    $log.debug('Project selected', projectId);
 
                     $rootScope.projectId = projectId;
                     $rootScope.loading = false;
 
                     wsContext = {
                         db: $rootScope.mainDbConnectionId,
-                        regionId: 'WorkspaceListController_' + ( new Date() )
+                        regionId: 'WorkSpaces_' + ( new Date() )
                             .toISOString()
                     };
-                    //$scope.$on( '$destroy', function () {
-                    //    workspaceService.cleanUpAllRegions( context );
-                    //} );
+
+                    $rootScope.$on('$destroy', function () {
+                        workspaceService.cleanUpAllRegions(wsContext);
+                    });
 
 
                     workspaceService.registerWatcher(wsContext, function (destroyed) {
 
-                        console.info('WorkspaceListController - initialize event raised');
-                        workspaceService.watchWorkspaces(wsContext, function (updateObject) {
-                            var index;
+                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
 
-                            if (updateObject.type === 'load') {
-                                console.log('load', updateObject);
-                            } else if (updateObject.type === 'update') {
-                                console.log('update', updateObject);
-                            } else if (updateObject.type === 'unload') {
-                                console.log('unload', updateObject);
-                            } else {
-                                throw new Error(updateObject);
+                        if (destroyed !== true) {
+                            workspaceService.watchWorkspaces(wsContext,function (updateObject) {
 
-                            }
+                                if (updateObject.type === 'load') {
+                                    console.log('load', updateObject);
+                                } else if (updateObject.type === 'update') {
+                                    console.log('update', updateObject);
+                                } else if (updateObject.type === 'unload') {
+                                    console.log('unload', updateObject);
+                                } else {
+                                    throw new Error(updateObject);
 
-                        }).then(function (data) {
-                                var workspaceId;
-
-                                for (workspaceId in data.workspaces) {
-                                    if (data.workspaces.hasOwnProperty(workspaceId)) {
-                                    }
                                 }
+
+                            }).then(function (data) {
+                                var workspaceId,
+                                    hasFoundFirstOne;
+
+                                hasFoundFirstOne = false;
+
+                                angular.forEach(data.workspaces, function(workSpace) {
+
+                                    if (!hasFoundFirstOne) {
+
+                                        hasFoundFirstOne = true;
+
+                                        $rootScope.activeWorkSpace = workSpace;
+
+                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
+
+                                        deferred.resolve(projectId);
+                                    }
+
+                                });
+
                             });
-                        });
 
-
-                        deferred.resolve(projectId);
-                    })
-                        .
-                        catch(function (reason) {
-                        $rootScope.loading = false;
-                        $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                        $state.go('404', {
-                            projectId: $stateParams.projectId
-                        });
+                        } else {
+                            $log.debug('WokrspaceService destroyed...');
+                        }
                     });
 
-                    return deferred.promise;
-                }
-        };
+                }).catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                    $state.go('404', {
+                        projectId: $stateParams.projectId
+                    });
+                });
+
+            return deferred.promise;
+        }
+    };
 
     $urlRouterProvider.otherwise('/noProject');
 
@@ -147,11 +168,13 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
     var defaultNavigatorItems;
 
-    defaultNavigatorItems = [{
-        id: 'root',
-        label: 'MMS App',
-        itemClass: 'cyphy-root'
-    }];
+    defaultNavigatorItems = [
+        {
+            id: 'root',
+            label: 'MMS App',
+            itemClass: 'cyphy-root'
+        }
+    ];
 
     $scope.navigator = {
         separator: true,

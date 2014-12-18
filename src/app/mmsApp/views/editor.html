@@ -1,16 +1,26 @@
 <div class="editor-container" layout="row">
-    <div class="grid-holder" flex="80">
+    <div class="grid-holder" flex="75">
 
         <diagram-container ng-attr-id="svg-container" diagram="diagram">
             <svg-diagram></svg-diagram>
         </diagram-container>
 
     </div>
-    <div class="component-browser-container" flex="20">
+    <div class="component-browser-container" flex="25">
 
-        <component-browser
-                data-workspace-id="'/577839143'"
-                avm-ids="['c2bcc5e3-6e35-4018-aa97-fc26ae8c1ccc']"
-                data-connection-id="mainDbConnectionId"></component-browser>
+        <!--{{mainDbConnectionId}}-->
+        <!--{{activeWorkSpace}}-->
+
+        <component-list
+            data-connection-id="mainDbConnectionId"
+            data-workspace-id="activeWorkSpace.id">
+
+        </component-list>
+
+        <!--<component-browser&ndash;&gt;-->
+        <!--data-workspace-id="'/577839143'"-->
+        <!--avm-ids="['/577839143/1379959555/1468018535']"-->
+        <!--data-connection-id="mainDbConnectionId"></component-browser>-->
+
     </div>
 </div>
