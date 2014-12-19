@@ -4,9 +4,7 @@
 
 module.exports = function($scope, diagramService, gridService, $log) {
 
-    var self = this,
-
-        onComponentMouseUp,
+    var onComponentMouseUp,
 
         moveComponentElementToFront,
         toggleComponentSelected;

@@ -141,7 +141,7 @@ angular.module( 'mms.designVisualization.svgDiagram', [
         };
 
 
-        $scope.onClick = function ( $event ) {
+        $scope.onClick = function ( /*$event */) {
         };
 
         $scope.onMouseMove = function ( $event ) {

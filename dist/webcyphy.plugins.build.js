@@ -5228,6 +5228,7 @@ require.alias("superagent/lib/client.js", "superagent/index.js");if (typeof expo
 define('executor/ExecutorClient',['superagent'], function (superagent) {
 
     var ExecutorClient = function (parameters) {
+        parameters = parameters || {};
         this.isNodeJS = (typeof window === 'undefined') && (typeof process === "object");
         this.isNodeWebkit = (typeof window === 'object') && (typeof process === "object");
 
@@ -5240,11 +5241,9 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
             this._clientSession = null; // parameters.sessionId;;
         }
-        if (parameters) {
-            this.server = parameters.server || this.server;
-            this.serverPort = parameters.serverPort || this.serverPort;
-            this.httpsecure = (parameters.httpsecure !== undefined) ? parameters.httpsecure : this.httpsecure;
-        }
+        this.server = parameters.server || this.server;
+        this.serverPort = parameters.serverPort || this.serverPort;
+        this.httpsecure = (parameters.httpsecure !== undefined) ? parameters.httpsecure : this.httpsecure;
         if (this.isNodeJS) {
             this.http = this.httpsecure ? require('https') : require('http');
         }
@@ -5254,7 +5253,14 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
         }
         // TODO: TOKEN???
         this.executorUrl = this.executorUrl + '/rest/external/executor/'; // TODO: any ways to ask for this or get it from the configuration?
-
+        if (parameters.executorNonce) {
+            this.executorNonce = parameters.executorNonce;
+        } else if (typeof webGMEGlobal !== "undefined") {
+            var webGMEConfig = webGMEGlobal.getConfig();
+            if (webGMEConfig.executorNonce) {
+                this.executorNonce = webGMEConfig.executorNonce;
+            }
+        }
     };
 
     ExecutorClient.prototype.getInfoURL = function (hash) {
@@ -5354,6 +5360,9 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
     ExecutorClient.prototype.sendHttpRequestWithData = function (method, url, data, callback) {
         var req = new superagent.Request(method, url);
+        if (this.executorNonce) {
+            req.set('x-executor-nonce', this.executorNonce);
+        }
         if (data) {
             req.send(data);
         }

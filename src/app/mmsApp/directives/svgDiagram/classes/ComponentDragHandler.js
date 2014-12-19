@@ -52,8 +52,6 @@ module.exports = function($scope, diagramService, wiringService, $log) {
 
         if ( dragTargetsDescriptor ) {
 
-            var offset;
-
             angular.forEach( dragTargetsDescriptor.targets, function ( target ) {
 
                 target.component.setPosition(

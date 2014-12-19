@@ -103,8 +103,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                                 }
 
                             }).then(function (data) {
-                                var workspaceId,
-                                    hasFoundFirstOne;
+                                var hasFoundFirstOne;
 
                                 hasFoundFirstOne = false;
 
