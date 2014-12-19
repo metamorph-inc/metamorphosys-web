@@ -4,13 +4,14 @@
   overflow: hidden;
   margin: 0;
   border: 1px solid #C9DEE4;
+  position: relative;
 }
 
 .panzoom-widget {
   position: absolute;
   z-index: 1;
   left: 5px;
-  top: 25px;
+  top: 40px;
   opacity: .5;
 }
 
