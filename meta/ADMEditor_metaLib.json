@@ -1083,6 +1083,7 @@
                 "INFO": "A property or parametric value.",
                 "Maximum": "inf",
                 "Minimum": "-inf",
+                "OnDataSheet": false,
                 "Unit": "",
                 "Value": "",
                 "ValueType": "Fixed",
@@ -1116,6 +1117,10 @@
                     "Minimum": {
                         "default": "-inf",
                         "type": "string"
+                    },
+                    "OnDataSheet": {
+                        "type": "boolean",
+                        "default": false
                     },
                     "Unit": {
                         "default": "",
