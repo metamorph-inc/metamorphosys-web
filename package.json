@@ -34,6 +34,7 @@
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.3",
     "gulp-shell": "^0.2.11",
+    "gulp-prettify": "^0.3.0",
     "istanbul": ">=0.2.6",
     "jslint": ">=0.3.0",
     "mocha": ">=1.17.1",
