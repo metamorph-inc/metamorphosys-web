@@ -60,18 +60,19 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                 host: window.location.basename
             })
                 .then(function () {
-                    var projectId = $timeout(function(){
-                        projectService.selectProject(connectionId, $stateParams.projectId);
+                    $timeout(function(){
+                        projectService.selectProject(connectionId, $stateParams.projectId)
+                        .then(function(projectId) {
+                            $log.debug('Project selected', projectId);
 
-                        console.log('timing out');
+                            $rootScope.projectId = projectId;
+                            $rootScope.loading = false;
+                        });
+
                     });
 
                     var wsContext;
 
-                    $log.debug('Project selected', projectId);
-
-                    $rootScope.projectId = projectId;
-                    $rootScope.loading = false;
 
                     wsContext = {
                         db: $rootScope.mainDbConnectionId,
@@ -117,7 +118,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
                                         $log.debug('Active workspace:', $rootScope.activeWorkSpace);
 
-                                        deferred.resolve(projectId);
+                                        deferred.resolve();
                                     }
 
                                 });
