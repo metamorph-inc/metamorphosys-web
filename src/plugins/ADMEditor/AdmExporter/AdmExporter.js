@@ -1189,7 +1189,9 @@ define( [
                     componentNode = componentNodes[ i ];
                     if ( componentNode ) {
                         if ( self.shouldBeGenerated( componentNode ) ) {
-                            //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot" AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
+                            //<DomainFeature xmlns:q3="cad" xmlns="" xsi:type="q3:AssemblyRoot"
+                            // AssemblyRootComponentInstance="{9267c3e4-a944-4a68-85a8-c90dfb5a428c}" />
+
                             if ( self.admData.DomainFeature ) {
                                 // TODO: Append the selection here when format updated.
                                 self.logger.warning(

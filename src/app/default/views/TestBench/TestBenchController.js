@@ -3,10 +3,9 @@
 angular.module( 'CyPhyApp' )
     .controller( 'TestBenchController', function ( $scope, $state, $timeout, $location, growl, testBenchService ) {
         'use strict';
-        var self = this,
-            context = {
-                db: 'my-db-connection-id'
-            },
+        var context = {
+            db: 'my-db-connection-id'
+        },
             workspaceId = $state.params.workspaceId.replace( /-/g, '/' ),
             testBenchId = $state.params.testBenchId.replace( /-/g, '/' );
 

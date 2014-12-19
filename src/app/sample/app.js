@@ -1,6 +1,6 @@
-/*globals angular, console*/
+/*globals angular*/
 
-var CyPhyApp = angular.module( 'CyPhyApp', [
+angular.module( 'CyPhyApp', [
     'ui.router',
 
     'gme.services',
