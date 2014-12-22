@@ -4,7 +4,9 @@
  ng-mouseup="onMouseUp($event)"
  ng-mousedown="onMouseDown($event)"
  ng-attr-id="{{::component.id}}"
- ng-attr-transform="{{getSymbolTransform()}}">
+ ng-attr-transform="{{getSymbolTransform()}}"
+>
+    >
     <rect ng-attr-width="{{::component.symbol.width + 20}}"
           ng-attr-height="{{::component.symbol.height + 20}}"
           transform="translate(-10,-10)"

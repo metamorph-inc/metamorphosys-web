@@ -23,6 +23,9 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
+            ComponentContextMenuHandler = require('./classes/ComponentContextMenuHandler'),
+            componentContextMenuHandler,
+
             componentElements,
 
             $$window;
@@ -33,16 +36,14 @@ angular.module('mms.designVisualization.svgDiagram', [
             $scope,
             diagramService,
             wiringService,
-            $log,
-            $scope.elementOffset
+            $log
         );
 
         componentSelectionHandler = new ComponentSelectionHandler(
             $scope,
             diagramService,
             gridService,
-            $log,
-            $scope.elementOffset
+            $log
         );
 
         wireDrawHandler = new WireDrawHandler(
@@ -50,6 +51,12 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             wiringService,
             gridService,
+            $log
+        );
+
+        componentContextMenuHandler = new ComponentContextMenuHandler(
+            $scope,
+            diagramService,
             $log
         );
 
@@ -65,6 +72,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
 
         $scope.onClick = function (/*$event*/) {
+
+
         };
 
         $scope.onMouseMove = function ($event) {
@@ -149,20 +158,9 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onComponentMouseDown = function (component, $event) {
 
-            var wires;
-
             if ($event.which === 3) {
 
-                component.rotate(90);
-
-                wires = diagramService.getWiresForComponents(component);
-
-                angular.forEach(wires, function (wire) {
-                    wiringService.adjustWireEndSegments(wire);
-                });
-
-
-                $event.preventDefault();
+                componentContextMenuHandler.onComponentMouseDown();
 
             } else {
 
@@ -217,7 +215,11 @@ angular.module('mms.designVisualization.svgDiagram', [
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
                 link: function (scope, element, attributes, diagramContainerController) {
 
-                    var id;
+                    var id,
+                        $el,
+                        contextMenuHandler;
+
+                    $el = $(element);
 
                     id = diagramContainerController.getId();
 
@@ -240,6 +242,20 @@ angular.module('mms.designVisualization.svgDiagram', [
                             scope.elementOffset = scope.$element.offset();
                             gridService.setVisibleArea(id, visibleArea);
                         });
+
+
+                    contextMenuHandler = function() {
+                        scope.$apply(function() {
+                            event.preventDefault();
+                        });
+                    };
+
+                    $el.bind('contextmenu', contextMenuHandler);
+
+
+                    scope.$on('$destroy', function() {
+                       $el.unbind(contextMenuHandler);
+                    });
 
                 }
 

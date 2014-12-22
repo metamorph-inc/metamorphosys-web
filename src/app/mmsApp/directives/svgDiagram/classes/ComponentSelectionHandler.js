@@ -48,8 +48,6 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
             index = $scope.diagram.state.selectedComponentIds.indexOf( component.id );
 
-            console.log(index, $scope.diagram.state.selectedComponentIds);
-
             if ( index > -1 ) {
 
                 $scope.diagram.state.selectedComponentIds.splice( index, 1 );

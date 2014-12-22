@@ -9,7 +9,8 @@ require('../drawingCanvas/drawingCanvas.js');
 angular.module('mms.designVisualization.diagramContainer', [
     'mms.designVisualization.drawingCanvas',
     'panzoom',
-    'panzoomwidget'
+    'panzoomwidget',
+    'isis.ui.contextmenu'
 ])
     .controller('DiagramContainerController', [
         '$scope',

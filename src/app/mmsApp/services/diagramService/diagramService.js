@@ -464,7 +464,8 @@ angular.module( 'mms.designVisualization.diagramService', [
 
             //this.generateDummyDiagram(2000, 500, 10000, 10000);
             //this.generateDummyDiagram(1000, 2000, 10000, 10000);
-            this.generateDummyDiagram( 10, 5, 1200, 1200 );
+            //this.generateDummyDiagram( 10, 5, 1200, 1200 );
+            this.generateDummyDiagram( 100, 50, 5000, 5000 );
 
         }
     ] );

@@ -115,6 +115,7 @@ symbolsModule.directive(
 
                 scope.onMouseDown = function ( $event ) {
                     svgDiagramController.onComponentMouseDown( scope.component, $event );
+                    $event.stopPropagation();
                 };
 
                 symbolComponent = scope.component.symbol.symbolComponent || 'generic-svg';
