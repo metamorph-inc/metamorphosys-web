@@ -4,19 +4,21 @@
 
 // Move this to GME eventually
 
-require( '../drawingCanvas/drawingCanvas.js' );
+require('../drawingCanvas/drawingCanvas.js');
 
-angular.module( 'mms.designVisualization.diagramContainer', [
+angular.module('mms.designVisualization.diagramContainer', [
     'mms.designVisualization.drawingCanvas',
     'panzoom',
     'panzoomwidget'
-] )
-    .controller( 'DiagramContainerController', [
+])
+    .controller('DiagramContainerController', [
         '$scope',
         'PanZoomService',
-        function ( $scope, PanZoomService ) {
+        function ($scope, PanZoomService) {
 
-            var compiledDirectives;
+            var self = this,
+
+                compiledDirectives;
 
             compiledDirectives = {};
 
@@ -38,23 +40,23 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                 friction: 50,
                 haltSpeed: 50,
 
-                modelChangedCallback: function ( val ) {
-                    PanZoomService.getAPI( $scope.panzoomId )
-                        .then( function ( api ) {
+                modelChangedCallback: function (val) {
+                    PanZoomService.getAPI($scope.panzoomId)
+                        .then(function (api) {
 
                             var topLeftCorner, bottomRightCorner;
 
                             $scope.zoomLevel = val.zoomLevel;
 
-                            topLeftCorner = api.getModelPosition( {
+                            topLeftCorner = api.getModelPosition({
                                 x: 0,
                                 y: 0
-                            } );
+                            });
 
-                            bottomRightCorner = api.getModelPosition( {
+                            bottomRightCorner = api.getModelPosition({
                                 x: $scope.canvasWidth,
                                 y: $scope.canvasHeight
-                            } );
+                            });
 
                             $scope.visibleArea = {
                                 top: topLeftCorner.y,
@@ -63,13 +65,22 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                                 bottom: bottomRightCorner.y
                             };
 
-                        } );
+                        });
 
                 }
             };
 
             $scope.getCssClass = function () {
-                return 'zoom-level-' + $scope.zoomLevel;
+
+                var classString;
+
+                classString = 'diagram-container';
+
+                classString += ' zoom-level-' + $scope.zoomLevel;
+
+                classString += self.isEditable() ? ' editable' : 'readonly';
+
+                return classString;
             };
 
             this.getVisibleArea = function () {
@@ -88,12 +99,12 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                 return $scope.zoomLevel;
             };
 
-            this.getCompiledDirective = function ( directive ) {
-                return compiledDirectives[ directive ];
+            this.getCompiledDirective = function (directive) {
+                return compiledDirectives[directive];
             };
 
-            this.setCompiledDirective = function ( directive, compiledDirective ) {
-                compiledDirectives[ directive ] = compiledDirective;
+            this.setCompiledDirective = function (directive, compiledDirective) {
+                compiledDirectives[directive] = compiledDirective;
             };
 
             this.isEditable = function () {
@@ -103,15 +114,15 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                 return $scope.diagram.config.editable === true;
             };
 
-            this.isComponentSelected = function ( component ) {
-                return $scope.diagram.state.selectedComponentIds.indexOf( component.id ) > -1;
+            this.isComponentSelected = function (component) {
+                return $scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1;
             };
 
         }
-    ] )
-    .directive( 'diagramContainer', [
+    ])
+    .directive('diagramContainer', [
         'diagramService', '$log', 'PanZoomService',
-        function ( diagramService, $log ) {
+        function (diagramService, $log) {
 
             return {
                 controller: 'DiagramContainerController',
@@ -123,11 +134,11 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                 replace: true,
                 transclude: true,
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
-                link: function ( scope, element ) {
+                link: function (scope, element) {
 
-                    scope.canvasWidth = $( element )
+                    scope.canvasWidth = $(element)
                         .outerWidth();
-                    scope.canvasHeight = $( element )
+                    scope.canvasHeight = $(element)
                         .outerHeight();
 
 
@@ -138,11 +149,11 @@ angular.module( 'mms.designVisualization.diagramContainer', [
                         bottom: scope.canvasHeight
                     };
 
-                    $log.debug( 'In canvas container', scope.visibleArea );
+                    $log.debug('In canvas container', scope.visibleArea);
 
 
                 }
 
             };
         }
-    ] );
+    ]);
