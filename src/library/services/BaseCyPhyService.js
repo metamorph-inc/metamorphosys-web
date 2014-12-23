@@ -101,14 +101,12 @@ angular.module( 'cyphy.services' )
                         setAttr = function () {
                             counter -= 1;
                             nodeObj.setAttribute( keys[ counter ], attrs[ keys[ counter ] ],
-                                'webCyPhy - setNodeAttributes' )
-                                .then( function () {
-                                    if ( counter <= 0 ) {
-                                        deferred.resolve();
-                                    } else {
-                                        setAttr();
-                                    }
-                                } );
+                                'webCyPhy - setNodeAttributes' );
+                            if ( counter <= 0 ) {
+                                deferred.resolve();
+                            } else {
+                                setAttr();
+                            }
                         };
                     setAttr();
                 } );

@@ -1007,6 +1007,7 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
+        /*
         this.saveConfigurationSet = function ( setName, setDesc, configurations, designNode, meta ) {
             var deferred = $q.defer(),
                 context = designNode.context;
@@ -1068,7 +1069,7 @@ angular.module( 'cyphy.services' )
 
             return deferred.promise;
         };
-
+        */
         /**
          * See baseCyPhyService.cleanUpAllRegions.
          */
