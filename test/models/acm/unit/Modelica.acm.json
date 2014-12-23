@@ -127,7 +127,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "Real"
+            "DataType": "Real",
+            "OnDataSheet": false
         },
         "registry": {
             "DisplayFormat": "",
