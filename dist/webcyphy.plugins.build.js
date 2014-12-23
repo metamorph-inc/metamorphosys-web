@@ -9078,6 +9078,9 @@ define( 'plugin/AcmImporter/AcmImporter/AcmImporter',[ 'plugin/PluginConfig',
         self.core.setAttribute( newAcmPropertyNode, 'Maximum', avmValueInfo.max );
         self.core.setAttribute( newAcmPropertyNode, 'ValueType', avmValueInfo.type );
         self.core.setAttribute( newAcmPropertyNode, 'DataType', dataType );
+        if ( avmPropInfo[ '@OnDataSheet' ] ) {
+            self.core.setAttribute( newAcmPropertyNode, 'OnDataSheet', avmPropInfo[ '@OnDataSheet' ] === 'true' );
+        }
         self.core.setRegistry( newAcmPropertyNode, 'position', {
             x: xPos,
             y: yPos
@@ -15077,3 +15080,4 @@ define('webcyphy.plugins',
 
 require(["webcyphy.plugins"]);
 }());
+//# sourceMappingURL=webcyphy.plugins.build.js.map
