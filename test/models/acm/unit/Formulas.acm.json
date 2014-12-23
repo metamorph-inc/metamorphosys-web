@@ -54,7 +54,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "String"
+            "DataType": "String",
+            "OnDataSheet": false
         },
         "registry": {
             "DisplayFormat": "",
@@ -92,7 +93,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "String"
+            "DataType": "String",
+            "OnDataSheet": false
         },
         "registry": {
             "DisplayFormat": "",
@@ -127,7 +129,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "String"
+            "DataType": "String",
+            "OnDataSheet": false
         },
         "registry": {
             "DisplayFormat": "",
@@ -163,7 +166,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "String"
+            "DataType": "String",
+            "OnDataSheet": true
         },
         "registry": {
             "DisplayFormat": "",
