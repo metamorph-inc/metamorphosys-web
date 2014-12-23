@@ -1,9 +1,12 @@
-<svg class="svg-canvas"
+<svg class="svg-diagram"
     ng-mousemove="onMouseMove($event)"
     ng-mouseleave="onMouseLeave($event)"
     ng-click="onClick($event)"
     ng-mouseup="onMouseUp($event)"
     ng-class="getCssClass()"
+    isis-contextmenu
+    contextmenu-data="contextMenuData"
+    contextmenu-config="{ triggerEvent: 'openContextMenu' }"
 >
 
         >

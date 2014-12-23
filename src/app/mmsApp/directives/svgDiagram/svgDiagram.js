@@ -8,9 +8,11 @@ require('../componentWire/componentWire.js');
 
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
-    'mms.designVisualization.componentWire'
+    'mms.designVisualization.componentWire',
+    'isis.ui.contextmenu'
 ])
-    .controller('SVGDiagramController', function ($scope, $log, diagramService, wiringService, gridService, $window) {
+    .controller('SVGDiagramController', function (
+        $scope, $log, diagramService, wiringService, gridService, $window, $timeout) {
 
         var
 
@@ -59,6 +61,20 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             $log
         );
+
+        $scope.contextMenuData = [{
+            id: 'top',
+            items: [{
+                id: 'newProject',
+                label: 'New project ...',
+                iconClass: 'glyphicon glyphicon-plus',
+                action: function () {
+                    console.log('New project clicked');
+                },
+                actionData: {}
+            }]
+        }];
+
 
 
         $scope.onMouseUp = function ($event) {
@@ -160,7 +176,15 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if ($event.which === 3) {
 
-                componentContextMenuHandler.onComponentMouseDown();
+                console.log($scope.$element);
+
+                $timeout(function() {
+
+                    $scope.$element.trigger('openContextMenu');
+
+                }, 100);
+
+                //componentContextMenuHandler.onComponentMouseDown();
 
             } else {
 
@@ -215,11 +239,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
                 link: function (scope, element, attributes, diagramContainerController) {
 
-                    var id,
-                        $el,
-                        contextMenuHandler;
-
-                    $el = $(element);
+                    var id;
 
                     id = diagramContainerController.getId();
 
@@ -235,6 +255,10 @@ angular.module('mms.designVisualization.svgDiagram', [
                         scope.diagram
                     );
 
+                    element.bind('openContextMenu', function(e) {
+                       console.log('e');
+                    });
+
                     scope.$watch(
                         function () {
                             return diagramContainerController.getVisibleArea();
@@ -243,19 +267,6 @@ angular.module('mms.designVisualization.svgDiagram', [
                             gridService.setVisibleArea(id, visibleArea);
                         });
 
-
-                    contextMenuHandler = function() {
-                        scope.$apply(function() {
-                            event.preventDefault();
-                        });
-                    };
-
-                    $el.bind('contextmenu', contextMenuHandler);
-
-
-                    scope.$on('$destroy', function() {
-                       $el.unbind(contextMenuHandler);
-                    });
 
                 }
 
