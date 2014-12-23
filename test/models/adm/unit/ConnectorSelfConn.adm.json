@@ -1,0 +1,151 @@
+{
+    "/1/39/41/143": {
+        "ID": 143,
+        "attributes": {
+            "name": "ConnectorSelfConn",
+            "Type": "Compound"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        "pointers": {
+            "base": "/12"
+        },
+        "collection": {},
+        "path": "/1/39/41/143",
+        "guid": "/1/39/41/143",
+        "parent": "/1/39/41",
+        "children": [
+            "/1/39/41/143/144",
+            "/1/39/41/143/147"
+        ]
+    },
+    "/1/39/41/143/144": {
+        "ID": 144,
+        "attributes": {
+            "name": "Connector"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 301,
+                "y": 154
+            }
+        },
+        "pointers": {
+            "base": "/10"
+        },
+        "collection": {},
+        "path": "/1/39/41/143/144",
+        "guid": "/1/39/41/143/144",
+        "parent": "/1/39/41/143",
+        "children": [
+            "/1/39/41/143/144/145",
+            "/1/39/41/143/144/146"
+        ]
+    },
+    "/1/39/41/143/144/145": {
+        "ID": 145,
+        "attributes": {
+            "name": "Axis",
+            "Type": "CadAxis"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 105,
+                "y": 84
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {
+            "src": [
+                "/1/39/41/143/147"
+            ]
+        },
+        "path": "/1/39/41/143/144/145",
+        "guid": "/1/39/41/143/144/145",
+        "parent": "/1/39/41/143/144",
+        "children": []
+    },
+    "/1/39/41/143/144/146": {
+        "ID": 146,
+        "attributes": {
+            "name": "Point",
+            "Type": "CadPoint"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 105,
+                "y": 203
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {
+            "dst": [
+                "/1/39/41/143/147"
+            ]
+        },
+        "path": "/1/39/41/143/144/146",
+        "guid": "/1/39/41/143/144/146",
+        "parent": "/1/39/41/143/144",
+        "children": []
+    },
+    "/1/39/41/143/147": {
+        "ID": 147,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/20",
+            "src": "/1/39/41/143/144/145",
+            "dst": "/1/39/41/143/144/146"
+        },
+        "collection": {},
+        "path": "/1/39/41/143/147",
+        "guid": "/1/39/41/143/147",
+        "parent": "/1/39/41/143",
+        "children": []
+    }
+}
