@@ -3266,7 +3266,6 @@ angular.module(
               }
             };
 
-              console.log(element, options.triggerEvent);
 
             element.bind(
               options.triggerEvent, handleContextmenuEvent

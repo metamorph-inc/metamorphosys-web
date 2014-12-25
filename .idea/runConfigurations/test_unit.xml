@@ -1,12 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="test/unit" type="mocha-javascript-test-runner" factoryName="Mocha">
-    <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
+    <test-directory>$PROJECT_DIR$/test/unit</test-directory>
     <pass-parent-env>true</pass-parent-env>
     <envs />
     <ui>BDD</ui>
-    <extra-mocha-options />
-    <test-directory>$PROJECT_DIR$/test/unit</test-directory>
+    <require />
     <recursive>true</recursive>
     <RunnerSettings RunnerId="RunnerForMochaJavaScript" />
     <RunnerSettings RunnerId="debuggableProgram" />

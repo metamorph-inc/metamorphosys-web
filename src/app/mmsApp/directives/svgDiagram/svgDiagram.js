@@ -12,7 +12,7 @@ angular.module('mms.designVisualization.svgDiagram', [
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
-        $scope, $log, diagramService, wiringService, gridService, $window, $timeout) {
+        $scope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService) {
 
         var
 
@@ -25,8 +25,8 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
-            ComponentContextMenuHandler = require('./classes/ComponentContextMenuHandler'),
-            componentContextMenuHandler,
+            ContextMenuHandler = require('./classes/contextMenuHandler'),
+            contextMenuHandler,
 
             componentElements,
 
@@ -56,33 +56,35 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
-        componentContextMenuHandler = new ComponentContextMenuHandler(
+        contextMenuHandler = new ContextMenuHandler(
             $scope,
             diagramService,
+            $timeout,
+            contextmenuService,
             $log
         );
 
-        $scope.contextMenuData = [{
-            id: 'top',
-            items: [{
-                id: 'newProject',
-                label: 'New project ...',
-                iconClass: 'glyphicon glyphicon-plus',
-                action: function () {
-                    console.log('New project clicked');
-                },
-                actionData: {}
-            }]
-        }];
+        $scope.onMouseDown = function ($event) {
 
+
+
+            if ($event.which === 3) {
+
+                contextMenuHandler.onContextmenu($event);
+
+            } else {
+
+                contextMenuHandler.onMouseDown($event);
+
+            }
+
+        };
 
 
         $scope.onMouseUp = function ($event) {
 
             componentDragHandler.onMouseUp($event);
             wireDrawHandler.onMouseUp($event);
-
-            console.log('mouseUp', $event);
 
         };
 
@@ -110,20 +112,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             return result;
 
         };
-
-        $scope.contextMenuData = [{
-            id: 'context-menu-common',
-            items: [{
-                id: 'newComponent',
-                label: 'New component ...',
-                iconClass: 'glyphicon glyphicon-plus',
-                action: function () {
-                    console.log('New component clicked');
-                },
-                actionData: {}
-            }]
-        }];
-
 
         $scope.onMouseLeave = function ($event) {
 
@@ -157,7 +145,15 @@ angular.module('mms.designVisualization.svgDiagram', [
         };
 
         this.onPortMouseDown = function (component, port, $event) {
-            wireDrawHandler.onPortMouseDown(component, port, $event);
+
+            if ( !wireDrawHandler.wiring && $event.which === 3 ) {
+
+                contextMenuHandler.onPortContextmenu(component, port, $event);
+
+            } else {
+                wireDrawHandler.onPortMouseDown(component, port, $event);
+            }
+
         };
 
         this.onPortMouseUp = function (component, port, $event) {
@@ -176,15 +172,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if ($event.which === 3) {
 
-                console.log($scope.$element);
-
-                $timeout(function() {
-
-                    $scope.$element.trigger('openContextMenu');
-
-                }, 100);
-
-                //componentContextMenuHandler.onComponentMouseDown();
+                contextMenuHandler.onComponentContextmenu(component, $event);
 
             } else {
 
@@ -239,12 +227,27 @@ angular.module('mms.designVisualization.svgDiagram', [
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
                 link: function (scope, element, attributes, diagramContainerController) {
 
-                    var id;
+                    var id,
+                        killContextMenu;
+
+                    killContextMenu = function($event) {
+
+                        $log.debug('killing default contextmenu');
+
+                        $event.stopPropagation();
+
+                        return false;
+
+                    };
 
                     id = diagramContainerController.getId();
 
                     scope.diagram = scope.diagram || {};
                     scope.$element = element;
+
+
+                    element.bind('contextmenu', killContextMenu);
+
 
                     scope.id = id;
 
@@ -254,10 +257,6 @@ angular.module('mms.designVisualization.svgDiagram', [
                         },
                         scope.diagram
                     );
-
-                    element.bind('openContextMenu', function(e) {
-                       console.log('e');
-                    });
 
                     scope.$watch(
                         function () {
