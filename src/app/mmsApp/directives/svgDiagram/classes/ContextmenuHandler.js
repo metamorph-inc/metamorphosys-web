@@ -54,8 +54,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         iconClass: 'fa fa-rotate-right',
                         action: function () {
                             console.log('Rotating clockwise');
-                        },
-                        actionData: {}
+                        }
                     },
                     {
                         id: 'rotateCCW',
@@ -63,8 +62,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         iconClass: 'fa fa-rotate-left',
                         action: function () {
                             console.log('Rotating anti-clockwise');
-                        },
-                        actionData: {}
+                        }
                     }
                 ]
             }

@@ -16,6 +16,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     'ui.bootstrap',
 
+    'mms.designVisualization.operationsManager',
     'mms.designVisualization.wiringService',
     'mms.designVisualization.diagramService',
 
@@ -27,6 +28,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
 ]);
 
 require('./utils.js');
+
+require('./services/operationsManager/operationsManager.js');
 
 require('./services/diagramService/diagramService.js');
 require('./services/gridService/gridService.js');
