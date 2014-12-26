@@ -64,40 +64,40 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
-        $scope.onMouseDown = function ($event) {
+        $scope.onDiagramMouseDown = function ($event) {
 
 
 
             if ($event.which === 3) {
 
-                contextMenuHandler.onContextmenu($event);
+                contextMenuHandler.onDiagramContextmenu($event);
 
             } else {
 
-                contextMenuHandler.onMouseDown($event);
+                contextMenuHandler.onDiagramMouseDown($event);
 
             }
 
         };
 
 
-        $scope.onMouseUp = function ($event) {
+        $scope.onDiagramMouseUp = function ($event) {
 
-            componentDragHandler.onMouseUp($event);
-            wireDrawHandler.onMouseUp($event);
-
-        };
-
-
-        $scope.onClick = function (/*$event*/) {
-
+            componentDragHandler.onDiagramMouseUp($event);
+            wireDrawHandler.onDiagramMouseUp($event);
 
         };
 
-        $scope.onMouseMove = function ($event) {
 
-            componentDragHandler.onMouseMove($event);
-            wireDrawHandler.onMouseMove($event);
+        $scope.onDiagramClick = function (/*$event*/) {
+
+
+        };
+
+        $scope.onDiagramMouseMove = function ($event) {
+
+            componentDragHandler.onDiagramMouseMove($event);
+            wireDrawHandler.onDiagramMouseMove($event);
 
         };
 
@@ -113,10 +113,10 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         };
 
-        $scope.onMouseLeave = function ($event) {
+        $scope.onDiagramMouseLeave = function ($event) {
 
-            componentDragHandler.onMouseLeave($event);
-            wireDrawHandler.onMouseLeave($event);
+            componentDragHandler.onDiagramMouseLeave($event);
+            wireDrawHandler.onDiagramMouseLeave($event);
 
         };
 

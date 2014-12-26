@@ -15,9 +15,9 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
         finishWire,
         cancelWire,
 
-        onMouseUp,
-        onMouseMove,
-        onMouseLeave,
+        onDiagramMouseUp,
+        onDiagramMouseMove,
+        onDiagramMouseLeave,
         onWindowBlur,
         onPortMouseDown;
 
@@ -75,8 +75,6 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
                 )
             ) );
 
-        console.log( wire.segments );
-
 
         diagramService.addWire( wire );
 
@@ -99,7 +97,7 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
         self.wiring = false;
     };
 
-    onMouseMove = function($event) {
+    onDiagramMouseMove = function($event) {
 
         if ( wireStart ) {
 
@@ -125,7 +123,7 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
 
     };
 
-    onMouseUp = function() {
+    onDiagramMouseUp = function() {
 
         if ( wireStart ) {
 
@@ -158,7 +156,7 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
 
     };
 
-    onMouseLeave = function(/*$event*/) {
+    onDiagramMouseLeave = function(/*$event*/) {
         if (self.wiring) {
             cancelWire();
         }
@@ -171,9 +169,9 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
     };
 
 
-    this.onMouseUp = onMouseUp;
-    this.onMouseMove = onMouseMove;
-    this.onMouseLeave = onMouseLeave;
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
     this.onWindowBlur = onWindowBlur;
     this.onPortMouseDown = onPortMouseDown;
 

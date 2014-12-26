@@ -7,8 +7,8 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
     var
         onComponentContextmenu,
         onPortContextmenu,
-        onContextmenu,
-        onMouseDown,
+        onDiagramContextmenu,
+        onDiagramMouseDown,
 
         openMenu;
 
@@ -38,7 +38,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
     };
 
-    onMouseDown = function() {
+    onDiagramMouseDown = function() {
         contextmenuService.close();
     };
 
@@ -85,6 +85,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                     {
                         id: 'info',
                         label: 'Info',
+                        disabled: true,
                         iconClass: null,
                         action: function () {
                             console.log('Port info');
@@ -103,7 +104,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
     };
 
-    onContextmenu = function ($event) {
+    onDiagramContextmenu = function ($event) {
 
         $scope.contextMenuData = [
             {
@@ -112,6 +113,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                     {
                         id: 'getStats',
                         label: 'Statistics',
+                        disabled: true,
                         iconClass: 'glyphicon glyphicon-plus',
                         action: function () {
                             console.log('Statistics');
@@ -128,10 +130,10 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
     };
 
-    this.onContextmenu = onContextmenu;
+    this.onDiagramContextmenu = onDiagramContextmenu;
     this.onComponentContextmenu = onComponentContextmenu;
     this.onPortContextmenu = onPortContextmenu;
-    this.onMouseDown = onMouseDown;
+    this.onDiagramMouseDown = onDiagramMouseDown;
 
     return this;
 

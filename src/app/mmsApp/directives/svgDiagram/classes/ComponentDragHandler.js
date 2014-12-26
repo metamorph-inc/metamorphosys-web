@@ -9,9 +9,9 @@ module.exports = function($scope, diagramService, wiringService, $log) {
         possibbleDragTargetsDescriptor,
         dragTargetsDescriptor,
 
-        onMouseUp,
-        onMouseMove,
-        onMouseLeave,
+        onDiagramMouseUp,
+        onDiagramMouseMove,
+        onDiagramMouseLeave,
         onWindowBlur,
         onComponentMouseUp,
         onComponentMouseDown,
@@ -85,7 +85,7 @@ module.exports = function($scope, diagramService, wiringService, $log) {
 
     };
 
-    onMouseMove = function($event) {
+    onDiagramMouseMove = function($event) {
 
         if ( possibbleDragTargetsDescriptor ) {
             startDrag();
@@ -116,7 +116,7 @@ module.exports = function($scope, diagramService, wiringService, $log) {
 
     };
 
-    onMouseUp = function($event) {
+    onDiagramMouseUp = function($event) {
 
         possibbleDragTargetsDescriptor = null;
 
@@ -127,7 +127,7 @@ module.exports = function($scope, diagramService, wiringService, $log) {
 
     };
 
-    onMouseLeave = function(/*$event*/) {
+    onDiagramMouseLeave = function(/*$event*/) {
 
         cancelDrag();
 
@@ -218,9 +218,9 @@ module.exports = function($scope, diagramService, wiringService, $log) {
 
     };
 
-    this.onMouseUp = onMouseUp;
-    this.onMouseMove = onMouseMove;
-    this.onMouseLeave = onMouseLeave;
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
     this.onWindowBlur = onWindowBlur;
     this.onComponentMouseUp = onComponentMouseUp;
     this.onComponentMouseDown = onComponentMouseDown;
