@@ -162,6 +162,8 @@ DiagramComponent.prototype.rotateAroundCenter = function ( angle ) {
     if ( angular.isNumber( angle ) ) {
 
         this.rotation += angle;
+//        this.x += this.symbol.width/2;
+//        this.y += this.symbol.height/2;
 
         this.updateTransformationMatrix();
 
