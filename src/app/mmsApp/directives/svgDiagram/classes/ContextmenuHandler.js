@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function ($scope, diagramService, $timeout, contextmenuService, $log) {
+module.exports = function ($scope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
 
     var
         onComponentContextmenu,
@@ -53,7 +53,12 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         label: 'Rotate CW',
                         iconClass: 'fa fa-rotate-right',
                         action: function () {
-                            console.log('Rotating clockwise');
+
+                            var operation;
+
+                            operation = operationsManager.initNew('rotateComponentsAroundCenter', component);
+                            operation.set(90);
+                            operation.commit();
                         }
                     },
                     {
@@ -61,7 +66,15 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         label: 'Rotate CCW',
                         iconClass: 'fa fa-rotate-left',
                         action: function () {
+
+                            var operation;
+
                             console.log('Rotating anti-clockwise');
+
+                            operation = operationsManager.initNew('rotateComponentsAroundCenter', component);
+                            operation.set(-90);
+                            operation.commit();
+
                         }
                     }
                 ]

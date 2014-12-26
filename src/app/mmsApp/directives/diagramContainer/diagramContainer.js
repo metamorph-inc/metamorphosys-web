@@ -23,11 +23,6 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             compiledDirectives = {};
 
-            $scope.diagram.state = $scope.diagram.state || {};
-            $scope.diagram.state.selectedComponentIds = $scope.diagram.state.selectedComponentIds || [];
-
-            $scope.diagram.config = $scope.diagram.config || {};
-
             $scope.panzoomId = 'panzoomId'; //scope.id + '-panzoomed';
 
             $scope.zoomLevel = 4;

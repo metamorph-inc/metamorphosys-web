@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, $log) {
+module.exports = function($scope, diagramService, wiringService, operationsManager, $log) {
 
     var self = this,
         getOffsetToMouse,
@@ -38,6 +38,8 @@ module.exports = function($scope, diagramService, wiringService, $log) {
     startDrag = function () {
 
         self.dragging = true;
+
+        //self.dragOperation = operationsManager.initNew('setComponentPosition');
 
         dragTargetsDescriptor = possibbleDragTargetsDescriptor;
         possibbleDragTargetsDescriptor = null;
@@ -78,6 +80,16 @@ module.exports = function($scope, diagramService, wiringService, $log) {
     finishDrag = function () {
 
         self.dragging = false;
+
+//        angular.forEach(dragTargetsDescriptor.targets, function(target) {
+//
+//            var position;
+//
+//            position = target.component.getPosition();
+//
+//            self.dragOperation.commit( target.component, position.x, position.y );
+//        });
+
 
         dragTargetsDescriptor = null;
 
@@ -212,7 +224,8 @@ module.exports = function($scope, diagramService, wiringService, $log) {
             }
 
             possibbleDragTargetsDescriptor.affectedWires = diagramService.getWiresForComponents(
-                componentsToDrag );
+                componentsToDrag
+            );
 
         }
 

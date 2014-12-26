@@ -4,16 +4,18 @@
 
 // Move this to GME eventually
 
-angular.module( 'mms.designVisualization.diagramService', [
-    'mms.designVisualization.symbolServices'
-] )
-    .config( [ 'symbolManagerProvider',
-        function ( symbolManagerProvider ) {
+angular.module('mms.designVisualization.diagramService', [
+        'mms.designVisualization.symbolServices',
+        'mms.designVisualization.operationsManager'
+    ])
+    .config([ 'symbolManagerProvider',
+        'operationsManagerProvider',
+        function (symbolManagerProvider) {
 
             var randomSymbolGenerator,
                 kinds = 7;
 
-            randomSymbolGenerator = function ( count ) {
+            randomSymbolGenerator = function (count) {
 
                 var i,
                     portCount,
@@ -26,57 +28,57 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                     spreadPortsAlongSide;
 
-                spreadPortsAlongSide = function ( somePorts, side, width, height ) {
+                spreadPortsAlongSide = function (somePorts, side, width, height) {
                     var offset = 2 * portWireLength;
 
-                    angular.forEach( somePorts, function ( aPort ) {
+                    angular.forEach(somePorts, function (aPort) {
 
-                        switch ( side ) {
+                        switch (side) {
 
-                        case 'top':
-                            aPort.x = offset;
-                            aPort.y = 0;
-                            aPort.wireAngle = -90;
+                            case 'top':
+                                aPort.x = offset;
+                                aPort.y = 0;
+                                aPort.wireAngle = -90;
 
-                            offset += width / ( somePorts.length + 2 );
+                                offset += width / ( somePorts.length + 2 );
 
-                            break;
+                                break;
 
-                        case 'right':
-                            aPort.x = width;
-                            aPort.y = offset;
-                            aPort.wireAngle = 0;
+                            case 'right':
+                                aPort.x = width;
+                                aPort.y = offset;
+                                aPort.wireAngle = 0;
 
-                            offset += height / ( somePorts.length + 2 );
+                                offset += height / ( somePorts.length + 2 );
 
-                            break;
+                                break;
 
-                        case 'bottom':
-                            aPort.x = offset;
-                            aPort.y = height;
-                            aPort.wireAngle = 90;
+                            case 'bottom':
+                                aPort.x = offset;
+                                aPort.y = height;
+                                aPort.wireAngle = 90;
 
-                            offset += width / ( somePorts.length + 2 );
+                                offset += width / ( somePorts.length + 2 );
 
-                            break;
+                                break;
 
-                        case 'left':
-                            aPort.x = 0;
-                            aPort.y = offset;
-                            aPort.wireAngle = 180;
+                            case 'left':
+                                aPort.x = 0;
+                                aPort.y = offset;
+                                aPort.wireAngle = 180;
 
-                            offset += height / ( somePorts.length + 2 );
+                                offset += height / ( somePorts.length + 2 );
 
-                            break;
+                                break;
 
                         }
 
-                    } );
+                    });
 
                 };
 
 
-                makeSomePorts = function ( countOfPorts ) {
+                makeSomePorts = function (countOfPorts) {
 
                     var ports = [],
                         port,
@@ -92,7 +94,7 @@ angular.module( 'mms.designVisualization.diagramService', [
                         minWidth = 140,
                         minHeight = 80;
 
-                    for ( i = 0; i < countOfPorts; i++ ) {
+                    for (i = 0; i < countOfPorts; i++) {
 
                         port = {
                             id: 'p_' + i,
@@ -100,9 +102,9 @@ angular.module( 'mms.designVisualization.diagramService', [
                             wireLeadIn: 20
                         };
 
-                        placement = Math.round( Math.random() * 3 );
+                        placement = Math.round(Math.random() * 3);
 
-                        sides[ placement ].push( port );
+                        sides[ placement ].push(port);
                     }
 
                     width = Math.max(
@@ -117,16 +119,16 @@ angular.module( 'mms.designVisualization.diagramService', [
                         minHeight
                     );
 
-                    spreadPortsAlongSide( top, 'top', width, height );
-                    spreadPortsAlongSide( right, 'right', width, height );
-                    spreadPortsAlongSide( bottom, 'bottom', width, height );
-                    spreadPortsAlongSide( left, 'left', width, height );
+                    spreadPortsAlongSide(top, 'top', width, height);
+                    spreadPortsAlongSide(right, 'right', width, height);
+                    spreadPortsAlongSide(bottom, 'bottom', width, height);
+                    spreadPortsAlongSide(left, 'left', width, height);
 
 
-                    ports = ports.concat( top )
-                        .concat( right )
-                        .concat( bottom )
-                        .concat( left );
+                    ports = ports.concat(top)
+                        .concat(right)
+                        .concat(bottom)
+                        .concat(left);
 
                     return {
                         ports: ports,
@@ -136,9 +138,9 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                 };
 
-                makeARandomSymbol = function ( idPostfix, countOfPorts ) {
+                makeARandomSymbol = function (idPostfix, countOfPorts) {
 
-                    var portsAndSizes = makeSomePorts( countOfPorts );
+                    var portsAndSizes = makeSomePorts(countOfPorts);
 
                     var symbol = {
                         type: 'random_' + idPostfix,
@@ -163,34 +165,35 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                 };
 
-                for ( i = 0; i < count; i++ ) {
+                for (i = 0; i < count; i++) {
 
                     portCount = Math.max(
-                        Math.floor( Math.random() * maxPorts ),
+                        Math.floor(Math.random() * maxPorts),
                         minPorts
                     );
 
-                    symbol = makeARandomSymbol( i, portCount );
+                    symbol = makeARandomSymbol(i, portCount);
 
-                    symbolManagerProvider.registerSymbol( symbol );
+                    symbolManagerProvider.registerSymbol(symbol);
 
                 }
 
             };
 
-            randomSymbolGenerator( kinds );
+            randomSymbolGenerator(kinds);
 
         }
-    ] )
-    .service( 'diagramService', [
+    ])
+    .service('diagramService', [
         '$q',
         '$timeout',
         'symbolManager',
         'wiringService',
-        function ( $q, $timeout, symbolManager, wiringService ) {
+        'operationsManager',
+        function ($q, $timeout, symbolManager, wiringService/*, operationsManager*/) {
 
             var
-            self = this,
+                self = this,
                 components = [],
                 componentsById = {},
 
@@ -202,13 +205,13 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                 registerWireForEnds,
 
-                DiagramComponent = require( './classes/DiagramComponent.js' ),
-                ComponentPort = require( './classes/ComponentPort' ),
-                Wire = require( './classes/Wire.js' );
+                DiagramComponent = require('./classes/DiagramComponent.js'),
+                ComponentPort = require('./classes/ComponentPort'),
+                Wire = require('./classes/Wire.js');
 
             symbolTypes = symbolManager.getAvailableSymbols();
 
-            this.generateDummyDiagram = function ( countOfBoxes, countOfWires, canvasWidth, canvasHeight ) {
+            this.generateDummyDiagram = function (countOfBoxes, countOfWires, canvasWidth, canvasHeight) {
 
                 var i, id,
                     countOfTypes,
@@ -229,7 +232,7 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                     wire;
 
-                portCreator = function ( componentId, ports ) {
+                portCreator = function (componentId, ports) {
 
                     var portInstance,
                         portInstances,
@@ -238,17 +241,17 @@ angular.module( 'mms.designVisualization.diagramService', [
                     portInstances = [];
                     portMapping = {};
 
-                    angular.forEach( ports, function ( port ) {
+                    angular.forEach(ports, function (port) {
 
-                        portInstance = new ComponentPort( {
+                        portInstance = new ComponentPort({
                             id: componentId + '_' + port.id,
                             portSymbol: port
-                        } );
+                        });
 
-                        portInstances.push( portInstance );
+                        portInstances.push(portInstance);
 
                         portMapping[ port.id ] = portInstance.id;
-                    } );
+                    });
 
                     return {
                         portInstances: portInstances,
@@ -257,34 +260,34 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                 };
 
-                symbolTypeIds = Object.keys( symbolTypes );
+                symbolTypeIds = Object.keys(symbolTypes);
 
                 countOfTypes = symbolTypeIds.length;
 
                 components = [];
                 componentsById = {};
 
-                for ( i = 0; i < countOfBoxes; i++ ) {
+                for (i = 0; i < countOfBoxes; i++) {
 
-                    typeId = symbolTypeIds[ Math.floor( Math.random() * countOfTypes ) ];
+                    typeId = symbolTypeIds[ Math.floor(Math.random() * countOfTypes) ];
                     type = symbolTypes[ typeId ];
 
-                    x = Math.round( Math.random() * ( canvasWidth - 1 ) );
-                    y = Math.round( Math.random() * ( canvasHeight - 1 ) );
+                    x = Math.round(Math.random() * ( canvasWidth - 1 ));
+                    y = Math.round(Math.random() * ( canvasHeight - 1 ));
 
                     id = 'component_' + typeId + '_' + i;
 
-                    symbol = symbolManager.getSymbol( typeId );
+                    symbol = symbolManager.getSymbol(typeId);
 
-                    createdPorts = portCreator( id, symbol.ports );
+                    createdPorts = portCreator(id, symbol.ports);
 
-                    newDiagramComponent = new DiagramComponent( {
+                    newDiagramComponent = new DiagramComponent({
                         id: id,
                         label: type.labelPrefix + i,
                         x: x,
                         y: y,
                         z: i,
-                        rotation: Math.floor( Math.random() * 40 ) * 90,
+                        rotation: Math.floor(Math.random() * 40) * 90,
                         scaleX: 1, //[1, -1][Math.round(Math.random())],
                         scaleY: 1, //[1, -1][Math.round(Math.random())],
                         symbol: symbol,
@@ -302,20 +305,20 @@ angular.module( 'mms.designVisualization.diagramService', [
                         //            ports: 'portInstances',
                         //            portMapping: createdPorts.portMapping
                         //          }
-                    } );
+                    });
 
-                    newDiagramComponent.registerPortInstances( createdPorts.portInstances );
+                    newDiagramComponent.registerPortInstances(createdPorts.portInstances);
 
                     newDiagramComponent.updateTransformationMatrix();
 
-                    self.addComponent( newDiagramComponent );
+                    self.addComponent(newDiagramComponent);
 
                 }
 
                 wires = [];
                 wiresById = {};
 
-                for ( i = 0; i < countOfWires; i++ ) {
+                for (i = 0; i < countOfWires; i++) {
 
                     id = 'wire_' + i;
 
@@ -324,13 +327,13 @@ angular.module( 'mms.designVisualization.diagramService', [
                     port1 = component1.portInstances.getRandomElement();
                     port2 = undefined;
 
-                    while ( !angular.isDefined( port2 ) || port1 === port2 ) {
+                    while (!angular.isDefined(port2) || port1 === port2) {
 
                         component2 = components.getRandomElement();
                         port2 = component2.portInstances.getRandomElement();
                     }
 
-                    wire = new Wire( {
+                    wire = new Wire({
                         id: id,
                         end1: {
                             component: component1,
@@ -340,29 +343,29 @@ angular.module( 'mms.designVisualization.diagramService', [
                             component: component2,
                             port: port2
                         }
-                    } );
+                    });
 
-                    wiringService.routeWire( wire, 'ElbowRouter' );
+                    wiringService.routeWire(wire, 'ElbowRouter');
 
-                    self.addWire( wire );
+                    self.addWire(wire);
 
                 }
 
             };
 
-            this.addComponent = function ( aDiagramComponent ) {
+            this.addComponent = function (aDiagramComponent) {
 
-                if ( angular.isObject( aDiagramComponent ) && !angular.isDefined( componentsById[ aDiagramComponent
-                    .id ] ) ) {
+                if (angular.isObject(aDiagramComponent) && !angular.isDefined(componentsById[ aDiagramComponent
+                    .id ])) {
 
                     componentsById[ aDiagramComponent.id ] = aDiagramComponent;
-                    components.push( aDiagramComponent );
+                    components.push(aDiagramComponent);
 
                 }
 
             };
 
-            registerWireForEnds = function ( wire ) {
+            registerWireForEnds = function (wire) {
 
                 var componentId;
 
@@ -370,47 +373,47 @@ angular.module( 'mms.designVisualization.diagramService', [
 
                 wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
 
-                if ( wiresByComponentId[ componentId ].indexOf( wire ) === -1 ) {
-                    wiresByComponentId[ componentId ].push( wire );
+                if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
+                    wiresByComponentId[ componentId ].push(wire);
                 }
 
                 componentId = wire.end2.component.id;
 
                 wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
 
-                if ( wiresByComponentId[ componentId ].indexOf( wire ) === -1 ) {
-                    wiresByComponentId[ componentId ].push( wire );
+                if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
+                    wiresByComponentId[ componentId ].push(wire);
                 }
 
             };
 
-            this.addWire = function ( aWire ) {
+            this.addWire = function (aWire) {
 
-                if ( angular.isObject( aWire ) && !angular.isDefined( wiresById[ aWire.id ] ) ) {
+                if (angular.isObject(aWire) && !angular.isDefined(wiresById[ aWire.id ])) {
 
                     wiresById[ aWire.id ] = aWire;
-                    wires.push( aWire );
+                    wires.push(aWire);
 
-                    registerWireForEnds( aWire );
+                    registerWireForEnds(aWire);
 
                 }
 
             };
 
-            this.getWiresForComponents = function ( components ) {
+            this.getWiresForComponents = function (components) {
 
                 var setOfWires = [];
 
-                angular.forEach( components, function ( component ) {
+                angular.forEach(components, function (component) {
 
-                    angular.forEach( wiresByComponentId[ component.id ], function ( wire ) {
+                    angular.forEach(wiresByComponentId[ component.id ], function (wire) {
 
-                        if ( setOfWires.indexOf( wire ) === -1 ) {
-                            setOfWires.push( wire );
+                        if (setOfWires.indexOf(wire) === -1) {
+                            setOfWires.push(wire);
                         }
-                    } );
+                    });
 
-                } );
+                });
 
                 return setOfWires;
 
@@ -424,6 +427,9 @@ angular.module( 'mms.designVisualization.diagramService', [
                     config: {
                         editable: true,
                         disallowSelection: false
+                    },
+                    state: {
+                        selectedComponentIds: []
                     }
                 };
 
@@ -435,17 +441,17 @@ angular.module( 'mms.designVisualization.diagramService', [
                     component,
                     z;
 
-                for ( i = 0; i < components.length; i++ ) {
+                for (i = 0; i < components.length; i++) {
 
                     component = components[ i ];
 
-                    if ( !isNaN( component.z ) ) {
+                    if (!isNaN(component.z)) {
 
-                        if ( isNaN( z ) ) {
+                        if (isNaN(z)) {
                             z = component.z;
                         } else {
 
-                            if ( z < component.z ) {
+                            if (z < component.z) {
                                 z = component.z;
                             }
 
@@ -454,7 +460,7 @@ angular.module( 'mms.designVisualization.diagramService', [
                     }
                 }
 
-                if ( isNaN( z ) ) {
+                if (isNaN(z)) {
                     z = -1;
                 }
 
@@ -462,10 +468,23 @@ angular.module( 'mms.designVisualization.diagramService', [
 
             };
 
+//            operationsManager.registerOperation({
+//                id: 'setComponentPosition',
+//                commit: function (component, x, y) {
+//
+//                    if (angular.isObject(component)) {
+//                        component.setPosition(x, y);
+//                    }
+//
+//                }
+//
+//            });
+
+
             //this.generateDummyDiagram(2000, 500, 10000, 10000);
             //this.generateDummyDiagram(1000, 2000, 10000, 10000);
-            this.generateDummyDiagram( 10, 5, 1200, 1200 );
+            this.generateDummyDiagram(10, 5, 1200, 1200);
             //this.generateDummyDiagram( 100, 50, 5000, 5000 );
 
         }
-    ] );
+    ]);

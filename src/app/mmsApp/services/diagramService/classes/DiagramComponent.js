@@ -120,6 +120,16 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
 
 };
 
+DiagramComponent.prototype.getPosition = function () {
+
+    return {
+        x: this.x,
+        y: this.y
+    };
+
+};
+
+
 DiagramComponent.prototype.setPosition = function ( x, y ) {
 
     if ( angular.isNumber( x ) && angular.isNumber( y ) ) {
@@ -135,6 +145,19 @@ DiagramComponent.prototype.setPosition = function ( x, y ) {
 };
 
 DiagramComponent.prototype.rotate = function ( angle ) {
+
+    if ( angular.isNumber( angle ) ) {
+
+        this.rotation += angle;
+
+        this.updateTransformationMatrix();
+
+    } else {
+        throw new Error( 'Angle must be number!' );
+    }
+};
+
+DiagramComponent.prototype.rotateAroundCenter = function ( angle ) {
 
     if ( angular.isNumber( angle ) ) {
 

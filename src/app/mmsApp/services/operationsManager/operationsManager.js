@@ -3,16 +3,21 @@
 'use strict';
 
 var operationsManagerModule = angular.module(
-    'mms.designVisualization.operationsManager', [] );
+    'mms.designVisualization.operationsManager', []);
 
-operationsManagerModule.service( 'operationsManager', function SymbolManagerProvider() {
-    var availableOperations = {};
+operationsManagerModule.provider('operationsManager', function OperationsManagerProvider() {
+    var self,
+        availableOperations;
 
-    this.registerOperation = function ( operationDescriptor ) {
+    self = this;
 
-        if ( angular.isObject( operationDescriptor ) &&
-            angular.isString( operationDescriptor.id ) ) {
-            availableOperations[ operationDescriptor.id ] = operationDescriptor;
+    availableOperations = {};
+
+    this.registerOperation = function (operationDescriptor) {
+
+        if (angular.isObject(operationDescriptor) &&
+            angular.isString(operationDescriptor.id)) {
+            availableOperations[ operationDescriptor.id ] = operationDescriptor.operationClass;
         }
     };
 
@@ -24,12 +29,37 @@ operationsManagerModule.service( 'operationsManager', function SymbolManagerProv
 
             OperationsManager = function () {
 
+                this.registerOperation = function (operationDescriptor) {
+
+                    if (angular.isObject(operationDescriptor) &&
+                        angular.isString(operationDescriptor.id)) {
+                        availableOperations[ operationDescriptor.id ] = operationDescriptor.operationClass;
+                    }
+
+                };
+
                 this.getAvailableOperations = function () {
                     return availableOperations;
                 };
 
-                this.getOperation = function ( operationId ) {
-                    return availableOperations[ operationId ];
+                this.initNew = function (operationId) {
+
+                    var OperationClass,
+                        operationInstance;
+
+                    OperationClass = availableOperations[ operationId ];
+
+                    if (angular.isFunction(OperationClass)) {
+
+                        operationInstance = new OperationClass();
+
+                        Array.prototype.shift.call(arguments);
+
+                        operationInstance.init.apply(operationInstance, arguments);
+
+                    }
+
+                    return operationInstance;
                 };
 
             };
@@ -38,4 +68,4 @@ operationsManagerModule.service( 'operationsManager', function SymbolManagerProv
 
         }
     ];
-} );
+});

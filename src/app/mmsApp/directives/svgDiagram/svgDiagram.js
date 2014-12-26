@@ -9,10 +9,11 @@ require('../componentWire/componentWire.js');
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire',
+    'mms.designVisualization.operationsManager',
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
-        $scope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService) {
+        $scope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
 
         var
 
@@ -38,6 +39,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             $scope,
             diagramService,
             wiringService,
+            operationsManager,
             $log
         );
 
@@ -61,6 +63,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             $timeout,
             contextmenuService,
+            operationsManager,
             $log
         );
 
@@ -210,6 +213,67 @@ angular.module('mms.designVisualization.svgDiagram', [
             delete componentElements[id];
 
         };
+
+        operationsManager.registerOperation({
+            id: 'rotateComponentsAroundCenter',
+            operationClass: function() {
+
+                this.init = function(component) {
+
+                    this.component = component;
+                };
+
+                this.set = function(angle) {
+                    this.angle = angle;
+                };
+
+                this.commit = function() {
+
+                    var componentsToRotate,
+                        component,
+                        angle,
+                        affectedWires;
+
+                    componentsToRotate = [];
+
+                    component = this.component;
+                    angle = this.angle;
+
+                    componentsToRotate.push( this.component );
+
+                    if ( $scope.diagram.state.selectedComponentIds.indexOf( this.component.id ) > -1 ) {
+
+                        angular.forEach( $scope.diagram.state.selectedComponentIds, function ( selectedComponentId ) {
+
+                            var selectedComponent;
+
+                            if ( component !== selectedComponentId ) {
+
+                                selectedComponent = $scope.diagram.components[ selectedComponentId ];
+
+                                componentsToRotate.push( selectedComponent );
+
+                            }
+
+                        } );
+                    }
+
+                    affectedWires = diagramService.getWiresForComponents(
+                        componentsToRotate
+                    );
+
+                    angular.forEach(componentsToRotate, function(component) {
+                        component.rotateAroundCenter(angle);
+                    });
+
+
+                    angular.forEach( affectedWires, function ( wire ) {
+                        wiringService.adjustWireEndSegments( wire );
+                    } );
+                };
+            }
+
+        });
 
     })
     .directive('svgDiagram', [
