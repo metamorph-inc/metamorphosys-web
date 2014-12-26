@@ -12,6 +12,9 @@ var DiagramComponent = function ( descriptor ) {
 
     angular.extend( this, descriptor );
 
+    // For rotation
+    this._centerOffset = [ this.symbol.width / 2, this.symbol.height / 2 ];
+
 };
 
 DiagramComponent.prototype.isInViewPort = function ( viewPort, padding ) {
@@ -75,7 +78,8 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
         transformMat3 = glMatrix.mat3.create();
 
         translation = glMatrix.vec2.create();
-        glMatrix.vec2.set( translation, this.x, this.y );
+
+        glMatrix.vec2.set( translation, this.x + this._centerOffset[0], this.y + this._centerOffset[1]);
 
         glMatrix.mat3.translate(
             transformMat3,
@@ -89,17 +93,13 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
             rotationRad
         );
 
-        //    sinA = Math.sin(rotationRad);
-        //    cosA = Math.cos(rotationRad);
-        //
-        //    this.transformationMatrix = [
-        //      this.scaleX * cosA,
-        //      sinA,
-        //      -sinA,
-        //      this.scaleY * cosA,
-        //      this.x,
-        //      this.y
-        //    ];
+        glMatrix.vec2.set( translation, -this._centerOffset[0], -this._centerOffset[1]);
+
+        glMatrix.mat3.translate(
+            transformMat3,
+            transformMat3,
+            translation
+        );
 
         this.transformationMatrix = transformMat3;
 
@@ -149,21 +149,6 @@ DiagramComponent.prototype.rotate = function ( angle ) {
     if ( angular.isNumber( angle ) ) {
 
         this.rotation += angle;
-
-        this.updateTransformationMatrix();
-
-    } else {
-        throw new Error( 'Angle must be number!' );
-    }
-};
-
-DiagramComponent.prototype.rotateAroundCenter = function ( angle ) {
-
-    if ( angular.isNumber( angle ) ) {
-
-        this.rotation += angle;
-//        this.x += this.symbol.width/2;
-//        this.y += this.symbol.height/2;
 
         this.updateTransformationMatrix();
 

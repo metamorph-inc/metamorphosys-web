@@ -215,7 +215,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         };
 
         operationsManager.registerOperation({
-            id: 'rotateComponentsAroundCenter',
+            id: 'rotateComponents',
             operationClass: function() {
 
                 this.init = function(component) {
@@ -247,7 +247,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                             var selectedComponent;
 
-                            if ( component !== selectedComponentId ) {
+                            if ( component.id !== selectedComponentId ) {
 
                                 selectedComponent = $scope.diagram.components[ selectedComponentId ];
 
@@ -263,7 +263,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                     );
 
                     angular.forEach(componentsToRotate, function(component) {
-                        component.rotateAroundCenter(angle);
+                        component.rotate(angle);
                     });
 
 

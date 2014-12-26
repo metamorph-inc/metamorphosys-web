@@ -1,26 +1,27 @@
 <g ng-attr-id="{{::component.id}}"
- class="symbol"
- ng-class="getCssClass()"
- ng-mouseup="onMouseUp($event)"
- ng-mousedown="onMouseDown($event)"
- ng-attr-id="{{::component.id}}"
- ng-attr-transform="{{getSymbolTransform()}}"
->
+   class="symbol"
+   ng-class="getCssClass()"
+   ng-mouseup="onMouseUp($event)"
+   ng-mousedown="onMouseDown($event)"
+   ng-attr-id="{{::component.id}}"
+   ng-attr-transform="{{getSymbolTransform()}}"
     >
-    <rect ng-attr-width="{{::component.symbol.width + 20}}"
-          ng-attr-height="{{::component.symbol.height + 20}}"
-          transform="translate(-10,-10)"
-          class="selected-symbol-boundary"></rect>
-    <g class="symbol-placeholder"></g>
-    <rect ng-attr-width="{{::component.symbol.width}}"
-          ng-attr-height="{{::component.symbol.height}}"
-          class="symbol-area"></rect>
-    <g  class="zoom-2">
-        <port
-            ng-repeat="portInstance in ::component.portInstances"
-            class="zoom-3"></port>
-        <text class="label" ng-attr-x="{{::component.symbol.labelPosition.x}}"
-              ng-attr-y="{{::component.symbol.labelPosition.y}}"
-              >{{component.label}} - {{component.z}}</text>
-    </g>
+        <rect ng-attr-width="{{::component.symbol.width + 20}}"
+              ng-attr-height="{{::component.symbol.height + 20}}"
+              transform="translate(-10,-10)"
+              class="selected-symbol-boundary"></rect>
+        <g class="symbol-placeholder"></g>
+        <rect ng-attr-width="{{::component.symbol.width}}"
+              ng-attr-height="{{::component.symbol.height}}"
+              class="symbol-area"></rect>
+        <g class="zoom-2">
+            <port
+                ng-repeat="portInstance in ::component.portInstances"
+                class="zoom-3"></port>
+            <text class="label" ng-attr-x="{{::component.symbol.labelPosition.x}}"
+                  ng-attr-y="{{::component.symbol.labelPosition.y}}"
+                >{{component.label}}
+            </text>
+        </g>
+
 </g>

@@ -56,7 +56,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
                             var operation;
 
-                            operation = operationsManager.initNew('rotateComponentsAroundCenter', component);
+                            operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(90);
                             operation.commit();
                         }
@@ -71,7 +71,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
                             console.log('Rotating anti-clockwise');
 
-                            operation = operationsManager.initNew('rotateComponentsAroundCenter', component);
+                            operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(-90);
                             operation.commit();
 

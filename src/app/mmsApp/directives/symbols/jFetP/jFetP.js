@@ -23,14 +23,14 @@ angular.module(
                     wireAngle: 270,
                     wireLeadIn: 20,
                     label: 'S',
-                    x: 46,
+                    x: 47,
                     y: 0
                 }, {
                     id: 'd',
                     wireAngle: 90,
                     wireLeadIn: 20,
                     label: 'D',
-                    x: 46,
+                    x: 47,
                     y: 70
                 }, {
                     id: 'g',
