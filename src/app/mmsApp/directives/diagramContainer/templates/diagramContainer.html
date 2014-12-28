@@ -4,6 +4,8 @@
     <div class="position-debug">{{customId}} Visible area: {{visibleArea}} Zoom level: {{zoomLevel}}</div>
     <panzoomwidget panzoom-id="panzoomId" class="panzoom-widget"></panzoomwidget>
     <panzoom id="panzoomId" config="panzoomConfig" model="panzoomModel" class="canvas-zoomer">
-        <drawing-canvas ng-attr-id="{{id}}-drawing-canvas"><ng-transclude></ng-transclude></drawing-canvas>
+    <diagram-content>
+            <ng-transclude></ng-transclude>
+    </diagram-content>
     </panzoom>
 </div>

@@ -4,14 +4,14 @@
 
 // Move this to GME eventually
 
-require('../drawingCanvas/drawingCanvas.js');
+require('../drawingGrid/drawingGrid.js');
 
 angular.module('mms.designVisualization.diagramContainer', [
-    'mms.designVisualization.drawingCanvas',
-    'panzoom',
-    'panzoomwidget',
-    'isis.ui.contextmenu'
-])
+        'mms.designVisualization.drawingGrid',
+        'panzoom',
+        'panzoomwidget',
+        'isis.ui.contextmenu'
+    ])
     .controller('DiagramContainerController', [
         '$scope',
         'PanZoomService',
@@ -114,6 +114,10 @@ angular.module('mms.designVisualization.diagramContainer', [
                 return $scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1;
             };
 
+            this.registerContentElement = function($element) {
+              this.contentElement = $element;
+            };
+
         }
     ])
     .directive('diagramContainer', [
@@ -152,4 +156,25 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             };
         }
+    ])
+    .directive('diagramContent', [ '$log',
+        function ($log) {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                require: '^diagramContainer',
+                templateUrl: '/mmsApp/templates/diagramContent.html',
+                link: function (scope, element, attributes, diagramContainerController) {
+
+                    $log.debug('Initializing diagram content', element);
+
+                    diagramContainerController.registerContentElement($(element));
+
+                }
+
+            };
+        }
     ]);
+

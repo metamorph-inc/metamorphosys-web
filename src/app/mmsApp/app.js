@@ -174,7 +174,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
     defaultNavigatorItems = [
         {
             id: 'root',
-            label: 'MMS App',
+            label: 'Metamorphosis',
             itemClass: 'cyphy-root'
         }
     ];

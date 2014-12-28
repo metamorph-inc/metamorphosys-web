@@ -4,8 +4,8 @@
 
 // Move this to GME eventually
 
-angular.module( 'mms.designVisualization.drawingCanvas', [] )
-    .directive( 'drawingCanvas',
+angular.module( 'mms.designVisualization.drawingGrid', [] )
+    .directive( 'drawingGrid',
         function () {
 
             return {
@@ -16,7 +16,7 @@ angular.module( 'mms.designVisualization.drawingCanvas', [] )
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: '/mmsApp/templates/drawingCanvas.html'
+                templateUrl: '/mmsApp/templates/drawingGrid.html'
 
             };
         } );

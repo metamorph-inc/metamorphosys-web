@@ -1,11 +1,12 @@
 <div class="editor-container" layout="row">
-    <div class="grid-holder" flex="75">
 
-        <diagram-container ng-attr-id="svg-container" diagram="diagram">
+    <diagram-container ng-attr-id="svg-container" diagram="diagram" flex="75">
+        <drawing-grid ng-attr-id="svg-container-drawing-grid">
             <svg-diagram></svg-diagram>
-        </diagram-container>
+        </drawing-grid>
+    </diagram-container>
 
-    </div>
+
     <div class="component-browser-container" flex="25">
 
         <!--{{mainDbConnectionId}}-->
