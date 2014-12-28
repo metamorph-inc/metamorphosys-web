@@ -426,7 +426,9 @@ angular.module('mms.designVisualization.diagramService', [
                     wires: wiresById,
                     config: {
                         editable: true,
-                        disallowSelection: false
+                        disallowSelection: false,
+                        width: 10000,
+                        height: 10000
                     },
                     state: {
                         selectedComponentIds: []

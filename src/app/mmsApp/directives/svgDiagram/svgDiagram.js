@@ -108,7 +108,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             var result = '';
 
-            if ($scope.dragTargetsDescriptor) {
+            if (componentDragHandler.dragging) {
                 result += 'dragging';
             }
 
@@ -292,7 +292,10 @@ angular.module('mms.designVisualization.svgDiagram', [
                 link: function (scope, element, attributes, diagramContainerController) {
 
                     var id,
+                        $element,
                         killContextMenu;
+
+                    $element = $(element);
 
                     killContextMenu = function($event) {
 
@@ -307,18 +310,18 @@ angular.module('mms.designVisualization.svgDiagram', [
                     id = diagramContainerController.getId();
 
                     scope.diagram = scope.diagram || {};
-                    scope.$element = element;
+                    scope.$element = $element;
 
 
-                    element.bind('contextmenu', killContextMenu);
+                    $element.bind('contextmenu', killContextMenu);
 
+
+                    $element.outerWidth(scope.diagram.config.width);
+                    $element.outerHeight(scope.diagram.config.width);
 
                     scope.id = id;
 
-                    scope.visibleObjects = gridService.createGrid(id, {
-                            width: 10000,
-                            height: 1000
-                        },
+                    scope.visibleObjects = gridService.createGrid(id,
                         scope.diagram
                     );
 

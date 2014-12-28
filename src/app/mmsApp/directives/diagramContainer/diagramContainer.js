@@ -118,6 +118,10 @@ angular.module('mms.designVisualization.diagramContainer', [
               this.contentElement = $element;
             };
 
+            this.getConfig = function() {
+              return $scope.config;
+            };
+
         }
     ])
     .directive('diagramContainer', [
@@ -128,13 +132,16 @@ angular.module('mms.designVisualization.diagramContainer', [
                 controller: 'DiagramContainerController',
                 scope: {
                     id: '@',
-                    diagram: '='
+                    diagram: '=',
+                    config: '='
                 },
                 restrict: 'E',
                 replace: true,
                 transclude: true,
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
+
+                    scope.config = scope.config || {};
 
                     scope.canvasWidth = $(element)
                         .outerWidth();
@@ -149,7 +156,7 @@ angular.module('mms.designVisualization.diagramContainer', [
                         bottom: scope.canvasHeight
                     };
 
-                    $log.debug('In canvas container', scope.visibleArea);
+                    $log.debug('In diagram container', scope.visibleArea);
 
 
                 }
@@ -168,9 +175,16 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContent.html',
                 link: function (scope, element, attributes, diagramContainerController) {
 
-                    $log.debug('Initializing diagram content', element);
+                    var $element,
+                        containerConfig;
 
-                    diagramContainerController.registerContentElement($(element));
+                    $element = $(element);
+                    containerConfig = diagramContainerController.getConfig();
+
+                    $log.debug('Initializing diagram content', $element, containerConfig);
+
+                    diagramContainerController.registerContentElement($element);
+
 
                 }
 

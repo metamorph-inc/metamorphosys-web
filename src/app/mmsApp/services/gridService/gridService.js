@@ -123,14 +123,13 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
         };
 
 
-        this.createGrid = function ( id, dimensions, diagram ) {
+        this.createGrid = function ( id, diagram ) {
 
             var grid;
 
             if ( !angular.isDefined( grids[ id ] ) ) {
                 grid = grids[ id ] = {
                     id: id,
-                    dimensions: dimensions,
                     components: diagram.components,
                     visibleDiagramComponents: [],
                     wires: diagram.wires,

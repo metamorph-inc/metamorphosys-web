@@ -2,6 +2,24 @@
 
 'use strict';
 
+
+require('./utils.js');
+
+require('./services/operationsManager/operationsManager.js');
+
+require('./services/diagramService/diagramService.js');
+require('./services/gridService/gridService.js');
+require('./services/wiringService/wiringService.js');
+
+require('./directives/diagramContainer/diagramContainer.js');
+require('./directives/fabricCanvas/fabricCanvas.js');
+require('./directives/svgDiagram/svgDiagram.js');
+
+require('./directives/symbols/componentSymbol.js');
+
+require('./directives/resizing/resizeToHeight.js');
+require('./directives/resizing/resizeToWindow.js');
+
 var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
 
@@ -24,22 +42,10 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.fabricCanvas',
     'mms.designVisualization.svgDiagram',
     'mms.designVisualization.symbols',
+    'mms.resizeToWindow',
+
     'ngMaterial'
 ]);
-
-require('./utils.js');
-
-require('./services/operationsManager/operationsManager.js');
-
-require('./services/diagramService/diagramService.js');
-require('./services/gridService/gridService.js');
-require('./services/wiringService/wiringService.js');
-
-require('./directives/diagramContainer/diagramContainer.js');
-require('./directives/fabricCanvas/fabricCanvas.js');
-require('./directives/svgDiagram/svgDiagram.js');
-
-require('./directives/symbols/componentSymbol.js');
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
@@ -208,7 +214,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 CyPhyApp.controller('ProjectViewController', function ($scope, $rootScope, diagramService, $log) {
 
     $scope.diagram = diagramService.getDiagram();
-
 
     $log.debug('Diagram:', $scope.diagram);
 
