@@ -2,6 +2,7 @@
 
 'use strict';
 
+require('./libraryIncludes.js');
 
 require('./utils.js');
 
@@ -19,6 +20,8 @@ require('./directives/symbols/componentSymbol.js');
 
 require('./directives/resizing/resizeToHeight.js');
 require('./directives/resizing/resizeToWindow.js');
+
+require('./directives/busyCover/busyCover.js');
 
 var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
@@ -43,6 +46,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.svgDiagram',
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
+    'mms.designVisualization.busyCover',
 
     'ngMaterial'
 ]);
@@ -75,7 +79,6 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                             $log.debug('Project selected', projectId);
 
                             $rootScope.projectId = projectId;
-                            $rootScope.loading = false;
                         });
 
                     });
@@ -126,6 +129,8 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                                         $rootScope.activeWorkSpace = workSpace;
 
                                         $log.debug('Active workspace:', $rootScope.activeWorkSpace);
+
+                                        $rootScope.loading = false;
 
                                         deferred.resolve();
                                     }

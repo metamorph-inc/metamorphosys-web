@@ -38,6 +38,10 @@
     }
 }
 
+.header {
+    text-shadow: 0 1px 2px rgba(0, 15, 50, .25);
+}
+
 h1.main-view-header {
     padding: 0px 14px;
 }
@@ -48,24 +52,6 @@ h1.main-view-header {
 
 .start-new-project {
     margin-left: 1ex;
-}
-
-.loading-cover {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-color: rgba(150, 150, 150, .5);
-    top: 0;
-    left: 0;
-    cursor: wait;
-
-    .loading-message {
-        position: relative;
-        top: 45%;
-        color: #fff;
-        font-size: 200%;
-        text-align: center;
-    }
 }
 
 .processing-cover {

@@ -12,24 +12,28 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             grids = {},
 
-            numberOfChangesAllowedInOneCycle = 2000,
-            recalculateCycleDelay = 10,
+            numberOfChangesAllowedInOneCycle = 1,
+            recalculateCycleDelay = 15,
             viewPortPadding = {
-                x: -300,
-                y: -200
+                x: -600,
+                y: -600
             },
 
             recalculateVisibleDiagramComponents,
+            _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
 
         recalculateVisibleWires = function ( grid ) {
 
-            var index;
+            var index,
+                i,
+                wire;
 
-            angular.forEach( grid.wires, function ( wire ) {
+            for (i=0; i < grid.wires.length; i++) {
+
+                wire = grid.wires[i];
 
                 index = grid.visibleWires.indexOf( wire );
-
 
                 if ( wire.isInViewPort( grid.viewPort, viewPortPadding ) ) {
 
@@ -45,27 +49,54 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                 }
 
-            } );
+            }
 
-            $log.debug( 'Number of visible wires: ' + grid.visibleWires.length );
+            //$log.debug( 'Number of visible wires: ' + grid.visibleWires.length );
 
         };
 
-        recalculateVisibleDiagramComponents = function ( grid ) {
+        recalculateVisibleDiagramComponents = function( grid, startIndex ) {
 
-            var i,
-                component,
+            if (grid.recalculateVisibleDiagramComponentsPromise) {
+
+                if ($timeout.cancel(grid.recalculateVisibleDiagramComponentsPromise)) {
+                    console.log('had to kill');
+                }
+
+            }
+
+            grid.recalculateVisibleDiagramComponentsPromise = $timeout(
+
+                function() {
+                    _recalculateVisibleDiagramComponents(grid, startIndex);
+                },
+
+                recalculateCycleDelay
+            );
+
+        };
+
+        _recalculateVisibleDiagramComponents = function ( grid, startIndex ) {
+
+            var i, component,
+
                 countOfChanges = 0,
                 changesLimitReached = false,
                 index;
 
-            grid.invisibleDiagramComponentsRecalculate = true;
+            grid.insideVisibleDiagramComponentsRecalculate = true;
 
 
-            for ( i = 0; i < grid.components.length && !changesLimitReached; i++ ) {
-                component = grid.components[ i ];
+            if (!changesLimitReached) {
+                recalculateVisibleWires( grid );
             }
-            angular.forEach( grid.components, function ( component ) {
+
+            startIndex = startIndex || 0;
+
+            for (i = startIndex; i< grid.components.length && changesLimitReached === false; i++) {
+
+                component = grid.components[i];
+
 
                 index = grid.visibleDiagramComponents.indexOf( component );
 
@@ -87,20 +118,30 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                     changesLimitReached = true;
                 }
 
-            } );
+            }
 
-            self.reorderVisibleComponents( grid.id );
-
-            recalculateVisibleWires( grid );
-
-            $log.debug( 'Number of changes compared to previous diagram state:', countOfChanges );
+            //$log.debug( 'Number of changes compared to previous diagram state:', countOfChanges );
 
             if ( !changesLimitReached ) {
-                grid.invisibleDiagramComponentsRecalculate = false;
+
+                self.reorderVisibleComponents( grid.id );
+
+                grid.insideVisibleDiagramComponentsRecalculate = false;
+
+                if (!grid.initialized) {
+
+                    grid.initialized = true;
+
+                    $timeout(function() {
+                        $rootScope.$broadcast('GridInitialized', grid.id);
+                    });
+
+                }
+                
             } else {
-                $timeout( function () {
-                    recalculateVisibleDiagramComponents( grid );
-                }, recalculateCycleDelay );
+
+                recalculateVisibleDiagramComponents(grid, i);
+
             }
 
         };
@@ -113,10 +154,10 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             if ( angular.isDefined( grid ) ) {
 
-                if ( !grid.invisibleDiagramComponentsRecalculate ) {
-                    $timeout( function () {
-                        recalculateVisibleDiagramComponents( grid );
-                    } );
+                if ( !grid.insideVisibleDiagramComponentsRecalculate ) {
+
+                    recalculateVisibleDiagramComponents(grid);
+
                 }
             }
 
@@ -135,7 +176,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                     wires: diagram.wires,
                     visibleWires: [],
                     viewPort: {},
-                    invisibleDiagramComponentsRecalculate: false
+                    insideVisibleDiagramComponentsRecalculate: false,
+                    initialized: false
                 };
             } else {
                 throw ( 'Grid was already defined!', id );

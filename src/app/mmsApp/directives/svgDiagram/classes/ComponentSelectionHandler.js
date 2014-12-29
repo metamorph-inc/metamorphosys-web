@@ -19,7 +19,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
         needsTobeReordered = false;
 
         z = diagramService.getHighestZ();
-        component = $scope.diagram.components[ componentId ];
+        component = $scope.diagram.componentsById[ componentId ];
 
         if ( isNaN( component.z ) ) {
             component.z = z;
@@ -59,7 +59,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
                     $event.shiftKey !== true ) {
 
                     angular.forEach( $scope.diagram.state.selectedComponentIds, function ( componentId ) {
-                        $scope.diagram.components[ componentId ].selected = false;
+                        $scope.diagram.componentsById[ componentId ].selected = false;
                     } );
                     $scope.diagram.state.selectedComponentIds = [];
                 }

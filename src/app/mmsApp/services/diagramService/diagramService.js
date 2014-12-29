@@ -201,6 +201,9 @@ angular.module('mms.designVisualization.diagramService', [
                 wiresById = {},
                 wiresByComponentId = {},
 
+                width = 5000,
+                height = 5000,
+
                 symbolTypes,
 
                 registerWireForEnds,
@@ -267,6 +270,9 @@ angular.module('mms.designVisualization.diagramService', [
                 components = [];
                 componentsById = {};
 
+                width = canvasWidth;
+                height = canvasHeight;
+
                 for (i = 0; i < countOfBoxes; i++) {
 
                     typeId = symbolTypeIds[ Math.floor(Math.random() * countOfTypes) ];
@@ -294,17 +300,6 @@ angular.module('mms.designVisualization.diagramService', [
                         nonSelectable: false,
                         locationLocked: false,
                         draggable: true
-
-                        //          symbolConfig: {
-                        //            x: 'x',
-                        //            y: 'y',
-                        //            label: 'label',
-                        //            rotation: 'rotation',
-                        //            scaleX: 'scaleX',
-                        //            scaleY: 'scaleY',
-                        //            ports: 'portInstances',
-                        //            portMapping: createdPorts.portMapping
-                        //          }
                     });
 
                     newDiagramComponent.registerPortInstances(createdPorts.portInstances);
@@ -422,13 +417,15 @@ angular.module('mms.designVisualization.diagramService', [
             this.getDiagram = function () {
 
                 return {
-                    components: componentsById,
-                    wires: wiresById,
+                    components: components,
+                    componentsById: componentsById,
+                    wires: wires,
+                    wiresById: wiresById,
                     config: {
                         editable: true,
                         disallowSelection: false,
-                        width: 10000,
-                        height: 10000
+                        width: width,
+                        height: height
                     },
                     state: {
                         selectedComponentIds: []
@@ -483,10 +480,10 @@ angular.module('mms.designVisualization.diagramService', [
 //            });
 
 
-            //this.generateDummyDiagram(2000, 500, 10000, 10000);
+            //this.generateDummyDiagram(1000, 200, 5000, 5000);
             //this.generateDummyDiagram(1000, 2000, 10000, 10000);
             //this.generateDummyDiagram(10, 5, 1200, 1200);
-            this.generateDummyDiagram( 100, 50, 5000, 5000 );
+            this.generateDummyDiagram( 100, 50, 3000, 3000 );
 
         }
     ]);

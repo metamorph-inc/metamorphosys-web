@@ -249,7 +249,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                             if ( component.id !== selectedComponentId ) {
 
-                                selectedComponent = $scope.diagram.components[ selectedComponentId ];
+                                selectedComponent = $scope.diagram.componentsById   [ selectedComponentId ];
 
                                 componentsToRotate.push( selectedComponent );
 
@@ -277,10 +277,11 @@ angular.module('mms.designVisualization.svgDiagram', [
 
     })
     .directive('svgDiagram', [
+        '$rootScope',
         '$log',
         'diagramService',
         'gridService',
-        function ($log, diagramService, gridService) {
+        function ($rootScope, $log, diagramService, gridService) {
 
             return {
                 controller: 'SVGDiagramController',
@@ -320,6 +321,18 @@ angular.module('mms.designVisualization.svgDiagram', [
                     $element.outerHeight(scope.diagram.config.width);
 
                     scope.id = id;
+
+                    diagramContainerController.setInitialized(false);
+                    $rootScope.initializing = true;
+
+                    $rootScope.$on('GridInitialized', function(event, data) {
+
+                       if (data === id) {
+                            diagramContainerController.setInitialized(true);
+                            $rootScope.initializing = false;
+                       }
+
+                    });
 
                     scope.visibleObjects = gridService.createGrid(id,
                         scope.diagram

@@ -14,11 +14,11 @@
     <g class="component-container">
         <!--<component-symbol ng-repeat="component in diagram.components | inViewPort : $parent.visibleArea : -0.3" component="component"></component-symbol>-->
         <!--<component-symbol ng-repeat="component in diagram.components" component="component" ng-if="component.isInViewPort($parent.$parent.visibleArea, {x:-300, y:-200})"></component-symbol>-->
-        <component-symbol ng-repeat="component in visibleObjects.components" component="component"></component-symbol>
+        <component-symbol ng-repeat="component in visibleObjects.components track by component.id" component="component"></component-symbol>
         <!--<component-symbol ng-repeat="component in diagram.components" ng-if="visibleDiagramComponents[component.id]" component="component"></component-symbol>-->
     </g>
     <g class="wire-container">
-        <component-wire ng-repeat="wire in visibleObjects.wires" wire="wire"></component-wire>
+        <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
     </g>
     <g class="new-wire-line" ng-if="newWireLine">
         <line ng-repeat="segment in newWireLine.segments"

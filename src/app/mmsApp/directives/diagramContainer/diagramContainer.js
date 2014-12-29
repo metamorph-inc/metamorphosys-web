@@ -14,14 +14,26 @@ angular.module('mms.designVisualization.diagramContainer', [
     ])
     .controller('DiagramContainerController', [
         '$scope',
+        '$timeout',
+        '$log',
         'PanZoomService',
-        function ($scope, PanZoomService) {
+        '$window',
+        function ($scope, $timeout, $log, PanZoomService, $window) {
 
             var self = this,
 
-                compiledDirectives;
+                $windowElement,
+
+                compiledDirectives,
+
+                ScrollHandler,
+                scrollHandler;
 
             compiledDirectives = {};
+
+            ScrollHandler = require('./classes/ScrollHandler');
+            scrollHandler = new ScrollHandler($scope, $timeout, $log);
+
 
             $scope.panzoomId = 'panzoomId'; //scope.id + '-panzoomed';
 
@@ -65,6 +77,13 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                 }
             };
+
+            $windowElement = angular.element($window);
+
+            $windowElement.bind(
+                'resize', scrollHandler.onWindowResize
+            );
+
 
             $scope.getCssClass = function () {
 
@@ -114,19 +133,19 @@ angular.module('mms.designVisualization.diagramContainer', [
                 return $scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1;
             };
 
-            this.registerContentElement = function($element) {
-              this.contentElement = $element;
+            this.getConfig = function () {
+                return $scope.config;
             };
 
-            this.getConfig = function() {
-              return $scope.config;
+            this.setInitialized = function(val) {
+                $scope.initialized = val;
             };
 
         }
     ])
     .directive('diagramContainer', [
-        'diagramService', '$log', 'PanZoomService',
-        function (diagramService, $log) {
+        'diagramService', '$log', '$timeout', 'PanZoomService',
+        function (diagramService, $log, $timeout) {
 
             return {
                 controller: 'DiagramContainerController',
@@ -141,51 +160,29 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
 
-                    scope.config = scope.config || {};
-
-                    scope.canvasWidth = $(element)
-                        .outerWidth();
-                    scope.canvasHeight = $(element)
-                        .outerHeight();
-
-
-                    scope.visibleArea = {
-                        top: 0,
-                        left: 0,
-                        right: scope.canvasWidth,
-                        bottom: scope.canvasHeight
-                    };
-
                     $log.debug('In diagram container', scope.visibleArea);
 
+                    scope.config = scope.config || {};
 
-                }
+//                    scope.canvasWidth = $(element)
+//                        .outerWidth();
+//                    scope.canvasHeight = $(element)
+//                        .outerHeight();
+//
+//
+//                    scope.visibleArea = {
+//                        top: 0,
+//                        left: 0,
+//                        right: scope.canvasWidth,
+//                        bottom: scope.canvasHeight
+//                    };
 
-            };
-        }
-    ])
-    .directive('diagramContent', [ '$log',
-        function ($log) {
+                    scope.$element = $(element);
+                    scope.$contentPane = element.find('>.diagram-content-pane');
 
-            return {
-                restrict: 'E',
-                replace: true,
-                transclude: true,
-                require: '^diagramContainer',
-                templateUrl: '/mmsApp/templates/diagramContent.html',
-                link: function (scope, element, attributes, diagramContainerController) {
-
-                    var $element,
-                        containerConfig;
-
-                    $element = $(element);
-                    containerConfig = diagramContainerController.getConfig();
-
-                    $log.debug('Initializing diagram content', $element, containerConfig);
-
-                    diagramContainerController.registerContentElement($element);
-
-
+                    $timeout(function() {
+                        scope.$broadcast('DiagramContainerInitialized');
+                    });
                 }
 
             };

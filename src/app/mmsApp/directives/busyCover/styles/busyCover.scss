@@ -1,0 +1,69 @@
+.busy-cover {
+
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    cursor: wait;
+
+    transition: opacity 1000ms;
+
+    opacity: 1;
+
+    .top-half {
+        position: absolute;
+        transition: top 500ms;
+        width: 100%;
+        height: 50%;
+        top: 0;
+        background-color: #fff;
+
+        md-progress-linear {
+            position: absolute;
+            bottom: 7px;
+        }
+
+        background: linear-gradient(to bottom, #fff, #eee);
+
+    }
+
+    .bottom-half {
+        position: absolute;
+        transition: top 500ms;
+        width: 100%;
+        height: 50%;
+        top: 50%;
+
+        background: linear-gradient(to bottom,  rgba(0,187,255,1) 0%,rgba(0,109,242,1) 100%); /* W3C */
+
+        .busy-message {
+            font-size: 200%;
+            margin-left: 1em;
+            margin-top: 1ex;
+            color: #fff;
+        }
+
+    }
+
+    &.off {
+
+        opacity: 0;
+
+        cursor: none;
+
+        transition: left 500ms 1000ms;
+
+        left: -1000000px;
+
+        .top-half {
+            top: -60%;
+        }
+
+        .bottom-half {
+            top: 100%;
+        }
+
+    }
+}

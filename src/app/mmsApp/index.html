@@ -12,9 +12,11 @@
     <!-- Include CSS library dependencies -->
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/extlib/bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
-    <link type="text/css" href="/extlib/bower_components/angular-material/angular-material.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/0.6.1/angular-material.min.css">
+
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/angular-material/angular-material.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/extlib/bower_components/jscrollpane/style/jquery.jscrollpane.css">
 
 
     <!-- Include CSS isis-ui-components -->
@@ -36,9 +38,7 @@
 </div>
 <div ui-view class="main-view-container" resize-to-window height-is-less-with="42"></div>
 
-<div class="loading-cover"
-     ng-if="loading"
-        ><div class="loading-message">Loading...</div></div>
+<busy-cover></busy-cover>
 
 <div class="processing-cover"
      ng-if="processing"
@@ -65,6 +65,10 @@
 <script src="/extlib/bower_components/angular-panhandler/dist/angular-panhandler.min.js"></script>
 <script src="/extlib/bower_components/angular-mousewheel/mousewheel.js"></script>
 <script src="/extlib/bower_components/angular-pan-zoom/bin/panzoom.js"></script>
+
+<!-- jScrollPane stuff -->
+<!--<script src="/extlib/bower_components/jscrollpane/script/jquery.mousewheel.js"></script>-->
+<script src="/extlib/bower_components/jscrollpane/script/jquery.jscrollpane.min.js"></script>
 
 
 <!-- Include WebGME libraries -->
