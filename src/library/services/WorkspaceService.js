@@ -59,17 +59,11 @@ angular.module( 'cyphy.services' )
                             } );
                         };
 
-                    wsNode.setAttribute( 'name', name, '[WebCyPhy] - set name to ' + name )
-                        .then( function () {
-                            if ( desc ) {
-                                wsNode.setAttribute( 'INFO', desc, '[WebCyPhy] - set INFO to ' + desc )
-                                    .then( function () {
-                                        createFolderNodes();
-                                    } );
-                            } else {
-                                createFolderNodes();
-                            }
-                        } );
+                    wsNode.setAttribute( 'name', name, '[WebCyPhy] - set name to ' + name );
+                    if ( desc ) {
+                        wsNode.setAttribute( 'INFO', desc, '[WebCyPhy] - set INFO to ' + desc );
+                    }
+                    createFolderNodes();
                 } )
                 .
             catch ( function ( reason ) {
@@ -316,6 +310,8 @@ angular.module( 'cyphy.services' )
         /**
          * Keeps track of the work-spaces defined in the root-node w.r.t. existence and attributes.
          * @param {object} parentContext - context of controller (must have a regionId defined).
+         * @param {string} parentContext.db - data-base connection.
+         * @param {string} parentContext.regionId - regionId (of group).
          * @param {function} updateListener - called on (filtered) changes in data-base. Data is an object in data.workspaces.
          * @returns {Promise} - Returns data when resolved.
          */
