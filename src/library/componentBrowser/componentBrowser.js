@@ -2,16 +2,23 @@
 'use strict';
 
 angular.module( 'cyphy.components' )
-    .controller( 'ComponentBrowserController', function ( $scope, $window, $modal, growl, componentService, fileService ) {
+    .controller( 'ComponentBrowserController',
+    function ( $scope, $window, $modal, growl, componentService, fileService, $log ) {
         var
             items = [], // Items that are passed to the item-list ui-component.
             componentItems = {}, // Same items are stored in a dictionary.
             serviceData2ListItem,
             addDomainWatcher,
-            config,
-            context;
 
-        console.log( 'ComponentBrowserController3', $scope.avmIds );
+            context,
+
+            ComponentBrowserListHelper,
+            listHelper,
+
+            ComponentBrowserTreeHelper,
+            treeHelper;
+
+
         this.getConnectionId = function () {
             return $scope.connectionId;
         };
@@ -29,142 +36,20 @@ angular.module( 'cyphy.components' )
             throw new Error( 'connectionId must be defined and it must be a string' );
         }
 
-        // Configuration for the item list ui component.
-        config = {
+        // List setup
 
-            sortable: false,
-            secondaryItemMenu: true,
-            detailsCollapsible: true,
-            showDetailsLabel: 'Show details',
-            hideDetailsLabel: 'Hide details',
+        ComponentBrowserListHelper = require('./classes/ComponentBrowserListHelper.js');
+        listHelper = new ComponentBrowserListHelper($scope, $window, context, $modal, componentService, $log);
 
-            // Event handlers
+        $scope.treeConfig = treeHelper.config;
 
-            itemSort: function ( jQEvent, ui ) {
-                console.log( 'Sort happened', jQEvent, ui );
-            },
 
-            itemClick: function ( event, item ) {
-                $scope.$emit( 'selectedInstances', {
-                    name: item.title,
-                    ids: item.data.instanceIds
-                } );
-            },
+        // Tree setup
 
-            itemContextmenuRenderer: function ( e, item ) {
-                return [ {
-                    items: [ {
-                        id: 'openInEditor',
-                        label: 'Open in Editor',
-                        disabled: false,
-                        iconClass: 'glyphicon glyphicon-edit',
-                        action: function () {
-                            $window.open( '/?project=ADMEditor&activeObject=' + item.id, '_blank' );
-                        }
-                    }, {
-                        id: 'editComponent',
-                        label: 'Edit',
-                        disabled: false,
-                        iconClass: 'glyphicon glyphicon-pencil',
-                        actionData: {
-                            description: item.description,
-                            id: item.id
-                        },
-                        action: function ( data ) {
-                            var editContext = {
-                                    db: context.db,
-                                    regionId: context.regionId + '_watchComponents'
-                                },
-                                modalInstance = $modal.open( {
-                                    templateUrl: '/cyphy-components/templates/ComponentEdit.html',
-                                    controller: 'ComponentEditController',
-                                    //size: size,
-                                    resolve: {
-                                        data: function () {
-                                            return data;
-                                        }
-                                    }
-                                } );
+        ComponentBrowserTreeHelper = require('./classes/ComponentBrowserTreeHelper.js');
+        treeHelper = new ComponentBrowserTreeHelper($log);
 
-                            modalInstance.result.then( function ( editedData ) {
-                                var attrs = {
-                                    'INFO': editedData.description
-                                };
-                                componentService.setComponentAttributes( editContext, data.id, attrs )
-                                    .then( function () {
-                                        console.log( 'Attribute updated' );
-                                    } );
-                            }, function () {
-                                console.log( 'Modal dismissed at: ' + new Date() );
-                            } );
-                        }
-                    }, {
-                        id: 'exportAsAcm',
-                        label: 'Export ACM',
-                        disabled: false,
-                        iconClass: 'glyphicon glyphicon-share-alt',
-                        actionData: {
-                            resource: item.data.resource,
-                            name: item.title
-                        },
-                        action: function ( data ) {
-                            var hash = data.resource,
-                                url = fileService.getDownloadUrl( hash );
-                            if ( url ) {
-                                growl.success( 'ACM file for <a href="' + url + '">' + data.name +
-                                '</a> exported.' );
-                            } else {
-                                growl.warning( data.name + ' does not have a resource.' );
-                            }
-                        }
-                    } ]
-                }, {
-                    items: [ {
-                        id: 'delete',
-                        label: 'Delete',
-                        disabled: false,
-                        iconClass: 'glyphicon glyphicon-remove',
-                        actionData: {
-                            id: item.id,
-                            name: item.title
-                        },
-                        action: function ( data ) {
-                            var modalInstance = $modal.open( {
-                                templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                                controller: 'SimpleModalController',
-                                resolve: {
-                                    data: function () {
-                                        return {
-                                            title: 'Delete Component',
-                                            details: 'This will delete ' + data.name +
-                                            ' from the workspace.'
-                                        };
-                                    }
-                                }
-                            } );
-
-                            modalInstance.result.then( function () {
-                                componentService.deleteComponent( context, data.id );
-                            }, function () {
-                                console.log( 'Modal dismissed at: ' + new Date() );
-                            } );
-                        }
-                    } ]
-                } ];
-            },
-
-            detailsRenderer: function ( /*item*/) {
-                //                item.details = 'My details are here now!';
-            },
-
-            filter: {}
-
-        };
-
-        $scope.config = config;
-        $scope.listData = {
-            items: items
-        };
+        $scope.treeConfig = treeHelper.config;
 
         // Transform the raw service node data to items for the list.
         serviceData2ListItem = function ( data ) {
