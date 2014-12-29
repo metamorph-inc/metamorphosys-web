@@ -3,7 +3,7 @@
 __`treeData`__ - Data to render in a recursive structure with the following node-schema:
 
   * `label`: {string} label,
-  * `extraInfo`: {string} any extra info to display after label,
+  * `extraInfo`: {string} any extra info to display after label (custom template can be set here for whatever content),
   * `children`: {array} array of children after __children got loaded__,
   * `childrenCount`: {int} indicates the number of children (0 if none),
   * `nodeData`: {object} arbitrary data object,
@@ -34,6 +34,7 @@ Rendering options:
    * `nodeClassGetter`: {function(node)}. If specified, it should return a string of CSS class for the given node.
    Make it work fast.
    * `disableManualSelection`: {boolean} set if node is manually selectable (eg. by clicking) or not
+   * `extraInfoTemplateUrl`: {string} Url of custom template for extra info.
 
 Event callbacks:
 

@@ -78,7 +78,8 @@
     padding-left: 2ex;
   }
 
-  span.node-extra-info {
+  .node-extra-info {
+    display: inline-block;
     color: #666;
     font-size: 80%;
   }
