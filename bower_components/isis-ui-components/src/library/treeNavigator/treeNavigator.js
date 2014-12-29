@@ -32,6 +32,9 @@ angular.module(
   $scope.config.collapsedIconClass = $scope.config.collapsedIconClass || 'icon-arrow-right';
   $scope.config.expandedIconClass = $scope.config.expandedIconClass || 'icon-arrow-down';
 
+  $scope.config.extraInfoTemplateUrl = $scope.config.extraInfoTemplateUrl ||
+                    '/isis-ui-components/templates/treeNavigator.node.extraInfo.html';
+
 } )
 
 .directive(
