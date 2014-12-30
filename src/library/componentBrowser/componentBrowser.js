@@ -41,8 +41,8 @@ angular.module( 'cyphy.components' )
         ComponentBrowserListHelper = require('./classes/ComponentBrowserListHelper.js');
         listHelper = new ComponentBrowserListHelper($scope, $window, context, $modal, componentService, $log);
 
-        $scope.treeConfig = treeHelper.config;
-
+        $scope.listConfig = listHelper.config;
+        $scope.listData = {};
 
         // Tree setup
 
