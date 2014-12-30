@@ -47,6 +47,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
+    'ngTouch',
 
     'ngMaterial'
 ]);
