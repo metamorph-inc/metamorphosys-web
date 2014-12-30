@@ -262,7 +262,7 @@ module.exports = function ($scope, $window, context, $modal, componentService, $
         if ( listItem ) {
             listItem.stats = domainModelsToStat( updateData.domainModels );
         } else {
-            $log.warning( 'DomainModel data did not have matching componentData', componentId );
+            $log.warn( 'DomainModel data did not have matching componentData', componentId );
         }
         
     };
