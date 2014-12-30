@@ -8,16 +8,17 @@
     <!--<item-list list-data="listData" config="listConfig" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"></item-list>-->
     <div class="component-search">
         <!--<input class="component-search-input"></input>-->
-        <angucomplete id="ex1"
+        <angucomplete-alt id="ex1"
                       placeholder="Search components"
                       pause="100"
-                      selectedobject="componentSearchSelection"
-                      localdata="treeNavigatorData.childNodes"
-                      searchfields="label"
-                      titlefield="label"
+                      selected-object="componentSearchSelection"
+                      local-data="treeNavigatorData.childNodes"
+                      search-fields="label"
+                      title-field="label"
                       descriptionfield="description"
                       minlength="1"
-                      inputclass="component-search-input"/>
+                      clear-selected="true"
+                      input-class="component-search-input"/>
     </div>
     <tree-navigator tree-data="treeNavigatorData.data" config="treeNavigatorData.config"></tree-navigator>
 </div>
