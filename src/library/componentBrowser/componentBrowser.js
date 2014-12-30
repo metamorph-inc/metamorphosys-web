@@ -9,8 +9,8 @@ angular.module( 'cyphy.components' )
 
             context,
 
-            ComponentBrowserListHelper,
-            listHelper,
+//            ComponentBrowserListHelper,
+//            listHelper,
 
             ComponentBrowserTreeHelper,
             treeHelper;
@@ -35,30 +35,29 @@ angular.module( 'cyphy.components' )
 
         // List setup
 
-        ComponentBrowserListHelper = require('./classes/ComponentBrowserListHelper.js');
-        listHelper = new ComponentBrowserListHelper($scope, $window, context, $modal, componentService, $log);
-
-        $scope.listConfig = listHelper.config;
-        $scope.listData = listHelper.data;
+//        ComponentBrowserListHelper = require('./classes/ComponentBrowserListHelper.js');
+//        listHelper = new ComponentBrowserListHelper($scope, $window, context, $modal, componentService, $log);
+//
+//        $scope.listConfig = listHelper.config;
+//        $scope.listData = listHelper.data;
 
         // Tree setup
 
         ComponentBrowserTreeHelper = require('./classes/ComponentBrowserTreeHelper.js');
         treeHelper = new ComponentBrowserTreeHelper($log);
 
-        $scope.treeConfig = treeHelper.config;
-        $scope.treeData = treeHelper.data;
+        $scope.treeNavigatorData = treeHelper.treeNavigatorData;
 
 
         // Getting the data
 
         addDomainWatcher = function (componentId) {
 
-            componentService.watchComponentDomains(context, componentId, function (updateData) {
-                listHelper.updateItemStats(componentId, updateData);
+            componentService.watchComponentDomains(context, componentId, function (/*updateData*/) {
+                //listHelper.updateItemStats(componentId, updateData);
             })
-                .then(function (data) {
-                    listHelper.updateItemStats(componentId, data);
+                .then(function (/*data*/) {
+                    //listHelper.updateItemStats(componentId, data);
                 });
         };
 
@@ -66,28 +65,31 @@ angular.module( 'cyphy.components' )
         componentService.registerWatcher( context, function ( destroyed ) {
 
             if ( destroyed ) {
-                console.warn( 'destroy event raised' );
-                // Data not (yet) avaliable.
-                // TODO: display this to the user.
+                $log.warn( 'destroy event raised' );
                 return;
             }
-            console.info( 'initialize event raised' );
+
+            $log.debug( 'initialize event raised' );
 
             componentService.watchComponents( context, $scope.workspaceId, $scope.avmIds, function (
                 updateObject ) {
 
                 if ( updateObject.type === 'load' ) {
 
-                    listHelper.addItem( updateObject.data );
+                    //listHelper.upsertItem( updateObject.data );
+                    treeHelper.upsertItem( updateObject.data );
+                    
                     addDomainWatcher( updateObject.id );
 
                 } else if ( updateObject.type === 'update' ) {
 
-                    listHelper.addItem( updateObject.data );
+                    //listHelper.upsertItem( updateObject.data );
+                    treeHelper.upsertItem( updateObject.data );                    
 
                 } else if ( updateObject.type === 'unload' ) {
 
-                    listHelper.removeItem(updateObject.id);
+                    //listHelper.removeItem( updateObject.id );
+                    treeHelper.removeItem( updateObject.id );
 
                 } else {
                     throw new Error( updateObject );
@@ -95,10 +97,13 @@ angular.module( 'cyphy.components' )
             } )
                 .then( function ( data ) {
                     var componentId;
+
+
+                    treeHelper.initializeWithNodes(data.components);
+
                     for ( componentId in data.components ) {
                         if ( data.components.hasOwnProperty( componentId ) ) {
-
-                            listHelper.addItem( data.components[ componentId ] );
+//                            listHelper.upsertItem( data.components[ componentId ] );
                             addDomainWatcher( componentId );
 
                         }

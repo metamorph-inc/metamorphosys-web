@@ -5,7 +5,7 @@ module.exports = function ($scope, $window, context, $modal, componentService, $
     var config,
         data,
 
-        addItem,
+        upsertItem,
         removeItem,
         updateItemStats,
 
@@ -141,7 +141,7 @@ module.exports = function ($scope, $window, context, $modal, componentService, $
 
     };
 
-    addItem = function (data) {
+    upsertItem = function (data) {
         var listItem;
 
         if (itemsById.hasOwnProperty(data.id)) {
@@ -270,7 +270,7 @@ module.exports = function ($scope, $window, context, $modal, componentService, $
     this.config = config;
     this.data = data;
 
-    this.addItem = addItem;
+    this.upsertItem = upsertItem;
     this.removeItem = removeItem;
     this.updateItemStats = updateItemStats;
 

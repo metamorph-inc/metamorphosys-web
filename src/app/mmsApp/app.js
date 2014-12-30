@@ -186,7 +186,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
     defaultNavigatorItems = [
         {
             id: 'root',
-            label: 'Metamorphosis',
+            label: 'MetaMorphosis',
             itemClass: 'cyphy-root'
         }
     ];

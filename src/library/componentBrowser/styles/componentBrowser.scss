@@ -1,0 +1,27 @@
+.component-browser {
+
+    .tree-navigator {
+
+        margin-top: -20px;
+
+        font-size: 95%;
+
+        li.parent-node > .node-label {
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #777;
+        }
+
+    }
+
+    .component-search {
+        padding-right: 4ex;
+        padding-left: 1ex;
+        width: 100%;
+
+        input {
+            width: 100%;
+        }
+
+    }
+}

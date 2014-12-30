@@ -1,3 +1,5 @@
+@import '../../../styles/colors';
+
 .busy-cover {
 
     width: 100%;
@@ -20,6 +22,15 @@
         top: 0;
         background-color: #fff;
 
+        .logo-container {
+            background-image: url(./images/mms-icon-big.png);
+            width: 100%;
+            height: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: auto 60%;
+        }
+
         md-progress-linear {
             position: absolute;
             bottom: 7px;
@@ -36,7 +47,7 @@
         height: 50%;
         top: 50%;
 
-        background: linear-gradient(to bottom,  rgba(0,187,255,1) 0%,rgba(0,109,242,1) 100%); /* W3C */
+        @include mmsBlueGradient();
 
         .busy-message {
             font-size: 200%;
