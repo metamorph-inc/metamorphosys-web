@@ -9,7 +9,7 @@
         li.parent-node > .node-label {
             font-weight: bold;
             text-transform: uppercase;
-            color: #777;
+            color: #666;
         }
 
     }
@@ -27,6 +27,14 @@
 
     .preferences-menu {
         margin-top: -6px;
+    }
+
+    .angucomplete-dropdown {
+        width: 240px;
+    }
+
+    .angucomplete-selected-row, .angucomplete-row:hover {
+        background-color: #aaa;
     }
 
 }

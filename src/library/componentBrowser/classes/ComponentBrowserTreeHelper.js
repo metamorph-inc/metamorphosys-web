@@ -7,8 +7,8 @@ module.exports = function ($log) {
     var config,
 
         treeNavigatorData,
-
         treeNodesById,
+        childNodes,
 
         initializeWithNodes,
         upsertItem,
@@ -27,6 +27,8 @@ module.exports = function ($log) {
         getNodeContextmenu;
 
     treeNodesById = {};
+
+    childNodes = [];
 
     getNodeContextmenu = function (node) {
 
@@ -130,6 +132,7 @@ module.exports = function ($log) {
                     {
                         id: 'expandAll',
                         label: 'Expand all',
+                        iconClass: 'fa fa-plus-square',
                         action: function () {
 
                             treeNavigatorData.config.state = treeNavigatorData.config.state || {};
@@ -149,6 +152,7 @@ module.exports = function ($log) {
                     {
                         id: 'collapseAll',
                         label: 'Collapse all',
+                        iconClass: 'fa fa-minus-square',
                         action: function () {
 
                             treeNavigatorData.config.state = treeNavigatorData.config.state || {};
@@ -186,11 +190,11 @@ module.exports = function ($log) {
 
         // Tree Event callbacks
 
-        nodeClick: function (e, node) {
+        nodeClick: function (/*e, node*/) {
             ///console.log('Node was clicked:', node);
         },
 
-        nodeDblclick: function (e, node) {
+        nodeDblclick: function (/*e, node*/) {
             //console.log('Node was double-clicked:', node);
         },
 
@@ -201,7 +205,7 @@ module.exports = function ($log) {
 
         },
 
-        nodeExpanderClick: function (e, node, isExpand) {
+        nodeExpanderClick: function (/*e, node, isExpand*/) {
             //console.log('Expander was clicked for node:', node, isExpand);
         }
 
@@ -312,7 +316,8 @@ module.exports = function ($log) {
     parseNode = function (nodeDescriptor) {
 
         var node,
-            parentNode;
+            parentNode,
+            label;
 
         node = treeNodesById[ nodeDescriptor.id ];
 
@@ -320,10 +325,15 @@ module.exports = function ($log) {
 
             parentNode = parseClassifications(nodeDescriptor.classifications);
 
+            label = parseNodeName(nodeDescriptor.name);
+
             node = {
                 id: nodeDescriptor.id,
-                label: parseNodeName(nodeDescriptor.name)
+                label: label,
+                description: null
             };
+
+            childNodes.push(node);
 
             parentNode.children.push(node);
             parentNode.childrenCount++;
@@ -368,7 +378,7 @@ module.exports = function ($log) {
 
         treeNodesById = {};
         parentNodes = {};
-
+        childNodes = [];
 
         rootNode = createParentNode(
             'root',
@@ -378,6 +388,7 @@ module.exports = function ($log) {
         );
 
         treeNavigatorData.data = rootNode;
+        treeNavigatorData.childNodes = childNodes;
 
         angular.forEach(nodes, function (node) {
 
@@ -423,7 +434,8 @@ module.exports = function ($log) {
 
     treeNavigatorData = {
         data: {},
-        config: config
+        config: config,
+        childNodes: childNodes
     };
 
 

@@ -7,7 +7,17 @@
     <!--<tree-navigator tree-data="treeData" config="config"></tree-navigator>-->
     <!--<item-list list-data="listData" config="listConfig" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"></item-list>-->
     <div class="component-search">
-        <input class="component-search-input"></input>
+        <!--<input class="component-search-input"></input>-->
+        <angucomplete id="ex1"
+                      placeholder="Search components"
+                      pause="100"
+                      selectedobject="selectedCountry"
+                      localdata="treeNavigatorData.childNodes"
+                      searchfields="label"
+                      titlefield="label"
+                      descriptionfield="description"
+                      minlength="1"
+                      inputclass="component-search-input"/>
     </div>
     <tree-navigator tree-data="treeNavigatorData.data" config="treeNavigatorData.config"></tree-navigator>
 </div>
