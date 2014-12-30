@@ -78,13 +78,13 @@ angular.module( 'cyphy.components' )
 
                     //listHelper.upsertItem( updateObject.data );
                     treeHelper.upsertItem( updateObject.data );
-                    
+
                     addDomainWatcher( updateObject.id );
 
                 } else if ( updateObject.type === 'update' ) {
 
                     //listHelper.upsertItem( updateObject.data );
-                    treeHelper.upsertItem( updateObject.data );                    
+                    treeHelper.upsertItem( updateObject.data );
 
                 } else if ( updateObject.type === 'unload' ) {
 
@@ -110,6 +110,20 @@ angular.module( 'cyphy.components' )
                     }
                 } );
         } );
+
+        $scope.$watch('componentSearchSelection', function(selectedObject) {
+
+            var node;
+
+            if (angular.isObject(selectedObject)) {
+
+                node = selectedObject.originalObject;
+
+                treeHelper.showNode(node.id);
+            }
+
+        });
+
     } )
     .directive( 'componentBrowser', function () {
 

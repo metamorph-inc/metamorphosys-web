@@ -13,6 +13,7 @@ module.exports = function ($log) {
         initializeWithNodes,
         upsertItem,
         removeItem,
+        showNode,
 
         parentNodes,
 
@@ -234,6 +235,7 @@ module.exports = function ($log) {
             if (parentId) {
 
                 parentNode = parentNodes[parentId];
+                node.parentNode = parentNode;
 
                 if (parentNode) {
 
@@ -330,10 +332,13 @@ module.exports = function ($log) {
             node = {
                 id: nodeDescriptor.id,
                 label: label,
-                description: null
+                description: null,
+                parentNode: parentNode
             };
 
             childNodes.push(node);
+
+            treeNodesById[node.id] = node;
 
             parentNode.children.push(node);
             parentNode.childrenCount++;
@@ -431,6 +436,32 @@ module.exports = function ($log) {
         // TODO: complete this
     };
 
+    showNode = function(nodeId) {
+
+        // TODO: make it part of TreeNaviagtor
+
+        var node,
+            parentNode;
+
+        node = treeNodesById[nodeId];
+
+        if (angular.isObject(node)) {
+
+            parentNode = node.parentNode;
+
+            while (parentNode) {
+
+                if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
+                    treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
+                }
+
+                parentNode = parentNode.parentNode;
+
+            }
+
+            treeNavigatorData.config.state.selectedNodes = [ nodeId ];
+        }
+    };
 
     treeNavigatorData = {
         data: {},
@@ -444,5 +475,6 @@ module.exports = function ($log) {
     this.initializeWithNodes = initializeWithNodes;
     this.upsertItem = upsertItem;
     this.removeItem = removeItem;
+    this.showNode = showNode;
 
 };

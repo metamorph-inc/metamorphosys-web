@@ -12,6 +12,10 @@
             color: #666;
         }
 
+        li.parent-node.selected-node > .node-label {
+            color: #fff;
+        }
+
     }
 
     .component-search {

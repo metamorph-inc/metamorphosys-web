@@ -92,3 +92,8 @@ h1.main-view-header {
 
     overflow: auto;
 }
+
+.tree-navigator .selected-node > .node-label {
+    background-color: $mmsBlueLight;
+    color: #fff;
+}
