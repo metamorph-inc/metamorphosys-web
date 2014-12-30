@@ -3,10 +3,12 @@
 module.exports = function($log) {
 
     var config,
-        treeData,
+        data,
 
         getNodeContextmenu;
 
+
+    data = {};
 
     getNodeContextmenu = function ( node ) {
 
@@ -156,5 +158,6 @@ module.exports = function($log) {
     };
 
     this.config = config;
+    this.data = data;
 
 };
