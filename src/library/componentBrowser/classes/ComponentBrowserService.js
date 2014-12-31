@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function ($log) {
+module.exports = function (symbolManager, $log) {
 
     var config,
 
@@ -24,10 +24,15 @@ module.exports = function ($log) {
         parseNodeName,
         parseClassName,
         parseNodeExtraInfo,
+        findSymbolForClassNode,
 
         organizeTree,
 
-        getNodeContextmenu;
+        getNodeContextmenu,
+
+        mapFromClassNamesToSymbolTypes;
+
+    mapFromClassNamesToSymbolTypes = require('./ClassNamesToSymbolTypes')();
 
     treeNodesById = {};
 
@@ -93,6 +98,10 @@ module.exports = function ($log) {
                 result = 'parent-node';
             } else {
                 result = 'leaf-node';
+            }
+
+            if (node.symbol) {
+                result += ' has-symbol';
             }
 
             return result;
@@ -233,6 +242,31 @@ module.exports = function ($log) {
 
     };
 
+    findSymbolForClassNode = function(classNode, rawClassName) {
+
+        var symbolType,
+            symbol;
+
+        if (angular.isObject(symbolManager)) {
+
+            symbolType = mapFromClassNamesToSymbolTypes[rawClassName];
+
+            if (symbolType) {
+
+                symbol = symbolManager.getSymbol(symbolType);
+
+                classNode.symbol = symbol;
+                classNode.extraInfo = classNode.extraInfo || {};
+
+                classNode.extraInfo.symbol = symbol;
+
+            }
+
+        }
+
+
+    };
+
 
     parseClassifications = function (classifications) {
         var classes,
@@ -267,6 +301,8 @@ module.exports = function ($log) {
             );
 
             parentId = classId;
+
+            findSymbolForClassNode(classNode, classes[i]);
 
         }
 

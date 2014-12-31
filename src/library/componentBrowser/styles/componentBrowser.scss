@@ -6,6 +6,14 @@
 
         font-size: 95%;
 
+        li {
+            position: relative;
+        }
+
+        li.has-symbol {
+
+        }
+
         li.parent-node > .node-label {
             font-weight: bold;
             text-transform: uppercase;
@@ -26,7 +34,7 @@
         }
 
         ul.node-list ul.node-list {
-            padding: 0 0 0 1ex;
+            padding: 0 0 0 2ex;
         }
 
         ul.node-list > li {
@@ -45,6 +53,14 @@
             background-color: rgba(218, 226, 244, 0.6);
         }
 
+
+        svg.component-symbol {
+            width: 60px;
+            height: 20px;
+            display: inline-block;
+            margin-left: 20px;
+            vertical-align: top;
+        }
     }
 
     .component-search {
@@ -78,6 +94,7 @@
     }
 
     .total-children-count {
+        display: inline;
         font-weight: normal;
     }
 
