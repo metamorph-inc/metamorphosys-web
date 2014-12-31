@@ -1,19 +1,17 @@
 /*globals angular*/
 'use strict';
 
+var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
+
+
 angular.module( 'cyphy.components' )
+    .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
-    function ( $scope, $window, $modal, growl, componentService, fileService, $log ) {
+    function ( $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService ) {
         var
-            addDomainWatcher,
+            addInterfaceWatcher,
 
-            context,
-
-//            ComponentBrowserListHelper,
-//            listHelper,
-
-            ComponentBrowserTreeHelper,
-            treeHelper;
+            context;
 
 
         this.getConnectionId = function () {
@@ -33,31 +31,25 @@ angular.module( 'cyphy.components' )
             throw new Error( 'connectionId must be defined and it must be a string' );
         }
 
-        // List setup
-
-//        ComponentBrowserListHelper = require('./classes/ComponentBrowserListHelper.js');
-//        listHelper = new ComponentBrowserListHelper($scope, $window, context, $modal, componentService, $log);
-//
-//        $scope.listConfig = listHelper.config;
-//        $scope.listData = listHelper.data;
-
         // Tree setup
 
-        ComponentBrowserTreeHelper = require('./classes/ComponentBrowserTreeHelper.js');
-        treeHelper = new ComponentBrowserTreeHelper($log);
 
-        $scope.treeNavigatorData = treeHelper.treeNavigatorData;
+        $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
 
 
         // Getting the data
 
-        addDomainWatcher = function (componentId) {
+        addInterfaceWatcher = function (componentId) {
 
-            componentService.watchComponentDomains(context, componentId, function (/*updateData*/) {
-                //listHelper.updateItemStats(componentId, updateData);
+            componentService.watchInterfaces(context, componentId, function (updateData) {
+
+                componentBrowserService.upsertComponentInterface(componentId, updateData);
+
             })
-                .then(function (/*data*/) {
-                    //listHelper.updateItemStats(componentId, data);
+                .then(function (data) {
+
+                    componentBrowserService.upsertComponentInterface(componentId, data);
+
                 });
         };
 
@@ -77,19 +69,19 @@ angular.module( 'cyphy.components' )
                 if ( updateObject.type === 'load' ) {
 
                     //listHelper.upsertItem( updateObject.data );
-                    treeHelper.upsertItem( updateObject.data );
+                    componentBrowserService.upsertItem( updateObject.data );
 
-                    addDomainWatcher( updateObject.id );
+                    addInterfaceWatcher( updateObject.id );
 
                 } else if ( updateObject.type === 'update' ) {
 
                     //listHelper.upsertItem( updateObject.data );
-                    treeHelper.upsertItem( updateObject.data );
+                    componentBrowserService.upsertItem( updateObject.data );
 
                 } else if ( updateObject.type === 'unload' ) {
 
                     //listHelper.removeItem( updateObject.id );
-                    treeHelper.removeItem( updateObject.id );
+                    componentBrowserService.removeItem( updateObject.id );
 
                 } else {
                     throw new Error( updateObject );
@@ -99,12 +91,12 @@ angular.module( 'cyphy.components' )
                     var componentId;
 
 
-                    treeHelper.initializeWithNodes(data.components);
+                    componentBrowserService.initializeWithNodes(data.components);
 
                     for ( componentId in data.components ) {
                         if ( data.components.hasOwnProperty( componentId ) ) {
 //                            listHelper.upsertItem( data.components[ componentId ] );
-                            addDomainWatcher( componentId );
+                            addInterfaceWatcher( componentId );
 
                         }
                     }
@@ -119,7 +111,7 @@ angular.module( 'cyphy.components' )
 
                 node = selectedObject.originalObject;
 
-                treeHelper.showNode(node.id);
+                componentBrowserService.showNode(node.id);
             }
 
         });

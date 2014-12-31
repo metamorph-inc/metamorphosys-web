@@ -14,6 +14,7 @@ module.exports = function ($log) {
         upsertItem,
         removeItem,
         showNode,
+        upsertComponentInterface,
 
         parentNodes,
 
@@ -463,6 +464,10 @@ module.exports = function ($log) {
         }
     };
 
+    upsertComponentInterface = function() {
+
+    };
+
     treeNavigatorData = {
         data: {},
         config: config,
@@ -476,5 +481,6 @@ module.exports = function ($log) {
     this.upsertItem = upsertItem;
     this.removeItem = removeItem;
     this.showNode = showNode;
+    this.upsertComponentInterface = upsertComponentInterface;
 
 };
