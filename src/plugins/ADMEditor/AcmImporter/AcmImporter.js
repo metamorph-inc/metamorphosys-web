@@ -275,7 +275,7 @@ define( [ 'plugin/PluginConfig',
             avmComponent = acmJson[ 'Component' ] || acmJson[ 'avm:Component' ],
             name = avmComponent[ '@Name' ],
             id = avmComponent[ '@ID' ],
-            schemaVersion = avmComponent[ '@SchemaVersion' ],
+            schemaVersion = avmComponent[ '@SchemaVersion' ] || null, // 'undefined' causes assert failure with WebGME
             version = avmComponent[ '@Version' ],
             avmProperties,
             avmConnectors,
