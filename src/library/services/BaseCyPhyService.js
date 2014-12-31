@@ -140,24 +140,47 @@ angular.module( 'cyphy.services' )
                     var newName = this.getAttribute( 'name' ),
                         newDataType = this.getAttribute( 'DataType' ),
                         newValueType = this.getAttribute( 'ValueType' ),
+                        newValue = this.getAttribute( 'Value' ),
+                        newUnit = this.getAttribute( 'Unit' ),
+                        newIsProminent = this.getAttribute( 'IsProminent' ),
                         newDerived = isPropertyDerived( this ),
                         hadChanges = false;
+
                     if ( newName !== data.properties[ id ].name ) {
                         data.properties[ id ].name = newName;
                         hadChanges = true;
                     }
+
                     if ( newDataType !== data.properties[ id ].dataType ) {
                         data.properties[ id ].dataType = newDataType;
                         hadChanges = true;
                     }
+
                     if ( newValueType !== data.properties[ id ].valueType ) {
                         data.properties[ id ].valueType = newValueType;
                         hadChanges = true;
                     }
+
+                    if ( newValue !== data.properties[ id ].value ) {
+                        data.properties[ id ].value = newValue;
+                        hadChanges = true;
+                    }
+
+                    if ( newUnit !== data.properties[ id ].unit ) {
+                        data.properties[ id ].unit = newUnit;
+                        hadChanges = true;
+                    }
+
+                    if ( newIsProminent !== data.properties[ id ].isProminent ) {
+                        data.properties[ id ].isProminent = newIsProminent;
+                        hadChanges = true;
+                    }
+
                     if ( newDerived !== data.properties[ id ].derived ) {
                         data.properties[ id ].derived = newDerived;
                         hadChanges = true;
                     }
+
                     if ( hadChanges ) {
                         $timeout( function () {
                             updateListener( {
@@ -268,6 +291,10 @@ angular.module( 'cyphy.services' )
                                                 name: childNode.getAttribute( 'name' ),
                                                 dataType: childNode.getAttribute( 'DataType' ),
                                                 valueType: childNode.getAttribute( 'ValueType' ),
+                                                value:  childNode.getAttribute( 'Value' ),
+                                                unit: childNode.getAttribute( 'Unit' ),
+                                                isProminent: childNode.getAttribute( 'IsProminent' ),
+
                                                 derived: isPropertyDerived( childNode )
                                             };
                                             childNode.onUpdate( onPropertyUpdate );
@@ -301,6 +328,10 @@ angular.module( 'cyphy.services' )
                                                 name: newChild.getAttribute( 'name' ),
                                                 dataType: newChild.getAttribute( 'DataType' ),
                                                 valueType: newChild.getAttribute( 'ValueType' ),
+                                                value:  childNode.getAttribute( 'Value' ),
+                                                unit: childNode.getAttribute( 'Unit' ),
+                                                isProminent: childNode.getAttribute( 'IsProminent' ),
+
                                                 derived: isPropertyDerived( newChild )
                                             };
                                             newChild.onUpdate( onPropertyUpdate );
