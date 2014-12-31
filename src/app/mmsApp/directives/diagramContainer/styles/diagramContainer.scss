@@ -1,0 +1,67 @@
+.diagram-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    border: none;
+    position: relative;
+
+    .diagram-content-pane {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        opacity: 1;
+
+        transition: opacity 1500ms;
+
+        &.not-initialized {
+            opacity: 0;
+        }
+    }
+
+
+}
+
+.panzoom-widget {
+    position: absolute;
+    z-index: 1;
+    left: 5px;
+    top: 40px;
+    opacity: .5;
+}
+
+.panzoom-widget:hover {
+    opacity: 1;
+}
+
+.canvas-zoomer {
+    width: 10000px;
+    height: 10000px;
+}
+
+.zoom-level-0,
+.zoom-level-1 {
+    .zoom-2,
+    .zoom-3 {
+        display: none;
+    }
+}
+
+.zoom-level-0,
+.zoom-level-1,
+.zoom-level-2 {
+    .zoom-3 {
+        display: none;
+    }
+}
+
+.unselectable {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.position-debug {
+    position: absolute;
+    z-index: 200;
+}

@@ -2293,16 +2293,16 @@ angular.module('ui.utils',  [
 ]);
 
 },{}],4:[function(require,module,exports){
-var css = "/* BASICS */\n\n.CodeMirror {\n  /* Set height, width, borders, and global font properties here */\n  font-family: monospace;\n  height: 300px;\n}\n.CodeMirror-scroll {\n  /* Set scrolling behaviour here */\n  overflow: auto;\n}\n\n/* PADDING */\n\n.CodeMirror-lines {\n  padding: 4px 0; /* Vertical padding around content */\n}\n.CodeMirror pre {\n  padding: 0 4px; /* Horizontal padding of content */\n}\n\n.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  background-color: white; /* The little square between H and V scrollbars */\n}\n\n/* GUTTER */\n\n.CodeMirror-gutters {\n  border-right: 1px solid #ddd;\n  background-color: #f7f7f7;\n  white-space: nowrap;\n}\n.CodeMirror-linenumbers {}\n.CodeMirror-linenumber {\n  padding: 0 3px 0 5px;\n  min-width: 20px;\n  text-align: right;\n  color: #999;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n.CodeMirror-guttermarker { color: black; }\n.CodeMirror-guttermarker-subtle { color: #999; }\n\n/* CURSOR */\n\n.CodeMirror div.CodeMirror-cursor {\n  border-left: 1px solid black;\n}\n/* Shown when moving in bi-directional text */\n.CodeMirror div.CodeMirror-secondarycursor {\n  border-left: 1px solid silver;\n}\n.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {\n  width: auto;\n  border: 0;\n  background: #7e7;\n}\n.cm-animate-fat-cursor {\n  width: auto;\n  border: 0;\n  -webkit-animation: blink 1.06s steps(1) infinite;\n  -moz-animation: blink 1.06s steps(1) infinite;\n  animation: blink 1.06s steps(1) infinite;\n}\n@-moz-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@-webkit-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n\n/* Can style cursor different in overwrite (non-insert) mode */\ndiv.CodeMirror-overwrite div.CodeMirror-cursor {}\n\n.cm-tab { display: inline-block; }\n\n.CodeMirror-ruler {\n  border-left: 1px solid #ccc;\n  position: absolute;\n}\n\n/* DEFAULT THEME */\n\n.cm-s-default .cm-keyword {color: #708;}\n.cm-s-default .cm-atom {color: #219;}\n.cm-s-default .cm-number {color: #164;}\n.cm-s-default .cm-def {color: #00f;}\n.cm-s-default .cm-variable,\n.cm-s-default .cm-punctuation,\n.cm-s-default .cm-property,\n.cm-s-default .cm-operator {}\n.cm-s-default .cm-variable-2 {color: #05a;}\n.cm-s-default .cm-variable-3 {color: #085;}\n.cm-s-default .cm-comment {color: #a50;}\n.cm-s-default .cm-string {color: #a11;}\n.cm-s-default .cm-string-2 {color: #f50;}\n.cm-s-default .cm-meta {color: #555;}\n.cm-s-default .cm-qualifier {color: #555;}\n.cm-s-default .cm-builtin {color: #30a;}\n.cm-s-default .cm-bracket {color: #997;}\n.cm-s-default .cm-tag {color: #170;}\n.cm-s-default .cm-attribute {color: #00c;}\n.cm-s-default .cm-header {color: blue;}\n.cm-s-default .cm-quote {color: #090;}\n.cm-s-default .cm-hr {color: #999;}\n.cm-s-default .cm-link {color: #00c;}\n\n.cm-negative {color: #d44;}\n.cm-positive {color: #292;}\n.cm-header, .cm-strong {font-weight: bold;}\n.cm-em {font-style: italic;}\n.cm-link {text-decoration: underline;}\n\n.cm-s-default .cm-error {color: #f00;}\n.cm-invalidchar {color: #f00;}\n\n/* Default styles for common addons */\n\ndiv.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}\ndiv.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}\n.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }\n.CodeMirror-activeline-background {background: #e8f2ff;}\n\n/* STOP */\n\n/* The rest of this file contains styles related to the mechanics of\n   the editor. You probably shouldn't touch them. */\n\n.CodeMirror {\n  line-height: 1;\n  position: relative;\n  overflow: hidden;\n  background: white;\n  color: black;\n}\n\n.CodeMirror-scroll {\n  /* 30px is the magic margin used to hide the element's real scrollbars */\n  /* See overflow: hidden in .CodeMirror */\n  margin-bottom: -30px; margin-right: -30px;\n  padding-bottom: 30px;\n  height: 100%;\n  outline: none; /* Prevent dragging from highlighting the element */\n  position: relative;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n.CodeMirror-sizer {\n  position: relative;\n  border-right: 30px solid transparent;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n/* The fake, visible scrollbars. Used to force redraw during scrolling\n   before actuall scrolling happens, thus preventing shaking and\n   flickering artifacts. */\n.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  position: absolute;\n  z-index: 6;\n  display: none;\n}\n.CodeMirror-vscrollbar {\n  right: 0; top: 0;\n  overflow-x: hidden;\n  overflow-y: scroll;\n}\n.CodeMirror-hscrollbar {\n  bottom: 0; left: 0;\n  overflow-y: hidden;\n  overflow-x: scroll;\n}\n.CodeMirror-scrollbar-filler {\n  right: 0; bottom: 0;\n}\n.CodeMirror-gutter-filler {\n  left: 0; bottom: 0;\n}\n\n.CodeMirror-gutters {\n  position: absolute; left: 0; top: 0;\n  padding-bottom: 30px;\n  z-index: 3;\n}\n.CodeMirror-gutter {\n  white-space: normal;\n  height: 100%;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  padding-bottom: 30px;\n  margin-bottom: -32px;\n  display: inline-block;\n  /* Hack to make IE7 behave */\n  *zoom:1;\n  *display:inline;\n}\n.CodeMirror-gutter-elt {\n  position: absolute;\n  cursor: default;\n  z-index: 4;\n}\n\n.CodeMirror-lines {\n  cursor: text;\n}\n.CodeMirror pre {\n  /* Reset some styles that the rest of the page might have set */\n  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;\n  border-width: 0;\n  background: transparent;\n  font-family: inherit;\n  font-size: inherit;\n  margin: 0;\n  white-space: pre;\n  word-wrap: normal;\n  line-height: inherit;\n  color: inherit;\n  z-index: 2;\n  position: relative;\n  overflow: visible;\n}\n.CodeMirror-wrap pre {\n  word-wrap: break-word;\n  white-space: pre-wrap;\n  word-break: normal;\n}\n\n.CodeMirror-linebackground {\n  position: absolute;\n  left: 0; right: 0; top: 0; bottom: 0;\n  z-index: 0;\n}\n\n.CodeMirror-linewidget {\n  position: relative;\n  z-index: 2;\n  overflow: auto;\n}\n\n.CodeMirror-widget {}\n\n.CodeMirror-wrap .CodeMirror-scroll {\n  overflow-x: hidden;\n}\n\n.CodeMirror-measure {\n  position: absolute;\n  width: 100%;\n  height: 0;\n  overflow: hidden;\n  visibility: hidden;\n}\n.CodeMirror-measure pre { position: static; }\n\n.CodeMirror div.CodeMirror-cursor {\n  position: absolute;\n  border-right: none;\n  width: 0;\n}\n\ndiv.CodeMirror-cursors {\n  visibility: hidden;\n  position: relative;\n  z-index: 1;\n}\n.CodeMirror-focused div.CodeMirror-cursors {\n  visibility: visible;\n}\n\n.CodeMirror-selected { background: #d9d9d9; }\n.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }\n.CodeMirror-crosshair { cursor: crosshair; }\n\n.cm-searching {\n  background: #ffa;\n  background: rgba(255, 255, 0, .4);\n}\n\n/* IE7 hack to prevent it from returning funny offsetTops on the spans */\n.CodeMirror span { *vertical-align: text-bottom; }\n\n/* Used to force a border model for a node */\n.cm-force-border { padding-right: .1px; }\n\n@media print {\n  /* Hide the cursor when printing */\n  .CodeMirror div.CodeMirror-cursors {\n    visibility: hidden;\n  }\n}\n"; (require("/Volumes/Projects/webgme/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
-},{"/Volumes/Projects/webgme/isis-ui-components/node_modules/cssify":14}],5:[function(require,module,exports){
+var css = "/* BASICS */\n\n.CodeMirror {\n  /* Set height, width, borders, and global font properties here */\n  font-family: monospace;\n  height: 300px;\n}\n.CodeMirror-scroll {\n  /* Set scrolling behaviour here */\n  overflow: auto;\n}\n\n/* PADDING */\n\n.CodeMirror-lines {\n  padding: 4px 0; /* Vertical padding around content */\n}\n.CodeMirror pre {\n  padding: 0 4px; /* Horizontal padding of content */\n}\n\n.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  background-color: white; /* The little square between H and V scrollbars */\n}\n\n/* GUTTER */\n\n.CodeMirror-gutters {\n  border-right: 1px solid #ddd;\n  background-color: #f7f7f7;\n  white-space: nowrap;\n}\n.CodeMirror-linenumbers {}\n.CodeMirror-linenumber {\n  padding: 0 3px 0 5px;\n  min-width: 20px;\n  text-align: right;\n  color: #999;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n.CodeMirror-guttermarker { color: black; }\n.CodeMirror-guttermarker-subtle { color: #999; }\n\n/* CURSOR */\n\n.CodeMirror div.CodeMirror-cursor {\n  border-left: 1px solid black;\n}\n/* Shown when moving in bi-directional text */\n.CodeMirror div.CodeMirror-secondarycursor {\n  border-left: 1px solid silver;\n}\n.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {\n  width: auto;\n  border: 0;\n  background: #7e7;\n}\n.cm-animate-fat-cursor {\n  width: auto;\n  border: 0;\n  -webkit-animation: blink 1.06s steps(1) infinite;\n  -moz-animation: blink 1.06s steps(1) infinite;\n  animation: blink 1.06s steps(1) infinite;\n}\n@-moz-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@-webkit-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n\n/* Can style cursor different in overwrite (non-insert) mode */\ndiv.CodeMirror-overwrite div.CodeMirror-cursor {}\n\n.cm-tab { display: inline-block; }\n\n.CodeMirror-ruler {\n  border-left: 1px solid #ccc;\n  position: absolute;\n}\n\n/* DEFAULT THEME */\n\n.cm-s-default .cm-keyword {color: #708;}\n.cm-s-default .cm-atom {color: #219;}\n.cm-s-default .cm-number {color: #164;}\n.cm-s-default .cm-def {color: #00f;}\n.cm-s-default .cm-variable,\n.cm-s-default .cm-punctuation,\n.cm-s-default .cm-property,\n.cm-s-default .cm-operator {}\n.cm-s-default .cm-variable-2 {color: #05a;}\n.cm-s-default .cm-variable-3 {color: #085;}\n.cm-s-default .cm-comment {color: #a50;}\n.cm-s-default .cm-string {color: #a11;}\n.cm-s-default .cm-string-2 {color: #f50;}\n.cm-s-default .cm-meta {color: #555;}\n.cm-s-default .cm-qualifier {color: #555;}\n.cm-s-default .cm-builtin {color: #30a;}\n.cm-s-default .cm-bracket {color: #997;}\n.cm-s-default .cm-tag {color: #170;}\n.cm-s-default .cm-attribute {color: #00c;}\n.cm-s-default .cm-header {color: blue;}\n.cm-s-default .cm-quote {color: #090;}\n.cm-s-default .cm-hr {color: #999;}\n.cm-s-default .cm-link {color: #00c;}\n\n.cm-negative {color: #d44;}\n.cm-positive {color: #292;}\n.cm-header, .cm-strong {font-weight: bold;}\n.cm-em {font-style: italic;}\n.cm-link {text-decoration: underline;}\n\n.cm-s-default .cm-error {color: #f00;}\n.cm-invalidchar {color: #f00;}\n\n/* Default styles for common addons */\n\ndiv.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}\ndiv.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}\n.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }\n.CodeMirror-activeline-background {background: #e8f2ff;}\n\n/* STOP */\n\n/* The rest of this file contains styles related to the mechanics of\n   the editor. You probably shouldn't touch them. */\n\n.CodeMirror {\n  line-height: 1;\n  position: relative;\n  overflow: hidden;\n  background: white;\n  color: black;\n}\n\n.CodeMirror-scroll {\n  /* 30px is the magic margin used to hide the element's real scrollbars */\n  /* See overflow: hidden in .CodeMirror */\n  margin-bottom: -30px; margin-right: -30px;\n  padding-bottom: 30px;\n  height: 100%;\n  outline: none; /* Prevent dragging from highlighting the element */\n  position: relative;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n.CodeMirror-sizer {\n  position: relative;\n  border-right: 30px solid transparent;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n/* The fake, visible scrollbars. Used to force redraw during scrolling\n   before actuall scrolling happens, thus preventing shaking and\n   flickering artifacts. */\n.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  position: absolute;\n  z-index: 6;\n  display: none;\n}\n.CodeMirror-vscrollbar {\n  right: 0; top: 0;\n  overflow-x: hidden;\n  overflow-y: scroll;\n}\n.CodeMirror-hscrollbar {\n  bottom: 0; left: 0;\n  overflow-y: hidden;\n  overflow-x: scroll;\n}\n.CodeMirror-scrollbar-filler {\n  right: 0; bottom: 0;\n}\n.CodeMirror-gutter-filler {\n  left: 0; bottom: 0;\n}\n\n.CodeMirror-gutters {\n  position: absolute; left: 0; top: 0;\n  padding-bottom: 30px;\n  z-index: 3;\n}\n.CodeMirror-gutter {\n  white-space: normal;\n  height: 100%;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  padding-bottom: 30px;\n  margin-bottom: -32px;\n  display: inline-block;\n  /* Hack to make IE7 behave */\n  *zoom:1;\n  *display:inline;\n}\n.CodeMirror-gutter-elt {\n  position: absolute;\n  cursor: default;\n  z-index: 4;\n}\n\n.CodeMirror-lines {\n  cursor: text;\n}\n.CodeMirror pre {\n  /* Reset some styles that the rest of the page might have set */\n  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;\n  border-width: 0;\n  background: transparent;\n  font-family: inherit;\n  font-size: inherit;\n  margin: 0;\n  white-space: pre;\n  word-wrap: normal;\n  line-height: inherit;\n  color: inherit;\n  z-index: 2;\n  position: relative;\n  overflow: visible;\n}\n.CodeMirror-wrap pre {\n  word-wrap: break-word;\n  white-space: pre-wrap;\n  word-break: normal;\n}\n\n.CodeMirror-linebackground {\n  position: absolute;\n  left: 0; right: 0; top: 0; bottom: 0;\n  z-index: 0;\n}\n\n.CodeMirror-linewidget {\n  position: relative;\n  z-index: 2;\n  overflow: auto;\n}\n\n.CodeMirror-widget {}\n\n.CodeMirror-wrap .CodeMirror-scroll {\n  overflow-x: hidden;\n}\n\n.CodeMirror-measure {\n  position: absolute;\n  width: 100%;\n  height: 0;\n  overflow: hidden;\n  visibility: hidden;\n}\n.CodeMirror-measure pre { position: static; }\n\n.CodeMirror div.CodeMirror-cursor {\n  position: absolute;\n  border-right: none;\n  width: 0;\n}\n\ndiv.CodeMirror-cursors {\n  visibility: hidden;\n  position: relative;\n  z-index: 1;\n}\n.CodeMirror-focused div.CodeMirror-cursors {\n  visibility: visible;\n}\n\n.CodeMirror-selected { background: #d9d9d9; }\n.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }\n.CodeMirror-crosshair { cursor: crosshair; }\n\n.cm-searching {\n  background: #ffa;\n  background: rgba(255, 255, 0, .4);\n}\n\n/* IE7 hack to prevent it from returning funny offsetTops on the spans */\n.CodeMirror span { *vertical-align: text-bottom; }\n\n/* Used to force a border model for a node */\n.cm-force-border { padding-right: .1px; }\n\n@media print {\n  /* Hide the cursor when printing */\n  .CodeMirror div.CodeMirror-cursors {\n    visibility: hidden;\n  }\n}\n"; (require("/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
+},{"/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify":14}],5:[function(require,module,exports){
 (function(e,n){"use strict";var t=6,o=4,i="asc",r="desc",l="_ng_field_",a="_ng_depth_",s="_ng_hidden_",c="_ng_column_",g=/CUSTOM_FILTERS/g,d=/COL_FIELD/g,u=/DISPLAY_CELL_TEMPLATE/g,f=/EDITABLE_CELL_TEMPLATE/g,h=/CELL_EDITABLE_CONDITION/g,p=/<.+>/,m=/(\([^)]*\))?$/,v=/\./g,w=/'/g,C=/^(.*)((?:\s*\[\s*\d+\s*\]\s*)|(?:\s*\[\s*"(?:[^"\\]|\\.)*"\s*\]\s*)|(?:\s*\[\s*'(?:[^'\\]|\\.)*'\s*\]\s*))(.*)$/;e.ngGrid={},e.ngGrid.i18n={},angular.module("ngGrid.services",[]);var b=angular.module("ngGrid.directives",[]),y=angular.module("ngGrid.filters",[]);angular.module("ngGrid",["ngGrid.services","ngGrid.directives","ngGrid.filters"]);var S=function(e,n,o,i){if(void 0===e.selectionProvider.selectedItems)return!0;var r,l=o.which||o.keyCode,a=!1,s=!1,c=void 0===e.selectionProvider.lastClickedRow?1:e.selectionProvider.lastClickedRow.rowIndex,g=e.columns.filter(function(e){return e.visible&&e.width>0}),d=e.columns.filter(function(e){return e.pinned});if(e.col&&(r=g.indexOf(e.col)),37!==l&&38!==l&&39!==l&&40!==l&&(i.config.noTabInterference||9!==l)&&13!==l)return!0;if(e.enableCellSelection){9===l&&o.preventDefault();var u=e.showSelectionCheckbox?1===r:0===r,f=1===r||0===r,h=r===g.length-1||r===g.length-2,p=g.indexOf(e.col)===g.length-1,m=d.indexOf(e.col)===d.length-1;if(37===l||9===l&&o.shiftKey){var v=0;u||(r-=1),f?u&&9===l&&o.shiftKey?(v=i.$canvas.width(),r=g.length-1,s=!0):v=i.$viewport.scrollLeft()-e.col.width:d.length>0&&(v=i.$viewport.scrollLeft()-g[r].width),i.$viewport.scrollLeft(v)}else(39===l||9===l&&!o.shiftKey)&&(h?p&&9===l&&!o.shiftKey?(i.$viewport.scrollLeft(0),r=e.showSelectionCheckbox?1:0,a=!0):i.$viewport.scrollLeft(i.$viewport.scrollLeft()+e.col.width):m&&i.$viewport.scrollLeft(0),p||(r+=1))}var w;w=e.configGroups.length>0?i.rowFactory.parsedData.filter(function(e){return!e.isAggRow}):i.filteredRows;var C=0;if(0!==c&&(38===l||13===l&&o.shiftKey||9===l&&o.shiftKey&&s)?C=-1:c!==w.length-1&&(40===l||13===l&&!o.shiftKey||9===l&&a)&&(C=1),C){var b=w[c+C];b.beforeSelectionChange(b,o)&&(b.continueSelection(o),e.$emit("ngGridEventDigestGridParent"),e.selectionProvider.lastClickedRow.renderedRowIndex>=e.renderedRows.length-t-2?i.$viewport.scrollTop(i.$viewport.scrollTop()+e.rowHeight):t+2>=e.selectionProvider.lastClickedRow.renderedRowIndex&&i.$viewport.scrollTop(i.$viewport.scrollTop()-e.rowHeight))}return e.enableCellSelection&&setTimeout(function(){e.domAccessProvider.focusCellElement(e,e.renderedColumns.indexOf(g[r]))},3),!1};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}),Array.prototype.indexOf||(Array.prototype.indexOf=function(e){var n=this.length>>>0,t=Number(arguments[1])||0;for(t=0>t?Math.ceil(t):Math.floor(t),0>t&&(t+=n);n>t;t++)if(t in this&&this[t]===e)return t;return-1}),Array.prototype.filter||(Array.prototype.filter=function(e){var n=Object(this),t=n.length>>>0;if("function"!=typeof e)throw new TypeError;for(var o=[],i=arguments[1],r=0;t>r;r++)if(r in n){var l=n[r];e.call(i,l,r,n)&&o.push(l)}return o}),y.filter("checkmark",function(){return function(e){return e?"✔":"✘"}}),y.filter("ngColumns",function(){return function(e){return e.filter(function(e){return!e.isAggCol})}}),angular.module("ngGrid.services").factory("$domUtilityService",["$utilityService","$window",function(e,t){var o={},i={},r=function(){var e=n("<div></div>");e.appendTo("body"),e.height(100).width(100).css("position","absolute").css("overflow","scroll"),e.append('<div style="height: 400px; width: 400px;"></div>'),o.ScrollH=e.height()-e[0].clientHeight,o.ScrollW=e.width()-e[0].clientWidth,e.empty(),e.attr("style",""),e.append('<span style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 14px;"><strong>M</strong></span>'),o.LetterW=e.children().first().width(),e.remove()};return o.eventStorage={},o.AssignGridContainers=function(e,t,i){i.$root=n(t),i.$topPanel=i.$root.find(".ngTopPanel"),i.$groupPanel=i.$root.find(".ngGroupPanel"),i.$headerContainer=i.$topPanel.find(".ngHeaderContainer"),e.$headerContainer=i.$headerContainer,i.$headerScroller=i.$topPanel.find(".ngHeaderScroller"),i.$headers=i.$headerScroller.children(),i.$viewport=i.$root.find(".ngViewport"),i.$canvas=i.$viewport.find(".ngCanvas"),i.$footerPanel=i.$root.find(".ngFooterPanel");var r=e.$watch(function(){return i.$viewport.scrollLeft()},function(e){return i.$headerContainer.scrollLeft(e)});e.$on("$destroy",function(){i.$root&&(n(i.$root.parent()).off("resize.nggrid"),i.$root=null,i.$topPanel=null,i.$headerContainer=null,i.$headers=null,i.$canvas=null,i.$footerPanel=null),r()}),o.UpdateGridLayout(e,i)},o.getRealWidth=function(e){var t=0,o={visibility:"hidden",display:"block"},i=e.parents().andSelf().not(":visible");return n.swap(i[0],o,function(){t=e.outerWidth()}),t},o.UpdateGridLayout=function(e,n){if(n.$root){var t=n.$viewport.scrollTop();n.elementDims.rootMaxW=n.$root.width(),n.$root.is(":hidden")&&(n.elementDims.rootMaxW=o.getRealWidth(n.$root)),n.elementDims.rootMaxH=n.$root.height(),n.refreshDomSizes(),e.adjustScrollTop(t,!0)}},o.numberOfGrids=0,o.setStyleText=function(e,n){var o=e.styleSheet,i=e.gridId,r=t.document;o||(o=r.getElementById(i)),o||(o=r.createElement("style"),o.type="text/css",o.id=i,(r.head||r.getElementsByTagName("head")[0]).appendChild(o)),o.styleSheet&&!o.sheet?o.styleSheet.cssText=n:o.innerHTML=n,e.styleSheet=o,e.styleText=n},o.BuildStyles=function(e,n,t){var i,r=n.config.rowHeight,l=n.gridId,a=e.columns,s=0,c=e.totalRowWidth();i="."+l+" .ngCanvas { width: "+c+"px; }"+"."+l+" .ngRow { width: "+c+"px; }"+"."+l+" .ngCanvas { width: "+c+"px; }"+"."+l+" .ngHeaderScroller { width: "+(c+o.ScrollH)+"px}";for(var g=0;a.length>g;g++){var d=a[g];if(d.visible!==!1){var u=0;g===a.length-1&&s+d.width<n.elementDims.rootMaxW&&(u=n.elementDims.rootMaxW-s-d.width),i+="."+l+" .col"+g+" { width: "+(d.width+u)+"px; left: "+s+"px; height: "+r+"px }"+"."+l+" .colt"+g+" { width: "+(d.width+u)+"px; }",s+=d.width}}o.setStyleText(n,i),e.adjustScrollLeft(n.$viewport.scrollLeft()),t&&o.digest(e)},o.setColLeft=function(e,n,t){if(t.styleText){var r=i[e.index];r||(r=i[e.index]=RegExp(".col"+e.index+" { width: [0-9]+px; left: [0-9]+px"));var l=t.styleText.replace(r,".col"+e.index+" { width: "+e.width+"px; left: "+n+"px");o.setStyleText(t,l)}},o.setColLeft.immediate=1,o.RebuildGrid=function(e,n){o.UpdateGridLayout(e,n),(null==n.config.maintainColumnRatios||n.config.maintainColumnRatios)&&n.configureColumnWidths(),e.adjustScrollLeft(n.$viewport.scrollLeft()),o.BuildStyles(e,n,!0)},o.digest=function(e){e.$root.$$phase||e.$digest()},o.ScrollH=17,o.ScrollW=17,o.LetterW=10,r(),o}]),angular.module("ngGrid.services").factory("$sortService",["$parse","$utilityService",function(e,n){var t={};return t.colSortFnCache={},t.isCustomSort=!1,t.guessSortFn=function(e){var n=typeof e;switch(n){case"number":return t.sortNumber;case"boolean":return t.sortBool;case"string":return e.match(/^[-+]?[£$¤]?[\d,.]+%?$/)?t.sortNumberStr:t.sortAlpha;default:return"[object Date]"===Object.prototype.toString.call(e)?t.sortDate:t.basicSort}},t.basicSort=function(e,n){return e===n?0:n>e?-1:1},t.sortNumber=function(e,n){return e-n},t.sortNumberStr=function(e,n){var t,o,i=!1,r=!1;return t=parseFloat(e.replace(/[^0-9.-]/g,"")),isNaN(t)&&(i=!0),o=parseFloat(n.replace(/[^0-9.-]/g,"")),isNaN(o)&&(r=!0),i&&r?0:i?1:r?-1:t-o},t.sortAlpha=function(e,n){var t=e.toLowerCase(),o=n.toLowerCase();return t===o?0:o>t?-1:1},t.sortDate=function(e,n){var t=e.getTime(),o=n.getTime();return t===o?0:o>t?-1:1},t.sortBool=function(e,n){return e&&n?0:e||n?e?1:-1:0},t.sortData=function(e,o){if(o&&e){var r,l,a=e.fields.length,s=e.fields,c=o.slice(0);o.sort(function(o,g){for(var d,u,f=0,h=0;0===f&&a>h;){r=e.columns[h],l=e.directions[h],u=t.getSortFn(r,c);var p=n.evalProperty(o,s[h]),m=n.evalProperty(g,s[h]);t.isCustomSort?(d=u(p,m),f=l===i?d:0-d):null==p||null==m?null==m&&null==p?f=0:null==p?f=1:null==m&&(f=-1):(d=u(p,m),f=l===i?d:0-d),h++}return f})}},t.Sort=function(e,n){t.isSorting||(t.isSorting=!0,t.sortData(e,n),t.isSorting=!1)},t.getSortFn=function(n,o){var i,r;if(t.colSortFnCache[n.field])i=t.colSortFnCache[n.field];else if(void 0!==n.sortingAlgorithm)i=n.sortingAlgorithm,t.colSortFnCache[n.field]=n.sortingAlgorithm,t.isCustomSort=!0;else{if(r=o[0],!r)return i;i=t.guessSortFn(e("entity['"+n.field.replace(v,"']['")+"']")({entity:r})),i?t.colSortFnCache[n.field]=i:i=t.sortAlpha}return i},t}]),angular.module("ngGrid.services").factory("$utilityService",["$parse",function(t){var o=/function (.{1,})\(/,i={visualLength:function(e){var t=document.getElementById("testDataLength");t||(t=document.createElement("SPAN"),t.id="testDataLength",t.style.visibility="hidden",document.body.appendChild(t));var o=n(e);n(t).css({font:o.css("font"),"font-size":o.css("font-size"),"font-family":o.css("font-family")}),t.innerHTML=o.text();var i=t.offsetWidth;return document.body.removeChild(t),i},forIn:function(e,n){for(var t in e)e.hasOwnProperty(t)&&n(e[t],t)},endsWith:function(e,n){return e&&n&&"string"==typeof e?-1!==e.indexOf(n,e.length-n.length):!1},isNullOrUndefined:function(e){return void 0===e||null===e?!0:!1},getElementsByClassName:function(e){if(document.getElementsByClassName)return document.getElementsByClassName(e);for(var n=[],t=RegExp("\\b"+e+"\\b"),o=document.getElementsByTagName("*"),i=0;o.length>i;i++){var r=o[i].className;t.test(r)&&n.push(o[i])}return n},newId:function(){var e=(new Date).getTime();return function(){return e+=1}}(),seti18n:function(n,t){var o=e.ngGrid.i18n[t];for(var i in o)n.i18n[i]=o[i]},getInstanceType:function(e){var n=o.exec(""+e.constructor);if(n&&n.length>1){var t=n[1].replace(/^\s+|\s+$/g,"");return t}return""},init:function(){function e(n){var t=C.exec(n);if(t)return(t[1]?e(t[1]):t[1])+t[2]+(t[3]?e(t[3]):t[3]);n=n.replace(w,"\\'");var o=n.split(v),i=[o.shift()];return angular.forEach(o,function(e){i.push(e.replace(m,"']$1"))}),i.join("['")}return this.preEval=e,this.evalProperty=function(n,o){return t(e("entity."+o))({entity:n})},delete this.init,this}}.init();return i}]);var x=function(e,n,t,o){this.rowIndex=0,this.offsetTop=this.rowIndex*t,this.entity=e,this.label=e.gLabel,this.field=e.gField,this.depth=e.gDepth,this.parent=e.parent,this.children=e.children,this.aggChildren=e.aggChildren,this.aggIndex=e.aggIndex,this.collapsed=o,this.groupInitState=o,this.rowFactory=n,this.rowHeight=t,this.isAggRow=!0,this.offsetLeft=25*e.gDepth,this.aggLabelFilter=e.aggLabelFilter};x.prototype.toggleExpand=function(){this.collapsed=this.collapsed?!1:!0,this.orig&&(this.orig.collapsed=this.collapsed),this.notifyChildren()},x.prototype.setExpand=function(e){this.collapsed=e,this.orig&&(this.orig.collapsed=e),this.notifyChildren()},x.prototype.notifyChildren=function(){for(var e=Math.max(this.rowFactory.aggCache.length,this.children.length),n=0;e>n;n++)if(this.aggChildren[n]&&(this.aggChildren[n].entity[s]=this.collapsed,this.collapsed&&this.aggChildren[n].setExpand(this.collapsed)),this.children[n]&&(this.children[n][s]=this.collapsed),n>this.aggIndex&&this.rowFactory.aggCache[n]){var t=this.rowFactory.aggCache[n],o=30*this.children.length;t.offsetTop=this.collapsed?t.offsetTop-o:t.offsetTop+o}this.rowFactory.renderedChange()},x.prototype.aggClass=function(){return this.collapsed?"ngAggArrowCollapsed":"ngAggArrowExpanded"},x.prototype.totalChildren=function(){if(this.aggChildren.length>0){var e=0,n=function(t){t.aggChildren.length>0?angular.forEach(t.aggChildren,function(e){n(e)}):e+=t.children.length};return n(this),e}return this.children.length},x.prototype.copy=function(){var e=new x(this.entity,this.rowFactory,this.rowHeight,this.groupInitState);return e.orig=this,e};var T=function(e,t,o,l,a,s){var c=this,d=e.colDef,u=500,f=0,h=null;c.colDef=e.colDef,c.width=d.width,c.groupIndex=0,c.isGroupedBy=!1,c.minWidth=d.minWidth?d.minWidth:50,c.maxWidth=d.maxWidth?d.maxWidth:9e3,c.enableCellEdit=void 0!==d.enableCellEdit?d.enableCellEdit:e.enableCellEdit||e.enableCellEditOnFocus,c.cellEditableCondition=d.cellEditableCondition||e.cellEditableCondition||"true",c.headerRowHeight=e.headerRowHeight,c.displayName=void 0===d.displayName?d.field:d.displayName,c.index=e.index,c.isAggCol=e.isAggCol,c.cellClass=d.cellClass,c.sortPriority=void 0,c.cellFilter=d.cellFilter?d.cellFilter:"",c.field=d.field,c.aggLabelFilter=d.aggLabelFilter||d.cellFilter,c.visible=s.isNullOrUndefined(d.visible)||d.visible,c.sortable=!1,c.resizable=!1,c.pinnable=!1,c.pinned=e.enablePinning&&d.pinned,c.originalIndex=null==e.originalIndex?c.index:e.originalIndex,c.groupable=s.isNullOrUndefined(d.groupable)||d.groupable,e.enableSort&&(c.sortable=s.isNullOrUndefined(d.sortable)||d.sortable),e.enableResize&&(c.resizable=s.isNullOrUndefined(d.resizable)||d.resizable),e.enablePinning&&(c.pinnable=s.isNullOrUndefined(d.pinnable)||d.pinnable),c.sortDirection=void 0,c.sortingAlgorithm=d.sortFn,c.headerClass=d.headerClass,c.cursor=c.sortable?"pointer":"default",c.headerCellTemplate=d.headerCellTemplate||a.get("headerCellTemplate.html"),c.cellTemplate=d.cellTemplate||a.get("cellTemplate.html").replace(g,c.cellFilter?"|"+c.cellFilter:""),c.enableCellEdit&&(c.cellEditTemplate=d.cellEditTemplate||a.get("cellEditTemplate.html"),c.editableCellTemplate=d.editableCellTemplate||a.get("editableCellTemplate.html")),d.cellTemplate&&!p.test(d.cellTemplate)&&(c.cellTemplate=a.get(d.cellTemplate)||n.ajax({type:"GET",url:d.cellTemplate,async:!1}).responseText),c.enableCellEdit&&d.editableCellTemplate&&!p.test(d.editableCellTemplate)&&(c.editableCellTemplate=a.get(d.editableCellTemplate)||n.ajax({type:"GET",url:d.editableCellTemplate,async:!1}).responseText),d.headerCellTemplate&&!p.test(d.headerCellTemplate)&&(c.headerCellTemplate=a.get(d.headerCellTemplate)||n.ajax({type:"GET",url:d.headerCellTemplate,async:!1}).responseText),c.colIndex=function(){var e=c.pinned?"pinned ":"";return e+="col"+c.index+" colt"+c.index,c.cellClass&&(e+=" "+c.cellClass),e},c.groupedByClass=function(){return c.isGroupedBy?"ngGroupedByIcon":"ngGroupIcon"},c.toggleVisible=function(){c.visible=!c.visible},c.showSortButtonUp=function(){return c.sortable?c.sortDirection===r:c.sortable},c.showSortButtonDown=function(){return c.sortable?c.sortDirection===i:c.sortable},c.noSortVisible=function(){return!c.sortDirection},c.sort=function(n){if(!c.sortable)return!0;var t=c.sortDirection===i?r:i;return c.sortDirection=t,e.sortCallback(c,n),!1},c.gripClick=function(){f++,1===f?h=setTimeout(function(){f=0},u):(clearTimeout(h),e.resizeOnDataCallback(c),f=0)},c.gripOnMouseDown=function(e){return t.isColumnResizing=!0,e.ctrlKey&&!c.pinned?(c.toggleVisible(),l.BuildStyles(t,o),!0):(e.target.parentElement.style.cursor="col-resize",c.startMousePosition=e.clientX,c.origWidth=c.width,n(document).mousemove(c.onMouseMove),n(document).mouseup(c.gripOnMouseUp),!1)},c.onMouseMove=function(e){var n=e.clientX-c.startMousePosition,i=n+c.origWidth;return c.width=c.minWidth>i?c.minWidth:i>c.maxWidth?c.maxWidth:i,t.hasUserChangedGridColumnWidths=!0,l.BuildStyles(t,o),!1},c.gripOnMouseUp=function(e){return n(document).off("mousemove",c.onMouseMove),n(document).off("mouseup",c.gripOnMouseUp),e.target.parentElement.style.cursor="default",l.digest(t),t.isColumnResizing=!1,!1},c.copy=function(){var n=new T(e,t,o,l,a,s);return n.isClone=!0,n.orig=c,n},c.setVars=function(e){c.orig=e,c.width=e.width,c.groupIndex=e.groupIndex,c.isGroupedBy=e.isGroupedBy,c.displayName=e.displayName,c.index=e.index,c.isAggCol=e.isAggCol,c.cellClass=e.cellClass,c.cellFilter=e.cellFilter,c.field=e.field,c.aggLabelFilter=e.aggLabelFilter,c.visible=e.visible,c.sortable=e.sortable,c.resizable=e.resizable,c.pinnable=e.pinnable,c.pinned=e.pinned,c.originalIndex=e.originalIndex,c.sortDirection=e.sortDirection,c.sortingAlgorithm=e.sortingAlgorithm,c.headerClass=e.headerClass,c.headerCellTemplate=e.headerCellTemplate,c.cellTemplate=e.cellTemplate,c.cellEditTemplate=e.cellEditTemplate}},P=function(e){this.outerHeight=null,this.outerWidth=null,n.extend(this,e)},I=function(e){this.previousColumn=null,this.grid=e};I.prototype.changeUserSelect=function(e,n){e.css({"-webkit-touch-callout":n,"-webkit-user-select":n,"-khtml-user-select":n,"-moz-user-select":"none"===n?"-moz-none":n,"-ms-user-select":n,"user-select":n})},I.prototype.focusCellElement=function(e,n){if(e.selectionProvider.lastClickedRow){var t=void 0!==n?n:this.previousColumn,o=e.selectionProvider.lastClickedRow.clone?e.selectionProvider.lastClickedRow.clone.elm:e.selectionProvider.lastClickedRow.elm;if(void 0!==t&&o){var i=angular.element(o[0].children).filter(function(){return 8!==this.nodeType}),r=Math.max(Math.min(e.renderedColumns.length-1,t),0);this.grid.config.showSelectionCheckbox&&angular.element(i[r]).scope()&&0===angular.element(i[r]).scope().col.index&&(r=1),i[r]&&i[r].children[1].children[0].focus(),this.previousColumn=t}}},I.prototype.selectionHandlers=function(e,n){function t(t){if(16===t.keyCode)return r.changeUserSelect(n,"none",t),!0;if(!i){i=!0;var o=S(e,n,t,r.grid);return i=!1,o}return!0}function o(e){return 16===e.keyCode&&r.changeUserSelect(n,"text",e),!0}var i=!1,r=this;n.bind("keydown",t),n.bind("keyup",o),n.on("$destroy",function(){n.off("keydown",t),n.off("keyup",o)})};var $=function(t,o,i,r){var l=this;l.colToMove=void 0,l.groupToMove=void 0,l.assignEvents=function(){t.config.jqueryUIDraggable&&!t.config.enablePinning?(t.$groupPanel.droppable({addClasses:!1,drop:function(e){l.onGroupDrop(e)}}),t.$groupPanel.on("$destroy",function(){t.$groupPanel=null})):(t.$groupPanel.on("mousedown",l.onGroupMouseDown).on("dragover",l.dragOver).on("drop",l.onGroupDrop),t.$topPanel.on("mousedown",".ngHeaderScroller",l.onHeaderMouseDown).on("dragover",".ngHeaderScroller",l.dragOver),t.$groupPanel.on("$destroy",function(){t.$groupPanel&&t.$groupPanel.off("mousedown"),t.$groupPanel=null}),t.config.enableColumnReordering&&t.$topPanel.on("drop",".ngHeaderScroller",l.onHeaderDrop),t.$topPanel.on("$destroy",function(){t.$topPanel&&t.$topPanel.off("mousedown"),t.config.enableColumnReordering&&t.$topPanel&&t.$topPanel.off("drop"),t.$topPanel=null})),o.$on("$destroy",o.$watch("renderedColumns",function(){r(l.setDraggables)}))},l.dragStart=function(e){e.dataTransfer.setData("text","")},l.dragOver=function(e){e.preventDefault()},l.setDraggables=function(){if(t.config.jqueryUIDraggable)t.$root&&t.$root.find(".ngHeaderSortColumn").draggable({helper:"clone",appendTo:"body",stack:"div",addClasses:!1,start:function(e){l.onHeaderMouseDown(e)}}).droppable({drop:function(e){l.onHeaderDrop(e)}});else{var e=t.$root.find(".ngHeaderSortColumn");if(angular.forEach(e,function(e){e.className&&-1!==e.className.indexOf("ngHeaderSortColumn")&&(e.setAttribute("draggable","true"),e.addEventListener&&(e.addEventListener("dragstart",l.dragStart),angular.element(e).on("$destroy",function(){angular.element(e).off("dragstart",l.dragStart),e.removeEventListener("dragstart",l.dragStart)})))}),-1!==navigator.userAgent.indexOf("MSIE")){var n=t.$root.find(".ngHeaderSortColumn");n.bind("selectstart",function(){return this.dragDrop(),!1}),angular.element(n).on("$destroy",function(){n.off("selectstart")})}}},l.onGroupMouseDown=function(e){var o=n(e.target);if("ngRemoveGroup"!==o[0].className){var i=angular.element(o).scope();i&&(t.config.jqueryUIDraggable||(o.attr("draggable","true"),this.addEventListener&&(this.addEventListener("dragstart",l.dragStart),angular.element(this).on("$destroy",function(){this.removeEventListener("dragstart",l.dragStart)})),-1!==navigator.userAgent.indexOf("MSIE")&&(o.bind("selectstart",function(){return this.dragDrop(),!1}),o.on("$destroy",function(){o.off("selectstart")}))),l.groupToMove={header:o,groupName:i.group,index:i.$index})}else l.groupToMove=void 0},l.onGroupDrop=function(e){e.stopPropagation();var i,r;l.groupToMove?(i=n(e.target).closest(".ngGroupElement"),"ngGroupPanel"===i.context.className?(o.configGroups.splice(l.groupToMove.index,1),o.configGroups.push(l.groupToMove.groupName)):(r=angular.element(i).scope(),r&&l.groupToMove.index!==r.$index&&(o.configGroups.splice(l.groupToMove.index,1),o.configGroups.splice(r.$index,0,l.groupToMove.groupName))),l.groupToMove=void 0,t.fixGroupIndexes()):l.colToMove&&(-1===o.configGroups.indexOf(l.colToMove.col)&&(i=n(e.target).closest(".ngGroupElement"),"ngGroupPanel"===i.context.className||"ngGroupPanelDescription ng-binding"===i.context.className?o.groupBy(l.colToMove.col):(r=angular.element(i).scope(),r&&o.removeGroup(r.$index))),l.colToMove=void 0),o.$$phase||o.$apply()},l.onHeaderMouseDown=function(e){var t=n(e.target).closest(".ngHeaderSortColumn"),o=angular.element(t).scope();o&&(l.colToMove={header:t,col:o.col})},l.onHeaderDrop=function(e){if(l.colToMove&&!l.colToMove.col.pinned){var r=n(e.target).closest(".ngHeaderSortColumn"),a=angular.element(r).scope();if(a){if(l.colToMove.col===a.col||a.col.pinned)return;o.columns.splice(l.colToMove.col.index,1),o.columns.splice(a.col.index,0,l.colToMove.col),t.fixColumnIndexes(),l.colToMove=void 0,i.digest(o)}}},l.assignGridEventHandlers=function(){-1===t.config.tabIndex?(t.$viewport.attr("tabIndex",i.numberOfGrids),i.numberOfGrids++):t.$viewport.attr("tabIndex",t.config.tabIndex);var r,l=function(){clearTimeout(r),r=setTimeout(function(){i.RebuildGrid(o,t)},100)};n(e).on("resize.nggrid",l);var a,s=function(){clearTimeout(a),a=setTimeout(function(){i.RebuildGrid(o,t)},100)};n(t.$root.parent()).on("resize.nggrid",s),o.$on("$destroy",function(){n(e).off("resize.nggrid",l)})},l.assignGridEventHandlers(),l.assignEvents()},D=function(e,n){e.maxRows=function(){var t=Math.max(e.totalServerItems,n.data.length);return t},e.$on("$destroy",e.$watch("totalServerItems",function(){e.currentMaxPages=e.maxPages()})),e.multiSelect=n.config.enableRowSelection&&n.config.multiSelect,e.selectedItemCount=n.selectedItemCount,e.maxPages=function(){return 0===e.maxRows()?1:Math.ceil(e.maxRows()/e.pagingOptions.pageSize)},e.pageForward=function(){var n=e.pagingOptions.currentPage;e.totalServerItems>0?e.pagingOptions.currentPage=Math.min(n+1,e.maxPages()):e.pagingOptions.currentPage++},e.pageBackward=function(){var n=e.pagingOptions.currentPage;e.pagingOptions.currentPage=Math.max(n-1,1)},e.pageToFirst=function(){e.pagingOptions.currentPage=1},e.pageToLast=function(){var n=e.maxPages();e.pagingOptions.currentPage=n},e.cantPageForward=function(){var t=e.pagingOptions.currentPage,o=e.maxPages();return e.totalServerItems>0?t>=o:1>n.data.length},e.cantPageToLast=function(){return e.totalServerItems>0?e.cantPageForward():!0},e.cantPageBackward=function(){var n=e.pagingOptions.currentPage;return 1>=n}},L=function(i,r,l,a,c,g,d,u,f,h,m){var v={aggregateTemplate:void 0,afterSelectionChange:function(){},beforeSelectionChange:function(){return!0},checkboxCellTemplate:void 0,checkboxHeaderTemplate:void 0,columnDefs:void 0,data:[],dataUpdated:function(){},enableCellEdit:!1,enableCellEditOnFocus:!1,enableCellSelection:!1,enableColumnResize:!1,enableColumnReordering:!1,enableColumnHeavyVirt:!1,enablePaging:!1,enablePinning:!1,enableRowSelection:!0,enableSorting:!0,enableHighlighting:!1,excludeProperties:[],filterOptions:{filterText:"",useExternalFilter:!1},footerRowHeight:55,footerTemplate:void 0,forceSyncScrolling:!0,groups:[],groupsCollapsedByDefault:!0,headerRowHeight:30,headerRowTemplate:void 0,jqueryUIDraggable:!1,jqueryUITheme:!1,keepLastSelected:!0,maintainColumnRatios:void 0,menuTemplate:void 0,multiSelect:!0,pagingOptions:{pageSizes:[250,500,1e3],pageSize:250,currentPage:1},pinSelectionCheckbox:!1,plugins:[],primaryKey:void 0,rowHeight:30,rowTemplate:void 0,selectedItems:[],selectionCheckboxColumnWidth:25,selectWithCheckboxOnly:!1,showColumnMenu:!1,showFilter:!1,showFooter:!1,showGroupPanel:!1,showSelectionCheckbox:!1,sortInfo:{fields:[],columns:[],directions:[]},tabIndex:-1,totalServerItems:0,useExternalSorting:!1,i18n:"en",virtualizationThreshold:50,noTabInterference:!1},w=this;w.maxCanvasHt=0,w.config=n.extend(v,e.ngGrid.config,r),w.config.showSelectionCheckbox=w.config.showSelectionCheckbox&&w.config.enableColumnHeavyVirt===!1,w.config.enablePinning=w.config.enablePinning&&w.config.enableColumnHeavyVirt===!1,w.config.selectWithCheckboxOnly=w.config.selectWithCheckboxOnly&&w.config.showSelectionCheckbox!==!1,w.config.pinSelectionCheckbox=w.config.enablePinning,"string"==typeof r.columnDefs&&(w.config.columnDefs=i.$eval(r.columnDefs)),w.rowCache=[],w.rowMap=[],w.gridId="ng"+d.newId(),w.$root=null,w.$groupPanel=null,w.$topPanel=null,w.$headerContainer=null,w.$headerScroller=null,w.$headers=null,w.$viewport=null,w.$canvas=null,w.rootDim=w.config.gridDim,w.data=[],w.lateBindColumns=!1,w.filteredRows=[],w.initTemplates=function(){var e=["rowTemplate","aggregateTemplate","headerRowTemplate","checkboxCellTemplate","checkboxHeaderTemplate","menuTemplate","footerTemplate"],n=[];return angular.forEach(e,function(e){n.push(w.getTemplate(e))}),m.all(n)},w.getTemplate=function(e){var n=w.config[e],t=w.gridId+e+".html",o=m.defer();if(n&&!p.test(n))h.get(n,{cache:g}).success(function(e){g.put(t,e),o.resolve()}).error(function(){o.reject("Could not load template: "+n)});else if(n)g.put(t,n),o.resolve();else{var i=e+".html";g.put(t,g.get(i)),o.resolve()}return o.promise},"object"==typeof w.config.data&&(w.data=w.config.data),w.calcMaxCanvasHeight=function(){var e;return e=w.config.groups.length>0?w.rowFactory.parsedData.filter(function(e){return!e[s]}).length*w.config.rowHeight:w.filteredRows.length*w.config.rowHeight},w.elementDims={scrollW:0,scrollH:0,rowIndexCellW:w.config.selectionCheckboxColumnWidth,rowSelectedCellW:w.config.selectionCheckboxColumnWidth,rootMaxW:0,rootMaxH:0},w.setRenderedRows=function(e){i.renderedRows.length=e.length;for(var n=0;e.length>n;n++)!i.renderedRows[n]||e[n].isAggRow||i.renderedRows[n].isAggRow?(i.renderedRows[n]=e[n].copy(),i.renderedRows[n].collapsed=e[n].collapsed,e[n].isAggRow||i.renderedRows[n].setVars(e[n])):i.renderedRows[n].setVars(e[n]),i.renderedRows[n].rowIndex=e[n].rowIndex,i.renderedRows[n].offsetTop=e[n].offsetTop,i.renderedRows[n].selected=e[n].selected,e[n].renderedRowIndex=n;w.refreshDomSizes(),i.$emit("ngGridEventRows",e)},w.minRowsToRender=function(){var e=i.viewportDimHeight()||1;return Math.floor(e/w.config.rowHeight)},w.refreshDomSizes=function(){var e=new P;e.outerWidth=w.elementDims.rootMaxW,e.outerHeight=w.elementDims.rootMaxH,w.rootDim=e,w.maxCanvasHt=w.calcMaxCanvasHeight()},w.buildColumnDefsFromData=function(){w.config.columnDefs=[];var e=w.data[0];return e?(d.forIn(e,function(e,n){-1===w.config.excludeProperties.indexOf(n)&&w.config.columnDefs.push({field:n})}),void 0):(w.lateBoundColumns=!0,void 0)},w.buildColumns=function(){var e=w.config.columnDefs,n=[];if(e||(w.buildColumnDefsFromData(),e=w.config.columnDefs),w.config.showSelectionCheckbox&&n.push(new T({colDef:{field:"✔",width:w.elementDims.rowSelectedCellW,sortable:!1,resizable:!1,groupable:!1,headerCellTemplate:g.get(i.gridId+"checkboxHeaderTemplate.html"),cellTemplate:g.get(i.gridId+"checkboxCellTemplate.html"),pinned:w.config.pinSelectionCheckbox},index:0,headerRowHeight:w.config.headerRowHeight,sortCallback:w.sortData,resizeOnDataCallback:w.resizeOnData,enableResize:w.config.enableColumnResize,enableSort:w.config.enableSorting,enablePinning:w.config.enablePinning},i,w,a,g,d)),e.length>0){var t=w.config.showSelectionCheckbox?1:0,o=i.configGroups.length;i.configGroups.length=0,angular.forEach(e,function(e,r){r+=t;var l=new T({colDef:e,index:r+o,originalIndex:r,headerRowHeight:w.config.headerRowHeight,sortCallback:w.sortData,resizeOnDataCallback:w.resizeOnData,enableResize:w.config.enableColumnResize,enableSort:w.config.enableSorting,enablePinning:w.config.enablePinning,enableCellEdit:w.config.enableCellEdit||w.config.enableCellEditOnFocus,cellEditableCondition:w.config.cellEditableCondition},i,w,a,g,d),s=w.config.groups.indexOf(e.field);-1!==s&&(l.isGroupedBy=!0,i.configGroups.splice(s,0,l),l.groupIndex=i.configGroups.length),n.push(l)}),i.columns=n,w.config.groups.length>0&&w.rowFactory.getGrouping(w.config.groups)}},w.configureColumnWidths=function(){var e=[],n=[],t=0,o=0,r={};if(angular.forEach(i.columns,function(e,n){if(d.isNullOrUndefined(e.originalIndex))e.isAggCol&&e.visible&&(o+=25);else{var t=e.originalIndex;w.config.showSelectionCheckbox&&(0===e.originalIndex&&e.visible&&(o+=w.config.selectionCheckboxColumnWidth),t--),r[t]=n}}),angular.forEach(w.config.columnDefs,function(l,a){var s=i.columns[r[a]];l.index=a;var c,g=!1;if(d.isNullOrUndefined(l.width)?l.width="*":(g=isNaN(l.width)?d.endsWith(l.width,"%"):!1,c=g?l.width:parseInt(l.width,10)),isNaN(c)){if(c=l.width,"auto"===c){s.width=s.minWidth,o+=s.width;var u=s;return i.$on("$destroy",i.$on("ngGridEventData",function(){w.resizeOnData(u)})),void 0}if(-1!==c.indexOf("*"))return s.visible!==!1&&(t+=c.length),e.push(l),void 0;if(g)return n.push(l),void 0;throw'unable to parse column width, use percentage ("10%","20%", etc...) or "*" to use remaining width of grid'}s.visible!==!1&&(o+=s.width=parseInt(s.width,10))}),n.length>0){w.config.maintainColumnRatios=w.config.maintainColumnRatios!==!1;var l=0,s=0;angular.forEach(n,function(e){var n=i.columns[r[e.index]],t=parseFloat(e.width)/100;l+=t,n.visible||(s+=t)});var c=l-s;angular.forEach(n,function(e){var n=i.columns[r[e.index]],t=parseFloat(e.width)/100;t/=s>0?c:l;var a=w.rootDim.outerWidth*l;n.width=a*t,o+=n.width})}if(e.length>0){w.config.maintainColumnRatios=w.config.maintainColumnRatios!==!1;var g=w.rootDim.outerWidth-o;w.maxCanvasHt>i.viewportDimHeight()&&(g-=a.ScrollW);var u=Math.floor(g/t);angular.forEach(e,function(n,t){var l=i.columns[r[n.index]];l.width=u*n.width.length,l.width<l.minWidth&&(l.width=l.minWidth),l.visible!==!1&&(o+=l.width);var s=t===e.length-1;if(s&&w.rootDim.outerWidth>o){var c=w.rootDim.outerWidth-o;w.maxCanvasHt>i.viewportDimHeight()&&(c-=a.ScrollW),l.width+=c}})}},w.init=function(){return w.initTemplates().then(function(){i.selectionProvider=new H(w,i,f,d),i.domAccessProvider=new I(w),w.rowFactory=new G(w,i,a,g,d),w.searchProvider=new k(i,w,c,d),w.styleProvider=new F(i,w),i.$on("$destroy",i.$watch("configGroups",function(e){var n=[];angular.forEach(e,function(e){n.push(e.field||e)}),w.config.groups=n,w.rowFactory.filteredRowsChanged(),i.$emit("ngGridEventGroups",e)},!0)),i.$on("$destroy",i.$watch("columns",function(e){i.isColumnResizing||a.RebuildGrid(i,w),i.$emit("ngGridEventColumns",e)},!0)),i.$on("$destroy",i.$watch(function(){return r.i18n},function(e){d.seti18n(i,e)})),w.maxCanvasHt=w.calcMaxCanvasHeight(),w.config.sortInfo.fields&&w.config.sortInfo.fields.length>0&&i.$on("$destroy",i.$watch(function(){return w.config.sortInfo},function(){l.isSorting||(w.sortColumnsInit(),i.$emit("ngGridEventSorted",w.config.sortInfo))},!0))})},w.resizeOnData=function(e){var t=e.minWidth,o=d.getElementsByClassName("col"+e.index);angular.forEach(o,function(e,o){var i;if(0===o){var r=n(e).find(".ngHeaderText");i=d.visualLength(r)+10}else{var l=n(e).find(".ngCellText");i=d.visualLength(l)+10}i>t&&(t=i)}),e.width=e.longest=Math.min(e.maxWidth,t+7),a.BuildStyles(i,w,!0)},w.lastSortedColumns=[],w.sortData=function(e,t){if(t&&t.shiftKey&&w.config.sortInfo){var o=w.config.sortInfo.columns.indexOf(e);-1===o?(1===w.config.sortInfo.columns.length&&(w.config.sortInfo.columns[0].sortPriority=1),w.config.sortInfo.columns.push(e),e.sortPriority=w.config.sortInfo.columns.length,w.config.sortInfo.fields.push(e.field),w.config.sortInfo.directions.push(e.sortDirection),w.lastSortedColumns.push(e)):w.config.sortInfo.directions[o]=e.sortDirection,i.$emit("ngGridEventSorted",w.config.sortInfo)}else if(!w.config.useExternalSorting||w.config.useExternalSorting&&w.config.sortInfo){var r=n.isArray(e);w.config.sortInfo.columns.length=0,w.config.sortInfo.fields.length=0,w.config.sortInfo.directions.length=0;var l=function(e){w.config.sortInfo.columns.push(e),w.config.sortInfo.fields.push(e.field),w.config.sortInfo.directions.push(e.sortDirection),w.lastSortedColumns.push(e)};r?angular.forEach(e,function(e,n){e.sortPriority=n+1,l(e)}):(w.clearSortingData(e),e.sortPriority=void 0,l(e)),w.sortActual(),w.searchProvider.evalFilter(),i.$emit("ngGridEventSorted",w.config.sortInfo)
 }},w.sortColumnsInit=function(){w.config.sortInfo.columns?w.config.sortInfo.columns.length=0:w.config.sortInfo.columns=[];var e=[];angular.forEach(i.columns,function(n){var t=w.config.sortInfo.fields.indexOf(n.field);-1!==t&&(n.sortDirection=w.config.sortInfo.directions[t]||"asc",e[t]=n)}),1===e.length?w.sortData(e[0]):w.sortData(e)},w.sortActual=function(){if(!w.config.useExternalSorting){var e=w.data.slice(0);angular.forEach(e,function(e,n){var t=w.rowMap[n];if(void 0!==t){var o=w.rowCache[t];void 0!==o&&(e.preSortSelected=o.selected,e.preSortIndex=n)}}),l.Sort(w.config.sortInfo,e),angular.forEach(e,function(e,n){w.rowCache[n].entity=e,w.rowCache[n].selected=e.preSortSelected,w.rowMap[e.preSortIndex]=n,delete e.preSortSelected,delete e.preSortIndex})}},w.clearSortingData=function(e){e?(angular.forEach(w.lastSortedColumns,function(n){e.index!==n.index&&(n.sortDirection="",n.sortPriority=null)}),w.lastSortedColumns[0]=e,w.lastSortedColumns.length=1):(angular.forEach(w.lastSortedColumns,function(e){e.sortDirection="",e.sortPriority=null}),w.lastSortedColumns=[])},w.fixColumnIndexes=function(){for(var e=0;i.columns.length>e;e++)i.columns[e].index=e},w.fixGroupIndexes=function(){angular.forEach(i.configGroups,function(e,n){e.groupIndex=n+1})},i.elementsNeedMeasuring=!0,i.columns=[],i.renderedRows=[],i.renderedColumns=[],i.headerRow=null,i.rowHeight=w.config.rowHeight,i.jqueryUITheme=w.config.jqueryUITheme,i.showSelectionCheckbox=w.config.showSelectionCheckbox,i.enableCellSelection=w.config.enableCellSelection,i.enableCellEditOnFocus=w.config.enableCellEditOnFocus,i.footer=null,i.selectedItems=w.config.selectedItems,i.multiSelect=w.config.multiSelect,i.showFooter=w.config.showFooter,i.footerRowHeight=i.showFooter?w.config.footerRowHeight:0,i.showColumnMenu=w.config.showColumnMenu,i.forceSyncScrolling=w.config.forceSyncScrolling,i.showMenu=!1,i.configGroups=[],i.gridId=w.gridId,i.enablePaging=w.config.enablePaging,i.pagingOptions=w.config.pagingOptions,i.i18n={},d.seti18n(i,w.config.i18n),i.adjustScrollLeft=function(e){for(var n=0,t=0,o=i.columns.length,r=[],l=!w.config.enableColumnHeavyVirt,s=0,c=function(e){l?r.push(e):i.renderedColumns[s]?i.renderedColumns[s].setVars(e):i.renderedColumns[s]=e.copy(),s++},g=0;o>g;g++){var d=i.columns[g];if(d.visible!==!1){var u=d.width+n;if(d.pinned){c(d);var f=g>0?e+t:e;a.setColLeft(d,f,w),t+=d.width}else u>=e&&e+w.rootDim.outerWidth>=n&&c(d);n+=d.width}}l&&(i.renderedColumns=r)},w.prevScrollTop=0,w.prevScrollIndex=0,i.adjustScrollTop=function(e,n){if(w.prevScrollTop!==e||n){e>0&&w.$viewport[0].scrollHeight-e<=w.$viewport.outerHeight()&&i.$emit("ngGridEventScroll");var r,l=Math.floor(e/w.config.rowHeight);if(w.filteredRows.length>w.config.virtualizationThreshold){if(e>w.prevScrollTop&&w.prevScrollIndex+o>l)return;if(w.prevScrollTop>e&&l>w.prevScrollIndex-o)return;r=new R(Math.max(0,l-t),l+w.minRowsToRender()+t)}else{var a=i.configGroups.length>0?w.rowFactory.parsedData.length:w.filteredRows.length;r=new R(0,Math.max(a,w.minRowsToRender()+t))}w.prevScrollTop=e,w.rowFactory.UpdateViewableRange(r),w.prevScrollIndex=l}},i.toggleShowMenu=function(){i.showMenu=!i.showMenu},i.toggleSelectAll=function(e,n){i.selectionProvider.toggleSelectAll(e,!1,n)},i.totalFilteredItemsLength=function(){return w.filteredRows.length},i.showGroupPanel=function(){return w.config.showGroupPanel},i.topPanelHeight=function(){return w.config.showGroupPanel===!0?w.config.headerRowHeight+32:w.config.headerRowHeight},i.viewportDimHeight=function(){return Math.max(0,w.rootDim.outerHeight-i.topPanelHeight()-i.footerRowHeight-2)},i.groupBy=function(e){if(!(1>w.data.length)&&e.groupable&&e.field){e.sortDirection||e.sort({shiftKey:i.configGroups.length>0?!0:!1});var n=i.configGroups.indexOf(e);-1===n?(e.isGroupedBy=!0,i.configGroups.push(e),e.groupIndex=i.configGroups.length):i.removeGroup(n),w.$viewport.scrollTop(0),a.digest(i)}},i.removeGroup=function(e){var n=i.columns.filter(function(n){return n.groupIndex===e+1})[0];n.isGroupedBy=!1,n.groupIndex=0,i.columns[e].isAggCol&&(i.columns.splice(e,1),i.configGroups.splice(e,1),w.fixGroupIndexes()),0===i.configGroups.length&&(w.fixColumnIndexes(),a.digest(i)),i.adjustScrollLeft(0)},i.togglePin=function(e){for(var n=e.index,t=0,o=0;i.columns.length>o&&i.columns[o].pinned;o++)t++;e.pinned&&(t=Math.max(e.originalIndex,t-1)),e.pinned=!e.pinned,i.columns.splice(n,1),i.columns.splice(t,0,e),w.fixColumnIndexes(),a.BuildStyles(i,w,!0),w.$viewport.scrollLeft(w.$viewport.scrollLeft()-e.width)},i.totalRowWidth=function(){for(var e=0,n=i.columns,t=0;n.length>t;t++)n[t].visible!==!1&&(e+=n[t].width);return e},i.headerScrollerDim=function(){var e=i.viewportDimHeight(),n=w.maxCanvasHt,t=n>e,o=new P;return o.autoFitHeight=!0,o.outerWidth=i.totalRowWidth(),t?o.outerWidth+=w.elementDims.scrollW:w.elementDims.scrollH>=n-e&&(o.outerWidth+=w.elementDims.scrollW),o}},R=function(e,n){this.topRow=e,this.bottomRow=n},E=function(e,n,t,o,i){this.entity=e,this.config=n,this.selectionProvider=t,this.rowIndex=o,this.utils=i,this.selected=t.getSelection(e),this.cursor=this.config.enableRowSelection&&!this.config.selectWithCheckboxOnly?"pointer":"default",this.beforeSelectionChange=n.beforeSelectionChangeCallback,this.afterSelectionChange=n.afterSelectionChangeCallback,this.offsetTop=this.rowIndex*n.rowHeight,this.rowDisplayIndex=0};E.prototype.setSelection=function(e){this.selectionProvider.setSelection(this,e),this.selectionProvider.lastClickedRow=this},E.prototype.continueSelection=function(e){this.selectionProvider.ChangeSelection(this,e)},E.prototype.ensureEntity=function(e){this.entity!==e&&(this.entity=e,this.selected=this.selectionProvider.getSelection(this.entity))},E.prototype.toggleSelected=function(e){if(!this.config.enableRowSelection&&!this.config.enableCellSelection)return!0;var n=e.target||e;return"checkbox"===n.type&&"ngSelectionCell ng-scope"!==n.parentElement.className?!0:this.config.selectWithCheckboxOnly&&"checkbox"!==n.type?(this.selectionProvider.lastClickedRow=this,!0):(this.beforeSelectionChange(this,e)&&this.continueSelection(e),!1)},E.prototype.alternatingRowClass=function(){var e=0===this.rowIndex%2,n={ngRow:!0,selected:this.selected,even:e,odd:!e,"ui-state-default":this.config.jqueryUITheme&&e,"ui-state-active":this.config.jqueryUITheme&&!e};return n},E.prototype.getProperty=function(e){return this.utils.evalProperty(this.entity,e)},E.prototype.copy=function(){return this.clone=new E(this.entity,this.config,this.selectionProvider,this.rowIndex,this.utils),this.clone.isClone=!0,this.clone.elm=this.elm,this.clone.orig=this,this.clone},E.prototype.setVars=function(e){e.clone=this,this.entity=e.entity,this.selected=e.selected,this.orig=e};var G=function(e,n,o,i,r){var g=this;g.aggCache={},g.parentCache=[],g.dataChanged=!0,g.parsedData=[],g.rowConfig={},g.selectionProvider=n.selectionProvider,g.rowHeight=30,g.numberOfAggregates=0,g.groupedData=void 0,g.rowHeight=e.config.rowHeight,g.rowConfig={enableRowSelection:e.config.enableRowSelection,rowClasses:e.config.rowClasses,selectedItems:n.selectedItems,selectWithCheckboxOnly:e.config.selectWithCheckboxOnly,beforeSelectionChangeCallback:e.config.beforeSelectionChange,afterSelectionChangeCallback:e.config.afterSelectionChange,jqueryUITheme:e.config.jqueryUITheme,enableCellSelection:e.config.enableCellSelection,rowHeight:e.config.rowHeight},g.renderedRange=new R(0,e.minRowsToRender()+t),g.buildEntityRow=function(e,n){return new E(e,g.rowConfig,g.selectionProvider,n,r)},g.buildAggregateRow=function(n,t){var o=g.aggCache[n.aggIndex];return o||(o=new x(n,g,g.rowConfig.rowHeight,e.config.groupsCollapsedByDefault),g.aggCache[n.aggIndex]=o),o.rowIndex=t,o.offsetTop=t*g.rowConfig.rowHeight,o},g.UpdateViewableRange=function(e){g.renderedRange=e,g.renderedChange()},g.filteredRowsChanged=function(){e.lateBoundColumns&&e.filteredRows.length>0&&(e.config.columnDefs=void 0,e.buildColumns(),e.lateBoundColumns=!1,n.$evalAsync(function(){n.adjustScrollLeft(0)})),g.dataChanged=!0,e.config.groups.length>0&&g.getGrouping(e.config.groups),g.UpdateViewableRange(g.renderedRange)},g.renderedChange=function(){if(!g.groupedData||1>e.config.groups.length)return g.renderedChangeNoGroups(),e.refreshDomSizes(),void 0;g.wasGrouped=!0,g.parentCache=[];var n=0,t=g.parsedData.filter(function(e){return e.isAggRow?e.parent&&e.parent.collapsed?!1:!0:(e[s]||(e.rowIndex=n++),!e[s])});g.totalRows=t.length;for(var o=[],i=g.renderedRange.topRow;g.renderedRange.bottomRow>i;i++)t[i]&&(t[i].offsetTop=i*e.config.rowHeight,o.push(t[i]));e.setRenderedRows(o)},g.renderedChangeNoGroups=function(){for(var n=[],t=g.renderedRange.topRow;g.renderedRange.bottomRow>t;t++)e.filteredRows[t]&&(e.filteredRows[t].rowIndex=t,e.filteredRows[t].offsetTop=t*e.config.rowHeight,n.push(e.filteredRows[t]));e.setRenderedRows(n)},g.fixRowCache=function(){var n=e.data.length,t=n-e.rowCache.length;if(0>t)e.rowCache.length=e.rowMap.length=n;else for(var o=e.rowCache.length;n>o;o++)e.rowCache[o]=e.rowFactory.buildEntityRow(e.data[o],o)},g.parseGroupData=function(e){if(e.values)for(var n=0;e.values.length>n;n++)g.parentCache[g.parentCache.length-1].children.push(e.values[n]),g.parsedData.push(e.values[n]);else for(var t in e)if(t!==l&&t!==a&&t!==c&&e.hasOwnProperty(t)){var o=g.buildAggregateRow({gField:e[l],gLabel:t,gDepth:e[a],isAggRow:!0,_ng_hidden_:!1,children:[],aggChildren:[],aggIndex:g.numberOfAggregates,aggLabelFilter:e[c].aggLabelFilter},0);g.numberOfAggregates++,o.parent=g.parentCache[o.depth-1],o.parent&&(o.parent.collapsed=!1,o.parent.aggChildren.push(o)),g.parsedData.push(o),g.parentCache[o.depth]=o,g.parseGroupData(e[t])}},g.getGrouping=function(t){function d(e,n){return e.filter(function(e){return e.field===n})}g.aggCache=[],g.numberOfAggregates=0,g.groupedData={};for(var u=e.filteredRows,f=t.length,h=n.columns,p=0;u.length>p;p++){var m=u[p].entity;if(!m)return;u[p][s]=e.config.groupsCollapsedByDefault;for(var v=g.groupedData,w=0;t.length>w;w++){var C=t[w],b=d(h,C)[0],y=r.evalProperty(m,C);y=""===y||null===y?"null":""+y,v[y]||(v[y]={}),v[l]||(v[l]=C),v[a]||(v[a]=w),v[c]||(v[c]=b),v=v[y]}v.values||(v.values=[]),v.values.push(u[p])}if(h.length>0)for(var S=0;t.length>S;S++)!h[S].isAggCol&&f>=S&&h.splice(0,0,new T({colDef:{field:"",width:25,sortable:!1,resizable:!1,headerCellTemplate:'<div class="ngAggHeader"></div>',pinned:e.config.pinSelectionCheckbox},enablePinning:e.config.enablePinning,isAggCol:!0,headerRowHeight:e.config.headerRowHeight},n,e,o,i,r));e.fixColumnIndexes(),n.adjustScrollLeft(0),g.parsedData.length=0,g.parseGroupData(g.groupedData),g.fixRowCache()},e.config.groups.length>0&&e.filteredRows.length>0&&g.getGrouping(e.config.groups)},k=function(e,t,o,i){var r=this,l=[];r.extFilter=t.config.filterOptions.useExternalFilter,e.showFilter=t.config.showFilter,e.filterText="",r.fieldMap={};var a=function(e){var n={};for(var t in e)e.hasOwnProperty(t)&&(n[t.toLowerCase()]=e[t]);return n},s=function(e){if("object"==typeof e){var n=[];for(var t in e)n=n.concat(s(e[t]));return n}return[e]},c=function(e,n,t){var i;for(var r in n)if(n.hasOwnProperty(r)){var l=t[r.toLowerCase()],s=n[r];if("object"!=typeof s||s instanceof Date){var g=null,d=null;if(l&&l.cellFilter&&(d=l.cellFilter.split(":"),g=o(d[0])),null!==s&&void 0!==s){if("function"==typeof g){var u=""+g(s,d[1]?d[1].slice(1,-1):"");i=e.regex.test(u)}else i=e.regex.test(""+s);if(i)return!0}}else{var f=a(l);if(i=c(e,s,f))return!0}}return!1},g=function(e,n){var t,l=r.fieldMap[e.columnDisplay];if(!l)return!1;var a=l.cellFilter.split(":"),c=l.cellFilter?o(a[0]):null,g=n[e.column]||n[l.field.split(".")[0]]||i.evalProperty(n,l.field);if(null===g||void 0===g)return!1;if("function"==typeof c){var d=""+c("object"==typeof g?u(g,l.field):g,a[1]);t=e.regex.test(d)}else{var f=s(u(g,l.field));for(var h in f)t|=e.regex.test(f[h])}return t?!0:!1},d=function(e){for(var n=0,t=l.length;t>n;n++){var o,i=l[n];if(o=i.column?g(i,e):c(i,e,r.fieldMap),!o)return!1}return!0};r.evalFilter=function(){t.filteredRows=0===l.length?t.rowCache:t.rowCache.filter(function(e){return d(e.entity)});for(var e=0;t.filteredRows.length>e;e++)t.filteredRows[e].rowIndex=e;t.rowFactory.filteredRowsChanged()};var u=function(e,n){if("object"!=typeof e||"string"!=typeof n)return e;var t=n.split("."),o=e;if(t.length>1){for(var i=1,r=t.length;r>i;i++)if(o=o[t[i]],!o)return e;return o}return e},f=function(e,n){try{return RegExp(e,n)}catch(t){return RegExp(e.replace(/(\^|\$|\(|\)|<|>|\[|\]|\{|\}|\\|\||\.|\*|\+|\?)/g,"\\$1"))}},h=function(e){l=[];var t;if(t=n.trim(e))for(var o=t.split(";"),i=0;o.length>i;i++){var r=o[i].split(":");if(r.length>1){var a=n.trim(r[0]),s=n.trim(r[1]);a&&s&&l.push({column:a,columnDisplay:a.replace(/\s+/g,"").toLowerCase(),regex:f(s,"i")})}else{var c=n.trim(r[0]);c&&l.push({column:"",regex:f(c,"i")})}}};r.extFilter||e.$on("$destroy",e.$watch("columns",function(e){for(var n=0;e.length>n;n++){var t=e[n];if(t.field)if(t.field.match(/\./g)){for(var o=t.field.split("."),i=r.fieldMap,l=0;o.length-1>l;l++)i[o[l]]=i[o[l]]||{},i=i[o[l]];i[o[o.length-1]]=t}else r.fieldMap[t.field.toLowerCase()]=t;t.displayName&&(r.fieldMap[t.displayName.toLowerCase().replace(/\s+/g,"")]=t)}})),e.$on("$destroy",e.$watch(function(){return t.config.filterOptions.filterText},function(n){e.filterText=n})),e.$on("$destroy",e.$watch("filterText",function(n){r.extFilter||(e.$emit("ngGridEventFilter",n),h(n),r.evalFilter())}))},H=function(e,n,t,o){var i=this;i.multi=e.config.multiSelect,i.selectedItems=e.config.selectedItems,i.selectedIndex=e.config.selectedIndex,i.lastClickedRow=void 0,i.ignoreSelectedItemChanges=!1;var r=e.config.primaryKey;r&&(r=o.preEval("entity."+e.config.primaryKey)),i.pKeyParser=t(r),i.ChangeSelection=function(t,o){var r=o.which||o.keyCode,l=40===r||38===r;if(o&&o.shiftKey&&!o.keyCode&&i.multi&&e.config.enableRowSelection){if(i.lastClickedRow){var a;a=n.configGroups.length>0?e.rowFactory.parsedData.filter(function(e){return!e.isAggRow}):e.filteredRows;var s=t.rowIndex,c=i.lastClickedRowIndex;if(s===c)return!1;c>s?(s^=c,c=s^c,s^=c,s--):c++;for(var g=[];s>=c;c++)g.push(a[c]);if(g[g.length-1].beforeSelectionChange(g,o)){for(var d=0;g.length>d;d++){var u=g[d],f=u.selected;u.selected=!f,u.clone&&(u.clone.selected=u.selected);var h=i.selectedItems.indexOf(u.entity);-1===h?i.selectedItems.push(u.entity):i.selectedItems.splice(h,1)}g[g.length-1].afterSelectionChange(g,o)}return i.lastClickedRow=t,i.lastClickedRowIndex=t.rowIndex,!0}}else i.multi?(!o.keyCode||l&&!e.config.selectWithCheckboxOnly)&&i.setSelection(t,!t.selected):i.lastClickedRow===t?i.setSelection(i.lastClickedRow,e.config.keepLastSelected?!0:!t.selected):(i.lastClickedRow&&i.setSelection(i.lastClickedRow,!1),i.setSelection(t,!t.selected));return i.lastClickedRow=t,i.lastClickedRowIndex=t.rowIndex,!0},i.getSelection=function(e){return-1!==i.getSelectionIndex(e)},i.getSelectionIndex=function(n){var t=-1;if(e.config.primaryKey){var o=i.pKeyParser({entity:n});angular.forEach(i.selectedItems,function(e,n){o===i.pKeyParser({entity:e})&&(t=n)})}else t=i.selectedItems.indexOf(n);return t},i.setSelection=function(n,t){if(e.config.enableRowSelection){if(t)-1===i.getSelectionIndex(n.entity)&&(!i.multi&&i.selectedItems.length>0&&i.toggleSelectAll(!1,!0),i.selectedItems.push(n.entity));else{var o=i.getSelectionIndex(n.entity);-1!==o&&i.selectedItems.splice(o,1)}n.selected=t,n.orig&&(n.orig.selected=t),n.clone&&(n.clone.selected=t),n.afterSelectionChange(n)}},i.toggleSelectAll=function(n,t,o){var r,l,a=o?e.filteredRows:e.rowCache;if(t||e.config.beforeSelectionChange(a,n)){!o&&i.selectedItems.length>0&&(i.selectedItems.length=0);for(var s=0;a.length>s;s++)r=a[s].selected,a[s].selected=n,a[s].clone&&(a[s].clone.selected=n),!r&&n?i.selectedItems.push(a[s].entity):r&&!n&&(l=i.selectedItems.indexOf(a[s].entity),l>-1&&i.selectedItems.splice(l,1));t||e.config.afterSelectionChange(a,n)}}},F=function(e,n){e.headerCellStyle=function(e){return{height:e.headerRowHeight+"px"}},e.rowStyle=function(n){var t={top:n.offsetTop+"px",height:e.rowHeight+"px"};return n.isAggRow&&(t.left=n.offsetLeft),t},e.canvasStyle=function(){return{height:n.maxCanvasHt+"px"}},e.headerScrollerStyle=function(){return{height:n.config.headerRowHeight+"px"}},e.topPanelStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.topPanelHeight()+"px"}},e.headerStyle=function(){return{width:n.rootDim.outerWidth+"px",height:n.config.headerRowHeight+"px"}},e.groupPanelStyle=function(){return{width:n.rootDim.outerWidth+"px",height:"32px"}},e.viewportStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.viewportDimHeight()+"px"}},e.footerStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.footerRowHeight+"px"}}};b.directive("ngCellHasFocus",["$domUtilityService",function(e){var n=function(n){n.isFocused=!0,e.digest(n),n.$broadcast("ngGridEventStartCellEdit"),n.$emit("ngGridEventStartCellEdit"),n.$on("$destroy",n.$on("ngGridEventEndCellEdit",function(){n.isFocused=!1,e.digest(n)}))};return function(e,t){function o(){return e.enableCellEditOnFocus?c=!0:t.focus(),!0}function i(o){e.enableCellEditOnFocus&&(o.preventDefault(),c=!1,n(e,t))}function r(){return s=!0,e.enableCellEditOnFocus&&!c&&n(e,t),!0}function l(){return s=!1,!0}function a(o){return e.enableCellEditOnFocus||(s&&37!==o.keyCode&&38!==o.keyCode&&39!==o.keyCode&&40!==o.keyCode&&9!==o.keyCode&&!o.shiftKey&&13!==o.keyCode&&n(e,t),s&&o.shiftKey&&o.keyCode>=65&&90>=o.keyCode&&n(e,t),27===o.keyCode&&t.focus()),!0}var s=!1,c=!1;e.editCell=function(){e.enableCellEditOnFocus||setTimeout(function(){n(e,t)},0)},t.bind("mousedown",o),t.bind("click",i),t.bind("focus",r),t.bind("blur",l),t.bind("keydown",a),t.on("$destroy",function(){t.off("mousedown",o),t.off("click",i),t.off("focus",r),t.off("blur",l),t.off("keydown",a)})}}]),b.directive("ngCellText",function(){return function(e,n){function t(e){e.preventDefault()}function o(e){e.preventDefault()}n.bind("mouseover",t),n.bind("mouseleave",o),n.on("$destroy",function(){n.off("mouseover",t),n.off("mouseleave",o)})}}),b.directive("ngCell",["$compile","$domUtilityService","$utilityService",function(e,t,o){var i={scope:!1,compile:function(){return{pre:function(t,i){var r,l=t.col.cellTemplate.replace(d,o.preEval("row.entity."+t.col.field));t.col.enableCellEdit?(r=t.col.cellEditTemplate,r=r.replace(h,t.col.cellEditableCondition),r=r.replace(u,l),r=r.replace(f,t.col.editableCellTemplate.replace(d,o.preEval("row.entity."+t.col.field)))):r=l;var a=n(r);i.append(a),e(a)(t),t.enableCellSelection&&-1===a[0].className.indexOf("ngSelectionCell")&&(a[0].setAttribute("tabindex",0),a.addClass("ngCellElement"))},post:function(e,n){e.enableCellSelection&&e.domAccessProvider.selectionHandlers(e,n),e.$on("$destroy",e.$on("ngGridEventDigestCell",function(){t.digest(e)}))}}}};return i}]),b.directive("ngEditCellIf",[function(){return{transclude:"element",priority:1e3,terminal:!0,restrict:"A",compile:function(e,n,t){return function(e,n,o){var i,r;e.$on("$destroy",e.$watch(o.ngEditCellIf,function(o){i&&(i.remove(),i=void 0),r&&(r.$destroy(),r=void 0),o&&(r=e.$new(),t(r,function(e){i=e,n.after(e)}))}))}}}}]),b.directive("ngGridFooter",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"footerTemplate.html"))(t))}}}};return t}]),b.directive("ngGridMenu",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"menuTemplate.html"))(t))}}}};return t}]),b.directive("ngGrid",["$compile","$filter","$templateCache","$sortService","$domUtilityService","$utilityService","$timeout","$parse","$http","$q",function(e,t,o,i,r,l,a,s,c,g){var d={scope:!0,compile:function(){return{pre:function(d,u,f){var h=n(u),p=d.$eval(f.ngGrid);p.gridDim=new P({outerHeight:n(h).height(),outerWidth:n(h).width()});var m=new L(d,p,i,r,t,o,l,a,s,c,g);return d.$on("$destroy",function(){p.gridDim=null,p.selectRow=null,p.selectItem=null,p.selectAll=null,p.selectVisible=null,p.groupBy=null,p.sortBy=null,p.gridId=null,p.ngGrid=null,p.$gridScope=null,p.$gridServices=null,d.domAccessProvider.grid=null,angular.element(m.styleSheet).remove(),m.styleSheet=null}),m.init().then(function(){if("string"==typeof p.columnDefs?d.$on("$destroy",d.$parent.$watch(p.columnDefs,function(e){return e?(m.lateBoundColumns=!1,d.columns=[],m.config.columnDefs=e,m.buildColumns(),m.eventProvider.assignEvents(),r.RebuildGrid(d,m),void 0):(m.refreshDomSizes(),m.buildColumns(),void 0)},!0)):m.buildColumns(),"string"==typeof p.totalServerItems?d.$on("$destroy",d.$parent.$watch(p.totalServerItems,function(e){d.totalServerItems=angular.isDefined(e)?e:0})):d.totalServerItems=0,"string"==typeof p.data){var t=function(e){m.data=n.extend([],e),m.rowFactory.fixRowCache(),angular.forEach(m.data,function(e,n){var t=m.rowMap[n]||n;m.rowCache[t]&&m.rowCache[t].ensureEntity(e),m.rowMap[t]=n}),m.searchProvider.evalFilter(),m.configureColumnWidths(),m.refreshDomSizes(),m.config.sortInfo.fields.length>0&&(m.sortColumnsInit(),d.$emit("ngGridEventSorted",m.config.sortInfo)),d.$emit("ngGridEventData",m.gridId)};d.$on("$destroy",d.$parent.$watch(p.data,t)),d.$on("$destroy",d.$parent.$watch(p.data+".length",function(){t(d.$eval(p.data)),d.adjustScrollTop(m.$viewport.scrollTop(),!0)}))}return m.footerController=new D(d,m),u.addClass("ngGrid").addClass(""+m.gridId),p.enableHighlighting||u.addClass("unselectable"),p.jqueryUITheme&&u.addClass("ui-widget"),u.append(e(o.get("gridTemplate.html"))(d)),r.AssignGridContainers(d,u,m),m.eventProvider=new $(m,d,r,a),p.selectRow=function(e,n){m.rowCache[e]&&(m.rowCache[e].clone&&m.rowCache[e].clone.setSelection(n?!0:!1),m.rowCache[e].setSelection(n?!0:!1))},p.selectItem=function(e,n){p.selectRow(m.rowMap[e],n)},p.selectAll=function(e){d.toggleSelectAll(e)},p.selectVisible=function(e){d.toggleSelectAll(e,!0)},p.groupBy=function(e){if(e)d.groupBy(d.columns.filter(function(n){return n.field===e})[0]);else{var t=n.extend(!0,[],d.configGroups);angular.forEach(t,d.groupBy)}},p.sortBy=function(e){var n=d.columns.filter(function(n){return n.field===e})[0];n&&n.sort()},p.gridId=m.gridId,p.ngGrid=m,p.$gridScope=d,p.$gridServices={SortService:i,DomUtilityService:r,UtilityService:l},d.$on("$destroy",d.$on("ngGridEventDigestGrid",function(){r.digest(d.$parent)})),d.$on("$destroy",d.$on("ngGridEventDigestGridParent",function(){r.digest(d.$parent)})),d.$evalAsync(function(){d.adjustScrollLeft(0)}),angular.forEach(p.plugins,function(e){"function"==typeof e&&(e=new e);var n=d.$new();e.init(n,m,p.$gridServices),p.plugins[l.getInstanceType(e)]=e,d.$on("$destroy",function(){n.$destroy()})}),"function"==typeof p.init&&p.init(m,d),null})}}}};return d}]),b.directive("ngHeaderCell",["$compile",function(e){var n={scope:!1,compile:function(){return{pre:function(n,t){t.append(e(n.col.headerCellTemplate)(n))}}}};return n}]),b.directive("ngHeaderRow",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"headerRowTemplate.html"))(t))}}}};return t}]),b.directive("ngInput",[function(){return{require:"ngModel",link:function(e,n,t,o){function i(t){switch(t.keyCode){case 37:case 38:case 39:case 40:t.stopPropagation();break;case 27:e.$$phase||e.$apply(function(){o.$setViewValue(a),n.blur()});break;case 13:(e.enableCellEditOnFocus&&e.totalFilteredItemsLength()-1>e.row.rowIndex&&e.row.rowIndex>0||e.col.enableCellEdit)&&n.blur()}return!0}function r(e){e.stopPropagation()}function l(e){e.stopPropagation()}var a,s=e.$watch("ngModel",function(){a=o.$modelValue,s()});n.bind("keydown",i),n.bind("click",r),n.bind("mousedown",l),n.on("$destroy",function(){n.off("keydown",i),n.off("click",r),n.off("mousedown",l)}),e.$on("$destroy",e.$on("ngGridEventStartCellEdit",function(){n.focus(),n.select()})),angular.element(n).bind("blur",function(){e.$emit("ngGridEventEndCellEdit")})}}}]),b.directive("ngRow",["$compile","$domUtilityService","$templateCache",function(e,n,t){var o={scope:!1,compile:function(){return{pre:function(o,i){if(o.row.elm=i,o.row.clone&&(o.row.clone.elm=i),o.row.isAggRow){var r=t.get(o.gridId+"aggregateTemplate.html");r=o.row.aggLabelFilter?r.replace(g,"| "+o.row.aggLabelFilter):r.replace(g,""),i.append(e(r)(o))}else i.append(e(t.get(o.gridId+"rowTemplate.html"))(o));o.$on("$destroy",o.$on("ngGridEventDigestRow",function(){n.digest(o)}))}}}};return o}]),b.directive("ngViewport",[function(){return function(e,n){function t(n){var t=n.target.scrollLeft,o=n.target.scrollTop;return e.$headerContainer&&e.$headerContainer.scrollLeft(t),e.adjustScrollLeft(t),e.adjustScrollTop(o),e.forceSyncScrolling?s():(clearTimeout(l),l=setTimeout(s,150)),r=t,a=o,i=!1,!0}function o(){return i=!0,n.focus&&n.focus(),!0}var i,r,l,a=0,s=function(){e.$root.$$phase||e.$digest()};n.bind("scroll",t),n.bind("mousewheel DOMMouseScroll",o),n.on("$destroy",function(){n.off("scroll",t),n.off("mousewheel DOMMouseScroll",o)}),e.enableCellSelection||e.domAccessProvider.selectionHandlers(e,n)}}]),e.ngGrid.i18n.da={ngAggregateLabel:"artikler",ngGroupPanelDescription:"Grupér rækker udfra en kolonne ved at trække dens overskift hertil.",ngSearchPlaceHolder:"Søg...",ngMenuText:"Vælg kolonner:",ngShowingItemsLabel:"Viste rækker:",ngTotalItemsLabel:"Rækker totalt:",ngSelectedItemsLabel:"Valgte rækker:",ngPageSizeLabel:"Side størrelse:",ngPagerFirstTitle:"Første side",ngPagerNextTitle:"Næste side",ngPagerPrevTitle:"Forrige side",ngPagerLastTitle:"Sidste side"},e.ngGrid.i18n.de={ngAggregateLabel:"eintrag",ngGroupPanelDescription:"Ziehen Sie eine Spaltenüberschrift hierhin um nach dieser Spalte zu gruppieren.",ngSearchPlaceHolder:"Suche...",ngMenuText:"Spalten auswählen:",ngShowingItemsLabel:"Zeige Einträge:",ngTotalItemsLabel:"Einträge gesamt:",ngSelectedItemsLabel:"Ausgewählte Einträge:",ngPageSizeLabel:"Einträge pro Seite:",ngPagerFirstTitle:"Erste Seite",ngPagerNextTitle:"Nächste Seite",ngPagerPrevTitle:"Vorherige Seite",ngPagerLastTitle:"Letzte Seite"},e.ngGrid.i18n.en={ngAggregateLabel:"items",ngGroupPanelDescription:"Drag a column header here and drop it to group by that column.",ngSearchPlaceHolder:"Search...",ngMenuText:"Choose Columns:",ngShowingItemsLabel:"Showing Items:",ngTotalItemsLabel:"Total Items:",ngSelectedItemsLabel:"Selected Items:",ngPageSizeLabel:"Page Size:",ngPagerFirstTitle:"First Page",ngPagerNextTitle:"Next Page",ngPagerPrevTitle:"Previous Page",ngPagerLastTitle:"Last Page"},e.ngGrid.i18n.es={ngAggregateLabel:"Artículos",ngGroupPanelDescription:"Arrastre un encabezado de columna aquí y soltarlo para agrupar por esa columna.",ngSearchPlaceHolder:"Buscar...",ngMenuText:"Elegir columnas:",ngShowingItemsLabel:"Artículos Mostrando:",ngTotalItemsLabel:"Artículos Totales:",ngSelectedItemsLabel:"Artículos Seleccionados:",ngPageSizeLabel:"Tamaño de Página:",ngPagerFirstTitle:"Primera Página",ngPagerNextTitle:"Página Siguiente",ngPagerPrevTitle:"Página Anterior",ngPagerLastTitle:"Última Página"},e.ngGrid.i18n.fa={ngAggregateLabel:"موردها",ngGroupPanelDescription:"یک عنوان ستون اینجا را بردار و به گروهی از آن ستون بیانداز.",ngSearchPlaceHolder:"جستجو...",ngMenuText:"انتخاب ستون‌ها:",ngShowingItemsLabel:"نمایش موردها:",ngTotalItemsLabel:"همهٔ موردها:",ngSelectedItemsLabel:"موردهای انتخاب‌شده:",ngPageSizeLabel:"اندازهٔ صفحه:",ngPagerFirstTitle:"صفحهٔ اول",ngPagerNextTitle:"صفحهٔ بعد",ngPagerPrevTitle:"صفحهٔ قبل",ngPagerLastTitle:"آخرین صفحه"},e.ngGrid.i18n.fr={ngAggregateLabel:"articles",ngGroupPanelDescription:"Faites glisser un en-tête de colonne ici et déposez-le vers un groupe par cette colonne.",ngSearchPlaceHolder:"Recherche...",ngMenuText:"Choisir des colonnes:",ngShowingItemsLabel:"Articles Affichage des:",ngTotalItemsLabel:"Nombre total d'articles:",ngSelectedItemsLabel:"Éléments Articles:",ngPageSizeLabel:"Taille de page:",ngPagerFirstTitle:"Première page",ngPagerNextTitle:"Page Suivante",ngPagerPrevTitle:"Page précédente",ngPagerLastTitle:"Dernière page"},e.ngGrid.i18n.nl={ngAggregateLabel:"items",ngGroupPanelDescription:"Sleep hier een kolomkop om op te groeperen.",ngSearchPlaceHolder:"Zoeken...",ngMenuText:"Kies kolommen:",ngShowingItemsLabel:"Toon items:",ngTotalItemsLabel:"Totaal items:",ngSelectedItemsLabel:"Geselecteerde items:",ngPageSizeLabel:"Pagina grootte:, ",ngPagerFirstTitle:"Eerste pagina",ngPagerNextTitle:"Volgende pagina",ngPagerPrevTitle:"Vorige pagina",ngPagerLastTitle:"Laatste pagina"},e.ngGrid.i18n["pt-br"]={ngAggregateLabel:"itens",ngGroupPanelDescription:"Arraste e solte uma coluna aqui para agrupar por essa coluna",ngSearchPlaceHolder:"Procurar...",ngMenuText:"Selecione as colunas:",ngShowingItemsLabel:"Mostrando os Itens:",ngTotalItemsLabel:"Total de Itens:",ngSelectedItemsLabel:"Items Selecionados:",ngPageSizeLabel:"Tamanho da Página:",ngPagerFirstTitle:"Primeira Página",ngPagerNextTitle:"Próxima Página",ngPagerPrevTitle:"Página Anterior",ngPagerLastTitle:"Última Página"},e.ngGrid.i18n.ru={ngAggregateLabel:"записи",ngGroupPanelDescription:"Перетащите сюда заголовок колонки для группировки по этой колонке.",ngSearchPlaceHolder:"Искать...",ngMenuText:"Выберите столбцы:",ngShowingItemsLabel:"Показаны записи:",ngTotalItemsLabel:"Всего записей:",ngSelectedItemsLabel:"Выбранные записи:",ngPageSizeLabel:"Строк на странице:",ngPagerFirstTitle:"Первая страница",ngPagerNextTitle:"Следующая страница",ngPagerPrevTitle:"Предыдущая страница",ngPagerLastTitle:"Последняя страница"},e.ngGrid.i18n["zh-cn"]={ngAggregateLabel:"条目",ngGroupPanelDescription:"拖曳表头到此处以进行分组",ngSearchPlaceHolder:"搜索...",ngMenuText:"数据分组与选择列：",ngShowingItemsLabel:"当前显示条目：",ngTotalItemsLabel:"条目总数：",ngSelectedItemsLabel:"选中条目：",ngPageSizeLabel:"每页显示数：",ngPagerFirstTitle:"回到首页",ngPagerNextTitle:"下一页",ngPagerPrevTitle:"上一页",ngPagerLastTitle:"前往尾页"},e.ngGrid.i18n["zh-tw"]={ngAggregateLabel:"筆",ngGroupPanelDescription:"拖拉表頭到此處以進行分組",ngSearchPlaceHolder:"搜尋...",ngMenuText:"選擇欄位：",ngShowingItemsLabel:"目前顯示筆數：",ngTotalItemsLabel:"總筆數：",ngSelectedItemsLabel:"選取筆數：",ngPageSizeLabel:"每頁顯示：",ngPagerFirstTitle:"第一頁",ngPagerNextTitle:"下一頁",ngPagerPrevTitle:"上一頁",ngPagerLastTitle:"最後頁"},angular.module("ngGrid").run(["$templateCache",function(e){e.put("aggregateTemplate.html",'<div ng-click="row.toggleExpand()" ng-style="rowStyle(row)" class="ngAggregate">\r\n    <span class="ngAggregateText">{{row.label CUSTOM_FILTERS}} ({{row.totalChildren()}} {{AggItemsLabel}})</span>\r\n    <div class="{{row.aggClass()}}"></div>\r\n</div>\r\n'),e.put("cellEditTemplate.html",'<div ng-cell-has-focus ng-dblclick="CELL_EDITABLE_CONDITION && editCell()">\r\n	<div ng-edit-cell-if="!(isFocused && CELL_EDITABLE_CONDITION)">	\r\n		DISPLAY_CELL_TEMPLATE\r\n	</div>\r\n	<div ng-edit-cell-if="isFocused && CELL_EDITABLE_CONDITION">\r\n		EDITABLE_CELL_TEMPLATE\r\n	</div>\r\n</div>\r\n'),e.put("cellTemplate.html",'<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text>{{COL_FIELD CUSTOM_FILTERS}}</span></div>'),e.put("checkboxCellTemplate.html",'<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-checked="row.selected" /></div>'),e.put("checkboxHeaderTemplate.html",'<input class="ngSelectionHeader" type="checkbox" ng-show="multiSelect" ng-model="allSelected" ng-change="toggleSelectAll(allSelected, true)"/>'),e.put("editableCellTemplate.html",'<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" />'),e.put("footerTemplate.html",'<div ng-show="showFooter" class="ngFooterPanel" ng-class="{\'ui-widget-content\': jqueryUITheme, \'ui-corner-bottom\': jqueryUITheme}" ng-style="footerStyle()">\r\n    <div class="ngTotalSelectContainer" >\r\n        <div class="ngFooterTotalItems" ng-class="{\'ngNoMultiSelect\': !multiSelect}" >\r\n            <span class="ngLabel">{{i18n.ngTotalItemsLabel}} {{maxRows()}}</span><span ng-show="filterText.length > 0" class="ngLabel">({{i18n.ngShowingItemsLabel}} {{totalFilteredItemsLength()}})</span>\r\n        </div>\r\n        <div class="ngFooterSelectedItems" ng-show="multiSelect">\r\n            <span class="ngLabel">{{i18n.ngSelectedItemsLabel}} {{selectedItems.length}}</span>\r\n        </div>\r\n    </div>\r\n    <div class="ngPagerContainer" style="float: right; margin-top: 10px;" ng-show="enablePaging" ng-class="{\'ngNoMultiSelect\': !multiSelect}">\r\n        <div style="float:left; margin-right: 10px;" class="ngRowCountPicker">\r\n            <span style="float: left; margin-top: 3px;" class="ngLabel">{{i18n.ngPageSizeLabel}}</span>\r\n            <select style="float: left;height: 27px; width: 100px" ng-model="pagingOptions.pageSize" >\r\n                <option ng-repeat="size in pagingOptions.pageSizes">{{size}}</option>\r\n            </select>\r\n        </div>\r\n        <div style="float:left; margin-right: 10px; line-height:25px;" class="ngPagerControl" style="float: left; min-width: 135px;">\r\n            <button type="button" class="ngPagerButton" ng-click="pageToFirst()" ng-disabled="cantPageBackward()" title="{{i18n.ngPagerFirstTitle}}"><div class="ngPagerFirstTriangle"><div class="ngPagerFirstBar"></div></div></button>\r\n            <button type="button" class="ngPagerButton" ng-click="pageBackward()" ng-disabled="cantPageBackward()" title="{{i18n.ngPagerPrevTitle}}"><div class="ngPagerFirstTriangle ngPagerPrevTriangle"></div></button>\r\n            <input class="ngPagerCurrent" min="1" max="{{currentMaxPages}}" type="number" style="width:50px; height: 24px; margin-top: 1px; padding: 0 4px;" ng-model="pagingOptions.currentPage"/>\r\n            <span class="ngGridMaxPagesNumber" ng-show="maxPages() > 0">/ {{maxPages()}}</span>\r\n            <button type="button" class="ngPagerButton" ng-click="pageForward()" ng-disabled="cantPageForward()" title="{{i18n.ngPagerNextTitle}}"><div class="ngPagerLastTriangle ngPagerNextTriangle"></div></button>\r\n            <button type="button" class="ngPagerButton" ng-click="pageToLast()" ng-disabled="cantPageToLast()" title="{{i18n.ngPagerLastTitle}}"><div class="ngPagerLastTriangle"><div class="ngPagerLastBar"></div></div></button>\r\n        </div>\r\n    </div>\r\n</div>\r\n'),e.put("gridTemplate.html",'<div class="ngTopPanel" ng-class="{\'ui-widget-header\':jqueryUITheme, \'ui-corner-top\': jqueryUITheme}" ng-style="topPanelStyle()">\r\n    <div class="ngGroupPanel" ng-show="showGroupPanel()" ng-style="groupPanelStyle()">\r\n        <div class="ngGroupPanelDescription" ng-show="configGroups.length == 0">{{i18n.ngGroupPanelDescription}}</div>\r\n        <ul ng-show="configGroups.length > 0" class="ngGroupList">\r\n            <li class="ngGroupItem" ng-repeat="group in configGroups">\r\n                <span class="ngGroupElement">\r\n                    <span class="ngGroupName">{{group.displayName}}\r\n                        <span ng-click="removeGroup($index)" class="ngRemoveGroup">x</span>\r\n                    </span>\r\n                    <span ng-hide="$last" class="ngGroupArrow"></span>\r\n                </span>\r\n            </li>\r\n        </ul>\r\n    </div>\r\n    <div class="ngHeaderContainer" ng-style="headerStyle()">\r\n        <div ng-header-row class="ngHeaderScroller" ng-style="headerScrollerStyle()"></div>\r\n    </div>\r\n    <div ng-grid-menu></div>\r\n</div>\r\n<div class="ngViewport" unselectable="on" ng-viewport ng-class="{\'ui-widget-content\': jqueryUITheme}" ng-style="viewportStyle()">\r\n    <div class="ngCanvas" ng-style="canvasStyle()">\r\n        <div ng-style="rowStyle(row)" ng-repeat="row in renderedRows" ng-click="row.toggleSelected($event)" ng-class="row.alternatingRowClass()" ng-row></div>\r\n    </div>\r\n</div>\r\n<div ng-grid-footer></div>\r\n'),e.put("headerCellTemplate.html",'<div class="ngHeaderSortColumn {{col.headerClass}}" ng-style="{\'cursor\': col.cursor}" ng-class="{ \'ngSorted\': !col.noSortVisible() }">\r\n    <div ng-click="col.sort($event)" ng-class="\'colt\' + col.index" class="ngHeaderText">{{col.displayName}}</div>\r\n    <div class="ngSortButtonDown" ng-click="col.sort($event)" ng-show="col.showSortButtonDown()"></div>\r\n    <div class="ngSortButtonUp" ng-click="col.sort($event)" ng-show="col.showSortButtonUp()"></div>\r\n    <div class="ngSortPriority">{{col.sortPriority}}</div>\r\n    <div ng-class="{ ngPinnedIcon: col.pinned, ngUnPinnedIcon: !col.pinned }" ng-click="togglePin(col)" ng-show="col.pinnable"></div>\r\n</div>\r\n<div ng-show="col.resizable" class="ngHeaderGrip" ng-click="col.gripClick($event)" ng-mousedown="col.gripOnMouseDown($event)"></div>\r\n'),e.put("headerRowTemplate.html",'<div ng-style="{ height: col.headerRowHeight }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngHeaderCell">\r\n	<div class="ngVerticalBar" ng-style="{height: col.headerRowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>\r\n	<div ng-header-cell></div>\r\n</div>'),e.put("menuTemplate.html",'<div ng-show="showColumnMenu || showFilter"  class="ngHeaderButton" ng-click="toggleShowMenu()">\r\n    <div class="ngHeaderButtonArrow"></div>\r\n</div>\r\n<div ng-show="showMenu" class="ngColMenu">\r\n    <div ng-show="showFilter">\r\n        <input placeholder="{{i18n.ngSearchPlaceHolder}}" type="text" ng-model="filterText"/>\r\n    </div>\r\n    <div ng-show="showColumnMenu">\r\n        <span class="ngMenuText">{{i18n.ngMenuText}}</span>\r\n        <ul class="ngColList">\r\n            <li class="ngColListItem" ng-repeat="col in columns | ngColumns">\r\n                <label><input ng-disabled="col.pinned" type="checkbox" class="ngColListCheckbox" ng-model="col.visible"/>{{col.displayName}}</label>\r\n				<a title="Group By" ng-class="col.groupedByClass()" ng-show="col.groupable && col.visible" ng-click="groupBy(col)"></a>\r\n				<span class="ngGroupingNumber" ng-show="col.groupIndex > 0">{{col.groupIndex}}</span>          \r\n            </li>\r\n        </ul>\r\n    </div>\r\n</div>'),e.put("rowTemplate.html",'<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}">\r\n	<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>\r\n	<div ng-cell></div>\r\n</div>')
 }])})(window,jQuery);
 },{}],6:[function(require,module,exports){
-var css = ".ngGrid{background-color:#fdfdfd}.ngGrid input[type=\"checkbox\"]{margin:0;padding:0}.ngGrid input{vertical-align:top}.ngGrid.unselectable{-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;user-select:none}.ngViewport{overflow:auto;min-height:20px}.ngViewport:focus{outline:0}.ngCanvas{position:relative}.ngVerticalBar{position:absolute;right:0;width:0}.ngVerticalBarVisible{width:1px;background-color:#d4d4d4}#testDataLength{position:absolute;top:0;right:0;z-index:-100000}.ngHeaderContainer{position:relative;overflow:hidden;font-weight:bold;background-color:inherit}.ngHeaderCell{position:absolute;top:0;bottom:0;background-color:inherit}.ngHeaderCell.pinned{z-index:1}.ngHeaderSortColumn{position:absolute;overflow:hidden}.ngTopPanel{position:relative;z-index:1;background-color:#eaeaea;border-bottom:1px solid #d4d4d4}.ngSortButtonDown{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:0 5px 5px 5px;height:0;width:0}.ngNoSort{cursor:default}.ngHeaderButton{position:absolute;right:2px;top:8px;-moz-border-radius:50%;-webkit-border-radius:50%;border-radius:50%;width:14px;height:14px;z-index:1;background-color:#9fbbb4;cursor:pointer}.ngSortButtonUp{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:5px 5px 0 5px;height:0;width:0}.ngHeaderScroller{position:absolute;background-color:inherit}.ngSortPriority{position:absolute;top:-5px;left:1px;font-size:6pt;font-weight:bold}.ngHeaderGrip{cursor:col-resize;width:10px;right:-5px;top:0;height:100%;position:absolute;background-color:transparent}.ngHeaderText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngHeaderButtonArrow{position:absolute;top:4px;left:3px;width:0;height:0;border-style:solid;border-width:6.5px 4.5px 0 4.5px;border-color:#4d4d4d transparent transparent transparent}.ngPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);background-repeat:no-repeat;position:absolute;right:5px;top:5px;height:10px;width:10px}.ngUnPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAlElEQVQoU33PPQrCQBRF4fFnI2KfZVi5ARvdgo1l6mwmkCJVOgluwd5OwUoDtnoOxAei8cLXTN7cvEl/skCNDCMPfsUPO5zQwOHIDEvYtMURHe6wOVLgigvOePRyeDkyR4ln7wZ//7XfFBu8B23+aDJjrHGAwza7hjtHJvDmHg7b7Bru7AMjK7Rw2ObBVHDY5oGk9AKQNB2zy8MBTgAAAABJRU5ErkJggg==);background-repeat:no-repeat;position:absolute;height:10px;width:10px;right:5px;top:5px}.ngColMenu{right:2px;padding:5px;top:25px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;background-color:#bdd0cb;position:absolute;border:2px solid #d4d4d4;z-index:1}.ngColListCheckbox{position:relative;right:3px;top:4px}.ngColList{list-style-type:none;margin-top:2px;margin-left:8px}.ngColListItem{white-space:nowrap}.ngMenuText{position:relative;top:2px;left:2px}.ngGroupPanel{background-color:#eaeaea;overflow:hidden;border-bottom:1px solid #d4d4d4}.ngGroupPanelDescription{margin-top:5px;margin-left:5px}.ngGroupList{list-style-type:none;margin:0;padding:0}.ngAggHeader{position:absolute;border:0}.ngGroupElement{float:left;height:100%;width:100%}.ngGroupIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAEFJREFUKFNjoAhISkr+h2J5JDZODNXGwGBsbPwfhIGAA8bGh6HaGBiAGhxAGJmND4M1gQCSM0adCsVQbcPcqQwMALWDGyDvWPefAAAAAElFTkSuQmCC);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupedByIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAElJREFUKFNjoAhISkr+R8LyaHwMDNXGwGBsbPwfhoGAA5mPDUO1oWpE52PDYE0gALTFAYbR+dgwWBMIoPlh1I9ADNU2NPzIwAAAFQYI9E4OLvEAAAAASUVORK5CYII=);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupName{background-color:#fdfdfd;border:1px solid #d4d4d4;padding:3px 10px;float:left;margin-left:0;margin-top:2px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;font-weight:bold}.ngGroupArrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:6px solid black;margin-top:10px;margin-left:5px;margin-right:5px;float:right}.ngGroupingNumber{position:absolute;right:-10px;top:-2px}.ngAggArrowCollapsed{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #000}.ngGroupItem{float:left}.ngGroupItem:first-child{margin-left:2px}.ngRemoveGroup{width:5px;-moz-opacity:.4;opacity:.4;margin-top:-1px;margin-left:5px}.ngRemoveGroup:hover{color:black;text-decoration:none;cursor:pointer;-moz-opacity:.7;opacity:.7}.ngAggArrowExpanded{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:0 0 9px 9px;border-color:transparent transparent #000 transparent}.ngAggregate{position:absolute;background-color:#c9dde1;border-bottom:1px solid beige;overflow:hidden;top:0;bottom:0;right:-1px;left:0}.ngAggregateText{position:absolute;left:27px;top:5px;line-height:20px;white-space:nowrap}.ngRow{position:absolute;border-bottom:1px solid #d4d4d4}.ngRow.odd{background-color:#fdfdfd}.ngRow.even{background-color:#f3f3f3}.ngRow.selected{background-color:#c9dde1}.ngCell{overflow:hidden;position:absolute;top:0;bottom:0;background-color:inherit}.ngCell.pinned{z-index:1}.ngCellText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngSelectionCell{margin-top:9px;margin-left:6px}.ngSelectionHeader{position:absolute;top:11px;left:6px}.ngCellElement:focus{outline:0;background-color:#b3c4c7}.ngRow.canSelect{cursor:pointer}.ngSelectionCheckbox{margin-top:9px;margin-left:6px}.ngFooterPanel{background-color:#eaeaea;padding:0;border-top:1px solid #d4d4d4;position:relative}.nglabel{display:block;float:left;font-weight:bold;padding-right:5px}.ngTotalSelectContainer{float:left;margin:5px;margin-top:7px}.ngFooterSelectedItems{padding:2px}.ngFooterTotalItems.ngnoMultiSelect{padding:0!important}.ngGridMaxPagesNumber{vertical-align:middle}.ngPagerFirstBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:-3px}.ngPagerButton{height:25px;min-width:26px}.ngPagerFirstTriangle{width:0;height:0;border-style:solid;border-width:5px 8.7px 5px 0;border-color:transparent #4d4d4d transparent transparent;margin-left:2px}.ngPagerNextTriangle{margin-left:1px}.ngPagerPrevTriangle{margin-left:0}.ngPagerLastTriangle{width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #4d4d4d;margin-left:-1px}.ngPagerLastBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:1px}.ngFooterTotalItems{padding:2px}"; (require("/Volumes/Projects/webgme/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
-},{"/Volumes/Projects/webgme/isis-ui-components/node_modules/cssify":14}],7:[function(require,module,exports){
+var css = ".ngGrid{background-color:#fdfdfd}.ngGrid input[type=\"checkbox\"]{margin:0;padding:0}.ngGrid input{vertical-align:top}.ngGrid.unselectable{-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;user-select:none}.ngViewport{overflow:auto;min-height:20px}.ngViewport:focus{outline:0}.ngCanvas{position:relative}.ngVerticalBar{position:absolute;right:0;width:0}.ngVerticalBarVisible{width:1px;background-color:#d4d4d4}#testDataLength{position:absolute;top:0;right:0;z-index:-100000}.ngHeaderContainer{position:relative;overflow:hidden;font-weight:bold;background-color:inherit}.ngHeaderCell{position:absolute;top:0;bottom:0;background-color:inherit}.ngHeaderCell.pinned{z-index:1}.ngHeaderSortColumn{position:absolute;overflow:hidden}.ngTopPanel{position:relative;z-index:1;background-color:#eaeaea;border-bottom:1px solid #d4d4d4}.ngSortButtonDown{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:0 5px 5px 5px;height:0;width:0}.ngNoSort{cursor:default}.ngHeaderButton{position:absolute;right:2px;top:8px;-moz-border-radius:50%;-webkit-border-radius:50%;border-radius:50%;width:14px;height:14px;z-index:1;background-color:#9fbbb4;cursor:pointer}.ngSortButtonUp{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:5px 5px 0 5px;height:0;width:0}.ngHeaderScroller{position:absolute;background-color:inherit}.ngSortPriority{position:absolute;top:-5px;left:1px;font-size:6pt;font-weight:bold}.ngHeaderGrip{cursor:col-resize;width:10px;right:-5px;top:0;height:100%;position:absolute;background-color:transparent}.ngHeaderText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngHeaderButtonArrow{position:absolute;top:4px;left:3px;width:0;height:0;border-style:solid;border-width:6.5px 4.5px 0 4.5px;border-color:#4d4d4d transparent transparent transparent}.ngPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);background-repeat:no-repeat;position:absolute;right:5px;top:5px;height:10px;width:10px}.ngUnPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAlElEQVQoU33PPQrCQBRF4fFnI2KfZVi5ARvdgo1l6mwmkCJVOgluwd5OwUoDtnoOxAei8cLXTN7cvEl/skCNDCMPfsUPO5zQwOHIDEvYtMURHe6wOVLgigvOePRyeDkyR4ln7wZ//7XfFBu8B23+aDJjrHGAwza7hjtHJvDmHg7b7Bru7AMjK7Rw2ObBVHDY5oGk9AKQNB2zy8MBTgAAAABJRU5ErkJggg==);background-repeat:no-repeat;position:absolute;height:10px;width:10px;right:5px;top:5px}.ngColMenu{right:2px;padding:5px;top:25px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;background-color:#bdd0cb;position:absolute;border:2px solid #d4d4d4;z-index:1}.ngColListCheckbox{position:relative;right:3px;top:4px}.ngColList{list-style-type:none;margin-top:2px;margin-left:8px}.ngColListItem{white-space:nowrap}.ngMenuText{position:relative;top:2px;left:2px}.ngGroupPanel{background-color:#eaeaea;overflow:hidden;border-bottom:1px solid #d4d4d4}.ngGroupPanelDescription{margin-top:5px;margin-left:5px}.ngGroupList{list-style-type:none;margin:0;padding:0}.ngAggHeader{position:absolute;border:0}.ngGroupElement{float:left;height:100%;width:100%}.ngGroupIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAEFJREFUKFNjoAhISkr+h2J5JDZODNXGwGBsbPwfhIGAA8bGh6HaGBiAGhxAGJmND4M1gQCSM0adCsVQbcPcqQwMALWDGyDvWPefAAAAAElFTkSuQmCC);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupedByIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAElJREFUKFNjoAhISkr+R8LyaHwMDNXGwGBsbPwfhoGAA5mPDUO1oWpE52PDYE0gALTFAYbR+dgwWBMIoPlh1I9ADNU2NPzIwAAAFQYI9E4OLvEAAAAASUVORK5CYII=);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupName{background-color:#fdfdfd;border:1px solid #d4d4d4;padding:3px 10px;float:left;margin-left:0;margin-top:2px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;font-weight:bold}.ngGroupArrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:6px solid black;margin-top:10px;margin-left:5px;margin-right:5px;float:right}.ngGroupingNumber{position:absolute;right:-10px;top:-2px}.ngAggArrowCollapsed{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #000}.ngGroupItem{float:left}.ngGroupItem:first-child{margin-left:2px}.ngRemoveGroup{width:5px;-moz-opacity:.4;opacity:.4;margin-top:-1px;margin-left:5px}.ngRemoveGroup:hover{color:black;text-decoration:none;cursor:pointer;-moz-opacity:.7;opacity:.7}.ngAggArrowExpanded{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:0 0 9px 9px;border-color:transparent transparent #000 transparent}.ngAggregate{position:absolute;background-color:#c9dde1;border-bottom:1px solid beige;overflow:hidden;top:0;bottom:0;right:-1px;left:0}.ngAggregateText{position:absolute;left:27px;top:5px;line-height:20px;white-space:nowrap}.ngRow{position:absolute;border-bottom:1px solid #d4d4d4}.ngRow.odd{background-color:#fdfdfd}.ngRow.even{background-color:#f3f3f3}.ngRow.selected{background-color:#c9dde1}.ngCell{overflow:hidden;position:absolute;top:0;bottom:0;background-color:inherit}.ngCell.pinned{z-index:1}.ngCellText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngSelectionCell{margin-top:9px;margin-left:6px}.ngSelectionHeader{position:absolute;top:11px;left:6px}.ngCellElement:focus{outline:0;background-color:#b3c4c7}.ngRow.canSelect{cursor:pointer}.ngSelectionCheckbox{margin-top:9px;margin-left:6px}.ngFooterPanel{background-color:#eaeaea;padding:0;border-top:1px solid #d4d4d4;position:relative}.nglabel{display:block;float:left;font-weight:bold;padding-right:5px}.ngTotalSelectContainer{float:left;margin:5px;margin-top:7px}.ngFooterSelectedItems{padding:2px}.ngFooterTotalItems.ngnoMultiSelect{padding:0!important}.ngGridMaxPagesNumber{vertical-align:middle}.ngPagerFirstBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:-3px}.ngPagerButton{height:25px;min-width:26px}.ngPagerFirstTriangle{width:0;height:0;border-style:solid;border-width:5px 8.7px 5px 0;border-color:transparent #4d4d4d transparent transparent;margin-left:2px}.ngPagerNextTriangle{margin-left:1px}.ngPagerPrevTriangle{margin-left:0}.ngPagerLastTriangle{width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #4d4d4d;margin-left:-1px}.ngPagerLastBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:1px}.ngFooterTotalItems{padding:2px}"; (require("/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
+},{"/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify":14}],7:[function(require,module,exports){
 /*
- * angular-markdown-directive v0.3.0
+ * angular-markdown-directive v0.3.1
  * (c) 2013-2014 Brian Ford http://briantford.com
  * License: MIT
  */
@@ -2321,7 +2321,7 @@ angular.module('btford.markdown', ['ngSanitize']).
       }
     };
   }).
-  directive('btfMarkdown', function ($sanitize, markdownConverter) {
+  directive('btfMarkdown', ['$sanitize', 'markdownConverter', function ($sanitize, markdownConverter) {
     return {
       restrict: 'AE',
       link: function (scope, element, attrs) {
@@ -2336,7 +2336,7 @@ angular.module('btford.markdown', ['ngSanitize']).
         }
       }
     };
-  });
+  }]);
 
 },{}],8:[function(require,module,exports){
 /*
@@ -2434,6 +2434,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (options.lineWrapping)
       this.display.wrapper.className += " CodeMirror-wrap";
     if (options.autofocus && !mobile) focusInput(this);
+    initScrollbars(this);
 
     this.state = {
       keyMaps: [],  // stores maps added by addKeyMap
@@ -2443,7 +2444,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       suppressEdits: false, // used to disable editing during key handlers when in readOnly mode
       pasteIncoming: false, cutIncoming: false, // help recognize paste/cut edits in readInput
       draggingText: false,
-      highlight: new Delayed() // stores highlight worker timeout
+      highlight: new Delayed(), // stores highlight worker timeout
+      keySeq: null  // Unfinished key sequence
     };
 
     // Override magic textarea content restore that IE sometimes does
@@ -2493,14 +2495,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
     // Wraps and hides input textarea
     d.inputDiv = elt("div", [input], null, "overflow: hidden; position: relative; width: 3px; height: 0px;");
-    // The fake scrollbar elements.
-    d.scrollbarH = elt("div", [elt("div", null, null, "height: 100%; min-height: 1px")], "CodeMirror-hscrollbar");
-    d.scrollbarV = elt("div", [elt("div", null, null, "min-width: 1px")], "CodeMirror-vscrollbar");
     // Covers bottom-right square when both scrollbars are present.
     d.scrollbarFiller = elt("div", null, "CodeMirror-scrollbar-filler");
+    d.scrollbarFiller.setAttribute("not-content", "true");
     // Covers bottom of gutter when coverGutterNextToScrollbar is on
     // and h scrollbar is present.
     d.gutterFiller = elt("div", null, "CodeMirror-gutter-filler");
+    d.gutterFiller.setAttribute("not-content", "true");
     // Will contain the actual code, positioned to cover the viewport.
     d.lineDiv = elt("div", null, "CodeMirror-code");
     // Elements are added to these to represent selection and cursors.
@@ -2517,10 +2518,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     d.mover = elt("div", [elt("div", [d.lineSpace], "CodeMirror-lines")], null, "position: relative");
     // Set to the height of the document, allowing scrolling.
     d.sizer = elt("div", [d.mover], "CodeMirror-sizer");
+    d.sizerWidth = null;
     // Behavior of elts with overflow: auto and padding is
     // inconsistent across browsers. This is used to ensure the
     // scrollable area is big enough.
-    d.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerCutOff + "px; width: 1px;");
+    d.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerGap + "px; width: 1px;");
     // Will contain the gutters, if any.
     d.gutters = elt("div", null, "CodeMirror-gutters");
     d.lineGutter = null;
@@ -2528,8 +2530,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     d.scroller = elt("div", [d.sizer, d.heightForcer, d.gutters], "CodeMirror-scroll");
     d.scroller.setAttribute("tabIndex", "-1");
     // The element in which the editor lives.
-    d.wrapper = elt("div", [d.inputDiv, d.scrollbarH, d.scrollbarV,
-                            d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
+    d.wrapper = elt("div", [d.inputDiv, d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
 
     // Work around IE7 z-index bug (not perfect, hence IE7 not really being supported)
     if (ie && ie_version < 8) { d.gutters.style.zIndex = -1; d.scroller.style.paddingRight = 0; }
@@ -2538,23 +2539,28 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (!webkit) d.scroller.draggable = true;
     // Needed to handle Tab key in KHTML
     if (khtml) { d.inputDiv.style.height = "1px"; d.inputDiv.style.position = "absolute"; }
-    // Need to set a minimum width to see the scrollbar on IE7 (but must not set it on IE8).
-    if (ie && ie_version < 8) d.scrollbarH.style.minHeight = d.scrollbarV.style.minWidth = "18px";
 
-    if (place.appendChild) place.appendChild(d.wrapper);
-    else place(d.wrapper);
+    if (place) {
+      if (place.appendChild) place.appendChild(d.wrapper);
+      else place(d.wrapper);
+    }
 
     // Current rendered range (may be bigger than the view window).
     d.viewFrom = d.viewTo = doc.first;
+    d.reportedViewFrom = d.reportedViewTo = doc.first;
     // Information about the rendered lines.
     d.view = [];
+    d.renderedView = null;
     // Holds info about a single rendered line when it was rendered
     // for measurement, while not in view.
     d.externalMeasured = null;
     // Empty space (in pixels) above the view
     d.viewOffset = 0;
-    d.lastSizeC = 0;
+    d.lastWrapHeight = d.lastWrapWidth = 0;
     d.updateLineNumbers = null;
+
+    d.nativeBarWidth = d.barHeight = d.barWidth = 0;
+    d.scrollbarsClipped = false;
 
     // Used to only resize the line number gutter when necessary (when
     // the amount of lines crosses a boundary that makes its width change)
@@ -2619,6 +2625,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (cm.options.lineWrapping) {
       addClass(cm.display.wrapper, "CodeMirror-wrap");
       cm.display.sizer.style.minWidth = "";
+      cm.display.sizerWidth = null;
     } else {
       rmClass(cm.display.wrapper, "CodeMirror-wrap");
       findMaxLine(cm);
@@ -2658,12 +2665,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     });
   }
 
-  function keyMapChanged(cm) {
-    var map = keyMap[cm.options.keyMap], style = map.style;
-    cm.display.wrapper.className = cm.display.wrapper.className.replace(/\s*cm-keymap-\S+/g, "") +
-      (style ? " cm-keymap-" + style : "");
-  }
-
   function themeChanged(cm) {
     cm.display.wrapper.className = cm.display.wrapper.className.replace(/\s*cm-s-\S+/g, "") +
       cm.options.theme.replace(/(^|\s)\s*/g, " cm-s-");
@@ -2696,7 +2697,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   function updateGutterSpace(cm) {
     var width = cm.display.gutters.offsetWidth;
     cm.display.sizer.style.marginLeft = width + "px";
-    cm.display.scrollbarH.style.left = cm.options.fixedGutter ? width + "px" : 0;
   }
 
   // Compute the character length of a line, taking into account
@@ -2749,78 +2749,166 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
   // SCROLLBARS
 
-  function hScrollbarTakesSpace(cm) {
-    return cm.display.scroller.clientHeight - cm.display.wrapper.clientHeight < scrollerCutOff - 3;
-  }
-
   // Prepare DOM reads needed to update the scrollbars. Done in one
   // shot to minimize update/measure roundtrips.
   function measureForScrollbars(cm) {
-    var scroll = cm.display.scroller;
+    var d = cm.display, gutterW = d.gutters.offsetWidth;
+    var docH = Math.round(cm.doc.height + paddingVert(cm.display));
     return {
-      clientHeight: scroll.clientHeight,
-      barHeight: cm.display.scrollbarV.clientHeight,
-      scrollWidth: scroll.scrollWidth, clientWidth: scroll.clientWidth,
-      hScrollbarTakesSpace: hScrollbarTakesSpace(cm),
-      barWidth: cm.display.scrollbarH.clientWidth,
-      docHeight: Math.round(cm.doc.height + paddingVert(cm.display))
+      clientHeight: d.scroller.clientHeight,
+      viewHeight: d.wrapper.clientHeight,
+      scrollWidth: d.scroller.scrollWidth, clientWidth: d.scroller.clientWidth,
+      viewWidth: d.wrapper.clientWidth,
+      barLeft: cm.options.fixedGutter ? gutterW : 0,
+      docHeight: docH,
+      scrollHeight: docH + scrollGap(cm) + d.barHeight,
+      nativeBarWidth: d.nativeBarWidth,
+      gutterWidth: gutterW
     };
+  }
+
+  function NativeScrollbars(place, scroll, cm) {
+    this.cm = cm;
+    var vert = this.vert = elt("div", [elt("div", null, null, "min-width: 1px")], "CodeMirror-vscrollbar");
+    var horiz = this.horiz = elt("div", [elt("div", null, null, "height: 100%; min-height: 1px")], "CodeMirror-hscrollbar");
+    place(vert); place(horiz);
+
+    on(vert, "scroll", function() {
+      if (vert.clientHeight) scroll(vert.scrollTop, "vertical");
+    });
+    on(horiz, "scroll", function() {
+      if (horiz.clientWidth) scroll(horiz.scrollLeft, "horizontal");
+    });
+
+    this.checkedOverlay = false;
+    // Need to set a minimum width to see the scrollbar on IE7 (but must not set it on IE8).
+    if (ie && ie_version < 8) this.horiz.style.minHeight = this.vert.style.minWidth = "18px";
+  }
+
+  NativeScrollbars.prototype = copyObj({
+    update: function(measure) {
+      var needsH = measure.scrollWidth > measure.clientWidth + 1;
+      var needsV = measure.scrollHeight > measure.clientHeight + 1;
+      var sWidth = measure.nativeBarWidth;
+
+      if (needsV) {
+        this.vert.style.display = "block";
+        this.vert.style.bottom = needsH ? sWidth + "px" : "0";
+        var totalHeight = measure.viewHeight - (needsH ? sWidth : 0);
+        // A bug in IE8 can cause this value to be negative, so guard it.
+        this.vert.firstChild.style.height =
+          Math.max(0, measure.scrollHeight - measure.clientHeight + totalHeight) + "px";
+      } else {
+        this.vert.style.display = "";
+        this.vert.firstChild.style.height = "0";
+      }
+
+      if (needsH) {
+        this.horiz.style.display = "block";
+        this.horiz.style.right = needsV ? sWidth + "px" : "0";
+        this.horiz.style.left = measure.barLeft + "px";
+        var totalWidth = measure.viewWidth - measure.barLeft - (needsV ? sWidth : 0);
+        this.horiz.firstChild.style.width =
+          (measure.scrollWidth - measure.clientWidth + totalWidth) + "px";
+      } else {
+        this.horiz.style.display = "";
+        this.horiz.firstChild.style.width = "0";
+      }
+
+      if (!this.checkedOverlay && measure.clientHeight > 0) {
+        if (sWidth == 0) this.overlayHack();
+        this.checkedOverlay = true;
+      }
+
+      return {right: needsV ? sWidth : 0, bottom: needsH ? sWidth : 0};
+    },
+    setScrollLeft: function(pos) {
+      if (this.horiz.scrollLeft != pos) this.horiz.scrollLeft = pos;
+    },
+    setScrollTop: function(pos) {
+      if (this.vert.scrollTop != pos) this.vert.scrollTop = pos;
+    },
+    overlayHack: function() {
+      var w = mac && !mac_geMountainLion ? "12px" : "18px";
+      this.horiz.style.minHeight = this.vert.style.minWidth = w;
+      var self = this;
+      var barMouseDown = function(e) {
+        if (e_target(e) != self.vert && e_target(e) != self.horiz)
+          operation(self.cm, onMouseDown)(e);
+      };
+      on(this.vert, "mousedown", barMouseDown);
+      on(this.horiz, "mousedown", barMouseDown);
+    },
+    clear: function() {
+      var parent = this.horiz.parentNode;
+      parent.removeChild(this.horiz);
+      parent.removeChild(this.vert);
+    }
+  }, NativeScrollbars.prototype);
+
+  function NullScrollbars() {}
+
+  NullScrollbars.prototype = copyObj({
+    update: function() { return {bottom: 0, right: 0}; },
+    setScrollLeft: function() {},
+    setScrollTop: function() {},
+    clear: function() {}
+  }, NullScrollbars.prototype);
+
+  CodeMirror.scrollbarModel = {"native": NativeScrollbars, "null": NullScrollbars};
+
+  function initScrollbars(cm) {
+    if (cm.display.scrollbars) {
+      cm.display.scrollbars.clear();
+      if (cm.display.scrollbars.addClass)
+        rmClass(cm.display.wrapper, cm.display.scrollbars.addClass);
+    }
+
+    cm.display.scrollbars = new CodeMirror.scrollbarModel[cm.options.scrollbarStyle](function(node) {
+      cm.display.wrapper.insertBefore(node, cm.display.scrollbarFiller);
+      on(node, "mousedown", function() {
+        if (cm.state.focused) setTimeout(bind(focusInput, cm), 0);
+      });
+      node.setAttribute("not-content", "true");
+    }, function(pos, axis) {
+      if (axis == "horizontal") setScrollLeft(cm, pos);
+      else setScrollTop(cm, pos);
+    }, cm);
+    if (cm.display.scrollbars.addClass)
+      addClass(cm.display.wrapper, cm.display.scrollbars.addClass);
+  }
+
+  function updateScrollbars(cm, measure) {
+    if (!measure) measure = measureForScrollbars(cm);
+    var startWidth = cm.display.barWidth, startHeight = cm.display.barHeight;
+    updateScrollbarsInner(cm, measure);
+    for (var i = 0; i < 4 && startWidth != cm.display.barWidth || startHeight != cm.display.barHeight; i++) {
+      if (startWidth != cm.display.barWidth && cm.options.lineWrapping)
+        updateHeightsInViewport(cm);
+      updateScrollbarsInner(cm, measureForScrollbars(cm));
+      startWidth = cm.display.barWidth; startHeight = cm.display.barHeight;
+    }
   }
 
   // Re-synchronize the fake scrollbars with the actual size of the
   // content.
-  function updateScrollbars(cm, measure) {
-    if (!measure) measure = measureForScrollbars(cm);
-    var d = cm.display, sWidth = scrollbarWidth(d.measure);
-    var scrollHeight = measure.docHeight + scrollerCutOff;
-    var needsH = measure.scrollWidth > measure.clientWidth;
-    if (needsH && measure.scrollWidth <= measure.clientWidth + 1 &&
-        sWidth > 0 && !measure.hScrollbarTakesSpace)
-      needsH = false; // (Issue #2562)
-    var needsV = scrollHeight > measure.clientHeight;
+  function updateScrollbarsInner(cm, measure) {
+    var d = cm.display;
+    var sizes = d.scrollbars.update(measure);
 
-    if (needsV) {
-      d.scrollbarV.style.display = "block";
-      d.scrollbarV.style.bottom = needsH ? sWidth + "px" : "0";
-      // A bug in IE8 can cause this value to be negative, so guard it.
-      d.scrollbarV.firstChild.style.height =
-        Math.max(0, scrollHeight - measure.clientHeight + (measure.barHeight || d.scrollbarV.clientHeight)) + "px";
-    } else {
-      d.scrollbarV.style.display = "";
-      d.scrollbarV.firstChild.style.height = "0";
-    }
-    if (needsH) {
-      d.scrollbarH.style.display = "block";
-      d.scrollbarH.style.right = needsV ? sWidth + "px" : "0";
-      d.scrollbarH.firstChild.style.width =
-        (measure.scrollWidth - measure.clientWidth + (measure.barWidth || d.scrollbarH.clientWidth)) + "px";
-    } else {
-      d.scrollbarH.style.display = "";
-      d.scrollbarH.firstChild.style.width = "0";
-    }
-    if (needsH && needsV) {
+    d.sizer.style.paddingRight = (d.barWidth = sizes.right) + "px";
+    d.sizer.style.paddingBottom = (d.barHeight = sizes.bottom) + "px";
+
+    if (sizes.right && sizes.bottom) {
       d.scrollbarFiller.style.display = "block";
-      d.scrollbarFiller.style.height = d.scrollbarFiller.style.width = sWidth + "px";
+      d.scrollbarFiller.style.height = sizes.bottom + "px";
+      d.scrollbarFiller.style.width = sizes.right + "px";
     } else d.scrollbarFiller.style.display = "";
-    if (needsH && cm.options.coverGutterNextToScrollbar && cm.options.fixedGutter) {
+    if (sizes.bottom && cm.options.coverGutterNextToScrollbar && cm.options.fixedGutter) {
       d.gutterFiller.style.display = "block";
-      d.gutterFiller.style.height = sWidth + "px";
-      d.gutterFiller.style.width = d.gutters.offsetWidth + "px";
+      d.gutterFiller.style.height = sizes.bottom + "px";
+      d.gutterFiller.style.width = measure.gutterWidth + "px";
     } else d.gutterFiller.style.display = "";
-
-    if (!cm.state.checkedOverlayScrollbar && measure.clientHeight > 0) {
-      if (sWidth === 0) {
-        var w = mac && !mac_geMountainLion ? "12px" : "18px";
-        d.scrollbarV.style.minWidth = d.scrollbarH.style.minHeight = w;
-        var barMouseDown = function(e) {
-          if (e_target(e) != d.scrollbarV && e_target(e) != d.scrollbarH)
-            operation(cm, onMouseDown)(e);
-        };
-        on(d.scrollbarV, "mousedown", barMouseDown);
-        on(d.scrollbarH, "mousedown", barMouseDown);
-      }
-      cm.state.checkedOverlayScrollbar = true;
-    }
   }
 
   // Compute the lines that are visible in a given viewport (defaults
@@ -2836,12 +2924,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     // forces those lines into the viewport (if possible).
     if (viewport && viewport.ensure) {
       var ensureFrom = viewport.ensure.from.line, ensureTo = viewport.ensure.to.line;
-      if (ensureFrom < from)
-        return {from: ensureFrom,
-                to: lineAtHeight(doc, heightAtLine(getLine(doc, ensureFrom)) + display.wrapper.clientHeight)};
-      if (Math.min(ensureTo, doc.lastLine()) >= to)
-        return {from: lineAtHeight(doc, heightAtLine(getLine(doc, ensureTo)) - display.wrapper.clientHeight),
-                to: ensureTo};
+      if (ensureFrom < from) {
+        from = ensureFrom;
+        to = lineAtHeight(doc, heightAtLine(getLine(doc, ensureFrom)) + display.wrapper.clientHeight);
+      } else if (Math.min(ensureTo, doc.lastLine()) >= to) {
+        from = lineAtHeight(doc, heightAtLine(getLine(doc, ensureTo)) - display.wrapper.clientHeight);
+        to = ensureTo;
+      }
     }
     return {from: from, to: Math.max(to, from + 1)};
   }
@@ -2908,10 +2997,21 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     this.visible = visibleLines(display, cm.doc, viewport);
     this.editorIsHidden = !display.wrapper.offsetWidth;
     this.wrapperHeight = display.wrapper.clientHeight;
-    this.oldViewFrom = display.viewFrom; this.oldViewTo = display.viewTo;
-    this.oldScrollerWidth = display.scroller.clientWidth;
+    this.wrapperWidth = display.wrapper.clientWidth;
+    this.oldDisplayWidth = displayWidth(cm);
     this.force = force;
     this.dims = getDimensions(cm);
+  }
+
+  function maybeClipScrollbars(cm) {
+    var display = cm.display;
+    if (!display.scrollbarsClipped && display.scroller.offsetWidth) {
+      display.nativeBarWidth = display.scroller.offsetWidth - display.scroller.clientWidth;
+      display.heightForcer.style.height = scrollGap(cm) + "px";
+      display.sizer.style.marginBottom = -display.nativeBarWidth + "px";
+      display.sizer.style.borderRightWidth = scrollGap(cm) + "px";
+      display.scrollbarsClipped = true;
+    }
   }
 
   // Does the actual updating of the line display. Bails out
@@ -2919,6 +3019,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // false.
   function updateDisplayIfNeeded(cm, update) {
     var display = cm.display, doc = cm.doc;
+
     if (update.editorIsHidden) {
       resetView(cm);
       return false;
@@ -2928,7 +3029,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (!update.force &&
         update.visible.from >= display.viewFrom && update.visible.to <= display.viewTo &&
         (display.updateLineNumbers == null || display.updateLineNumbers >= display.viewTo) &&
-        countDirtyView(cm) == 0)
+        display.renderedView == display.view && countDirtyView(cm) == 0)
       return false;
 
     if (maybeUpdateLineNumberWidth(cm)) {
@@ -2948,7 +3049,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     }
 
     var different = from != display.viewFrom || to != display.viewTo ||
-      display.lastSizeC != update.wrapperHeight;
+      display.lastWrapHeight != update.wrapperHeight || display.lastWrapWidth != update.wrapperWidth;
     adjustView(cm, from, to);
 
     display.viewOffset = heightAtLine(getLine(cm.doc, display.viewFrom));
@@ -2956,7 +3057,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     cm.display.mover.style.top = display.viewOffset + "px";
 
     var toUpdate = countDirtyView(cm);
-    if (!different && toUpdate == 0 && !update.force &&
+    if (!different && toUpdate == 0 && !update.force && display.renderedView == display.view &&
         (display.updateLineNumbers == null || display.updateLineNumbers >= display.viewTo))
       return false;
 
@@ -2966,17 +3067,20 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (toUpdate > 4) display.lineDiv.style.display = "none";
     patchDisplay(cm, display.updateLineNumbers, update.dims);
     if (toUpdate > 4) display.lineDiv.style.display = "";
+    display.renderedView = display.view;
     // There might have been a widget with a focused element that got
     // hidden or updated, if so re-focus it.
     if (focused && activeElt() != focused && focused.offsetHeight) focused.focus();
 
     // Prevent selection and cursors from interfering with the scroll
-    // width.
+    // width and height.
     removeChildren(display.cursorDiv);
     removeChildren(display.selectionDiv);
+    display.heightForcer.style.top = display.gutters.style.height = 0;
 
     if (different) {
-      display.lastSizeC = update.wrapperHeight;
+      display.lastWrapHeight = update.wrapperHeight;
+      display.lastWrapWidth = update.wrapperWidth;
       startWorker(cm, 400);
     }
 
@@ -2988,14 +3092,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   function postUpdateDisplay(cm, update) {
     var force = update.force, viewport = update.viewport;
     for (var first = true;; first = false) {
-      if (first && cm.options.lineWrapping && update.oldScrollerWidth != cm.display.scroller.clientWidth) {
+      if (first && cm.options.lineWrapping && update.oldDisplayWidth != displayWidth(cm)) {
         force = true;
       } else {
         force = false;
         // Clip forced viewport to actual scrollable area.
         if (viewport && viewport.top != null)
-          viewport = {top: Math.min(cm.doc.height + paddingVert(cm.display) - scrollerCutOff -
-                                    cm.display.scroller.clientHeight, viewport.top)};
+          viewport = {top: Math.min(cm.doc.height + paddingVert(cm.display) - displayHeight(cm), viewport.top)};
         // Updated line heights might result in the drawn area not
         // actually covering the viewport. Keep looping until it does.
         update.visible = visibleLines(cm.display, cm.doc, viewport);
@@ -3011,8 +3114,10 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     }
 
     signalLater(cm, "update", cm);
-    if (cm.display.viewFrom != update.oldViewFrom || cm.display.viewTo != update.oldViewTo)
+    if (cm.display.viewFrom != cm.display.reportedViewFrom || cm.display.viewTo != cm.display.reportedViewTo) {
       signalLater(cm, "viewportChange", cm, cm.display.viewFrom, cm.display.viewTo);
+      cm.display.reportedViewFrom = cm.display.viewFrom; cm.display.reportedViewTo = cm.display.viewTo;
+    }
   }
 
   function updateDisplaySimple(cm, viewport) {
@@ -3028,17 +3133,10 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   }
 
   function setDocumentHeight(cm, measure) {
-    cm.display.sizer.style.minHeight = cm.display.heightForcer.style.top = measure.docHeight + "px";
-    cm.display.gutters.style.height = Math.max(measure.docHeight, measure.clientHeight - scrollerCutOff) + "px";
-  }
-
-  function checkForWebkitWidthBug(cm, measure) {
-    // Work around Webkit bug where it sometimes reserves space for a
-    // non-existing phantom scrollbar in the scroller (Issue #2420)
-    if (cm.display.sizer.offsetWidth + cm.display.gutters.offsetWidth < cm.display.scroller.clientWidth - 1) {
-      cm.display.sizer.style.minHeight = cm.display.heightForcer.style.top = "0px";
-      cm.display.gutters.style.height = measure.docHeight + "px";
-    }
+    cm.display.sizer.style.minHeight = measure.docHeight + "px";
+    var plusGap = measure.docHeight + scrollGap(cm);
+    cm.display.heightForcer.style.top = plusGap + "px";
+    cm.display.gutters.style.height = Math.max(plusGap, measure.clientHeight) + "px";
   }
 
   // Read the actual heights of the rendered lines, and update their
@@ -3225,9 +3323,12 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (cm.options.lineNumbers || markers) {
       var wrap = ensureLineWrapped(lineView);
       var gutterWrap = lineView.gutter =
-        wrap.insertBefore(elt("div", null, "CodeMirror-gutter-wrapper", "position: absolute; left: " +
-                              (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) + "px"),
+        wrap.insertBefore(elt("div", null, "CodeMirror-gutter-wrapper", "left: " +
+                              (cm.options.fixedGutter ? dims.fixedPos : -dims.gutterTotalWidth) +
+                              "px; width: " + dims.gutterTotalWidth + "px"),
                           lineView.text);
+      if (lineView.line.gutterClass)
+        gutterWrap.className += " " + lineView.line.gutterClass;
       if (cm.options.lineNumbers && (!markers || !markers["CodeMirror-linenumbers"]))
         lineView.lineNumber = gutterWrap.appendChild(
           elt("div", lineNumberFor(cm.options, lineN),
@@ -3279,7 +3380,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     var wrap = ensureLineWrapped(lineView);
     for (var i = 0, ws = line.widgets; i < ws.length; ++i) {
       var widget = ws[i], node = elt("div", [widget.node], "CodeMirror-linewidget");
-      if (!widget.handleMouseEvents) node.ignoreEvents = true;
+      if (!widget.handleMouseEvents) node.setAttribute("cm-ignore-events", "true");
       positionLineWidget(widget, node, lineView, dims);
       if (allowAbove && widget.above)
         wrap.insertBefore(node, lineView.gutter || lineView.text);
@@ -3674,7 +3775,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   function drawSelectionRange(cm, range, output) {
     var display = cm.display, doc = cm.doc;
     var fragment = document.createDocumentFragment();
-    var padding = paddingH(cm.display), leftSide = padding.left, rightSide = display.lineSpace.offsetWidth - padding.right;
+    var padding = paddingH(cm.display), leftSide = padding.left;
+    var rightSide = Math.max(display.sizerWidth, displayWidth(cm) - display.sizer.offsetLeft) - padding.right;
 
     function add(left, top, width, bottom) {
       if (top < 0) top = 0;
@@ -3853,13 +3955,21 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     return data;
   }
 
+  function scrollGap(cm) { return scrollerGap - cm.display.nativeBarWidth; }
+  function displayWidth(cm) {
+    return cm.display.scroller.clientWidth - scrollGap(cm) - cm.display.barWidth;
+  }
+  function displayHeight(cm) {
+    return cm.display.scroller.clientHeight - scrollGap(cm) - cm.display.barHeight;
+  }
+
   // Ensure the lineView.wrapping.heights array is populated. This is
   // an array of bottom offsets for the lines that make up a drawn
   // line. When lineWrapping is on, there might be more than one
   // height.
   function ensureLineHeights(cm, lineView, rect) {
     var wrapping = cm.options.lineWrapping;
-    var curWidth = wrapping && cm.display.scroller.clientWidth;
+    var curWidth = wrapping && displayWidth(cm);
     if (!lineView.measure.heights || wrapping && lineView.measure.width != curWidth) {
       var heights = lineView.measure.heights = [];
       if (wrapping) {
@@ -4377,6 +4487,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
   function endOperation_R1(op) {
     var cm = op.cm, display = cm.display;
+    maybeClipScrollbars(cm);
     if (op.updateMaxLine) findMaxLine(cm);
 
     op.mustUpdate = op.viewChanged || op.forceUpdate || op.scrollTop != null ||
@@ -4402,8 +4513,10 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     // updateDisplay_W2 will use these properties to do the actual resizing
     if (display.maxLineChanged && !cm.options.lineWrapping) {
       op.adjustWidthTo = measureChar(cm, display.maxLine, display.maxLine.text.length).left + 3;
-      op.maxScrollLeft = Math.max(0, display.sizer.offsetLeft + op.adjustWidthTo +
-                                  scrollerCutOff - display.scroller.clientWidth);
+      cm.display.sizerWidth = op.adjustWidthTo;
+      op.barMeasure.scrollWidth =
+        Math.max(display.scroller.clientWidth, display.sizer.offsetLeft + op.adjustWidthTo + scrollGap(cm) + cm.display.barWidth);
+      op.maxScrollLeft = Math.max(0, display.sizer.offsetLeft + op.adjustWidthTo - displayWidth(cm));
     }
 
     if (op.updatedDisplay || op.selectionChanged)
@@ -4436,9 +4549,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   function endOperation_finish(op) {
     var cm = op.cm, display = cm.display, doc = cm.doc;
 
-    if (op.adjustWidthTo != null && Math.abs(op.barMeasure.scrollWidth - cm.display.scroller.scrollWidth) > 1)
-      updateScrollbars(cm);
-
     if (op.updatedDisplay) postUpdateDisplay(cm, op.update);
 
     // Abort mouse wheel delta measurement, when scrolling explicitly
@@ -4447,12 +4557,14 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
     // Propagate the scroll position to the actual DOM scroller
     if (op.scrollTop != null && (display.scroller.scrollTop != op.scrollTop || op.forceScroll)) {
-      var top = Math.max(0, Math.min(display.scroller.scrollHeight - display.scroller.clientHeight, op.scrollTop));
-      display.scroller.scrollTop = display.scrollbarV.scrollTop = doc.scrollTop = top;
+      doc.scrollTop = Math.max(0, Math.min(display.scroller.scrollHeight - display.scroller.clientHeight, op.scrollTop));
+      display.scrollbars.setScrollTop(doc.scrollTop);
+      display.scroller.scrollTop = doc.scrollTop;
     }
     if (op.scrollLeft != null && (display.scroller.scrollLeft != op.scrollLeft || op.forceScroll)) {
-      var left = Math.max(0, Math.min(display.scroller.scrollWidth - display.scroller.clientWidth, op.scrollLeft));
-      display.scroller.scrollLeft = display.scrollbarH.scrollLeft = doc.scrollLeft = left;
+      doc.scrollLeft = Math.max(0, Math.min(display.scroller.scrollWidth - displayWidth(cm), op.scrollLeft));
+      display.scrollbars.setScrollLeft(doc.scrollLeft);
+      display.scroller.scrollLeft = doc.scrollLeft;
       alignHorizontally(cm);
     }
     // If we need to scroll a specific position into view, do so.
@@ -4472,16 +4584,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
     if (display.wrapper.offsetHeight)
       doc.scrollTop = cm.display.scroller.scrollTop;
-
-    // Apply workaround for two webkit bugs
-    if (op.updatedDisplay && webkit) {
-      if (cm.options.lineWrapping)
-        checkForWebkitWidthBug(cm, op.barMeasure); // (Issue #2420)
-      if (op.barMeasure.scrollWidth > op.barMeasure.clientWidth &&
-          op.barMeasure.scrollWidth < op.barMeasure.clientWidth + 1 &&
-          !hScrollbarTakesSpace(cm))
-        updateScrollbars(cm); // (Issue #2562)
-    }
 
     // Fire change events, and delayed event handlers
     if (op.changeObjs)
@@ -4754,7 +4856,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     // possible when it is clear that nothing happened. hasSelection
     // will be the case when there is a lot of text in the textarea,
     // in which case reading its value would be expensive.
-    if (!cm.state.focused || (hasSelection(input) && !prevInput) || isReadOnly(cm) || cm.options.disableInput)
+    if (!cm.state.focused || (hasSelection(input) && !prevInput) || isReadOnly(cm) || cm.options.disableInput || cm.state.keySeq)
       return false;
     // See paste handler for more on the fakedLastChar kludge
     if (cm.state.pasteIncoming && cm.state.fakedLastChar) {
@@ -4841,6 +4943,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // Reset the input to correspond to the selection (or to be empty,
   // when not typing and nothing is selected)
   function resetInput(cm, typing) {
+    if (cm.display.contextMenuPending) return;
     var minimal, selected, doc = cm.doc;
     if (cm.somethingSelected()) {
       cm.display.prevInput = "";
@@ -4907,28 +5010,18 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
         signal(cm, "scroll", cm);
       }
     });
-    on(d.scrollbarV, "scroll", function() {
-      if (d.scroller.clientHeight) setScrollTop(cm, d.scrollbarV.scrollTop);
-    });
-    on(d.scrollbarH, "scroll", function() {
-      if (d.scroller.clientHeight) setScrollLeft(cm, d.scrollbarH.scrollLeft);
-    });
 
     // Listen to wheel events in order to try and update the viewport on time.
     on(d.scroller, "mousewheel", function(e){onScrollWheel(cm, e);});
     on(d.scroller, "DOMMouseScroll", function(e){onScrollWheel(cm, e);});
 
-    // Prevent clicks in the scrollbars from killing focus
-    function reFocus() { if (cm.state.focused) setTimeout(bind(focusInput, cm), 0); }
-    on(d.scrollbarH, "mousedown", reFocus);
-    on(d.scrollbarV, "mousedown", reFocus);
     // Prevent wrapper from ever scrolling
     on(d.wrapper, "scroll", function() { d.wrapper.scrollTop = d.wrapper.scrollLeft = 0; });
 
     on(d.input, "keyup", function(e) { onKeyUp.call(cm, e); });
     on(d.input, "input", function() {
       if (ie && ie_version >= 9 && cm.display.inputHasSelection) cm.display.inputHasSelection = null;
-      fastPoll(cm);
+      readInput(cm);
     });
     on(d.input, "keydown", operation(cm, onKeyDown));
     on(d.input, "keypress", operation(cm, onKeyPress));
@@ -5009,9 +5102,12 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
   // Called when the window resizes
   function onResize(cm) {
-    // Might be a text scaling operation, clear size caches.
     var d = cm.display;
+    if (d.lastWrapHeight == d.wrapper.clientHeight && d.lastWrapWidth == d.wrapper.clientWidth)
+      return;
+    // Might be a text scaling operation, clear size caches.
     d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
+    d.scrollbarsClipped = false;
     cm.setSize();
   }
 
@@ -5020,7 +5116,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // Return true when the given mouse event happened in a widget
   function eventInWidget(display, e) {
     for (var n = e_target(e); n != display.wrapper; n = n.parentNode) {
-      if (!n || n.ignoreEvents || n.parentNode == display.sizer && n != display.mover) return true;
+      if (!n || n.getAttribute("cm-ignore-events") == "true" || n.parentNode == display.sizer && n != display.mover) return true;
     }
   }
 
@@ -5031,11 +5127,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // coordinates beyond the right of the text.
   function posFromMouse(cm, e, liberal, forRect) {
     var display = cm.display;
-    if (!liberal) {
-      var target = e_target(e);
-      if (target == display.scrollbarH || target == display.scrollbarV ||
-          target == display.scrollbarFiller || target == display.gutterFiller) return null;
-    }
+    if (!liberal && e_target(e).getAttribute("not-content") == "true") return null;
+
     var x, y, space = display.lineSpace.getBoundingClientRect();
     // Fails unpredictably on IE[67] when mouse is dragged around quickly.
     try { x = e.clientX - space.left; y = e.clientY - space.top; }
@@ -5105,9 +5198,10 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       lastClick = {time: now, pos: start};
     }
 
-    var sel = cm.doc.sel, modifier = mac ? e.metaKey : e.ctrlKey;
+    var sel = cm.doc.sel, modifier = mac ? e.metaKey : e.ctrlKey, contained;
     if (cm.options.dragDrop && dragAndDrop && !isReadOnly(cm) &&
-        type == "single" && sel.contains(start) > -1 && sel.somethingSelected())
+        type == "single" && (contained = sel.contains(start)) > -1 &&
+        !sel.ranges[contained].empty())
       leftButtonStartDrag(cm, e, start, modifier);
     else
       leftButtonSelect(cm, e, start, type, modifier);
@@ -5146,11 +5240,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     var display = cm.display, doc = cm.doc;
     e_preventDefault(e);
 
-    var ourRange, ourIndex, startSel = doc.sel;
+    var ourRange, ourIndex, startSel = doc.sel, ranges = startSel.ranges;
     if (addNew && !e.shiftKey) {
       ourIndex = doc.sel.contains(start);
       if (ourIndex > -1)
-        ourRange = doc.sel.ranges[ourIndex];
+        ourRange = ranges[ourIndex];
       else
         ourRange = new Range(start, start);
     } else {
@@ -5182,12 +5276,15 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       ourIndex = 0;
       setSelection(doc, new Selection([ourRange], 0), sel_mouse);
       startSel = doc.sel;
-    } else if (ourIndex > -1) {
-      replaceOneSelection(doc, ourIndex, ourRange, sel_mouse);
-    } else {
-      ourIndex = doc.sel.ranges.length;
-      setSelection(doc, normalizeSelection(doc.sel.ranges.concat([ourRange]), ourIndex),
+    } else if (ourIndex == -1) {
+      ourIndex = ranges.length;
+      setSelection(doc, normalizeSelection(ranges.concat([ourRange]), ourIndex),
                    {scroll: false, origin: "*mouse"});
+    } else if (ranges.length > 1 && ranges[ourIndex].empty() && type == "single") {
+      setSelection(doc, normalizeSelection(ranges.slice(0, ourIndex).concat(ranges.slice(ourIndex + 1)), 0));
+      startSel = doc.sel;
+    } else {
+      replaceOneSelection(doc, ourIndex, ourRange, sel_mouse);
     }
 
     var lastPos = start;
@@ -5393,7 +5490,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     cm.doc.scrollTop = val;
     if (!gecko) updateDisplaySimple(cm, {top: val});
     if (cm.display.scroller.scrollTop != val) cm.display.scroller.scrollTop = val;
-    if (cm.display.scrollbarV.scrollTop != val) cm.display.scrollbarV.scrollTop = val;
+    cm.display.scrollbars.setScrollTop(val);
     if (gecko) updateDisplaySimple(cm);
     startWorker(cm, 100);
   }
@@ -5405,7 +5502,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     cm.doc.scrollLeft = val;
     alignHorizontally(cm);
     if (cm.display.scroller.scrollLeft != val) cm.display.scroller.scrollLeft = val;
-    if (cm.display.scrollbarH.scrollLeft != val) cm.display.scrollbarH.scrollLeft = val;
+    cm.display.scrollbars.setScrollLeft(val);
   }
 
   // Since the delta values reported on mouse wheel events are
@@ -5429,11 +5526,22 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   else if (chrome) wheelPixelsPerUnit = -.7;
   else if (safari) wheelPixelsPerUnit = -1/3;
 
-  function onScrollWheel(cm, e) {
+  var wheelEventDelta = function(e) {
     var dx = e.wheelDeltaX, dy = e.wheelDeltaY;
     if (dx == null && e.detail && e.axis == e.HORIZONTAL_AXIS) dx = e.detail;
     if (dy == null && e.detail && e.axis == e.VERTICAL_AXIS) dy = e.detail;
     else if (dy == null) dy = e.wheelDelta;
+    return {x: dx, y: dy};
+  };
+  CodeMirror.wheelEventPixels = function(e) {
+    var delta = wheelEventDelta(e);
+    delta.x *= wheelPixelsPerUnit;
+    delta.y *= wheelPixelsPerUnit;
+    return delta;
+  };
+
+  function onScrollWheel(cm, e) {
+    var delta = wheelEventDelta(e), dx = delta.x, dy = delta.y;
 
     var display = cm.display, scroll = display.scroller;
     // Quit if there's nothing to scroll here
@@ -5524,62 +5632,70 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     return done;
   }
 
-  // Collect the currently active keymaps.
-  function allKeyMaps(cm) {
-    var maps = cm.state.keyMaps.slice(0);
-    if (cm.options.extraKeys) maps.push(cm.options.extraKeys);
-    maps.push(cm.options.keyMap);
-    return maps;
+  function lookupKeyForEditor(cm, name, handle) {
+    for (var i = 0; i < cm.state.keyMaps.length; i++) {
+      var result = lookupKey(name, cm.state.keyMaps[i], handle, cm);
+      if (result) return result;
+    }
+    return (cm.options.extraKeys && lookupKey(name, cm.options.extraKeys, handle, cm))
+      || lookupKey(name, cm.options.keyMap, handle, cm);
   }
 
-  var maybeTransition;
+  var stopSeq = new Delayed;
+  function dispatchKey(cm, name, e, handle) {
+    var seq = cm.state.keySeq;
+    if (seq) {
+      if (isModifierKey(name)) return "handled";
+      stopSeq.set(50, function() {
+        if (cm.state.keySeq == seq) {
+          cm.state.keySeq = null;
+          resetInput(cm);
+        }
+      });
+      name = seq + " " + name;
+    }
+    var result = lookupKeyForEditor(cm, name, handle);
+
+    if (result == "multi")
+      cm.state.keySeq = name;
+    if (result == "handled")
+      signalLater(cm, "keyHandled", cm, name, e);
+
+    if (result == "handled" || result == "multi") {
+      e_preventDefault(e);
+      restartBlink(cm);
+    }
+
+    if (seq && !result && /\'$/.test(name)) {
+      e_preventDefault(e);
+      return true;
+    }
+    return !!result;
+  }
+
   // Handle a key from the keydown event.
   function handleKeyBinding(cm, e) {
-    // Handle automatic keymap transitions
-    var startMap = getKeyMap(cm.options.keyMap), next = startMap.auto;
-    clearTimeout(maybeTransition);
-    if (next && !isModifierKey(e)) maybeTransition = setTimeout(function() {
-      if (getKeyMap(cm.options.keyMap) == startMap) {
-        cm.options.keyMap = (next.call ? next.call(null, cm) : next);
-        keyMapChanged(cm);
-      }
-    }, 50);
-
-    var name = keyName(e, true), handled = false;
+    var name = keyName(e, true);
     if (!name) return false;
-    var keymaps = allKeyMaps(cm);
 
-    if (e.shiftKey) {
+    if (e.shiftKey && !cm.state.keySeq) {
       // First try to resolve full name (including 'Shift-'). Failing
       // that, see if there is a cursor-motion command (starting with
       // 'go') bound to the keyname without 'Shift-'.
-      handled = lookupKey("Shift-" + name, keymaps, function(b) {return doHandleBinding(cm, b, true);})
-             || lookupKey(name, keymaps, function(b) {
-                  if (typeof b == "string" ? /^go[A-Z]/.test(b) : b.motion)
-                    return doHandleBinding(cm, b);
-                });
+      return dispatchKey(cm, "Shift-" + name, e, function(b) {return doHandleBinding(cm, b, true);})
+          || dispatchKey(cm, name, e, function(b) {
+               if (typeof b == "string" ? /^go[A-Z]/.test(b) : b.motion)
+                 return doHandleBinding(cm, b);
+             });
     } else {
-      handled = lookupKey(name, keymaps, function(b) { return doHandleBinding(cm, b); });
+      return dispatchKey(cm, name, e, function(b) { return doHandleBinding(cm, b); });
     }
-
-    if (handled) {
-      e_preventDefault(e);
-      restartBlink(cm);
-      signalLater(cm, "keyHandled", cm, name, e);
-    }
-    return handled;
   }
 
   // Handle a key from the keypress event
   function handleCharBinding(cm, e, ch) {
-    var handled = lookupKey("'" + ch + "'", allKeyMaps(cm),
-                            function(b) { return doHandleBinding(cm, b, true); });
-    if (handled) {
-      e_preventDefault(e);
-      restartBlink(cm);
-      signalLater(cm, "keyHandled", cm, "'" + ch + "'", e);
-    }
-    return handled;
+    return dispatchKey(cm, "'" + ch + "'", e,
+                       function(b) { return doHandleBinding(cm, b, true); });
   }
 
   var lastStoppedKey = null;
@@ -5696,6 +5812,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     resetInput(cm);
     // Adds "Select all" to context menu in FF
     if (!cm.somethingSelected()) display.input.value = display.prevInput = " ";
+    display.contextMenuPending = true;
     display.selForContextMenu = cm.doc.sel;
     clearTimeout(display.detectingSelectAll);
 
@@ -5714,9 +5831,10 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       }
     }
     function rehide() {
+      display.contextMenuPending = false;
       display.inputDiv.style.position = "relative";
       display.input.style.cssText = oldCSS;
-      if (ie && ie_version < 9) display.scrollbarV.scrollTop = display.scroller.scrollTop = scrollPos;
+      if (ie && ie_version < 9) display.scrollbars.setScrollTop(display.scroller.scrollTop = scrollPos);
       slowPoll(cm);
 
       // Try to detect the user choosing select-all
@@ -6058,13 +6176,15 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // If an editor sits on the top or bottom of the window, partially
   // scrolled out of view, this ensures that the cursor is visible.
   function maybeScrollWindow(cm, coords) {
+    if (signalDOMEvent(cm, "scrollCursorIntoView")) return;
+
     var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null;
     if (coords.top + box.top < 0) doScroll = true;
     else if (coords.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) doScroll = false;
     if (doScroll != null && !phantom) {
       var scrollNode = elt("div", "\u200b", null, "position: absolute; top: " +
                            (coords.top - display.viewOffset - paddingTop(cm.display)) + "px; height: " +
-                           (coords.bottom - coords.top + scrollerCutOff) + "px; left: " +
+                           (coords.bottom - coords.top + scrollGap(cm) + display.barHeight) + "px; left: " +
                            coords.left + "px; width: 2px;");
       cm.display.lineSpace.appendChild(scrollNode);
       scrollNode.scrollIntoView(doScroll);
@@ -6093,8 +6213,9 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
         setScrollLeft(cm, scrollPos.scrollLeft);
         if (Math.abs(cm.doc.scrollLeft - startLeft) > 1) changed = true;
       }
-      if (!changed) return coords;
+      if (!changed) break;
     }
+    return coords;
   }
 
   // Scroll a given set of coordinates into view (immediately).
@@ -6112,7 +6233,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     var display = cm.display, snapMargin = textHeight(cm.display);
     if (y1 < 0) y1 = 0;
     var screentop = cm.curOp && cm.curOp.scrollTop != null ? cm.curOp.scrollTop : display.scroller.scrollTop;
-    var screen = display.scroller.clientHeight - scrollerCutOff, result = {};
+    var screen = displayHeight(cm), result = {};
     if (y2 - y1 > screen) y2 = y1 + screen;
     var docBottom = cm.doc.height + paddingVert(display);
     var atTop = y1 < snapMargin, atBottom = y2 > docBottom - snapMargin;
@@ -6124,7 +6245,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     }
 
     var screenleft = cm.curOp && cm.curOp.scrollLeft != null ? cm.curOp.scrollLeft : display.scroller.scrollLeft;
-    var screenw = display.scroller.clientWidth - scrollerCutOff - display.gutters.offsetWidth;
+    var screenw = displayWidth(cm) - (cm.options.fixedGutter ? display.gutters.offsetWidth : 0);
     var tooWide = x2 - x1 > screenw;
     if (tooWide) x2 = x1 + screenw;
     if (x1 < 10)
@@ -6133,7 +6254,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       result.scrollLeft = Math.max(0, x1 - (tooWide ? 0 : 10));
     else if (x2 > screenw + screenleft - 3)
       result.scrollLeft = x2 + (tooWide ? 0 : 10) - screenw;
-
     return result;
   }
 
@@ -6381,12 +6501,12 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     getDoc: function() {return this.doc;},
 
     addKeyMap: function(map, bottom) {
-      this.state.keyMaps[bottom ? "push" : "unshift"](map);
+      this.state.keyMaps[bottom ? "push" : "unshift"](getKeyMap(map));
     },
     removeKeyMap: function(map) {
       var maps = this.state.keyMaps;
       for (var i = 0; i < maps.length; ++i)
-        if (maps[i] == map || (typeof maps[i] != "string" && maps[i].name == map)) {
+        if (maps[i] == map || maps[i].name == map) {
           maps.splice(i, 1);
           return true;
         }
@@ -6443,20 +6563,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     // Fetch the parser token for a given character. Useful for hacks
     // that want to inspect the mode state (say, for completion).
     getTokenAt: function(pos, precise) {
-      var doc = this.doc;
-      pos = clipPos(doc, pos);
-      var state = getStateBefore(this, pos.line, precise), mode = this.doc.mode;
-      var line = getLine(doc, pos.line);
-      var stream = new StringStream(line.text, this.options.tabSize);
-      while (stream.pos < pos.ch && !stream.eol()) {
-        stream.start = stream.pos;
-        var style = readToken(mode, stream, state);
-      }
-      return {start: stream.start,
-              end: stream.pos,
-              string: stream.current(),
-              type: style || null,
-              state: state};
+      return takeToken(this, pos, precise);
+    },
+
+    getLineTokens: function(line, precise) {
+      return takeToken(this, Pos(line), precise, true);
     },
 
     getTokenTypeAt: function(pos) {
@@ -6597,6 +6708,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       pos = cursorCoords(this, clipPos(this.doc, pos));
       var top = pos.bottom, left = pos.left;
       node.style.position = "absolute";
+      node.setAttribute("cm-ignore-events", "true");
       display.sizer.appendChild(node);
       if (vert == "over") {
         top = pos.top;
@@ -6731,10 +6843,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       if (y != null) this.curOp.scrollTop = y;
     }),
     getScrollInfo: function() {
-      var scroller = this.display.scroller, co = scrollerCutOff;
+      var scroller = this.display.scroller;
       return {left: scroller.scrollLeft, top: scroller.scrollTop,
-              height: scroller.scrollHeight - co, width: scroller.scrollWidth - co,
-              clientHeight: scroller.clientHeight - co, clientWidth: scroller.clientWidth - co};
+              height: scroller.scrollHeight - scrollGap(this) - this.display.barHeight,
+              width: scroller.scrollWidth - scrollGap(this) - this.display.barWidth,
+              clientHeight: displayHeight(this), clientWidth: displayWidth(this)};
     },
 
     scrollIntoView: methodOp(function(range, margin) {
@@ -6859,7 +6972,12 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     themeChanged(cm);
     guttersChanged(cm);
   }, true);
-  option("keyMap", "default", keyMapChanged);
+  option("keyMap", "default", function(cm, val, old) {
+    var next = getKeyMap(val);
+    var prev = old != CodeMirror.Init && getKeyMap(old);
+    if (prev && prev.detach) prev.detach(cm, next);
+    if (next.attach) next.attach(cm, prev || null);
+  });
   option("extraKeys", null);
 
   option("lineWrapping", false, wrappingChanged, true);
@@ -6871,7 +6989,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     cm.display.gutters.style.left = val ? compensateForHScroll(cm.display) + "px" : "0";
     cm.refresh();
   }, true);
-  option("coverGutterNextToScrollbar", false, updateScrollbars, true);
+  option("coverGutterNextToScrollbar", false, function(cm) {updateScrollbars(cm);}, true);
+  option("scrollbarStyle", "native", function(cm) {
+    initScrollbars(cm);
+    updateScrollbars(cm);
+    cm.display.scrollbars.setScrollTop(cm.doc.scrollTop);
+    cm.display.scrollbars.setScrollLeft(cm.doc.scrollLeft);
+  }, true);
   option("lineNumbers", false, function(cm) {
     setGuttersForLineNumbers(cm.options);
     guttersChanged(cm);
@@ -7204,9 +7328,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     toggleOverwrite: function(cm) {cm.toggleOverwrite();}
   };
 
+
   // STANDARD KEYMAPS
 
   var keyMap = CodeMirror.keyMap = {};
+
   keyMap.basic = {
     "Left": "goCharLeft", "Right": "goCharRight", "Up": "goLineUp", "Down": "goLineDown",
     "End": "goLineEnd", "Home": "goLineStartSmart", "PageUp": "goPageUp", "PageDown": "goPageDown",
@@ -7228,6 +7354,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     "Ctrl-U": "undoSelection", "Shift-Ctrl-U": "redoSelection", "Alt-U": "redoSelection",
     fallthrough: "basic"
   };
+  // Very basic readline/emacs-style bindings, which are standard on Mac.
+  keyMap.emacsy = {
+    "Ctrl-F": "goCharRight", "Ctrl-B": "goCharLeft", "Ctrl-P": "goLineUp", "Ctrl-N": "goLineDown",
+    "Alt-F": "goWordRight", "Alt-B": "goWordLeft", "Ctrl-A": "goLineStart", "Ctrl-E": "goLineEnd",
+    "Ctrl-V": "goPageDown", "Shift-Ctrl-V": "goPageUp", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
+    "Alt-D": "delWordAfter", "Alt-Backspace": "delWordBefore", "Ctrl-K": "killLine", "Ctrl-T": "transposeChars"
+  };
   keyMap.macDefault = {
     "Cmd-A": "selectAll", "Cmd-D": "deleteLine", "Cmd-Z": "undo", "Shift-Cmd-Z": "redo", "Cmd-Y": "redo",
     "Cmd-Home": "goDocStart", "Cmd-Up": "goDocStart", "Cmd-End": "goDocEnd", "Cmd-Down": "goDocEnd", "Alt-Left": "goGroupLeft",
@@ -7238,69 +7371,99 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     "Cmd-U": "undoSelection", "Shift-Cmd-U": "redoSelection", "Ctrl-Up": "goDocStart", "Ctrl-Down": "goDocEnd",
     fallthrough: ["basic", "emacsy"]
   };
-  // Very basic readline/emacs-style bindings, which are standard on Mac.
-  keyMap.emacsy = {
-    "Ctrl-F": "goCharRight", "Ctrl-B": "goCharLeft", "Ctrl-P": "goLineUp", "Ctrl-N": "goLineDown",
-    "Alt-F": "goWordRight", "Alt-B": "goWordLeft", "Ctrl-A": "goLineStart", "Ctrl-E": "goLineEnd",
-    "Ctrl-V": "goPageDown", "Shift-Ctrl-V": "goPageUp", "Ctrl-D": "delCharAfter", "Ctrl-H": "delCharBefore",
-    "Alt-D": "delWordAfter", "Alt-Backspace": "delWordBefore", "Ctrl-K": "killLine", "Ctrl-T": "transposeChars"
-  };
   keyMap["default"] = mac ? keyMap.macDefault : keyMap.pcDefault;
 
   // KEYMAP DISPATCH
 
-  function getKeyMap(val) {
-    if (typeof val == "string") return keyMap[val];
-    else return val;
+  function normalizeKeyName(name) {
+    var parts = name.split(/-(?!$)/), name = parts[parts.length - 1];
+    var alt, ctrl, shift, cmd;
+    for (var i = 0; i < parts.length - 1; i++) {
+      var mod = parts[i];
+      if (/^(cmd|meta|m)$/i.test(mod)) cmd = true;
+      else if (/^a(lt)?$/i.test(mod)) alt = true;
+      else if (/^(c|ctrl|control)$/i.test(mod)) ctrl = true;
+      else if (/^s(hift)$/i.test(mod)) shift = true;
+      else throw new Error("Unrecognized modifier name: " + mod);
+    }
+    if (alt) name = "Alt-" + name;
+    if (ctrl) name = "Ctrl-" + name;
+    if (cmd) name = "Cmd-" + name;
+    if (shift) name = "Shift-" + name;
+    return name;
   }
 
-  // Given an array of keymaps and a key name, call handle on any
-  // bindings found, until that returns a truthy value, at which point
-  // we consider the key handled. Implements things like binding a key
-  // to false stopping further handling and keymap fallthrough.
-  var lookupKey = CodeMirror.lookupKey = function(name, maps, handle) {
-    function lookup(map) {
-      map = getKeyMap(map);
-      var found = map[name];
-      if (found === false) return "stop";
-      if (found != null && handle(found)) return true;
-      if (map.nofallthrough) return "stop";
+  // This is a kludge to keep keymaps mostly working as raw objects
+  // (backwards compatibility) while at the same time support features
+  // like normalization and multi-stroke key bindings. It compiles a
+  // new normalized keymap, and then updates the old object to reflect
+  // this.
+  CodeMirror.normalizeKeyMap = function(keymap) {
+    var copy = {};
+    for (var keyname in keymap) if (keymap.hasOwnProperty(keyname)) {
+      var value = keymap[keyname];
+      if (/^(name|fallthrough|(de|at)tach)$/.test(keyname)) continue;
+      if (value == "...") { delete keymap[keyname]; continue; }
 
-      var fallthrough = map.fallthrough;
-      if (fallthrough == null) return false;
-      if (Object.prototype.toString.call(fallthrough) != "[object Array]")
-        return lookup(fallthrough);
-      for (var i = 0; i < fallthrough.length; ++i) {
-        var done = lookup(fallthrough[i]);
-        if (done) return done;
+      var keys = map(keyname.split(" "), normalizeKeyName);
+      for (var i = 0; i < keys.length; i++) {
+        var val, name;
+        if (i == keys.length - 1) {
+          name = keyname;
+          val = value;
+        } else {
+          name = keys.slice(0, i + 1).join(" ");
+          val = "...";
+        }
+        var prev = copy[name];
+        if (!prev) copy[name] = val;
+        else if (prev != val) throw new Error("Inconsistent bindings for " + name);
       }
-      return false;
+      delete keymap[keyname];
     }
+    for (var prop in copy) keymap[prop] = copy[prop];
+    return keymap;
+  };
 
-    for (var i = 0; i < maps.length; ++i) {
-      var done = lookup(maps[i]);
-      if (done) return done != "stop";
+  var lookupKey = CodeMirror.lookupKey = function(key, map, handle, context) {
+    map = getKeyMap(map);
+    var found = map.call ? map.call(key, context) : map[key];
+    if (found === false) return "nothing";
+    if (found === "...") return "multi";
+    if (found != null && handle(found)) return "handled";
+
+    if (map.fallthrough) {
+      if (Object.prototype.toString.call(map.fallthrough) != "[object Array]")
+        return lookupKey(key, map.fallthrough, handle, context);
+      for (var i = 0; i < map.fallthrough.length; i++) {
+        var result = lookupKey(key, map.fallthrough[i], handle, context);
+        if (result) return result;
+      }
     }
   };
 
   // Modifier key presses don't count as 'real' key presses for the
   // purpose of keymap fallthrough.
-  var isModifierKey = CodeMirror.isModifierKey = function(event) {
-    var name = keyNames[event.keyCode];
+  var isModifierKey = CodeMirror.isModifierKey = function(value) {
+    var name = typeof value == "string" ? value : keyNames[value.keyCode];
     return name == "Ctrl" || name == "Alt" || name == "Shift" || name == "Mod";
   };
 
   // Look up the name of a key as indicated by an event object.
   var keyName = CodeMirror.keyName = function(event, noShift) {
     if (presto && event.keyCode == 34 && event["char"]) return false;
-    var name = keyNames[event.keyCode];
+    var base = keyNames[event.keyCode], name = base;
     if (name == null || event.altGraphKey) return false;
-    if (event.altKey) name = "Alt-" + name;
-    if (flipCtrlCmd ? event.metaKey : event.ctrlKey) name = "Ctrl-" + name;
-    if (flipCtrlCmd ? event.ctrlKey : event.metaKey) name = "Cmd-" + name;
-    if (!noShift && event.shiftKey) name = "Shift-" + name;
+    if (event.altKey && base != "Alt") name = "Alt-" + name;
+    if ((flipCtrlCmd ? event.metaKey : event.ctrlKey) && base != "Ctrl") name = "Ctrl-" + name;
+    if ((flipCtrlCmd ? event.ctrlKey : event.metaKey) && base != "Cmd") name = "Cmd-" + name;
+    if (!noShift && event.shiftKey && base != "Shift") name = "Shift-" + name;
     return name;
   };
+
+  function getKeyMap(val) {
+    return typeof val == "string" ? keyMap[val] : val;
+  }
 
   // FROMTEXTAREA
 
@@ -7580,7 +7743,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       // Showing up as a widget implies collapsed (widget replaces text)
       marker.collapsed = true;
       marker.widgetNode = elt("span", [marker.replacedWith], "CodeMirror-widget");
-      if (!options.handleMouseEvents) marker.widgetNode.ignoreEvents = true;
+      if (!options.handleMouseEvents) marker.widgetNode.setAttribute("cm-ignore-events", "true");
       if (options.insertLeft) marker.widgetNode.insertLeft = true;
     }
     if (marker.collapsed) {
@@ -7624,7 +7787,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       if (updateMaxLine) cm.curOp.updateMaxLine = true;
       if (marker.collapsed)
         regChange(cm, from.line, to.line + 1);
-      else if (marker.className || marker.title || marker.startStyle || marker.endStyle)
+      else if (marker.className || marker.title || marker.startStyle || marker.endStyle || marker.css)
         for (var i = from.line; i <= to.line; i++) regLineChange(cm, i, "text");
       if (marker.atomic) reCheckSelection(cm.doc);
       signalLater(cm, "markerAdded", cm, marker);
@@ -8151,12 +8314,35 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (inner.mode.blankLine) return inner.mode.blankLine(inner.state);
   }
 
-  function readToken(mode, stream, state) {
+  function readToken(mode, stream, state, inner) {
     for (var i = 0; i < 10; i++) {
+      if (inner) inner[0] = CodeMirror.innerMode(mode, state).mode;
       var style = mode.token(stream, state);
       if (stream.pos > stream.start) return style;
     }
     throw new Error("Mode " + mode.name + " failed to advance stream.");
+  }
+
+  // Utility for getTokenAt and getLineTokens
+  function takeToken(cm, pos, precise, asArray) {
+    function getObj(copy) {
+      return {start: stream.start, end: stream.pos,
+              string: stream.current(),
+              type: style || null,
+              state: copy ? copyState(doc.mode, state) : state};
+    }
+
+    var doc = cm.doc, mode = doc.mode, style;
+    pos = clipPos(doc, pos);
+    var line = getLine(doc, pos.line), state = getStateBefore(cm, pos.line, precise);
+    var stream = new StringStream(line.text, cm.options.tabSize), tokens;
+    if (asArray) tokens = [];
+    while ((asArray || stream.pos < pos.ch) && !stream.eol()) {
+      stream.start = stream.pos;
+      style = readToken(mode, stream, state);
+      if (asArray) tokens.push(getObj(true));
+    }
+    return asArray ? tokens : getObj();
   }
 
   // Run the given mode's parser over a line, calling f for each token.
@@ -8165,6 +8351,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     if (flattenSpans == null) flattenSpans = cm.options.flattenSpans;
     var curStart = 0, curStyle = null;
     var stream = new StringStream(text, cm.options.tabSize), style;
+    var inner = cm.options.addModeClass && [null];
     if (text == "") extractLineClasses(callBlankLine(mode, state), lineClasses);
     while (!stream.eol()) {
       if (stream.pos > cm.options.maxHighlightLength) {
@@ -8173,15 +8360,18 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
         stream.pos = text.length;
         style = null;
       } else {
-        style = extractLineClasses(readToken(mode, stream, state), lineClasses);
+        style = extractLineClasses(readToken(mode, stream, state, inner), lineClasses);
       }
-      if (cm.options.addModeClass) {
-        var mName = CodeMirror.innerMode(mode, state).mode.name;
+      if (inner) {
+        var mName = inner[0].name;
         if (mName) style = "m-" + (style ? mName + " " + style : mName);
       }
       if (!flattenSpans || curStyle != style) {
-        if (curStart < stream.start) f(stream.start, curStyle);
-        curStart = stream.start; curStyle = style;
+        while (curStart < stream.start) {
+          curStart = Math.min(stream.start, curStart + 50000);
+          f(curStart, curStyle);
+        }
+        curStyle = style;
       }
       stream.start = stream.pos;
     }
@@ -8235,12 +8425,13 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     return {styles: st, classes: lineClasses.bgClass || lineClasses.textClass ? lineClasses : null};
   }
 
-  function getLineStyles(cm, line) {
+  function getLineStyles(cm, line, updateFrontier) {
     if (!line.styles || line.styles[0] != cm.state.modeGen) {
       var result = highlightLine(cm, line, line.stateAfter = getStateBefore(cm, lineNo(line)));
       line.styles = result.styles;
       if (result.classes) line.styleClasses = result.classes;
       else if (line.styleClasses) line.styleClasses = null;
+      if (updateFrontier === cm.doc.frontier) cm.doc.frontier++;
     }
     return line.styles;
   }
@@ -8295,7 +8486,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       if (hasBadBidiRects(cm.display.measure) && (order = getOrder(line)))
         builder.addToken = buildTokenBadBidi(builder.addToken, order);
       builder.map = [];
-      insertLineContent(line, builder, getLineStyles(cm, line));
+      var allowFrontierUpdate = lineView != cm.display.externalMeasured && lineNo(line);
+      insertLineContent(line, builder, getLineStyles(cm, line, allowFrontierUpdate));
       if (line.styleClasses) {
         if (line.styleClasses.bgClass)
           builder.bgClass = joinClasses(line.styleClasses.bgClass, builder.bgClass || "");
@@ -8317,9 +8509,14 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       }
     }
 
+    // See issue #2901
+    if (webkit && /\bcm-tab\b/.test(builder.content.lastChild.className))
+      builder.content.className = "cm-tab-wrap-hack";
+
     signal(cm, "renderLine", cm, lineView.line, builder.pre);
     if (builder.pre.className)
       builder.textClass = joinClasses(builder.pre.className, builder.textClass || "");
+
     return builder;
   }
 
@@ -8331,7 +8528,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
   // Build up the DOM representation for a single token, and add it to
   // the line map. Takes care to render special characters separately.
-  function buildToken(builder, text, style, startStyle, endStyle, title) {
+  function buildToken(builder, text, style, startStyle, endStyle, title, css) {
     if (!text) return;
     var special = builder.cm.options.specialChars, mustWrap = false;
     if (!special.test(text)) {
@@ -8370,11 +8567,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
         builder.pos++;
       }
     }
-    if (style || startStyle || endStyle || mustWrap) {
+    if (style || startStyle || endStyle || mustWrap || css) {
       var fullStyle = style || "";
       if (startStyle) fullStyle += startStyle;
       if (endStyle) fullStyle += endStyle;
-      var token = elt("span", [content], fullStyle);
+      var token = elt("span", [content], fullStyle, css);
       if (title) token.title = title;
       return builder.content.appendChild(token);
     }
@@ -8433,11 +8630,11 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
       return;
     }
 
-    var len = allText.length, pos = 0, i = 1, text = "", style;
+    var len = allText.length, pos = 0, i = 1, text = "", style, css;
     var nextChange = 0, spanStyle, spanEndStyle, spanStartStyle, title, collapsed;
     for (;;) {
       if (nextChange == pos) { // Update current marker set
-        spanStyle = spanEndStyle = spanStartStyle = title = "";
+        spanStyle = spanEndStyle = spanStartStyle = title = css = "";
         collapsed = null; nextChange = Infinity;
         var foundBookmarks = [];
         for (var j = 0; j < spans.length; ++j) {
@@ -8445,6 +8642,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
           if (sp.from <= pos && (sp.to == null || sp.to > pos)) {
             if (sp.to != null && nextChange > sp.to) { nextChange = sp.to; spanEndStyle = ""; }
             if (m.className) spanStyle += " " + m.className;
+            if (m.css) css = m.css;
             if (m.startStyle && sp.from == pos) spanStartStyle += " " + m.startStyle;
             if (m.endStyle && sp.to == nextChange) spanEndStyle += " " + m.endStyle;
             if (m.title && !title) title = m.title;
@@ -8472,7 +8670,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
           if (!collapsed) {
             var tokenText = end > upto ? text.slice(0, upto - pos) : text;
             builder.addToken(builder, tokenText, style ? style + spanStyle : spanStyle,
-                             spanStartStyle, pos + tokenText.length == nextChange ? spanEndStyle : "", title);
+                             spanStartStyle, pos + tokenText.length == nextChange ? spanEndStyle : "", title, css);
           }
           if (end >= upto) {text = text.slice(upto - pos); pos = upto; break;}
           pos = end;
@@ -8888,22 +9086,26 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     },
 
     addLineClass: docMethodOp(function(handle, where, cls) {
-      return changeLine(this, handle, "class", function(line) {
-        var prop = where == "text" ? "textClass" : where == "background" ? "bgClass" : "wrapClass";
+      return changeLine(this, handle, where == "gutter" ? "gutter" : "class", function(line) {
+        var prop = where == "text" ? "textClass"
+                 : where == "background" ? "bgClass"
+                 : where == "gutter" ? "gutterClass" : "wrapClass";
         if (!line[prop]) line[prop] = cls;
-        else if (new RegExp("(?:^|\\s)" + cls + "(?:$|\\s)").test(line[prop])) return false;
+        else if (classTest(cls).test(line[prop])) return false;
         else line[prop] += " " + cls;
         return true;
       });
     }),
     removeLineClass: docMethodOp(function(handle, where, cls) {
-      return changeLine(this, handle, "class", function(line) {
-        var prop = where == "text" ? "textClass" : where == "background" ? "bgClass" : "wrapClass";
+      return changeLine(this, handle, where == "gutter" ? "gutter" : "class", function(line) {
+        var prop = where == "text" ? "textClass"
+                 : where == "background" ? "bgClass"
+                 : where == "gutter" ? "gutterClass" : "wrapClass";
         var cur = line[prop];
         if (!cur) return false;
         else if (cls == null) line[prop] = null;
         else {
-          var found = cur.match(new RegExp("(?:^|\\s+)" + cls + "(?:$|\\s+)"));
+          var found = cur.match(classTest(cls));
           if (!found) return false;
           var end = found.index + found[0].length;
           line[prop] = cur.slice(0, found.index) + (!found.index || end == cur.length ? "" : " ") + cur.slice(end) || null;
@@ -9522,6 +9724,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // registering a (non-DOM) handler on the editor for the event name,
   // and preventDefault-ing the event in that handler.
   function signalDOMEvent(cm, e, override) {
+    if (typeof e == "string")
+      e = {type: e, preventDefault: function() { this.defaultPrevented = true; }};
     signal(cm, override || e.type, cm, e);
     return e_defaultPrevented(e) || e.codemirrorIgnore;
   }
@@ -9549,7 +9753,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   // MISC UTILITIES
 
   // Number of pixels added to scroller and sizer to hide scrollbar
-  var scrollerCutOff = 30;
+  var scrollerGap = 30;
 
   // Returned or thrown by various protocols to signal 'I'm not
   // handling this'.
@@ -9695,7 +9899,8 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   };
   else range = function(node, start, end) {
     var r = document.body.createTextRange();
-    r.moveToElementText(node.parentNode);
+    try { r.moveToElementText(node.parentNode); }
+    catch(e) { return r; }
     r.collapse(true);
     r.moveEnd("character", end);
     r.moveStart("character", start);
@@ -9727,14 +9932,19 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     catch(e) { return document.body; }
   };
 
-  function classTest(cls) { return new RegExp("\\b" + cls + "\\b\\s*"); }
-  function rmClass(node, cls) {
-    var test = classTest(cls);
-    if (test.test(node.className)) node.className = node.className.replace(test, "");
-  }
-  function addClass(node, cls) {
-    if (!classTest(cls).test(node.className)) node.className += " " + cls;
-  }
+  function classTest(cls) { return new RegExp("(^|\\s)" + cls + "(?:$|\\s)\\s*"); }
+  var rmClass = CodeMirror.rmClass = function(node, cls) {
+    var current = node.className;
+    var match = classTest(cls).exec(current);
+    if (match) {
+      var after = current.slice(match.index + match[0].length);
+      node.className = current.slice(0, match.index) + (after ? match[1] + after : "");
+    }
+  };
+  var addClass = CodeMirror.addClass = function(node, cls) {
+    var current = node.className;
+    if (!classTest(cls).test(current)) node.className += (current ? " " : "") + cls;
+  };
   function joinClasses(a, b) {
     var as = a.split(" ");
     for (var i = 0; i < as.length; i++)
@@ -9769,7 +9979,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     on(window, "resize", function() {
       if (resizeTimer == null) resizeTimer = setTimeout(function() {
         resizeTimer = null;
-        knownScrollbarWidth = null;
         forEachCodeMirror(onResize);
       }, 100);
     });
@@ -9789,16 +9998,6 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
     var div = elt('div');
     return "draggable" in div || "dragDrop" in div;
   }();
-
-  var knownScrollbarWidth;
-  function scrollbarWidth(measure) {
-    if (knownScrollbarWidth != null) return knownScrollbarWidth;
-    var test = elt("div", null, null, "width: 50px; height: 50px; overflow-x: scroll");
-    removeChildrenAndAdd(measure, test);
-    if (test.offsetWidth)
-      knownScrollbarWidth = test.offsetHeight - test.clientHeight;
-    return knownScrollbarWidth || 0;
-  }
 
   var zwspSupported;
   function zeroWidthElement(measure) {
@@ -10181,7 +10380,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 
   // THE END
 
-  CodeMirror.version = "4.7.0";
+  CodeMirror.version = "4.10.0";
 
   return CodeMirror;
 });
@@ -10371,7 +10570,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
         override = "string-2";
         return "maybeprop";
       } else if (allowNested) {
-        override = stream.match(/^\s*:/, false) ? "property" : "tag";
+        override = stream.match(/^\s*:(?:\s|$)/, false) ? "property" : "tag";
         return "block";
       } else {
         override += " error";
@@ -10977,7 +11176,7 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
     if (stream.match(/^<\/\s*script\s*>/i, false)) {
       state.token = html;
       state.localState = state.localMode = null;
-      return html(stream, state);
+      return null;
     }
     return maybeBackup(stream, /<\/\s*script\s*>/,
                        state.localMode.token(stream, state.localState));
@@ -10986,7 +11185,7 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
     if (stream.match(/^<\/\s*style\s*>/i, false)) {
       state.token = html;
       state.localState = state.localMode = null;
-      return html(stream, state);
+      return null;
     }
     return maybeBackup(stream, /<\/\s*style\s*>/,
                        cssMode.token(stream, state.localState));
@@ -11236,6 +11435,8 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         ++depth;
       } else if (wordRE.test(ch)) {
         sawSomething = true;
+      } else if (/["'\/]/.test(ch)) {
+        return;
       } else if (sawSomething && !depth) {
         ++pos;
         break;

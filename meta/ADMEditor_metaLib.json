@@ -10,9 +10,12 @@
         "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
         "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
         "3317c9c6-6c44-1a06-a476-11f77d722b34": {},
+        "3e223dbc-998f-e965-9d15-99085fd445ff": {},
         "58fcb797-8a06-2976-9632-d281b3c1ddd2": {},
         "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
         "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
+        "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {},
+        "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {},
         "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
         "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
         "97a00dee-7375-3637-ec08-b62588d4d71d": {},
@@ -31,6 +34,7 @@
         "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {},
         "edf95f43-efbd-5c2c-6384-6ab74c160c17": {},
         "f0508110-9a11-3b6d-ea42-2193bf0485e0": {},
+        "f26a44de-edb5-57c8-fd0f-242811b7816c": {},
         "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {},
         "f9f20885-6316-a7b6-2196-8299f45692ff": {}
     },
@@ -108,6 +112,15 @@
                     }
                 }
             },
+            "3e223dbc-998f-e965-9d15-99085fd445ff": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 900,
+                        "y": 365
+                    }
+                }
+            },
             "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
                 "attributes": {},
                 "registry": {
@@ -132,6 +145,24 @@
                     "position": {
                         "x": 18,
                         "y": 304
+                    }
+                }
+            },
+            "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 291,
+                        "y": 539
+                    }
+                }
+            },
+            "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 717,
+                        "y": 253
                     }
                 }
             },
@@ -306,6 +337,15 @@
                     }
                 }
             },
+            "f26a44de-edb5-57c8-fd0f-242811b7816c": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 876,
+                        "y": 551
+                    }
+                }
+            },
             "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
                 "attributes": {},
                 "registry": {
@@ -323,6 +363,22 @@
                         "y": 486
                     }
                 }
+            }
+        },
+        "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1": {
+            "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 100,
+                        "y": 100
+                    }
+                }
+            },
+            "global": {
+                "SetID": "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1",
+                "order": 0,
+                "title": "META"
             }
         },
         "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": {
@@ -402,6 +458,67 @@
                 "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
                 "order": 3,
                 "title": "AVM Component Model"
+            }
+        },
+        "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": {
+            "3317c9c6-6c44-1a06-a476-11f77d722b34": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 376,
+                        "y": 138
+                    }
+                }
+            },
+            "3e223dbc-998f-e965-9d15-99085fd445ff": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 256,
+                        "y": 493
+                    }
+                }
+            },
+            "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 527,
+                        "y": 495
+                    }
+                }
+            },
+            "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 580,
+                        "y": 329
+                    }
+                }
+            },
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 577,
+                        "y": 105
+                    }
+                }
+            },
+            "f26a44de-edb5-57c8-fd0f-242811b7816c": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 775,
+                        "y": 490
+                    }
+                }
+            },
+            "global": {
+                "SetID": "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35",
+                "order": 7,
+                "title": "LayoutConstraints"
             }
         },
         "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740": {
@@ -981,7 +1098,7 @@
                     ]
                 }
             },
-            "parent": "005cb34a-7523-4940-a1e9-0cb530ba1005",
+            "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
@@ -1176,10 +1293,10 @@
             "meta": {
                 "aspects": {
                     "NoValueFlow": [
-                        "3317c9c6-6c44-1a06-a476-11f77d722b34",
+                        "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
                         "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-                        "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-                        "f8d9bcd3-5655-7ddb-850d-28046a9dfba5"
+                        "3317c9c6-6c44-1a06-a476-11f77d722b34",
+                        "cb92c02d-84cf-f104-938b-b7de6641f8e5"
                     ]
                 },
                 "attributes": {
@@ -1199,6 +1316,7 @@
                         "3317c9c6-6c44-1a06-a476-11f77d722b34",
                         "58fcb797-8a06-2976-9632-d281b3c1ddd2",
                         "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+                        "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
                         "97a00dee-7375-3637-ec08-b62588d4d71d",
                         "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
                         "cb92c02d-84cf-f104-938b-b7de6641f8e5",
@@ -1212,6 +1330,7 @@
                         -1,
                         -1,
                         -1,
+                        -1,
                         1,
                         -1,
                         -1,
@@ -1221,6 +1340,7 @@
                         -1
                     ],
                     "minItems": [
+                        -1,
                         -1,
                         -1,
                         -1,
@@ -1247,6 +1367,59 @@
                 }
             },
             "sets": {}
+        },
+        "3e223dbc-998f-e965-9d15-99085fd445ff": {
+            "attributes": {
+                "Layer": "Top",
+                "Rotation": "",
+                "X": null,
+                "Y": null,
+                "name": "ExactLayoutConstraint"
+            },
+            "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "meta": {
+                "attributes": {
+                    "Layer": {
+                        "default": "Top",
+                        "enum": [
+                            "Top",
+                            "Bottom"
+                        ],
+                        "type": "string"
+                    },
+                    "Rotation": {
+                        "default": "",
+                        "enum": [
+                            "0",
+                            "90",
+                            "180",
+                            "270"
+                        ],
+                        "type": "string"
+                    },
+                    "X": {
+                        "default": null,
+                        "type": "float"
+                    },
+                    "Y": {
+                        "default": null,
+                        "type": "float"
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+            },
+            "registry": {
+                "position": {
+                    "x": 746,
+                    "y": 258
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
         },
         "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
             "attributes": {
@@ -1342,6 +1515,83 @@
                 }
             },
             "sets": {}
+        },
+        "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
+            "attributes": {
+                "LayerRange": "",
+                "XRange": "",
+                "YRange": "",
+                "name": "RangeLayoutConstraint"
+            },
+            "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "meta": {
+                "attributes": {
+                    "LayerRange": {
+                        "default": "",
+                        "enum": [
+                            "Top",
+                            "Bottom",
+                            "Either"
+                        ],
+                        "type": "string"
+                    },
+                    "XRange": {
+                        "default": "",
+                        "type": "string"
+                    },
+                    "YRange": {
+                        "default": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
+        },
+        "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
+            "attributes": {
+                "name": "LayoutConstraint"
+            },
+            "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "meta": {
+                "pointers": {
+                    "ConstraintTarget": {
+                        "items": [
+                            "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+                        ],
+                        "maxItems": [
+                            -1
+                        ],
+                        "minItems": [
+                            -1
+                        ]
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+            },
+            "registry": {
+                "position": {
+                    "x": 838,
+                    "y": 163
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
         },
         "8b1e277e-0f88-a58b-4aff-51c74250671d": {
             "attributes": {
@@ -1503,8 +1753,8 @@
                 "aspects": {
                     "NoValueFlow": [
                         "3317c9c6-6c44-1a06-a476-11f77d722b34",
-                        "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-                        "d5fc3678-2722-5112-c0bb-fa758f113246"
+                        "d5fc3678-2722-5112-c0bb-fa758f113246",
+                        "2bc42bca-a9be-0f33-16a7-ea847e546b37"
                     ]
                 },
                 "attributes": {
@@ -2136,7 +2386,11 @@
                             "Modelica",
                             "CAD",
                             "Cyber",
-                            "Manufacturing"
+                            "Manufacturing",
+                            "RF",
+                            "EDA",
+                            "SystemC",
+                            "SPICE"
                         ],
                         "type": "string"
                     }
@@ -2224,7 +2478,10 @@
                             "CadPoint",
                             "CadAxis",
                             "CadPlane",
-                            "CadCoordinateSystem"
+                            "CadCoordinateSystem",
+                            "RFPort",
+                            "SchematicPin",
+                            "SystemCPort"
                         ],
                         "type": "string"
                     }
@@ -2246,6 +2503,55 @@
                 }
             },
             "sets": {}
+        },
+        "f26a44de-edb5-57c8-fd0f-242811b7816c": {
+            "attributes": {
+                "XOffset": null,
+                "YOffset": null,
+                "name": "RelativeLayoutConstraint"
+            },
+            "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "meta": {
+                "attributes": {
+                    "XOffset": {
+                        "default": null,
+                        "type": "float"
+                    },
+                    "YOffset": {
+                        "default": null,
+                        "type": "float"
+                    }
+                },
+                "pointers": {
+                    "OriginComponent": {
+                        "items": [
+                            "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+                        ],
+                        "max": 1,
+                        "maxItems": [
+                            1
+                        ],
+                        "min": 1,
+                        "minItems": [
+                            -1
+                        ]
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "OriginComponent": null,
+                "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
         },
         "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
             "attributes": {
@@ -2355,14 +2661,17 @@
         "0375e1c1-1217-7aa9-5e14-53c709a2abbe": "1675023230",
         "07d79d42-e631-fb69-a1f7-25b044d94fbb": "319211427",
         "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": "711037118",
-        "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "1008889918",
+        "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "501604959",
         "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
         "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
         "2bc42bca-a9be-0f33-16a7-ea847e546b37": "34094492",
         "3317c9c6-6c44-1a06-a476-11f77d722b34": "1993805430",
+        "3e223dbc-998f-e965-9d15-99085fd445ff": "749469140",
         "58fcb797-8a06-2976-9632-d281b3c1ddd2": "1045980796",
         "65dcb250-dcb6-4cad-4617-0518a9a37d2e": "803021327",
         "79f0cc09-f068-284b-5473-efcf5dfa3497": "1949671222",
+        "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": "1669293789",
+        "87018874-0598-6ca4-a7b3-4e1dd2bfe926": "236224320",
         "8b1e277e-0f88-a58b-4aff-51c74250671d": "398267330",
         "9001f172-4258-ceaa-86e9-f6e80b85853d": "891929219",
         "97a00dee-7375-3637-ec08-b62588d4d71d": "1502717053",
@@ -2381,11 +2690,12 @@
         "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": "481954284",
         "edf95f43-efbd-5c2c-6384-6ab74c160c17": "91705197",
         "f0508110-9a11-3b6d-ea42-2193bf0485e0": "126974487",
+        "f26a44de-edb5-57c8-fd0f-242811b7816c": "24011457",
         "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": "488584186",
         "f9f20885-6316-a7b6-2196-8299f45692ff": "1474284259"
     },
     "root": {
         "guid": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-        "path": "/1008889918"
+        "path": "/501604959"
     }
 }

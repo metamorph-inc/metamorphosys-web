@@ -1484,6 +1484,10 @@ define( [], function () {
                 Modelica: 'cyphy-tag dark-blue', //'label-primary',
                 CAD: 'cyphy-tag green', //'label-success',
                 Manufacturing: 'cyphy-tag yellow', //'label-warning',
+                SPICE: 'cyphy-tag yellow',
+                EDA: 'cyphy-tag purple',
+                SystemC: 'cyphy-tag green',
+                RF: 'cyphy-tag dark-blue',
                 Cyber: 'cyphy-tag purple' //'label-info'
             },
             icon;

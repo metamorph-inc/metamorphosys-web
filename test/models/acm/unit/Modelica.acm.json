@@ -1,6 +1,6 @@
 {
-    "/1/35": {
-        "ID": 35,
+    "/1/39": {
+        "ID": 39,
         "attributes": {
             "name": "Modelica",
             "SchemaVersion": "2.5",
@@ -24,18 +24,18 @@
             "base": "/7"
         },
         "collection": {},
-        "path": "/1/35",
+        "path": "/1/39",
         "parent": "/1",
         "children": [
-            "/1/35/36",
-            "/1/35/38",
-            "/1/35/39",
-            "/1/35/40",
-            "/1/35/41"
+            "/1/39/40",
+            "/1/39/42",
+            "/1/39/43",
+            "/1/39/44",
+            "/1/39/45"
         ]
     },
-    "/1/35/36": {
-        "ID": 36,
+    "/1/39/40": {
+        "ID": 40,
         "attributes": {
             "name": "c",
             "ID": "id-a99d8ceb-ab0c-42e3-a87f-e2dc046d4d0c"
@@ -56,14 +56,14 @@
             "base": "/10"
         },
         "collection": {},
-        "path": "/1/35/36",
-        "parent": "/1/35",
+        "path": "/1/39/40",
+        "parent": "/1/39",
         "children": [
-            "/1/35/36/37"
+            "/1/39/40/41"
         ]
     },
-    "/1/35/36/37": {
-        "ID": 37,
+    "/1/39/40/41": {
+        "ID": 41,
         "attributes": {
             "name": "mc",
             "Type": "ModelicaConnector",
@@ -83,15 +83,15 @@
             }
         },
         "pointers": {
-            "base": "/15"
+            "base": "/16"
         },
         "collection": {},
-        "path": "/1/35/36/37",
-        "parent": "/1/35/36",
+        "path": "/1/39/40/41",
+        "parent": "/1/39/40",
         "children": []
     },
-    "/1/35/38": {
-        "ID": 38,
+    "/1/39/42": {
+        "ID": 42,
         "attributes": {
             "name": "mc",
             "Type": "ModelicaConnector",
@@ -111,15 +111,15 @@
             }
         },
         "pointers": {
-            "base": "/15"
+            "base": "/16"
         },
         "collection": {},
-        "path": "/1/35/38",
-        "parent": "/1/35",
+        "path": "/1/39/42",
+        "parent": "/1/39",
         "children": []
     },
-    "/1/35/39": {
-        "ID": 39,
+    "/1/39/43": {
+        "ID": 43,
         "attributes": {
             "name": "Prop",
             "ID": "id-40fd7c8d-6149-4c6e-97f3-42128e5e17f1",
@@ -127,7 +127,8 @@
             "Minimum": "-inf",
             "Maximum": "inf",
             "ValueType": "Fixed",
-            "DataType": "Real"
+            "DataType": "Real",
+            "OnDataSheet": false
         },
         "registry": {
             "DisplayFormat": "",
@@ -142,15 +143,15 @@
             }
         },
         "pointers": {
-            "base": "/20"
+            "base": "/21"
         },
         "collection": {},
-        "path": "/1/35/39",
-        "parent": "/1/35",
+        "path": "/1/39/43",
+        "parent": "/1/39",
         "children": []
     },
-    "/1/35/40": {
-        "ID": 40,
+    "/1/39/44": {
+        "ID": 44,
         "attributes": {
             "name": "Param",
             "ID": "id-3eb0bd47-c681-4868-b9ae-6fa5b9708521",
@@ -173,15 +174,15 @@
             }
         },
         "pointers": {
-            "base": "/20"
+            "base": "/21"
         },
         "collection": {},
-        "path": "/1/35/40",
-        "parent": "/1/35",
+        "path": "/1/39/44",
+        "parent": "/1/39",
         "children": []
     },
-    "/1/35/41": {
-        "ID": 41,
+    "/1/39/45": {
+        "ID": 45,
         "attributes": {
             "name": "ModelicaModel",
             "Type": "Modelica",
@@ -200,11 +201,11 @@
             }
         },
         "pointers": {
-            "base": "/16"
+            "base": "/15"
         },
         "collection": {},
-        "path": "/1/35/41",
-        "parent": "/1/35",
+        "path": "/1/39/45",
+        "parent": "/1/39",
         "children": []
     }
 }

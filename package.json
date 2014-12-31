@@ -7,6 +7,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bson-stream": "0.0.4",
     "webgme": "https://github.com/webgme/webgme/tarball/master",
     "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
     "requirejs": "=2.1.11",
@@ -42,7 +43,10 @@
     "run-sequence": "^0.3.6",
     "tiny-lr": "^0.1.1",
     "vinyl-source-stream": "^1.0.0",
-    "yargs": "^1.3.1"
+    "yargs": "^1.3.1",
+    "svgmin": "~0.1.0",
+    "gulp-svgstore": "~3.0.0",
+    "gulp-svgmin": "~1.0.0"
   },
   "browserify": {
     "transform": [
@@ -54,7 +58,10 @@
     "showdown": "./vendor/showdown_for_browserify.js",
     "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
     "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
-    "chance": "./bower_components/chance/chance.js"
+    "chance": "./bower_components/chance/chance.js",
+    "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
+    "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
+    "ui-layout": "./bower_components/angular-ui-layout/ui-layout.min.js"
   },
   "browserify-shim": {
     "showdown": "Showdown"

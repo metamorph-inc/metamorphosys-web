@@ -1,6 +1,6 @@
 /*globals angular, console, window, require*/
 
-var CyPhyApp = angular.module( 'CyPhyApp', [
+angular.module( 'CyPhyApp', [
     'ui.router',
 
     'gme.services',
@@ -20,27 +20,27 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
         // Now set up the states
         $stateProvider
             .state( 'index', {
-                url: "/index"
+                url: '/index'
             } )
             .state( 'workspaces', {
-                url: "/workspaces",
-                templateUrl: "/default/templates/Workspaces.html",
-                controller: "WorkspacesController"
+                url: '/workspaces',
+                templateUrl: '/default/templates/Workspaces.html',
+                controller: 'WorkspacesController'
             } )
             .state( 'workspaceDetails', {
-                url: "/workspaceDetails/:workspaceId",
-                templateUrl: "/default/templates/WorkspaceDetails.html",
-                controller: "WorkspaceDetailsController"
+                url: '/workspaceDetails/:workspaceId',
+                templateUrl: '/default/templates/WorkspaceDetails.html',
+                controller: 'WorkspaceDetailsController'
             } )
             .state( 'designSpace', {
-                url: "/designSpace/:workspaceId/:designId",
-                templateUrl: "/default/templates/DesignSpace.html",
-                controller: "DesignSpaceController"
+                url: '/designSpace/:workspaceId/:designId',
+                templateUrl: '/default/templates/DesignSpace.html',
+                controller: 'DesignSpaceController'
             } )
             .state( 'testBench', {
-                url: "/testBench/:workspaceId/:testBenchId",
-                templateUrl: "/default/templates/TestBench.html",
-                controller: "TestBenchController"
+                url: '/testBench/:workspaceId/:testBenchId',
+                templateUrl: '/default/templates/TestBench.html',
+                controller: 'TestBenchController'
             } );
     } )
     .controller( 'MainNavigatorController', function ( $rootScope, $scope ) {

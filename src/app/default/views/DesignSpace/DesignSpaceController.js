@@ -4,8 +4,7 @@ angular.module( 'CyPhyApp' )
     .controller( 'DesignSpaceController', function ( $scope, $state, $timeout, $modal, $location, $q, growl,
         desertService, designService ) {
         'use strict';
-        var self = this,
-            context,
+        var context,
             meta,
             workspaceId = $state.params.workspaceId.replace( /-/g, '/' ),
             designId = $state.params.designId.replace( /-/g, '/' ),
@@ -161,7 +160,7 @@ angular.module( 'CyPhyApp' )
                     }
                 }
             } );
-            modalInstance.result.then( function ( result ) {
+            modalInstance.result.then( function ( /*result*/) {
                 $scope.state.savingConfigurations = false;
             }, function () {
                 console.log( 'Modal dismissed at: ' + new Date() );
@@ -254,7 +253,7 @@ angular.module( 'CyPhyApp' )
         designService ) {
         'use strict';
         var configurations = data.configurations,
-            meta = data.meta,
+            //meta = data.meta,
             designNode = data.designNode,
             context = data.context;
         $scope.data = {

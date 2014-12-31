@@ -14,3 +14,4 @@ require( './ComponentService' );
 require( './DesignService' );
 require( './TestBenchService' );
 require( './DesertService' );
+require( './DesignLayoutService' );

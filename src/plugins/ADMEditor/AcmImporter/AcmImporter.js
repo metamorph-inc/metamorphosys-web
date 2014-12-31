@@ -368,7 +368,7 @@ define( [ 'plugin/PluginConfig',
     AcmImporter.prototype.createNewDomainModel = function ( avmDomainModelInfo, newAcmNode ) {
         var self = this,
             newDomainModelNode,
-            domainModelName = avmDomainModelInfo[ '@Name' ],
+            domainModelName = avmDomainModelInfo[ '@Name' ] || "",
             domainModelType,
             xPos = parseInt( avmDomainModelInfo[ '@XPosition' ], 10 ),
             yPos = parseInt( avmDomainModelInfo[ '@YPosition' ], 10 ),
@@ -400,6 +400,14 @@ define( [ 'plugin/PluginConfig',
                 self.core.setAttribute( newDomainModelNode, 'Type', 'Manufacturing' );
             } else if ( domainModelType.indexOf( 'Cyber' ) > -1 ) {
                 self.core.setAttribute( newDomainModelNode, 'Type', 'Cyber' );
+            } else if ( domainModelType.indexOf( 'SPICEModel' ) > -1 ) {
+                self.core.setAttribute( newDomainModelNode, 'Type', 'SPICE' );
+            } else if ( domainModelType.indexOf( 'EDAModel' ) > -1 ) {
+                self.core.setAttribute( newDomainModelNode, 'Type', 'EDA' );
+            } else if ( domainModelType.indexOf( 'SystemCModel' ) > -1 ) {
+                self.core.setAttribute( newDomainModelNode, 'Type', 'SystemC' );
+            } else if ( domainModelType.indexOf( 'RFModel' ) > -1 ) {
+                self.core.setAttribute( newDomainModelNode, 'Type', 'RF' );
             }
         }
 
@@ -473,6 +481,12 @@ define( [ 'plugin/PluginConfig',
                 self.core.setAttribute( newDomainConnNode, 'Type', 'CadPlane' );
             } else if ( domainConnType.indexOf( 'Point' ) > -1 ) {
                 self.core.setAttribute( newDomainConnNode, 'Type', 'CadPoint' );
+            } else if ( domainConnType.indexOf( 'Pin' ) > -1 ) {
+                self.core.setAttribute( newDomainConnNode, 'Type', 'SchematicPin' );
+            } else if ( domainConnType.indexOf( 'SystemCPort' ) > -1 ) {
+                self.core.setAttribute( newDomainConnNode, 'Type', 'SystemCPort' );
+            } else if ( domainConnType.indexOf( 'RFPort' ) > -1 ) {
+                self.core.setAttribute( newDomainConnNode, 'Type', 'RFPort' );
             }
         }
 

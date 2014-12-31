@@ -229,6 +229,21 @@ angular.module( 'cyphy.components' )
                             value: 0,
                             toolTip: 'Modelica',
                             iconClass: 'fa fa-gears'
+                        },
+                        EDA: {
+                            value: 0,
+                            toolTip: 'EDA',
+                            iconClass: 'fa fa-laptop'
+                        },
+                        SPICE: {
+                            value: 0,
+                            toolTip: 'SPICE',
+                            iconClass: 'fa fa-laptop'
+                        },
+                        SystemC: {
+                            value: 0,
+                            toolTip: 'SystemC',
+                            iconClass: 'fa fa-laptop'
                         }
                     },
                     key;

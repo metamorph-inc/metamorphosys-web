@@ -37,6 +37,9 @@ var argv = require('yargs').argv,
             'src/library/SimpleModal/*.js',
             'src/library/WorkspaceList/*.js',
             'src/library/ComponentList/*.js',
+            'src/library/componentBrowser/*.js',
+            'src/library/propertyList/*.js',
+            'src/library/ComponentBrowser/classes/*.js',
             'src/library/DesignList/*.js',
             'src/library/DesignTree/*.js',
             'src/library/TestBenchList/*.js',
@@ -86,8 +89,10 @@ var argv = require('yargs').argv,
     refresh = require('gulp-livereload'),
     lrserver = require('tiny-lr')(),
     prettify = require('gulp-js-prettify'),
+
     shell = require('gulp-shell'),
-    exec = require('child_process').exec;
+    svgstore = require('gulp-svgstore'),
+    svgmin = require('gulp-svgmin');
 
 // Utility tasks
 
@@ -95,11 +100,10 @@ require('process');
 require('path');
 
 function swallowError( error ) {
+    //If you want details of the error in the console
+    console.log( error.toString() );
 
-  //If you want details of the error in the console
-  console.log( error.toString() );
-
-  this.emit( 'end' );
+    this.emit( 'end' );
 }
 
 
@@ -275,7 +279,7 @@ gulp.task('compile-library',
 
 
 // Application tasks
-var applications = ['default', 'sample', 'servicetest'],
+var applications = ['default', 'sample', 'servicetest', 'mmsApp'],
     i,
     registerAppTasks,
     gulpAppTaskNames = [];
@@ -285,10 +289,14 @@ registerAppTasks = function (appName) {
     var appSources = ['./src/app/' + appName + '/**/*.js'],
         appModuleScript = './src/app/' + appName + '/app.js',
 
-        appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+        appTemplates = ['src/app/' + appName + '/**/*.html'],
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
-        appStyles = ['src/app/' + appName + '/**/*.scss'];
+        appStyles = ['src/app/' + appName + '/**/*.scss'],
+
+        appSvgSymbols = ['src/app/' + appName + '/**/*.svg'];
+
+
     gulp.task('lint-' + appName + '-app', function () {
 
         console.log('Linting ' + appName + '-app...');
@@ -297,6 +305,13 @@ registerAppTasks = function (appName) {
             .pipe(jshint())
             .pipe(jshint.reporter('default'));
 
+    });
+
+    gulp.task('generate-svg-map-' + appName + '-app', function () {
+      return gulp.src( appSvgSymbols )
+      .pipe(svgmin())
+      .pipe(svgstore({ fileName: 'symbols.svg', prefix: 'icon-' }))
+      .pipe(gulp.dest( buildPaths.images ));
     });
 
     gulp.task('browserify-' + appName + '-app', function () {
@@ -351,7 +366,11 @@ registerAppTasks = function (appName) {
     });
 
     gulp.task('compile-' + appName + '-app',
-        [ 'lint-' + appName + '-app', 'browserify-' + appName + '-app', 'compile-' + appName + '-app-templates', 'compile-' + appName + '-app-styles'],
+        [ 'lint-' + appName + '-app',
+          'generate-svg-map-' + appName + '-app',
+          'browserify-' + appName + '-app',
+          'compile-' + appName + '-app-templates',
+          'compile-' + appName + '-app-styles'],
         function () {
             console.log('Compiling ' + appName + '-app scripts...');
         });
@@ -451,7 +470,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         var appSources = ['./src/app/' + appName + '/**/*.js'],
             appModuleScript = './src/app/' + appName + '/app.js',
 
-            appTemplates = ['src/app/' + appName + '/views/**/*.html'],
+            appTemplates = ['src/app/' + appName + '/**/*.html'],
             appTemplateModule = 'cyphy.' + appName + '.templates',
 
             appStyles = ['src/app/' + appName + '/**/*.scss'];

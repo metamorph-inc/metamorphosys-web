@@ -45,7 +45,8 @@ describe('AcmImporterSpec', function () {
         "PropertiesWithinConnectors_InputModel.component.acm",
         "Unit_Component.acm",
         "Formulas.acm",
-        "Modelica.acm"].forEach(function(acmFilename) {
+        "Modelica.acm",
+        "TonkaDomains.acm"].forEach(function(acmFilename) {
             it('regressions on ' + acmFilename, function() {
                     return AcmImporterTestLib.runAcmImporterRegression(model, Templates, acmFilename, expect);
                 }

@@ -30,6 +30,7 @@
         "plugin/SaveDesertConfigurations": "./src/plugins/ADMEditor"
     },
     optimize: "none",
+    generateSourceMaps: true,
     insertRequire: ["webcyphy.plugins"],
     include: ['./node_modules/requirejs/require'],
     wrap: {

@@ -1,0 +1,36 @@
+.jspTrack {
+    background: transparent;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.jspDrag {
+    background-color: #ccc;
+    opacity: .5;
+    border-radius: 4px;
+
+    transition: opacity 200ms;
+}
+
+.jspHorizontalBar {
+    background: transparent;
+    height: 12px;
+
+    &:hover .jspDrag {
+        opacity: .95;
+
+        cursor: ew-resize;
+    }
+
+}
+
+.jspVerticalBar {
+    background: transparent;
+    width: 12px;
+
+    &:hover .jspDrag {
+        opacity: .95;
+
+        cursor: ns-resize;
+    }
+}

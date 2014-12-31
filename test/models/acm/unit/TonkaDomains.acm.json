@@ -1,0 +1,259 @@
+{
+    "/1/39": {
+        "ID": 39,
+        "attributes": {
+            "name": "TonkaDomains",
+            "SchemaVersion": "2.5",
+            "Version": "",
+            "ID": "2468d7c1-8632-4a8c-ba00-e1338d3ff4bd",
+            "Resource": "hash"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/7"
+        },
+        "collection": {},
+        "path": "/1/39",
+        "parent": "/1",
+        "children": [
+            "/1/39/40",
+            "/1/39/44",
+            "/1/39/45",
+            "/1/39/46",
+            "/1/39/47"
+        ]
+    },
+    "/1/39/40": {
+        "ID": 40,
+        "attributes": {
+            "name": "Connector",
+            "ID": "id-812b2575-0910-4f7f-b420-39fb196ab117"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 301,
+                "y": 217
+            }
+        },
+        "pointers": {
+            "base": "/10"
+        },
+        "collection": {},
+        "path": "/1/39/40",
+        "parent": "/1/39",
+        "children": [
+            "/1/39/40/41",
+            "/1/39/40/42",
+            "/1/39/40/43"
+        ]
+    },
+    "/1/39/40/41": {
+        "ID": 41,
+        "attributes": {
+            "name": "RFPort",
+            "Type": "RFPort",
+            "ID": "id-562ba8a0-7070-4715-879b-fdfe804addfb"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 200,
+                "y": 200
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {},
+        "path": "/1/39/40/41",
+        "parent": "/1/39/40",
+        "children": []
+    },
+    "/1/39/40/42": {
+        "ID": 42,
+        "attributes": {
+            "name": "SystemCPort",
+            "Type": "SystemCPort",
+            "ID": "id-8687369f-bc5e-4743-896f-2cad759e2753"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 200,
+                "y": 300
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {},
+        "path": "/1/39/40/42",
+        "parent": "/1/39/40",
+        "children": []
+    },
+    "/1/39/40/43": {
+        "ID": 43,
+        "attributes": {
+            "name": "Pin",
+            "Type": "SchematicPin",
+            "ID": "id-e5d44cad-8cd0-4e16-b68b-4912659eebc3"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 200,
+                "y": 400
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {},
+        "path": "/1/39/40/43",
+        "parent": "/1/39/40",
+        "children": []
+    },
+    "/1/39/44": {
+        "ID": 44,
+        "attributes": {
+            "name": "Property",
+            "ID": "id-46709821-095d-44a3-9151-3726fb91e448",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "String",
+            "OnDataSheet": false
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 77,
+                "y": 147
+            }
+        },
+        "pointers": {
+            "base": "/21"
+        },
+        "collection": {},
+        "path": "/1/39/44",
+        "parent": "/1/39",
+        "children": []
+    },
+    "/1/39/45": {
+        "ID": 45,
+        "attributes": {
+            "name": "SPICEModel",
+            "Type": "SPICE",
+            "Class": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 665,
+                "y": 91
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/39/45",
+        "parent": "/1/39",
+        "children": []
+    },
+    "/1/39/46": {
+        "ID": 46,
+        "attributes": {
+            "name": "SystemCModel",
+            "Type": "SystemC"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 322,
+                "y": 77
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/39/46",
+        "parent": "/1/39",
+        "children": []
+    },
+    "/1/39/47": {
+        "ID": 47,
+        "attributes": {
+            "name": "RFModel",
+            "Type": "RF"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 560,
+                "y": 231
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/39/47",
+        "parent": "/1/39",
+        "children": []
+    }
+}
