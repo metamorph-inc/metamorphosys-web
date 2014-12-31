@@ -23,8 +23,9 @@ module.exports = function ($log) {
         parseNode,
         parseNodeName,
         parseClassName,
+        parseNodeExtraInfo,
 
-        sortNodeTree,
+        organizeTree,
 
         getNodeContextmenu;
 
@@ -38,47 +39,10 @@ module.exports = function ($log) {
             {
                 items: [
                     {
-                        id: 'create',
-                        label: 'Create new',
+                        id: 'inspect',
+                        label: 'Inspect',
                         disabled: true,
-                        iconClass: 'fa fa-plus',
-                        menu: []
-                    },
-                    {
-                        id: 'dummy',
-                        label: 'Just for test ' + node.id,
-
-                        actionData: node,
-
-                        action: function (data) {
-                            $log.log('testing ', data);
-                        }
-
-                    },
-                    {
-                        id: 'rename',
-                        label: 'Rename'
-                    },
-                    {
-                        id: 'preferences 3',
-                        label: 'Preferences 3',
-                        menu: [
-                            {
-                                items: [
-                                    {
-                                        id: 'sub_preferences 1',
-                                        label: 'Sub preferences 1'
-                                    },
-                                    {
-                                        id: 'sub_preferences 2',
-                                        label: 'Sub preferences 2',
-                                        action: function (data) {
-                                            $log.log('testing2 ', data);
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
+                        iconClass: 'glyphicon glyphicon-zoom-in'
                     }
                 ]
             }
@@ -115,6 +79,8 @@ module.exports = function ($log) {
 //
 //        ],
 //
+        extraInfoTemplateUrl: '/cyphy-components/templates/componentExtraInfo.html',
+
         nodeClassGetter: function (node) {
 
             var result;
@@ -123,6 +89,8 @@ module.exports = function ($log) {
 
             if (node.childrenCount) {
                 result = 'parent-node';
+            } else {
+                result = 'leaf-node';
             }
 
             return result;
@@ -351,9 +319,17 @@ module.exports = function ($log) {
     };
 
 
-    sortNodeTree = function (node) {
+    organizeTree = function (node) {
 
-        var i;
+        var i,
+            totalChildrenCount;
+
+
+        if (node.childrenCount > 0) {
+            totalChildrenCount = 0;
+        } else {
+            totalChildrenCount = 1;
+        }
 
         if (angular.isArray(node.children)) {
 
@@ -371,10 +347,20 @@ module.exports = function ($log) {
             });
 
             for (i=0; i < node.children.length; i++ ) {
-                sortNodeTree( node.children[ i ] );
+                totalChildrenCount += organizeTree( node.children[ i ] );
+            }
+            node.totalChildrenCount = totalChildrenCount;
+
+            if (node.totalChildrenCount > 0) {
+
+                node.extraInfo = node.extraInfo || {};
+
+                node.extraInfo.totalChildrenCount = node.totalChildrenCount;
             }
 
         }
+
+        return totalChildrenCount;
 
     };
 
@@ -402,7 +388,7 @@ module.exports = function ($log) {
 
         });
 
-        sortNodeTree(treeNavigatorData.data);
+        organizeTree(treeNavigatorData.data);
 
     };
 
@@ -464,7 +450,51 @@ module.exports = function ($log) {
         }
     };
 
-    upsertComponentInterface = function() {
+    parseNodeExtraInfo = function(node) {
+
+        var extraInfo;
+
+        if (angular.isObject(node) && angular.isObject(node.interfaces)) {
+
+//            console.log(node.interfaces);
+
+            if (angular.isObject(node.interfaces.properties)) {
+
+                extraInfo = extraInfo || {};
+
+                extraInfo.properties = {};
+
+                angular.forEach(node.interfaces.properties, function(property, key) {
+
+                    extraInfo.properties[key] = property;
+
+                });
+
+//                console.log(extraInfo.properties);
+
+            }
+
+        }
+
+        node.extraInfo = extraInfo;
+
+    };
+
+    upsertComponentInterface = function(nodeId, interfaces) {
+
+        var node;
+
+        node = treeNodesById[nodeId];
+
+        if (angular.isObject(node)) {
+
+            interfaces = interfaces || {};
+
+            node.interfaces = interfaces;
+
+            parseNodeExtraInfo(node);
+
+        }
 
     };
 

@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('cyphy.components')
-    .directive('componentProperties', function () {
+    .directive('propertyList', function () {
 
         return {
             restrict: 'E',
@@ -10,6 +10,6 @@ angular.module('cyphy.components')
                 properties: '='
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/componentProperties.html'
+            templateUrl: '/cyphy-components/templates/propertyList.html'
         };
     });

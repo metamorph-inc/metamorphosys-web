@@ -17,6 +17,7 @@ angular.module( 'cyphy.components' )
         this.getConnectionId = function () {
             return $scope.connectionId;
         };
+
         // Check for valid connectionId and register clean-up on destroy event.
         if ( $scope.connectionId && angular.isString( $scope.connectionId ) ) {
             context = {
@@ -68,19 +69,16 @@ angular.module( 'cyphy.components' )
 
                 if ( updateObject.type === 'load' ) {
 
-                    //listHelper.upsertItem( updateObject.data );
                     componentBrowserService.upsertItem( updateObject.data );
 
                     addInterfaceWatcher( updateObject.id );
 
                 } else if ( updateObject.type === 'update' ) {
 
-                    //listHelper.upsertItem( updateObject.data );
                     componentBrowserService.upsertItem( updateObject.data );
 
                 } else if ( updateObject.type === 'unload' ) {
 
-                    //listHelper.removeItem( updateObject.id );
                     componentBrowserService.removeItem( updateObject.id );
 
                 } else {
@@ -95,7 +93,7 @@ angular.module( 'cyphy.components' )
 
                     for ( componentId in data.components ) {
                         if ( data.components.hasOwnProperty( componentId ) ) {
-//                            listHelper.upsertItem( data.components[ componentId ] );
+
                             addInterfaceWatcher( componentId );
 
                         }

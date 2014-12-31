@@ -1,4 +1,11 @@
-.component-properties {
-    list-style-type: none;
-    padding-left: 0;
+.property-list {
+
+    margin: 0.5ex 0;
+
+    padding:0;
+
+    .property-name {
+        font-weight: bold;
+    }
+
 }

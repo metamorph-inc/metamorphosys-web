@@ -1,1 +1,4 @@
-<div class="component-properties">{{ node.interfaces.properties }}</div>
+<div class="component-extra-info">
+    <div class="total-children-count" ng-if="::node.totalChildrenCount">[{{::node.totalChildrenCount}}]</div>
+    <property-list properties="::node.interfaces.properties"></property-list>
+</div>

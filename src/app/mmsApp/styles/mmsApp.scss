@@ -81,7 +81,7 @@ h1.main-view-header {
 
 .sidebar {
 
-    background: linear-gradient(to bottom, #fff, #eee);
+    background: linear-gradient(to bottom, #fff, #f5f5f5);
     box-shadow: -1px 0 1px rgba(0,0,0,.15);
 
     h2 {
@@ -91,9 +91,4 @@ h1.main-view-header {
     }
 
     overflow: auto;
-}
-
-.tree-navigator .selected-node > .node-label {
-    background-color: $mmsBlueLight;
-    color: #fff;
 }
