@@ -33,7 +33,9 @@ module.exports = function ($log) {
 
     childNodes = [];
 
-    getNodeContextmenu = function (node) {
+    $log.debug('In ComponentBrowserService');
+
+    getNodeContextmenu = function (/*node*/) {
 
         var defaultNodeContextmenu = [
             {
