@@ -58,8 +58,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     var selectProject;
 
     selectProject = {
-        load: function (
-            $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, designService, $timeout) {
+        load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, designService, $timeout) {
             var
                 connectionId,
                 deferred;
@@ -75,13 +74,13 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                 host: window.location.basename
             })
                 .then(function () {
-                    $timeout(function(){
+                    $timeout(function () {
                         projectService.selectProject(connectionId, $stateParams.projectId)
-                        .then(function(projectId) {
-                            $log.debug('Project selected', projectId);
+                            .then(function (projectId) {
+                                $log.debug('Project selected', projectId);
 
-                            $rootScope.projectId = projectId;
-                        });
+                                $rootScope.projectId = projectId;
+                            });
 
                     });
 
@@ -126,7 +125,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                                 hasFoundFirstDesign = false;
 
 
-                                angular.forEach(data.workspaces, function(workSpace) {
+                                angular.forEach(data.workspaces, function (workSpace) {
 
                                     if (!hasFoundFirstWorkspace) {
 
@@ -134,44 +133,61 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                                         $rootScope.activeWorkSpace = workSpace;
                                         $log.debug('Active workspace:', $rootScope.activeWorkSpace);
 
-                                        designService.watchDesigns(wsContext, workSpace.id, function(/*designsUpdateObject*/) {
-
-                                        }).then(function(designsData) {
-
-                                            angular.forEach(designsData.designs, function(design) {
-
-                                                if (!hasFoundFirstDesign) {
-
-                                                    hasFoundFirstDesign = true;
-                                                    $rootScope.activeDesign = design;
-                                                    $log.debug('Active design:', $rootScope.activeDesign);
-
-                                                }
-
-                                            });
-
-                                            $rootScope.loading = false;
-
-                                            if (hasFoundFirstDesign) {
-                                                deferred.resolve();
-                                            } else {
-
-                                                $log.debug('Could not find designs in workspace.');
-                                                $state.go('404', {
-                                                    projectId: $stateParams.projectId
-                                                });
-
-                                                deferred.reject();
-                                            }
-
-                                        });
-
 
                                     }
 
                                 });
 
-                                if (!hasFoundFirstWorkspace) {
+                                if (hasFoundFirstWorkspace) {
+
+                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id,function (/*designsUpdateObject*/) {
+
+                                    }).then(function (designsData) {
+
+                                        angular.forEach(designsData.designs, function (design) {
+
+                                            if (!hasFoundFirstDesign) {
+
+                                                hasFoundFirstDesign = true;
+                                                $rootScope.activeDesign = design;
+                                                $log.debug('Active design:', $rootScope.activeDesign);
+
+                                            }
+
+                                        });
+
+
+                                        if (hasFoundFirstDesign) {
+
+//                                            designService.watchInterfaces(wsContext, $rootScope.activeDesign.id, function(designInterfacesUpdateObject) {
+//
+//                                            }).then(function(designInterfaces) {
+//
+//                                                console.log(designInterfaces);
+//
+//                                            });
+
+
+                                            deferred.resolve();
+                                            $rootScope.loading = false;
+
+                                        } else {
+
+                                            $rootScope.loading = false;
+
+                                            $log.debug('Could not find designs in workspace.');
+                                            $state.go('404', {
+                                                projectId: $stateParams.projectId
+                                            });
+
+                                            deferred.reject();
+                                        }
+
+                                    });
+
+                                } else {
+
+                                    $rootScope.loading = false;
 
                                     $log.debug('Could not find workspaces in project.');
                                     $state.go('404', {
@@ -261,7 +277,23 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('ProjectViewController', function ($scope, $rootScope, diagramService, $log) {
+CyPhyApp.controller('ProjectViewController', function ($scope, $rootScope, diagramService, $log, designService) {
+
+    var designCtx = {
+        db: $rootScope.mainDbConnectionId,
+        regionId: 'Design_' + ( new Date() ).toISOString()
+    };
+
+
+    designService.watchDesignStructure(designCtx, $rootScope.activeDesign.id,function (designStructureUpdateObject) {
+
+    }).then(function (designStructure) {
+
+        console.log(designStructure);
+
+
+    });
+
 
     $scope.diagram = diagramService.getDiagram();
 
