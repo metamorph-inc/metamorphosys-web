@@ -59,7 +59,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
     selectProject = {
         load: function (
-            $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, $timeout) {
+            $q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, designService, $timeout) {
             var
                 connectionId,
                 deferred;
@@ -118,19 +118,41 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
                                 }
 
                             }).then(function (data) {
-                                var hasFoundFirstOne;
 
-                                hasFoundFirstOne = false;
+                                var hasFoundFirstWorkspace;
+
+                                hasFoundFirstWorkspace = false;
 
                                 angular.forEach(data.workspaces, function(workSpace) {
 
-                                    if (!hasFoundFirstOne) {
+                                    if (!hasFoundFirstWorkspace) {
 
-                                        hasFoundFirstOne = true;
-
+                                        hasFoundFirstWorkspace = true;
                                         $rootScope.activeWorkSpace = workSpace;
-
                                         $log.debug('Active workspace:', $rootScope.activeWorkSpace);
+
+                                        designService.watchDesigns(wsContext, workSpace.id, function(/*designsUpdateObject*/) {
+
+                                        }).then(function(designsData) {
+
+                                            var hasFoundFirstDesign;
+
+                                            hasFoundFirstDesign = false;
+
+                                            angular.forEach(designsData.designs, function(design) {
+
+                                                if (!hasFoundFirstDesign) {
+
+                                                    hasFoundFirstDesign = true;
+                                                    $rootScope.activeDesign = design;
+                                                    $log.debug('Active design:', $rootScope.activeDesign);
+
+                                                }
+
+                                            });
+
+                                        });
+
 
                                         $rootScope.loading = false;
 
