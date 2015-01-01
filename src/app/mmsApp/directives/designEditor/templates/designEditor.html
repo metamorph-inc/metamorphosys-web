@@ -1,0 +1,34 @@
+<div class="editor-container" layout="row">
+
+    <diagram-container
+        ng-attr-id="svg-container"
+        diagram="diagram"
+        config="diagramContainerConfig"
+        flex="75">
+        <drawing-grid ng-attr-id="svg-container-drawing-grid">
+            <svg-diagram></svg-diagram>
+        </drawing-grid>
+    </diagram-container>
+
+
+    <!--<div class="component-browser-container" flex="25">-->
+
+    <!--&lt;!&ndash;{{mainDbConnectionId}}&ndash;&gt;-->
+    <!--&lt;!&ndash;{{activeWorkSpace}}&ndash;&gt;-->
+    <div class="component-browser-container sidebar" flex="25">
+
+        <component-browser
+
+            data-connection-id="mainDbConnectionId"
+            data-workspace-id="activeWorkSpace.id">
+
+        </component-browser>
+
+    </div>
+    <!--&lt;!&ndash;<component-browser&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;data-workspace-id="'/577839143'"&ndash;&gt;-->
+    <!--&lt;!&ndash;avm-ids="['/577839143/1379959555/1468018535']"&ndash;&gt;-->
+    <!--&lt;!&ndash;data-connection-id="mainDbConnectionId"></component-browser>&ndash;&gt;-->
+
+    <!--</div>-->
+</div>
