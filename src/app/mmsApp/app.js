@@ -119,9 +119,12 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
                             }).then(function (data) {
 
-                                var hasFoundFirstWorkspace;
+                                var hasFoundFirstWorkspace,
+                                    hasFoundFirstDesign;
 
                                 hasFoundFirstWorkspace = false;
+                                hasFoundFirstDesign = false;
+
 
                                 angular.forEach(data.workspaces, function(workSpace) {
 
@@ -135,10 +138,6 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
                                         }).then(function(designsData) {
 
-                                            var hasFoundFirstDesign;
-
-                                            hasFoundFirstDesign = false;
-
                                             angular.forEach(designsData.designs, function(design) {
 
                                                 if (!hasFoundFirstDesign) {
@@ -151,15 +150,37 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
                                             });
 
+                                            $rootScope.loading = false;
+
+                                            if (hasFoundFirstDesign) {
+                                                deferred.resolve();
+                                            } else {
+
+                                                $log.debug('Could not find designs in workspace.');
+                                                $state.go('404', {
+                                                    projectId: $stateParams.projectId
+                                                });
+
+                                                deferred.reject();
+                                            }
+
                                         });
 
 
-                                        $rootScope.loading = false;
-
-                                        deferred.resolve();
                                     }
 
                                 });
+
+                                if (!hasFoundFirstWorkspace) {
+
+                                    $log.debug('Could not find workspaces in project.');
+                                    $state.go('404', {
+                                        projectId: $stateParams.projectId
+                                    });
+
+                                    deferred.reject();
+
+                                }
 
                             });
 
