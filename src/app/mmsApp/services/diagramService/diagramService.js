@@ -188,9 +188,10 @@ angular.module('mms.designVisualization.diagramService', [
         '$q',
         '$timeout',
         'symbolManager',
+        '$stateParams',
         'wiringService',
         'operationsManager',
-        function ($q, $timeout, symbolManager, wiringService/*, operationsManager*/) {
+        function ($q, $timeout, symbolManager, $stateParams, wiringService/*, operationsManager*/) {
 
             var
                 self = this,

@@ -310,41 +310,49 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     id = diagramContainerController.getId();
 
-                    scope.diagram = scope.diagram || {};
-                    scope.$element = $element;
+                    scope.$watch('diagram', function(newDiagramValue) {
+
+                        if (newDiagramValue) {
+
+                            scope.diagram = scope.diagram || {};
+                            scope.$element = $element;
+
+                            $element.outerWidth(scope.diagram.config.width);
+                            $element.outerHeight(scope.diagram.config.width);
+
+                            scope.id = id;
+
+                            diagramContainerController.setInitialized(false);
+                            $rootScope.initializing = true;
+
+                            $rootScope.$on('GridInitialized', function (event, data) {
+
+                                if (data === id) {
+                                    diagramContainerController.setInitialized(true);
+                                    $rootScope.initializing = false;
+                                }
+
+                            });
+
+                            scope.visibleObjects = gridService.createGrid(id,
+                                scope.diagram
+                            );
 
 
-                    $element.bind('contextmenu', killContextMenu);
+                            scope.$watch(
+                                function () {
+                                    return diagramContainerController.getVisibleArea();
+                                }, function (visibleArea) {
+                                    scope.elementOffset = scope.$element.offset();
+                                    gridService.setVisibleArea(id, visibleArea);
+                                });
 
-
-                    $element.outerWidth(scope.diagram.config.width);
-                    $element.outerHeight(scope.diagram.config.width);
-
-                    scope.id = id;
-
-                    diagramContainerController.setInitialized(false);
-                    $rootScope.initializing = true;
-
-                    $rootScope.$on('GridInitialized', function(event, data) {
-
-                       if (data === id) {
-                            diagramContainerController.setInitialized(true);
-                            $rootScope.initializing = false;
-                       }
+                        }
 
                     });
 
-                    scope.visibleObjects = gridService.createGrid(id,
-                        scope.diagram
-                    );
 
-                    scope.$watch(
-                        function () {
-                            return diagramContainerController.getVisibleArea();
-                        }, function (visibleArea) {
-                            scope.elementOffset = scope.$element.offset();
-                            gridService.setVisibleArea(id, visibleArea);
-                        });
+                    $element.bind('contextmenu', killContextMenu);
 
 
                 }

@@ -225,11 +225,14 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
 
     $stateProvider
-        .state('project', {
-            url: '/project/:projectId',
+        .state('editor', {
+            url: '/editor/:projectId',
             templateUrl: '/mmsApp/templates/editor.html',
             resolve: selectProject,
-            controller: 'ProjectViewController'
+            controller: 'EditorViewController'
+        })
+        .state('editor.inContainer', {
+            url: '/:containerId'
         })
         .state('noProject', {
             url: '/noProject',
@@ -281,27 +284,8 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('ProjectViewController', function ($scope, $rootScope, diagramService, $log, designService) {
+CyPhyApp.controller('EditorViewController', function () {
 
-    var designCtx = {
-        db: $rootScope.mainDbConnectionId,
-        regionId: 'Design_' + ( new Date() ).toISOString()
-    };
-
-
-    designService.watchDesignStructure(designCtx, $rootScope.activeDesign.id,function (designStructureUpdateObject) {
-
-    }).then(function (designStructure) {
-
-        console.log(designStructure);
-
-
-    });
-
-
-    $scope.diagram = diagramService.getDiagram();
-
-    $log.debug('Diagram:', $scope.diagram);
 
 });
 
@@ -322,7 +306,7 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
 
                 $rootScope.processing = false;
                 $log.debug('New project creation successful', data);
-                $state.go('project', {
+                $state.go('editor', {
                     projectId: data
                 });
 

@@ -29,22 +29,23 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 i,
                 wire;
 
-            for (i=0; i < grid.wires.length; i++) {
+
+            for (i = 0; i < grid.wires.length; i++) {
 
                 wire = grid.wires[i];
 
-                index = grid.visibleWires.indexOf( wire );
+                index = grid.visibleWires.indexOf(wire);
 
-                if ( wire.isInViewPort( grid.viewPort, viewPortPadding ) ) {
+                if (wire.isInViewPort(grid.viewPort, viewPortPadding)) {
 
-                    if ( index === -1 ) {
-                        grid.visibleWires.push( wire );
+                    if (index === -1) {
+                        grid.visibleWires.push(wire);
                     }
 
                 } else {
 
-                    if ( index > -1 ) {
-                        grid.visibleWires.splice( index, 1 );
+                    if (index > -1) {
+                        grid.visibleWires.splice(index, 1);
                     }
 
                 }
@@ -57,23 +58,24 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         recalculateVisibleDiagramComponents = function( grid, startIndex ) {
 
-            if (grid.recalculateVisibleDiagramComponentsPromise) {
+            if (angular.isArray(grid.components) && angular.isArray(grid.wires)) {
 
-                if ($timeout.cancel(grid.recalculateVisibleDiagramComponentsPromise)) {
-                    console.log('had to kill');
+                if (grid.recalculateVisibleDiagramComponentsPromise) {
+
+                    if ($timeout.cancel(grid.recalculateVisibleDiagramComponentsPromise)) {
+                        console.log('had to kill');
+                    }
+
                 }
 
+                grid.recalculateVisibleDiagramComponentsPromise = $timeout(
+                    function () {
+                        _recalculateVisibleDiagramComponents(grid, startIndex);
+                    },
+
+                    recalculateCycleDelay
+                );
             }
-
-            grid.recalculateVisibleDiagramComponentsPromise = $timeout(
-
-                function() {
-                    _recalculateVisibleDiagramComponents(grid, startIndex);
-                },
-
-                recalculateCycleDelay
-            );
-
         };
 
         _recalculateVisibleDiagramComponents = function ( grid, startIndex ) {
@@ -137,7 +139,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                     });
 
                 }
-                
+
             } else {
 
                 recalculateVisibleDiagramComponents(grid, i);
