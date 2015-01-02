@@ -23,6 +23,8 @@ require('./directives/resizing/resizeToWindow.js');
 
 require('./directives/busyCover/busyCover.js');
 
+require('./directives/designEditor/designEditor');
+
 var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
 
@@ -47,6 +49,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
+    'mms.designVisualization.designEditor',
+
     'angucomplete-alt',
     'ngTouch',
 
