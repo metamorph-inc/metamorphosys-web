@@ -4,61 +4,68 @@
  * @author pmeijer / https://github.com/pmeijer
  */
 
+'use strict';
 
 angular.module('cyphy.services')
     .service('designLayoutService', function ($q, $timeout, nodeService, baseCyPhyService) {
-        'use strict';
-        var watchers;
+
+        var self = this,
+            watchers,
+            typesWithConnectordsInside;
+
+        typesWithConnectordsInside = [
+            'AVMComponentModel',
+            'Container'
+        ];
 
         watchers = {};
 
-        this.watchDiagramElements = function (parentContext, containerId, updateListener) {
+        this.watchConnectorsInside = function (parentContext, containerId, updateListener) {
 
             var deferred,
                 regionId,
                 context,
-
-                data,
-
                 metaNamesById,
 
-                onChildUnload,
-                onChildUpdate,
+                connectors,
 
-                parseNewChild,
-                findChildForNode;
+                triggerUpdateListener,
+
+                findChildForNode,
+                onChildUpdate,
+                onChildUnload,
+                parseNewChild;
+
 
             deferred = $q.defer();
-            regionId = parentContext.regionId + '_watchDiagramElements_' + containerId;
+            regionId = parentContext.regionId + '_watchConnectorsInside_' + containerId;
             context = {
                 db: parentContext.db,
                 regionId: regionId
             };
 
-            data = {
-                regionId: regionId,
-                elements: {}
-            };
+            connectors = {};
 
+
+            triggerUpdateListener = function(id, data, eventType) {
+
+                $timeout(function () {
+                    updateListener({
+                        id: id,
+                        type: eventType,
+                        data: data
+                    });
+                });
+
+            };
 
             findChildForNode = function (node) {
 
-                var baseName,
-                    child;
-
-                baseName = metaNamesById[ this.getBaseId() ];
-
-                if (baseName) {
-
-                    data.elements[ baseName ] = data.elements[ baseName ] || {};
-                    child = data.elements[ baseName ][ node.getId() ];
-                }
-
-                return child;
+                return connectors[ node.getId() ];
 
             };
 
-            onChildUpdate = function (id) {
+            onChildUpdate = function () {
 
                 var newName,
                     newPos,
@@ -86,13 +93,200 @@ angular.module('cyphy.services')
                     }
 
                     if (hadChanges) {
-                        $timeout(function () {
-                            updateListener({
-                                id: id,
-                                type: 'update',
-                                data: child
-                            });
+                        triggerUpdateListener(child.id, child, 'update');
+                    }
+
+
+                }
+
+            };
+
+            onChildUnload = function (id) {
+
+                var child;
+
+                child = findChildForNode(this);
+
+                if (child) {
+                    delete connectors[ id ];
+                }
+
+                triggerUpdateListener(id, null, 'unload');
+
+            };
+
+
+            parseNewChild = function (node) {
+
+                var deferredParseResult,
+                    parsePromises,
+
+                    baseName,
+                    connector;
+
+                deferredParseResult = $q.defer();
+                parsePromises = [ deferredParseResult ];
+
+                baseName = metaNamesById[ node.getBaseId() ];
+
+                if (baseName === 'Connector') {
+
+                    connector = {
+                        id: node.getId(),
+                        name: node.getAttribute('name'),
+                        position: node.getRegistry('position'),
+                        baseId: node.getBaseId()
+                    };
+
+                    connectors[ connector.id ] = connector;
+
+                    node.onUpdate(onChildUpdate);
+                    node.onUnload(onChildUnload);
+
+                }
+
+
+                deferredParseResult.resolve(connector);
+
+
+                return $q.all(parsePromises);
+
+            };
+
+            nodeService.getMetaNodes(context)
+                .then(function (meta) {
+
+                    metaNamesById = {};
+
+                    angular.forEach(meta, function (metaNode, name) {
+                        metaNamesById[metaNode.id] = name;
+                    });
+
+                    nodeService.loadNode(context, containerId)
+
+                        .then(function (rootNode) {
+                            rootNode.loadChildren(context)
+                                .then(function (childNodes) {
+
+                                    var i,
+                                        childPromises;
+
+                                    childPromises = [];
+
+                                    for (i = 0; i < childNodes.length; i += 1) {
+                                        childPromises.push(parseNewChild(childNodes[i]));
+                                    }
+
+                                    rootNode.onNewChildLoaded(function (newNode) {
+
+
+                                        parseNewChild(newNode).then(function (newChild) {
+                                            triggerUpdateListener(newChild.id, newChild, 'load');
+                                        });
+
+                                    });
+
+                                    $q.all(childPromises).then(function () {
+                                        deferred.resolve(connectors);
+                                    });
+
+                                });
                         });
+                });
+
+
+            return deferred.promise;
+        };
+
+        this.watchDiagramElements = function (parentContext, containerId, updateListener) {
+
+            var deferred,
+                regionId,
+                context,
+
+                data,
+
+                metaNamesById,
+
+                onChildUnload,
+                onChildUpdate,
+
+                parseNewChild,
+                findChildForNode,
+
+                triggerUpdateListener;
+
+            deferred = $q.defer();
+            regionId = parentContext.regionId + '_watchDiagramElements_' + containerId;
+            context = {
+                db: parentContext.db,
+                regionId: regionId
+            };
+
+            data = {
+                regionId: regionId,
+                elements: {}
+            };
+
+
+            triggerUpdateListener = function(id, data, eventType) {
+
+                $timeout(function () {
+                    updateListener({
+                        id: id,
+                        type: eventType,
+                        data: data
+                    });
+                });
+
+            };
+
+            findChildForNode = function (node) {
+
+                var baseName,
+                    child;
+
+                baseName = metaNamesById[ this.getBaseId() ];
+
+                if (baseName) {
+
+                    data.elements[ baseName ] = data.elements[ baseName ] || {};
+                    child = data.elements[ baseName ][ node.getId() ];
+                }
+
+                return child;
+
+            };
+
+            onChildUpdate = function () {
+
+                var newName,
+                    newPos,
+                    hadChanges,
+                    child;
+
+                // BaseName never changes, does it?
+
+                child = findChildForNode(this);
+
+                if (child) {
+
+                    newName = this.getAttribute('name');
+                    newPos = this.getRegistry('position');
+                    hadChanges = false;
+
+                    if (newName !== child.name) {
+                        child.name = newName;
+                        hadChanges = true;
+                    }
+
+                    if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
+                        child.position = newPos;
+                        hadChanges = true;
+                    }
+
+                    if (hadChanges) {
+                        triggerUpdateListener(child.id, child, 'update');
                     }
 
 
@@ -110,20 +304,22 @@ angular.module('cyphy.services')
                     delete data.elements[ child.baseName][ id ];
                 }
 
-                $timeout(function () {
-                    updateListener({
-                        id: id,
-                        type: 'unload',
-                        data: null
-                    });
-                });
-            };
+                triggerUpdateListener(id, null, 'unload');
 
+            };
 
             parseNewChild = function (node) {
 
-                var child;
-                
+                var deferredParseResult,
+                    parsePromises,
+
+                    getConnectorsPromise,
+
+                    child;
+
+                deferredParseResult = $q.defer();
+                parsePromises = [ deferredParseResult ];
+
                 child = {
                     id: node.getId(),
                     name: node.getAttribute('name'),
@@ -143,7 +339,23 @@ angular.module('cyphy.services')
                 node.onUpdate(onChildUpdate);
                 node.onUnload(onChildUnload);
 
-                return child;
+                deferredParseResult.resolve(child);
+
+
+                if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
+
+                    getConnectorsPromise = self.watchConnectorsInside(context, child.id, function() {
+                        //TODO: finish this
+                    });
+
+                    getConnectorsPromise.then(function(connectors) {
+                        child.connectors = connectors;
+                    });
+
+                    parsePromises.push(getConnectorsPromise);
+                }
+
+                return $q.all(parsePromises);
 
             };
 
@@ -160,32 +372,34 @@ angular.module('cyphy.services')
                     });
 
                     nodeService.loadNode(context, containerId)
+
                         .then(function (rootNode) {
                             rootNode.loadChildren(context)
                                 .then(function (childNodes) {
+
                                     var i,
-                                        childId;
+                                        childPromises;
+
+                                    childPromises = [];
 
                                     for (i = 0; i < childNodes.length; i += 1) {
-                                        parseNewChild(childNodes[i]);
+                                        childPromises.push(parseNewChild(childNodes[i]));
                                     }
 
                                     rootNode.onNewChildLoaded(function (newNode) {
 
-                                        var newChild;
 
-                                        newChild = parseNewChild(newNode);
-
-                                        $timeout(function () {
-                                            updateListener({
-                                                id: childId,
-                                                type: 'load',
-                                                data: newChild
-                                            });
+                                        parseNewChild(newNode).then(function (newChild) {
+                                            triggerUpdateListener(newChild.id, newChild, 'load');
                                         });
+
                                     });
 
-                                    deferred.resolve(data);
+                                    $q.all(childPromises).then(function () {
+
+                                        deferred.resolve(data);
+                                    });
+
                                 });
                         });
                 });
