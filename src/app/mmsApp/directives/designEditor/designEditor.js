@@ -21,13 +21,11 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
         };
 
-        $scope.diagram = diagramService.getDiagram($stateParams.containerId);
+        designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
 
-        designLayoutService.watchChildrenPositions(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
+        }).then(function (diagramElements) {
 
-        }).then(function (designStructure) {
-
-            console.log(designStructure);
+            $log.debug('Diagram elements', diagramElements);
 
             $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
