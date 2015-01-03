@@ -103,7 +103,14 @@ angular.module('mms.designVisualization.diagramContainer', [
             };
 
             this.getId = function () {
-                return $scope.id;
+
+                var diagramId;
+
+                if (angular.isObject($scope.diagram)) {
+                    diagramId = $scope.diagram.id;
+                }
+
+                return diagramId;
             };
 
             this.getDiagram = function () {
@@ -124,13 +131,24 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             this.isEditable = function () {
 
-                $scope.diagram.config = $scope.diagram.config || {};
+                if (angular.isObject($scope.diagram)) {
 
-                return $scope.diagram.config.editable === true;
+                    $scope.diagram.config = $scope.diagram.config || {};
+
+                    return $scope.diagram.config.editable === true;
+
+                }
+
             };
 
             this.isComponentSelected = function (component) {
-                return $scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1;
+
+                if (angular.isObject($scope.diagram)) {
+
+                    return $scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1;
+
+                }
+
             };
 
             this.getConfig = function () {
@@ -150,7 +168,6 @@ angular.module('mms.designVisualization.diagramContainer', [
             return {
                 controller: 'DiagramContainerController',
                 scope: {
-                    id: '@',
                     diagram: '=',
                     config: '='
                 },

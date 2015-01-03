@@ -2,13 +2,11 @@
 
 'use strict';
 
-// Move this to GME eventually
-
 angular.module('mms.designVisualization.diagramService', [
-        'mms.designVisualization.symbolServices',
-        'mms.designVisualization.operationsManager'
-    ])
-    .config([ 'symbolManagerProvider',
+    'mms.designVisualization.symbolServices',
+    'mms.designVisualization.operationsManager'
+])
+    .config(['symbolManagerProvider',
         'operationsManagerProvider',
         function (symbolManagerProvider) {
 
@@ -89,7 +87,7 @@ angular.module('mms.designVisualization.diagramService', [
                         bottom = [],
                         left = [],
                         width, height,
-                        sides = [ top, right, bottom, left ],
+                        sides = [top, right, bottom, left],
                         portSpacing = 20,
                         minWidth = 140,
                         minHeight = 80;
@@ -104,7 +102,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                         placement = Math.round(Math.random() * 3);
 
-                        sides[ placement ].push(port);
+                        sides[placement].push(port);
                     }
 
                     width = Math.max(
@@ -142,7 +140,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     var portsAndSizes = makeSomePorts(countOfPorts);
 
-                    var symbol = {
+                    return  {
                         type: 'random_' + idPostfix,
                         symbolComponent: 'box',
                         svgDecoration: null,
@@ -159,9 +157,6 @@ angular.module('mms.designVisualization.diagramService', [
                         boxWidth: portsAndSizes.width - 2 * portWireLength
                     };
 
-                    //      debugger;
-
-                    return symbol;
 
                 };
 
@@ -195,273 +190,143 @@ angular.module('mms.designVisualization.diagramService', [
 
             var
                 self = this,
-                components = [],
-                componentsById = {},
 
-                wires = [],
-                wiresById = {},
-                wiresByComponentId = {},
-
-                width = 5000,
-                height = 5000,
+                diagrams,
 
                 symbolTypes,
 
-                registerWireForEnds,
+                DummyDiagramGenerator,
+                dummyDiagramGenerator,
 
-                DiagramComponent = require('./classes/DiagramComponent.js'),
-                ComponentPort = require('./classes/ComponentPort'),
-                Wire = require('./classes/Wire.js');
+                DiagramComponent,
+                ComponentPort,
+                Wire;
+
+            diagrams = {};
+
+            DummyDiagramGenerator = require('./classes/DummyDiagramGenerator.js');
+
+            DiagramComponent = require('./classes/DiagramComponent.js');
+            ComponentPort = require('./classes/ComponentPort');
+            Wire = require('./classes/Wire.js');
+
+            dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService);
 
             symbolTypes = symbolManager.getAvailableSymbols();
 
-            this.generateDummyDiagram = function (countOfBoxes, countOfWires, canvasWidth, canvasHeight) {
 
-                var i, id,
-                    countOfTypes,
-                    symbol,
-                    typeId,
-                    type,
-                    x,
-                    y,
-                    symbolTypeIds,
-                    component1,
-                    component2,
-                    port1,
-                    port2,
-                    createdPorts,
-                    newDiagramComponent,
+            this.addComponent = function (diagramId, aDiagramComponent) {
 
-                    portCreator,
+                var diagram;
 
-                    wire;
+                diagram = diagrams[diagramId];
 
-                portCreator = function (componentId, ports) {
+                if (angular.isObject(diagram)) {
 
-                    var portInstance,
-                        portInstances,
-                        portMapping;
-
-                    portInstances = [];
-                    portMapping = {};
-
-                    angular.forEach(ports, function (port) {
-
-                        portInstance = new ComponentPort({
-                            id: componentId + '_' + port.id,
-                            portSymbol: port
-                        });
-
-                        portInstances.push(portInstance);
-
-                        portMapping[ port.id ] = portInstance.id;
-                    });
-
-                    return {
-                        portInstances: portInstances,
-                        portMapping: portMapping
-                    };
-
-                };
-
-                symbolTypeIds = Object.keys(symbolTypes);
-
-                countOfTypes = symbolTypeIds.length;
-
-                components = [];
-                componentsById = {};
-
-                width = canvasWidth;
-                height = canvasHeight;
-
-                for (i = 0; i < countOfBoxes; i++) {
-
-                    typeId = symbolTypeIds[ Math.floor(Math.random() * countOfTypes) ];
-                    type = symbolTypes[ typeId ];
-
-                    x = Math.round(Math.random() * ( canvasWidth - 1 ));
-                    y = Math.round(Math.random() * ( canvasHeight - 1 ));
-
-                    id = 'component_' + typeId + '_' + i;
-
-                    symbol = symbolManager.getSymbol(typeId);
-
-                    createdPorts = portCreator(id, symbol.ports);
-
-                    newDiagramComponent = new DiagramComponent({
-                        id: id,
-                        label: type.labelPrefix + i,
-                        x: x,
-                        y: y,
-                        z: i,
-                        rotation: Math.floor(Math.random() * 40) * 90,
-                        scaleX: 1, //[1, -1][Math.round(Math.random())],
-                        scaleY: 1, //[1, -1][Math.round(Math.random())],
-                        symbol: symbol,
-                        nonSelectable: false,
-                        locationLocked: false,
-                        draggable: true
-                    });
-
-                    newDiagramComponent.registerPortInstances(createdPorts.portInstances);
-
-                    newDiagramComponent.updateTransformationMatrix();
-
-                    self.addComponent(newDiagramComponent);
-
-                }
-
-                wires = [];
-                wiresById = {};
-
-                for (i = 0; i < countOfWires; i++) {
-
-                    id = 'wire_' + i;
-
-                    component1 = components.getRandomElement();
-
-                    port1 = component1.portInstances.getRandomElement();
-                    port2 = undefined;
-
-                    while (!angular.isDefined(port2) || port1 === port2) {
-
-                        component2 = components.getRandomElement();
-                        port2 = component2.portInstances.getRandomElement();
-                    }
-
-                    wire = new Wire({
-                        id: id,
-                        end1: {
-                            component: component1,
-                            port: port1
-                        },
-                        end2: {
-                            component: component2,
-                            port: port2
-                        }
-                    });
-
-                    wiringService.routeWire(wire, 'ElbowRouter');
-
-                    self.addWire(wire);
+                    diagram.addComponent(aDiagramComponent);
 
                 }
 
             };
 
-            this.addComponent = function (aDiagramComponent) {
+            this.addWire = function (diagramId, aWire) {
 
-                if (angular.isObject(aDiagramComponent) && !angular.isDefined(componentsById[ aDiagramComponent
-                    .id ])) {
+                var diagram;
 
-                    componentsById[ aDiagramComponent.id ] = aDiagramComponent;
-                    components.push(aDiagramComponent);
+                diagram = diagrams[diagramId];
 
-                }
+                if (angular.isObject(diagram)) {
 
-            };
-
-            registerWireForEnds = function (wire) {
-
-                var componentId;
-
-                componentId = wire.end1.component.id;
-
-                wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
-
-                if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
-                    wiresByComponentId[ componentId ].push(wire);
-                }
-
-                componentId = wire.end2.component.id;
-
-                wiresByComponentId[ componentId ] = wiresByComponentId[ componentId ] || [];
-
-                if (wiresByComponentId[ componentId ].indexOf(wire) === -1) {
-                    wiresByComponentId[ componentId ].push(wire);
-                }
-
-            };
-
-            this.addWire = function (aWire) {
-
-                if (angular.isObject(aWire) && !angular.isDefined(wiresById[ aWire.id ])) {
-
-                    wiresById[ aWire.id ] = aWire;
-                    wires.push(aWire);
-
-                    registerWireForEnds(aWire);
+                    diagram.addWire(aWire);
 
                 }
 
             };
 
-            this.getWiresForComponents = function (components) {
+            this.getWiresForComponents = function (diagramId, components) {
 
-                var setOfWires = [];
+                var diagram;
 
-                angular.forEach(components, function (component) {
+                diagram = diagrams[diagramId];
 
-                    angular.forEach(wiresByComponentId[ component.id ], function (wire) {
+                if (angular.isObject(diagram)) {
 
-                        if (setOfWires.indexOf(wire) === -1) {
-                            setOfWires.push(wire);
-                        }
-                    });
+                    diagram.getWiresForComponents(components);
 
-                });
-
-                return setOfWires;
+                }
 
             };
 
-            this.getDiagram = function () {
+            this.getDiagram = function (diagramId) {
 
-                return {
-                    components: components,
-                    componentsById: componentsById,
-                    wires: wires,
-                    wiresById: wiresById,
-                    config: {
-                        editable: true,
-                        disallowSelection: false,
-                        width: width,
-                        height: height
-                    },
-                    state: {
-                        selectedComponentIds: []
-                    }
-                };
+                var diagram;
+
+                if (diagramId) {
+
+                    diagram = diagrams[diagramId];
+
+                }
+
+                return diagram;
 
             };
 
-            this.getHighestZ = function () {
+            this.addDummyDiagram = function (diagramId, countOfBoxes, countOfWires, canvasWidth, canvasHeight) {
+
+                var dummyDiagram;
+
+                if (diagramId) {
+
+                    dummyDiagram =
+                        dummyDiagramGenerator.getDiagram(
+                            countOfBoxes, countOfWires, canvasWidth, canvasHeight, symbolTypes
+                        );
+
+                    dummyDiagram.id = diagramId;
+
+                    diagrams[diagramId] = dummyDiagram;
+
+                }
+
+                return dummyDiagram;
+
+            };
+
+            this.getHighestZ = function (diagramId) {
 
                 var i,
                     component,
                     z;
 
-                for (i = 0; i < components.length; i++) {
+                var diagram;
 
-                    component = components[ i ];
+                diagram = diagrams[diagramId];
 
-                    if (!isNaN(component.z)) {
+                if (angular.isObject(diagram)) {
 
-                        if (isNaN(z)) {
-                            z = component.z;
-                        } else {
+                    for (i = 0; i < diagram.components.length; i++) {
 
-                            if (z < component.z) {
+                        component = diagram.components[i];
+
+                        if (!isNaN(component.z)) {
+
+                            if (isNaN(z)) {
                                 z = component.z;
+                            } else {
+
+                                if (z < component.z) {
+                                    z = component.z;
+                                }
+
                             }
 
                         }
-
                     }
-                }
 
-                if (isNaN(z)) {
-                    z = -1;
+                    if (isNaN(z)) {
+                        z = -1;
+                    }
+
                 }
 
                 return z;
@@ -484,7 +349,7 @@ angular.module('mms.designVisualization.diagramService', [
             //this.generateDummyDiagram(1000, 200, 5000, 5000);
             //this.generateDummyDiagram(1000, 2000, 10000, 10000);
             //this.generateDummyDiagram(10, 5, 1200, 1200);
-            this.generateDummyDiagram( 100, 50, 3000, 3000 );
+            //this.generateDummyDiagram( 100, 50, 3000, 3000 );
 
         }
     ]);

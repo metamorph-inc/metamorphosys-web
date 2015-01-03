@@ -258,7 +258,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                         } );
                     }
 
-                    affectedWires = diagramService.getWiresForComponents(
+                    affectedWires = $scope.diagram.getWiresForComponents(
                         componentsToRotate
                     );
 
@@ -308,8 +308,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     };
 
-                    id = diagramContainerController.getId();
-
                     scope.$watch('diagram', function(newDiagramValue) {
 
                         if (newDiagramValue) {
@@ -320,7 +318,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                             $element.outerWidth(scope.diagram.config.width);
                             $element.outerHeight(scope.diagram.config.width);
 
-                            scope.id = id;
+                            scope.id = id = newDiagramValue.id;
 
                             diagramContainerController.setInitialized(false);
                             $rootScope.initializing = true;

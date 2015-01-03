@@ -76,7 +76,7 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
             ) );
 
 
-        diagramService.addWire( wire );
+        diagramService.addWire( $scope.id, wire );
 
         $scope.diagram.wires[ wire.id ] = wire;
 

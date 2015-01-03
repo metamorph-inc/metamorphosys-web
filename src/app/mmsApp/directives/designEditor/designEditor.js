@@ -5,11 +5,12 @@
 // Move this to GME eventually
 
 angular.module( 'mms.designVisualization.designEditor', [] )
-    .controller( 'DesignEditorController', function($scope, $rootScope, diagramService, $log, designService, $stateParams) {
+    .controller( 'DesignEditorController', function(
+        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService) {
 
         var designCtx;
 
-        $scope.diagram = {};
+        $scope.diagram = null;
 
         designCtx = {
             db: $rootScope.mainDbConnectionId,
@@ -20,27 +21,32 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
         };
 
-        if ($stateParams.containerId === 'dummy') {
+        $scope.diagram = diagramService.getDiagram($stateParams.containerId);
 
-            $scope.diagram = diagramService.getDiagram();
+        designLayoutService.watchChildrenPositions(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
 
-            $log.debug('Loading dummy diagram:', $scope.diagram);
+        }).then(function (designStructure) {
+
+            console.log(designStructure);
+
+            $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
+
+            $log.debug($rootScope.activeContainerId);
+
+            if ($stateParams.containerId === 'dummy') {
+
+                $scope.diagram = diagramService.addDummyDiagram('dummy', 100, 50, 3000, 3000);
+
+                $log.debug('Drawing dummy diagram:', $scope.diagram);
+
+            } else {
+
+                $scope.diagram = diagramService.getDiagram($stateParams.containerId);
+
+            }
 
 
-        } else {
-
-
-            designService.watchDesignStructure(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
-
-            }).then(function (designStructure) {
-
-                console.log(designStructure);
-
-            });
-
-        }
-
-
+        });
 
     })
     .directive( 'designEditor', [

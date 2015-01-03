@@ -286,7 +286,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 CyPhyApp.controller('EditorViewController', function () {
 
-
 });
 
 CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
@@ -323,20 +322,3 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
     };
 
 });
-
-
-//CyPhyApp.run(function ($state, growl, dataStoreService, projectService) {
-
-//  var connectionId = 'mms-connection-id';
-//
-//  dataStoreService.connectToDatabase(connectionId, {host: window.location.basename})
-//    .then(function () {
-//      // select default project and branch (master)
-//      return projectService.selectProject(connectionId, 'ADMEditor');
-//    })
-//    .catch(function (reason) {
-//      growl.error('ADMEditor does not exist. Create and import it using the <a href="' +
-//        window.location.origin + '"> webgme interface</a>.');
-//      console.error(reason);
-//    });
-//});
