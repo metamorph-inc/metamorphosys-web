@@ -24,6 +24,14 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
             SymbolManager = function () {
 
+                this.registerSymbol = function ( symbolDescriptor ) {
+
+                    if ( angular.isObject( symbolDescriptor ) &&
+                        angular.isString( symbolDescriptor.type ) ) {
+                        availableSymbols[ symbolDescriptor.type ] = symbolDescriptor;
+                    }
+                };
+
                 this.getAvailableSymbols = function () {
                     return availableSymbols;
                 };
