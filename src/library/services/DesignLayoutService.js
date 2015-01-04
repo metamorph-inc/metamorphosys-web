@@ -20,6 +20,56 @@ angular.module('cyphy.services')
 
         watchers = {};
 
+        this.watchConnectorCompositionDetails = function (parentContext, containerId, updateListener) {
+
+            var deferred,
+                regionId,
+                context;
+
+            deferred = $q.defer();
+            regionId = parentContext.regionId + '_watchConnectorCompositionDetails_' + containerId;
+            context = {
+                db: parentContext.db,
+                regionId: regionId
+            };
+
+            nodeService.loadNode(context, containerId)
+                .then(function (connectorCompositionNode) {
+
+                    var sourcePtr,
+                        destinationPtr,
+
+                        sourceId,
+                        destinationId,
+                        wireSegments;
+
+                    sourcePtr = connectorCompositionNode.getPointer('src');
+                    destinationPtr = connectorCompositionNode.getPointer('dst');
+                    wireSegments = connectorCompositionNode.getRegistry('wireSegments');
+
+                    if (angular.isObject(sourcePtr)) {
+                        sourceId = sourcePtr.to;
+                    }
+
+                    if (angular.isObject(destinationPtr)) {
+                        destinationId = destinationPtr.to;
+                    }
+
+
+//                    connectorCompositionNode.onUpdate(onConnectorComposition);
+
+
+                    deferred.resolve({
+                        sourceId: sourceId,
+                        destinationId: destinationId,
+                        wireSegments: wireSegments
+                    });
+
+                });
+
+            return deferred.promise;
+        };
+
         this.watchConnectorsInside = function (parentContext, containerId, updateListener) {
 
             var deferred,
@@ -47,7 +97,7 @@ angular.module('cyphy.services')
             connectors = {};
 
 
-            triggerUpdateListener = function(id, data, eventType) {
+            triggerUpdateListener = function (id, data, eventType) {
 
                 $timeout(function () {
                     updateListener({
@@ -229,7 +279,7 @@ angular.module('cyphy.services')
             };
 
 
-            triggerUpdateListener = function(id, data, eventType) {
+            triggerUpdateListener = function (id, data, eventType) {
 
                 $timeout(function () {
                     updateListener({
@@ -314,6 +364,7 @@ angular.module('cyphy.services')
                     parsePromises,
 
                     getInterfacesPromise,
+                    getConnectorCompositionDetailsPromise,
 
                     child;
 
@@ -345,14 +396,14 @@ angular.module('cyphy.services')
 
                 if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
 
-                    getInterfacesPromise = self.watchInterfaces(context, child.id, function(interfaceUpdateData) {
+                    getInterfacesPromise = self.watchInterfaces(context, child.id, function (interfaceUpdateData) {
                         //TODO: finish this
 
                         $log.warn('Connector update is not handled for this', interfaceUpdateData);
 
                     });
 
-                    getInterfacesPromise.then(function(interfaces) {
+                    getInterfacesPromise.then(function (interfaces) {
                         child.interfaces = interfaces;
                     });
 
@@ -360,6 +411,21 @@ angular.module('cyphy.services')
                 }
 
                 if (child.baseName === 'ConnectorComposition') {
+
+                    getConnectorCompositionDetailsPromise = self.watchConnectorCompositionDetails(context, child.id, function (connectorCompositionUpdateData) {
+
+                        //TODO: finish this
+
+                        $log.warn('Wire update is not handled for this', connectorCompositionUpdateData);
+
+                    });
+
+                    getConnectorCompositionDetailsPromise.then(function (connectorCompositionDetails) {
+                        console.log(connectorCompositionDetails);
+                        angular.extend(child, connectorCompositionDetails);
+                    });
+
+                    parsePromises.push(getConnectorCompositionDetailsPromise);
 
                 }
 
@@ -419,8 +485,8 @@ angular.module('cyphy.services')
         /**
          * See baseCyPhyService.watchInterfaces.
          */
-        this.watchInterfaces = function ( parentContext, id, updateListener ) {
-            return baseCyPhyService.watchInterfaces( watchers, parentContext, id, updateListener );
+        this.watchInterfaces = function (parentContext, id, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
         };
 
         /**
