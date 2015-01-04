@@ -7,7 +7,7 @@
 'use strict';
 
 angular.module('cyphy.services')
-    .service('designLayoutService', function ($q, $timeout, nodeService, baseCyPhyService) {
+    .service('designLayoutService', function ($q, $timeout, nodeService, baseCyPhyService, $log) {
 
         var self = this,
             watchers,
@@ -313,7 +313,7 @@ angular.module('cyphy.services')
                 var deferredParseResult,
                     parsePromises,
 
-                    getConnectorsPromise,
+                    getInterfacesPromise,
 
                     child;
 
@@ -341,19 +341,28 @@ angular.module('cyphy.services')
 
                 deferredParseResult.resolve(child);
 
+                // Getting connectors from inside where needed
 
                 if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
 
-                    getConnectorsPromise = self.watchConnectorsInside(context, child.id, function() {
+                    getInterfacesPromise = self.watchInterfaces(context, child.id, function(interfaceUpdateData) {
                         //TODO: finish this
+
+                        $log.warn('Connector update is not handled for this', interfaceUpdateData);
+
                     });
 
-                    getConnectorsPromise.then(function(connectors) {
-                        child.connectors = connectors;
+                    getInterfacesPromise.then(function(interfaces) {
+                        child.interfaces = interfaces;
                     });
 
-                    parsePromises.push(getConnectorsPromise);
+                    parsePromises.push(getInterfacesPromise);
                 }
+
+                if (child.baseName === 'ConnectorComposition') {
+
+                }
+
 
                 return $q.all(parsePromises);
 
@@ -405,6 +414,13 @@ angular.module('cyphy.services')
                 });
 
             return deferred.promise;
+        };
+
+        /**
+         * See baseCyPhyService.watchInterfaces.
+         */
+        this.watchInterfaces = function ( parentContext, id, updateListener ) {
+            return baseCyPhyService.watchInterfaces( watchers, parentContext, id, updateListener );
         };
 
         /**

@@ -202,12 +202,32 @@ angular.module( 'cyphy.services' )
                     } );
                 },
                 onConnectorUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        hadChanges = false;
-                    if ( newName !== data.connectors[ id ].name ) {
-                        data.connectors[ id ].name = newName;
+                    
+                    var connector,
+                        
+                        newName,
+                        newPos,
+                        
+                        hadChanges;
+
+                    hadChanges = false;
+                    
+                    connector = data.connectors[ id ];
+                    
+                    newName = this.getAttribute( 'name' );
+                    newPos = this.getRegistry('position');
+                    
+                
+                    if ( newName !== connector.name ) {
+                        connector.name = newName;
                         hadChanges = true;
                     }
+
+                    if ( newPos.x !== connector.position.x || newPos.y !== connector.position.y) {
+                        connector.position = newPos;
+                        hadChanges = true;
+                    }
+                    
                     if ( hadChanges ) {
                         $timeout( function () {
                             updateListener( {
@@ -303,6 +323,7 @@ angular.module( 'cyphy.services' )
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
+                                                position: childNode.getRegistry('position'),
                                                 domainPorts: {}
                                             };
                                             childNode.onUpdate( onConnectorUpdate );
@@ -328,9 +349,9 @@ angular.module( 'cyphy.services' )
                                                 name: newChild.getAttribute( 'name' ),
                                                 dataType: newChild.getAttribute( 'DataType' ),
                                                 valueType: newChild.getAttribute( 'ValueType' ),
-                                                value:  childNode.getAttribute( 'Value' ),
-                                                unit: childNode.getAttribute( 'Unit' ),
-                                                isProminent: childNode.getAttribute( 'IsProminent' ),
+                                                value:  newChild.getAttribute( 'Value' ),
+                                                unit: newChild.getAttribute( 'Unit' ),
+                                                isProminent: newChild.getAttribute( 'IsProminent' ),
 
                                                 derived: isPropertyDerived( newChild )
                                             };
@@ -347,6 +368,7 @@ angular.module( 'cyphy.services' )
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: newChild.getAttribute( 'name' ),
+                                                position: newChild.getRegistry('position'),
                                                 domainPorts: {}
                                             };
                                             newChild.onUpdate( onConnectorUpdate );
