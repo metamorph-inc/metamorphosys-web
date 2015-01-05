@@ -32,8 +32,7 @@ module.exports = function(symbolManagerProvider) {
 
                 port = {
                     id: 'p_' + j,
-                    label: 'Port-' + j,
-                    wireLeadIn: 20
+                    label: 'Port-' + j
                 };
 
                 placement = placements.getRandomElement();

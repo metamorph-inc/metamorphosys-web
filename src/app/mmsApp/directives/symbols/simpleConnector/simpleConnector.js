@@ -3,10 +3,10 @@
 'use strict';
 
 angular.module(
-    'mms.designVisualization.symbols.simpleConnector', []
-)    .config( [ 'symbolManagerProvider',
-        function ( symbolManagerProvider ) {
-            symbolManagerProvider.registerSymbol( {
+        'mms.designVisualization.symbols.simpleConnector', []
+    ).config([ 'symbolManagerProvider',
+        function (symbolManagerProvider) {
+            symbolManagerProvider.registerSymbol({
                 type: 'simpleConnector',
                 symbolDirective: 'simple-connector',
                 labelPrefix: '',
@@ -16,30 +16,31 @@ angular.module(
                 },
                 width: 100,
                 height: 15,
-                ports: [ {
-                    id: 'p1',
-                    wireAngle: 0,
-                    wireLeadIn: 0,
-                    label: '',
-                    x: 97,
-                    y: 7
-                } ]
-            } );
+                ports: {
+                    p1: {
+                        id: 'p1',
+                        wireAngle: 0,
+                        wireLeadIn: 0,
+                        label: '',
+                        x: 97,
+                        y: 7
+                    } }
+            });
         }
-    ] )
-    .controller( 'SimpleConnectorController', function (  ) {
-    } )
+    ])
+    .controller('SimpleConnectorController', function () {
+    })
     .directive(
-        'simpleConnector',
+    'simpleConnector',
 
-        function () {
+    function () {
 
-            return {
-                scope: false,
-                restrict: 'E',
-                replace: true,
-                controller: 'SimpleConnectorController',
-                templateUrl: '/mmsApp/templates/simpleConnector.html',
-                templateNamespace: 'SVG'
-            };
-        } );
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            controller: 'SimpleConnectorController',
+            templateUrl: '/mmsApp/templates/simpleConnector.html',
+            templateNamespace: 'SVG'
+        };
+    });

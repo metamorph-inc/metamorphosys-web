@@ -3,11 +3,11 @@
 'use strict';
 
 angular.module(
-    'mms.designVisualization.symbols.capacitor', []
-)
-    .config( [ 'symbolManagerProvider',
-        function ( symbolManagerProvider ) {
-            symbolManagerProvider.registerSymbol( {
+        'mms.designVisualization.symbols.capacitor', []
+    )
+    .config([ 'symbolManagerProvider',
+        function (symbolManagerProvider) {
+            symbolManagerProvider.registerSymbol({
                 type: 'capacitor',
                 directive: null,
                 svgDecoration: 'images/symbols.svg#icon-capacitor',
@@ -18,21 +18,22 @@ angular.module(
                 },
                 width: 60,
                 height: 15,
-                ports: [ {
-                    id: 'C',
-                    wireAngle: 180,
-                    wireLeadIn: 20,
-                    label: 'C',
-                    x: 0,
-                    y: 7.5
-                }, {
-                    id: 'A',
-                    wireAngle: 0,
-                    wireLeadIn: 20,
-                    label: 'A',
-                    x: 60,
-                    y: 7.5
-                } ]
-            } );
+                ports: {
+                    C: {
+                        id: 'C',
+                        wireAngle: 180,
+                        wireLeadIn: 20,
+                        label: 'C',
+                        x: 0,
+                        y: 7.5
+                    }, A: {
+                        id: 'A',
+                        wireAngle: 0,
+                        wireLeadIn: 20,
+                        label: 'A',
+                        x: 60,
+                        y: 7.5
+                    } }
+            });
         }
-    ] );
+    ]);

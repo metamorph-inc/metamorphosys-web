@@ -156,7 +156,6 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             portsAndSizes,
             cssClass;
 
-
         parameters = angular.extend({
             portWireLength: 20,
             portSpacing: 20,
@@ -170,6 +169,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         if (angular.isObject(descriptor) && type) {
 
             if (!availableSymbols[type]) {
+
+                portDescriptors = portDescriptors || {};
 
                 portsAndSizes = portCreator(portDescriptors, parameters);
 

@@ -25,6 +25,9 @@ angular.module('mms.designVisualization.diagramService', [
                 DummyDiagramGenerator,
                 dummyDiagramGenerator,
 
+                CyPhyDiagramParser,
+                cyPhyDiagramParser,
+
                 DiagramComponent,
                 ComponentPort,
                 Wire;
@@ -32,12 +35,14 @@ angular.module('mms.designVisualization.diagramService', [
             diagrams = {};
 
             DummyDiagramGenerator = require('./classes/DummyDiagramGenerator.js');
+            CyPhyDiagramParser = require('./classes/CyPhyDiagramParser.js');
 
             DiagramComponent = require('./classes/DiagramComponent.js');
             ComponentPort = require('./classes/ComponentPort');
             Wire = require('./classes/Wire.js');
 
             dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService);
+            cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService);
 
             symbolTypes = symbolManager.getAvailableSymbols();
 
@@ -81,6 +86,23 @@ angular.module('mms.designVisualization.diagramService', [
                     diagram.getWiresForComponents(components);
 
                 }
+
+            };
+
+            this.createDiagramFromCyPhyElements = function(diagramId, diagramElements) {
+
+                var diagram;
+
+                if (diagramId && angular.isObject(diagramElements)) {
+
+                    diagram = cyPhyDiagramParser.getDiagram(diagramElements);
+                    diagram.id = diagramId;
+
+                    diagrams[diagramId] = diagram;
+
+                }
+
+                return diagram;
 
             };
 

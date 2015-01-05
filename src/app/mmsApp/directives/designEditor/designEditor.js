@@ -41,17 +41,19 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
             designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
 
-            }).then(function (diagramElements) {
+            }).then(function (cyPhyLayout) {
 
-                $log.debug('Diagram elements', diagramElements);
+                $log.debug('Diagram elements', cyPhyLayout);
 
                 $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
                 $log.debug($rootScope.activeContainerId);
 
+                $scope.diagram =
+                    diagramService.createDiagramFromCyPhyElements($rootScope.activeContainerId, cyPhyLayout.elements);
 
+                $log.debug('Drawing diagram:', $scope.diagram);
 
-                $scope.diagram = diagramService.getDiagram($stateParams.containerId);
                 $rootScope.loading = false;
 
             });
