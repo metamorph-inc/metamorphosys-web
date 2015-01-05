@@ -154,7 +154,7 @@ define( [ 'logManager',
     };
 
     DesertRest = function ( req, res, next ) {
-        var config = webGMEGlobal.getConfig(),
+        var config = WebGMEGlobal.getConfig(),
             url = req.url.split( '/' ),
             handlers = {
                 create: desertRestCreate,

@@ -2,7 +2,7 @@
  * Created by pmeijer on 8/4/2014.
  */
 
-/*globals define, require, window, webGMEGlobal */
+/*globals define, require, window, WebGMEGlobal */
 /**
  * Created by pmeijer on 6/23/2014.
  */
@@ -16,7 +16,7 @@ define( [], function () {
         //console.log(isNode);
 
         if ( isNode ) {
-            config = webGMEGlobal.getConfig();
+            config = WebGMEGlobal.getConfig();
             this.server = '127.0.0.1';
             this.serverPort = config.port;
             this.httpsecure = config.httpsecure;
