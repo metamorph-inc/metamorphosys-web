@@ -8,7 +8,7 @@ if (typeof window === 'undefined') {
     // server-side setup
     var webgme = require('webgme');
     var webgmeConfig = require('../../../config.json');
-    webGMEGlobal.setConfig(webgmeConfig);
+    WebGMEGlobal.setConfig(webgmeConfig);
 
     var chai = require('chai');
 }
@@ -26,7 +26,7 @@ describe('<%=name%>', function () {
             expectedSuccess = <%=test.success%>,
             assetHash = '<%=test.asset%>';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint

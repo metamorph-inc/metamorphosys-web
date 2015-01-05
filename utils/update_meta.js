@@ -1,15 +1,15 @@
-/* global webGMEGlobal */
+/* global WebGMEGlobal */
 var PATH = require('path');
 var cyphyRootDir = PATH.resolve(__dirname, '..');
 var fs = require('fs');
 var webGme = require('webgme');
-var CONFIG = webGMEGlobal.getConfig();
+var CONFIG = WebGMEGlobal.getConfig();
 var requirejs = require('requirejs');
 require(PATH.resolve(cyphyRootDir, 'test-conf.js'));
 require(PATH.resolve(__dirname, 'JSON2_ordered'));
 
 var CyPhyConfig = require(PATH.resolve(cyphyRootDir, "config.json"));
-webGMEGlobal.setConfig(CyPhyConfig);
+WebGMEGlobal.setConfig(CyPhyConfig);
 // TODO: check if command line config valid or not
 // TODO: probably we should not overwrite the dictionary and array options
 for (var key in CyPhyConfig) {

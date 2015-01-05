@@ -1,4 +1,4 @@
-/*globals define, require, process, webGMEGlobal */
+/*globals define, require, process, WebGMEGlobal */
 /**
  * Created by pmeijer on 8/4/2014.
  */
@@ -18,7 +18,7 @@ define( [ 'logManager',
         logger = logManager.create( 'REST-SERVER-INFO' );
 
     serverInfoRestInit = function ( req, res, next ) {
-        var config = webGMEGlobal.getConfig(),
+        var config = WebGMEGlobal.getConfig(),
             url = req.url.split( '/' ),
             handlers = {
                 os: serverInfoRestOS,
