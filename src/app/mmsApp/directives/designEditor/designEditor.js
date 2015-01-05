@@ -36,10 +36,12 @@ angular.module( 'mms.designVisualization.designEditor', [] )
                 $scope.diagram = diagramService.addDummyDiagram('dummy', 100, 50, 3000, 3000);
 
                 $log.debug('Drawing dummy diagram:', $scope.diagram);
+                $rootScope.loading = false;
 
             } else {
 
                 $scope.diagram = diagramService.getDiagram($stateParams.containerId);
+                $rootScope.loading = false;
 
             }
 

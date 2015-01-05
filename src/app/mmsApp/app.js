@@ -173,7 +173,6 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
 
                                             deferred.resolve();
-                                            $rootScope.loading = false;
 
                                         } else {
 
