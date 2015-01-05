@@ -2949,7 +2949,7 @@ angular.module(
                 type: 'tvsDiode',
                 directive: null,
                 svgDecoration: 'images/symbols.svg#icon-tvsDiode',
-                labelPrefix: 'TVSD',
+                labelPrefix: 'D',
                 labelPosition: {
                     x: 10,
                     y: -8
@@ -3145,7 +3145,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                     portInstances.push(newPort);
 
                     if (angular.isObject(collector)) {
-                        collector[ innerConnector.id ] = newPort;
+                        collector[innerConnector.id] = newPort;
                     }
 
                 });
@@ -3196,7 +3196,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 allPortsById[element.id] = portInstance;
 
-                newDiagramComponent.registerPortInstances([ portInstance ]);
+                newDiagramComponent.registerPortInstances([portInstance]);
                 diagram.addComponent(newDiagramComponent);
 
                 i++;
@@ -3205,14 +3205,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
-                var portStuff,
-                    i;
+                var portStuff;
 
                 portStuff = minePortsFromInterfaces(element, allPortsById);
 
                 if (angular.isString(element.name) &&
-                    element.name.charAt(0) === 'C' &&
-                    !isNaN(element.name.charAt(1))
+                    element.name.charAt(0) === 'C' && !isNaN(element.name.charAt(1))
                 ) {
 
                     // Cheap shot to figure if it is a capacitor
@@ -3234,26 +3232,50 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                         draggable: true
                     });
 
-                    //p1 = new ComponentPort({
-                    //    id: element.id,
-                    //    portSymbol: symbol.ports.C
-                    //});
-                    //
-                    //p2 = new ComponentPort({
-                    //    id: element.id,
-                    //    portSymbol: symbol.ports.A
-                    //});
-                    //
-                    //allPortsById[element.id] = p1;
-                    //allPortsById[element.id] = p2;
-
-                    for (i=0; i < portStuff.portInstances.length; i++) {
+                    for (i = 0; i < portStuff.portInstances.length; i++) {
 
                         if (portStuff.portInstances[i].portSymbol.label === 'P2') {
                             portStuff.portInstances[i].portSymbol = symbol.ports.C;
                         }
 
                         if (portStuff.portInstances[i].portSymbol.label === 'P1') {
+                            portStuff.portInstances[i].portSymbol = symbol.ports.A;
+                        }
+
+                    }
+
+                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+                } else if (angular.isString(element.name) &&
+                    element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
+                ) {
+
+                    // Cheap shot to figure if it is a diode
+
+                    symbol = symbolManager.getSymbol('tvsDiode');
+
+                    newDiagramComponent = new DiagramComponent({
+                        id: element.id,
+                        label: element.name,
+                        x: element.position.x,
+                        y: element.position.y,
+                        z: i,
+                        rotation: 0,
+                        scaleX: 1,
+                        scaleY: 1,
+                        symbol: symbol,
+                        nonSelectable: false,
+                        locationLocked: false,
+                        draggable: true
+                    });
+
+                    for (i = 0; i < portStuff.portInstances.length; i++) {
+
+                        if (portStuff.portInstances[i].portSymbol.label === '2') {
+                            portStuff.portInstances[i].portSymbol = symbol.ports.C;
+                        }
+
+                        if (portStuff.portInstances[i].portSymbol.label === '1') {
                             portStuff.portInstances[i].portSymbol = symbol.ports.A;
                         }
 
