@@ -11,6 +11,7 @@ require( './opAmp/opAmp.js' );
 require( './diode/diode.js' );
 require( './capacitor/capacitor.js' );
 require( './inductor/inductor.js' );
+require( './simpleConnector/simpleConnector.js' );
 
 require( './box/box.js' );
 
@@ -26,6 +27,7 @@ var symbolsModule = angular.module(
         'mms.designVisualization.symbols.diode',
         'mms.designVisualization.symbols.capacitor',
         'mms.designVisualization.symbols.inductor',
+        'mms.designVisualization.symbols.simpleConnector',
 
         'mms.designVisualization.symbols.box'
 
@@ -80,7 +82,7 @@ symbolsModule.directive(
 
                     $el,
                     compiledSymbol,
-                    symbolComponent;
+                    symbolDirective;
 
                 svgDiagramController = controllers[ 0 ];
                 diagramContainerController = controllers[ 1 ];
@@ -118,20 +120,20 @@ symbolsModule.directive(
                     $event.stopPropagation();
                 };
 
-                symbolComponent = scope.component.symbol.symbolComponent || 'generic-svg';
+                symbolDirective = scope.component.symbol.symbolDirective || 'generic-svg';
 
-                compiledSymbol = diagramContainerController.getCompiledDirective( symbolComponent );
+                compiledSymbol = diagramContainerController.getCompiledDirective( symbolDirective );
 
                 if ( !angular.isFunction( compiledSymbol ) ) {
 
-                    templateStr = '<' + symbolComponent + '>' +
-                        '</' + symbolComponent + '>';
+                    templateStr = '<' + symbolDirective + '>' +
+                        '</' + symbolDirective + '>';
 
                     template = angular.element( templateStr );
 
                     compiledSymbol = $compile( template );
 
-                    diagramContainerController.setCompiledDirective( symbolComponent, compiledSymbol );
+                    diagramContainerController.setCompiledDirective( symbolDirective, compiledSymbol );
 
                 }
 
