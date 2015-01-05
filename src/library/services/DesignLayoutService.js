@@ -326,7 +326,7 @@ angular.module('cyphy.services')
                         if (!angular.isEqual(newDetails, child.details)) {
 
                             child.details = newDetails;
-                            hadChanges = true;  
+                            hadChanges = true;
                         }
 
                     }
