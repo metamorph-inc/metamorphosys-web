@@ -45,20 +45,24 @@ Diagram.prototype.addWire = function (aWire) {
 
         var componentId;
 
-        componentId = wire.end1.component.id;
+        if (angular.isObject(wire.end1.component) && angular.isObject(wire.end2.component)) {
 
-        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+            componentId = wire.end1.component.id;
 
-        if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
-            self.wiresByComponentId[componentId].push(wire);
-        }
+            self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
 
-        componentId = wire.end2.component.id;
+            if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
+                self.wiresByComponentId[componentId].push(wire);
+            }
 
-        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+            componentId = wire.end2.component.id;
 
-        if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
-            self.wiresByComponentId[componentId].push(wire);
+            self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+
+            if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
+                self.wiresByComponentId[componentId].push(wire);
+            }
+
         }
 
     };

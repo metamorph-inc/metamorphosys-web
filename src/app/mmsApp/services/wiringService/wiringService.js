@@ -46,8 +46,12 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                 endPositions = wire.getEndPositions();
 
-                wire.segments = router.makeSegments(
-                    [ endPositions.end1, endPositions.end2 ] );
+                if (endPositions) {
+
+                    wire.segments = router.makeSegments(
+                        [endPositions.end1, endPositions.end2]);
+
+                }
 
                 wire.routerType = routerType;
             }

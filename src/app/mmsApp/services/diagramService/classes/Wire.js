@@ -62,17 +62,24 @@ Wire.prototype.isInViewPort = function ( viewPort, padding ) {
 Wire.prototype.getEndPositions = function () {
 
     var port1Position,
-        port2Position;
+        port2Position,
+        positions;
 
     port1Position = this.end1.port.getGridPosition();
     port2Position = this.end2.port.getGridPosition();
 
-    return {
+    if (port1Position && port2Position) {
 
-        end1: port1Position,
-        end2: port2Position
+        positions = {
 
-    };
+            end1: port1Position,
+            end2: port2Position
+
+        };
+
+    }
+
+    return positions;
 
 };
 

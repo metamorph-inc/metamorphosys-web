@@ -185,28 +185,86 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
-                var portStuff;
+                var portStuff,
+                    i;
 
                 portStuff = minePortsFromInterfaces(element, allPortsById);
 
-                symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+                if (angular.isString(element.name) &&
+                    element.name.charAt(0) === 'C' &&
+                    !isNaN(element.name.charAt(1))
+                ) {
 
-                newDiagramComponent = new DiagramComponent({
-                    id: element.id,
-                    label: element.name,
-                    x: element.position.x,
-                    y: element.position.y,
-                    z: i,
-                    rotation: 0,
-                    scaleX: 1,
-                    scaleY: 1,
-                    symbol: symbol,
-                    nonSelectable: false,
-                    locationLocked: false,
-                    draggable: true
-                });
+                    // Cheap shot to figure if it is a capacitor
 
-                newDiagramComponent.registerPortInstances(portStuff.portInstances);
+                    symbol = symbolManager.getSymbol('capacitor');
+
+                    newDiagramComponent = new DiagramComponent({
+                        id: element.id,
+                        label: element.name,
+                        x: element.position.x,
+                        y: element.position.y,
+                        z: i,
+                        rotation: 0,
+                        scaleX: 1,
+                        scaleY: 1,
+                        symbol: symbol,
+                        nonSelectable: false,
+                        locationLocked: false,
+                        draggable: true
+                    });
+
+                    //p1 = new ComponentPort({
+                    //    id: element.id,
+                    //    portSymbol: symbol.ports.C
+                    //});
+                    //
+                    //p2 = new ComponentPort({
+                    //    id: element.id,
+                    //    portSymbol: symbol.ports.A
+                    //});
+                    //
+                    //allPortsById[element.id] = p1;
+                    //allPortsById[element.id] = p2;
+
+                    for (i=0; i < portStuff.portInstances.length; i++) {
+
+                        if (portStuff.portInstances[i].portSymbol.label === 'P2') {
+                            portStuff.portInstances[i].portSymbol = symbol.ports.C;
+                        }
+
+                        if (portStuff.portInstances[i].portSymbol.label === 'P1') {
+                            portStuff.portInstances[i].portSymbol = symbol.ports.A;
+                        }
+
+                    }
+
+                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+                } else {
+
+                    symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+
+                    newDiagramComponent = new DiagramComponent({
+                        id: element.id,
+                        label: element.name,
+                        x: element.position.x,
+                        y: element.position.y,
+                        z: i,
+                        rotation: 0,
+                        scaleX: 1,
+                        scaleY: 1,
+                        symbol: symbol,
+                        nonSelectable: false,
+                        locationLocked: false,
+                        draggable: true
+                    });
+
+                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+
+                }
+
                 diagram.addComponent(newDiagramComponent);
 
                 i++;
