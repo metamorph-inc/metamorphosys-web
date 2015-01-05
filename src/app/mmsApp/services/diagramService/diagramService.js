@@ -6,21 +6,6 @@ angular.module('mms.designVisualization.diagramService', [
     'mms.designVisualization.symbolServices',
     'mms.designVisualization.operationsManager'
 ])
-    .config(['symbolManagerProvider',
-        'operationsManagerProvider',
-        function (symbolManagerProvider) {
-
-            var RandomSymbolGenerator,
-                randomSymbolGenerator;
-
-
-            RandomSymbolGenerator = require('./classes/RandomSymbolGenerator');
-            randomSymbolGenerator = new RandomSymbolGenerator(symbolManagerProvider);
-
-            randomSymbolGenerator.generateSymbols(7);
-
-        }
-    ])
     .service('diagramService', [
         '$q',
         '$timeout',

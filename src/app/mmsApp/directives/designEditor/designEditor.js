@@ -6,9 +6,12 @@
 
 angular.module( 'mms.designVisualization.designEditor', [] )
     .controller( 'DesignEditorController', function(
-        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService) {
+        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager) {
 
-        var designCtx;
+        var RandomSymbolGenerator,
+            randomSymbolGenerator,
+
+            designCtx;
 
         $scope.diagram = null;
 
@@ -22,6 +25,12 @@ angular.module( 'mms.designVisualization.designEditor', [] )
         };
 
         if ($stateParams.containerId === 'dummy') {
+
+            RandomSymbolGenerator = require('./classes/RandomSymbolGenerator');
+            randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
+
+            randomSymbolGenerator.generateSymbols(7);
+
 
             $scope.diagram = diagramService.addDummyDiagram('dummy', 100, 50, 3000, 3000);
 
