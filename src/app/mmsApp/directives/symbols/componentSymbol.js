@@ -9,6 +9,7 @@ require( './resistor/resistor.js' );
 require( './jFetP/jFetP.js' );
 require( './opAmp/opAmp.js' );
 require( './diode/diode.js' );
+require( './tvsDiode/tvsDiode.js' );
 require( './capacitor/capacitor.js' );
 require( './inductor/inductor.js' );
 require( './simpleConnector/simpleConnector.js' );
@@ -25,6 +26,7 @@ var symbolsModule = angular.module(
         'mms.designVisualization.symbols.jFetP',
         'mms.designVisualization.symbols.opAmp',
         'mms.designVisualization.symbols.diode',
+        'mms.designVisualization.symbols.tvsDiode',
         'mms.designVisualization.symbols.capacitor',
         'mms.designVisualization.symbols.inductor',
         'mms.designVisualization.symbols.simpleConnector',
