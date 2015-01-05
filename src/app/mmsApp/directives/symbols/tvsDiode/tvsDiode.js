@@ -11,7 +11,7 @@ angular.module(
                 type: 'tvsDiode',
                 directive: null,
                 svgDecoration: 'images/symbols.svg#icon-tvsDiode',
-                labelPrefix: 'TVSD',
+                labelPrefix: 'D',
                 labelPosition: {
                     x: 10,
                     y: -8
