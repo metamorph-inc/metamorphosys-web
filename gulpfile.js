@@ -73,6 +73,8 @@ var argv = require('yargs').argv,
     jshint = require('gulp-jshint'),
     browserify = require('browserify'),
     concat = require('gulp-concat'),
+    buffer = require('gulp-buffer'),
+    sourcemaps = require('gulp-sourcemaps'),
     source = require('vinyl-source-stream'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass'),
@@ -119,22 +121,29 @@ gulp.task('lint-docs', function () {
 });
 
 gulp.task('browserify-docs', function () {
-
+    var bundler, bundle;
     console.log('Browserifying docs...');
 
     if (debugShim) {
         process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
     }
-
-    return browserify({
+    bundler = browserify({
         entries: [sourcePaths.docsApp],
-        debug: debug
-    })
-        .bundle()
-        .on('error', swallowError)
-        .pipe(source(libraryName + '-docs.js'))
-        .pipe(gulp.dest(buildPaths.docsRoot));
+        debug: true
+    });
 
+    bundle = function() {
+        return bundler
+            .bundle()
+            .pipe(source(libraryName + '-docs.js'))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({loadMaps: true}))
+            // Add transformation tasks to the pipeline here.
+            //.pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(buildPaths.docsRoot));
+    };
+    return bundle();
 });
 
 gulp.task('compile-docs-templates', function () {
@@ -201,22 +210,30 @@ gulp.task('lint-library', function () {
 });
 
 gulp.task('browserify-library', function () {
-
+    var bundler, bundle;
     console.log('Browserifying library...');
 
     if (debugShim) {
         process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
     }
-
-    return browserify({
+    bundler = browserify({
         entries: [sourcePaths.libraryModuleScript],
-        debug: debug
-    })
-        .bundle()
-        .on('error', swallowError)
-        .pipe(source(libraryName + '.js'))
-        .pipe(gulp.dest(buildPaths.scripts));
+        debug: true
+    });
 
+    bundle = function() {
+        return bundler
+            .bundle()
+            .pipe(source(libraryName + '.js'))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({loadMaps: true}))
+            // Add transformation tasks to the pipeline here.
+            //.pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(buildPaths.scripts));
+    };
+
+    return bundle();
 });
 
 gulp.task('compile-library-templates', function () {
@@ -298,21 +315,30 @@ registerAppTasks = function (appName) {
     });
 
     gulp.task('browserify-' + appName + '-app', function () {
-
+        var bundler, bundle;
         console.log('Browserifying ' + appName + '-app...');
 
         if (debugShim) {
             process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
         }
-
-        return browserify({
+        bundler = browserify({
             entries: [appModuleScript],
-            debug: debug
-        })
-            .bundle()
-            .pipe(source(appName + '-app.js'))
-            .pipe(gulp.dest(buildPaths.scripts));
+            debug: true
+        });
 
+        bundle = function() {
+            return bundler
+                .bundle()
+                .pipe(source(appName + '-app.js'))
+                .pipe(buffer())
+                .pipe(sourcemaps.init({loadMaps: true}))
+                // Add transformation tasks to the pipeline here.
+                //.pipe(uglify())
+                .pipe(sourcemaps.write('./'))
+                .pipe(gulp.dest(buildPaths.scripts));
+        };
+
+        return bundle();
     });
 
     gulp.task('compile-' + appName + '-app-templates', function () {
