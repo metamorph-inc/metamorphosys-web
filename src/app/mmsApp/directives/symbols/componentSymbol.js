@@ -11,6 +11,7 @@ require( './opAmp/opAmp.js' );
 require( './diode/diode.js' );
 require( './capacitor/capacitor.js' );
 require( './inductor/inductor.js' );
+require( './simpleConnector/simpleConnector.js' );
 
 require( './box/box.js' );
 
@@ -26,6 +27,7 @@ var symbolsModule = angular.module(
         'mms.designVisualization.symbols.diode',
         'mms.designVisualization.symbols.capacitor',
         'mms.designVisualization.symbols.inductor',
+        'mms.designVisualization.symbols.simpleConnector',
 
         'mms.designVisualization.symbols.box'
 

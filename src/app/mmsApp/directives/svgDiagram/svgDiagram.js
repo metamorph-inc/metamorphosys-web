@@ -345,6 +345,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                                     gridService.setVisibleArea(id, visibleArea);
                                 });
 
+                            scope.$emit('DiagramInitialized');
                         }
 
                     });
