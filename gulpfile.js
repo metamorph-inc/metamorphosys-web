@@ -294,7 +294,8 @@ registerAppTasks = function (appName) {
 
         appStyles = ['src/app/' + appName + '/**/*.scss'],
 
-        appSvgSymbols = ['src/app/' + appName + '/**/*.svg'];
+        appSvgSymbols = ['src/app/' + appName + '/**/*.svg'],
+        appSvgSymbol2ndCopyDestination = 'src/app/' + appName + '/images/';
 
 
     gulp.task('lint-' + appName + '-app', function () {
@@ -311,7 +312,8 @@ registerAppTasks = function (appName) {
       return gulp.src( appSvgSymbols )
       .pipe(svgmin())
       .pipe(svgstore({ fileName: 'symbols.svg', prefix: 'icon-' }))
-      .pipe(gulp.dest( buildPaths.images ));
+      .pipe(gulp.dest( buildPaths.images ))
+      .pipe(gulp.dest(appSvgSymbol2ndCopyDestination));
     });
 
     gulp.task('browserify-' + appName + '-app', function () {
