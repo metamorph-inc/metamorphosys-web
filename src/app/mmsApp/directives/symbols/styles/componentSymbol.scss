@@ -1,0 +1,45 @@
+.symbol {
+
+    .component-label {
+        fill: #555;
+        font-weight: bold;
+        font-size: 85%;
+    }
+
+    .selected-symbol-boundary {
+        fill: rgba(255, 255, 255, .7);
+        stroke: #ff7100;
+        stroke-dasharray: 1;
+
+        display: none;
+    }
+
+    &.selected {
+
+        .selected-symbol-boundary {
+            display: block;
+        }
+
+    }
+
+    .symbol-area {
+        fill: transparent;
+    }
+
+    &.selected,
+    &:hover {
+
+        cursor: pointer;
+
+        .component-label {
+            fill: #ff7100;
+        }
+
+        .silhouette {
+
+            stroke: #ff7100;
+
+        }
+    }
+
+}

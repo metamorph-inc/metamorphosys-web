@@ -135,12 +135,13 @@ module.exports = function(symbolManagerProvider) {
 
             return  {
                 type: 'random_' + idPostfix,
+                cssClass: 'box ' + 'random_' + idPostfix,
                 symbolDirective: 'box',
                 svgDecoration: null,
                 labelPrefix: 'RND_' + countOfPorts + '_' + idPostfix + ' ',
                 labelPosition: {
-                    x: portWireLength + 10,
-                    y: portWireLength + 20
+                    x: portsAndSizes.width/2,
+                    y: portsAndSizes.height/2
                 },
                 portWireLength: portWireLength,
                 width: portsAndSizes.width,

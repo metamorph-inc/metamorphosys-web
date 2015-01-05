@@ -99,7 +99,7 @@ symbolsModule.directive(
 
                     var result;
 
-                    result = scope.component.symbol.type;
+                    result = scope.component.symbol.cssClass ? scope.component.symbol.cssClass : scope.component.symbol.type;
 
                     if ( diagramContainerController.isComponentSelected( scope.component ) ) {
                         result += ' selected';

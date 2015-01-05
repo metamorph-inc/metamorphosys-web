@@ -21,32 +21,32 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
         };
 
-        designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
+        if ($stateParams.containerId === 'dummy') {
 
-        }).then(function (diagramElements) {
+            $scope.diagram = diagramService.addDummyDiagram('dummy', 100, 50, 3000, 3000);
 
-            $log.debug('Diagram elements', diagramElements);
+            $log.debug('Drawing dummy diagram:', $scope.diagram);
+            $rootScope.loading = false;
 
-            $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
+        } else {
 
-            $log.debug($rootScope.activeContainerId);
+            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
 
-            if ($stateParams.containerId === 'dummy') {
+            }).then(function (diagramElements) {
 
-                $scope.diagram = diagramService.addDummyDiagram('dummy', 100, 50, 3000, 3000);
+                $log.debug('Diagram elements', diagramElements);
 
-                $log.debug('Drawing dummy diagram:', $scope.diagram);
-                $rootScope.loading = false;
+                $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
-            } else {
+                $log.debug($rootScope.activeContainerId);
+
+
 
                 $scope.diagram = diagramService.getDiagram($stateParams.containerId);
                 $rootScope.loading = false;
 
-            }
-
-
-        });
+            });
+        }
 
     })
     .directive( 'designEditor', [
