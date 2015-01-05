@@ -1173,14 +1173,49 @@ angular.module(
     'mms.designVisualization.port', []
 )
     .controller( 'PortController', function ( $scope ) {
+
         $scope.getPortTransform = function () {
+
             var transformString;
 
             transformString = 'translate(' + $scope.portInstance.portSymbol.x + ',' + $scope.portInstance.portSymbol
                 .y + ')';
 
             return transformString;
+
         };
+
+        $scope.getLabel = function() {
+
+            var label;
+
+            if (angular.isString($scope.portInstance.label)) {
+                label = $scope.portInstance.label;
+            } else if (angular.isFunction($scope.portInstance.label)){
+                label = $scope.portInstance.label();
+            } else {
+                label = $scope.portInstance.portSymbol.label;
+            }
+
+            return label;
+        };
+
+        $scope.isPortLabelVisible = function() {
+
+            return $scope.component.symbol.showPortLabels;
+
+        };
+
+        $scope.getCssClass = function() {
+
+            var cssClass;
+
+            cssClass = $scope.portInstance.portSymbol.cssClass;
+
+            return cssClass;
+
+        };
+
     } )
     .directive(
         'port',
@@ -1217,6 +1252,7 @@ angular.module(
             };
         }
 );
+
 },{}],14:[function(require,module,exports){
 /*globals angular*/
 'use strict';
@@ -2688,18 +2724,19 @@ angular.module(
                         wireLeadIn: 20,
                         label: 'C',
                         x: 0,
-                        y: 7
+                        y: 7.5
                     }, A: {
                         id: 'A',
                         wireAngle: 180,
                         wireLeadIn: 20,
                         label: 'A',
                         x: 60,
-                        y: 7
+                        y: 7.5
                     } }
             });
         }
     ]);
+
 },{}],25:[function(require,module,exports){
 /*globals angular*/
 
@@ -2905,7 +2942,7 @@ angular.module(
                     x: 3,
                     y: 11
                 },
-                width: 100,
+                width: 120,
                 height: 15,
                 ports: {
                     p1: {
@@ -2935,6 +2972,7 @@ angular.module(
             templateNamespace: 'SVG'
         };
     });
+
 },{}],30:[function(require,module,exports){
 /*globals angular*/
 
@@ -2963,14 +3001,14 @@ angular.module(
                         wireLeadIn: 20,
                         label: 'C',
                         x: 0,
-                        y: 7
+                        y: 7.5
                     }, A: {
                         id: 'A',
                         wireAngle: 180,
                         wireLeadIn: 20,
                         label: 'A',
                         x: 75,
-                        y: 7
+                        y: 7.5
                     } }
             });
         }
@@ -3042,7 +3080,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             Diagram,
             DiagramComponent,
             ComponentPort,
-            Wire;
+            Wire,
+
+            labelParser;
+
+
 
         Diagram = require('./Diagram');
         DiagramComponent = require('./DiagramComponent.js');
@@ -3050,6 +3092,17 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         Wire = require('./Wire.js');
 
         allPortsById = {};
+
+        labelParser = function (crappyName) {
+
+            var result;
+
+            result = crappyName.replace(/_/g, ' ');
+
+            return result;
+
+        };
+
 
         minePortsFromInterfaces = function (element, collector) {
 
@@ -3124,7 +3177,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     portSymbol = {
                         id: innerConnector.id,
-                        label: innerConnector.name
+                        label: labelParser(innerConnector.name)
                     };
 
                     if (innerConnector.position.x < median) {
@@ -3176,7 +3229,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 newDiagramComponent = new DiagramComponent({
                     id: element.id,
-                    label: element.name,
+                    label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
                     z: i,
@@ -3219,7 +3272,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -3256,7 +3309,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -3285,11 +3338,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 } else {
 
-                    symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+                    symbol = symbolManager.makeBoxSymbol(element.name, {
+                            showPortLabels: true
+                        }, portStuff.portDescriptors,
+                        {
+                            minWidth: 200
+                        });
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -3319,11 +3377,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 portStuff = minePortsFromInterfaces(element, allPortsById);
 
-                symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+                symbol = symbolManager.makeBoxSymbol(element.name, {
+                        showPortLabels: true
+                    }, portStuff.portDescriptors,
+                    {
+                        minWidth: 200
+                    });
 
                 newDiagramComponent = new DiagramComponent({
                     id: element.id,
-                    label: element.name,
+                    label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
                     z: i,
@@ -4454,7 +4517,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         availableSymbols = {},
 
         portCreator,
-        spreadPortsAlongSide;
+        spreadPortsAlongSide,
+
+        portHorizontalTranslation;
 
 
     spreadPortsAlongSide = function (somePorts, side, width, height, parameters) {
@@ -4486,6 +4551,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             increment = parameters.portSpacing;
         }
 
+        portHorizontalTranslation = parameters.portWireLength + parameters.portLabelHorizontalPadding;
+
         for (i=0; i < somePorts.length; i++) {
 
             aPort = somePorts[i];
@@ -4496,6 +4563,11 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = offset;
                     aPort.y = 0;
                     aPort.wireAngle = -90;
+                    aPort.cssClass = 'top';
+                    aPort.labelPosition = {
+                        x: 0,
+                        y: 0
+                    };
 
                     offset += increment;
 
@@ -4505,6 +4577,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = width;
                     aPort.y = offset;
                     aPort.wireAngle = 0;
+                    aPort.cssClass = 'right';
+                    aPort.labelPosition = {
+                        x: -portHorizontalTranslation,
+                        y: parameters.portLabelVerticalPadding
+                    };
+
 
                     offset += increment;
 
@@ -4514,6 +4592,11 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = offset;
                     aPort.y = height;
                     aPort.wireAngle = 90;
+                    aPort.cssClass = 'bottom';
+                    aPort.labelPosition = {
+                        x: 0,
+                        y: 0
+                    };
 
                     offset += increment;
 
@@ -4523,6 +4606,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = 0;
                     aPort.y = offset;
                     aPort.wireAngle = 180;
+                    aPort.cssClass = 'left';
+                    aPort.labelPosition = {
+                        x: portHorizontalTranslation,
+                        y: parameters.portLabelVerticalPadding
+                    };
+
 
                     offset += increment;
 
@@ -4603,8 +4692,10 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         parameters = angular.extend({
             portWireLength: 20,
             portSpacing: 20,
-            topPortPadding: 20,
+            topPortPadding: 25,
             bottomPortPadding: 0,
+            portLabelHorizontalPadding: 5,
+            portLabelVerticalPadding: 3,
             minWidth: 140,
             minHeight: 80,
             justifyPorts: false

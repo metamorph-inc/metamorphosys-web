@@ -10,7 +10,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         availableSymbols = {},
 
         portCreator,
-        spreadPortsAlongSide;
+        spreadPortsAlongSide,
+
+        portHorizontalTranslation;
 
 
     spreadPortsAlongSide = function (somePorts, side, width, height, parameters) {
@@ -42,6 +44,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             increment = parameters.portSpacing;
         }
 
+        portHorizontalTranslation = parameters.portWireLength + parameters.portLabelHorizontalPadding;
+
         for (i=0; i < somePorts.length; i++) {
 
             aPort = somePorts[i];
@@ -52,6 +56,11 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = offset;
                     aPort.y = 0;
                     aPort.wireAngle = -90;
+                    aPort.cssClass = 'top';
+                    aPort.labelPosition = {
+                        x: 0,
+                        y: 0
+                    };
 
                     offset += increment;
 
@@ -61,6 +70,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = width;
                     aPort.y = offset;
                     aPort.wireAngle = 0;
+                    aPort.cssClass = 'right';
+                    aPort.labelPosition = {
+                        x: -portHorizontalTranslation,
+                        y: parameters.portLabelVerticalPadding
+                    };
+
 
                     offset += increment;
 
@@ -70,6 +85,11 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = offset;
                     aPort.y = height;
                     aPort.wireAngle = 90;
+                    aPort.cssClass = 'bottom';
+                    aPort.labelPosition = {
+                        x: 0,
+                        y: 0
+                    };
 
                     offset += increment;
 
@@ -79,6 +99,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     aPort.x = 0;
                     aPort.y = offset;
                     aPort.wireAngle = 180;
+                    aPort.cssClass = 'left';
+                    aPort.labelPosition = {
+                        x: portHorizontalTranslation,
+                        y: parameters.portLabelVerticalPadding
+                    };
+
 
                     offset += increment;
 
@@ -159,8 +185,10 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         parameters = angular.extend({
             portWireLength: 20,
             portSpacing: 20,
-            topPortPadding: 20,
+            topPortPadding: 25,
             bottomPortPadding: 0,
+            portLabelHorizontalPadding: 5,
+            portLabelVerticalPadding: 3,
             minWidth: 140,
             minHeight: 80,
             justifyPorts: false

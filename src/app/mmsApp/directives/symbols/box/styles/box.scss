@@ -2,6 +2,17 @@
     .component-label {
         text-anchor: middle;
     }
+
+    .port {
+
+        &.right {
+
+            .port-label {
+                text-anchor: end;
+            }
+        }
+
+    }
 }
 
 .box-box {

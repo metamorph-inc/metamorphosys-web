@@ -6,14 +6,49 @@ angular.module(
     'mms.designVisualization.port', []
 )
     .controller( 'PortController', function ( $scope ) {
+
         $scope.getPortTransform = function () {
+
             var transformString;
 
             transformString = 'translate(' + $scope.portInstance.portSymbol.x + ',' + $scope.portInstance.portSymbol
                 .y + ')';
 
             return transformString;
+
         };
+
+        $scope.getLabel = function() {
+
+            var label;
+
+            if (angular.isString($scope.portInstance.label)) {
+                label = $scope.portInstance.label;
+            } else if (angular.isFunction($scope.portInstance.label)){
+                label = $scope.portInstance.label();
+            } else {
+                label = $scope.portInstance.portSymbol.label;
+            }
+
+            return label;
+        };
+
+        $scope.isPortLabelVisible = function() {
+
+            return $scope.component.symbol.showPortLabels;
+
+        };
+
+        $scope.getCssClass = function() {
+
+            var cssClass;
+
+            cssClass = $scope.portInstance.portSymbol.cssClass;
+
+            return cssClass;
+
+        };
+
     } )
     .directive(
         'port',

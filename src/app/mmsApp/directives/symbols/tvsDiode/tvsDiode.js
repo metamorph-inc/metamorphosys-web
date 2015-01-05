@@ -25,14 +25,14 @@ angular.module(
                         wireLeadIn: 20,
                         label: 'C',
                         x: 0,
-                        y: 7
+                        y: 7.5
                     }, A: {
                         id: 'A',
                         wireAngle: 180,
                         wireLeadIn: 20,
                         label: 'A',
                         x: 75,
-                        y: 7
+                        y: 7.5
                     } }
             });
         }

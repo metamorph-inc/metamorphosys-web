@@ -22,7 +22,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             Diagram,
             DiagramComponent,
             ComponentPort,
-            Wire;
+            Wire,
+
+            labelParser;
+
+
 
         Diagram = require('./Diagram');
         DiagramComponent = require('./DiagramComponent.js');
@@ -30,6 +34,17 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         Wire = require('./Wire.js');
 
         allPortsById = {};
+
+        labelParser = function (crappyName) {
+
+            var result;
+
+            result = crappyName.replace(/_/g, ' ');
+
+            return result;
+
+        };
+
 
         minePortsFromInterfaces = function (element, collector) {
 
@@ -104,7 +119,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     portSymbol = {
                         id: innerConnector.id,
-                        label: innerConnector.name
+                        label: labelParser(innerConnector.name)
                     };
 
                     if (innerConnector.position.x < median) {
@@ -156,7 +171,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 newDiagramComponent = new DiagramComponent({
                     id: element.id,
-                    label: element.name,
+                    label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
                     z: i,
@@ -199,7 +214,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -236,7 +251,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -265,11 +280,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 } else {
 
-                    symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+                    symbol = symbolManager.makeBoxSymbol(element.name, {
+                            showPortLabels: true
+                        }, portStuff.portDescriptors,
+                        {
+                            minWidth: 200
+                        });
 
                     newDiagramComponent = new DiagramComponent({
                         id: element.id,
-                        label: element.name,
+                        label: labelParser(element.name),
                         x: element.position.x,
                         y: element.position.y,
                         z: i,
@@ -299,11 +319,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 portStuff = minePortsFromInterfaces(element, allPortsById);
 
-                symbol = symbolManager.makeBoxSymbol(element.name, {}, portStuff.portDescriptors);
+                symbol = symbolManager.makeBoxSymbol(element.name, {
+                        showPortLabels: true
+                    }, portStuff.portDescriptors,
+                    {
+                        minWidth: 200
+                    });
 
                 newDiagramComponent = new DiagramComponent({
                     id: element.id,
-                    label: element.name,
+                    label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
                     z: i,

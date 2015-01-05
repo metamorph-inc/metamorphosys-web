@@ -14,7 +14,7 @@ angular.module(
                     x: 3,
                     y: 11
                 },
-                width: 100,
+                width: 120,
                 height: 15,
                 ports: {
                     p1: {
