@@ -11,8 +11,8 @@ var PATH = require('path');
 var CONFIG = require('./config.json');
 var webgme = require('webgme');
 var requirejs = require('requirejs');
-webGMEGlobal.setConfig(CONFIG);
-var requirejsBase = webGMEGlobal.baseDir;
+WebGMEGlobal.setConfig(CONFIG);
+var requirejsBase = WebGMEGlobal.baseDir;
 
 // specifies all test specific requirejs paths for server side tests
 // read it from the config file

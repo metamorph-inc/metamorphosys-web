@@ -1,4 +1,4 @@
-/*globals window, webGMEGlobal, require, describe, it */
+/*globals window, WebGMEGlobal, require, describe, it */
 
 
 if (typeof window === 'undefined') {
@@ -6,7 +6,7 @@ if (typeof window === 'undefined') {
     // server-side setup
     var webgme = require('webgme');
     var webgmeConfig = require('../../../config.json');
-    webGMEGlobal.setConfig(webgmeConfig);
+    WebGMEGlobal.setConfig(webgmeConfig);
 
     var chai = require('chai');
 }
@@ -21,7 +21,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -39,7 +39,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -57,7 +57,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -75,7 +75,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -93,7 +93,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -111,7 +111,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -129,7 +129,7 @@ describe('TestTesting', function () {
             expectedSuccess = true,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -147,7 +147,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -165,7 +165,7 @@ describe('TestTesting', function () {
             expectedSuccess = false,
             assetHash = '';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -183,7 +183,7 @@ describe('TestTesting', function () {
             expectedSuccess = true,
             assetHash = 'cdf0bf15cbd31f0b4b07a2deb7a47abcd952d8be';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
@@ -202,7 +202,7 @@ describe('TestTesting', function () {
             expectedSuccess = true,
             assetHash = '1b40c20526b7eb0c454abc0f5bd6bc3d3e864e54';
 
-        webgme.runPlugin.main(webGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,

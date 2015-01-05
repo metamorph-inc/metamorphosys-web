@@ -11,7 +11,7 @@ define( [], function () {
         //console.log(isNode);
 
         if ( isNode ) {
-            config = webGMEGlobal.getConfig();
+            config = WebGMEGlobal.getConfig();
             this.server = '127.0.0.1';
             this.serverPort = config.port;
             this.httpsecure = config.httpsecure;

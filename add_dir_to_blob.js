@@ -23,7 +23,7 @@ var config = require('./config.json'),
 var startDir = path.resolve(process.argv[2]);
 
 // updating default configuration with ours
-webGMEGlobal.setConfig(config);
+WebGMEGlobal.setConfig(config);
 
 var BlobFSBackend = requirejs('blob/BlobFSBackend');
 var BlobRunPluginClient = requirejs('blob/BlobRunPluginClient');
@@ -100,7 +100,7 @@ walk(startDir, function (err, files) {
 
                     console.log('All files were added successfully.');
 
-                    var port = webGMEGlobal.getConfig().port;
+                    var port = WebGMEGlobal.getConfig().port;
 
                     console.log(artifactName + ' - localhost:' + port);
                     console.log(' - metadata: localhost:' + port + blobClient.getMetadataURL(artifactHash));
