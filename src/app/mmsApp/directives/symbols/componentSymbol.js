@@ -80,7 +80,7 @@ symbolsModule.directive(
 
                     $el,
                     compiledSymbol,
-                    symbolComponent;
+                    symbolDirective;
 
                 svgDiagramController = controllers[ 0 ];
                 diagramContainerController = controllers[ 1 ];
@@ -118,20 +118,20 @@ symbolsModule.directive(
                     $event.stopPropagation();
                 };
 
-                symbolComponent = scope.component.symbol.symbolComponent || 'generic-svg';
+                symbolDirective = scope.component.symbol.symbolDirective || 'generic-svg';
 
-                compiledSymbol = diagramContainerController.getCompiledDirective( symbolComponent );
+                compiledSymbol = diagramContainerController.getCompiledDirective( symbolDirective );
 
                 if ( !angular.isFunction( compiledSymbol ) ) {
 
-                    templateStr = '<' + symbolComponent + '>' +
-                        '</' + symbolComponent + '>';
+                    templateStr = '<' + symbolDirective + '>' +
+                        '</' + symbolDirective + '>';
 
                     template = angular.element( templateStr );
 
                     compiledSymbol = $compile( template );
 
-                    diagramContainerController.setCompiledDirective( symbolComponent, compiledSymbol );
+                    diagramContainerController.setCompiledDirective( symbolDirective, compiledSymbol );
 
                 }
 

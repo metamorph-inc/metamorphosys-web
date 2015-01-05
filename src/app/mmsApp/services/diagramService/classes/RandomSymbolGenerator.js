@@ -135,7 +135,7 @@ module.exports = function(symbolManagerProvider) {
 
             return  {
                 type: 'random_' + idPostfix,
-                symbolComponent: 'box',
+                symbolDirective: 'box',
                 svgDecoration: null,
                 labelPrefix: 'RND_' + countOfPorts + '_' + idPostfix + ' ',
                 labelPosition: {

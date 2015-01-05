@@ -9,7 +9,7 @@ angular.module(
         function ( symbolManagerProvider ) {
             symbolManagerProvider.registerSymbol( {
                 type: 'resistor',
-                symbolComponent: null,
+                symbolDirective: null,
                 svgDecoration: 'images/symbols.svg#icon-resistor',
                 labelPrefix: 'R',
                 labelPosition: {
