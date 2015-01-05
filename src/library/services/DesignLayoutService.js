@@ -1,4 +1,4 @@
-/*globals angular, console*/
+/*globals angular*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -26,7 +26,7 @@ angular.module( 'cyphy.services' )
             watchers[ parentContext.regionId ][ regionId ] = context;
 
             nodeService.getMetaNodes( context )
-                .then( function ( meta ) {
+                .then( function ( /*meta*/ ) {
                     nodeService.loadNode( context, containerId )
                         .then( function ( rootNode ) {
                             rootNode.loadChildren( context )
