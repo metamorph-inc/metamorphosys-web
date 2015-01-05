@@ -1,4 +1,4 @@
-/* global define,require,webGMEGlobal */
+/* global define,require,WebGMEGlobal */
 /*
 config.json: "rextrast": { "copyproject": "./src/rest/copyproject/CopyProject", ...
 http://localhost:8855/rest/external/copyproject
@@ -17,7 +17,7 @@ define( [ 'logManager',
         BSONStream = require( 'bson-stream' ),
         fs = require( 'fs' ),
         child_process = require( 'child_process' ),
-        CONFIG = webGMEGlobal.getConfig(),
+        CONFIG = WebGMEGlobal.getConfig(),
         use_exec;
 
     function Copy( req, res, callback ) {
