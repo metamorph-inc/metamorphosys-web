@@ -313,7 +313,7 @@ registerAppTasks = function (appName) {
 
         appStyles = ['src/app/' + appName + '/**/*.scss'],
 
-        appSvgSymbols = ['src/app/' + appName + '/**/*.svg'],
+        appSvgSymbols = ['src/app/' + appName + '/**/symbols/**/*.svg'],
         appSvgSymbol2ndCopyDestination = 'src/app/' + appName + '/images/';
 
 

@@ -5570,7 +5570,7 @@ angular.module( 'cyphy.services' )
         this.setNodeAttributes = function ( context, id, attrs ) {
             var deferred = $q.defer();
             if ( Object.keys( attrs )
-                .length === 0 ) {
+                    .length === 0 ) {
                 console.log( 'no attribute to update' );
                 deferred.resolve();
             }
@@ -5682,22 +5682,22 @@ angular.module( 'cyphy.services' )
                     } );
                 },
                 onConnectorUpdate = function ( id ) {
-                    
+
                     var connector,
-                        
+
                         newName,
                         newPos,
-                        
+
                         hadChanges;
 
                     hadChanges = false;
-                    
+
                     connector = data.connectors[ id ];
-                    
+
                     newName = this.getAttribute( 'name' );
                     newPos = this.getRegistry('position');
-                    
-                
+
+
                     if ( newName !== connector.name ) {
                         connector.name = newName;
                         hadChanges = true;
@@ -5707,7 +5707,7 @@ angular.module( 'cyphy.services' )
                         connector.position = newPos;
                         hadChanges = true;
                     }
-                    
+
                     if ( hadChanges ) {
                         $timeout( function () {
                             updateListener( {
@@ -5767,7 +5767,7 @@ angular.module( 'cyphy.services' )
                 },
                 isPropertyDerived = function ( node ) {
                     return node.getCollectionPaths( 'dst' )
-                        .length > 0;
+                            .length > 0;
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -5896,6 +5896,7 @@ angular.module( 'cyphy.services' )
         };
 
     } );
+
 },{}],25:[function(require,module,exports){
 /*globals angular, console*/
 

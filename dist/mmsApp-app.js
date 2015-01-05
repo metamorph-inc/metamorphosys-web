@@ -2954,7 +2954,7 @@ angular.module(
                     x: 10,
                     y: -8
                 },
-                width: 60,
+                width: 75,
                 height: 15,
                 ports: {
                     C: {
@@ -2969,7 +2969,7 @@ angular.module(
                         wireAngle: 180,
                         wireLeadIn: 20,
                         label: 'A',
-                        x: 60,
+                        x: 75,
                         y: 7
                     } }
             });
