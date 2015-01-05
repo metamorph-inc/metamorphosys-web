@@ -5217,10 +5217,6 @@ require.alias("superagent/lib/client.js", "superagent/index.js");if (typeof expo
 }})();
 /**
  * Created by Zsolt on 5/21/2014.
- * 
- * THIS IS A THROW AWAY CODE AND IMPLEMENTATION.
- *
- * TEMPORARY CODE AND IMPLEMENTATION.
  *
  */
 
@@ -5394,6 +5390,7 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
     return ExecutorClient;
 });
+
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
  *
