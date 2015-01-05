@@ -135,6 +135,7 @@ gulp.task('browserify-docs', function () {
     bundle = function() {
         return bundler
             .bundle()
+            .on('error', swallowError)
             .pipe(source(libraryName + '-docs.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({loadMaps: true}))
@@ -224,6 +225,7 @@ gulp.task('browserify-library', function () {
     bundle = function() {
         return bundler
             .bundle()
+            .on('error', swallowError)
             .pipe(source(libraryName + '.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({loadMaps: true}))
@@ -329,6 +331,7 @@ registerAppTasks = function (appName) {
         bundle = function() {
             return bundler
                 .bundle()
+                .on('error', swallowError)
                 .pipe(source(appName + '-app.js'))
                 .pipe(buffer())
                 .pipe(sourcemaps.init({loadMaps: true}))
