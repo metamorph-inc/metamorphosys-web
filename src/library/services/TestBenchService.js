@@ -302,9 +302,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = childNode.getId();
                                     data.testBenches[ testBenchId ] = {
                                         id: testBenchId,
@@ -320,9 +320,9 @@ angular.module( 'cyphy.services' )
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     watchFromFolderRec( newChild, meta );
-                                } else if ( newChild.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = newChild.getId();
                                     data.testBenches[ testBenchId ] = {
                                         id: testBenchId,
@@ -369,12 +369,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -434,7 +434,7 @@ angular.module( 'cyphy.services' )
                                 .then( function ( children ) {
                                     var i;
                                     for ( i = 0; i < children.length; i += 1 ) {
-                                        if ( children[ i ].isMetaTypeOf( meta.Container ) ) {
+                                        if ( children[ i ].isMetaTypeOf( meta.byName.Container ) ) {
                                             data.containerIds.push( children[ i ].getId() );
                                             children[ i ].onUnload( onUnload );
                                         }

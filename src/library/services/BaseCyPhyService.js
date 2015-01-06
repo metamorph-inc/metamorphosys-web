@@ -11,7 +11,7 @@
 angular.module( 'cyphy.services' )
     .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
-
+        var self = this;
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
@@ -90,7 +90,7 @@ angular.module( 'cyphy.services' )
         this.setNodeAttributes = function ( context, id, attrs ) {
             var deferred = $q.defer();
             if ( Object.keys( attrs )
-                    .length === 0 ) {
+                .length === 0 ) {
                 console.log( 'no attribute to update' );
                 deferred.resolve();
             }
@@ -215,7 +215,7 @@ angular.module( 'cyphy.services' )
                     connector = data.connectors[ id ];
 
                     newName = this.getAttribute( 'name' );
-                    newPos = this.getRegistry('position');
+                    newPos = this.getRegistry( 'position' );
 
 
                     if ( newName !== connector.name ) {
@@ -223,7 +223,7 @@ angular.module( 'cyphy.services' )
                         hadChanges = true;
                     }
 
-                    if ( newPos.x !== connector.position.x || newPos.y !== connector.position.y) {
+                    if ( newPos.x !== connector.position.x || newPos.y !== connector.position.y ) {
                         connector.position = newPos;
                         hadChanges = true;
                     }
@@ -287,7 +287,7 @@ angular.module( 'cyphy.services' )
                 },
                 isPropertyDerived = function ( node ) {
                     return node.getCollectionPaths( 'dst' )
-                            .length > 0;
+                        .length > 0;
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -300,18 +300,20 @@ angular.module( 'cyphy.services' )
                                 .then( function ( children ) {
                                     var i,
                                         childId,
+                                        metaName,
                                         queueList = [],
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
                                         childId = childNode.getId();
-                                        if ( childNode.isMetaTypeOf( meta.Property ) ) {
+                                        metaName = childNode.getMetaTypeName( meta );
+                                        if ( metaName === 'Property' ) {
                                             data.properties[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
                                                 dataType: childNode.getAttribute( 'DataType' ),
                                                 valueType: childNode.getAttribute( 'ValueType' ),
-                                                value:  childNode.getAttribute( 'Value' ),
+                                                value: childNode.getAttribute( 'Value' ),
                                                 unit: childNode.getAttribute( 'Unit' ),
                                                 isProminent: childNode.getAttribute( 'IsProminent' ),
 
@@ -319,17 +321,17 @@ angular.module( 'cyphy.services' )
                                             };
                                             childNode.onUpdate( onPropertyUpdate );
                                             childNode.onUnload( onPropertyUnload );
-                                        } else if ( childNode.isMetaTypeOf( meta.Connector ) ) {
+                                        } else if ( metaName === 'Connector' ) {
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
-                                                position: childNode.getRegistry('position'),
+                                                position: childNode.getRegistry( 'position' ),
                                                 domainPorts: {}
                                             };
                                             childNode.onUpdate( onConnectorUpdate );
                                             childNode.onUnload( onConnectorUnload );
                                             ///queueList.push(childNode.loadChildren(childNode));
-                                        } else if ( childNode.isMetaTypeOf( meta.DomainPort ) ) {
+                                        } else if ( metaName === 'DomainPort' ) {
                                             data.ports[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
@@ -343,13 +345,14 @@ angular.module( 'cyphy.services' )
                                     }
                                     modelNode.onNewChildLoaded( function ( newChild ) {
                                         childId = newChild.getId();
-                                        if ( newChild.isMetaTypeOf( meta.Property ) ) {
+                                        metaName = childNode.getMetaTypeName( meta );
+                                        if ( metaName === 'Property' ) {
                                             data.properties[ childId ] = {
                                                 id: childId,
                                                 name: newChild.getAttribute( 'name' ),
                                                 dataType: newChild.getAttribute( 'DataType' ),
                                                 valueType: newChild.getAttribute( 'ValueType' ),
-                                                value:  newChild.getAttribute( 'Value' ),
+                                                value: newChild.getAttribute( 'Value' ),
                                                 unit: newChild.getAttribute( 'Unit' ),
                                                 isProminent: newChild.getAttribute( 'IsProminent' ),
 
@@ -364,11 +367,11 @@ angular.module( 'cyphy.services' )
                                                     data: data
                                                 } );
                                             } );
-                                        } else if ( newChild.isMetaTypeOf( meta.Connector ) ) {
+                                        } else if ( metaName === 'Connector' ) {
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: newChild.getAttribute( 'name' ),
-                                                position: newChild.getRegistry('position'),
+                                                position: newChild.getRegistry( 'position' ),
                                                 domainPorts: {}
                                             };
                                             newChild.onUpdate( onConnectorUpdate );
@@ -381,7 +384,7 @@ angular.module( 'cyphy.services' )
                                                 } );
                                             } );
                                             ///queueList.push(childNode.loadChildren(childNode));
-                                        } else if ( newChild.isMetaTypeOf( meta.DomainPort ) ) {
+                                        } else if ( metaName === 'DomainPort' ) {
                                             data.ports[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
@@ -415,4 +418,19 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            var key,
+                newAttr,
+                hadChanges = false;
+            for ( key in keyToAttr ) {
+                if ( keyToAttr.hasOwnProperty( key ) ) {
+                    newAttr = node.getAttribute( keyToAttr[ key ] );
+                    if ( newAttr !== data[ key ] ) {
+                        data[ key ] = newAttr;
+                        hadChanges = true;
+                    }
+                }
+            }
+            return hadChanges;
+        };
     } );

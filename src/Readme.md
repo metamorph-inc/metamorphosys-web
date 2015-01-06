@@ -1,7 +1,6 @@
 Contains all source files that are developed as part of the project. May contain external libraries too.
 
 - `app` - domain specific applications, one application per subdirectory
-- `client` - [DEPRECATED] old version/implementation of a single client application. Will be removed soon.
 - `decorators` - domain specific decorators for `WebGME UI`
 - `docs` - documentation and UI preview of the `cyphy-components` from `library`
 - `library` - `cyphy-components` angular module that contains domain specific directives, controllers, and services.

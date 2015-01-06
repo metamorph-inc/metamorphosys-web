@@ -296,9 +296,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                     designId = childNode.getId();
                                     data.designs[ designId ] = {
                                         id: designId,
@@ -311,9 +311,9 @@ angular.module( 'cyphy.services' )
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     watchFromFolderRec( newChild, meta );
-                                } else if ( newChild.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.Container ) ) {
                                     designId = newChild.getId();
                                     data.designs[ designId ] = {
                                         id: designId,
@@ -357,12 +357,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -442,13 +442,13 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.Result ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.Result ) ) {
                                     data.counters.results += 1;
                                     childNode.onUnload( resultOnUnload );
                                 }
                             }
                             cfgNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.Result ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.Result ) ) {
                                     data.counters.results += 1;
                                     $timeout( function () {
                                         updateListener( {
@@ -495,12 +495,12 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                     queueList.push( watchConfiguration( childNode, meta ) );
                                 }
                             }
                             setNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                     watchConfiguration( newChild, meta, true );
                                 }
                             } );
@@ -530,12 +530,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             queueList.push( watchConfigurationSet( childNode, meta ) );
                                         }
                                     }
                                     designNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             watchConfigurationSet( newChild, meta, true );
                                         }
                                     } );
@@ -616,9 +616,9 @@ angular.module( 'cyphy.services' )
 
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                     queueList.push( watchFromContainerRec( childNode, container, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     component = getComponentInfo( childNode, container.id );
                                     container.components[ childNode.getId() ] = component;
                                     data.components[ childNode.getId() ] = component;
@@ -673,10 +673,10 @@ angular.module( 'cyphy.services' )
                                     data.containers[ rootContainer.id ] = rootContainer;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                             queueList.push( watchFromContainerRec( childNode,
                                                 rootContainer, meta ) );
-                                        } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                        } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                             component = getComponentInfo( childNode, rootContainer.id );
                                             rootContainer.components[ childNode.getId() ] = component;
                                             data.components[ childNode.getId() ] = component;
@@ -762,7 +762,7 @@ angular.module( 'cyphy.services' )
                                             } );
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             childId = childNodes[ i ].getId();
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
@@ -775,7 +775,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     designNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             childId = newNode.getId();
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
@@ -869,7 +869,7 @@ angular.module( 'cyphy.services' )
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
                                         childId = childNodes[ i ].getId();
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                             data.configurations[ childId ] = {
                                                 id: childId,
                                                 name: childNodes[ i ].getAttribute( 'name' ),
@@ -882,7 +882,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     cfgSetNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                             childId = newNode.getId();
                                             data.configurations[ childId ] = {
                                                 id: childId,
@@ -947,7 +947,7 @@ angular.module( 'cyphy.services' )
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
                                         childId = childNodes[ i ].getId();
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.Result ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.Result ) ) {
                                             configuration.results[ childId ] = {
                                                 id: childId
                                                 //name: childNodes[i].getAttribute('name'),
@@ -959,7 +959,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     cfgNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.Result ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.Result ) ) {
                                             childId = newNode.getId();
                                             $timeout( function () {
                                                 configuration.results[ childId ] = {
