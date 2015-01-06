@@ -99,5 +99,20 @@ Diagram.prototype.getWiresForComponents = function (components) {
 
 };
 
+Diagram.prototype.updateComponentPosition = function (componentId, newPosition) {
+
+    var self = this,
+        component;
+
+        component = self.componentsById[componentId];
+
+        if (angular.isObject(component)) {
+
+            component.setPosition(newPosition.x, newPosition.y);
+
+        }
+
+};
+
 
 module.exports = Diagram;

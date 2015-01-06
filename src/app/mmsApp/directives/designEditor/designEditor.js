@@ -39,7 +39,18 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
         } else {
 
-            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
+            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
+
+                $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+
+                if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                    diagramService.updateComponentsAndItsWiresPosition(
+                        $rootScope.activeContainerId,
+                        designStructureUpdateObject.id,
+                        designStructureUpdateObject.data.position
+                    );
+                }
 
             }).then(function (cyPhyLayout) {
 

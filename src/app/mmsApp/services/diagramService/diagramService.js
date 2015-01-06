@@ -61,6 +61,30 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
+            this.updateComponentsAndItsWiresPosition = function( diagramId, componentId, newPosition) {
+
+                var diagram,
+                    setOfWires;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    diagram.updateComponentPosition(componentId, newPosition);
+
+                    setOfWires = diagram.wiresByComponentId[componentId];
+
+                    angular.forEach( setOfWires, function ( wire ) {
+
+                        wiringService.adjustWireEndSegments( wire );
+
+                    } );
+
+
+                }
+
+            };
+
             this.addWire = function (diagramId, aWire) {
 
                 var diagram;

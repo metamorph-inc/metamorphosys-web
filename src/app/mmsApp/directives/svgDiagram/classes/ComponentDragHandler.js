@@ -99,30 +99,35 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     onDiagramMouseMove = function($event) {
 
+        var offset,
+            target,
+            i;
+
+
         if ( possibbleDragTargetsDescriptor ) {
             startDrag();
         }
 
         if ( dragTargetsDescriptor ) {
 
-            var offset;
-
             offset = getOffsetToMouse( $event );
 
-            angular.forEach( dragTargetsDescriptor.targets, function ( target ) {
+            for (i=0; i < dragTargetsDescriptor.targets.length; i++) {
+
+                target = dragTargetsDescriptor.targets[i];
 
                 target.component.setPosition(
                     offset.x + target.deltaToCursor.x,
                     offset.y + target.deltaToCursor.y
                 );
 
-            } );
+            }
 
-            angular.forEach( dragTargetsDescriptor.affectedWires, function ( wire ) {
+            for (i=0; i < dragTargetsDescriptor.affectedWires.length; i++) {
 
-                wiringService.adjustWireEndSegments( wire );
+                wiringService.adjustWireEndSegments( dragTargetsDescriptor.affectedWires[i] );
 
-            } );
+            }
 
         }
 

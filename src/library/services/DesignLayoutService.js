@@ -230,12 +230,13 @@ angular.module('cyphy.services')
             };
 
 
-            triggerUpdateListener = function (id, data, eventType) {
+            triggerUpdateListener = function (id, data, eventType, updateType) {
 
                 $timeout(function () {
                     updateListener({
                         id: id,
                         type: eventType,
+                        updateType: updateType,
                         data: data
                     });
                 });
@@ -247,7 +248,7 @@ angular.module('cyphy.services')
                 var baseName,
                     child;
 
-                baseName = metaNamesById[ this.getBaseId() ];
+                baseName = metaNamesById[ node.getBaseId() ];
 
                 if (baseName) {
 
@@ -297,7 +298,8 @@ angular.module('cyphy.services')
                     newDetails,
                     newPos,
                     hadChanges,
-                    child;
+                    child,
+                    updateType;
 
                 // BaseName never changes, does it?
 
@@ -312,27 +314,32 @@ angular.module('cyphy.services')
                     if (newName !== child.name) {
                         child.name = newName;
                         hadChanges = true;
+
                     }
 
                     if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
                         child.position = newPos;
+
                         hadChanges = true;
+                        updateType = 'positionChange';
                     }
 
                     if (child.baseName === 'ConnectorComposition') {
 
                         newDetails = getConnectorCompositionDetails(this);
 
-                        if (!angular.isEqual(newDetails, child.details)) {
+                        if (!angular.equals(newDetails, child.details)) {
 
                             child.details = newDetails;
                             hadChanges = true;
+
                         }
 
                     }
 
                     if (hadChanges) {
-                        triggerUpdateListener(child.id, child, 'update');
+
+                        triggerUpdateListener(child.id, child, 'update', updateType);
                     }
 
 

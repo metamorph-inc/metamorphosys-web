@@ -53,7 +53,6 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
                     points = [ endPositions.end1 ];
 
                     if (endPositions.end1.leadInPosition) {
-                        console.log(endPositions.end1.leadInPosition);
                         points.push(endPositions.end1.leadInPosition);
                     }
 

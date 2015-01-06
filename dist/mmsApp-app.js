@@ -660,7 +660,18 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
         } else {
 
-            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (/*designStructureUpdateObject*/) {
+            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
+
+                $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+
+                if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                    diagramService.updateComponentsAndItsWiresPosition(
+                        $rootScope.activeContainerId,
+                        designStructureUpdateObject.id,
+                        designStructureUpdateObject.data.position
+                    );
+                }
 
             }).then(function (cyPhyLayout) {
 
@@ -1483,30 +1494,35 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     onDiagramMouseMove = function($event) {
 
+        var offset,
+            target,
+            i;
+
+
         if ( possibbleDragTargetsDescriptor ) {
             startDrag();
         }
 
         if ( dragTargetsDescriptor ) {
 
-            var offset;
-
             offset = getOffsetToMouse( $event );
 
-            angular.forEach( dragTargetsDescriptor.targets, function ( target ) {
+            for (i=0; i < dragTargetsDescriptor.targets.length; i++) {
+
+                target = dragTargetsDescriptor.targets[i];
 
                 target.component.setPosition(
                     offset.x + target.deltaToCursor.x,
                     offset.y + target.deltaToCursor.y
                 );
 
-            } );
+            }
 
-            angular.forEach( dragTargetsDescriptor.affectedWires, function ( wire ) {
+            for (i=0; i < dragTargetsDescriptor.affectedWires.length; i++) {
 
-                wiringService.adjustWireEndSegments( wire );
+                wiringService.adjustWireEndSegments( dragTargetsDescriptor.affectedWires[i] );
 
-            } );
+            }
 
         }
 
@@ -3589,6 +3605,21 @@ Diagram.prototype.getWiresForComponents = function (components) {
 
 };
 
+Diagram.prototype.updateComponentPosition = function (componentId, newPosition) {
+
+    var self = this,
+        component;
+
+        component = self.componentsById[componentId];
+
+        if (angular.isObject(component)) {
+
+            component.setPosition(newPosition.x, newPosition.y);
+
+        }
+
+};
+
 
 module.exports = Diagram;
 
@@ -4084,6 +4115,30 @@ angular.module('mms.designVisualization.diagramService', [
                 if (angular.isObject(diagram)) {
 
                     diagram.addComponent(aDiagramComponent);
+
+                }
+
+            };
+
+            this.updateComponentsAndItsWiresPosition = function( diagramId, componentId, newPosition) {
+
+                var diagram,
+                    setOfWires;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    diagram.updateComponentPosition(componentId, newPosition);
+
+                    setOfWires = diagram.wiresByComponentId[componentId];
+
+                    angular.forEach( setOfWires, function ( wire ) {
+
+                        wiringService.adjustWireEndSegments( wire );
+
+                    } );
+
 
                 }
 
@@ -5014,7 +5069,6 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
                     points = [ endPositions.end1 ];
 
                     if (endPositions.end1.leadInPosition) {
-                        console.log(endPositions.end1.leadInPosition);
                         points.push(endPositions.end1.leadInPosition);
                     }
 
