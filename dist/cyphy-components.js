@@ -5491,7 +5491,7 @@ angular.module('cyphy.components')
 angular.module( 'cyphy.services' )
     .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
-        var self = this;
+
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
@@ -5914,6 +5914,7 @@ angular.module( 'cyphy.services' )
             return hadChanges;
         };
     } );
+
 },{}],25:[function(require,module,exports){
 /*globals angular, console*/
 
