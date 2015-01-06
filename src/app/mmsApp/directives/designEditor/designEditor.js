@@ -4,14 +4,16 @@
 
 // Move this to GME eventually
 
-angular.module( 'mms.designVisualization.designEditor', [] )
-    .controller( 'DesignEditorController', function(
-        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager) {
+angular.module('mms.designVisualization.designEditor', [])
+    .controller('DesignEditorController', function (
+        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager, $timeout) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
 
-            designCtx;
+            designCtx,
+
+            setupDiagramEventHandlers;
 
         $scope.diagram = null;
 
@@ -20,7 +22,34 @@ angular.module( 'mms.designVisualization.designEditor', [] )
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
 
-        $scope.diagramContainerConfig = {
+        $scope.diagramContainerConfig = {};
+
+        setupDiagramEventHandlers = function () {
+
+            $scope.$on('componentsPositionChange', function (e, data) {
+
+                var i;
+
+                i = 1;
+
+                angular.forEach(data.components, function (component) {
+
+                    $timeout(function () {
+
+                        designLayoutService.setPosition(
+                            designCtx,
+                            component.id,
+                            component.getPosition(),
+                            data.message
+                        );
+                    }, 10 * i);
+
+                    i++;
+
+                });
+
+
+            });
 
         };
 
@@ -65,13 +94,15 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
                 $log.debug('Drawing diagram:', $scope.diagram);
 
+                setupDiagramEventHandlers();
+
                 $rootScope.loading = false;
 
             });
         }
 
     })
-    .directive( 'designEditor', [
+    .directive('designEditor', [
         function () {
 
             return {
@@ -83,4 +114,4 @@ angular.module( 'mms.designVisualization.designEditor', [] )
                 templateUrl: '/mmsApp/templates/designEditor.html'
 
             };
-        }] );
+        }]);

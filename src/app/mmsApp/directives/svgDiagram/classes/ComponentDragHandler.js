@@ -81,14 +81,19 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         self.dragging = false;
 
-//        angular.forEach(dragTargetsDescriptor.targets, function(target) {
-//
-//            var position;
-//
-//            position = target.component.getPosition();
-//
-//            self.dragOperation.commit( target.component, position.x, position.y );
-//        });
+        $scope.$emit('componentsPositionChange', {
+            diagramId: $scope.diagram.id,
+            components: dragTargetsDescriptor.targets.map(
+                function(target) {
+                    return target.component;
+                }),
+            message: 'Dragging component'
+        });
+
+        $scope.$emit('wiresChange', {
+            diagramId: $scope.diagram.id,
+            wires: dragTargetsDescriptor.affectedWires
+        });
 
 
         dragTargetsDescriptor = null;

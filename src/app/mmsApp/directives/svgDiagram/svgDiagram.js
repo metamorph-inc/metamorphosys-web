@@ -270,6 +270,17 @@ angular.module('mms.designVisualization.svgDiagram', [
                     angular.forEach( affectedWires, function ( wire ) {
                         wiringService.adjustWireEndSegments( wire );
                     } );
+
+                    $scope.emit('componentsRotationChange', {
+                        diagramId: $scope.diagram.id,
+                        components: componentsToRotate
+                    });
+
+                    $scope.emit('wiresChange', {
+                        diagramId: $scope.diagram.id,
+                        wires: affectedWires
+                    });
+
                 };
             }
 

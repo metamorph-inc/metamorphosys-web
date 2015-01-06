@@ -201,6 +201,15 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
+        this.setPosition = function( context, nodeId, position, msg) {
+
+            nodeService.loadNode(context, nodeId)
+                .then(function(node) {
+                    node.setRegistry( 'position', position, msg);
+                });
+
+        };
+
         this.watchDiagramElements = function ( parentContext, containerId, updateListener ) {
 
             var deferred,
@@ -295,7 +304,7 @@ angular.module( 'cyphy.services' )
 
             };
 
-            onChildUpdate = function () {
+            onChildUpdate = function (e) {
 
                 var newName,
                     newDetails,
@@ -303,6 +312,8 @@ angular.module( 'cyphy.services' )
                     hadChanges,
                     child,
                     updateType;
+
+                //console.log(e, this.getId());
 
                 // BaseName never changes, does it?
 

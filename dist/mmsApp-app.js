@@ -625,14 +625,16 @@ module.exports = function(symbolManagerProvider) {
 
 // Move this to GME eventually
 
-angular.module( 'mms.designVisualization.designEditor', [] )
-    .controller( 'DesignEditorController', function(
-        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager) {
+angular.module('mms.designVisualization.designEditor', [])
+    .controller('DesignEditorController', function (
+        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager, $timeout) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
 
-            designCtx;
+            designCtx,
+
+            setupDiagramEventHandlers;
 
         $scope.diagram = null;
 
@@ -641,7 +643,34 @@ angular.module( 'mms.designVisualization.designEditor', [] )
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
 
-        $scope.diagramContainerConfig = {
+        $scope.diagramContainerConfig = {};
+
+        setupDiagramEventHandlers = function () {
+
+            $scope.$on('componentsPositionChange', function (e, data) {
+
+                var i;
+
+                i = 1;
+
+                angular.forEach(data.components, function (component) {
+
+                    $timeout(function () {
+
+                        designLayoutService.setPosition(
+                            designCtx,
+                            component.id,
+                            component.getPosition(),
+                            data.message
+                        );
+                    }, 10 * i);
+
+                    i++;
+
+                });
+
+
+            });
 
         };
 
@@ -686,13 +715,15 @@ angular.module( 'mms.designVisualization.designEditor', [] )
 
                 $log.debug('Drawing diagram:', $scope.diagram);
 
+                setupDiagramEventHandlers();
+
                 $rootScope.loading = false;
 
             });
         }
 
     })
-    .directive( 'designEditor', [
+    .directive('designEditor', [
         function () {
 
             return {
@@ -704,7 +735,7 @@ angular.module( 'mms.designVisualization.designEditor', [] )
                 templateUrl: '/mmsApp/templates/designEditor.html'
 
             };
-        }] );
+        }]);
 
 },{"./classes/RandomSymbolGenerator":7}],9:[function(require,module,exports){
 /*globals angular*/
@@ -1476,14 +1507,19 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         self.dragging = false;
 
-//        angular.forEach(dragTargetsDescriptor.targets, function(target) {
-//
-//            var position;
-//
-//            position = target.component.getPosition();
-//
-//            self.dragOperation.commit( target.component, position.x, position.y );
-//        });
+        $scope.$emit('componentsPositionChange', {
+            diagramId: $scope.diagram.id,
+            components: dragTargetsDescriptor.targets.map(
+                function(target) {
+                    return target.component;
+                }),
+            message: 'Dragging component'
+        });
+
+        $scope.$emit('wiresChange', {
+            diagramId: $scope.diagram.id,
+            wires: dragTargetsDescriptor.affectedWires
+        });
 
 
         dragTargetsDescriptor = null;
@@ -2341,6 +2377,17 @@ angular.module('mms.designVisualization.svgDiagram', [
                     angular.forEach( affectedWires, function ( wire ) {
                         wiringService.adjustWireEndSegments( wire );
                     } );
+
+                    $scope.emit('componentsRotationChange', {
+                        diagramId: $scope.diagram.id,
+                        components: componentsToRotate
+                    });
+
+                    $scope.emit('wiresChange', {
+                        diagramId: $scope.diagram.id,
+                        wires: affectedWires
+                    });
+
                 };
             }
 
