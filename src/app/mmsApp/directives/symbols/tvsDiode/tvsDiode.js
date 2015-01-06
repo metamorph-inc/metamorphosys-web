@@ -21,14 +21,14 @@ angular.module(
                 ports: {
                     C: {
                         id: 'C',
-                        wireAngle: 0,
+                        wireAngle: 180,
                         wireLeadIn: 20,
                         label: 'C',
                         x: 0,
                         y: 7.5
                     }, A: {
                         id: 'A',
-                        wireAngle: 180,
+                        wireAngle: 0,
                         wireLeadIn: 20,
                         label: 'A',
                         x: 75,
