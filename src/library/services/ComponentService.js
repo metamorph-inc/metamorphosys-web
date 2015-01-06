@@ -113,9 +113,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     componentId = childNode.getId();
                                     if ( !avmIds || avmIds.hasOwnProperty( childNode.getAttribute( 'ID' ) ) ) {
                                         data.components[ componentId ] = {
@@ -183,12 +183,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -269,7 +269,7 @@ angular.module( 'cyphy.services' )
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
                                         childId = childNode.getId();
-                                        if ( childNode.isMetaTypeOf( meta.DomainModel ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.DomainModel ) ) {
                                             data.domainModels[ childId ] = {
                                                 id: childId,
                                                 type: childNode.getAttribute( 'Type' )
@@ -280,7 +280,7 @@ angular.module( 'cyphy.services' )
                                     }
                                     componentNode.onNewChildLoaded( function ( newChild ) {
                                         childId = newChild.getId();
-                                        if ( newChild.isMetaTypeOf( meta.DomainModel ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.DomainModel ) ) {
                                             data.domainModels[ childId ] = {
                                                 id: childId,
                                                 type: newChild.getAttribute( 'Type' )
