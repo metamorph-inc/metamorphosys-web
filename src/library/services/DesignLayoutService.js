@@ -25,7 +25,7 @@ angular.module( 'cyphy.services' )
             var deferred,
                 regionId,
                 context,
-                metaNamesById,
+                meta,
 
                 connectors,
 
@@ -127,7 +127,7 @@ angular.module( 'cyphy.services' )
                 deferredParseResult = $q.defer();
                 parsePromises = [ deferredParseResult ];
 
-                baseName = metaNamesById[ node.getBaseId() ];
+                baseName = node.getMetaTypeName( meta );
 
                 if ( baseName === 'Connector' ) {
 
@@ -154,14 +154,14 @@ angular.module( 'cyphy.services' )
             };
 
             nodeService.getMetaNodes( context )
-                .then( function ( meta ) {
+                .then( function ( metaNodes ) {
 
-                    metaNamesById = {};
-
-                    angular.forEach( meta, function ( metaNode, name ) {
-                        metaNamesById[ metaNode.id ] = name;
-                    } );
-
+                    //                    metaNamesById = {};
+                    //
+                    //                    angular.forEach( meta, function ( metaNode, name ) {
+                    //                        metaNamesById[ metaNode.id ] = name;
+                    //                    } );
+                    meta = metaNodes;
                     nodeService.loadNode( context, containerId )
 
                     .then( function ( rootNode ) {
@@ -209,7 +209,7 @@ angular.module( 'cyphy.services' )
 
                 data,
 
-                metaNamesById,
+                meta,
 
                 onChildUnload,
                 onChildUpdate,
@@ -250,7 +250,7 @@ angular.module( 'cyphy.services' )
                 var baseName,
                     child;
 
-                baseName = metaNamesById[ this.getBaseId() ];
+                baseName = node.getMetaTypeName( meta );
 
                 if ( baseName ) {
 
@@ -376,7 +376,7 @@ angular.module( 'cyphy.services' )
                     baseId: node.getBaseId()
                 };
 
-                child.baseName = metaNamesById[ child.baseId ];
+                child.baseName = child.getMetaTypeName( meta );
 
                 if ( child.baseName ) {
 
@@ -422,13 +422,13 @@ angular.module( 'cyphy.services' )
             watchers[ parentContext.regionId ][ regionId ] = context;
 
             nodeService.getMetaNodes( context )
-                .then( function ( meta ) {
-
-                    metaNamesById = {};
-
-                    angular.forEach( meta, function ( metaNode, name ) {
-                        metaNamesById[ metaNode.id ] = name;
-                    } );
+                .then( function ( metaNodes ) {
+                    //                    metaNamesById = {};
+                    //
+                    //                    angular.forEach( meta, function ( metaNode, name ) {
+                    //                        metaNamesById[ metaNode.id ] = name;
+                    //                    } );
+                    meta = metaNodes;
 
                     nodeService.loadNode( context, containerId )
 
