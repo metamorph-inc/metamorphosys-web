@@ -4755,7 +4755,7 @@ angular.module( 'cyphy.components' )
 angular.module( 'cyphy.services' )
     .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
-
+        var self = this;
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
@@ -5162,6 +5162,21 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            var key,
+                newAttr,
+                hadChanges = false;
+            for ( key in keyToAttr ) {
+                if ( keyToAttr.hasOwnProperty( key ) ) {
+                    newAttr = node.getAttribute( keyToAttr[ key ] );
+                    if ( newAttr !== data[ key ] ) {
+                        data[ key ] = newAttr;
+                        hadChanges = true;
+                    }
+                }
+            }
+            return hadChanges;
+        };
     } );
 },{}],21:[function(require,module,exports){
 /*globals angular, console*/
@@ -6026,37 +6041,37 @@ angular.module( 'cyphy.services' )
                     meta = metaNodes;
                     nodeService.loadNode( context, containerId )
 
-                    .then( function ( rootNode ) {
-                        rootNode.loadChildren( context )
-                            .then( function ( childNodes ) {
+                        .then( function ( rootNode ) {
+                            rootNode.loadChildren( context )
+                                .then( function ( childNodes ) {
 
-                                var i,
-                                    childPromises;
+                                    var i,
+                                        childPromises;
 
-                                childPromises = [];
+                                    childPromises = [];
 
-                                for ( i = 0; i < childNodes.length; i += 1 ) {
-                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                }
+                                    for ( i = 0; i < childNodes.length; i += 1 ) {
+                                        childPromises.push( parseNewChild( childNodes[ i ] ) );
+                                    }
 
-                                rootNode.onNewChildLoaded( function ( newNode ) {
+                                    rootNode.onNewChildLoaded( function ( newNode ) {
 
 
-                                    parseNewChild( newNode )
-                                        .then( function ( newChild ) {
-                                            triggerUpdateListener( newChild.id, newChild,
-                                                'load' );
+                                        parseNewChild( newNode )
+                                            .then( function ( newChild ) {
+                                                triggerUpdateListener( newChild.id, newChild,
+                                                    'load' );
+                                            } );
+
+                                    } );
+
+                                    $q.all( childPromises )
+                                        .then( function () {
+                                            deferred.resolve( connectors );
                                         } );
 
                                 } );
-
-                                $q.all( childPromises )
-                                    .then( function () {
-                                        deferred.resolve( connectors );
-                                    } );
-
-                            } );
-                    } );
+                        } );
                 } );
 
 
@@ -6095,12 +6110,13 @@ angular.module( 'cyphy.services' )
             };
 
 
-            triggerUpdateListener = function ( id, data, eventType ) {
+            triggerUpdateListener = function (id, data, eventType, updateType) {
 
                 $timeout( function () {
                     updateListener( {
                         id: id,
                         type: eventType,
+                        updateType: updateType,
                         data: data
                     } );
                 } );
@@ -6162,7 +6178,8 @@ angular.module( 'cyphy.services' )
                     newDetails,
                     newPos,
                     hadChanges,
-                    child;
+                    child,
+                    updateType;
 
                 // BaseName never changes, does it?
 
@@ -6177,27 +6194,34 @@ angular.module( 'cyphy.services' )
                     if ( newName !== child.name ) {
                         child.name = newName;
                         hadChanges = true;
+
                     }
 
                     if ( newPos.x !== child.position.x || newPos.y !== child.position.y ) {
                         child.position = newPos;
+
                         hadChanges = true;
+                        updateType = 'positionChange';
                     }
 
                     if ( child.baseName === 'ConnectorComposition' ) {
 
                         newDetails = getConnectorCompositionDetails( this );
 
-                        if ( !angular.isEqual( newDetails, child.details ) ) {
+
+                        if (!angular.equals(newDetails, child.details)) {
 
                             child.details = newDetails;
                             hadChanges = true;
+
                         }
 
                     }
 
-                    if ( hadChanges ) {
-                        triggerUpdateListener( child.id, child, 'update' );
+                    if (hadChanges) {
+
+                        triggerUpdateListener(child.id, child, 'update', updateType);
+
                     }
 
 
@@ -6238,7 +6262,7 @@ angular.module( 'cyphy.services' )
                     baseId: node.getBaseId()
                 };
 
-                child.baseName = child.getMetaTypeName( meta );
+                child.baseName = node.getMetaTypeName( meta );
 
                 if ( child.baseName ) {
 
@@ -6294,38 +6318,38 @@ angular.module( 'cyphy.services' )
 
                     nodeService.loadNode( context, containerId )
 
-                    .then( function ( rootNode ) {
-                        rootNode.loadChildren( context )
-                            .then( function ( childNodes ) {
+                        .then( function ( rootNode ) {
+                            rootNode.loadChildren( context )
+                                .then( function ( childNodes ) {
 
-                                var i,
-                                    childPromises;
+                                    var i,
+                                        childPromises;
 
-                                childPromises = [];
+                                    childPromises = [];
 
-                                for ( i = 0; i < childNodes.length; i += 1 ) {
-                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                }
+                                    for ( i = 0; i < childNodes.length; i += 1 ) {
+                                        childPromises.push( parseNewChild( childNodes[ i ] ) );
+                                    }
 
-                                rootNode.onNewChildLoaded( function ( newNode ) {
+                                    rootNode.onNewChildLoaded( function ( newNode ) {
 
 
-                                    parseNewChild( newNode )
-                                        .then( function ( newChild ) {
-                                            triggerUpdateListener( newChild.id, newChild,
-                                                'load' );
+                                        parseNewChild( newNode )
+                                            .then( function ( newChild ) {
+                                                triggerUpdateListener( newChild.id, newChild,
+                                                    'load' );
+                                            } );
+
+                                    } );
+
+                                    $q.all( childPromises )
+                                        .then( function () {
+
+                                            deferred.resolve( data );
                                         } );
 
                                 } );
-
-                                $q.all( childPromises )
-                                    .then( function () {
-
-                                        deferred.resolve( data );
-                                    } );
-
-                            } );
-                    } );
+                        } );
                 } );
 
             return deferred.promise;
@@ -6359,6 +6383,7 @@ angular.module( 'cyphy.services' )
             baseCyPhyService.registerWatcher( watchers, parentContext, fn );
         };
     } );
+
 },{}],24:[function(require,module,exports){
 /*globals angular, console*/
 
@@ -8639,36 +8664,29 @@ angular.module( 'cyphy.services' )
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
                 },
                 onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        hadChanges = false;
-                    if ( newName !== data.workspaces[ id ].name ) {
-                        data.workspaces[ id ].name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.workspaces[ id ].description ) {
-                        data.workspaces[ id ].description = newDesc;
-                        hadChanges = true;
-                    }
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO'
+                    },
+                        hadChanges = self.checkForUpdates( data.workspaces[ id ], this, keyToAttr );
+
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data.workspaces[ id ]
-                            } );
+                        updateListener( {
+                            id: id,
+                            type: 'update',
+                            data: data.workspaces[ id ]
                         } );
+                        $timeout( function () {} );
                     }
                 },
                 onUnload = function ( id ) {
                     delete data.workspaces[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
+                    updateListener( {
+                        id: id,
+                        type: 'unload',
+                        data: null
                     } );
+                    $timeout( function () {} );
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -9107,6 +9125,10 @@ angular.module( 'cyphy.services' )
                 } );
 
             return deferred.promise;
+        };
+
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForUpdates( data, node, keyToAttr );
         };
 
         /**
