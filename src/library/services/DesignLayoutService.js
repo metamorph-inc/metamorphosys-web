@@ -304,7 +304,7 @@ angular.module( 'cyphy.services' )
 
             };
 
-            onChildUpdate = function (e) {
+            onChildUpdate = function () {
 
                 var newName,
                     newDetails,
@@ -341,7 +341,6 @@ angular.module( 'cyphy.services' )
                     if ( child.baseName === 'ConnectorComposition' ) {
 
                         newDetails = getConnectorCompositionDetails( this );
-
 
                         if (!angular.equals(newDetails, child.details)) {
 

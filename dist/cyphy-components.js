@@ -5491,7 +5491,7 @@ angular.module('cyphy.components')
 angular.module( 'cyphy.services' )
     .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
-
+        var self = this;
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
@@ -5898,6 +5898,21 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            var key,
+                newAttr,
+                hadChanges = false;
+            for ( key in keyToAttr ) {
+                if ( keyToAttr.hasOwnProperty( key ) ) {
+                    newAttr = node.getAttribute( keyToAttr[ key ] );
+                    if ( newAttr !== data[ key ] ) {
+                        data[ key ] = newAttr;
+                        hadChanges = true;
+                    }
+                }
+            }
+            return hadChanges;
+        };
     } );
 },{}],25:[function(require,module,exports){
 /*globals angular, console*/
@@ -6902,7 +6917,7 @@ angular.module( 'cyphy.services' )
 
             };
 
-            onChildUpdate = function (e) {
+            onChildUpdate = function () {
 
                 var newName,
                     newDetails,
@@ -6939,7 +6954,6 @@ angular.module( 'cyphy.services' )
                     if ( child.baseName === 'ConnectorComposition' ) {
 
                         newDetails = getConnectorCompositionDetails( this );
-
 
                         if (!angular.equals(newDetails, child.details)) {
 
@@ -9396,36 +9410,29 @@ angular.module( 'cyphy.services' )
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
                 },
                 onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        hadChanges = false;
-                    if ( newName !== data.workspaces[ id ].name ) {
-                        data.workspaces[ id ].name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.workspaces[ id ].description ) {
-                        data.workspaces[ id ].description = newDesc;
-                        hadChanges = true;
-                    }
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO'
+                    },
+                        hadChanges = self.checkForUpdates( data.workspaces[ id ], this, keyToAttr );
+
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data.workspaces[ id ]
-                            } );
+                        updateListener( {
+                            id: id,
+                            type: 'update',
+                            data: data.workspaces[ id ]
                         } );
+                        $timeout( function () {} );
                     }
                 },
                 onUnload = function ( id ) {
                     delete data.workspaces[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
+                    updateListener( {
+                        id: id,
+                        type: 'unload',
+                        data: null
                     } );
+                    $timeout( function () {} );
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -9864,6 +9871,10 @@ angular.module( 'cyphy.services' )
                 } );
 
             return deferred.promise;
+        };
+
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForUpdates( data, node, keyToAttr );
         };
 
         /**

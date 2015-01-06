@@ -327,36 +327,29 @@ angular.module( 'cyphy.services' )
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
                 },
                 onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        hadChanges = false;
-                    if ( newName !== data.workspaces[ id ].name ) {
-                        data.workspaces[ id ].name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.workspaces[ id ].description ) {
-                        data.workspaces[ id ].description = newDesc;
-                        hadChanges = true;
-                    }
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO'
+                    },
+                        hadChanges = self.checkForUpdates( data.workspaces[ id ], this, keyToAttr );
+
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data.workspaces[ id ]
-                            } );
+                        updateListener( {
+                            id: id,
+                            type: 'update',
+                            data: data.workspaces[ id ]
                         } );
+                        $timeout( function () {} );
                     }
                 },
                 onUnload = function ( id ) {
                     delete data.workspaces[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
+                    updateListener( {
+                        id: id,
+                        type: 'unload',
+                        data: null
                     } );
+                    $timeout( function () {} );
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -795,6 +788,10 @@ angular.module( 'cyphy.services' )
                 } );
 
             return deferred.promise;
+        };
+
+        this.checkForUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForUpdates( data, node, keyToAttr );
         };
 
         /**
