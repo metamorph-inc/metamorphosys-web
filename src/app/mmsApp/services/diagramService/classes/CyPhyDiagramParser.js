@@ -284,7 +284,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                             showPortLabels: true
                         }, portStuff.portDescriptors,
                         {
-                            minWidth: 200
+                            minWidth: 200,
+                            portWireLeadInIncrement: 8
                         });
 
                     newDiagramComponent = new DiagramComponent({
@@ -323,7 +324,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                         showPortLabels: true
                     }, portStuff.portDescriptors,
                     {
-                        minWidth: 200
+                        minWidth: 200,
+                        portWireLeadInIncrement: 8
                     });
 
                 newDiagramComponent = new DiagramComponent({

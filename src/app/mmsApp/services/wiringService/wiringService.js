@@ -36,7 +36,9 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
         this.routeWire = function ( wire, routerType ) {
 
-            var router, endPositions;
+            var router,
+                endPositions,
+                points;
 
             routerType = routerType || 'ElbowRouter';
 
@@ -48,8 +50,20 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                 if (endPositions) {
 
-                    wire.segments = router.makeSegments(
-                        [endPositions.end1, endPositions.end2]);
+                    points = [ endPositions.end1 ];
+
+                    if (endPositions.end1.leadInPosition) {
+                        console.log(endPositions.end1.leadInPosition);
+                        points.push(endPositions.end1.leadInPosition);
+                    }
+
+                    if (endPositions.end2.leadInPosition) {
+                        points.push(endPositions.end2.leadInPosition);
+                    }
+
+                    points.push(endPositions.end2);
+
+                    wire.segments = router.makeSegments( points );
 
                 }
 

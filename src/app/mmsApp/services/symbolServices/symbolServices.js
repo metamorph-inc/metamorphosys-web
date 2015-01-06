@@ -21,7 +21,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             increment,
 
             i,
-            aPort;
+            aPort,
+
+            numberOfPorts,
+            wireLeadIn;
+
+        numberOfPorts = somePorts.length;
 
         offset = parameters.portWireLength + parameters.portSpacing;
 
@@ -46,9 +51,17 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         portHorizontalTranslation = parameters.portWireLength + parameters.portLabelHorizontalPadding;
 
-        for (i=0; i < somePorts.length; i++) {
+        wireLeadIn = 0;
+
+        for (i=0; i < numberOfPorts; i++) {
 
             aPort = somePorts[i];
+
+            if (i < numberOfPorts) {
+                wireLeadIn += parameters.portWireLeadInIncrement;
+            } else {
+                wireLeadIn -= parameters.portWireLeadInIncrement;
+            }
 
             switch (side) {
 
@@ -111,6 +124,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     break;
 
             }
+
+            aPort.wireLeadIn = wireLeadIn;
 
         }
 
@@ -183,6 +198,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             cssClass;
 
         parameters = angular.extend({
+
             portWireLength: 20,
             portSpacing: 20,
             topPortPadding: 25,
@@ -191,7 +207,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             portLabelVerticalPadding: 3,
             minWidth: 140,
             minHeight: 80,
-            justifyPorts: false
+            justifyPorts: false,
+            portWireLeadInIncrement: 0
+
         }, givenParameters || {});
 
         if (angular.isObject(descriptor) && type) {

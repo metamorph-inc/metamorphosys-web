@@ -3021,32 +3021,67 @@ angular.module(
 
 'use strict';
 
-var glMatrix = require( 'glMatrix' );
+var glMatrix = require('glMatrix');
 
-var ComponentPort = function ( descriptor ) {
+var ComponentPort = function (descriptor) {
 
-    angular.extend( this, descriptor );
+    angular.extend(this, descriptor);
 
 };
 
 ComponentPort.prototype.getGridPosition = function () {
 
     var position,
-        positionVector;
+        positionVector,
 
-    if ( angular.isObject( this.portSymbol ) && angular.isObject( this.parentComponent ) ) {
+        wireAngle,
+        leadInTransformation,
+        leadInVector;
+
+    if (angular.isObject(this.portSymbol) && angular.isObject(this.parentComponent)) {
 
         positionVector = glMatrix.vec2.create();
-        glMatrix.vec2.set( positionVector, this.portSymbol.x, this.portSymbol.y );
+        glMatrix.vec2.set(positionVector, this.portSymbol.x, this.portSymbol.y);
 
-        glMatrix.vec2.transformMat3( positionVector, positionVector, this.parentComponent.getTransformationMatrix() );
+        glMatrix.vec2.transformMat3(positionVector, positionVector, this.parentComponent.getTransformationMatrix());
 
         position = {
 
-            x: positionVector[ 0 ],
-            y: positionVector[ 1 ]
+            x: positionVector[0],
+            y: positionVector[1]
 
         };
+
+        if (this.portSymbol.wireLeadIn) {
+
+            leadInVector = glMatrix.vec2.create();
+            glMatrix.vec2.set(leadInVector, this.portSymbol.wireLeadIn, 0);
+
+            leadInTransformation = glMatrix.mat2.create();
+
+            if (isNaN(this.portSymbol.wireAngleRad)) {
+
+                this.portSymbol.wireAngle = this.portSymbol.wireAngle || 0;
+                this.portSymbol.wireAngleRad = this.portSymbol.wireAngle / 180 * Math.PI;
+
+            }
+
+            wireAngle = this.portSymbol.wireAngleRad;
+
+
+            glMatrix.mat2.rotate(leadInTransformation, leadInTransformation, wireAngle);
+
+            glMatrix.vec2.transformMat2(leadInVector, leadInVector, leadInTransformation);
+
+            glMatrix.vec2.add(leadInVector, leadInVector, positionVector);
+
+            position.leadInPosition = {
+
+                x: leadInVector[0],
+                y: leadInVector[1]
+
+            };
+        }
 
     }
 
@@ -3055,6 +3090,7 @@ ComponentPort.prototype.getGridPosition = function () {
 };
 
 module.exports = ComponentPort;
+
 },{"glMatrix":3}],33:[function(require,module,exports){
 /*globals angular*/
 
@@ -3342,7 +3378,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                             showPortLabels: true
                         }, portStuff.portDescriptors,
                         {
-                            minWidth: 200
+                            minWidth: 200,
+                            portWireLeadInIncrement: 8
                         });
 
                     newDiagramComponent = new DiagramComponent({
@@ -3381,7 +3418,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                         showPortLabels: true
                     }, portStuff.portDescriptors,
                     {
-                        minWidth: 200
+                        minWidth: 200,
+                        portWireLeadInIncrement: 8
                     });
 
                 newDiagramComponent = new DiagramComponent({
@@ -4528,7 +4566,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             increment,
 
             i,
-            aPort;
+            aPort,
+
+            numberOfPorts,
+            wireLeadIn;
+
+        numberOfPorts = somePorts.length;
 
         offset = parameters.portWireLength + parameters.portSpacing;
 
@@ -4553,9 +4596,17 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         portHorizontalTranslation = parameters.portWireLength + parameters.portLabelHorizontalPadding;
 
-        for (i=0; i < somePorts.length; i++) {
+        wireLeadIn = 0;
+
+        for (i=0; i < numberOfPorts; i++) {
 
             aPort = somePorts[i];
+
+            if (i < numberOfPorts) {
+                wireLeadIn += parameters.portWireLeadInIncrement;
+            } else {
+                wireLeadIn -= parameters.portWireLeadInIncrement;
+            }
 
             switch (side) {
 
@@ -4618,6 +4669,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     break;
 
             }
+
+            aPort.wireLeadIn = wireLeadIn;
 
         }
 
@@ -4690,6 +4743,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             cssClass;
 
         parameters = angular.extend({
+
             portWireLength: 20,
             portSpacing: 20,
             topPortPadding: 25,
@@ -4698,7 +4752,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             portLabelVerticalPadding: 3,
             minWidth: 140,
             minHeight: 80,
-            justifyPorts: false
+            justifyPorts: false,
+            portWireLeadInIncrement: 0
+
         }, givenParameters || {});
 
         if (angular.isObject(descriptor) && type) {
@@ -4941,7 +4997,9 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
         this.routeWire = function ( wire, routerType ) {
 
-            var router, endPositions;
+            var router,
+                endPositions,
+                points;
 
             routerType = routerType || 'ElbowRouter';
 
@@ -4953,8 +5011,20 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                 if (endPositions) {
 
-                    wire.segments = router.makeSegments(
-                        [endPositions.end1, endPositions.end2]);
+                    points = [ endPositions.end1 ];
+
+                    if (endPositions.end1.leadInPosition) {
+                        console.log(endPositions.end1.leadInPosition);
+                        points.push(endPositions.end1.leadInPosition);
+                    }
+
+                    if (endPositions.end2.leadInPosition) {
+                        points.push(endPositions.end2.leadInPosition);
+                    }
+
+                    points.push(endPositions.end2);
+
+                    wire.segments = router.makeSegments( points );
 
                 }
 
