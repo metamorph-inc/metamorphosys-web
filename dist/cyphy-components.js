@@ -4834,7 +4834,7 @@ angular.module( 'cyphy.services' )
         this.setNodeAttributes = function ( context, id, attrs ) {
             var deferred = $q.defer();
             if ( Object.keys( attrs )
-                .length === 0 ) {
+                    .length === 0 ) {
                 console.log( 'no attribute to update' );
                 deferred.resolve();
             }
@@ -4946,12 +4946,32 @@ angular.module( 'cyphy.services' )
                     } );
                 },
                 onConnectorUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        hadChanges = false;
-                    if ( newName !== data.connectors[ id ].name ) {
-                        data.connectors[ id ].name = newName;
+
+                    var connector,
+
+                        newName,
+                        newPos,
+
+                        hadChanges;
+
+                    hadChanges = false;
+
+                    connector = data.connectors[ id ];
+
+                    newName = this.getAttribute( 'name' );
+                    newPos = this.getRegistry('position');
+
+
+                    if ( newName !== connector.name ) {
+                        connector.name = newName;
                         hadChanges = true;
                     }
+
+                    if ( newPos.x !== connector.position.x || newPos.y !== connector.position.y) {
+                        connector.position = newPos;
+                        hadChanges = true;
+                    }
+
                     if ( hadChanges ) {
                         $timeout( function () {
                             updateListener( {
@@ -5011,7 +5031,7 @@ angular.module( 'cyphy.services' )
                 },
                 isPropertyDerived = function ( node ) {
                     return node.getCollectionPaths( 'dst' )
-                        .length > 0;
+                            .length > 0;
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -5024,12 +5044,14 @@ angular.module( 'cyphy.services' )
                                 .then( function ( children ) {
                                     var i,
                                         childId,
+                                        metaName,
                                         queueList = [],
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
                                         childId = childNode.getId();
-                                        if ( childNode.isMetaTypeOf( meta.Property ) ) {
+                                        metaName = childNode.getMetaTypeName( meta );
+                                        if ( metaName === 'Property' ) {
                                             data.properties[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
@@ -5043,16 +5065,17 @@ angular.module( 'cyphy.services' )
                                             };
                                             childNode.onUpdate( onPropertyUpdate );
                                             childNode.onUnload( onPropertyUnload );
-                                        } else if ( childNode.isMetaTypeOf( meta.Connector ) ) {
+                                        } else if ( metaName === 'Connector' ) {
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
+                                                position: childNode.getRegistry('position'),
                                                 domainPorts: {}
                                             };
                                             childNode.onUpdate( onConnectorUpdate );
                                             childNode.onUnload( onConnectorUnload );
                                             ///queueList.push(childNode.loadChildren(childNode));
-                                        } else if ( childNode.isMetaTypeOf( meta.DomainPort ) ) {
+                                        } else if ( metaName === 'DomainPort' ) {
                                             data.ports[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
@@ -5066,15 +5089,16 @@ angular.module( 'cyphy.services' )
                                     }
                                     modelNode.onNewChildLoaded( function ( newChild ) {
                                         childId = newChild.getId();
-                                        if ( newChild.isMetaTypeOf( meta.Property ) ) {
+                                        metaName = childNode.getMetaTypeName( meta );
+                                        if ( metaName === 'Property' ) {
                                             data.properties[ childId ] = {
                                                 id: childId,
                                                 name: newChild.getAttribute( 'name' ),
                                                 dataType: newChild.getAttribute( 'DataType' ),
                                                 valueType: newChild.getAttribute( 'ValueType' ),
-                                                value:  childNode.getAttribute( 'Value' ),
-                                                unit: childNode.getAttribute( 'Unit' ),
-                                                isProminent: childNode.getAttribute( 'IsProminent' ),
+                                                value:  newChild.getAttribute( 'Value' ),
+                                                unit: newChild.getAttribute( 'Unit' ),
+                                                isProminent: newChild.getAttribute( 'IsProminent' ),
 
                                                 derived: isPropertyDerived( newChild )
                                             };
@@ -5087,10 +5111,11 @@ angular.module( 'cyphy.services' )
                                                     data: data
                                                 } );
                                             } );
-                                        } else if ( newChild.isMetaTypeOf( meta.Connector ) ) {
+                                        } else if ( metaName === 'Connector' ) {
                                             data.connectors[ childId ] = {
                                                 id: childId,
                                                 name: newChild.getAttribute( 'name' ),
+                                                position: newChild.getRegistry('position'),
                                                 domainPorts: {}
                                             };
                                             newChild.onUpdate( onConnectorUpdate );
@@ -5103,7 +5128,7 @@ angular.module( 'cyphy.services' )
                                                 } );
                                             } );
                                             ///queueList.push(childNode.loadChildren(childNode));
-                                        } else if ( newChild.isMetaTypeOf( meta.DomainPort ) ) {
+                                        } else if ( metaName === 'DomainPort' ) {
                                             data.ports[ childId ] = {
                                                 id: childId,
                                                 name: childNode.getAttribute( 'name' ),
@@ -5138,6 +5163,7 @@ angular.module( 'cyphy.services' )
         };
 
     } );
+
 },{}],21:[function(require,module,exports){
 /*globals angular, console*/
 
@@ -5254,9 +5280,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     componentId = childNode.getId();
                                     if ( !avmIds || avmIds.hasOwnProperty( childNode.getAttribute( 'ID' ) ) ) {
                                         data.components[ componentId ] = {
@@ -5324,12 +5350,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -5410,7 +5436,7 @@ angular.module( 'cyphy.services' )
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
                                         childId = childNode.getId();
-                                        if ( childNode.isMetaTypeOf( meta.DomainModel ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.DomainModel ) ) {
                                             data.domainModels[ childId ] = {
                                                 id: childId,
                                                 type: childNode.getAttribute( 'Type' )
@@ -5421,7 +5447,7 @@ angular.module( 'cyphy.services' )
                                     }
                                     componentNode.onNewChildLoaded( function ( newChild ) {
                                         childId = newChild.getId();
-                                        if ( newChild.isMetaTypeOf( meta.DomainModel ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.DomainModel ) ) {
                                             data.domainModels[ childId ] = {
                                                 id: childId,
                                                 type: newChild.getAttribute( 'Type' )
@@ -5841,130 +5867,494 @@ angular.module( 'cyphy.services' )
  * @author pmeijer / https://github.com/pmeijer
  */
 
+'use strict';
 
-angular.module( 'cyphy.services' )
-    .service( 'designLayoutService', function ( $q, $timeout, nodeService, baseCyPhyService) {
-        'use strict';
-        var watchers = {};
+angular.module('cyphy.services')
+    .service('designLayoutService', function ($q, $timeout, nodeService, baseCyPhyService, $log) {
 
-        this.watchChildrenPositions = function ( parentContext, containerId, updateListener ) {
-            var deferred = $q.defer(),
-                regionId = parentContext.regionId + '_watchChildrenPositions_' + containerId,
-                data = {
-                    regionId: regionId,
-                    children: {}
-                },
-                context = {
-                    db: parentContext.db,
-                    regionId: regionId
+        var self = this,
+            watchers,
+            typesWithConnectordsInside;
+
+        typesWithConnectordsInside = [
+            'AVMComponentModel',
+            'Container'
+        ];
+
+        watchers = {};
+
+        this.watchConnectorsInside = function (parentContext, containerId, updateListener) {
+
+            var deferred,
+                regionId,
+                context,
+                metaNamesById,
+
+                connectors,
+
+                triggerUpdateListener,
+
+                findChildForNode,
+                onChildUpdate,
+                onChildUnload,
+                parseNewChild;
+
+
+            deferred = $q.defer();
+            regionId = parentContext.regionId + '_watchConnectorsInside_' + containerId;
+            context = {
+                db: parentContext.db,
+                regionId: regionId
+            };
+
+            connectors = {};
+
+
+            triggerUpdateListener = function (id, data, eventType) {
+
+                $timeout(function () {
+                    updateListener({
+                        id: id,
+                        type: eventType,
+                        data: data
+                    });
+                });
+
+            };
+
+            findChildForNode = function (node) {
+
+                return connectors[ node.getId() ];
+
+            };
+
+            onChildUpdate = function () {
+
+                var newName,
+                    newPos,
+                    hadChanges,
+                    child;
+
+                // BaseName never changes, does it?
+
+                child = findChildForNode(this);
+
+                if (child) {
+
+                    newName = this.getAttribute('name');
+                    newPos = this.getRegistry('position');
+                    hadChanges = false;
+
+                    if (newName !== child.name) {
+                        child.name = newName;
+                        hadChanges = true;
+                    }
+
+                    if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
+                        child.position = newPos;
+                        hadChanges = true;
+                    }
+
+                    if (hadChanges) {
+                        triggerUpdateListener(child.id, child, 'update');
+                    }
+
+
+                }
+
+            };
+
+            onChildUnload = function (id) {
+
+                var child;
+
+                child = findChildForNode(this);
+
+                if (child) {
+                    delete connectors[ id ];
+                }
+
+                triggerUpdateListener(id, null, 'unload');
+
+            };
+
+
+            parseNewChild = function (node) {
+
+                var deferredParseResult,
+                    parsePromises,
+
+                    baseName,
+                    connector;
+
+                deferredParseResult = $q.defer();
+                parsePromises = [ deferredParseResult ];
+
+                baseName = metaNamesById[ node.getBaseId() ];
+
+                if (baseName === 'Connector') {
+
+                    connector = {
+                        id: node.getId(),
+                        name: node.getAttribute('name'),
+                        position: node.getRegistry('position'),
+                        baseId: node.getBaseId()
+                    };
+
+                    connectors[ connector.id ] = connector;
+
+                    node.onUpdate(onChildUpdate);
+                    node.onUnload(onChildUnload);
+
+                }
+
+
+                deferredParseResult.resolve(connector);
+
+
+                return $q.all(parsePromises);
+
+            };
+
+            nodeService.getMetaNodes(context)
+                .then(function (meta) {
+
+                    metaNamesById = {};
+
+                    angular.forEach(meta, function (metaNode, name) {
+                        metaNamesById[metaNode.id] = name;
+                    });
+
+                    nodeService.loadNode(context, containerId)
+
+                        .then(function (rootNode) {
+                            rootNode.loadChildren(context)
+                                .then(function (childNodes) {
+
+                                    var i,
+                                        childPromises;
+
+                                    childPromises = [];
+
+                                    for (i = 0; i < childNodes.length; i += 1) {
+                                        childPromises.push(parseNewChild(childNodes[i]));
+                                    }
+
+                                    rootNode.onNewChildLoaded(function (newNode) {
+
+
+                                        parseNewChild(newNode).then(function (newChild) {
+                                            triggerUpdateListener(newChild.id, newChild, 'load');
+                                        });
+
+                                    });
+
+                                    $q.all(childPromises).then(function () {
+                                        deferred.resolve(connectors);
+                                    });
+
+                                });
+                        });
+                });
+
+
+            return deferred.promise;
+        };
+
+        this.watchDiagramElements = function (parentContext, containerId, updateListener) {
+
+            var deferred,
+                regionId,
+                context,
+
+                data,
+
+                metaNamesById,
+
+                onChildUnload,
+                onChildUpdate,
+
+                getConnectorCompositionDetails,
+                parseNewChild,
+                findChildForNode,
+
+                triggerUpdateListener;
+
+            deferred = $q.defer();
+            regionId = parentContext.regionId + '_watchDiagramElements_' + containerId;
+            context = {
+                db: parentContext.db,
+                regionId: regionId
+            };
+
+            data = {
+                regionId: regionId,
+                elements: {}
+            };
+
+
+            triggerUpdateListener = function (id, data, eventType) {
+
+                $timeout(function () {
+                    updateListener({
+                        id: id,
+                        type: eventType,
+                        data: data
+                    });
+                });
+
+            };
+
+            findChildForNode = function (node) {
+
+                var baseName,
+                    child;
+
+                baseName = metaNamesById[ this.getBaseId() ];
+
+                if (baseName) {
+
+                    data.elements[ baseName ] = data.elements[ baseName ] || {};
+                    child = data.elements[ baseName ][ node.getId() ];
+                }
+
+                return child;
+
+            };
+
+            getConnectorCompositionDetails = function(connectorCompositionNode) {
+
+                var details,
+                    sourcePtr,
+                    destinationPtr,
+
+                    sourceId,
+                    destinationId,
+                    wireSegments;
+
+                sourcePtr = connectorCompositionNode.getPointer('src');
+                destinationPtr = connectorCompositionNode.getPointer('dst');
+                wireSegments = connectorCompositionNode.getRegistry('wireSegments');
+
+                if (angular.isObject(sourcePtr)) {
+                    sourceId = sourcePtr.to;
+                }
+
+                if (angular.isObject(destinationPtr)) {
+                    destinationId = destinationPtr.to;
+                }
+
+                details = {
+                    sourceId: sourceId,
+                    destinationId: destinationId,
+                    wireSegments: wireSegments
                 };
+
+                return details;
+
+            };
+
+            onChildUpdate = function () {
+
+                var newName,
+                    newDetails,
+                    newPos,
+                    hadChanges,
+                    child;
+
+                // BaseName never changes, does it?
+
+                child = findChildForNode(this);
+
+                if (child) {
+
+                    newName = this.getAttribute('name');
+                    newPos = this.getRegistry('position');
+                    hadChanges = false;
+
+                    if (newName !== child.name) {
+                        child.name = newName;
+                        hadChanges = true;
+                    }
+
+                    if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
+                        child.position = newPos;
+                        hadChanges = true;
+                    }
+
+                    if (child.baseName === 'ConnectorComposition') {
+
+                        newDetails = getConnectorCompositionDetails(this);
+
+                        if (!angular.isEqual(newDetails, child.details)) {
+
+                            child.details = newDetails;
+                            hadChanges = true;
+                        }
+
+                    }
+
+                    if (hadChanges) {
+                        triggerUpdateListener(child.id, child, 'update');
+                    }
+
+
+                }
+
+            };
+
+            onChildUnload = function (id) {
+
+                var child;
+
+                child = findChildForNode(this);
+
+                if (child) {
+                    delete data.elements[ child.baseName][ id ];
+                }
+
+                triggerUpdateListener(id, null, 'unload');
+
+            };
+
+            parseNewChild = function (node) {
+
+                var deferredParseResult,
+                    parsePromises,
+
+                    getInterfacesPromise,
+
+                    child;
+
+                deferredParseResult = $q.defer();
+                parsePromises = [ deferredParseResult ];
+
+                child = {
+                    id: node.getId(),
+                    name: node.getAttribute('name'),
+                    position: node.getRegistry('position'),
+                    baseId: node.getBaseId()
+                };
+
+                child.baseName = metaNamesById[ child.baseId ];
+
+                if (child.baseName) {
+
+                    data.elements[ child.baseName ] = data.elements[ child.baseName ] || {};
+                    data.elements[ child.baseName ][ child.id ] = child;
+
+                }
+
+                node.onUpdate(onChildUpdate);
+                node.onUnload(onChildUnload);
+
+                deferredParseResult.resolve(child);
+
+                // Getting connectors from inside where needed
+
+                if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
+
+                    getInterfacesPromise = self.watchInterfaces(context, child.id, function (interfaceUpdateData) {
+                        //TODO: finish this
+
+                        $log.warn('Connector update is not handled for this', interfaceUpdateData);
+
+                    });
+
+                    getInterfacesPromise.then(function (interfaces) {
+                        child.interfaces = interfaces;
+                    });
+
+                    parsePromises.push(getInterfacesPromise);
+                }
+
+                if (child.baseName === 'ConnectorComposition') {
+
+                    child.details = getConnectorCompositionDetails(node);
+                }
+
+
+                return $q.all(parsePromises);
+
+            };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
             watchers[ parentContext.regionId ][ regionId ] = context;
 
-            nodeService.getMetaNodes( context )
-                .then( function ( /*meta*/ ) {
-                    nodeService.loadNode( context, containerId )
-                        .then( function ( rootNode ) {
-                            rootNode.loadChildren( context )
-                                .then( function ( childNodes ) {
+            nodeService.getMetaNodes(context)
+                .then(function (meta) {
+
+                    metaNamesById = {};
+
+                    angular.forEach(meta, function (metaNode, name) {
+                        metaNamesById[metaNode.id] = name;
+                    });
+
+                    nodeService.loadNode(context, containerId)
+
+                        .then(function (rootNode) {
+                            rootNode.loadChildren(context)
+                                .then(function (childNodes) {
+
                                     var i,
-                                        childId,
-                                        onUpdate = function ( id ) {
-                                            var newName = this.getAttribute( 'name' ),
-                                                NewPos = this.getRegistry( 'position' ),
-                                                hadChanges = false;
+                                        childPromises;
 
-                                            if ( newName !== data.children[ id ].name ) {
-                                                data.children[ id ].name = newName;
-                                                hadChanges = true;
-                                            }
-//                                            if ( NewPos !== data.children[ id ].position ) {
-                                                data.children[ id ].position = NewPos;
-                                                hadChanges = true;
-                                            //}
+                                    childPromises = [];
 
-                                            if ( hadChanges ) {
-                                                $timeout( function () {
-                                                    updateListener( {
-                                                        id: id,
-                                                        type: 'update',
-                                                        data: data.children[ id ]
-                                                    } );
-                                                } );
-                                            }
-                                        },
-                                        onUnload = function ( id ) {
-                                            if ( data.children[ id ] ) {
-                                                delete data.children[ id ];
-                                            }
-                                            $timeout( function () {
-                                                updateListener( {
-                                                    id: id,
-                                                    type: 'unload',
-                                                    data: null
-                                                } );
-                                            } );
-                                        };
-
-                                    for ( i = 0; i < childNodes.length; i += 1 ) {
-                                        childId = childNodes[ i ].getId();
-                                        data.children[ childId ] = {
-                                            id: childId,
-                                            name: childNodes[ i ].getAttribute( 'name' ),
-                                            position: childNodes[ i ].getRegistry( 'position' )
-                                        };
-                                        childNodes[ i ].onUpdate( onUpdate );
-                                        childNodes[ i ].onUnload( onUnload );
+                                    for (i = 0; i < childNodes.length; i += 1) {
+                                        childPromises.push(parseNewChild(childNodes[i]));
                                     }
 
-                                    rootNode.onNewChildLoaded( function ( newNode ) {
-                                        childId = newNode.getId();
-                                        data.children[ childId ] = {
-                                            id: childId,
-                                            name: newNode.getAttribute( 'name' ),
-                                            position: newNode.getRegistry( 'position' )
-                                        };
-                                        newNode.onUpdate( onUpdate );
-                                        newNode.onUnload( onUnload );
-                                        $timeout( function () {
-                                            updateListener( {
-                                                id: childId,
-                                                type: 'load',
-                                                data: data.children[ childId ]
-                                            } );
-                                        } );
-                                    } );
+                                    rootNode.onNewChildLoaded(function (newNode) {
 
-                                    deferred.resolve( data );
-                                } );
-                        } );
-                } );
+
+                                        parseNewChild(newNode).then(function (newChild) {
+                                            triggerUpdateListener(newChild.id, newChild, 'load');
+                                        });
+
+                                    });
+
+                                    $q.all(childPromises).then(function () {
+
+                                        deferred.resolve(data);
+                                    });
+
+                                });
+                        });
+                });
 
             return deferred.promise;
         };
 
         /**
+         * See baseCyPhyService.watchInterfaces.
+         */
+        this.watchInterfaces = function (parentContext, id, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
+        };
+
+        /**
          * See baseCyPhyService.cleanUpAllRegions.
          */
-        this.cleanUpAllRegions = function ( parentContext ) {
-            baseCyPhyService.cleanUpAllRegions( watchers, parentContext );
+        this.cleanUpAllRegions = function (parentContext) {
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
          * See baseCyPhyService.cleanUpRegion.
          */
-        this.cleanUpRegion = function ( parentContext, regionId ) {
-            baseCyPhyService.cleanUpRegion( watchers, parentContext, regionId );
+        this.cleanUpRegion = function (parentContext, regionId) {
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
          * See baseCyPhyService.registerWatcher.
          */
-        this.registerWatcher = function ( parentContext, fn ) {
-            baseCyPhyService.registerWatcher( watchers, parentContext, fn );
+        this.registerWatcher = function (parentContext, fn) {
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
-    } );
+    });
+
 },{}],24:[function(require,module,exports){
 /*globals angular, console*/
 
@@ -6264,9 +6654,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                     designId = childNode.getId();
                                     data.designs[ designId ] = {
                                         id: designId,
@@ -6279,9 +6669,9 @@ angular.module( 'cyphy.services' )
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     watchFromFolderRec( newChild, meta );
-                                } else if ( newChild.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.Container ) ) {
                                     designId = newChild.getId();
                                     data.designs[ designId ] = {
                                         id: designId,
@@ -6325,12 +6715,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -6410,13 +6800,13 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.Result ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.Result ) ) {
                                     data.counters.results += 1;
                                     childNode.onUnload( resultOnUnload );
                                 }
                             }
                             cfgNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.Result ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.Result ) ) {
                                     data.counters.results += 1;
                                     $timeout( function () {
                                         updateListener( {
@@ -6463,12 +6853,12 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                     queueList.push( watchConfiguration( childNode, meta ) );
                                 }
                             }
                             setNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                     watchConfiguration( newChild, meta, true );
                                 }
                             } );
@@ -6498,12 +6888,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             queueList.push( watchConfigurationSet( childNode, meta ) );
                                         }
                                     }
                                     designNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             watchConfigurationSet( newChild, meta, true );
                                         }
                                     } );
@@ -6584,9 +6974,9 @@ angular.module( 'cyphy.services' )
 
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                     queueList.push( watchFromContainerRec( childNode, container, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     component = getComponentInfo( childNode, container.id );
                                     container.components[ childNode.getId() ] = component;
                                     data.components[ childNode.getId() ] = component;
@@ -6641,10 +7031,10 @@ angular.module( 'cyphy.services' )
                                     data.containers[ rootContainer.id ] = rootContainer;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                             queueList.push( watchFromContainerRec( childNode,
                                                 rootContainer, meta ) );
-                                        } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                        } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                             component = getComponentInfo( childNode, rootContainer.id );
                                             rootContainer.components[ childNode.getId() ] = component;
                                             data.components[ childNode.getId() ] = component;
@@ -6730,7 +7120,7 @@ angular.module( 'cyphy.services' )
                                             } );
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             childId = childNodes[ i ].getId();
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
@@ -6743,7 +7133,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     designNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.DesertConfigurationSet ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.DesertConfigurationSet ) ) {
                                             childId = newNode.getId();
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
@@ -6837,7 +7227,7 @@ angular.module( 'cyphy.services' )
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
                                         childId = childNodes[ i ].getId();
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                             data.configurations[ childId ] = {
                                                 id: childId,
                                                 name: childNodes[ i ].getAttribute( 'name' ),
@@ -6850,7 +7240,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     cfgSetNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.DesertConfiguration ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.DesertConfiguration ) ) {
                                             childId = newNode.getId();
                                             data.configurations[ childId ] = {
                                                 id: childId,
@@ -6915,7 +7305,7 @@ angular.module( 'cyphy.services' )
                                         };
                                     for ( i = 0; i < childNodes.length; i += 1 ) {
                                         childId = childNodes[ i ].getId();
-                                        if ( childNodes[ i ].isMetaTypeOf( meta.Result ) ) {
+                                        if ( childNodes[ i ].isMetaTypeOf( meta.byName.Result ) ) {
                                             configuration.results[ childId ] = {
                                                 id: childId
                                                 //name: childNodes[i].getAttribute('name'),
@@ -6927,7 +7317,7 @@ angular.module( 'cyphy.services' )
                                     }
 
                                     cfgNode.onNewChildLoaded( function ( newNode ) {
-                                        if ( newNode.isMetaTypeOf( meta.Result ) ) {
+                                        if ( newNode.isMetaTypeOf( meta.byName.Result ) ) {
                                             childId = newNode.getId();
                                             $timeout( function () {
                                                 configuration.results[ childId ] = {
@@ -7728,9 +8118,9 @@ angular.module( 'cyphy.services' )
                                 childNode;
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = childNode.getId();
                                     data.testBenches[ testBenchId ] = {
                                         id: testBenchId,
@@ -7746,9 +8136,9 @@ angular.module( 'cyphy.services' )
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     watchFromFolderRec( newChild, meta );
-                                } else if ( newChild.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = newChild.getId();
                                     data.testBenches[ testBenchId ] = {
                                         id: testBenchId,
@@ -7795,12 +8185,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             watchFromFolderRec( newChild, meta );
                                         }
                                     } );
@@ -7860,7 +8250,7 @@ angular.module( 'cyphy.services' )
                                 .then( function ( children ) {
                                     var i;
                                     for ( i = 0; i < children.length; i += 1 ) {
-                                        if ( children[ i ].isMetaTypeOf( meta.Container ) ) {
+                                        if ( children[ i ].isMetaTypeOf( meta.byName.Container ) ) {
                                             data.containerIds.push( children[ i ].getId() );
                                             children[ i ].onUnload( onUnload );
                                         }
@@ -7940,7 +8330,7 @@ angular.module( 'cyphy.services' )
             nodeService.getMetaNodes( context )
                 .then( function ( metaNodes ) {
                     meta = metaNodes;
-                    return nodeService.createNode( context, '', meta.WorkSpace,
+                    return nodeService.createNode( context, '', meta.byName.WorkSpace,
                         '[WebCyPhy] - WorkspaceService.createWorkspace' );
                 } )
                 .then( function ( wsNode ) {
@@ -7949,17 +8339,17 @@ angular.module( 'cyphy.services' )
                         atmFolderId,
                         createFolderNodes = function () {
                             var parentId = wsNode.getId(),
-                                baseId = meta.ACMFolder.getId();
+                                baseId = meta.byName.ACMFolder.getId();
                             nodeService.createNode( context, parentId, baseId, '[WebCyPhy] - create ACMFolder' )
                                 .then( function ( acmNode ) {
                                     acmFolderId = acmNode.getId();
-                                    baseId = meta.ADMFolder.getId();
+                                    baseId = meta.byName.ADMFolder.getId();
                                     return nodeService.createNode( context, parentId, baseId,
                                         '[WebCyPhy] - create ADMFolder' );
                                 } )
                                 .then( function ( admNode ) {
                                     admFolderId = admNode.getId();
-                                    baseId = meta.ATMFolder.getId();
+                                    baseId = meta.byName.ATMFolder.getId();
                                     return nodeService.createNode( context, parentId, baseId,
                                         '[WebCyPhy] - create ATMFolder' );
                                 } )
@@ -8290,7 +8680,7 @@ angular.module( 'cyphy.services' )
                                         wsId;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.WorkSpace ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.WorkSpace ) ) {
                                             wsId = childNode.getId();
                                             data.workspaces[ wsId ] = {
                                                 id: wsId,
@@ -8302,7 +8692,7 @@ angular.module( 'cyphy.services' )
                                         }
                                     }
                                     rootNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.WorkSpace ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.WorkSpace ) ) {
                                             wsId = newChild.getId();
                                             data.workspaces[ wsId ] = {
                                                 id: wsId,
@@ -8365,16 +8755,16 @@ angular.module( 'cyphy.services' )
                                 };
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     data.count += 1;
                                     childNode.onUnload( onUnload );
                                 }
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                     watchFromFolderRec( newChild, meta )
                                         .then( function () {
                                             $timeout( function () {
@@ -8385,7 +8775,7 @@ angular.module( 'cyphy.services' )
                                                 } );
                                             } );
                                         } );
-                                } else if ( newChild.isMetaTypeOf( meta.AVMComponentModel ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.AVMComponentModel ) ) {
                                     data.count += 1;
                                     newChild.onUnload( onUnload );
                                     $timeout( function () {
@@ -8423,12 +8813,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ACMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ACMFolder ) ) {
                                             watchFromFolderRec( newChild, meta )
                                                 .then( function () {
                                                     $timeout( function () {
@@ -8493,16 +8883,16 @@ angular.module( 'cyphy.services' )
                                 };
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.Container ) ) {
                                     data.count += 1;
                                     childNode.onUnload( onUnload );
                                 }
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                     watchFromFolderRec( newChild, meta )
                                         .then( function () {
                                             $timeout( function () {
@@ -8513,7 +8903,7 @@ angular.module( 'cyphy.services' )
                                                 } );
                                             } );
                                         } );
-                                } else if ( newChild.isMetaTypeOf( meta.Container ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.Container ) ) {
                                     data.count += 1;
                                     newChild.onUnload( onUnload );
                                     $timeout( function () {
@@ -8554,12 +8944,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ADMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ADMFolder ) ) {
                                             watchFromFolderRec( newChild, meta )
                                                 .then( function () {
                                                     $timeout( function () {
@@ -8624,16 +9014,16 @@ angular.module( 'cyphy.services' )
                                 };
                             for ( i = 0; i < children.length; i += 1 ) {
                                 childNode = children[ i ];
-                                if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
-                                } else if ( childNode.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( childNode.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     data.count += 1;
                                     childNode.onUnload( onUnload );
                                 }
                             }
 
                             folderNode.onNewChildLoaded( function ( newChild ) {
-                                if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                     watchFromFolderRec( newChild, meta )
                                         .then( function () {
                                             $timeout( function () {
@@ -8644,7 +9034,7 @@ angular.module( 'cyphy.services' )
                                                 } );
                                             } );
                                         } );
-                                } else if ( newChild.isMetaTypeOf( meta.AVMTestBenchModel ) ) {
+                                } else if ( newChild.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     data.count += 1;
                                     newChild.onUnload( onUnload );
                                     $timeout( function () {
@@ -8682,12 +9072,12 @@ angular.module( 'cyphy.services' )
                                         childNode;
                                     for ( i = 0; i < children.length; i += 1 ) {
                                         childNode = children[ i ];
-                                        if ( childNode.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( childNode.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             queueList.push( watchFromFolderRec( childNode, meta ) );
                                         }
                                     }
                                     workspaceNode.onNewChildLoaded( function ( newChild ) {
-                                        if ( newChild.isMetaTypeOf( meta.ATMFolder ) ) {
+                                        if ( newChild.isMetaTypeOf( meta.byName.ATMFolder ) ) {
                                             watchFromFolderRec( newChild, meta )
                                                 .then( function () {
                                                     $timeout( function () {

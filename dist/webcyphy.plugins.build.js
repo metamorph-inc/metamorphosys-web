@@ -5251,7 +5251,7 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
         this.executorUrl = this.executorUrl + '/rest/external/executor/'; // TODO: any ways to ask for this or get it from the configuration?
         if (parameters.executorNonce) {
             this.executorNonce = parameters.executorNonce;
-        } else if (typeof WebGMEGlobal !== "undefined") {
+        } else if (typeof WebGMEGlobal !== "undefined" && typeof WebGMEGlobal.getConfig !== "undefined") {
             var webGMEConfig = WebGMEGlobal.getConfig();
             if (webGMEConfig.executorNonce) {
                 this.executorNonce = webGMEConfig.executorNonce;

@@ -86,7 +86,6 @@ angular.module( 'CyPhyApp' )
         desertService, designService ) {
         'use strict';
         var context,
-            meta,
             workspaceId = $state.params.workspaceId.replace( /-/g, '/' ),
             designId = $state.params.designId.replace( /-/g, '/' ),
             saveConfigurations,
@@ -234,7 +233,6 @@ angular.module( 'CyPhyApp' )
                     data: function () {
                         return {
                             configurations: configurations,
-                            meta: meta,
                             context: context,
                             designNode: $scope.dataModels.design.node
                         };
@@ -326,7 +324,6 @@ angular.module( 'CyPhyApp' )
             } )
                 .then( function ( data ) {
                     $scope.dataModels.design = data.design;
-                    meta = data.meta;
                 } );
         } );
     } )
@@ -334,7 +331,6 @@ angular.module( 'CyPhyApp' )
         designService ) {
         'use strict';
         var configurations = data.configurations,
-            //meta = data.meta,
             designNode = data.designNode,
             context = data.context;
         $scope.data = {

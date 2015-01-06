@@ -53,7 +53,7 @@ define( [ '../../js/DesertFrontEnd',
                 .toISOString() + 'TestBenchController';
             self.NS.getMetaNodes( self.context )
                 .then( function ( metaNodes ) {
-                    self.meta = metaNodes;
+                    self.meta = metaNodes.byName;
                     self.NS.loadNode( self.context, nodeId )
                         .then( function ( node ) {
                             self.initialize( node );
