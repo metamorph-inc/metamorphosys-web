@@ -14,6 +14,10 @@ module.exports = function ($scope, $timeout, $log) {
         updateVisibleArea,
         updatePromise,
 
+        timedJSPReinit,
+        jspReinitChillPeriod,
+        jspReinitPromise,
+
         onWindowResize;
 
 
@@ -48,7 +52,9 @@ module.exports = function ($scope, $timeout, $log) {
         }
     };
 
-    jspReinit = function () {
+    jspReinitChillPeriod = 200;
+
+    timedJSPReinit = function() {
 
         if (angular.isObject(jsp)) {
 
@@ -56,6 +62,14 @@ module.exports = function ($scope, $timeout, $log) {
             jsp.reinitialise();
 
         }
+
+    };
+
+    jspReinit = function () {
+
+        $timeout.cancel(jspReinitPromise);
+
+        jspReinitPromise = $timeout(timedJSPReinit, jspReinitChillPeriod);
 
     };
 
