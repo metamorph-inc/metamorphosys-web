@@ -331,7 +331,7 @@ angular.module( 'cyphy.services' )
                         name: 'name',
                         description: 'INFO'
                     },
-                        hadChanges = self.checkForUpdates( data.workspaces[ id ], this, keyToAttr );
+                        hadChanges = self.checkForAttributeUpdates( data.workspaces[ id ], this, keyToAttr );
 
                     if ( hadChanges ) {
                         updateListener( {
@@ -790,8 +790,8 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
-        this.checkForUpdates = function ( data, node, keyToAttr ) {
-            return baseCyPhyService.checkForUpdates( data, node, keyToAttr );
+        this.checkForAttributeUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForAttributeUpdates( data, node, keyToAttr );
         };
 
         /**
