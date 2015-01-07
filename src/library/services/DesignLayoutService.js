@@ -210,6 +210,15 @@ angular.module( 'cyphy.services' )
 
         };
 
+        this.setRotation = function( context, nodeId, rotation, msg) {
+
+            nodeService.loadNode(context, nodeId)
+                .then(function(node) {
+                    node.setRegistry( 'rotation', rotation, msg);
+                });
+
+        };
+
         this.watchDiagramElements = function ( parentContext, containerId, updateListener ) {
 
             var deferred,
@@ -304,7 +313,7 @@ angular.module( 'cyphy.services' )
 
             };
 
-            onChildUpdate = function () {
+            onChildUpdate = function (e) {
 
                 var newName,
                     newDetails,
@@ -313,7 +322,7 @@ angular.module( 'cyphy.services' )
                     child,
                     updateType;
 
-                //console.log(e, this.getId());
+                console.log(e);
 
                 // BaseName never changes, does it?
 
