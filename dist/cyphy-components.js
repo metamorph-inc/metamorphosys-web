@@ -5432,7 +5432,7 @@ angular.module( 'cyphy.services' )
         };
     } );
 },{}],22:[function(require,module,exports){
-/*globals angular, console, WebGMEGlobal*/
+/*globals angular, console, GME*/
 
 /**
  * This service contains methods for design space exploration through the Executor Client.
@@ -5445,7 +5445,7 @@ angular.module( 'cyphy.services' )
         'use strict';
         var self = this,
             CMDSTR,
-            xmlToJson = new WebGMEGlobal.classes.Converters.Xml2json( {
+            xmlToJson = new GME.classes.Converters.Xml2json( {
                 skipWSText: true,
                 arrayElements: {
                     Configuration: true,
@@ -5454,7 +5454,7 @@ angular.module( 'cyphy.services' )
                     AlternativeAssignment: true
                 }
             } ),
-            jsonToXml = new WebGMEGlobal.classes.Converters.Json2xml();
+            jsonToXml = new GME.classes.Converters.Json2xml();
 
         this.calculateConfigurations = function ( desertInput ) {
             var deferred = $q.defer();
@@ -7384,7 +7384,7 @@ angular.module( 'cyphy.services' )
         };
     } );
 },{}],25:[function(require,module,exports){
-/*globals angular, WebGMEGlobal*/
+/*globals angular, GME*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -7393,7 +7393,7 @@ angular.module( 'cyphy.services' )
 angular.module( 'cyphy.services' )
     .service( 'executorService', function ( $q ) {
         'use strict';
-        var executorClient = new WebGMEGlobal.classes.ExecutorClient();
+        var executorClient = new GME.classes.ExecutorClient();
 
         this.createJob = function ( jobData ) {
             var deferred = $q.defer();
@@ -7435,7 +7435,7 @@ angular.module( 'cyphy.services' )
         };
     } );
 },{}],26:[function(require,module,exports){
-/*globals angular, WebGMEGlobal, console*/
+/*globals angular, GME, console*/
 
 
 /**
@@ -7446,7 +7446,7 @@ angular.module( 'cyphy.services' )
     .service( 'fileService', function ( $q ) {
         'use strict';
         var self = this,
-            blobClient = new WebGMEGlobal.classes.BlobClient();
+            blobClient = new GME.classes.BlobClient();
 
         //TODO: Consider making an Artifact 'Class'.
         this.createArtifact = function ( name ) {
@@ -7679,7 +7679,7 @@ angular.module( 'cyphy.services' )
         };
     } );
 },{}],27:[function(require,module,exports){
-/*globals angular, WebGMEGlobal*/
+/*globals angular, GME*/
 
 
 /**
@@ -7704,7 +7704,7 @@ angular.module( 'cyphy.services' )
         this.runPlugin = function ( context, pluginName, config ) {
             var deferred = $q.defer(),
                 dbConn = dataStoreService.getDatabaseConnection( context.db ),
-                interpreterManager = new WebGMEGlobal.classes.InterpreterManager( dbConn.client );
+                interpreterManager = new GME.classes.InterpreterManager( dbConn.client );
 
             interpreterManager.run( pluginName, config, function ( result ) {
                 if ( result ) {

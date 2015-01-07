@@ -1,4 +1,4 @@
-/*globals angular, WebGMEGlobal, console*/
+/*globals angular, GME, console*/
 
 
 /**
@@ -9,7 +9,7 @@ angular.module( 'cyphy.services' )
     .service( 'fileService', function ( $q ) {
         'use strict';
         var self = this,
-            blobClient = new WebGMEGlobal.classes.BlobClient();
+            blobClient = new GME.classes.BlobClient();
 
         //TODO: Consider making an Artifact 'Class'.
         this.createArtifact = function ( name ) {

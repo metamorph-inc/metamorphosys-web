@@ -34,7 +34,7 @@
     insertRequire: ["webcyphy.plugins"],
     include: ['./node_modules/requirejs/require'],
     wrap: {
-        start: "var WebGMEGlobal = WebGMEGlobal || {}; WebGMEGlobal.plugins = WebGMEGlobal.plugins || {};(function(){",
+        start: "var GME = GME || {}, WebGMEGlobal = {} ;(function(){",
         end: "}());"
     }
 })

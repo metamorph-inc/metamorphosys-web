@@ -1,4 +1,4 @@
-/*globals angular, WebGMEGlobal*/
+/*globals angular, GME*/
 
 /**
  * @author pmeijer / https://github.com/pmeijer
@@ -7,7 +7,7 @@
 angular.module( 'cyphy.services' )
     .service( 'executorService', function ( $q ) {
         'use strict';
-        var executorClient = new WebGMEGlobal.classes.ExecutorClient();
+        var executorClient = new GME.classes.ExecutorClient();
 
         this.createJob = function ( jobData ) {
             var deferred = $q.defer();

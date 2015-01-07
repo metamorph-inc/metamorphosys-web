@@ -20,14 +20,14 @@
             usedClasses = ["Client"],
             interval = 200, // 100 milliseconds interval
             waitForLoadId = setInterval(function () {
-                if (window.WebGMEGlobal &&
-                    window.WebGMEGlobal.classes) {
+                if (window.GME &&
+                    window.GME.classes) {
                     // TODO: check for all classes that we use
                     clearInterval(waitForLoadId);
                     success = true;
 
                     for (i = 0; i < usedClasses.length; i += 1) {
-                        if (window.WebGMEGlobal.classes.hasOwnProperty(usedClasses[i])) {
+                        if (window.GME.classes.hasOwnProperty(usedClasses[i])) {
                             console.log('WebGME ' + usedClasses[i] + ' is available.');
                         } else {
                             console.error('WebGME ' + usedClasses[i] + ' was not found.');
@@ -54,7 +54,7 @@
         // once the webgme Client is loaded and ready we can use it.
 
 
-        var client = new WebGMEGlobal.classes.Client({host: window.location.basename});
+        var client = new GME.classes.Client({host: window.location.basename});
 
         client.connectToDatabaseAsync({}, function (err) {
             var terrId;
