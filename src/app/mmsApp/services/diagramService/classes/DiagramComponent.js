@@ -157,6 +157,19 @@ DiagramComponent.prototype.rotate = function ( angle ) {
     }
 };
 
+DiagramComponent.prototype.setRotation = function ( newRotation ) {
+
+    if ( angular.isNumber( newRotation ) ) {
+
+        this.rotation = newRotation;
+
+        this.updateTransformationMatrix();
+
+    } else {
+        throw new Error( 'Angle must be number!' );
+    }
+};
+
 DiagramComponent.prototype.registerPortInstances = function ( newPorts ) {
 
     var self = this;

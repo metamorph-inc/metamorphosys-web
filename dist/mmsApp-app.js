@@ -725,6 +725,15 @@ angular.module('mms.designVisualization.designEditor', [])
                     );
                 }
 
+                if (designStructureUpdateObject.updateType === 'rotationChange') {
+
+                    diagramService.updateComponentsAndItsWiresRotation(
+                        $rootScope.activeContainerId,
+                        designStructureUpdateObject.id,
+                        designStructureUpdateObject.data.rotation
+                    );
+                }
+
             }).then(function (cyPhyLayout) {
 
                 $log.debug('Diagram elements', cyPhyLayout);
@@ -3708,6 +3717,21 @@ Diagram.prototype.updateComponentPosition = function (componentId, newPosition) 
 
 };
 
+Diagram.prototype.updateComponentRotation = function (componentId, newRotation) {
+
+    var self = this,
+        component;
+
+    component = self.componentsById[componentId];
+
+    if (angular.isObject(component)) {
+
+        component.setRotation(newRotation);
+
+    }
+
+};
+
 
 module.exports = Diagram;
 
@@ -3863,6 +3887,19 @@ DiagramComponent.prototype.rotate = function ( angle ) {
     if ( angular.isNumber( angle ) ) {
 
         this.rotation += angle;
+
+        this.updateTransformationMatrix();
+
+    } else {
+        throw new Error( 'Angle must be number!' );
+    }
+};
+
+DiagramComponent.prototype.setRotation = function ( newRotation ) {
+
+    if ( angular.isNumber( newRotation ) ) {
+
+        this.rotation = newRotation;
 
         this.updateTransformationMatrix();
 
@@ -4218,6 +4255,30 @@ angular.module('mms.designVisualization.diagramService', [
                 if (angular.isObject(diagram)) {
 
                     diagram.updateComponentPosition(componentId, newPosition);
+
+                    setOfWires = diagram.wiresByComponentId[componentId];
+
+                    angular.forEach( setOfWires, function ( wire ) {
+
+                        wiringService.adjustWireEndSegments( wire );
+
+                    } );
+
+
+                }
+
+            };
+
+            this.updateComponentsAndItsWiresRotation = function( diagramId, componentId, newRotation) {
+
+                var diagram,
+                    setOfWires;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    diagram.updateComponentRotation(componentId, newRotation);
 
                     setOfWires = diagram.wiresByComponentId[componentId];
 

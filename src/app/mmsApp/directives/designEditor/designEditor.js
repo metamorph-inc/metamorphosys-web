@@ -104,6 +104,15 @@ angular.module('mms.designVisualization.designEditor', [])
                     );
                 }
 
+                if (designStructureUpdateObject.updateType === 'rotationChange') {
+
+                    diagramService.updateComponentsAndItsWiresRotation(
+                        $rootScope.activeContainerId,
+                        designStructureUpdateObject.id,
+                        designStructureUpdateObject.data.rotation
+                    );
+                }
+
             }).then(function (cyPhyLayout) {
 
                 $log.debug('Diagram elements', cyPhyLayout);

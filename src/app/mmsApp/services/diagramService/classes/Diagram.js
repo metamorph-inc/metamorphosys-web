@@ -114,5 +114,20 @@ Diagram.prototype.updateComponentPosition = function (componentId, newPosition) 
 
 };
 
+Diagram.prototype.updateComponentRotation = function (componentId, newRotation) {
+
+    var self = this,
+        component;
+
+    component = self.componentsById[componentId];
+
+    if (angular.isObject(component)) {
+
+        component.setRotation(newRotation);
+
+    }
+
+};
+
 
 module.exports = Diagram;
