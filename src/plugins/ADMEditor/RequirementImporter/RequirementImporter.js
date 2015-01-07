@@ -119,12 +119,25 @@ define( [ 'plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementImporte
                 callback( null, self.result );
                 return;
             }
-            reqStr = String.fromCharCode.apply( null, new Uint8Array( requirementBuffer ) );
-            try {
-                reqJson = JSON.parse( reqStr );
-            } catch ( exc ) {
-                self.logger.error( 'Could not parse given file as json, err: ' + exc.message );
-                self.createMessage( null, 'Could not parse given file as json, err: ' + exc.message, 'error' );
+            if ( requirementBuffer.slice && typeof requirementBuffer.slice === 'function' ) {
+                // Check if this is a ArrayBuffer
+                reqStr = String.fromCharCode.apply( null, new Uint8Array( requirementBuffer ) );
+                try {
+                    reqJson = JSON.parse( reqStr );
+                } catch ( exc ) {
+                    self.logger.error( 'Could not parse given file as json, err: ' + exc.message );
+                    self.createMessage( null, 'Could not parse given file as json, err: ' + exc.message,
+                        'error' );
+                    callback( null, self.result );
+                    return;
+                }
+            } else if ( typeof requirementBuffer === 'object' ) {
+                // Assume it's a json
+                reqJson = requirementBuffer;
+            } else {
+                self.logger.error( 'Could not handle return of getObject, was not an ArrayBuffer or object' );
+                self.createMessage( null,
+                    'Could not handle return of getObject, was not an ArrayBuffer or object' );
                 callback( null, self.result );
                 return;
             }
