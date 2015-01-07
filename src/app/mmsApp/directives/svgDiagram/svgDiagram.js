@@ -232,7 +232,8 @@ angular.module('mms.designVisualization.svgDiagram', [
                     var componentsToRotate,
                         component,
                         angle,
-                        affectedWires;
+                        affectedWires,
+                        message;
 
                     componentsToRotate = [];
 
@@ -271,15 +272,22 @@ angular.module('mms.designVisualization.svgDiagram', [
                         wiringService.adjustWireEndSegments( wire );
                     } );
 
-                    $scope.emit('componentsRotationChange', {
+                    if (componentsToRotate.length > 1) {
+                        message = 'Rotating selection by ' + angle + 'deg';
+                    } else {
+                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                    }
+
+                    $scope.$emit('componentsRotationChange', {
                         diagramId: $scope.diagram.id,
-                        components: componentsToRotate
+                        components: componentsToRotate,
+                        message: message
                     });
 
-                    $scope.emit('wiresChange', {
-                        diagramId: $scope.diagram.id,
-                        wires: affectedWires
-                    });
+                    //$scope.$emit('wiresChange', {
+                    //    diagramId: $scope.diagram.id,
+                    //    wires: affectedWires
+                    //});
 
                 };
             }

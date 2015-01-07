@@ -134,7 +134,6 @@ angular.module( 'cyphy.services' )
                     connector = {
                         id: node.getId(),
                         name: node.getAttribute( 'name' ),
-                        position: node.getRegistry( 'position' ),
                         baseId: node.getBaseId()
                     };
 
@@ -206,6 +205,15 @@ angular.module( 'cyphy.services' )
             nodeService.loadNode(context, nodeId)
                 .then(function(node) {
                     node.setRegistry( 'position', position, msg);
+                });
+
+        };
+
+        this.setRotation = function( context, nodeId, angle, msg) {
+
+            nodeService.loadNode(context, nodeId)
+                .then(function(node) {
+                    node.setRegistry( 'rotation', angle, msg);
                 });
 
         };
@@ -318,6 +326,7 @@ angular.module( 'cyphy.services' )
                 var newName,
                     newDetails,
                     newPos,
+                    newRotation,
                     hadChanges,
                     child,
                     updateType;
@@ -332,6 +341,8 @@ angular.module( 'cyphy.services' )
 
                     newName = this.getAttribute( 'name' );
                     newPos = this.getRegistry( 'position' );
+                    newRotation = this.getRegistry( 'rotation' );
+
                     hadChanges = false;
 
                     if ( newName !== child.name ) {
@@ -345,6 +356,16 @@ angular.module( 'cyphy.services' )
 
                         hadChanges = true;
                         updateType = 'positionChange';
+
+                    }
+
+                    if (newRotation !== child.rotation) {
+
+                        child.rotation = newRotation;
+
+                        hadChanges = true;
+                        updateType = 'rotationChange';
+
                     }
 
                     if ( child.baseName === 'ConnectorComposition' ) {
@@ -401,6 +422,7 @@ angular.module( 'cyphy.services' )
                     id: node.getId(),
                     name: node.getAttribute( 'name' ),
                     position: node.getRegistry( 'position' ),
+                    rotation: node.getRegistry( 'rotation' ),
                     baseId: node.getBaseId()
                 };
 

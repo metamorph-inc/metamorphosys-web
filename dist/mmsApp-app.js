@@ -669,6 +669,29 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 });
 
+            });
+
+            $scope.$on('componentsRotationChange', function (e, data) {
+
+                var i;
+
+                i = 1;
+
+                angular.forEach(data.components, function (component) {
+
+                    $timeout(function () {
+
+                        designLayoutService.setRotation(
+                            designCtx,
+                            component.id,
+                            component.rotation,
+                            data.message
+                        );
+                    }, 10 * i);
+
+                    i++;
+
+                });
 
             });
 
@@ -1505,22 +1528,32 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     finishDrag = function () {
 
-        self.dragging = false;
+        var message,
+            components;
+
+        components = dragTargetsDescriptor.targets.map(
+            function (target) {
+                return target.component;
+            });
+
+        if (components.length > 1) {
+            message = 'Dragging selection';
+        } else {
+            message = 'Dragging ' + components[0].label;
+        }
 
         $scope.$emit('componentsPositionChange', {
             diagramId: $scope.diagram.id,
-            components: dragTargetsDescriptor.targets.map(
-                function(target) {
-                    return target.component;
-                }),
-            message: 'Dragging component'
+            components: components,
+            message: message
         });
 
-        $scope.$emit('wiresChange', {
-            diagramId: $scope.diagram.id,
-            wires: dragTargetsDescriptor.affectedWires
-        });
+        //$scope.$emit('wiresChange', {
+        //    diagramId: $scope.diagram.id,
+        //    wires: dragTargetsDescriptor.affectedWires
+        //});
 
+        self.dragging = false;
 
         dragTargetsDescriptor = null;
 
@@ -2339,7 +2372,8 @@ angular.module('mms.designVisualization.svgDiagram', [
                     var componentsToRotate,
                         component,
                         angle,
-                        affectedWires;
+                        affectedWires,
+                        message;
 
                     componentsToRotate = [];
 
@@ -2378,15 +2412,22 @@ angular.module('mms.designVisualization.svgDiagram', [
                         wiringService.adjustWireEndSegments( wire );
                     } );
 
-                    $scope.emit('componentsRotationChange', {
+                    if (componentsToRotate.length > 1) {
+                        message = 'Rotating selection by ' + angle + 'deg';
+                    } else {
+                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                    }
+
+                    $scope.$emit('componentsRotationChange', {
                         diagramId: $scope.diagram.id,
-                        components: componentsToRotate
+                        components: componentsToRotate,
+                        message: message
                     });
 
-                    $scope.emit('wiresChange', {
-                        diagramId: $scope.diagram.id,
-                        wires: affectedWires
-                    });
+                    //$scope.$emit('wiresChange', {
+                    //    diagramId: $scope.diagram.id,
+                    //    wires: affectedWires
+                    //});
 
                 };
             }

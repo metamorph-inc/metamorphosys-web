@@ -48,6 +48,29 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 });
 
+            });
+
+            $scope.$on('componentsRotationChange', function (e, data) {
+
+                var i;
+
+                i = 1;
+
+                angular.forEach(data.components, function (component) {
+
+                    $timeout(function () {
+
+                        designLayoutService.setRotation(
+                            designCtx,
+                            component.id,
+                            component.rotation,
+                            data.message
+                        );
+                    }, 10 * i);
+
+                    i++;
+
+                });
 
             });
 

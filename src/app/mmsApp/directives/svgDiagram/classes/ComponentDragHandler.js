@@ -79,22 +79,32 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     finishDrag = function () {
 
-        self.dragging = false;
+        var message,
+            components;
+
+        components = dragTargetsDescriptor.targets.map(
+            function (target) {
+                return target.component;
+            });
+
+        if (components.length > 1) {
+            message = 'Dragging selection';
+        } else {
+            message = 'Dragging ' + components[0].label;
+        }
 
         $scope.$emit('componentsPositionChange', {
             diagramId: $scope.diagram.id,
-            components: dragTargetsDescriptor.targets.map(
-                function(target) {
-                    return target.component;
-                }),
-            message: 'Dragging component'
+            components: components,
+            message: message
         });
 
-        $scope.$emit('wiresChange', {
-            diagramId: $scope.diagram.id,
-            wires: dragTargetsDescriptor.affectedWires
-        });
+        //$scope.$emit('wiresChange', {
+        //    diagramId: $scope.diagram.id,
+        //    wires: dragTargetsDescriptor.affectedWires
+        //});
 
+        self.dragging = false;
 
         dragTargetsDescriptor = null;
 
