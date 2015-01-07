@@ -163,37 +163,37 @@ angular.module( 'cyphy.services' )
                     meta = metaNodes;
                     nodeService.loadNode( context, containerId )
 
-                        .then( function ( rootNode ) {
-                            rootNode.loadChildren( context )
-                                .then( function ( childNodes ) {
+                    .then( function ( rootNode ) {
+                        rootNode.loadChildren( context )
+                            .then( function ( childNodes ) {
 
-                                    var i,
-                                        childPromises;
+                                var i,
+                                    childPromises;
 
-                                    childPromises = [];
+                                childPromises = [];
 
-                                    for ( i = 0; i < childNodes.length; i += 1 ) {
-                                        childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                    }
+                                for ( i = 0; i < childNodes.length; i += 1 ) {
+                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
+                                }
 
-                                    rootNode.onNewChildLoaded( function ( newNode ) {
+                                rootNode.onNewChildLoaded( function ( newNode ) {
 
 
-                                        parseNewChild( newNode )
-                                            .then( function ( newChild ) {
-                                                triggerUpdateListener( newChild.id, newChild,
-                                                    'load' );
-                                            } );
-
-                                    } );
-
-                                    $q.all( childPromises )
-                                        .then( function () {
-                                            deferred.resolve( connectors );
+                                    parseNewChild( newNode )
+                                        .then( function ( newChild ) {
+                                            triggerUpdateListener( newChild.id, newChild,
+                                                'load' );
                                         } );
 
                                 } );
-                        } );
+
+                                $q.all( childPromises )
+                                    .then( function () {
+                                        deferred.resolve( connectors );
+                                    } );
+
+                            } );
+                    } );
                 } );
 
 
@@ -259,7 +259,7 @@ angular.module( 'cyphy.services' )
             };
 
 
-            triggerUpdateListener = function (id, data, eventType, updateType) {
+            triggerUpdateListener = function ( id, data, eventType, updateType ) {
 
                 $timeout( function () {
                     updateListener( {
@@ -381,9 +381,9 @@ angular.module( 'cyphy.services' )
 
                     }
 
-                    if (hadChanges) {
+                    if ( hadChanges ) {
 
-                        triggerUpdateListener(child.id, child, 'update', updateType);
+                        triggerUpdateListener( child.id, child, 'update', updateType );
 
                     }
 
@@ -482,38 +482,38 @@ angular.module( 'cyphy.services' )
 
                     nodeService.loadNode( context, containerId )
 
-                        .then( function ( rootNode ) {
-                            rootNode.loadChildren( context )
-                                .then( function ( childNodes ) {
+                    .then( function ( rootNode ) {
+                        rootNode.loadChildren( context )
+                            .then( function ( childNodes ) {
 
-                                    var i,
-                                        childPromises;
+                                var i,
+                                    childPromises;
 
-                                    childPromises = [];
+                                childPromises = [];
 
-                                    for ( i = 0; i < childNodes.length; i += 1 ) {
-                                        childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                    }
+                                for ( i = 0; i < childNodes.length; i += 1 ) {
+                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
+                                }
 
-                                    rootNode.onNewChildLoaded( function ( newNode ) {
+                                rootNode.onNewChildLoaded( function ( newNode ) {
 
 
-                                        parseNewChild( newNode )
-                                            .then( function ( newChild ) {
-                                                triggerUpdateListener( newChild.id, newChild,
-                                                    'load' );
-                                            } );
-
-                                    } );
-
-                                    $q.all( childPromises )
-                                        .then( function () {
-
-                                            deferred.resolve( data );
+                                    parseNewChild( newNode )
+                                        .then( function ( newChild ) {
+                                            triggerUpdateListener( newChild.id, newChild,
+                                                'load' );
                                         } );
 
                                 } );
-                        } );
+
+                                $q.all( childPromises )
+                                    .then( function () {
+
+                                        deferred.resolve( data );
+                                    } );
+
+                            } );
+                    } );
                 } );
 
             return deferred.promise;

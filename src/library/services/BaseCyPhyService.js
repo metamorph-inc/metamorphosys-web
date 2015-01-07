@@ -11,7 +11,7 @@
 angular.module( 'cyphy.services' )
     .service( 'baseCyPhyService', function ( $q, $timeout, nodeService ) {
         'use strict';
-
+        var self = this;
         /**
          * Registers a watcher (controller) to the service. Callback function is called when nodes become available or
          * when they became unavailable. These are also called directly with the state of the nodeService.
@@ -136,45 +136,41 @@ angular.module( 'cyphy.services' )
                     connectors: {}, //connector: {id: <string>, name: <string>, domainPorts: <object> }
                     ports: {} //port:      {id: <string>, name: <string>, type: <string>, class: <string> }
                 },
+                triggerUpdateListener = function ( id, data, eventType ) {
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            type: eventType,
+                            data: data
+                        } );
+                    } );
+                },
+                addNewProperty = function ( id, node ) {
+                    data.properties[ id ] = {
+                        id: id,
+                        name: node.getAttribute( 'name' ),
+                        dataType: node.getAttribute( 'DataType' ),
+                        valueType: node.getAttribute( 'ValueType' ),
+                        value: node.getAttribute( 'Value' ),
+                        unit: node.getAttribute( 'Unit' ),
+                        isProminent: node.getAttribute( 'IsProminent' ),
+
+                        derived: isPropertyDerived( node )
+                    };
+                    node.onUpdate( onPropertyUpdate );
+                    node.onUnload( onPropertyUnload );
+                },
                 onPropertyUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDataType = this.getAttribute( 'DataType' ),
-                        newValueType = this.getAttribute( 'ValueType' ),
-                        newValue = this.getAttribute( 'Value' ),
-                        newUnit = this.getAttribute( 'Unit' ),
-                        newIsProminent = this.getAttribute( 'IsProminent' ),
+                    var keyToAttr = {
+                        name: 'name',
+                        dataType: 'DataType',
+                        valueType: 'ValueType',
+                        value: 'Value',
+                        unit: 'Unit',
+                        isProminent: 'IsProminent'
+                    },
                         newDerived = isPropertyDerived( this ),
-                        hadChanges = false;
-
-                    if ( newName !== data.properties[ id ].name ) {
-                        data.properties[ id ].name = newName;
-                        hadChanges = true;
-                    }
-
-                    if ( newDataType !== data.properties[ id ].dataType ) {
-                        data.properties[ id ].dataType = newDataType;
-                        hadChanges = true;
-                    }
-
-                    if ( newValueType !== data.properties[ id ].valueType ) {
-                        data.properties[ id ].valueType = newValueType;
-                        hadChanges = true;
-                    }
-
-                    if ( newValue !== data.properties[ id ].value ) {
-                        data.properties[ id ].value = newValue;
-                        hadChanges = true;
-                    }
-
-                    if ( newUnit !== data.properties[ id ].unit ) {
-                        data.properties[ id ].unit = newUnit;
-                        hadChanges = true;
-                    }
-
-                    if ( newIsProminent !== data.properties[ id ].isProminent ) {
-                        data.properties[ id ].isProminent = newIsProminent;
-                        hadChanges = true;
-                    }
+                        hadChanges = self.checkForAttributeUpdates( data.properties[ id ], this, keyToAttr );
 
                     if ( newDerived !== data.properties[ id ].derived ) {
                         data.properties[ id ].derived = newDerived;
@@ -182,24 +178,23 @@ angular.module( 'cyphy.services' )
                     }
 
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data
-                            } );
-                        } );
+                        triggerUpdateListener( id, data, 'update' );
                     }
                 },
                 onPropertyUnload = function ( id ) {
                     delete data.properties[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
-                    } );
+                    triggerUpdateListener( id, null, 'unload' );
+                },
+                addNewConnector = function ( id, node ) {
+                    data.connectors[ id ] = {
+                        id: id,
+                        name: node.getAttribute( 'name' ),
+                        position: node.getRegistry( 'position' ),
+                        domainPorts: {}
+                    };
+                    node.onUpdate( onConnectorUpdate );
+                    node.onUnload( onConnectorUnload );
+                    ///queueList.push(childNode.loadChildren(childNode));
                 },
                 onConnectorUpdate = function ( id ) {
 
@@ -229,61 +224,38 @@ angular.module( 'cyphy.services' )
                     }
 
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data
-                            } );
-                        } );
+                        triggerUpdateListener( id, data, 'update' );
                     }
                 },
                 onConnectorUnload = function ( id ) {
                     delete data.connectors[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
-                    } );
+                    triggerUpdateListener( id, null, 'unload' );
+                },
+                addNewPort = function ( id, node ) {
+                    data.ports[ id ] = {
+                        id: id,
+                        name: node.getAttribute( 'name' ),
+                        type: node.getAttribute( 'Type' ),
+                        class: node.getAttribute( 'Class' )
+                    };
+                    node.onUpdate( onPortUpdate );
+                    node.onUnload( onPortUnload );
                 },
                 onPortUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newType = this.getAttribute( 'Type' ),
-                        newClass = this.getAttribute( 'Class' ),
-                        hadChanges = false;
-                    if ( newName !== data.ports[ id ].name ) {
-                        data.ports[ id ].name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newType !== data.ports[ id ].dataType ) {
-                        data.ports[ id ].type = newType;
-                        hadChanges = true;
-                    }
-                    if ( newClass !== data.ports[ id ].class ) {
-                        data.ports[ id ].class = newClass;
-                        hadChanges = true;
-                    }
+                    var keyToAttr = {
+                        name: 'name',
+                        type: 'Type',
+                        class: 'Class'
+                    },
+                        hadChanges = self.checkForAttributeUpdates( data.ports[ id ], this, keyToAttr );
+
                     if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data
-                            } );
-                        } );
+                        triggerUpdateListener( id, data, 'update' );
                     }
                 },
                 onPortUnload = function ( id ) {
                     delete data.ports[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
-                    } );
+                    triggerUpdateListener( id, null, 'unload' );
                 },
                 isPropertyDerived = function ( node ) {
                     return node.getCollectionPaths( 'dst' )
@@ -308,98 +280,25 @@ angular.module( 'cyphy.services' )
                                         childId = childNode.getId();
                                         metaName = childNode.getMetaTypeName( meta );
                                         if ( metaName === 'Property' ) {
-                                            data.properties[ childId ] = {
-                                                id: childId,
-                                                name: childNode.getAttribute( 'name' ),
-                                                dataType: childNode.getAttribute( 'DataType' ),
-                                                valueType: childNode.getAttribute( 'ValueType' ),
-                                                value: childNode.getAttribute( 'Value' ),
-                                                unit: childNode.getAttribute( 'Unit' ),
-                                                isProminent: childNode.getAttribute( 'IsProminent' ),
-
-                                                derived: isPropertyDerived( childNode )
-                                            };
-                                            childNode.onUpdate( onPropertyUpdate );
-                                            childNode.onUnload( onPropertyUnload );
+                                            addNewProperty( childId, childNode );
                                         } else if ( metaName === 'Connector' ) {
-                                            data.connectors[ childId ] = {
-                                                id: childId,
-                                                name: childNode.getAttribute( 'name' ),
-                                                position: childNode.getRegistry( 'position' ),
-                                                domainPorts: {}
-                                            };
-                                            childNode.onUpdate( onConnectorUpdate );
-                                            childNode.onUnload( onConnectorUnload );
-                                            ///queueList.push(childNode.loadChildren(childNode));
+                                            addNewConnector( childId, childNode );
                                         } else if ( metaName === 'DomainPort' ) {
-                                            data.ports[ childId ] = {
-                                                id: childId,
-                                                name: childNode.getAttribute( 'name' ),
-                                                type: childNode.getAttribute( 'Type' ),
-                                                class: childNode.getAttribute( 'Class' )
-                                            };
-                                            childNode.onUpdate( onPortUpdate );
-                                            childNode.onUnload( onPortUnload );
-                                            ///queueList.push(childNode.loadChildren(childNode));
+                                            addNewPort( childId, childNode );
                                         }
                                     }
                                     modelNode.onNewChildLoaded( function ( newChild ) {
                                         childId = newChild.getId();
-                                        metaName = childNode.getMetaTypeName( meta );
+                                        metaName = newChild.getMetaTypeName( meta );
                                         if ( metaName === 'Property' ) {
-                                            data.properties[ childId ] = {
-                                                id: childId,
-                                                name: newChild.getAttribute( 'name' ),
-                                                dataType: newChild.getAttribute( 'DataType' ),
-                                                valueType: newChild.getAttribute( 'ValueType' ),
-                                                value: newChild.getAttribute( 'Value' ),
-                                                unit: newChild.getAttribute( 'Unit' ),
-                                                isProminent: newChild.getAttribute( 'IsProminent' ),
-
-                                                derived: isPropertyDerived( newChild )
-                                            };
-                                            newChild.onUpdate( onPropertyUpdate );
-                                            newChild.onUnload( onPropertyUnload );
-                                            $timeout( function () {
-                                                updateListener( {
-                                                    id: childId,
-                                                    type: 'load',
-                                                    data: data
-                                                } );
-                                            } );
+                                            addNewProperty( childId, newChild );
+                                            triggerUpdateListener( childId, data, 'load' );
                                         } else if ( metaName === 'Connector' ) {
-                                            data.connectors[ childId ] = {
-                                                id: childId,
-                                                name: newChild.getAttribute( 'name' ),
-                                                position: newChild.getRegistry( 'position' ),
-                                                domainPorts: {}
-                                            };
-                                            newChild.onUpdate( onConnectorUpdate );
-                                            newChild.onUnload( onConnectorUnload );
-                                            $timeout( function () {
-                                                updateListener( {
-                                                    id: childId,
-                                                    type: 'load',
-                                                    data: data
-                                                } );
-                                            } );
-                                            ///queueList.push(childNode.loadChildren(childNode));
+                                            addNewConnector( childId, newChild );
+                                            triggerUpdateListener( childId, data, 'load' );
                                         } else if ( metaName === 'DomainPort' ) {
-                                            data.ports[ childId ] = {
-                                                id: childId,
-                                                name: childNode.getAttribute( 'name' ),
-                                                type: childNode.getAttribute( 'Type' ),
-                                                class: childNode.getAttribute( 'Class' )
-                                            };
-                                            newChild.onUpdate( onPortUpdate );
-                                            newChild.onUnload( onPortUnload );
-                                            $timeout( function () {
-                                                updateListener( {
-                                                    id: childId,
-                                                    type: 'load',
-                                                    data: data
-                                                } );
-                                            } );
+                                            addNewPort( childId, newChild );
+                                            triggerUpdateListener( childId, data, 'load' );
                                         }
                                     } );
 
@@ -418,7 +317,14 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
-        this.checkForUpdates = function ( data, node, keyToAttr ) {
+        /**
+         * Checks and updates the values in data with the new attribute values in node.
+         * @param {Object} data - Where the attribute values are stored.
+         * @param {NodeObj} node - Node that had update events.
+         * @param {Object} keyToAttr - Maps the key in data to the attribute string.
+         * @returns {boolean} - True if there were any changes.
+         */
+        this.checkForAttributeUpdates = function ( data, node, keyToAttr ) {
             var key,
                 newAttr,
                 hadChanges = false;
