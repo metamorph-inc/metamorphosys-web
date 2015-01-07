@@ -1483,6 +1483,7 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         dragTargetsWiresUpdate,
         wireUpdateWait,
+        dragTargetsWiresUpdatePromises,
 
         onDiagramMouseUp,
         onDiagramMouseMove,
@@ -1587,13 +1588,16 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     };
 
-    wireUpdateWait = 40;
+    wireUpdateWait = 20;
+    dragTargetsWiresUpdatePromises = {};
 
     dragTargetsWiresUpdate = function(affectedWires) {
 
         angular.forEach(affectedWires, function(wire) {
 
-            $timeout(function(){
+            $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
+
+            dragTargetsWiresUpdatePromises[wire.id] = $timeout(function(){
                 wiringService.adjustWireEndSegments( wire );
             }, wireUpdateWait);
 
