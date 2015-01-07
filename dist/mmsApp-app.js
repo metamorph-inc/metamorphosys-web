@@ -3054,7 +3054,7 @@ angular.module(
                         wireAngle: 0,
                         wireLeadIn: 0,
                         label: '',
-                        x: 97,
+                        x: 117,
                         y: 7
                     } }
             });
