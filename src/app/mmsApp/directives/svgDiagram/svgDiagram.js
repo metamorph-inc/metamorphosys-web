@@ -40,6 +40,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             wiringService,
             operationsManager,
+            $timeout,
             $log
         );
 

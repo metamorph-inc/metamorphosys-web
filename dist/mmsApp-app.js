@@ -1474,12 +1474,15 @@ module.exports = resizeToWindowModule;
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, operationsManager, $log) {
+module.exports = function($scope, diagramService, wiringService, operationsManager, $timeout, $log) {
 
     var self = this,
         getOffsetToMouse,
         possibbleDragTargetsDescriptor,
         dragTargetsDescriptor,
+
+        dragTargetsWiresUpdate,
+        wireUpdateWait,
 
         onDiagramMouseUp,
         onDiagramMouseMove,
@@ -1584,12 +1587,25 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     };
 
+    wireUpdateWait = 40;
+
+    dragTargetsWiresUpdate = function(affectedWires) {
+
+        angular.forEach(affectedWires, function(wire) {
+
+            $timeout(function(){
+                wiringService.adjustWireEndSegments( wire );
+            }, wireUpdateWait);
+
+        });
+
+    };
+
     onDiagramMouseMove = function($event) {
 
         var offset,
-            target,
-            i;
-
+            i,
+            target;
 
         if ( possibbleDragTargetsDescriptor ) {
             startDrag();
@@ -1597,7 +1613,7 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         if ( dragTargetsDescriptor ) {
 
-            offset = getOffsetToMouse( $event );
+            offset = getOffsetToMouse($event);
 
             for (i=0; i < dragTargetsDescriptor.targets.length; i++) {
 
@@ -1610,11 +1626,7 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
             }
 
-            for (i=0; i < dragTargetsDescriptor.affectedWires.length; i++) {
-
-                wiringService.adjustWireEndSegments( dragTargetsDescriptor.affectedWires[i] );
-
-            }
+            dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
 
         }
 
@@ -2203,6 +2215,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             wiringService,
             operationsManager,
+            $timeout,
             $log
         );
 
