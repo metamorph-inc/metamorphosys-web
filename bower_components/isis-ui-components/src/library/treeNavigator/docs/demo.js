@@ -1,7 +1,12 @@
 /*globals angular*/
 'use strict';
 
-var demoApp = angular.module( 'isis.ui.treeNavigator.demo', [ 'isis.ui.treeNavigator' ] );
+require( 'ngDragDrop' );
+
+var demoApp = angular.module( 'isis.ui.treeNavigator.demo', [
+  'isis.ui.treeNavigator',
+  'ang-drag-drop'
+] );
 
 demoApp.controller( 'TreeNavigatorDemoController', function ( $scope, $log, $q ) {
 

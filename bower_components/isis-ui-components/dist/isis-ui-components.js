@@ -29,43 +29,12 @@ angular.module( 'isis.ui.components', [
   'isis.ui.decisionTable'
 
 ] );
-},{"./contextmenu/contextmenu.js":6,"./decisionTable/decisionTable.js":9,"./dropdownNavigator/dropdownNavigator.js":10,"./hierarchicalMenu/hierarchicalMenu.js":12,"./itemList/itemList.js":15,"./searchBox/searchBox.js":22,"./services/isisUIServices.js":23,"./simpleDialog/simpleDialog.js":24,"./taxonomyTerms/taxonomyTerms.js":26,"./treeNavigator/treeNavigator.js":28,"./valueWidgets/valueWidgets.js":37}],2:[function(require,module,exports){
-/**
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- */
-
-/**
- * Implementing Drag and Drop functionality in AngularJS is easier than ever.
- * Demo: http://codef0rmer.github.com/angular-dragdrop/
- * 
- * @version 1.0.7
- *
- * (c) 2013 Amit Gharat a.k.a codef0rmer <amit.2006.it@gmail.com> - amitgharat.wordpress.com
- */
-(function(e,t,n){"use strict";var r=t.module("ngDragDrop",[]).service("ngDragDropService",["$timeout","$parse",function(i,s){this.callEventCallback=function(e,t,n,r){function f(t){var n=t.indexOf("(")!==-1?t.indexOf("("):t.length,r=t.lastIndexOf(")")!==-1?t.lastIndexOf(")"):t.length,i=t.substring(n+1,r),o=t.match(/^[^.]+.\s*/)[0].slice(0,-1);o=e[o]&&typeof e[o].constructor==="function"?o:null;return{callback:t.substring(o&&o.length+1||0,n),args:(i&&i.split(",")||[]).map(function(t){return s(t)(e)}),constructor:o}}if(!t)return;var i=f(t),o=i.callback,u=i.constructor,a=[n,r].concat(i.args);e.$apply((e[o]||e[u][o]).apply(e,a))};this.invokeDrop=function(e,s,o,u){var a="",f="",l={},c={},h=null,p={},d={},v,m,g=null,y=s.scope(),b=e.scope();a=e.ngattr("ng-model");f=s.ngattr("ng-model");v=b.$eval(a);m=y.$eval(f);g=s.find("[jqyoui-draggable]:last,[data-jqyoui-draggable]:last");c=y.$eval(s.attr("jqyoui-droppable")||s.attr("data-jqyoui-droppable"))||[];l=b.$eval(e.attr("jqyoui-draggable")||e.attr("data-jqyoui-draggable"))||[];l.index=this.fixIndex(b,l,v);c.index=this.fixIndex(y,c,m);h=t.isArray(v)?l.index:null;p=t.copy(t.isArray(v)?v[h]:v);if(t.isArray(m)&&c&&c.index!==n){d=m[c.index]}else if(!t.isArray(m)){d=m}else{d={}}d=t.copy(d);if(l.animate===true){this.move(e,g.length>0?g:s,null,"fast",c,null);this.move(g.length>0&&!c.multiple?g:[],e.parent("[jqyoui-droppable],[data-jqyoui-droppable]"),r.startXY,"fast",c,t.bind(this,function(){i(t.bind(this,function(){e.css({position:"relative",left:"",top:""});g.css({position:"relative",left:"",top:"",display:""});this.mutateDraggable(b,c,l,a,f,d,e);this.mutateDroppable(y,c,l,f,p,h);this.callEventCallback(y,c.onDrop,o,u)}))}))}else{i(t.bind(this,function(){this.mutateDraggable(b,c,l,a,f,d,e);this.mutateDroppable(y,c,l,f,p,h);this.callEventCallback(y,c.onDrop,o,u)}))}};this.move=function(t,r,i,s,o,u){if(t.length===0){if(u){e.setTimeout(function(){u()},300)}return false}var a=9999,f=t[o.containment||"offset"](),l=r&&r.is(":visible"),c=r.hasClass("ng-hide");if(i===null&&r.length>0){if((r.attr("jqyoui-draggable")||r.attr("data-jqyoui-draggable"))!==n&&r.ngattr("ng-model")!==n&&r.is(":visible")&&o&&o.multiple){i=r[o.containment||"offset"]();if(o.stack===false){i.left+=r.outerWidth(true)}else{i.top+=r.outerHeight(true)}}else{if(c)r.removeClass("ng-hide");i=r.css({visibility:"hidden",display:"block"})[o.containment||"offset"]();r.css({visibility:"",display:l?"block":"none"})}}t.css({position:"absolute","z-index":a}).css(f).animate(i,s,function(){if(c)r.addClass("ng-hide");if(u)u()})};this.mutateDroppable=function(e,n,r,i,o,u){var a=e.$eval(i);e.dndDragItem=o;if(t.isArray(a)){if(n&&n.index>=0){a[n.index]=o}else{a.push(o)}if(r&&r.placeholder===true){a[a.length-1]["jqyoui_pos"]=u}}else{s(i+" = dndDragItem")(e);if(r&&r.placeholder===true){a["jqyoui_pos"]=u}}};this.mutateDraggable=function(e,r,i,o,u,a,f){var l=t.equals(a,{}),c=e.$eval(o);e.dndDropItem=a;if(i&&i.placeholder){if(i.placeholder!="keep"){if(t.isArray(c)&&i.index!==n){c[i.index]=a}else{s(o+" = dndDropItem")(e)}}}else{if(t.isArray(c)){if(l){if(i&&i.placeholder!==true&&i.placeholder!=="keep"){c.splice(i.index,1)}}else{c[i.index]=a}}else{s(o+" = dndDropItem")(e);if(e.$parent){s(o+" = dndDropItem")(e.$parent)}}}f.css({"z-index":"",left:"",top:""})};this.fixIndex=function(e,r,i){if(r.applyFilter&&t.isArray(i)&&i.length>0){var s=e[r.applyFilter](),o=s[r.index],u=n;i.forEach(function(e,n){if(t.equals(e,o)){u=n}});return u}return r.index}}]).directive("jqyouiDraggable",["ngDragDropService",function(e){return{require:"?jqyouiDroppable",restrict:"A",link:function(n,i,s){var o,u,a;var f=function(f,l){if(f){o=n.$eval(i.attr("jqyoui-draggable")||i.attr("data-jqyoui-draggable"))||{};u=n.$eval(s.jqyouiOptions)||{};i.draggable({disabled:false}).draggable(u).draggable({start:function(i,s){a=t.element(u.helper?s.helper:this).css("z-index");t.element(u.helper?s.helper:this).css("z-index",9999);r.startXY=t.element(this)[o.containment||"offset"]();e.callEventCallback(n,o.onStart,i,s)},stop:function(r,i){t.element(u.helper?i.helper:this).css("z-index",a);e.callEventCallback(n,o.onStop,r,i)},drag:function(t,r){e.callEventCallback(n,o.onDrag,t,r)}})}else{i.draggable({disabled:true})}};n.$watch(function(){return n.$eval(s.drag)},f);f();i.on("$destroy",function(){i.draggable("destroy")})}}}]).directive("jqyouiDroppable",["ngDragDropService",function(e){return{restrict:"A",priority:1,link:function(n,r,i){var s;var o=function(o,u){if(o){s=n.$eval(t.element(r).attr("jqyoui-droppable")||t.element(r).attr("data-jqyoui-droppable"))||{};r.droppable({disabled:false}).droppable(n.$eval(i.jqyouiOptions)||{}).droppable({over:function(t,r){e.callEventCallback(n,s.onOver,t,r)},out:function(t,r){e.callEventCallback(n,s.onOut,t,r)},drop:function(r,o){if(t.element(o.draggable).ngattr("ng-model")&&i.ngModel){e.invokeDrop(t.element(o.draggable),t.element(this),r,o)}else{e.callEventCallback(n,s.onDrop,r,o)}}})}else{r.droppable({disabled:true})}};n.$watch(function(){return n.$eval(i.drop)},o);o();r.on("$destroy",function(){r.droppable("destroy")})}}}]);$.fn.ngattr=function(e,n){var r=t.element(this).get(0);return r.getAttribute(e)||r.getAttribute("data-"+e)}})(window,window.angular)
-
-},{}],3:[function(require,module,exports){
+},{"./contextmenu/contextmenu.js":5,"./decisionTable/decisionTable.js":8,"./dropdownNavigator/dropdownNavigator.js":9,"./hierarchicalMenu/hierarchicalMenu.js":11,"./itemList/itemList.js":14,"./searchBox/searchBox.js":21,"./services/isisUIServices.js":22,"./simpleDialog/simpleDialog.js":23,"./taxonomyTerms/taxonomyTerms.js":25,"./treeNavigator/treeNavigator.js":27,"./valueWidgets/valueWidgets.js":36}],2:[function(require,module,exports){
 !function(){"use strict";function a(a,b){return a.module("angularMoment",[]).constant("angularMomentConfig",{preprocess:null,timezone:"",format:null}).constant("moment",b).constant("amTimeAgoConfig",{withoutSuffix:!1,serverTime:null}).directive("amTimeAgo",["$window","moment","amMoment","amTimeAgoConfig","angularMomentConfig",function(b,c,d,e,f){return function(g,h,i){function j(){var a;if(e.serverTime){var b=(new Date).getTime(),d=b-t+e.serverTime;a=c(d)}else a=c();return a}function k(){q&&(b.clearTimeout(q),q=null)}function l(a){if(h.text(a.from(j(),s)),!w){var c=Math.abs(j().diff(a,"minute")),d=3600;1>c?d=1:60>c?d=30:180>c&&(d=300),q=b.setTimeout(function(){l(a)},1e3*d)}}function m(a){x&&h.attr("datetime",a)}function n(){if(k(),o){var a=d.preprocessDate(o,u,r);l(a),m(a.toISOString())}}var o,p,q=null,r=f.format,s=e.withoutSuffix,t=(new Date).getTime(),u=f.preprocess,v=i.amTimeAgo.replace(/^::/,""),w=0===i.amTimeAgo.indexOf("::"),x="TIME"===h[0].nodeName.toUpperCase();p=g.$watch(v,function(a){return"undefined"==typeof a||null===a||""===a?(k(),void(o&&(h.text(""),m(""),o=null))):(o=a,n(),void(void 0!==a&&w&&p()))}),a.isDefined(i.amWithoutSuffix)&&g.$watch(i.amWithoutSuffix,function(a){"boolean"==typeof a?(s=a,n()):s=e.withoutSuffix}),i.$observe("amFormat",function(a){"undefined"!=typeof a&&(r=a,n())}),i.$observe("amPreprocess",function(a){u=a,n()}),g.$on("$destroy",function(){k()}),g.$on("amMoment:localeChanged",function(){n()})}}]).service("amMoment",["moment","$rootScope","$log","angularMomentConfig",function(b,c,d,e){var f=this;this.preprocessors={utc:b.utc,unix:b.unix},this.changeLocale=function(d){var e=(b.locale||b.lang)(d);return a.isDefined(d)&&(c.$broadcast("amMoment:localeChanged"),c.$broadcast("amMoment:languageChange")),e},this.changeLanguage=function(a){return d.warn("angular-moment: Usage of amMoment.changeLanguage() is deprecated. Please use changeLocale()"),f.changeLocale(a)},this.preprocessDate=function(c,f,g){return a.isUndefined(f)&&(f=e.preprocess),this.preprocessors[f]?this.preprocessors[f](c,g):(f&&d.warn("angular-moment: Ignoring unsupported value for preprocess: "+f),!isNaN(parseFloat(c))&&isFinite(c)?b(parseInt(c,10)):b(c,g))},this.applyTimezone=function(a){var b=e.timezone;return a&&b&&(a.tz?a=a.tz(b):d.warn("angular-moment: timezone specified but moment.tz() is undefined. Did you forget to include moment-timezone.js?")),a}}]).filter("amCalendar",["moment","amMoment",function(a,b){return function(c,d){if("undefined"==typeof c||null===c)return"";c=b.preprocessDate(c,d);var e=a(c);return e.isValid()?b.applyTimezone(e).calendar():""}}]).filter("amDateFormat",["moment","amMoment",function(a,b){return function(c,d,e){if("undefined"==typeof c||null===c)return"";c=b.preprocessDate(c,e);var f=a(c);return f.isValid()?b.applyTimezone(f).format(d):""}}]).filter("amDurationFormat",["moment",function(a){return function(b,c,d){return"undefined"==typeof b||null===b?"":a.duration(b,c).humanize(d)}}])}"function"==typeof define&&define.amd?define("angular-moment",["angular","moment"],a):a(angular,window.moment)}();
 //# sourceMappingURL=angular-moment.min.js.map
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 !function(a,b){"use strict";b.module("ui.sortable",[]).value("uiSortableConfig",{}).directive("uiSortable",["uiSortableConfig","$timeout","$log",function(a,c,d){return{require:"?ngModel",link:function(e,f,g,h){function i(a,b){return b&&"function"==typeof b?function(c,d){a(c,d),b(c,d)}:a}function j(a,b){var c=a.sortable("option","helper");return"clone"===c||"function"==typeof c&&b.item.sortable.isCustomHelperUsed()}var k,l={},m={receive:null,remove:null,start:null,stop:null,update:null},n={helper:null};return b.extend(l,a,e.$eval(g.uiSortable)),b.element.fn&&b.element.fn.jquery?(h?(e.$watch(g.ngModel+".length",function(){c(function(){f.data("ui-sortable")&&f.sortable("refresh")})}),m.start=function(a,b){b.item.sortable={index:b.item.index(),cancel:function(){b.item.sortable._isCanceled=!0},isCanceled:function(){return b.item.sortable._isCanceled},isCustomHelperUsed:function(){return!!b.item.sortable._isCustomHelperUsed},_isCanceled:!1,_isCustomHelperUsed:b.item.sortable._isCustomHelperUsed}},m.activate=function(){k=f.contents();var a=f.sortable("option","placeholder");if(a&&a.element&&"function"==typeof a.element){var c=a.element();c=b.element(c);var d=f.find('[class="'+c.attr("class")+'"]');k=k.not(d)}},m.update=function(a,b){b.item.sortable.received||(b.item.sortable.dropindex=b.item.index(),b.item.sortable.droptarget=b.item.parent(),f.sortable("cancel")),j(f,b)&&!b.item.sortable.received&&"parent"===f.sortable("option","appendTo")&&(k=k.not(k.last())),k.appendTo(f),b.item.sortable.received&&(k=null),b.item.sortable.received&&!b.item.sortable.isCanceled()&&e.$apply(function(){h.$modelValue.splice(b.item.sortable.dropindex,0,b.item.sortable.moved)})},m.stop=function(a,b){!b.item.sortable.received&&"dropindex"in b.item.sortable&&!b.item.sortable.isCanceled()?e.$apply(function(){h.$modelValue.splice(b.item.sortable.dropindex,0,h.$modelValue.splice(b.item.sortable.index,1)[0])}):"dropindex"in b.item.sortable&&!b.item.sortable.isCanceled()||j(f,b)||k.appendTo(f),k=null},m.receive=function(a,b){b.item.sortable.received=!0},m.remove=function(a,b){"dropindex"in b.item.sortable||(f.sortable("cancel"),b.item.sortable.cancel()),b.item.sortable.isCanceled()||e.$apply(function(){b.item.sortable.moved=h.$modelValue.splice(b.item.sortable.index,1)[0]})},n.helper=function(a){return a&&"function"==typeof a?function(b,c){var d=a(b,c);return c.sortable._isCustomHelperUsed=c!==d,d}:a},e.$watch(g.uiSortable,function(a){f.data("ui-sortable")&&b.forEach(a,function(a,b){m[b]?("stop"===b&&(a=i(a,function(){e.$apply()})),a=i(m[b],a)):n[b]&&(a=n[b](a)),f.sortable("option",b,a)})},!0),b.forEach(m,function(a,b){l[b]=i(a,l[b])})):d.info("ui.sortable: ngModel not provided!",f),void f.sortable(l)):void d.error("ui.sortable: jQuery should be included before AngularJS!")}}}])}(window,window.angular);
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -3005,7 +2974,7 @@ angular.module( 'isis.ui.components', [
 }).call(this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*globals angular, $*/
 'use strict';
 
@@ -3365,7 +3334,7 @@ angular.module(
         };
       }
     ] );
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3419,7 +3388,7 @@ function () {
 });
 
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3465,7 +3434,7 @@ function () {
 });
 
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3507,7 +3476,7 @@ function () {
 });
 
 
-},{"./decisionTable.decisions.js":7,"./decisionTable.declarations.js":8}],10:[function(require,module,exports){
+},{"./decisionTable.decisions.js":6,"./decisionTable.declarations.js":7}],9:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3527,7 +3496,7 @@ angular.module(
         templateUrl: '/isis-ui-components/templates/dropdownNavigator.html'
       };
     } );
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3583,7 +3552,7 @@ angular.module( 'RecursionHelper', [] )
       };
     }
   ] );
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3665,7 +3634,7 @@ angular.module(
         };
       }
     ] );
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3716,7 +3685,7 @@ angular.module(
 
 
     } );
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3738,7 +3707,7 @@ angular.module(
 
 
     } );
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3813,7 +3782,7 @@ angular.module(
     };
   }
 );
-},{"../contextmenu/contextmenu.js":6,"./itemListFilter.js":16,"./itemListNewItem.js":18,"./listItemGroup.js":21}],16:[function(require,module,exports){
+},{"../contextmenu/contextmenu.js":5,"./itemListFilter.js":15,"./itemListNewItem.js":17,"./listItemGroup.js":20}],15:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3832,7 +3801,7 @@ angular.module(
         require: '^itemList'
       };
     } );
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3860,7 +3829,7 @@ angular.module(
       };
     }
 );
-},{"./itemDetails.js":13,"./itemHeader.js":14,"./itemMenu.js":19,"./itemStats.js":20}],18:[function(require,module,exports){
+},{"./itemDetails.js":12,"./itemHeader.js":13,"./itemMenu.js":18,"./itemStats.js":19}],17:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3898,7 +3867,7 @@ angular.module(
         }
       };
     } );
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3920,7 +3889,7 @@ angular.module(
 
 
     } );
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*globals angular, window*/
 'use strict';
 
@@ -3944,7 +3913,7 @@ angular.module(
         require: '^itemList'
       };
     } );
-},{"angular-moment":3,"moment":5}],21:[function(require,module,exports){
+},{"angular-moment":2,"moment":4}],20:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -3978,7 +3947,7 @@ angular.module(
         }
       };
     } );
-},{"./itemListItem.js":17,"angular-ui-sortable":4}],22:[function(require,module,exports){
+},{"./itemListItem.js":16,"angular-ui-sortable":3}],21:[function(require,module,exports){
 /*globals angular*/
 
 
@@ -4003,7 +3972,7 @@ angular.module(
 
       };
     } );
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4061,7 +4030,7 @@ angular.module(
 
   }
 ] );
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -4150,7 +4119,7 @@ angular.module(
 
     return $simpleDialogProvider;
   } );
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -4182,7 +4151,7 @@ function () {
 });
 
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -4214,7 +4183,7 @@ function () {
 });
 
 
-},{"./taxonomyTerm.js":25}],27:[function(require,module,exports){
+},{"./taxonomyTerm.js":24}],26:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4239,7 +4208,7 @@ angular.module(
       };
     }
 );
-},{"../contextmenu/contextmenu.js":6}],28:[function(require,module,exports){
+},{"../contextmenu/contextmenu.js":5}],27:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4252,8 +4221,7 @@ angular.module(
   'isis.ui.treeNavigator', [
     'isis.ui.treeNavigator.nodeList',
     'isis.ui.treeNavigator.header',
-    'isis.ui.treeNavigator.node.label',
-    'ngDragDrop'
+    'isis.ui.treeNavigator.node.label'
   ] )
 
 .controller( 'TreeNavigatorController', function ( $scope ) {
@@ -4295,7 +4263,7 @@ angular.module(
     };
   }
 );
-},{"./treeNavigator.header.js":27,"./treeNavigator.node.label.js":30,"./treeNavigator.nodeList.js":31}],29:[function(require,module,exports){
+},{"./treeNavigator.header.js":26,"./treeNavigator.node.label.js":29,"./treeNavigator.nodeList.js":30}],28:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4318,7 +4286,7 @@ angular.module(
       };
     }
 );
-},{"./treeNavigator.node.label.js":30}],30:[function(require,module,exports){
+},{"./treeNavigator.node.label.js":29}],29:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4341,20 +4309,18 @@ angular.module(
       };
     }
 );
-},{"../contextmenu/contextmenu.js":6}],31:[function(require,module,exports){
+},{"../contextmenu/contextmenu.js":5}],30:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
 
 require( './treeNavigator.node.js' );
 require( '../helpers/angular-recursion.js' );
-require( 'angular-dragdrop' );
 
 angular.module(
 'isis.ui.treeNavigator.nodeList', [
   'isis.ui.treeNavigator.node',
-  'RecursionHelper',
-  'ngDragDrop'
+  'RecursionHelper'
 ]
 )
 
@@ -4616,7 +4582,7 @@ angular.module(
   };
 }
 );
-},{"../helpers/angular-recursion.js":11,"./treeNavigator.node.js":29,"angular-dragdrop":2}],32:[function(require,module,exports){
+},{"../helpers/angular-recursion.js":10,"./treeNavigator.node.js":28}],31:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -4694,7 +4660,7 @@ angular.module(
       }
     };
   });
-},{"../contextmenu/contextmenu.js":6}],33:[function(require,module,exports){
+},{"../contextmenu/contextmenu.js":5}],32:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4753,7 +4719,7 @@ angular.module(
     };
   }
 ] );
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*globals angular*/
 
 
@@ -4795,7 +4761,7 @@ angular.module(
         };
       }
     ] );
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4880,7 +4846,7 @@ angular.module(
     };
   }
 ]);
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4974,7 +4940,7 @@ angular.module(
     }
   };
 }] );
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5171,4 +5137,4 @@ directive( 'valueWidgetBody', [ '$log', '$compile', 'valueWidgetsService',
 
   }
 ] );
-},{"../validationErrorMarker/validationErrorMarker.js":32,"./checkboxWidget.js":33,"./compoundWidget.js":34,"./selectWidget.js":35,"./stringWidget.js":36}]},{},[1]);
+},{"../validationErrorMarker/validationErrorMarker.js":31,"./checkboxWidget.js":32,"./compoundWidget.js":33,"./selectWidget.js":34,"./stringWidget.js":35}]},{},[1]);

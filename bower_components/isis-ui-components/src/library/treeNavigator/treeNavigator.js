@@ -10,8 +10,7 @@ angular.module(
   'isis.ui.treeNavigator', [
     'isis.ui.treeNavigator.nodeList',
     'isis.ui.treeNavigator.header',
-    'isis.ui.treeNavigator.node.label',
-    'ngDragDrop'
+    'isis.ui.treeNavigator.node.label'
   ] )
 
 .controller( 'TreeNavigatorController', function ( $scope ) {
