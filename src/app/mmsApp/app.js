@@ -103,15 +103,40 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
 
 
-CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
+CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window, $mdDialog) {
 
     var defaultNavigatorItems;
 
     defaultNavigatorItems = [
         {
             id: 'root',
-            label: 'MetaMorphosis',
-            itemClass: 'cyphy-root'
+            label: '',
+            itemClass: 'cyphy-root',
+            action: function(item, ev) {
+
+                function DialogController($scope, $mdDialog) {
+                    $scope.hide = function() {
+                        $mdDialog.hide();
+                    };
+                    $scope.cancel = function() {
+                        $mdDialog.cancel();
+                    };
+                    $scope.answer = function(answer) {
+                        $mdDialog.hide(answer);
+                    };
+                }
+
+                $mdDialog.show({
+                    controller: DialogController,
+                    templateUrl: '/mmsApp/templates/aboutDialog.html',
+                    targetEvent: ev
+                })
+                    .then(function(answer) {
+                        $scope.alert = 'You said the information was "' + answer + '".';
+                    }, function() {
+                        $scope.alert = 'You cancelled the dialog.';
+                    });
+            }
         }
     ];
 
@@ -120,17 +145,21 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
         items: angular.copy(defaultNavigatorItems, [])
     };
 
-    $rootScope.$watch('projectId', function (projectId) {
+    $rootScope.$watch('activeDesign', function (activeDesign) {
 
-        if (projectId) {
+        console.log(activeDesign);
+
+        if (activeDesign && activeDesign.id) {
+
 
             $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
+
             $scope.navigator.items.push({
-                id: 'project',
-                label: projectId,
-                action: function () {
-                    $window.open('/?project=' + projectId);
-                }
+                id: 'design',
+                label: activeDesign.name
+                //action: function () {
+                //    $window.open('/?project=' + projectId);
+                //}
             });
 
         } else {
@@ -142,7 +171,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 });
 
 CyPhyApp.controller('EditorViewController', function () {
-    console.log('lolka');
 });
 
 CyPhyApp.controller('CreateDesignController', function (

@@ -10,6 +10,8 @@
 .main-navigator-container {
     .dropdown-navigator {
 
+        overflow: hidden;
+
         margin-bottom: 0;
 
         @include mmsBlueGradient();
@@ -17,6 +19,8 @@
         color: #f0f0f0;
 
         > li {
+
+
             transition: background-color 200ms;
 
             text-shadow: 0 1px 2px rgba(0, 15, 50, .35);
@@ -36,14 +40,19 @@
         }
 
         li.cyphy-root {
-            background-image: url(./images/mms-icon-bright.png);
-            background-position: 8px 10px;
-            background-repeat: no-repeat;
+
+            background-color: rgba(0,0,68,.2);
 
             .label-container {
+                background-image: url(./images/mms-icon-bright.png);
+                background-position: 8px 10px;
+                background-repeat: no-repeat;
+
                 padding-left: 46px;
 
                 .item-label {
+                    display: inline-block;
+                    height: 1em;
                     font-style: italic;
                 }
 
@@ -59,6 +68,11 @@
 
 h1.main-view-header {
     padding: 0px 14px;
+}
+
+.version-number {
+    font-size: 60%;
+    color: $mmsBlueLight;
 }
 
 .main-view-container {

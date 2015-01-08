@@ -136,6 +136,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     $scope.diagram =
                         diagramService.createDiagramFromCyPhyElements($rootScope.activeDiagramId, cyPhyLayout.elements);
+
                 });
 
 
