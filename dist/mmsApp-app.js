@@ -98,7 +98,13 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
         })
         .state('404', {
             url: '/404',
-            templateUrl: '/mmsApp/templates/404.html'
+            templateUrl: '/mmsApp/templates/404.html',
+            views: {
+              'onCover': {
+                  templateUrl: '/mmsApp/templates/404.html',
+                  controller: 'NotFoundController'
+              }
+            }
         });
 });
 
@@ -148,8 +154,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
     $rootScope.$watch('activeDesign', function (activeDesign) {
 
-        console.log(activeDesign);
-
         if (activeDesign && activeDesign.id) {
 
 
@@ -171,7 +175,17 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
+CyPhyApp.controller('AppController', function ($rootScope) {
+    $rootScope.busy = true;
+});
+
 CyPhyApp.controller('EditorViewController', function () {
+});
+
+CyPhyApp.controller('NotFoundController', function ($rootScope) {
+
+    $rootScope.stopBusy();
+
 });
 
 CyPhyApp.controller('CreateDesignController', function (
@@ -307,8 +321,6 @@ module.exports = function () {
             $rootScope.loading = true;
 
             deferred = $q.defer();
-
-            console.log('In selectBranch', $stateParams);
 
             connectionId = connectionHandling.getMainGMEConnectionId();
 
@@ -471,8 +483,6 @@ module.exports = function () {
 
             $rootScope.loading = true;
 
-            console.log('In selectProject', $stateParams);
-
             connectionHandling.establishMainGMEConnection()
                 .then(function(){
 
@@ -516,161 +526,6 @@ module.exports = function () {
                 });
 
             return deferred.promise;
-        },
-
-        selectProjectOld: function ($q,
-                                     $stateParams,
-                                     $rootScope,
-                                     $state,
-                                     $log,
-                                     dataStoreService,
-                                     projectService,
-                                     workspaceService,
-                                     designService,
-                                     connectionHandling) {
-            var deferred,
-                connectionId;
-
-            deferred = $q.defer();
-
-            $rootScope.loading = true;
-
-            connectionId = connectionHandling.getMainGMEConnectionId();
-
-            console.log(connectionId);
-
-            dataStoreService.connectToDatabase(connectionId, {
-                host: window.location.basename
-            })
-                .then(function () {
-
-                    var wsContext;
-
-                    projectService.selectProject(connectionId, $stateParams.projectId)
-                        .then(function (projectId) {
-                            $log.debug('Project selected', projectId);
-                            $rootScope.projectId = projectId;
-                        });
-
-
-                    wsContext = {
-                        db: connectionId,
-                        regionId: 'WorkSpaces_' + ( new Date() )
-                            .toISOString()
-                    };
-
-                    $rootScope.$on('$destroy', function () {
-                        $log.debug('Cleaning up workspace regions');
-                        workspaceService.cleanUpAllRegions(wsContext);
-                    });
-
-
-                    workspaceService.registerWatcher(wsContext, function (destroyed) {
-
-                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
-
-                        if (destroyed !== true) {
-                            workspaceService.watchWorkspaces(wsContext, function (updateObject) {
-
-                                if (updateObject.type === 'load') {
-                                    console.log('load', updateObject);
-                                } else if (updateObject.type === 'update') {
-                                    console.log('update', updateObject);
-                                } else if (updateObject.type === 'unload') {
-                                    console.log('unload', updateObject);
-                                } else {
-                                    throw new Error(updateObject);
-
-                                }
-
-                            }).then(function (data) {
-
-                                var hasFoundFirstWorkspace,
-                                    hasFoundFirstDesign;
-
-                                hasFoundFirstWorkspace = false;
-                                hasFoundFirstDesign = false;
-
-
-                                angular.forEach(data.workspaces, function (workSpace) {
-
-                                    if (!hasFoundFirstWorkspace) {
-
-                                        hasFoundFirstWorkspace = true;
-                                        $rootScope.activeWorkSpace = workSpace;
-                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
-
-
-                                    }
-
-                                });
-
-                                if (hasFoundFirstWorkspace) {
-
-                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id, function (/*designsUpdateObject*/) {
-
-                                    }).then(function (designsData) {
-
-                                        angular.forEach(designsData.designs, function (design) {
-
-                                            if (!hasFoundFirstDesign) {
-
-                                                hasFoundFirstDesign = true;
-                                                $rootScope.activeDesign = design;
-                                                $log.debug('Active design:', $rootScope.activeDesign);
-
-                                            }
-
-                                        });
-
-
-                                        if (hasFoundFirstDesign) {
-
-                                            deferred.resolve();
-
-                                        } else {
-
-                                            $rootScope.loading = false;
-
-                                            $log.debug('Could not find designs in workspace.');
-                                            $state.go('404', {
-                                                projectId: $stateParams.projectId
-                                            });
-
-                                            deferred.reject();
-                                        }
-
-                                    });
-
-                                } else {
-
-                                    $rootScope.loading = false;
-
-                                    $log.debug('Could not find workspaces in project.');
-                                    $state.go('404', {
-                                        projectId: $stateParams.projectId
-                                    });
-
-                                    deferred.reject();
-
-                                }
-
-                            });
-
-                        } else {
-                            $log.debug('WokrspaceService destroyed...');
-                        }
-                    });
-
-                }).catch(function (reason) {
-                    $rootScope.loading = false;
-                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                    $state.go('404', {
-                        projectId: $stateParams.projectId
-                    });
-                });
-
-            return deferred.promise;
         }
 
 
@@ -698,36 +553,59 @@ angular.module( 'mms.designVisualization.busyCover', [] )
 
                     scope.$watch(function() {
 
-                        var result;
-
-                        result = false;
+                        var isBusy;
 
                         if ($rootScope.loading) {
 
-                            result = true;
                             scope.busyMessage = 'Loading...';
 
                         } else if ( $rootScope.initializing ){
-
-                            result = true;
 
                             scope.busyMessage = 'Initializing...';
 
                         } else if ( $rootScope.busy ){
 
-                            result = true;
-
                             if (!scope.busyMessage) {
                                 scope.busyMessage = 'Just a second...';
                             }
 
+                        } else {
+                            scope.busyMessage = '';
                         }
 
-                        return result;
+                        isBusy = $rootScope.loading ||
+                            $rootScope.initializing ||
+                            $rootScope.busy;
 
-                    }, function(newVal) {
+                        return isBusy;
 
-                        if (newVal) {
+                    }, function(isBusy) {
+
+                        scope.busy = isBusy;
+
+                        if (!isBusy) {
+
+                            element.removeClass('busy');
+
+                        } else {
+
+                            element.addClass('busy');
+
+                        }
+
+                    });
+
+                    scope.$watch(function() {
+
+                        var isCovered;
+
+                        isCovered = ( $rootScope.unCovered !== true );
+
+                        return isCovered;
+
+                    }, function(isCovered) {
+
+                        if (isCovered) {
 
                             element.removeClass('off');
 
@@ -740,6 +618,19 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                     });
 
 
+                    $rootScope.stopBusy = function() {
+
+                        $rootScope.loading = false;
+                        $rootScope.initializing = false;
+                        $rootScope.busy = false;
+
+                    };
+
+                    $rootScope.unCover = function() {
+
+                        $rootScope.unCovered = true;
+
+                    };
                 }
 
 
@@ -1011,6 +902,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
         } else {
 
+            $scope.designCtx = designCtx;
+
             designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
@@ -1055,16 +948,25 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 setupDiagramEventHandlers();
 
-                $rootScope.loading = false;
+                $timeout(function(){
+                    $rootScope.stopBusy();
+                    $rootScope.unCover();
+                }, 500);
 
             });
 
             $scope.$on('$destroy', function() {
 
-                $log.debug('Celaning up designLayout watchers');
-                designLayoutService.cleanUpAllRegions(designCtx);
+                $rootScope.unCovered = false;
+
+                if ($scope.designCtx) {
+                    $log.debug('Celaning up designLayout watchers');
+                    designLayoutService.cleanUpAllRegions($scope.designCtx);
+                }
 
             });
+
+
         }
 
     })
@@ -2839,8 +2741,9 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                                 if (data === id) {
                                     diagramContainerController.setInitialized(true);
-                                    $rootScope.initializing = false;
                                 }
+
+                                $rootScope.initializing = false;
 
                             });
 

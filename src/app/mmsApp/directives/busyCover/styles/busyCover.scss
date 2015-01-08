@@ -30,7 +30,6 @@
     z-index: 10000;
     top: 0;
     left: 0;
-    cursor: wait;
 
     transition: opacity 1000ms;
 
@@ -45,9 +44,6 @@
         background-color: #fff;
 
         .logo-container {
-
-            @include animation(0, 1s, logoAnimation, infinite);
-
             background-image: url(./images/mms-icon-big.png);
             width: 100%;
             height: 100%;
@@ -65,20 +61,35 @@
 
     }
 
+
+    &.busy {
+        cursor: wait;
+
+        .top-half {
+
+            .logo-container {
+                @include animation(0, 1s, logoAnimation, infinite);
+            }
+
+        }
+    }
+
+
     .bottom-half {
         position: absolute;
         transition: top 500ms;
         width: 100%;
         height: 50%;
         top: 50%;
+        color: #fff;
+        padding-left: 1em;
+        font-size: 1.2em;
 
         @include mmsBlueGradient();
 
-        .busy-message {
+        .header {
             font-size: 200%;
-            margin-left: 1em;
             margin-top: 1ex;
-            color: #fff;
         }
 
     }

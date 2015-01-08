@@ -32,14 +32,16 @@
 
     <title>MMS App</title>
 </head>
-<body class="mms-app">
+<body class="mms-app ng-cloak" data-ng-controller="AppController">
 <div growl></div>
 <div data-ng-controller="MainNavigatorController" class="main-navigator-container">
     <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
 </div>
 <div ui-view class="main-view-container" resize-to-window height-is-less-with="51"></div>
 
-<busy-cover></busy-cover>
+<busy-cover>
+    <div ui-view="onCover"></div>
+</busy-cover>
 
 <div class="processing-cover"
      ng-if="processing"

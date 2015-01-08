@@ -347,8 +347,9 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                                 if (data === id) {
                                     diagramContainerController.setInitialized(true);
-                                    $rootScope.initializing = false;
                                 }
+
+                                $rootScope.initializing = false;
 
                             });
 

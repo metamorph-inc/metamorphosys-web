@@ -17,36 +17,59 @@ angular.module( 'mms.designVisualization.busyCover', [] )
 
                     scope.$watch(function() {
 
-                        var result;
-
-                        result = false;
+                        var isBusy;
 
                         if ($rootScope.loading) {
 
-                            result = true;
                             scope.busyMessage = 'Loading...';
 
                         } else if ( $rootScope.initializing ){
-
-                            result = true;
 
                             scope.busyMessage = 'Initializing...';
 
                         } else if ( $rootScope.busy ){
 
-                            result = true;
-
                             if (!scope.busyMessage) {
                                 scope.busyMessage = 'Just a second...';
                             }
 
+                        } else {
+                            scope.busyMessage = '';
                         }
 
-                        return result;
+                        isBusy = $rootScope.loading ||
+                            $rootScope.initializing ||
+                            $rootScope.busy;
 
-                    }, function(newVal) {
+                        return isBusy;
 
-                        if (newVal) {
+                    }, function(isBusy) {
+
+                        scope.busy = isBusy;
+
+                        if (!isBusy) {
+
+                            element.removeClass('busy');
+
+                        } else {
+
+                            element.addClass('busy');
+
+                        }
+
+                    });
+
+                    scope.$watch(function() {
+
+                        var isCovered;
+
+                        isCovered = ( $rootScope.unCovered !== true );
+
+                        return isCovered;
+
+                    }, function(isCovered) {
+
+                        if (isCovered) {
 
                             element.removeClass('off');
 
@@ -59,6 +82,19 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                     });
 
 
+                    $rootScope.stopBusy = function() {
+
+                        $rootScope.loading = false;
+                        $rootScope.initializing = false;
+                        $rootScope.busy = false;
+
+                    };
+
+                    $rootScope.unCover = function() {
+
+                        $rootScope.unCovered = true;
+
+                    };
                 }
 
 

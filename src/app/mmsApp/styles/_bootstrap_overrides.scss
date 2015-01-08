@@ -1,10 +1,23 @@
 .btn {
-  border-radius: 3px;
+  border-radius: 1ex;
+  font-weight: bold;
+  font-size: 95%;
 }
 
 .btn-default {
-  background-color: #08489d;
+
+  @include gradient(#072e71, #011869, 100%);
+
+  border-color: #A4B6D5;
   color: #fff;
+  padding-left:2ex;
+  padding-right:2ex;
+  box-shadow: 0 0 3px rgba(0,0,0,.2);
+
+  &:hover {
+    color: #fff;
+    @include gradient(#ff7100, #ff7100, 100%);
+  }
 }
 
 a:focus {

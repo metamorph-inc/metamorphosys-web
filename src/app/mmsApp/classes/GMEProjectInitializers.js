@@ -27,8 +27,6 @@ module.exports = function () {
 
             deferred = $q.defer();
 
-            console.log('In selectBranch', $stateParams);
-
             connectionId = connectionHandling.getMainGMEConnectionId();
 
             selectBranchWhenHaveOne = function(branchId) {
@@ -190,8 +188,6 @@ module.exports = function () {
 
             $rootScope.loading = true;
 
-            console.log('In selectProject', $stateParams);
-
             connectionHandling.establishMainGMEConnection()
                 .then(function(){
 
@@ -227,161 +223,6 @@ module.exports = function () {
                         });
                 })
                 .catch(function (reason) {
-                    $rootScope.loading = false;
-                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                    $state.go('404', {
-                        projectId: $stateParams.projectId
-                    });
-                });
-
-            return deferred.promise;
-        },
-
-        selectProjectOld: function ($q,
-                                     $stateParams,
-                                     $rootScope,
-                                     $state,
-                                     $log,
-                                     dataStoreService,
-                                     projectService,
-                                     workspaceService,
-                                     designService,
-                                     connectionHandling) {
-            var deferred,
-                connectionId;
-
-            deferred = $q.defer();
-
-            $rootScope.loading = true;
-
-            connectionId = connectionHandling.getMainGMEConnectionId();
-
-            console.log(connectionId);
-
-            dataStoreService.connectToDatabase(connectionId, {
-                host: window.location.basename
-            })
-                .then(function () {
-
-                    var wsContext;
-
-                    projectService.selectProject(connectionId, $stateParams.projectId)
-                        .then(function (projectId) {
-                            $log.debug('Project selected', projectId);
-                            $rootScope.projectId = projectId;
-                        });
-
-
-                    wsContext = {
-                        db: connectionId,
-                        regionId: 'WorkSpaces_' + ( new Date() )
-                            .toISOString()
-                    };
-
-                    $rootScope.$on('$destroy', function () {
-                        $log.debug('Cleaning up workspace regions');
-                        workspaceService.cleanUpAllRegions(wsContext);
-                    });
-
-
-                    workspaceService.registerWatcher(wsContext, function (destroyed) {
-
-                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
-
-                        if (destroyed !== true) {
-                            workspaceService.watchWorkspaces(wsContext, function (updateObject) {
-
-                                if (updateObject.type === 'load') {
-                                    console.log('load', updateObject);
-                                } else if (updateObject.type === 'update') {
-                                    console.log('update', updateObject);
-                                } else if (updateObject.type === 'unload') {
-                                    console.log('unload', updateObject);
-                                } else {
-                                    throw new Error(updateObject);
-
-                                }
-
-                            }).then(function (data) {
-
-                                var hasFoundFirstWorkspace,
-                                    hasFoundFirstDesign;
-
-                                hasFoundFirstWorkspace = false;
-                                hasFoundFirstDesign = false;
-
-
-                                angular.forEach(data.workspaces, function (workSpace) {
-
-                                    if (!hasFoundFirstWorkspace) {
-
-                                        hasFoundFirstWorkspace = true;
-                                        $rootScope.activeWorkSpace = workSpace;
-                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
-
-
-                                    }
-
-                                });
-
-                                if (hasFoundFirstWorkspace) {
-
-                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id, function (/*designsUpdateObject*/) {
-
-                                    }).then(function (designsData) {
-
-                                        angular.forEach(designsData.designs, function (design) {
-
-                                            if (!hasFoundFirstDesign) {
-
-                                                hasFoundFirstDesign = true;
-                                                $rootScope.activeDesign = design;
-                                                $log.debug('Active design:', $rootScope.activeDesign);
-
-                                            }
-
-                                        });
-
-
-                                        if (hasFoundFirstDesign) {
-
-                                            deferred.resolve();
-
-                                        } else {
-
-                                            $rootScope.loading = false;
-
-                                            $log.debug('Could not find designs in workspace.');
-                                            $state.go('404', {
-                                                projectId: $stateParams.projectId
-                                            });
-
-                                            deferred.reject();
-                                        }
-
-                                    });
-
-                                } else {
-
-                                    $rootScope.loading = false;
-
-                                    $log.debug('Could not find workspaces in project.');
-                                    $state.go('404', {
-                                        projectId: $stateParams.projectId
-                                    });
-
-                                    deferred.reject();
-
-                                }
-
-                            });
-
-                        } else {
-                            $log.debug('WokrspaceService destroyed...');
-                        }
-                    });
-
-                }).catch(function (reason) {
                     $rootScope.loading = false;
                     $log.debug('Opening project errored:', $stateParams.projectId, reason);
                     $state.go('404', {

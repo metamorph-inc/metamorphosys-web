@@ -100,6 +100,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
         } else {
 
+            $scope.designCtx = designCtx;
+
             designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
@@ -144,16 +146,25 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 setupDiagramEventHandlers();
 
-                $rootScope.loading = false;
+                $timeout(function(){
+                    $rootScope.stopBusy();
+                    $rootScope.unCover();
+                }, 500);
 
             });
 
             $scope.$on('$destroy', function() {
 
-                $log.debug('Celaning up designLayout watchers');
-                designLayoutService.cleanUpAllRegions(designCtx);
+                $rootScope.unCovered = false;
+
+                if ($scope.designCtx) {
+                    $log.debug('Celaning up designLayout watchers');
+                    designLayoutService.cleanUpAllRegions($scope.designCtx);
+                }
 
             });
+
+
         }
 
     })

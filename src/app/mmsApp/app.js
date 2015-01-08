@@ -97,7 +97,13 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
         })
         .state('404', {
             url: '/404',
-            templateUrl: '/mmsApp/templates/404.html'
+            templateUrl: '/mmsApp/templates/404.html',
+            views: {
+              'onCover': {
+                  templateUrl: '/mmsApp/templates/404.html',
+                  controller: 'NotFoundController'
+              }
+            }
         });
 });
 
@@ -147,8 +153,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
     $rootScope.$watch('activeDesign', function (activeDesign) {
 
-        console.log(activeDesign);
-
         if (activeDesign && activeDesign.id) {
 
 
@@ -170,7 +174,17 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
+CyPhyApp.controller('AppController', function ($rootScope) {
+    $rootScope.busy = true;
+});
+
 CyPhyApp.controller('EditorViewController', function () {
+});
+
+CyPhyApp.controller('NotFoundController', function ($rootScope) {
+
+    $rootScope.stopBusy();
+
 });
 
 CyPhyApp.controller('CreateDesignController', function (
