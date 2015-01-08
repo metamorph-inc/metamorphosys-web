@@ -98,6 +98,12 @@ angular.module('mms.designVisualization.diagramContainer', [
                 return classString;
             };
 
+
+            $scope.somethingWasDroppedOnMe = function($event) {
+                console.log($event);
+            };
+
+
             this.getVisibleArea = function () {
                 return $scope.visibleArea;
             };
@@ -177,6 +183,8 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
 
+                    var $element;
+
                     $log.debug('In diagram container', scope.visibleArea);
 
                     scope.config = scope.config || {};
@@ -194,7 +202,14 @@ angular.module('mms.designVisualization.diagramContainer', [
 //                        bottom: scope.canvasHeight
 //                    };
 
-                    scope.$element = $(element);
+                    $element = scope.$element = $(element);
+
+                    //scope.$watch(function(){
+                    //    return $element.attr('class');
+                    //}, function(cssClass){
+                    //    console.log(cssClass);
+                    //});
+
                     scope.$contentPane = element.find('>.diagram-content-pane');
 
                     $timeout(function() {

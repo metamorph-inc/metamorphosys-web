@@ -63,7 +63,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 if (grid.recalculateVisibleDiagramComponentsPromise) {
 
                     if ($timeout.cancel(grid.recalculateVisibleDiagramComponentsPromise)) {
-                        console.log('had to kill');
+                        $log.debug('Had to kill recalculateVisibleDiagramComponents');
                     }
 
                 }

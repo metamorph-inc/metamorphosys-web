@@ -328,6 +328,12 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     };
 
+                    //scope.$watch(function(){
+                    //    return $element.attr('class');
+                    //}, function(cssClass){
+                    //   console.log(cssClass);
+                    //});
+
                     scope.$watch('diagram', function(newDiagramValue) {
 
                         if (newDiagramValue) {

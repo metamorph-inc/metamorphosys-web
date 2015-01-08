@@ -5070,7 +5070,7 @@ module.exports = function (symbolManager, $log) {
                 classId,
                 {
                     label: parseClassName(classes[i]),
-                    draggable: true
+                    dropChannel: 'noDrop'
                 },
                 parentId
             );
@@ -5115,7 +5115,10 @@ module.exports = function (symbolManager, $log) {
                 id: nodeDescriptor.id,
                 label: label,
                 description: null,
-                parentNode: parentNode
+                parentNode: parentNode,
+                draggable: true,
+                dragChannel: 'component',
+                dropChannel: 'noDrop'
             };
 
             childNodes.push(node);

@@ -4,6 +4,10 @@
 
 require('./libraryIncludes.js');
 
+require('ngDragDrop');
+
+
+
 require('./utils.js');
 
 require('./services/projectHandling/projectHandling.js');
@@ -63,7 +67,9 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'angucomplete-alt',
     'ngTouch',
 
-    'ngMaterial'
+    'ngMaterial',
+
+    'ang-drag-drop'
 ]);
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
@@ -175,7 +181,19 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 });
 
 CyPhyApp.controller('AppController', function ($rootScope) {
+
     $rootScope.busy = true;
+    //
+    //$rootScope.$on('ANGULAR_DRAG_START', function($event, e2, e3) {
+    //    console.log($event, e2, e3);
+    //});
+    //
+    //window.dragStart = function(evt) {
+    //    console.log('--------------' + evt);
+    //    evt.dataTransfer.effectAllowed = 'copy';
+    //    evt.dataTransfer.dropEffect = 'copy';
+    //};
+
 });
 
 CyPhyApp.controller('EditorViewController', function () {

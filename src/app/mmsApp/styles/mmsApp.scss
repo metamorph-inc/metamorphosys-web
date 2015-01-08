@@ -120,3 +120,15 @@ h1.main-view-header {
 
     overflow: auto;
 }
+
+.on-drag-enter {
+    background-color: #d8fff8;
+}
+
+.on-drag-hover {
+    background-color: #c8fcff;
+    cursor: copy;
+}
+
+.drag-handle {
+}
