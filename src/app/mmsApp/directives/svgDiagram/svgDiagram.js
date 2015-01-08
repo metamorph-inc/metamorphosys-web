@@ -370,7 +370,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     });
 
-
                     $element.bind('contextmenu', killContextMenu);
 
 

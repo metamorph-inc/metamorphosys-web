@@ -170,20 +170,17 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             var grid;
 
-            if ( !angular.isDefined( grids[ id ] ) ) {
-                grid = grids[ id ] = {
-                    id: id,
-                    components: diagram.components,
-                    visibleDiagramComponents: [],
-                    wires: diagram.wires,
-                    visibleWires: [],
-                    viewPort: {},
-                    insideVisibleDiagramComponentsRecalculate: false,
-                    initialized: false
-                };
-            } else {
-                throw ( 'Grid was already defined!', id );
-            }
+
+            grid = grids[ id ] = {
+                id: id,
+                components: diagram.components,
+                visibleDiagramComponents: [],
+                wires: diagram.wires,
+                visibleWires: [],
+                viewPort: {},
+                insideVisibleDiagramComponentsRecalculate: false,
+                initialized: false
+            };
 
             return {
                 components: grid.visibleDiagramComponents,

@@ -40,7 +40,7 @@ module.exports = function () {
                         $log.debug('Branch selected', branchId);
                         $rootScope.branchId = branchId;
 
-                        wsContext = {
+                        wsContext = $rootScope.wsContext = {
                             db: connectionId,
                             regionId: 'WorkSpaces_' + ( new Date() )
                                 .toISOString()
@@ -153,7 +153,7 @@ module.exports = function () {
                     .catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening branch errored:', $stateParams.projectId, reason);
-                        $state.go('noProject', {
+                        $state.go('404', {
                             projectId: $stateParams.projectId
                         });
                     });
@@ -172,7 +172,7 @@ module.exports = function () {
                     }).catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                        $state.go('noProject', {
+                        $state.go('404', {
                             projectId: $stateParams.projectId
                         });
                     });
@@ -182,11 +182,13 @@ module.exports = function () {
         },
 
         selectProject: function (
-            $q, projectService, connectionHandling, $stateParams, $log, $rootScope, projectHandling, $state, $timeout) {
+            $q, projectService, connectionHandling, $stateParams, $log, $rootScope, projectHandling, $state) {
 
             var deferred;
 
             deferred = $q.defer();
+
+            $rootScope.loading = true;
 
             console.log('In selectProject', $stateParams);
 
@@ -200,27 +202,27 @@ module.exports = function () {
                             $log.debug('Project selected', projectId);
                             $rootScope.projectId = projectId;
 
-                            projectHandling.findFirstBranch()
-                                .then(function(branchId){
+                            //projectHandling.findFirstBranch()
+                            //    .then(function(branchId){
+                            //
+                            //        $stateParams.branchId = branchId;
+                            //
+                            //        console.log('First branch', branchId);
+                            //
+                            //        deferred.resolve();
+                            //
+                            //        $timeout(function() {
+                            //            $state.go('editor.branch', {
+                            //                projectId: projectId,
+                            //                branchId: branchId
+                            //            });
+                            //        });
+                            //
+                            //
+                            //    });
 
-                                    $stateParams.branchId = branchId;
 
-                                    console.log('First branch', branchId);
-
-                                    deferred.resolve();
-
-                                    $timeout(function() {
-                                        $state.go('editor.branch', {
-                                            projectId: projectId,
-                                            branchId: branchId
-                                        });
-                                    });
-
-
-                                });
-
-
-//                            deferred.resolve(projectId);
+                            deferred.resolve(projectId);
 
                         });
                 })
@@ -277,7 +279,7 @@ module.exports = function () {
                     };
 
                     $rootScope.$on('$destroy', function () {
-                        $log.debug('Destroying');
+                        $log.debug('Cleaning up workspace regions');
                         workspaceService.cleanUpAllRegions(wsContext);
                     });
 

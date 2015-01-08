@@ -214,41 +214,36 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         if (angular.isObject(descriptor) && type) {
 
-            if (!availableSymbols[type]) {
+            portDescriptors = portDescriptors || {};
 
-                portDescriptors = portDescriptors || {};
+            portsAndSizes = portCreator(portDescriptors, parameters);
 
-                portsAndSizes = portCreator(portDescriptors, parameters);
+            cssClass = 'box';
 
-                cssClass = 'box';
-
-                if (parameters.cssClass) {
-                    cssClass += ' parameters.cssClass';
-                }
-
-                symbol = angular.extend(descriptor,
-                    {
-                        type: type,
-                        cssClass: cssClass,
-                        symbolDirective: 'box',
-                        svgDecoration: null,
-                        labelPosition: {
-                            x: portsAndSizes.width/2,
-                            y: parameters.portWireLength + 24
-                        },
-                        portWireLength: parameters.portWireLength,
-                        width: portsAndSizes.width,
-                        height: portsAndSizes.height,
-                        ports: portsAndSizes.ports,
-                        boxHeight: portsAndSizes.height - 2 * parameters.portWireLength,
-                        boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
-                    });
-
-                provider.registerSymbol(symbol);
-
-            } else {
-                symbol = availableSymbols[type];
+            if (parameters.cssClass) {
+                cssClass += ' parameters.cssClass';
             }
+
+            symbol = angular.extend(descriptor,
+                {
+                    type: type,
+                    cssClass: cssClass,
+                    symbolDirective: 'box',
+                    svgDecoration: null,
+                    labelPosition: {
+                        x: portsAndSizes.width/2,
+                        y: parameters.portWireLength + 24
+                    },
+                    portWireLength: parameters.portWireLength,
+                    width: portsAndSizes.width,
+                    height: portsAndSizes.height,
+                    ports: portsAndSizes.ports,
+                    boxHeight: portsAndSizes.height - 2 * parameters.portWireLength,
+                    boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
+                });
+
+            provider.registerSymbol(symbol);
+
 
         }
 

@@ -72,7 +72,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     GMEProjectInitializers = require('./classes/GMEProjectInitializers');
     gmeProjectInitializers = new GMEProjectInitializers();
 
-    $urlRouterProvider.otherwise('/noProject');
+    $urlRouterProvider.otherwise('/404');
 
 
     $stateProvider
@@ -89,26 +89,19 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
             },
             controller: 'EditorViewController'
         })
-        .state('noProject', {
-            url: '/noProject',
-            templateUrl: '/mmsApp/templates/noProjectSpecified.html',
-            controller: 'NoProjectController'
+        .state('createDesign', {
+            url: '/createDesign/:projectId',
+            resolve: {
+                selectProject: gmeProjectInitializers.selectProject
+            },
+            controller: 'CreateDesignController'
+        })
+        .state('404', {
+            url: '/404',
+            templateUrl: '/mmsApp/templates/404.html'
         });
-
 });
 
-
-CyPhyApp.controller('AppController', function() {
-
-//    connectionHandling.establishMainGMEConnection();
-
-    //$rootScope.$on('$stateChangeSuccess',
-    //    function(event, toState, toParams, fromState, fromParams){
-    //
-    //
-    //    })
-
-});
 
 
 CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
@@ -153,38 +146,42 @@ CyPhyApp.controller('EditorViewController', function () {
     console.log('lolka');
 });
 
-CyPhyApp.controller('NoProjectController', function (
-    $rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling) {
+CyPhyApp.controller('CreateDesignController', function (
+    $rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling, workspaceService) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
+    $rootScope.processing = true;
 
-    $scope.startNewProject = function () {
+    if ($rootScope.wsContext) {
 
-        $rootScope.processing = true;
+        $log.debug('Cleaning up workspace regions');
+        workspaceService.cleanUpAllRegions($rootScope.wsContext);
 
-        $log.debug('New project creation');
+    }
 
-            projectHandling.copyProject()
-                .success(function (data) {
+    $rootScope.$emit('$destroy');
 
-                $rootScope.processing = false;
-                $log.debug('New project creation successful', data);
-                $state.go('editor.branch', {
-                    projectId: data,
-                    branchId: 'master'
-                });
+    $log.debug('New branch creation');
 
-            })
-            .error(function (data, status) {
+        projectHandling.cloneMaster()
+            .then(function (data) {
 
-                $log.debug('New project creation failed', status);
-                $rootScope.processing = false;
-                growl.error('An error occured while project creation. Please retry later.');
-
+            $rootScope.processing = false;
+            $log.debug('New project creation successful', data);
+            $state.go('editor.branch', {
+                projectId: $scope.projectId,
+                branchId: data
             });
 
-    };
+        })
+        .catch(function (data, status) {
+
+            $log.debug('New project creation failed', status);
+            $rootScope.processing = false;
+            growl.error('An error occured while project creation. Please retry later.');
+
+        });
 
 });
 
@@ -296,7 +293,7 @@ module.exports = function () {
                         $log.debug('Branch selected', branchId);
                         $rootScope.branchId = branchId;
 
-                        wsContext = {
+                        wsContext = $rootScope.wsContext = {
                             db: connectionId,
                             regionId: 'WorkSpaces_' + ( new Date() )
                                 .toISOString()
@@ -409,7 +406,7 @@ module.exports = function () {
                     .catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening branch errored:', $stateParams.projectId, reason);
-                        $state.go('noProject', {
+                        $state.go('404', {
                             projectId: $stateParams.projectId
                         });
                     });
@@ -428,7 +425,7 @@ module.exports = function () {
                     }).catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                        $state.go('noProject', {
+                        $state.go('404', {
                             projectId: $stateParams.projectId
                         });
                     });
@@ -438,11 +435,13 @@ module.exports = function () {
         },
 
         selectProject: function (
-            $q, projectService, connectionHandling, $stateParams, $log, $rootScope, projectHandling, $state, $timeout) {
+            $q, projectService, connectionHandling, $stateParams, $log, $rootScope, projectHandling, $state) {
 
             var deferred;
 
             deferred = $q.defer();
+
+            $rootScope.loading = true;
 
             console.log('In selectProject', $stateParams);
 
@@ -456,27 +455,27 @@ module.exports = function () {
                             $log.debug('Project selected', projectId);
                             $rootScope.projectId = projectId;
 
-                            projectHandling.findFirstBranch()
-                                .then(function(branchId){
+                            //projectHandling.findFirstBranch()
+                            //    .then(function(branchId){
+                            //
+                            //        $stateParams.branchId = branchId;
+                            //
+                            //        console.log('First branch', branchId);
+                            //
+                            //        deferred.resolve();
+                            //
+                            //        $timeout(function() {
+                            //            $state.go('editor.branch', {
+                            //                projectId: projectId,
+                            //                branchId: branchId
+                            //            });
+                            //        });
+                            //
+                            //
+                            //    });
 
-                                    $stateParams.branchId = branchId;
 
-                                    console.log('First branch', branchId);
-
-                                    deferred.resolve();
-
-                                    $timeout(function() {
-                                        $state.go('editor.branch', {
-                                            projectId: projectId,
-                                            branchId: branchId
-                                        });
-                                    });
-
-
-                                });
-
-
-//                            deferred.resolve(projectId);
+                            deferred.resolve(projectId);
 
                         });
                 })
@@ -533,7 +532,7 @@ module.exports = function () {
                     };
 
                     $rootScope.$on('$destroy', function () {
-                        $log.debug('Destroying');
+                        $log.debug('Cleaning up workspace regions');
                         workspaceService.cleanUpAllRegions(wsContext);
                     });
 
@@ -898,7 +897,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
             designCtx,
 
-            setupDiagramEventHandlers;
+            setupDiagramEventHandlers,
+            eventHandlersAreSet;
 
         $scope.diagram = null;
 
@@ -913,54 +913,59 @@ angular.module('mms.designVisualization.designEditor', [])
 
         setupDiagramEventHandlers = function () {
 
-            $scope.$on('componentsPositionChange', function (e, data) {
+            if (!eventHandlersAreSet) {
 
-                var i;
+                eventHandlersAreSet = true;
 
-                i = 1;
+                $scope.$on('componentsPositionChange', function (e, data) {
 
-                angular.forEach(data.components, function (component) {
+                    var i;
 
-                    $timeout(function () {
+                    i = 1;
 
-                        designLayoutService.setPosition(
-                            designCtx,
-                            component.id,
-                            component.getPosition(),
-                            data.message
-                        );
-                    }, 10 * i);
+                    angular.forEach(data.components, function (component) {
 
-                    i++;
+                        $timeout(function () {
 
-                });
+                            designLayoutService.setPosition(
+                                designCtx,
+                                component.id,
+                                component.getPosition(),
+                                data.message
+                            );
+                        }, 10 * i);
 
-            });
+                        i++;
 
-            $scope.$on('componentsRotationChange', function (e, data) {
-
-                var i;
-
-                i = 1;
-
-                angular.forEach(data.components, function (component) {
-
-                    $timeout(function () {
-
-                        designLayoutService.setRotation(
-                            designCtx,
-                            component.id,
-                            component.rotation,
-                            data.message
-                        );
-                    }, 10 * i);
-
-                    i++;
+                    });
 
                 });
 
-            });
+                $scope.$on('componentsRotationChange', function (e, data) {
 
+                    var i;
+
+                    i = 1;
+
+                    angular.forEach(data.components, function (component) {
+
+                        $timeout(function () {
+
+                            designLayoutService.setRotation(
+                                designCtx,
+                                component.id,
+                                component.rotation,
+                                data.message
+                            );
+                        }, 10 * i);
+
+                        i++;
+
+                    });
+
+                });
+
+            }
         };
 
         if ($stateParams.containerId === 'dummy') {
@@ -985,7 +990,7 @@ angular.module('mms.designVisualization.designEditor', [])
                 if (designStructureUpdateObject.updateType === 'positionChange') {
 
                     diagramService.updateComponentsAndItsWiresPosition(
-                        $rootScope.activeContainerId,
+                        $rootScope.activeDiagramId,
                         designStructureUpdateObject.id,
                         designStructureUpdateObject.data.position
                     );
@@ -994,7 +999,7 @@ angular.module('mms.designVisualization.designEditor', [])
                 if (designStructureUpdateObject.updateType === 'rotationChange') {
 
                     diagramService.updateComponentsAndItsWiresRotation(
-                        $rootScope.activeContainerId,
+                        $rootScope.activeDiagramId,
                         designStructureUpdateObject.id,
                         designStructureUpdateObject.data.rotation
                     );
@@ -1006,16 +1011,29 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
-                $log.debug($rootScope.activeContainerId);
+                $timeout(function(){
 
-                $scope.diagram =
-                    diagramService.createDiagramFromCyPhyElements($rootScope.activeContainerId, cyPhyLayout.elements);
+                    $rootScope.activeDiagramId = $rootScope.activeContainerId + '_' + ( new Date() ).toISOString();
+
+                    $log.debug('Active diagram ID', $rootScope.activeDiagramId);
+
+                    $scope.diagram =
+                        diagramService.createDiagramFromCyPhyElements($rootScope.activeDiagramId, cyPhyLayout.elements);
+                });
+
 
                 $log.debug('Drawing diagram:', $scope.diagram);
 
                 setupDiagramEventHandlers();
 
                 $rootScope.loading = false;
+
+            });
+
+            $scope.$on('$destroy', function() {
+
+                $log.debug('Celaning up designLayout watchers');
+                designLayoutService.cleanUpAllRegions(designCtx);
 
             });
         }
@@ -2814,7 +2832,6 @@ angular.module('mms.designVisualization.svgDiagram', [
                         }
 
                     });
-
 
                     $element.bind('contextmenu', killContextMenu);
 
@@ -4953,20 +4970,17 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             var grid;
 
-            if ( !angular.isDefined( grids[ id ] ) ) {
-                grid = grids[ id ] = {
-                    id: id,
-                    components: diagram.components,
-                    visibleDiagramComponents: [],
-                    wires: diagram.wires,
-                    visibleWires: [],
-                    viewPort: {},
-                    insideVisibleDiagramComponentsRecalculate: false,
-                    initialized: false
-                };
-            } else {
-                throw ( 'Grid was already defined!', id );
-            }
+
+            grid = grids[ id ] = {
+                id: id,
+                components: diagram.components,
+                visibleDiagramComponents: [],
+                wires: diagram.wires,
+                visibleWires: [],
+                viewPort: {},
+                insideVisibleDiagramComponentsRecalculate: false,
+                initialized: false
+            };
 
             return {
                 components: grid.visibleDiagramComponents,
@@ -5099,13 +5113,95 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
 angular.module('mms.projectHandling', [])
     .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http) {
 
-        this.copyProject = function() {
+        var randomString;
+
+        randomString = function(length) {
+            var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+
+            if (! length) {
+                length = Math.floor(Math.random() * chars.length);
+            }
+
+            var str = '';
+            for (var i = 0; i < length; i++) {
+                str += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return str;
+        };
+
+        this.copyProject = function () {
             return $http.get('/rest/external/copyproject/noredirect');
 
         };
 
+        this.cloneMaster = function () {
 
-        this.findFirstBranch = function() {
+            var deferred,
+                connectionId;
+
+            deferred = $q.defer();
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function () {
+
+                    connectionId = connectionHandling.getMainGMEConnectionId();
+
+                    branchService.getBranches(connectionId)
+                        .then(function (branches) {
+
+                            var newBranchId,
+                                hashId,
+                                i;
+
+                            $log.debug('Available branches', branches);
+
+                            if (!branches.length) {
+
+                                $log.error('No branches, what now?');
+                                deferred.reject();
+
+                            } else {
+
+                                for (i=0; i < branches.length; i++) {
+
+                                    if (branches[i].name === 'master') {
+                                        hashId = branches[i].commitId;
+                                    }
+                                }
+
+                                if (!hashId) {
+                                    deferred.reject('Could not find master branch!');
+                                }
+
+                                newBranchId = randomString(6) + (new Date()).getTime();
+
+                                branchService.createBranch(
+                                    connectionId,
+                                    newBranchId,
+                                    hashId
+                                )
+                                    .then(function () {
+                                        deferred.resolve(newBranchId);
+                                    })
+                                    .catch(function (err) {
+                                        deferred.reject(err);
+                                    });
+
+
+                            }
+
+                        })
+                        .catch(function (error) {
+                            deferred.reject(error);
+                        });
+
+                });
+
+            return deferred.promise;
+
+        };
+
+        this.findFirstBranch = function () {
 
             var deferred,
                 connectionId;
@@ -5115,7 +5211,7 @@ angular.module('mms.projectHandling', [])
             connectionId = connectionHandling.getMainGMEConnectionId();
 
             branchService.getBranches(connectionId)
-                .then(function(branches) {
+                .then(function (branches) {
 
                     $log.debug('Available branches', branches);
 
@@ -5356,41 +5452,36 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         if (angular.isObject(descriptor) && type) {
 
-            if (!availableSymbols[type]) {
+            portDescriptors = portDescriptors || {};
 
-                portDescriptors = portDescriptors || {};
+            portsAndSizes = portCreator(portDescriptors, parameters);
 
-                portsAndSizes = portCreator(portDescriptors, parameters);
+            cssClass = 'box';
 
-                cssClass = 'box';
-
-                if (parameters.cssClass) {
-                    cssClass += ' parameters.cssClass';
-                }
-
-                symbol = angular.extend(descriptor,
-                    {
-                        type: type,
-                        cssClass: cssClass,
-                        symbolDirective: 'box',
-                        svgDecoration: null,
-                        labelPosition: {
-                            x: portsAndSizes.width/2,
-                            y: parameters.portWireLength + 24
-                        },
-                        portWireLength: parameters.portWireLength,
-                        width: portsAndSizes.width,
-                        height: portsAndSizes.height,
-                        ports: portsAndSizes.ports,
-                        boxHeight: portsAndSizes.height - 2 * parameters.portWireLength,
-                        boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
-                    });
-
-                provider.registerSymbol(symbol);
-
-            } else {
-                symbol = availableSymbols[type];
+            if (parameters.cssClass) {
+                cssClass += ' parameters.cssClass';
             }
+
+            symbol = angular.extend(descriptor,
+                {
+                    type: type,
+                    cssClass: cssClass,
+                    symbolDirective: 'box',
+                    svgDecoration: null,
+                    labelPosition: {
+                        x: portsAndSizes.width/2,
+                        y: parameters.portWireLength + 24
+                    },
+                    portWireLength: parameters.portWireLength,
+                    width: portsAndSizes.width,
+                    height: portsAndSizes.height,
+                    ports: portsAndSizes.ports,
+                    boxHeight: portsAndSizes.height - 2 * parameters.portWireLength,
+                    boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
+                });
+
+            provider.registerSymbol(symbol);
+
 
         }
 

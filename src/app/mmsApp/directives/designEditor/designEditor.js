@@ -14,7 +14,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
             designCtx,
 
-            setupDiagramEventHandlers;
+            setupDiagramEventHandlers,
+            eventHandlersAreSet;
 
         $scope.diagram = null;
 
@@ -29,54 +30,59 @@ angular.module('mms.designVisualization.designEditor', [])
 
         setupDiagramEventHandlers = function () {
 
-            $scope.$on('componentsPositionChange', function (e, data) {
+            if (!eventHandlersAreSet) {
 
-                var i;
+                eventHandlersAreSet = true;
 
-                i = 1;
+                $scope.$on('componentsPositionChange', function (e, data) {
 
-                angular.forEach(data.components, function (component) {
+                    var i;
 
-                    $timeout(function () {
+                    i = 1;
 
-                        designLayoutService.setPosition(
-                            designCtx,
-                            component.id,
-                            component.getPosition(),
-                            data.message
-                        );
-                    }, 10 * i);
+                    angular.forEach(data.components, function (component) {
 
-                    i++;
+                        $timeout(function () {
 
-                });
+                            designLayoutService.setPosition(
+                                designCtx,
+                                component.id,
+                                component.getPosition(),
+                                data.message
+                            );
+                        }, 10 * i);
 
-            });
+                        i++;
 
-            $scope.$on('componentsRotationChange', function (e, data) {
-
-                var i;
-
-                i = 1;
-
-                angular.forEach(data.components, function (component) {
-
-                    $timeout(function () {
-
-                        designLayoutService.setRotation(
-                            designCtx,
-                            component.id,
-                            component.rotation,
-                            data.message
-                        );
-                    }, 10 * i);
-
-                    i++;
+                    });
 
                 });
 
-            });
+                $scope.$on('componentsRotationChange', function (e, data) {
 
+                    var i;
+
+                    i = 1;
+
+                    angular.forEach(data.components, function (component) {
+
+                        $timeout(function () {
+
+                            designLayoutService.setRotation(
+                                designCtx,
+                                component.id,
+                                component.rotation,
+                                data.message
+                            );
+                        }, 10 * i);
+
+                        i++;
+
+                    });
+
+                });
+
+            }
         };
 
         if ($stateParams.containerId === 'dummy') {
@@ -101,7 +107,7 @@ angular.module('mms.designVisualization.designEditor', [])
                 if (designStructureUpdateObject.updateType === 'positionChange') {
 
                     diagramService.updateComponentsAndItsWiresPosition(
-                        $rootScope.activeContainerId,
+                        $rootScope.activeDiagramId,
                         designStructureUpdateObject.id,
                         designStructureUpdateObject.data.position
                     );
@@ -110,7 +116,7 @@ angular.module('mms.designVisualization.designEditor', [])
                 if (designStructureUpdateObject.updateType === 'rotationChange') {
 
                     diagramService.updateComponentsAndItsWiresRotation(
-                        $rootScope.activeContainerId,
+                        $rootScope.activeDiagramId,
                         designStructureUpdateObject.id,
                         designStructureUpdateObject.data.rotation
                     );
@@ -122,16 +128,29 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
-                $log.debug($rootScope.activeContainerId);
+                $timeout(function(){
 
-                $scope.diagram =
-                    diagramService.createDiagramFromCyPhyElements($rootScope.activeContainerId, cyPhyLayout.elements);
+                    $rootScope.activeDiagramId = $rootScope.activeContainerId + '_' + ( new Date() ).toISOString();
+
+                    $log.debug('Active diagram ID', $rootScope.activeDiagramId);
+
+                    $scope.diagram =
+                        diagramService.createDiagramFromCyPhyElements($rootScope.activeDiagramId, cyPhyLayout.elements);
+                });
+
 
                 $log.debug('Drawing diagram:', $scope.diagram);
 
                 setupDiagramEventHandlers();
 
                 $rootScope.loading = false;
+
+            });
+
+            $scope.$on('$destroy', function() {
+
+                $log.debug('Celaning up designLayout watchers');
+                designLayoutService.cleanUpAllRegions(designCtx);
 
             });
         }

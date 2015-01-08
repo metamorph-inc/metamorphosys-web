@@ -71,7 +71,7 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     GMEProjectInitializers = require('./classes/GMEProjectInitializers');
     gmeProjectInitializers = new GMEProjectInitializers();
 
-    $urlRouterProvider.otherwise('/noProject');
+    $urlRouterProvider.otherwise('/404');
 
 
     $stateProvider
@@ -88,26 +88,19 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
             },
             controller: 'EditorViewController'
         })
-        .state('noProject', {
-            url: '/noProject',
-            templateUrl: '/mmsApp/templates/noProjectSpecified.html',
-            controller: 'NoProjectController'
+        .state('createDesign', {
+            url: '/createDesign/:projectId',
+            resolve: {
+                selectProject: gmeProjectInitializers.selectProject
+            },
+            controller: 'CreateDesignController'
+        })
+        .state('404', {
+            url: '/404',
+            templateUrl: '/mmsApp/templates/404.html'
         });
-
 });
 
-
-CyPhyApp.controller('AppController', function() {
-
-//    connectionHandling.establishMainGMEConnection();
-
-    //$rootScope.$on('$stateChangeSuccess',
-    //    function(event, toState, toParams, fromState, fromParams){
-    //
-    //
-    //    })
-
-});
 
 
 CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
@@ -152,37 +145,41 @@ CyPhyApp.controller('EditorViewController', function () {
     console.log('lolka');
 });
 
-CyPhyApp.controller('NoProjectController', function (
-    $rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling) {
+CyPhyApp.controller('CreateDesignController', function (
+    $rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling, workspaceService) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
+    $rootScope.processing = true;
 
-    $scope.startNewProject = function () {
+    if ($rootScope.wsContext) {
 
-        $rootScope.processing = true;
+        $log.debug('Cleaning up workspace regions');
+        workspaceService.cleanUpAllRegions($rootScope.wsContext);
 
-        $log.debug('New project creation');
+    }
 
-            projectHandling.copyProject()
-                .success(function (data) {
+    $rootScope.$emit('$destroy');
 
-                $rootScope.processing = false;
-                $log.debug('New project creation successful', data);
-                $state.go('editor.branch', {
-                    projectId: data,
-                    branchId: 'master'
-                });
+    $log.debug('New branch creation');
 
-            })
-            .error(function (data, status) {
+        projectHandling.cloneMaster()
+            .then(function (data) {
 
-                $log.debug('New project creation failed', status);
-                $rootScope.processing = false;
-                growl.error('An error occured while project creation. Please retry later.');
-
+            $rootScope.processing = false;
+            $log.debug('New project creation successful', data);
+            $state.go('editor.branch', {
+                projectId: $scope.projectId,
+                branchId: data
             });
 
-    };
+        })
+        .catch(function (data, status) {
+
+            $log.debug('New project creation failed', status);
+            $rootScope.processing = false;
+            growl.error('An error occured while project creation. Please retry later.');
+
+        });
 
 });
