@@ -7,6 +7,9 @@ require('./libraryIncludes.js');
 
 require('./utils.js');
 
+require('./services/projectHandling/projectHandling.js');
+require('./services/connectionHandling/connectionHandling.js');
+
 require('./services/operationsManager/operationsManager.js');
 
 require('./services/diagramService/diagramService.js');
@@ -40,6 +43,9 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     'ui.bootstrap',
 
+    'mms.connectionHandling',
+    'mms.projectHandling',
+
     'mms.designVisualization.operationsManager',
     'mms.designVisualization.wiringService',
     'mms.designVisualization.diagramService',
@@ -60,191 +66,50 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
-    var selectProject;
+    var GMEProjectInitializers,
+        gmeProjectInitializers;
 
-    selectProject = {
-        load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, designService, $timeout) {
-            var
-                connectionId,
-                deferred;
-
-            $rootScope.mainDbConnectionId = 'mms-main-db-connection-id';
-
-            connectionId = $rootScope.mainDbConnectionId;
-            deferred = $q.defer();
-
-            $rootScope.loading = true;
-
-            dataStoreService.connectToDatabase(connectionId, {
-                host: window.location.basename
-            })
-                .then(function () {
-                    $timeout(function () {
-                        projectService.selectProject(connectionId, $stateParams.projectId)
-                            .then(function (projectId) {
-                                $log.debug('Project selected', projectId);
-
-                                $rootScope.projectId = projectId;
-                            });
-
-                    });
-
-                    var wsContext;
-
-
-                    wsContext = {
-                        db: $rootScope.mainDbConnectionId,
-                        regionId: 'WorkSpaces_' + ( new Date() )
-                            .toISOString()
-                    };
-
-                    $rootScope.$on('$destroy', function () {
-                        workspaceService.cleanUpAllRegions(wsContext);
-                    });
-
-
-                    workspaceService.registerWatcher(wsContext, function (destroyed) {
-
-                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
-
-                        if (destroyed !== true) {
-                            workspaceService.watchWorkspaces(wsContext,function (updateObject) {
-
-                                if (updateObject.type === 'load') {
-                                    console.log('load', updateObject);
-                                } else if (updateObject.type === 'update') {
-                                    console.log('update', updateObject);
-                                } else if (updateObject.type === 'unload') {
-                                    console.log('unload', updateObject);
-                                } else {
-                                    throw new Error(updateObject);
-
-                                }
-
-                            }).then(function (data) {
-
-                                var hasFoundFirstWorkspace,
-                                    hasFoundFirstDesign;
-
-                                hasFoundFirstWorkspace = false;
-                                hasFoundFirstDesign = false;
-
-
-                                angular.forEach(data.workspaces, function (workSpace) {
-
-                                    if (!hasFoundFirstWorkspace) {
-
-                                        hasFoundFirstWorkspace = true;
-                                        $rootScope.activeWorkSpace = workSpace;
-                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
-
-
-                                    }
-
-                                });
-
-                                if (hasFoundFirstWorkspace) {
-
-                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id,function (/*designsUpdateObject*/) {
-
-                                    }).then(function (designsData) {
-
-                                        angular.forEach(designsData.designs, function (design) {
-
-                                            if (!hasFoundFirstDesign) {
-
-                                                hasFoundFirstDesign = true;
-                                                $rootScope.activeDesign = design;
-                                                $log.debug('Active design:', $rootScope.activeDesign);
-
-                                            }
-
-                                        });
-
-
-                                        if (hasFoundFirstDesign) {
-
-//                                            designService.watchInterfaces(wsContext, $rootScope.activeDesign.id, function(designInterfacesUpdateObject) {
-//
-//                                            }).then(function(designInterfaces) {
-//
-//                                                console.log(designInterfaces);
-//
-//                                            });
-
-
-                                            deferred.resolve();
-
-                                        } else {
-
-                                            $rootScope.loading = false;
-
-                                            $log.debug('Could not find designs in workspace.');
-                                            $state.go('404', {
-                                                projectId: $stateParams.projectId
-                                            });
-
-                                            deferred.reject();
-                                        }
-
-                                    });
-
-                                } else {
-
-                                    $rootScope.loading = false;
-
-                                    $log.debug('Could not find workspaces in project.');
-                                    $state.go('404', {
-                                        projectId: $stateParams.projectId
-                                    });
-
-                                    deferred.reject();
-
-                                }
-
-                            });
-
-                        } else {
-                            $log.debug('WokrspaceService destroyed...');
-                        }
-                    });
-
-                }).catch(function (reason) {
-                    $rootScope.loading = false;
-                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                    $state.go('404', {
-                        projectId: $stateParams.projectId
-                    });
-                });
-
-            return deferred.promise;
-        }
-    };
+    GMEProjectInitializers = require('./classes/GMEProjectInitializers');
+    gmeProjectInitializers = new GMEProjectInitializers();
 
     $urlRouterProvider.otherwise('/noProject');
 
 
     $stateProvider
+
         .state('editor', {
-            url: '/editor/:projectId',
             templateUrl: '/mmsApp/templates/editor.html',
-            resolve: selectProject,
-            controller: 'EditorViewController'
+            url: '/editor',
+            abstract: true
         })
-        .state('editor.inContainer', {
-            url: '/:containerId'
+        .state('editor.branch', {
+            url: '/:projectId/:branchId',
+            resolve: {
+                selectProjectBranchWorkspaceAndDesign: gmeProjectInitializers.selectProjectBranchWorkspaceAndDesign
+            },
+            controller: 'EditorViewController'
         })
         .state('noProject', {
             url: '/noProject',
             templateUrl: '/mmsApp/templates/noProjectSpecified.html',
             controller: 'NoProjectController'
-        })
-        .state('404', {
-            url: '/404/:projectId',
-            controller: 'NoProjectController',
-            templateUrl: '/mmsApp/templates/404.html'
         });
+
 });
+
+
+CyPhyApp.controller('AppController', function() {
+
+//    connectionHandling.establishMainGMEConnection();
+
+    //$rootScope.$on('$stateChangeSuccess',
+    //    function(event, toState, toParams, fromState, fromParams){
+    //
+    //
+    //    })
+
+});
+
 
 CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
 
@@ -285,7 +150,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 });
 
 CyPhyApp.controller('EditorViewController', function () {
-
+    console.log('lolka');
 });
 
 CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
@@ -305,8 +170,9 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
 
                 $rootScope.processing = false;
                 $log.debug('New project creation successful', data);
-                $state.go('editor', {
-                    projectId: data
+                $state.go('editor.branch', {
+                    projectId: data,
+                    branchId: 'master'
                 });
 
             })
@@ -323,7 +189,7 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
 
 });
 
-},{"./directives/busyCover/busyCover.js":4,"./directives/designEditor/designEditor":8,"./directives/diagramContainer/diagramContainer.js":10,"./directives/fabricCanvas/fabricCanvas.js":12,"./directives/resizing/resizeToHeight.js":14,"./directives/resizing/resizeToWindow.js":15,"./directives/svgDiagram/svgDiagram.js":20,"./directives/symbols/componentSymbol.js":23,"./libraryIncludes.js":31,"./services/diagramService/diagramService.js":38,"./services/gridService/gridService.js":39,"./services/operationsManager/operationsManager.js":40,"./services/wiringService/wiringService.js":44,"./utils.js":45}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":4,"./directives/busyCover/busyCover.js":5,"./directives/designEditor/designEditor":9,"./directives/diagramContainer/diagramContainer.js":11,"./directives/fabricCanvas/fabricCanvas.js":13,"./directives/resizing/resizeToHeight.js":15,"./directives/resizing/resizeToWindow.js":16,"./directives/svgDiagram/svgDiagram.js":21,"./directives/symbols/componentSymbol.js":24,"./libraryIncludes.js":32,"./services/connectionHandling/connectionHandling.js":33,"./services/diagramService/diagramService.js":40,"./services/gridService/gridService.js":41,"./services/operationsManager/operationsManager.js":42,"./services/projectHandling/projectHandling.js":43,"./services/wiringService/wiringService.js":47,"./utils.js":48}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -390,6 +256,404 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 },{}],4:[function(require,module,exports){
 /*globals angular*/
+'use strict';
+
+module.exports = function () {
+
+    return {
+
+        selectDesign: function ($q) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            return deferred.promise;
+        },
+
+        selectProjectBranchWorkspaceAndDesign: function (
+            $q, $stateParams, branchService, connectionHandling,
+            $log, $rootScope, projectHandling, $state, projectService, workspaceService, designService) {
+
+            var deferred,
+                connectionId,
+
+                selectBranchWhenHaveOne;
+
+            $rootScope.loading = true;
+
+            deferred = $q.defer();
+
+            console.log('In selectBranch', $stateParams);
+
+            connectionId = connectionHandling.getMainGMEConnectionId();
+
+            selectBranchWhenHaveOne = function(branchId) {
+                branchService.selectBranch(connectionId, branchId)
+                    .then(function(branchId){
+
+                        var wsContext;
+
+                        $log.debug('Branch selected', branchId);
+                        $rootScope.branchId = branchId;
+
+                        wsContext = {
+                            db: connectionId,
+                            regionId: 'WorkSpaces_' + ( new Date() )
+                                .toISOString()
+                        };
+
+                        $rootScope.$on('$destroy', function () {
+                            workspaceService.cleanUpAllRegions(wsContext);
+                        });
+
+
+                        workspaceService.registerWatcher(wsContext, function (destroyed) {
+
+                            $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
+
+                            if (destroyed !== true) {
+                                workspaceService.watchWorkspaces(wsContext, function (updateObject) {
+
+                                    if (updateObject.type === 'load') {
+                                        console.log('load', updateObject);
+                                    } else if (updateObject.type === 'update') {
+                                        console.log('update', updateObject);
+                                    } else if (updateObject.type === 'unload') {
+                                        console.log('unload', updateObject);
+                                    } else {
+                                        throw new Error(updateObject);
+
+                                    }
+
+                                }).then(function (data) {
+
+                                    var hasFoundFirstWorkspace,
+                                        hasFoundFirstDesign;
+
+                                    hasFoundFirstWorkspace = false;
+                                    hasFoundFirstDesign = false;
+
+
+                                    angular.forEach(data.workspaces, function (workSpace) {
+
+                                        if (!hasFoundFirstWorkspace) {
+
+                                            hasFoundFirstWorkspace = true;
+                                            $rootScope.activeWorkSpace = workSpace;
+                                            $log.debug('Active workspace:', $rootScope.activeWorkSpace);
+
+
+                                        }
+
+                                    });
+
+                                    if (hasFoundFirstWorkspace) {
+
+                                        designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id, function (/*designsUpdateObject*/) {
+
+                                        }).then(function (designsData) {
+
+                                            angular.forEach(designsData.designs, function (design) {
+
+                                                if (!hasFoundFirstDesign) {
+
+                                                    hasFoundFirstDesign = true;
+                                                    $rootScope.activeDesign = design;
+                                                    $log.debug('Active design:', $rootScope.activeDesign);
+
+                                                }
+
+                                            });
+
+
+                                            if (hasFoundFirstDesign) {
+
+                                                deferred.resolve();
+                                                $rootScope.loading = false;
+
+                                            } else {
+
+                                                $rootScope.loading = false;
+
+                                                $log.debug('Could not find designs in workspace.');
+                                                $state.go('404', {
+                                                    projectId: $stateParams.projectId
+                                                });
+
+                                                deferred.reject();
+                                            }
+
+                                        });
+
+                                    } else {
+
+                                        $rootScope.loading = false;
+
+                                        $log.debug('Could not find workspaces in project.');
+                                        $state.go('404', {
+                                            projectId: $stateParams.projectId
+                                        });
+
+                                        deferred.reject();
+
+                                    }
+
+                                });
+
+                            } else {
+                                $log.debug('WokrspaceService destroyed...');
+                            }
+                        });
+
+                    })
+                    .catch(function (reason) {
+                        $rootScope.loading = false;
+                        $log.debug('Opening branch errored:', $stateParams.projectId, reason);
+                        $state.go('noProject', {
+                            projectId: $stateParams.projectId
+                        });
+                    });
+            };
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function(){
+                projectService.selectProject(connectionHandling.getMainGMEConnectionId(), $stateParams.projectId)
+                    .then(function (projectId) {
+
+                        $log.debug('Project selected', projectId);
+                        $rootScope.projectId = projectId;
+
+                        selectBranchWhenHaveOne($stateParams.branchId);
+
+                    }).catch(function (reason) {
+                        $rootScope.loading = false;
+                        $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                        $state.go('noProject', {
+                            projectId: $stateParams.projectId
+                        });
+                    });
+                });
+
+            return deferred.promise;
+        },
+
+        selectProject: function (
+            $q, projectService, connectionHandling, $stateParams, $log, $rootScope, projectHandling, $state, $timeout) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            console.log('In selectProject', $stateParams);
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function(){
+
+
+                    projectService.selectProject(connectionHandling.getMainGMEConnectionId(), $stateParams.projectId)
+                        .then(function (projectId) {
+
+                            $log.debug('Project selected', projectId);
+                            $rootScope.projectId = projectId;
+
+                            projectHandling.findFirstBranch()
+                                .then(function(branchId){
+
+                                    $stateParams.branchId = branchId;
+
+                                    console.log('First branch', branchId);
+
+                                    deferred.resolve();
+
+                                    $timeout(function() {
+                                        $state.go('editor.branch', {
+                                            projectId: projectId,
+                                            branchId: branchId
+                                        });
+                                    });
+
+
+                                });
+
+
+//                            deferred.resolve(projectId);
+
+                        });
+                })
+                .catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                    $state.go('404', {
+                        projectId: $stateParams.projectId
+                    });
+                });
+
+            return deferred.promise;
+        },
+
+        selectProjectOld: function ($q,
+                                     $stateParams,
+                                     $rootScope,
+                                     $state,
+                                     $log,
+                                     dataStoreService,
+                                     projectService,
+                                     workspaceService,
+                                     designService,
+                                     connectionHandling) {
+            var deferred,
+                connectionId;
+
+            deferred = $q.defer();
+
+            $rootScope.loading = true;
+
+            connectionId = connectionHandling.getMainGMEConnectionId();
+
+            console.log(connectionId);
+
+            dataStoreService.connectToDatabase(connectionId, {
+                host: window.location.basename
+            })
+                .then(function () {
+
+                    var wsContext;
+
+                    projectService.selectProject(connectionId, $stateParams.projectId)
+                        .then(function (projectId) {
+                            $log.debug('Project selected', projectId);
+                            $rootScope.projectId = projectId;
+                        });
+
+
+                    wsContext = {
+                        db: connectionId,
+                        regionId: 'WorkSpaces_' + ( new Date() )
+                            .toISOString()
+                    };
+
+                    $rootScope.$on('$destroy', function () {
+                        $log.debug('Destroying');
+                        workspaceService.cleanUpAllRegions(wsContext);
+                    });
+
+
+                    workspaceService.registerWatcher(wsContext, function (destroyed) {
+
+                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
+
+                        if (destroyed !== true) {
+                            workspaceService.watchWorkspaces(wsContext, function (updateObject) {
+
+                                if (updateObject.type === 'load') {
+                                    console.log('load', updateObject);
+                                } else if (updateObject.type === 'update') {
+                                    console.log('update', updateObject);
+                                } else if (updateObject.type === 'unload') {
+                                    console.log('unload', updateObject);
+                                } else {
+                                    throw new Error(updateObject);
+
+                                }
+
+                            }).then(function (data) {
+
+                                var hasFoundFirstWorkspace,
+                                    hasFoundFirstDesign;
+
+                                hasFoundFirstWorkspace = false;
+                                hasFoundFirstDesign = false;
+
+
+                                angular.forEach(data.workspaces, function (workSpace) {
+
+                                    if (!hasFoundFirstWorkspace) {
+
+                                        hasFoundFirstWorkspace = true;
+                                        $rootScope.activeWorkSpace = workSpace;
+                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
+
+
+                                    }
+
+                                });
+
+                                if (hasFoundFirstWorkspace) {
+
+                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id, function (/*designsUpdateObject*/) {
+
+                                    }).then(function (designsData) {
+
+                                        angular.forEach(designsData.designs, function (design) {
+
+                                            if (!hasFoundFirstDesign) {
+
+                                                hasFoundFirstDesign = true;
+                                                $rootScope.activeDesign = design;
+                                                $log.debug('Active design:', $rootScope.activeDesign);
+
+                                            }
+
+                                        });
+
+
+                                        if (hasFoundFirstDesign) {
+
+                                            deferred.resolve();
+
+                                        } else {
+
+                                            $rootScope.loading = false;
+
+                                            $log.debug('Could not find designs in workspace.');
+                                            $state.go('404', {
+                                                projectId: $stateParams.projectId
+                                            });
+
+                                            deferred.reject();
+                                        }
+
+                                    });
+
+                                } else {
+
+                                    $rootScope.loading = false;
+
+                                    $log.debug('Could not find workspaces in project.');
+                                    $state.go('404', {
+                                        projectId: $stateParams.projectId
+                                    });
+
+                                    deferred.reject();
+
+                                }
+
+                            });
+
+                        } else {
+                            $log.debug('WokrspaceService destroyed...');
+                        }
+                    });
+
+                }).catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                    $state.go('404', {
+                        projectId: $stateParams.projectId
+                    });
+                });
+
+            return deferred.promise;
+        }
+
+
+    };
+
+};
+
+},{}],5:[function(require,module,exports){
+/*globals angular*/
 
 'use strict';
 
@@ -455,7 +719,7 @@ angular.module( 'mms.designVisualization.busyCover', [] )
 
             };
         }] );
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -507,7 +771,7 @@ angular.module(
             };
         }
 );
-},{"./componentWireSegment":6}],6:[function(require,module,exports){
+},{"./componentWireSegment":7}],7:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -529,7 +793,7 @@ angular.module(
         };
     }
 );
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = function(symbolManagerProvider) {
@@ -618,7 +882,7 @@ module.exports = function(symbolManagerProvider) {
 
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -627,7 +891,8 @@ module.exports = function(symbolManagerProvider) {
 
 angular.module('mms.designVisualization.designEditor', [])
     .controller('DesignEditorController', function (
-        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager, $timeout) {
+        $scope, $rootScope, diagramService, $log, connectionHandling,
+        designService, $stateParams, designLayoutService, symbolManager, $timeout) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -638,8 +903,10 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagram = null;
 
+        $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
+
         designCtx = {
-            db: $rootScope.mainDbConnectionId,
+            db: $scope.mainGMEConnectionId,
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
 
@@ -769,7 +1036,7 @@ angular.module('mms.designVisualization.designEditor', [])
             };
         }]);
 
-},{"./classes/RandomSymbolGenerator":7}],9:[function(require,module,exports){
+},{"./classes/RandomSymbolGenerator":8}],10:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -909,7 +1176,7 @@ module.exports = function ($scope, $timeout, $log) {
 
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -1119,7 +1386,7 @@ angular.module('mms.designVisualization.diagramContainer', [
     ]);
 
 
-},{"../drawingGrid/drawingGrid.js":11,"./classes/ScrollHandler":9}],11:[function(require,module,exports){
+},{"../drawingGrid/drawingGrid.js":12,"./classes/ScrollHandler":10}],12:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -1154,7 +1421,7 @@ angular.module( 'mms.designVisualization.drawingGrid', [] )
 
             };
         }] );
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*globals angular, fabric*/
 
 'use strict';
@@ -1252,7 +1519,7 @@ angular.module( 'mms.designVisualization.fabricCanvas', [] )
             };
         }
     ] );
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -1341,7 +1608,7 @@ angular.module(
         }
 );
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -1390,7 +1657,7 @@ resizeToHeightModule.directive('resizeToHeight', function ($window) {
 });
 
 module.exports = resizeToHeightModule;
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -1469,7 +1736,7 @@ resizeToWindowModule.directive('resizeToWindow', function ($window) {
 });
 
 module.exports = resizeToWindowModule;
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -1750,7 +2017,7 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -1841,7 +2108,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2023,7 +2290,7 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
 
 };
 
-},{"../../../services/diagramService/classes/Wire.js":37}],19:[function(require,module,exports){
+},{"../../../services/diagramService/classes/Wire.js":39}],20:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -2176,7 +2443,7 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
 
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -2559,7 +2826,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":5,"./classes/ComponentDragHandler":16,"./classes/ComponentSelectionHandler":17,"./classes/WireDrawHandler":18,"./classes/contextMenuHandler":19}],21:[function(require,module,exports){
+},{"../componentWire/componentWire.js":6,"./classes/ComponentDragHandler":17,"./classes/ComponentSelectionHandler":18,"./classes/WireDrawHandler":19,"./classes/contextMenuHandler":20}],22:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2625,7 +2892,7 @@ angular.module(
                 templateNamespace: 'SVG'
             };
         } );
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2665,7 +2932,7 @@ angular.module(
             });
         }
     ]);
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -2840,7 +3107,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":41,"../port/port.js":13,"./box/box.js":21,"./capacitor/capacitor.js":22,"./diode/diode.js":24,"./inductor/inductor.js":25,"./jFetP/jFetP.js":26,"./opAmp/opAmp.js":27,"./resistor/resistor.js":28,"./simpleConnector/simpleConnector.js":29,"./tvsDiode/tvsDiode.js":30}],24:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":44,"../port/port.js":14,"./box/box.js":22,"./capacitor/capacitor.js":23,"./diode/diode.js":25,"./inductor/inductor.js":26,"./jFetP/jFetP.js":27,"./opAmp/opAmp.js":28,"./resistor/resistor.js":29,"./simpleConnector/simpleConnector.js":30,"./tvsDiode/tvsDiode.js":31}],25:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2881,7 +3148,7 @@ angular.module(
         }
     ]);
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2921,7 +3188,7 @@ angular.module(
             });
         }
     ]);
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2968,7 +3235,7 @@ angular.module(
             });
         }
     ]);
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3029,7 +3296,7 @@ angular.module(
             });
         }
     ]);
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3069,7 +3336,7 @@ angular.module(
             });
         }
     ]);
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3117,7 +3384,7 @@ angular.module(
         };
     });
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3158,9 +3425,57 @@ angular.module(
         }
     ]);
 
-},{}],31:[function(require,module,exports){
-
 },{}],32:[function(require,module,exports){
+
+},{}],33:[function(require,module,exports){
+/*globals angular */
+
+'use strict';
+
+angular.module('mms.connectionHandling', [])
+    .service('connectionHandling', function ($q, dataStoreService) {
+
+        var mainConnectionId,
+            mainConnectionEstablished,
+
+            dataStorePromise;
+
+        mainConnectionId = 'main-db-connection-id';
+        mainConnectionEstablished = false;
+
+        this.establishMainGMEConnection = function() {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            if (!dataStorePromise && !mainConnectionEstablished) {
+
+                dataStorePromise = dataStoreService.connectToDatabase(mainConnectionId, {
+                    host: window.location.basename
+                }).then(function () {
+
+                    mainConnectionEstablished = true;
+
+                    deferred.resolve();
+
+                });
+
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+
+        };
+
+        this.getMainGMEConnectionId = function(){
+            return mainConnectionId;
+        };
+
+    });
+
+},{}],34:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3235,7 +3550,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
 module.exports = ComponentPort;
 
-},{"glMatrix":3}],33:[function(require,module,exports){
+},{"glMatrix":3}],35:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3631,7 +3946,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":32,"./Diagram":34,"./DiagramComponent.js":35,"./Wire.js":37}],34:[function(require,module,exports){
+},{"./ComponentPort":34,"./Diagram":36,"./DiagramComponent.js":37,"./Wire.js":39}],36:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3766,7 +4081,7 @@ Diagram.prototype.updateComponentRotation = function (componentId, newRotation) 
 
 module.exports = Diagram;
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3968,7 +4283,7 @@ DiagramComponent.prototype.localToGlobal = function () {
 };
 
 module.exports = DiagramComponent;
-},{"glMatrix":3}],36:[function(require,module,exports){
+},{"glMatrix":3}],38:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4124,7 +4439,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":32,"./Diagram":34,"./DiagramComponent.js":35,"./Wire.js":37}],37:[function(require,module,exports){
+},{"./ComponentPort":34,"./Diagram":36,"./DiagramComponent.js":37,"./Wire.js":39}],39:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4212,7 +4527,7 @@ Wire.prototype.getEndPositions = function () {
 
 module.exports = Wire;
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -4466,7 +4781,7 @@ angular.module('mms.designVisualization.diagramService', [
         }
     ]);
 
-},{"./classes/ComponentPort":32,"./classes/CyPhyDiagramParser.js":33,"./classes/DiagramComponent.js":35,"./classes/DummyDiagramGenerator.js":36,"./classes/Wire.js":37}],39:[function(require,module,exports){
+},{"./classes/ComponentPort":34,"./classes/CyPhyDiagramParser.js":35,"./classes/DiagramComponent.js":37,"./classes/DummyDiagramGenerator.js":38,"./classes/Wire.js":39}],41:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4705,7 +5020,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
     }
 ] );
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4777,7 +5092,49 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
         }
     ];
 });
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
+/*globals angular */
+
+'use strict';
+
+angular.module('mms.projectHandling', [])
+    .service('projectHandling', function ($q, $log, branchService, connectionHandling) {
+
+        this.findFirstBranch = function() {
+
+            var deferred,
+                connectionId;
+
+            deferred = $q.defer();
+
+            connectionId = connectionHandling.getMainGMEConnectionId();
+
+            branchService.getBranches(connectionId)
+                .then(function(branches) {
+
+                    $log.debug('Available branches', branches);
+
+                    if (!branches.length) {
+
+                        $log.error('No branches, what now?');
+                        deferred.reject();
+
+                    } else {
+
+                        deferred.resolve(branches[0].name);
+
+                    }
+
+                });
+
+            return deferred.promise;
+
+        };
+
+
+    });
+
+},{}],44:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5065,7 +5422,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{}],42:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5148,7 +5505,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5193,7 +5550,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],44:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5356,7 +5713,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
     }
 ] );
 
-},{"./classes/ElbowRouter.js":42,"./classes/SimpleRouter.js":43}],45:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":45,"./classes/SimpleRouter.js":46}],48:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );

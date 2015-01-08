@@ -6,6 +6,9 @@ require('./libraryIncludes.js');
 
 require('./utils.js');
 
+require('./services/projectHandling/projectHandling.js');
+require('./services/connectionHandling/connectionHandling.js');
+
 require('./services/operationsManager/operationsManager.js');
 
 require('./services/diagramService/diagramService.js');
@@ -39,6 +42,9 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     'ui.bootstrap',
 
+    'mms.connectionHandling',
+    'mms.projectHandling',
+
     'mms.designVisualization.operationsManager',
     'mms.designVisualization.wiringService',
     'mms.designVisualization.diagramService',
@@ -59,191 +65,50 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
-    var selectProject;
+    var GMEProjectInitializers,
+        gmeProjectInitializers;
 
-    selectProject = {
-        load: function ($q, $stateParams, $rootScope, $state, $log, dataStoreService, projectService, workspaceService, designService, $timeout) {
-            var
-                connectionId,
-                deferred;
-
-            $rootScope.mainDbConnectionId = 'mms-main-db-connection-id';
-
-            connectionId = $rootScope.mainDbConnectionId;
-            deferred = $q.defer();
-
-            $rootScope.loading = true;
-
-            dataStoreService.connectToDatabase(connectionId, {
-                host: window.location.basename
-            })
-                .then(function () {
-                    $timeout(function () {
-                        projectService.selectProject(connectionId, $stateParams.projectId)
-                            .then(function (projectId) {
-                                $log.debug('Project selected', projectId);
-
-                                $rootScope.projectId = projectId;
-                            });
-
-                    });
-
-                    var wsContext;
-
-
-                    wsContext = {
-                        db: $rootScope.mainDbConnectionId,
-                        regionId: 'WorkSpaces_' + ( new Date() )
-                            .toISOString()
-                    };
-
-                    $rootScope.$on('$destroy', function () {
-                        workspaceService.cleanUpAllRegions(wsContext);
-                    });
-
-
-                    workspaceService.registerWatcher(wsContext, function (destroyed) {
-
-                        $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
-
-                        if (destroyed !== true) {
-                            workspaceService.watchWorkspaces(wsContext,function (updateObject) {
-
-                                if (updateObject.type === 'load') {
-                                    console.log('load', updateObject);
-                                } else if (updateObject.type === 'update') {
-                                    console.log('update', updateObject);
-                                } else if (updateObject.type === 'unload') {
-                                    console.log('unload', updateObject);
-                                } else {
-                                    throw new Error(updateObject);
-
-                                }
-
-                            }).then(function (data) {
-
-                                var hasFoundFirstWorkspace,
-                                    hasFoundFirstDesign;
-
-                                hasFoundFirstWorkspace = false;
-                                hasFoundFirstDesign = false;
-
-
-                                angular.forEach(data.workspaces, function (workSpace) {
-
-                                    if (!hasFoundFirstWorkspace) {
-
-                                        hasFoundFirstWorkspace = true;
-                                        $rootScope.activeWorkSpace = workSpace;
-                                        $log.debug('Active workspace:', $rootScope.activeWorkSpace);
-
-
-                                    }
-
-                                });
-
-                                if (hasFoundFirstWorkspace) {
-
-                                    designService.watchDesigns(wsContext, $rootScope.activeWorkSpace.id,function (/*designsUpdateObject*/) {
-
-                                    }).then(function (designsData) {
-
-                                        angular.forEach(designsData.designs, function (design) {
-
-                                            if (!hasFoundFirstDesign) {
-
-                                                hasFoundFirstDesign = true;
-                                                $rootScope.activeDesign = design;
-                                                $log.debug('Active design:', $rootScope.activeDesign);
-
-                                            }
-
-                                        });
-
-
-                                        if (hasFoundFirstDesign) {
-
-//                                            designService.watchInterfaces(wsContext, $rootScope.activeDesign.id, function(designInterfacesUpdateObject) {
-//
-//                                            }).then(function(designInterfaces) {
-//
-//                                                console.log(designInterfaces);
-//
-//                                            });
-
-
-                                            deferred.resolve();
-
-                                        } else {
-
-                                            $rootScope.loading = false;
-
-                                            $log.debug('Could not find designs in workspace.');
-                                            $state.go('404', {
-                                                projectId: $stateParams.projectId
-                                            });
-
-                                            deferred.reject();
-                                        }
-
-                                    });
-
-                                } else {
-
-                                    $rootScope.loading = false;
-
-                                    $log.debug('Could not find workspaces in project.');
-                                    $state.go('404', {
-                                        projectId: $stateParams.projectId
-                                    });
-
-                                    deferred.reject();
-
-                                }
-
-                            });
-
-                        } else {
-                            $log.debug('WokrspaceService destroyed...');
-                        }
-                    });
-
-                }).catch(function (reason) {
-                    $rootScope.loading = false;
-                    $log.debug('Opening project errored:', $stateParams.projectId, reason);
-                    $state.go('404', {
-                        projectId: $stateParams.projectId
-                    });
-                });
-
-            return deferred.promise;
-        }
-    };
+    GMEProjectInitializers = require('./classes/GMEProjectInitializers');
+    gmeProjectInitializers = new GMEProjectInitializers();
 
     $urlRouterProvider.otherwise('/noProject');
 
 
     $stateProvider
+
         .state('editor', {
-            url: '/editor/:projectId',
             templateUrl: '/mmsApp/templates/editor.html',
-            resolve: selectProject,
-            controller: 'EditorViewController'
+            url: '/editor',
+            abstract: true
         })
-        .state('editor.inContainer', {
-            url: '/:containerId'
+        .state('editor.branch', {
+            url: '/:projectId/:branchId',
+            resolve: {
+                selectProjectBranchWorkspaceAndDesign: gmeProjectInitializers.selectProjectBranchWorkspaceAndDesign
+            },
+            controller: 'EditorViewController'
         })
         .state('noProject', {
             url: '/noProject',
             templateUrl: '/mmsApp/templates/noProjectSpecified.html',
             controller: 'NoProjectController'
-        })
-        .state('404', {
-            url: '/404/:projectId',
-            controller: 'NoProjectController',
-            templateUrl: '/mmsApp/templates/404.html'
         });
+
 });
+
+
+CyPhyApp.controller('AppController', function() {
+
+//    connectionHandling.establishMainGMEConnection();
+
+    //$rootScope.$on('$stateChangeSuccess',
+    //    function(event, toState, toParams, fromState, fromParams){
+    //
+    //
+    //    })
+
+});
+
 
 CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window) {
 
@@ -284,7 +149,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 });
 
 CyPhyApp.controller('EditorViewController', function () {
-
+    console.log('lolka');
 });
 
 CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
@@ -304,8 +169,9 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
 
                 $rootScope.processing = false;
                 $log.debug('New project creation successful', data);
-                $state.go('editor', {
-                    projectId: data
+                $state.go('editor.branch', {
+                    projectId: data,
+                    branchId: 'master'
                 });
 
             })

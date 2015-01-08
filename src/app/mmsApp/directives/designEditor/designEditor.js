@@ -6,7 +6,8 @@
 
 angular.module('mms.designVisualization.designEditor', [])
     .controller('DesignEditorController', function (
-        $scope, $rootScope, diagramService, $log, designService, $stateParams, designLayoutService, symbolManager, $timeout) {
+        $scope, $rootScope, diagramService, $log, connectionHandling,
+        designService, $stateParams, designLayoutService, symbolManager, $timeout) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -17,8 +18,10 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagram = null;
 
+        $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
+
         designCtx = {
-            db: $rootScope.mainDbConnectionId,
+            db: $scope.mainGMEConnectionId,
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
 
