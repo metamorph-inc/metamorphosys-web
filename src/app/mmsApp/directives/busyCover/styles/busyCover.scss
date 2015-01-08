@@ -85,6 +85,10 @@
         padding-left: 1em;
         font-size: 1.2em;
 
+        button {
+            font-size: 90%;
+        }
+
         @include mmsBlueGradient();
 
         .header {

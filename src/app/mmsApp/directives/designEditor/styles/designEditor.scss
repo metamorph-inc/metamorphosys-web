@@ -4,3 +4,14 @@
     max-width: 100%;
     max-height: 100%;
 }
+
+button.md-primary.md-fab.md-fab-bottom-right.run-button.md-button {
+    right: 26.5%;
+    background-color: #178CFF;
+    font-size: 140%;
+    line-height: 140%;
+
+    &:hover {
+        background-color: #ff7100 !important;
+    }
+}

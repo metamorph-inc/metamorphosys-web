@@ -5,7 +5,7 @@ module.exports = function() {
         'capacitors': 'capacitor',
         'resistors': 'resistor',
         'diodes': 'diode',
-        'inductors': 'inductor',
-        'transistors': 'jFetP'
+        'inductors': 'inductor'
+        //'transistors': 'jFetP'
     };
 };

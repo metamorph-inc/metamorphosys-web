@@ -1,6 +1,8 @@
 $mmsBlueLight: #0c6cb8;
 $mmsBlueDark: #073f96;
 
+$mmsVeryDark: #00235B;
+
 
 @mixin gradient($from, $to, $height, $pie:"false") {
     background-color: $to;

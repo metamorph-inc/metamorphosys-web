@@ -153,6 +153,12 @@ angular.module('mms.designVisualization.designEditor', [])
 
             });
 
+            $scope.fabClick = function() {
+
+                $log.debug('Fab was clicked');
+
+            };
+
             $scope.$on('$destroy', function() {
 
                 $rootScope.unCovered = false;

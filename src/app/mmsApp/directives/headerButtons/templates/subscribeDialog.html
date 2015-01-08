@@ -1,0 +1,29 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content class="subscribe-dialog">
+        <h1 class="md-sticky-no-effect">Get in touch!</h1>
+        <p>You love us. We love you... Let me give you a call when you are ready.</p>
+        <form>
+            <div class="row">
+                <span></span>
+                <md-text-float label="Name" ng-model="user.name"> </md-text-float>
+                <md-text-float label="eMail" ng-model="user.email" type="email" class="long"></md-text-float>
+            </div>
+            <!--<div class="row">-->
+                <!--<md-text-float label="City" ng-model="user.city"> </md-text-float>-->
+                <!--<md-text-float label="State" ng-model="user.state"> </md-text-float>-->
+                <!--<md-text-float label="Postal Code" ng-model="user.postalCode"> </md-text-float>-->
+            <!--</div>-->
+            <!--<md-text-float label="Country" ng-model="user.country" disabled> </md-text-float>-->
+        </form>
+
+    </md-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <md-button ng-click="cancel()">
+            No, thanks!
+        </md-button>
+        <md-button ng-click="send(user)" class="md-primary">
+            Send
+        </md-button>
+    </div>
+</md-dialog>

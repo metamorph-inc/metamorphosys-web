@@ -1,0 +1,42 @@
+.header-buttons {
+
+  position: absolute;
+  right: 10px;
+  top: 5px;
+
+  button {
+    margin-left: 1ex;
+  }
+
+  button.md-raised.md-primary.md-button.md-default-theme {
+    background-color: #E7EBF6;
+    color: #666;
+
+    &.help {
+
+      top: 3px;
+      border-radius: 2em;
+      color: #fff;
+      box-shadow: none;
+      background-color: transparent;
+
+      &:hover {
+        background-color: rgba(255,255,255,.13);
+      }
+
+      i {
+        font-size: 150%;
+      }
+
+    }
+
+    &:hover {
+      color: #fff;
+    }
+
+  }
+
+  .md-button.md-default-theme.md-fab.md-primary:not([disabled]):focus, .md-button.md-default-theme.md-fab.md-primary:not([disabled]):hover, .md-button.md-default-theme.md-raised.md-primary:not([disabled]):focus, .md-button.md-default-theme.md-raised.md-primary:not([disabled]):hover {
+    color: #fff;
+  }
+}

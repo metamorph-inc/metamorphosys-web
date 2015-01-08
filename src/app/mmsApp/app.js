@@ -15,6 +15,8 @@ require('./services/diagramService/diagramService.js');
 require('./services/gridService/gridService.js');
 require('./services/wiringService/wiringService.js');
 
+require('./directives/headerButtons/headerButtons.js');
+
 require('./directives/diagramContainer/diagramContainer.js');
 require('./directives/fabricCanvas/fabricCanvas.js');
 require('./directives/svgDiagram/svgDiagram.js');
@@ -44,6 +46,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     'mms.connectionHandling',
     'mms.projectHandling',
+    'mms.headerButtons',
 
     'mms.designVisualization.operationsManager',
     'mms.designVisualization.wiringService',
@@ -137,11 +140,8 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
                     templateUrl: '/mmsApp/templates/aboutDialog.html',
                     targetEvent: ev
                 })
-                    .then(function(answer) {
-                        $scope.alert = 'You said the information was "' + answer + '".';
-                    }, function() {
-                        $scope.alert = 'You cancelled the dialog.';
-                    });
+                    .then(function() {});
+
             }
         }
     ];

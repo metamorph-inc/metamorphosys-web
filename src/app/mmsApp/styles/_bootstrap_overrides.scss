@@ -16,7 +16,7 @@
 
   &:hover {
     color: #fff;
-    @include gradient(#ff7100, #ff7100, 100%);
+    background-color: #ff7100;
   }
 }
 

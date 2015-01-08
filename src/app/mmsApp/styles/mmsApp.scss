@@ -1,10 +1,23 @@
 @import 'colors';
 @import '_bootstrap_overrides.scss';
+@import '_material_overrides.scss';
 @import '../../../../bower_components/angular-ui-layout/ui-layout.css';
 
 .mms-app {
     font-family: 'Titillium Web', sans-serif;
     overflow: hidden;
+}
+
+
+.md-dialog-container h1 {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: .5em;
+    padding-bottom: 0.6em;
+    margin-left: -8px;
+    padding-left: 8px;
+    margin-right: -8px;
+    padding-right: 8px;
+    color: $mmsVeryDark
 }
 
 .main-navigator-container {
@@ -35,8 +48,9 @@
             }
         }
 
-        > li:not(.separator):hover {
-            background-color: rgba(255,255,255,.2);
+        > li:not(.separator):not(.cyphy-root):hover {
+            background-color: transparent;
+            cursor: default;
         }
 
         li.cyphy-root {
