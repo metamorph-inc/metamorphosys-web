@@ -3,7 +3,13 @@
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function ($q, $log, branchService, connectionHandling) {
+    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http) {
+
+        this.copyProject = function() {
+            return $http.get('/rest/external/copyproject/noredirect');
+
+        };
+
 
         this.findFirstBranch = function() {
 

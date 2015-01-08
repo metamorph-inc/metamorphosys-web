@@ -153,7 +153,8 @@ CyPhyApp.controller('EditorViewController', function () {
     console.log('lolka');
 });
 
-CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl) {
+CyPhyApp.controller('NoProjectController', function (
+    $rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
@@ -164,9 +165,8 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
 
         $log.debug('New project creation');
 
-        $http.get('/rest/external/copyproject/noredirect')
-            .
-            success(function (data) {
+            projectHandling.copyProject()
+                .success(function (data) {
 
                 $rootScope.processing = false;
                 $log.debug('New project creation successful', data);
@@ -176,8 +176,7 @@ CyPhyApp.controller('NoProjectController', function ($rootScope, $scope, $stateP
                 });
 
             })
-            .
-            error(function (data, status) {
+            .error(function (data, status) {
 
                 $log.debug('New project creation failed', status);
                 $rootScope.processing = false;
@@ -5098,7 +5097,13 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function ($q, $log, branchService, connectionHandling) {
+    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http) {
+
+        this.copyProject = function() {
+            return $http.get('/rest/external/copyproject/noredirect');
+
+        };
+
 
         this.findFirstBranch = function() {
 
