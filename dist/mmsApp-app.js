@@ -184,11 +184,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 CyPhyApp.controller('AppController', function ($rootScope) {
 
     $rootScope.busy = true;
-    //
-    //$rootScope.$on('ANGULAR_DRAG_START', function($event, e2, e3) {
-    //    console.log($event, e2, e3);
-    //});
-    //
     //window.dragStart = function(evt) {
     //    console.log('--------------' + evt);
     //    evt.dataTransfer.effectAllowed = 'copy';
@@ -245,7 +240,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/svgDiagram/svgDiagram.js":23,"./directives/symbols/componentSymbol.js":26,"./libraryIncludes.js":34,"./services/connectionHandling/connectionHandling.js":35,"./services/diagramService/diagramService.js":42,"./services/gridService/gridService.js":43,"./services/operationsManager/operationsManager.js":44,"./services/projectHandling/projectHandling.js":45,"./services/wiringService/wiringService.js":49,"./utils.js":50,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/svgDiagram/svgDiagram.js":23,"./directives/symbols/componentSymbol.js":26,"./libraryIncludes.js":34,"./services/connectionHandling/connectionHandling.js":35,"./services/diagramService/diagramService.js":42,"./services/gridService/gridService.js":43,"./services/operationsManager/operationsManager.js":44,"./services/projectHandling/projectHandling.js":45,"./services/wiringService/wiringService.js":50,"./utils.js":51,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1209,7 +1204,8 @@ module.exports = function(symbolManagerProvider) {
 angular.module('mms.designVisualization.designEditor', [])
     .controller('DesignEditorController', function (
         $scope, $rootScope, diagramService, $log, connectionHandling,
-        designService, $stateParams, designLayoutService, symbolManager, $timeout) {
+        designService, $stateParams, designLayoutService, symbolManager, $timeout,
+        nodeService, gridService) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -1217,7 +1213,8 @@ angular.module('mms.designVisualization.designEditor', [])
             designCtx,
 
             setupDiagramEventHandlers,
-            eventHandlersAreSet;
+            eventHandlersAreSet,
+            lastComponentInstantiationPosition;
 
         $scope.diagram = null;
 
@@ -1229,6 +1226,30 @@ angular.module('mms.designVisualization.designEditor', [])
         };
 
         $scope.diagramContainerConfig = {};
+
+        $rootScope.$on('ComponentInstantiationMustBeDone', function($event, componentData, position) {
+
+            var nodesToCopy;
+
+            $rootScope.processing = true;
+
+            lastComponentInstantiationPosition = position;
+
+            if (componentData && componentData.id) {
+
+                nodesToCopy = {};
+
+                nodesToCopy[componentData.id] = {
+                    registry: {
+                        position: position,
+                        rotation: 0
+                    }
+                };
+
+                nodeService.copyMoreNodes(designCtx, $rootScope.activeContainerId, nodesToCopy);
+            }
+
+        });
 
         setupDiagramEventHandlers = function () {
 
@@ -1307,6 +1328,18 @@ angular.module('mms.designVisualization.designEditor', [])
             designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+
+                if (designStructureUpdateObject.updateType === 'newChild') {
+
+                    diagramService.createNewComponentFromFromCyPhyElement(
+                        $rootScope.activeDiagramId,
+                        designStructureUpdateObject.data);
+
+                    gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+
+                    $rootScope.processing = false;
+
+                }
 
                 if (designStructureUpdateObject.updateType === 'positionChange') {
 
@@ -1551,7 +1584,9 @@ angular.module('mms.designVisualization.diagramContainer', [
         '$log',
         'PanZoomService',
         '$window',
-        function ($scope, $timeout, $log, PanZoomService, $window) {
+        'componentBrowserService',
+        '$rootScope',
+        function ($scope, $timeout, $log, PanZoomService, $window, componentBrowserService, $rootScope) {
 
             var self = this,
 
@@ -1632,8 +1667,33 @@ angular.module('mms.designVisualization.diagramContainer', [
             };
 
 
-            $scope.somethingWasDroppedOnMe = function($event) {
-                console.log($event);
+            $scope.somethingWasDroppedOnMe = function($event, $data) {
+
+                var component,
+                    position,
+                    x,
+                    y;
+
+                component = componentBrowserService.getComponentById($data);
+
+                if (component) {
+
+                    if ($event && $event.originalEvent) {
+
+                        x = $event.originalEvent.offsetX || 100;
+                        y = $event.originalEvent.offsetY || 100;
+
+                        position = {
+                            x: x - 20,
+                            y: y - 20
+                        };
+
+                    }
+
+                    $rootScope.$emit('ComponentInstantiationMustBeDone', component, position);
+
+                }
+
             };
 
 
@@ -3561,7 +3621,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":46,"../port/port.js":16,"./box/box.js":24,"./capacitor/capacitor.js":25,"./diode/diode.js":27,"./inductor/inductor.js":28,"./jFetP/jFetP.js":29,"./opAmp/opAmp.js":30,"./resistor/resistor.js":31,"./simpleConnector/simpleConnector.js":32,"./tvsDiode/tvsDiode.js":33}],27:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":47,"../port/port.js":16,"./box/box.js":24,"./capacitor/capacitor.js":25,"./diode/diode.js":27,"./inductor/inductor.js":28,"./jFetP/jFetP.js":29,"./opAmp/opAmp.js":30,"./resistor/resistor.js":31,"./simpleConnector/simpleConnector.js":32,"./tvsDiode/tvsDiode.js":33}],27:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4011,7 +4071,298 @@ module.exports = ComponentPort;
 
 module.exports = function (symbolManager, diagramService, wiringService) {
 
-    var getDiagram;
+    var getDiagram,
+        getDiagramElement,
+        avmComponentModelParser,
+        connectorParser,
+        labelParser,
+
+        Diagram,
+        DiagramComponent,
+        ComponentPort,
+        Wire,
+
+        minePortsFromInterfaces;
+
+
+
+    Diagram = require('./Diagram');
+    DiagramComponent = require('./DiagramComponent.js');
+    ComponentPort = require('./ComponentPort');
+    Wire = require('./Wire.js');
+
+    minePortsFromInterfaces = function (element, collector) {
+
+        var minX,
+            maxX,
+            portDescriptors,
+            median,
+            allInterConnectors,
+            portInstances,
+            newPort;
+
+        portDescriptors = {};
+        portInstances = [];
+
+        allInterConnectors = [];
+
+        portDescriptors.top = [];
+        portDescriptors.right = [];
+        portDescriptors.bottom = [];
+        portDescriptors.left = [];
+
+        minX = null;
+        maxX = null;
+
+        if (angular.isObject(element.interfaces)) {
+
+            angular.forEach(element.interfaces.connectors, function (innerConnector) {
+
+                var x;
+
+                x = innerConnector.position.x;
+
+                if (minX === null) {
+                    minX = x;
+                }
+
+                if (maxX === null) {
+                    maxX = x;
+                }
+
+                if (x < minX) {
+                    minX = x;
+                }
+
+                if (x > maxX) {
+                    maxX = x;
+                }
+
+                allInterConnectors.push(innerConnector);
+
+            });
+
+            allInterConnectors.sort(function (a, b) {
+
+                if (a.position.x > b.position.x) {
+                    return 1;
+                }
+
+                if (a.position.x < b.position.x) {
+                    return 1;
+                }
+
+                return 0;
+
+            });
+
+            median = (minX + maxX) / 2;
+
+            angular.forEach(allInterConnectors, function (innerConnector) {
+
+                var portSymbol;
+
+                portSymbol = {
+                    id: innerConnector.id,
+                    label: labelParser(innerConnector.name)
+                };
+
+                if (innerConnector.position.x < median) {
+
+                    portDescriptors.left.push(portSymbol);
+
+                } else {
+
+                    portDescriptors.right.push(portSymbol);
+
+                }
+
+                newPort = new ComponentPort({
+                    id: innerConnector.id,
+                    portSymbol: portSymbol
+                });
+
+                portInstances.push(newPort);
+
+                if (angular.isObject(collector)) {
+                    collector[innerConnector.id] = newPort;
+                }
+
+            });
+        }
+
+        return {
+            portDescriptors: portDescriptors,
+            portInstances: portInstances
+        };
+
+
+    };
+
+
+    labelParser = function (crappyName) {
+
+        var result;
+
+        result = crappyName.replace(/_/g, ' ');
+
+        return result;
+
+    };
+
+    connectorParser = function(element, allPortsById, zIndex) {
+        var portInstance,
+            symbol,
+            newDiagramComponent;
+
+        symbol = symbolManager.getSymbol('simpleConnector');
+
+        newDiagramComponent = new DiagramComponent({
+            id: element.id,
+            label: labelParser(element.name),
+            x: element.position.x,
+            y: element.position.y,
+            z: zIndex,
+            rotation: 0,
+            scaleX: 1,
+            scaleY: 1,
+            symbol: symbol,
+            nonSelectable: false,
+            locationLocked: false,
+            draggable: true
+        });
+
+        portInstance = new ComponentPort({
+            id: element.id,
+            portSymbol: symbol.ports.p1
+        });
+
+        allPortsById[element.id] = portInstance;
+
+        newDiagramComponent.registerPortInstances([portInstance]);
+
+        return newDiagramComponent;
+
+    };
+
+    avmComponentModelParser = function(element, allPortsById, zIndex) {
+
+        var portStuff,
+            newModelComponent,
+            symbol;
+
+        allPortsById = allPortsById || {};
+        zIndex = zIndex || 0;
+
+        portStuff = minePortsFromInterfaces(element, allPortsById);
+
+        if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'C' && !isNaN(element.name.charAt(1))
+        ) {
+
+            // Cheap shot to figure if it is a capacitor
+
+            symbol = symbolManager.getSymbol('capacitor');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
+        ) {
+
+            // Cheap shot to figure if it is a diode
+
+            symbol = symbolManager.getSymbol('tvsDiode');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else {
+
+            symbol = symbolManager.makeBoxSymbol(element.name, {
+                    showPortLabels: true
+                }, portStuff.portDescriptors,
+                {
+                    minWidth: 200,
+                    portWireLeadInIncrement: 8
+                });
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        }
+
+        return newModelComponent;
+
+    };
+
 
     getDiagram = function (diagramElements) {
 
@@ -4021,145 +4372,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             allPortsById,
 
-            minePortsFromInterfaces,
-
             diagram,
-            wire,
+            wire;
 
-            Diagram,
-            DiagramComponent,
-            ComponentPort,
-            Wire,
-
-            labelParser;
-
-
-
-        Diagram = require('./Diagram');
-        DiagramComponent = require('./DiagramComponent.js');
-        ComponentPort = require('./ComponentPort');
-        Wire = require('./Wire.js');
 
         allPortsById = {};
 
-        labelParser = function (crappyName) {
-
-            var result;
-
-            result = crappyName.replace(/_/g, ' ');
-
-            return result;
-
-        };
-
-
-        minePortsFromInterfaces = function (element, collector) {
-
-            var minX,
-                maxX,
-                portDescriptors,
-                median,
-                allInterConnectors,
-                portInstances,
-                newPort;
-
-            portDescriptors = {};
-            portInstances = [];
-
-            allInterConnectors = [];
-
-            portDescriptors.top = [];
-            portDescriptors.right = [];
-            portDescriptors.bottom = [];
-            portDescriptors.left = [];
-
-            minX = null;
-            maxX = null;
-
-            if (angular.isObject(element.interfaces)) {
-
-                angular.forEach(element.interfaces.connectors, function (innerConnector) {
-
-                    var x;
-
-                    x = innerConnector.position.x;
-
-                    if (minX === null) {
-                        minX = x;
-                    }
-
-                    if (maxX === null) {
-                        maxX = x;
-                    }
-
-                    if (x < minX) {
-                        minX = x;
-                    }
-
-                    if (x > maxX) {
-                        maxX = x;
-                    }
-
-                    allInterConnectors.push(innerConnector);
-
-                });
-
-                allInterConnectors.sort(function (a, b) {
-
-                    if (a.position.x > b.position.x) {
-                        return 1;
-                    }
-
-                    if (a.position.x < b.position.x) {
-                        return 1;
-                    }
-
-                    return 0;
-
-                });
-
-                median = (minX + maxX) / 2;
-
-                angular.forEach(allInterConnectors, function (innerConnector) {
-
-                    var portSymbol;
-
-                    portSymbol = {
-                        id: innerConnector.id,
-                        label: labelParser(innerConnector.name)
-                    };
-
-                    if (innerConnector.position.x < median) {
-
-                        portDescriptors.left.push(portSymbol);
-
-                    } else {
-
-                        portDescriptors.right.push(portSymbol);
-
-                    }
-
-                    newPort = new ComponentPort({
-                        id: innerConnector.id,
-                        portSymbol: portSymbol
-                    });
-
-                    portInstances.push(newPort);
-
-                    if (angular.isObject(collector)) {
-                        collector[innerConnector.id] = newPort;
-                    }
-
-                });
-            }
-
-            return {
-                portDescriptors: portDescriptors,
-                portInstances: portInstances
-            };
-
-
-        };
 
         diagram = new Diagram();
 
@@ -4172,33 +4390,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.Connector, function (element) {
 
-                var portInstance;
+                newDiagramComponent = connectorParser(element, allPortsById, i);
 
-                symbol = symbolManager.getSymbol('simpleConnector');
-
-                newDiagramComponent = new DiagramComponent({
-                    id: element.id,
-                    label: labelParser(element.name),
-                    x: element.position.x,
-                    y: element.position.y,
-                    z: i,
-                    rotation: 0,
-                    scaleX: 1,
-                    scaleY: 1,
-                    symbol: symbol,
-                    nonSelectable: false,
-                    locationLocked: false,
-                    draggable: true
-                });
-
-                portInstance = new ComponentPort({
-                    id: element.id,
-                    portSymbol: symbol.ports.p1
-                });
-
-                allPortsById[element.id] = portInstance;
-
-                newDiagramComponent.registerPortInstances([portInstance]);
                 diagram.addComponent(newDiagramComponent);
 
                 i++;
@@ -4207,113 +4400,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
-                var portStuff;
-
-                portStuff = minePortsFromInterfaces(element, allPortsById);
-
-                if (angular.isString(element.name) &&
-                    element.name.charAt(0) === 'C' && !isNaN(element.name.charAt(1))
-                ) {
-
-                    // Cheap shot to figure if it is a capacitor
-
-                    symbol = symbolManager.getSymbol('capacitor');
-
-                    newDiagramComponent = new DiagramComponent({
-                        id: element.id,
-                        label: labelParser(element.name),
-                        x: element.position.x,
-                        y: element.position.y,
-                        z: i,
-                        rotation: 0,
-                        scaleX: 1,
-                        scaleY: 1,
-                        symbol: symbol,
-                        nonSelectable: false,
-                        locationLocked: false,
-                        draggable: true
-                    });
-
-                    for (i = 0; i < portStuff.portInstances.length; i++) {
-
-                        if (portStuff.portInstances[i].portSymbol.label === 'P2') {
-                            portStuff.portInstances[i].portSymbol = symbol.ports.C;
-                        }
-
-                        if (portStuff.portInstances[i].portSymbol.label === 'P1') {
-                            portStuff.portInstances[i].portSymbol = symbol.ports.A;
-                        }
-
-                    }
-
-                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
-
-                } else if (angular.isString(element.name) &&
-                    element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
-                ) {
-
-                    // Cheap shot to figure if it is a diode
-
-                    symbol = symbolManager.getSymbol('tvsDiode');
-
-                    newDiagramComponent = new DiagramComponent({
-                        id: element.id,
-                        label: labelParser(element.name),
-                        x: element.position.x,
-                        y: element.position.y,
-                        z: i,
-                        rotation: 0,
-                        scaleX: 1,
-                        scaleY: 1,
-                        symbol: symbol,
-                        nonSelectable: false,
-                        locationLocked: false,
-                        draggable: true
-                    });
-
-                    for (i = 0; i < portStuff.portInstances.length; i++) {
-
-                        if (portStuff.portInstances[i].portSymbol.label === '2') {
-                            portStuff.portInstances[i].portSymbol = symbol.ports.C;
-                        }
-
-                        if (portStuff.portInstances[i].portSymbol.label === '1') {
-                            portStuff.portInstances[i].portSymbol = symbol.ports.A;
-                        }
-
-                    }
-
-                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
-
-                } else {
-
-                    symbol = symbolManager.makeBoxSymbol(element.name, {
-                            showPortLabels: true
-                        }, portStuff.portDescriptors,
-                        {
-                            minWidth: 200,
-                            portWireLeadInIncrement: 8
-                        });
-
-                    newDiagramComponent = new DiagramComponent({
-                        id: element.id,
-                        label: labelParser(element.name),
-                        x: element.position.x,
-                        y: element.position.y,
-                        z: i,
-                        rotation: 0,
-                        scaleX: 1,
-                        scaleY: 1,
-                        symbol: symbol,
-                        nonSelectable: false,
-                        locationLocked: false,
-                        draggable: true
-                    });
-
-                    newDiagramComponent.registerPortInstances(portStuff.portInstances);
-
-
-                }
+                newDiagramComponent = avmComponentModelParser(element, allPortsById, i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -4397,7 +4484,28 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
+    getDiagramElement = function(descriptor) {
+
+        var element;
+
+        if (descriptor.baseName === 'AVMComponentModel') {
+
+            element = avmComponentModelParser(descriptor);
+
+        } else if (descriptor.baseName === 'Connector') {
+
+            element = avmComponentModelParser(descriptor);
+
+        }
+
+        return element;
+
+
+    };
+
+
     this.getDiagram = getDiagram;
+    this.getDiagramElement = getDiagramElement;
 };
 
 },{"./ComponentPort":36,"./Diagram":38,"./DiagramComponent.js":39,"./Wire.js":41}],38:[function(require,module,exports){
@@ -5138,6 +5246,25 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
+            this.createNewComponentFromFromCyPhyElement = function(diagramId, diagramElementDescriptor) {
+
+                var diagram,
+                    diagramComponent;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
+
+                    diagramComponent = cyPhyDiagramParser.getDiagramElement(diagramElementDescriptor);
+
+                    diagram.addComponent(diagramComponent);
+
+                }
+
+                return diagramComponent;
+
+            };
+
             this.getDiagram = function (diagramId) {
 
                 var diagram;
@@ -5675,11 +5802,60 @@ angular.module('mms.projectHandling', [])
 
 },{}],46:[function(require,module,exports){
 /*globals angular*/
+'use strict';
+
+module.exports = function() {
+    var keywordsBySymbols,
+        symbolsByKeywords;
+
+    keywordsBySymbols = {
+        'capacitor': [
+            'capacitors',
+            'c'
+        ],
+        'resistors': [
+            'resistors',
+            'r'
+        ],
+        'diodes': [
+            'diodes',
+            'led'
+        ],
+        'inductors': [
+            'inductors',
+            'l'
+        ],
+        'transistors': [
+            'jFetP'
+        ]
+    };
+
+    symbolsByKeywords = {};
+
+    angular.forEach(keywordsBySymbols, function(symbol, keywords){
+
+        angular.forEach(keywords, function(keyword) {
+
+            symbolsByKeywords[ keyword ] = symbol;
+
+        });
+
+    });
+
+    return symbolsByKeywords;
+};
+
+},{}],47:[function(require,module,exports){
+/*globals angular*/
 
 'use strict';
 
 var symbolServicesModule = angular.module(
-    'mms.designVisualization.symbolServices', [] );
+    'mms.designVisualization.symbolServices', [] ),
+
+    symbolTypesSearchIndex = require('./classes/SymbolTypesSearchIndex')();
+
+
 
 symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider() {
     var provider = this,
@@ -5935,6 +6111,10 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
             SymbolManager = function () {
 
+                var self;
+
+                self = this;
+
                 this.registerSymbol = provider.registerSymbol;
 
                 this.makeBoxSymbol = provider.makeBoxSymbol;
@@ -5947,6 +6127,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     return availableSymbols[ symbolType ];
                 };
 
+                this.getAccurateSymbolType = function ( approximateName ) {
+
+                    return symbolTypesSearchIndex[approximateName.toLowerCase()];
+
+                };
+
 
             };
 
@@ -5956,7 +6142,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{}],47:[function(require,module,exports){
+},{"./classes/SymbolTypesSearchIndex":46}],48:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6039,7 +6225,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6084,7 +6270,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6247,7 +6433,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
     }
 ] );
 
-},{"./classes/ElbowRouter.js":47,"./classes/SimpleRouter.js":48}],50:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":48,"./classes/SimpleRouter.js":49}],51:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );

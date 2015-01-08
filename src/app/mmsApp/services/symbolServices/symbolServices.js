@@ -3,7 +3,11 @@
 'use strict';
 
 var symbolServicesModule = angular.module(
-    'mms.designVisualization.symbolServices', [] );
+    'mms.designVisualization.symbolServices', [] ),
+
+    symbolTypesSearchIndex = require('./classes/SymbolTypesSearchIndex')();
+
+
 
 symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider() {
     var provider = this,
@@ -259,6 +263,10 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
             SymbolManager = function () {
 
+                var self;
+
+                self = this;
+
                 this.registerSymbol = provider.registerSymbol;
 
                 this.makeBoxSymbol = provider.makeBoxSymbol;
@@ -269,6 +277,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
                 this.getSymbol = function ( symbolType ) {
                     return availableSymbols[ symbolType ];
+                };
+
+                this.getAccurateSymbolType = function ( approximateName ) {
+
+                    return symbolTypesSearchIndex[approximateName.toLowerCase()];
+
                 };
 
 

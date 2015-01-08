@@ -154,6 +154,25 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
+            this.createNewComponentFromFromCyPhyElement = function(diagramId, diagramElementDescriptor) {
+
+                var diagram,
+                    diagramComponent;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
+
+                    diagramComponent = cyPhyDiagramParser.getDiagramElement(diagramElementDescriptor);
+
+                    diagram.addComponent(diagramComponent);
+
+                }
+
+                return diagramComponent;
+
+            };
+
             this.getDiagram = function (diagramId) {
 
                 var diagram;

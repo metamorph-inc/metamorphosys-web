@@ -29,6 +29,7 @@ module.exports = function (symbolManager, $log) {
         organizeTree,
 
         getNodeContextmenu,
+        getComponentById,
 
         mapFromClassNamesToSymbolTypes;
 
@@ -539,6 +540,13 @@ module.exports = function (symbolManager, $log) {
 
     };
 
+    getComponentById = function(nodeId) {
+
+        return treeNodesById[nodeId];
+
+    };
+
+
     treeNavigatorData = {
         data: {},
         config: config,
@@ -553,5 +561,7 @@ module.exports = function (symbolManager, $log) {
     this.removeItem = removeItem;
     this.showNode = showNode;
     this.upsertComponentInterface = upsertComponentInterface;
+
+    this.getComponentById = getComponentById;
 
 };

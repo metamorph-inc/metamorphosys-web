@@ -18,7 +18,9 @@ angular.module('mms.designVisualization.diagramContainer', [
         '$log',
         'PanZoomService',
         '$window',
-        function ($scope, $timeout, $log, PanZoomService, $window) {
+        'componentBrowserService',
+        '$rootScope',
+        function ($scope, $timeout, $log, PanZoomService, $window, componentBrowserService, $rootScope) {
 
             var self = this,
 
@@ -99,8 +101,33 @@ angular.module('mms.designVisualization.diagramContainer', [
             };
 
 
-            $scope.somethingWasDroppedOnMe = function($event) {
-                console.log($event);
+            $scope.somethingWasDroppedOnMe = function($event, $data) {
+
+                var component,
+                    position,
+                    x,
+                    y;
+
+                component = componentBrowserService.getComponentById($data);
+
+                if (component) {
+
+                    if ($event && $event.originalEvent) {
+
+                        x = $event.originalEvent.offsetX || 100;
+                        y = $event.originalEvent.offsetY || 100;
+
+                        position = {
+                            x: x - 20,
+                            y: y - 20
+                        };
+
+                    }
+
+                    $rootScope.$emit('ComponentInstantiationMustBeDone', component, position);
+
+                }
+
             };
 
 

@@ -7,7 +7,8 @@
 angular.module('mms.designVisualization.designEditor', [])
     .controller('DesignEditorController', function (
         $scope, $rootScope, diagramService, $log, connectionHandling,
-        designService, $stateParams, designLayoutService, symbolManager, $timeout) {
+        designService, $stateParams, designLayoutService, symbolManager, $timeout,
+        nodeService, gridService) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -15,7 +16,8 @@ angular.module('mms.designVisualization.designEditor', [])
             designCtx,
 
             setupDiagramEventHandlers,
-            eventHandlersAreSet;
+            eventHandlersAreSet,
+            lastComponentInstantiationPosition;
 
         $scope.diagram = null;
 
@@ -27,6 +29,30 @@ angular.module('mms.designVisualization.designEditor', [])
         };
 
         $scope.diagramContainerConfig = {};
+
+        $rootScope.$on('ComponentInstantiationMustBeDone', function($event, componentData, position) {
+
+            var nodesToCopy;
+
+            $rootScope.processing = true;
+
+            lastComponentInstantiationPosition = position;
+
+            if (componentData && componentData.id) {
+
+                nodesToCopy = {};
+
+                nodesToCopy[componentData.id] = {
+                    registry: {
+                        position: position,
+                        rotation: 0
+                    }
+                };
+
+                nodeService.copyMoreNodes(designCtx, $rootScope.activeContainerId, nodesToCopy);
+            }
+
+        });
 
         setupDiagramEventHandlers = function () {
 
@@ -105,6 +131,18 @@ angular.module('mms.designVisualization.designEditor', [])
             designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+
+                if (designStructureUpdateObject.updateType === 'newChild') {
+
+                    diagramService.createNewComponentFromFromCyPhyElement(
+                        $rootScope.activeDiagramId,
+                        designStructureUpdateObject.data);
+
+                    gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+
+                    $rootScope.processing = false;
+
+                }
 
                 if (designStructureUpdateObject.updateType === 'positionChange') {
 

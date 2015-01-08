@@ -183,11 +183,6 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 CyPhyApp.controller('AppController', function ($rootScope) {
 
     $rootScope.busy = true;
-    //
-    //$rootScope.$on('ANGULAR_DRAG_START', function($event, e2, e3) {
-    //    console.log($event, e2, e3);
-    //});
-    //
     //window.dragStart = function(evt) {
     //    console.log('--------------' + evt);
     //    evt.dataTransfer.effectAllowed = 'copy';

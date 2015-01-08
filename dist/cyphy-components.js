@@ -4804,6 +4804,7 @@ module.exports = function (symbolManager, $log) {
         organizeTree,
 
         getNodeContextmenu,
+        getComponentById,
 
         mapFromClassNamesToSymbolTypes;
 
@@ -5314,6 +5315,13 @@ module.exports = function (symbolManager, $log) {
 
     };
 
+    getComponentById = function(nodeId) {
+
+        return treeNodesById[nodeId];
+
+    };
+
+
     treeNavigatorData = {
         data: {},
         config: config,
@@ -5328,6 +5336,8 @@ module.exports = function (symbolManager, $log) {
     this.removeItem = removeItem;
     this.showNode = showNode;
     this.upsertComponentInterface = upsertComponentInterface;
+
+    this.getComponentById = getComponentById;
 
 };
 
@@ -6542,186 +6552,6 @@ angular.module( 'cyphy.services' )
 
         watchers = {};
 
-        this.watchConnectorsInside = function ( parentContext, containerId, updateListener ) {
-
-            var deferred,
-                regionId,
-                context,
-                meta,
-
-                connectors,
-
-                triggerUpdateListener,
-
-                findChildForNode,
-                onChildUpdate,
-                onChildUnload,
-                parseNewChild;
-
-
-            deferred = $q.defer();
-            regionId = parentContext.regionId + '_watchConnectorsInside_' + containerId;
-            context = {
-                db: parentContext.db,
-                regionId: regionId
-            };
-
-            connectors = {};
-
-
-            triggerUpdateListener = function ( id, data, eventType ) {
-
-                $timeout( function () {
-                    updateListener( {
-                        id: id,
-                        type: eventType,
-                        data: data
-                    } );
-                } );
-
-            };
-
-            findChildForNode = function ( node ) {
-
-                return connectors[ node.getId() ];
-
-            };
-
-            onChildUpdate = function () {
-
-                var newName,
-                    newPos,
-                    hadChanges,
-                    child;
-
-                // BaseName never changes, does it?
-
-                child = findChildForNode( this );
-
-                if ( child ) {
-
-                    newName = this.getAttribute( 'name' );
-                    newPos = this.getRegistry( 'position' );
-                    hadChanges = false;
-
-                    if ( newName !== child.name ) {
-                        child.name = newName;
-                        hadChanges = true;
-                    }
-
-                    if ( newPos.x !== child.position.x || newPos.y !== child.position.y ) {
-                        child.position = newPos;
-                        hadChanges = true;
-                    }
-
-                    if ( hadChanges ) {
-                        triggerUpdateListener( child.id, child, 'update' );
-                    }
-
-
-                }
-
-            };
-
-            onChildUnload = function ( id ) {
-
-                var child;
-
-                child = findChildForNode( this );
-
-                if ( child ) {
-                    delete connectors[ id ];
-                }
-
-                triggerUpdateListener( id, null, 'unload' );
-
-            };
-
-
-            parseNewChild = function ( node ) {
-
-                var deferredParseResult,
-                    parsePromises,
-
-                    baseName,
-                    connector;
-
-                deferredParseResult = $q.defer();
-                parsePromises = [ deferredParseResult ];
-
-                baseName = node.getMetaTypeName( meta );
-
-                if ( baseName === 'Connector' ) {
-
-                    connector = {
-                        id: node.getId(),
-                        name: node.getAttribute( 'name' ),
-                        baseId: node.getBaseId()
-                    };
-
-                    connectors[ connector.id ] = connector;
-
-                    node.onUpdate( onChildUpdate );
-                    node.onUnload( onChildUnload );
-
-                }
-
-
-                deferredParseResult.resolve( connector );
-
-
-                return $q.all( parsePromises );
-
-            };
-
-            nodeService.getMetaNodes( context )
-                .then( function ( metaNodes ) {
-
-                    //                    metaNamesById = {};
-                    //
-                    //                    angular.forEach( meta, function ( metaNode, name ) {
-                    //                        metaNamesById[ metaNode.id ] = name;
-                    //                    } );
-                    meta = metaNodes;
-                    nodeService.loadNode( context, containerId )
-
-                    .then( function ( rootNode ) {
-                        rootNode.loadChildren( context )
-                            .then( function ( childNodes ) {
-
-                                var i,
-                                    childPromises;
-
-                                childPromises = [];
-
-                                for ( i = 0; i < childNodes.length; i += 1 ) {
-                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                }
-
-                                rootNode.onNewChildLoaded( function ( newNode ) {
-
-
-                                    parseNewChild( newNode )
-                                        .then( function ( newChild ) {
-                                            triggerUpdateListener( newChild.id, newChild,
-                                                'load' );
-                                        } );
-
-                                } );
-
-                                $q.all( childPromises )
-                                    .then( function () {
-                                        deferred.resolve( connectors );
-                                    } );
-
-                            } );
-                    } );
-                } );
-
-
-            return deferred.promise;
-        };
-
         this.setPosition = function( context, nodeId, position, msg) {
 
             nodeService.loadNode(context, nodeId)
@@ -6843,7 +6673,7 @@ angular.module( 'cyphy.services' )
 
             };
 
-            onChildUpdate = function (e) {
+            onChildUpdate = function () {
 
                 var newName,
                     newDetails,
@@ -6852,8 +6682,6 @@ angular.module( 'cyphy.services' )
                     hadChanges,
                     child,
                     updateType;
-
-                console.log(e);
 
                 // BaseName never changes, does it?
 
@@ -6938,7 +6766,7 @@ angular.module( 'cyphy.services' )
                     child;
 
                 deferredParseResult = $q.defer();
-                parsePromises = [ deferredParseResult ];
+                parsePromises = [  ];
 
                 child = {
                     id: node.getId(),
@@ -6960,7 +6788,6 @@ angular.module( 'cyphy.services' )
                 node.onUpdate( onChildUpdate );
                 node.onUnload( onChildUnload );
 
-                deferredParseResult.resolve( child );
 
                 // Getting connectors from inside where needed
 
@@ -6986,7 +6813,12 @@ angular.module( 'cyphy.services' )
                 }
 
 
-                return $q.all( parsePromises );
+                $q.all( parsePromises)
+                    .then(function(){
+                        deferredParseResult.resolve( child );
+                    });
+
+                return deferredParseResult.promise;
 
             };
 
@@ -7017,14 +6849,20 @@ angular.module( 'cyphy.services' )
                                     childPromises.push( parseNewChild( childNodes[ i ] ) );
                                 }
 
-                                rootNode.onNewChildLoaded( function ( newNode ) {
+                                rootNode.onNewChildLoaded( function ( newNode) {
 
+                                            parseNewChild(newNode)
+                                                .then(function (newChild) {
 
-                                    parseNewChild( newNode )
-                                        .then( function ( newChild ) {
-                                            triggerUpdateListener( newChild.id, newChild,
-                                                'load' );
-                                        } );
+//                                                    console.log('new child', newChild);
+
+                                                    triggerUpdateListener(
+                                                        newChild.id,
+                                                        newChild,
+                                                        'load',
+                                                        'newChild'
+                                                    );
+                                                });
 
                                 } );
 

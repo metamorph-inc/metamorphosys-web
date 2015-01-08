@@ -24,8 +24,16 @@
 //            color: #fff;
 //        }
 
-        li.leaf-node .node-extra-info {
-            display: block;
+        li.leaf-node {
+
+            .label-and-extra-info {
+                display: block;
+                cursor: copy;
+            }
+
+            .node-extra-info {
+                display: block;
+           }
         }
 
         .node-label:hover,
