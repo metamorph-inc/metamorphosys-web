@@ -1,4 +1,4 @@
-/*globals angular, console, WebGMEGlobal*/
+/*globals angular, console, GME*/
 
 /**
  * This service contains methods for design space exploration through the Executor Client.
@@ -11,7 +11,7 @@ angular.module( 'cyphy.services' )
         'use strict';
         var self = this,
             CMDSTR,
-            xmlToJson = new WebGMEGlobal.classes.Converters.Xml2json( {
+            xmlToJson = new GME.classes.Converters.Xml2json( {
                 skipWSText: true,
                 arrayElements: {
                     Configuration: true,
@@ -20,7 +20,7 @@ angular.module( 'cyphy.services' )
                     AlternativeAssignment: true
                 }
             } ),
-            jsonToXml = new WebGMEGlobal.classes.Converters.Json2xml();
+            jsonToXml = new GME.classes.Converters.Json2xml();
 
         this.calculateConfigurations = function ( desertInput ) {
             var deferred = $q.defer();

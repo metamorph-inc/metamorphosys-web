@@ -326,30 +326,38 @@ angular.module( 'cyphy.services' )
                     regionId: regionId,
                     workspaces: {} // workspace = {id: <string>, name: <string>, description: <string>}
                 },
+                triggerUpdateListener = function ( id, data, eventType ) {
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            data: data,
+                            type: eventType
+                        } );
+                    } );
+                },
+                addNewWorkspace = function ( id, node ) {
+                    data.workspaces[ id ] = {
+                        id: id,
+                        name: node.getAttribute( 'name' ),
+                        description: node.getAttribute( 'INFO' )
+                    };
+                    node.onUpdate( onUpdate );
+                    node.onUnload( onUnload );
+                },
                 onUpdate = function ( id ) {
                     var keyToAttr = {
                         name: 'name',
                         description: 'INFO'
                     },
-                        hadChanges = self.checkForUpdates( data.workspaces[ id ], this, keyToAttr );
+                        hadChanges = self.checkForAttributeUpdates( data.workspaces[ id ], this, keyToAttr );
 
                     if ( hadChanges ) {
-                        updateListener( {
-                            id: id,
-                            type: 'update',
-                            data: data.workspaces[ id ]
-                        } );
-                        $timeout( function () {} );
+                        triggerUpdateListener( id, data.workspaces[ id ], 'update' );
                     }
                 },
                 onUnload = function ( id ) {
                     delete data.workspaces[ id ];
-                    updateListener( {
-                        id: id,
-                        type: 'unload',
-                        data: null
-                    } );
-                    $timeout( function () {} );
+                    triggerUpdateListener( id, null, 'unload' );
                 };
 
             watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
@@ -367,32 +375,15 @@ angular.module( 'cyphy.services' )
                                         childNode = children[ i ];
                                         if ( childNode.isMetaTypeOf( meta.byName.WorkSpace ) ) {
                                             wsId = childNode.getId();
-                                            data.workspaces[ wsId ] = {
-                                                id: wsId,
-                                                name: childNode.getAttribute( 'name' ),
-                                                description: childNode.getAttribute( 'INFO' )
-                                            };
-                                            childNode.onUpdate( onUpdate );
-                                            childNode.onUnload( onUnload );
+                                            addNewWorkspace( wsId, childNode );
                                         }
                                     }
                                     rootNode.onNewChildLoaded( function ( newChild ) {
                                         if ( newChild.isMetaTypeOf( meta.byName.WorkSpace ) ) {
                                             wsId = newChild.getId();
-                                            data.workspaces[ wsId ] = {
-                                                id: wsId,
-                                                name: newChild.getAttribute( 'name' ),
-                                                description: newChild.getAttribute( 'INFO' )
-                                            };
-                                            newChild.onUpdate( onUpdate );
-                                            newChild.onUnload( onUnload );
-                                            $timeout( function () {
-                                                updateListener( {
-                                                    id: wsId,
-                                                    type: 'load',
-                                                    data: data.workspaces[ wsId ]
-                                                } );
-                                            } );
+                                            addNewWorkspace( wsId, newChild );
+                                            triggerUpdateListener( wsId, data.workspaces[ wsId ],
+                                                'load' );
                                         }
                                     } );
                                     deferred.resolve( data );
@@ -790,8 +781,8 @@ angular.module( 'cyphy.services' )
             return deferred.promise;
         };
 
-        this.checkForUpdates = function ( data, node, keyToAttr ) {
-            return baseCyPhyService.checkForUpdates( data, node, keyToAttr );
+        this.checkForAttributeUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForAttributeUpdates( data, node, keyToAttr );
         };
 
         /**

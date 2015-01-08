@@ -7,6 +7,8 @@
 
     "debug": true,
 
+    "storageKeyType": "rand320Bits",
+
     "decoratorpaths": ["./src/decorators"],
 
     "visualizerDescriptors": ["./Visualizers.json"],

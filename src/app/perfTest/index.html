@@ -68,14 +68,14 @@
             usedClasses = ["Client"],
             interval = 200, // 100 milliseconds interval
             waitForLoadId = setInterval(function () {
-                if (window.WebGMEGlobal &&
-                    window.WebGMEGlobal.classes) {
+                if (window.GME &&
+                    window.GME.classes) {
                     // TODO: check for all classes that we use
                     clearInterval(waitForLoadId);
                     success = true;
 
                     for (i = 0; i < usedClasses.length; i += 1) {
-                        if (window.WebGMEGlobal.classes.hasOwnProperty(usedClasses[i])) {
+                        if (window.GME.classes.hasOwnProperty(usedClasses[i])) {
                             console.log('WebGME ' + usedClasses[i] + ' is available.');
                         } else {
                             console.error('WebGME ' + usedClasses[i] + ' was not found.');

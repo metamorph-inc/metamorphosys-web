@@ -1,4 +1,4 @@
-var WebGMEGlobal = WebGMEGlobal || {}; WebGMEGlobal.plugins = WebGMEGlobal.plugins || {};(function(){/** vim: et:ts=4:sw=4:sts=4
+var GME = GME || {}, WebGMEGlobal = {} ;(function(){/** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.11 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
@@ -15272,7 +15272,7 @@ define( 'plugin/SaveDesertConfigurations/SaveDesertConfigurations/SaveDesertConf
 
     return SaveDesertConfigurations;
 } );
-/*globals define, WebGMEGlobal */
+/*globals define, GME, WebGMEGlobal */
 define('webcyphy.plugins',
     [
         'xmljsonconverter',
@@ -15296,9 +15296,11 @@ define('webcyphy.plugins',
                  GenerateDashboard,
                  SaveDesertConfigurations) {
         
-        WebGMEGlobal.classes = WebGMEGlobal.classes || {};
-        WebGMEGlobal.classes.ExecutorClient = ExecutorClient;
-        WebGMEGlobal.classes.Converters = Converters;
+        GME.classes = GME.classes || {};
+        GME.classes.ExecutorClient = ExecutorClient;
+        GME.classes.Converters = Converters;
+
+        WebGMEGlobal.plugins = WebGMEGlobal.plugins || {};
         WebGMEGlobal.plugins.AcmImporter = AcmImporter;
         WebGMEGlobal.plugins.AdmImporter = AdmImporter;
         WebGMEGlobal.plugins.AtmImporter = AtmImporter;
