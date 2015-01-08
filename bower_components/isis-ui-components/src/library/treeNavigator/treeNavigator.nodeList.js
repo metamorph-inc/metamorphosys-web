@@ -4,13 +4,11 @@
 
 require( './treeNavigator.node.js' );
 require( '../helpers/angular-recursion.js' );
-require( 'angular-dragdrop' );
 
 angular.module(
 'isis.ui.treeNavigator.nodeList', [
   'isis.ui.treeNavigator.node',
-  'RecursionHelper',
-  'ngDragDrop'
+  'RecursionHelper'
 ]
 )
 
