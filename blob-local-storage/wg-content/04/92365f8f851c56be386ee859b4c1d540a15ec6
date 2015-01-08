@@ -1,0 +1,23 @@
+
+C:\Users\kevin\Documents\tonkalib\designs\Template_Module_1x2\results\damevgnw>echo off 
+
+HKEY_LOCAL_MACHINE\software\META
+    META_PATH    REG_SZ    C:\Users\kevin\Documents\meta-tonka\META\
+
+Input: layout-input.json
+Output: layout.json
+Inter chip gap: 0.5
+Board edge gap: 0.5
+Applying User-defined Package Constraints ...
+Applying User-defined Global/Group Constraints ...
+Board Width: 16.5 Board Height: 39.15 Layers: 2
+Number of Chips: 0 Total Chip Area: 0
+Layout Density = 0
+X,Y,R,Z
+Time : 0
+Parsed Schematic File : schema.sch
+Parsed Eagle Library schema version: 6.5.0
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\eagle.exe
+    Path    REG_SZ    C:\Program Files (x86)\EAGLE-6.5.0
+

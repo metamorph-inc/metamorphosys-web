@@ -1,0 +1,89 @@
+import sys
+import os
+import os.path
+import glob
+import zipfile
+import errno
+import win32com.client.dynamic
+
+try:
+    os.mkdir("export")
+except OSError as e:
+    import errno
+    if e.errno != errno.EEXIST: raise
+
+mgafile = os.path.abspath("Template_Module_1x2.mga")
+
+project = win32com.client.dynamic.Dispatch("Mga.MgaProject")
+project.OpenEx("MGA=" + mgafile, "CyPhyML", True)
+
+#compexp = win32com.client.dynamic.Dispatch("MGA.Interpreter.CyPhyComponentExporter")
+#compexp.OutputDir = "export"
+#compexp.InvokeEx(project, None, None, 128)
+
+designexp = win32com.client.dynamic.Dispatch("MGA.Interpreter.CyPhyDesignExporter")
+designexp.OutputDir = "export"
+designexp.InvokeEx(project, None, None, 128)
+
+for adp in glob.glob('export/*.adp'):
+    with zipfile.ZipFile(adp, "r") as z:
+        z.extractall('export')
+
+def write_testbench():
+    save = {}
+    project.BeginTransactionInNewTerr()
+    emptyfilter = project.CreateFilter()
+
+    def parents(fco):
+        while fco.ParentModel:
+            yield fco.ParentModel
+            fco = fco.ParentModel
+        f = fco
+        while f.ParentFolder:
+            yield f.ParentFolder
+            f = f.ParentFolder
+
+    filter = project.CreateFilter()
+    filter.Kind = "TestBench"
+    tbs = project.AllFCOs(filter)
+    for tb in tbs:
+        print "/" + "/".join([f.Name for f in list(parents(tb))[::-1][1:] + [tb]])
+        save[tb.ID] = True
+        for p in parents(tb):
+            save[p.ID] = True
+        for fco in tb.GetDescendantFCOs(emptyfilter):
+            save[fco.ID] = True
+            if fco.ObjType == 3 and fco.Referred:
+                save[fco.Referred.ID] = True
+                for p in parents(fco.Referred):
+                    save[p.ID] = True
+                if fco.Referred.ObjType == 1:
+                    for child in fco.Referred.ChildObjects:
+                        save[child.ID] = True
+
+    allfcos = project.AllFCOs(emptyfilter)
+    for fco in allfcos:
+        if fco.Status != 0:
+            continue
+        if fco.IsLibObject:
+            continue
+        if fco.ID in save:
+            continue
+        fco.DestroyObject()
+
+    project.CommitTransaction()
+    project.Save("MGA=" + "testbenches.mga")
+    dumper = win32com.client.dynamic.Dispatch("Mga.MgaDumper")
+    dumper.DumpProject(project, "testbenches.xme")
+
+    with zipfile.ZipFile("testbenches.zip", "w") as z:
+        def add(f):
+            print "adding to testbenches.zip: " + f
+            z.write(f)
+        add("testbenches.xme")
+        for f in glob.glob('config/*'):
+            add(f)
+
+write_testbench()
+
+project.Close(True)

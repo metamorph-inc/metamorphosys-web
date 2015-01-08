@@ -1,0 +1,19 @@
+2015-01-08T12:42:23 - [Info] - Configuration : OK
+2015-01-08T12:42:23 - [Debug] - Elaborating model...
+2015-01-08T12:42:23 - [Debug] - Elaboration is done.
+2015-01-08T12:42:23 - [Info] - Elaborator : OK
+2015-01-08T12:42:23 - [Debug] - CyPhyBuildVisitor::visit(RootFolder/Testing/PlaceAndRoute_1x2)
+2015-01-08T12:42:23 - [Debug] - CyPhyBuildVisitor::visit(RootFolder/Testing/PlaceAndRoute_1x2/Template_Module_1x2)
+2015-01-08T12:42:23 - [Debug] - CyPhyBuildVisitor::visit(RootFolder/Testing/PlaceAndRoute_1x2/Template_Module_1x2/GP_ASIC)
+2015-01-08T12:42:23 - [Debug] - CyPhyBuildVisitor::visit(RootFolder/Testing/PlaceAndRoute_1x2/Template_Module_1x2/Power_System)
+2015-01-08T12:42:23 - [Debug] - CyPhyBuildVisitor::visit(RootFolder/Testing/PlaceAndRoute_1x2/Template_Module_1x2/Wake_Detect)
+2015-01-08T12:42:24 - [Info] - Parsed Eagle Library schema version: 6.5.0
+2015-01-08T12:42:24 - [Info] - Schematic translation : OK
+2015-01-08T12:42:24 - [Debug] - ======================================================
+2015-01-08T12:42:24 - [Debug] - Start time: 1/8/2015 12:42:23 PM
+2015-01-08T12:42:24 - [Debug] - Configuration = 00:00:00.0624848
+2015-01-08T12:42:24 - [Debug] - Elaborator = 00:00:00.2968400
+2015-01-08T12:42:24 - [Debug] - Schematic translation = 00:00:00.7208824
+2015-01-08T12:42:24 - [Debug] - ======================================================
+2015-01-08T12:42:24 - [Info] - Generated files are here: <a href="file:///C:\Users\kevin\Documents\tonkalib\designs\Template_Module_1x2\results\damevgnw" target="_blank">C:\Users\kevin\Documents\tonkalib\designs\Template_Module_1x2\results\damevgnw</a>
+2015-01-08T12:42:24 - [Info] - Schematic Interpreter has finished. [SUCCESS: True, Labels: Schematic]

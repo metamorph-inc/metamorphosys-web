@@ -29,26 +29,33 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
 
 
 angular.module( 'CyPhyApp' )
-    .controller( 'MyViewController', function ( $scope, $timeout, $http, growl, dataStoreService, projectService,
+    .controller( 'MyViewController', function ( $q, $scope, $timeout, $http, growl, dataStoreService, projectService,
         nodeService, branchService ) {
         'use strict';
 
+        var future,
+            log,
+            databaseId,
+            meta,
+            context;
+
         $scope.logs = [ 'init' ];
 
-        var log = function ( message ) {
-            $scope.logs.push( message );
+        log = function ( message ) {
+            $scope.logs.push( new Date() + " " + message );
+            //$scope.$apply();
         };
 
-        var databaseId = 'my-db-connection-id';
+        databaseId = 'my-db-connection-id';
 
-        var meta;
-        var context;
+        meta;
+        context;
         //$http.get('/rest/external/copyproject/noredirect')
         //    .then(function(data) {
         //        //return data.data;
         //        return "NkLabsPrototype";
         //    }).then(
-        ( function ( projectName ) {
+        future = ( function ( projectName ) {
             return dataStoreService.connectToDatabase( databaseId, {
                 host: window.location.basename
             } )
@@ -63,7 +70,7 @@ angular.module( 'CyPhyApp' )
                     window.location.origin + '"> webgme interface</a>.' );
                 fatal( reason );
             } );
-        } )( "NkLabsPrototype" )
+        } )( "Template_Module_1x2" )
             .then( function ( project ) {
                 context = {
                     db: databaseId,
@@ -78,7 +85,7 @@ angular.module( 'CyPhyApp' )
             } )
             .then( function () {
                 return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ),
-                    '#b1b8c03f41344f3465fd1a6f82f436989bafc48f' );
+                    '#1e28896c0d52371d56cf725a1e76ffbdfd318637' );
             } )
             .then( function ( branchId ) {
                 return $timeout( function () {
@@ -113,20 +120,39 @@ angular.module( 'CyPhyApp' )
             } )
             .then( function ( children ) {
                 log( 'children: ' + children.length );
-                return children.filter( function ( child ) {
-                    return child.getAttribute( 'name' ) === 'ATTiny-24';
-                } )[ 0 ].loadChildren();
-            } )
-            .then( function ( children ) {
-                log( 'children: ' + children.length );
-                var c = children.filter( function ( child ) {
-                    return child.getAttribute( 'name' ) === 'C';
+                attiny = children.filter( function ( child ) {
+                    return child.getAttribute( 'name' ) === 'R_0201_620k_0.05W_1%_Thick_Film';
                 } )[ 0 ];
-                c.setAttribute( 'Value', 0.12345 );
-            } )
-            .then( function ( children ) {
-                log( 'PHANTOM DONE' );
-            } )
-            .
-        catch ( fatal );
+                return attiny.loadChildren();
+            } );
+        future = future.then(function (children) {
+            log('children2: ' + children.length);
+            var c = children.filter(function (child) {
+                return child.getAttribute('name') === 'R';
+            })[0];
+            value = c;
+            return c;
+        });
+        var count = 0;
+        var value;
+        var attiny;
+        var setattr = function (c) {
+            log('set');
+
+            value.setAttribute('Value', Math.random() * 10000);
+            var deferred = $q.defer();
+            value.onUpdate(function () {
+                    count++; log("done " + count);
+                    if (count < 10) {
+                        deferred.resolve($timeout(setattr, 2));
+                        //deferred.resolve(setattr);
+                        return;
+                    }
+                    log( 'PHANTOM DONE' );
+                    deferred.resolve(null);
+                });
+            return deferred.promise;
+        }
+        future.then(setattr);
+        //.catch ( fatal );
     } );

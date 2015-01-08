@@ -1,0 +1,32 @@
+{
+  "$id": "1",
+  "Name": "PlaceAndRoute_1x2",
+  "Metrics": [],
+  "Parameters": [
+    {
+      "$id": "2",
+      "Name": "boardEdgeSpace",
+      "Unit": "Millimeter",
+      "Value": "0.5"
+    },
+    {
+      "$id": "3",
+      "Name": "interChipSpace",
+      "Unit": "Millimeter",
+      "Value": "0.5"
+    },
+    {
+      "$id": "4",
+      "Name": "boardHeight",
+      "Unit": "Millimeter",
+      "Value": "39.15"
+    },
+    {
+      "$id": "5",
+      "Name": "boardWidth",
+      "Unit": "Millimeter",
+      "Value": "16.5"
+    }
+  ],
+  "Requirements": []
+}

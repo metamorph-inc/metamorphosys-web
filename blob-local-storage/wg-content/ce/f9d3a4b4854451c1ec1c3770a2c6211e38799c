@@ -1,0 +1,48 @@
+2015-01-08T12:42:23 - [Info] - CyPhyElaborate 2.0 started.
+2015-01-08T12:42:23 - [Debug] - id-0067-00000194 - Switching reference to model: Template_Module_1x2 [TopLevelSystemUnderTest]
+2015-01-08T12:42:23 - [Debug] - id-0065-00000041 - Creating copy from: Template_Module_1x2 [ComponentAssembly]
+2015-01-08T12:42:23 - [Warning] - Null D1 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Warning] - Null Y1 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Warning] - Null D2 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Warning] - Null C5 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Warning] - Null C4 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Warning] - Null J1 [ComponentRef] was ignored and skipped.
+2015-01-08T12:42:23 - [Debug] - Traceability map size: 22
+2015-01-08T12:42:23 - [Debug] - Before: 7, After: 22
+2015-01-08T12:42:23 - [Debug] - Traceability map has traces for all objects within the current context.
+2015-01-08T12:42:23 - [Debug] - Time: 00:00:00.0364924
+2015-01-08T12:42:23 - [Info] - CyPhyFormulaEvaluator 1.0 started
+2015-01-08T12:42:23 - [Info] - CyPhyFormulaEvaluator 1.0 finished
+2015-01-08T12:42:23 - [Debug] - Formula evaluator runtime: 00:00:00.1459494
+2015-01-08T12:42:23 - [Info] - ConnectorUnroller started
+2015-01-08T12:42:23 - [Debug] - UnrollTestBench: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitTestBench: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitComponentAssembly: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitComponentAssembly: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Wake_Detect|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - ExpandConnectorCompositionChildren: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Wake_Detect|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitComponentAssembly: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Power_System|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - ExpandConnectorCompositionChildren: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Power_System|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitComponentAssembly: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@GP_ASIC|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - ExpandConnectorCompositionChildren: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@GP_ASIC|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Vconn|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing with parent as Archetype
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing connector as Archetype
+2015-01-08T12:42:23 - [Debug] - RedirectConnectionsToConstituentPorts: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Vconn|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Module_Det_Wake|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing with parent as Archetype
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing connector as Archetype
+2015-01-08T12:42:23 - [Debug] - RedirectConnectionsToConstituentPorts: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Module_Det_Wake|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Gnd|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing with parent as Archetype
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing connector as Archetype
+2015-01-08T12:42:23 - [Debug] - RedirectConnectionsToConstituentPorts: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Gnd|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Power_En|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing with parent as Archetype
+2015-01-08T12:42:23 - [Debug] - VisitConnector: Processing connector as Archetype
+2015-01-08T12:42:23 - [Debug] - RedirectConnectionsToConstituentPorts: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0/@Power_En|kind=Connector|relpos=0
+2015-01-08T12:42:23 - [Debug] - ExpandConnectorCompositionChildren: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0
+2015-01-08T12:42:23 - [Debug] - ExpandConnectorCompositionChildren: /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0
+2015-01-08T12:42:23 - [Debug] - DeleteConnectorsAndPorts
+2015-01-08T12:42:23 - [Info] - ConnectorUnroller finished
+2015-01-08T12:42:23 - [Debug] - ConnectorUnroller runtime: 00:00:00.0134638
+2015-01-08T12:42:23 - [Info] - CyPhyElaborate 2.0 finished.
