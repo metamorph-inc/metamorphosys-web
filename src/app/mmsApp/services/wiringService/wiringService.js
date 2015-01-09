@@ -23,17 +23,17 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
             return [
 
                 {
-                    id: 'elbowVertical',
-                    label: 'Elbow - vertical first',
-                    type: 'ElbowRouter',
-                    params: 'verticalFirst'
-                },
-
-                {
                     id: 'elbowHorizontal',
                     label: 'Elbow - horizontal first',
                     type: 'ElbowRouter',
                     params: 'horizontalFirst'
+                },
+
+                {
+                    id: 'elbowVertical',
+                    label: 'Elbow - vertical first',
+                    type: 'ElbowRouter',
+                    params: 'verticalFirst'
                 },
 
                 {
