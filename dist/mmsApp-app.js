@@ -3013,12 +3013,12 @@ module.exports = function (
             var openContextMenuEvent;
 
             openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
-                clientX: $event.clientX,
-                clientY: $event.clientY,
-                pageX: $event.pageX,
-                pageY: $event.pageY,
-                screenX: $event.screenX,
-                screenY: $event.screenY,
+                clientX: $event.clientX + 2,
+                clientY: $event.clientY + 2,
+                pageX: $event.pageX + 2,
+                pageY: $event.pageY + 2,
+                screenX: $event.screenX + 2,
+                screenY: $event.screenY + 2,
                 target: $event.target
             });
 
