@@ -64,6 +64,31 @@ angular.module( 'mms.headerButtons', [ ] )
         };
 
 
+        $scope.openShareDialog = function(ev) {
+
+            function DialogController($scope, $mdDialog, $window) {
+
+                $scope.designUrl = $window.location.href;
+
+
+                $scope.hide = function () {
+                    $mdDialog.hide();
+                };
+                $scope.close = function () {
+                    $mdDialog.hide();
+                };
+            }
+
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: '/mmsApp/templates/shareDialog.html',
+                targetEvent: ev
+            })
+                .then(function () {
+                });
+        };
+
+
     })
     .directive( 'headerButtons', [ '$rootScope',
         function () {
