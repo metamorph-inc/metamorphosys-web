@@ -53,6 +53,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         wireDrawHandler = new WireDrawHandler(
             $scope,
+            $rootScope,
             diagramService,
             wiringService,
             gridService,

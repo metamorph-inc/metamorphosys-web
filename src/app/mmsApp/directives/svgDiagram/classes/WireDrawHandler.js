@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, gridService, $timeout, $log) {
+module.exports = function($scope, $rootScope, diagramService, wiringService, gridService, $timeout, $log) {
 
     var self = this,
 
@@ -82,6 +82,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
         $scope.diagram.wires[ wire.id ] = wire;
 
         gridService.invalidateVisibleDiagramComponents( $scope.id );
+
+        $rootScope.$emit('wireCreationMustBeDone', wire);
 
         $log.debug( 'Finish wire', wire );
 
