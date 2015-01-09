@@ -6713,7 +6713,7 @@ angular.module('cyphy.services')
 
                     newName = this.getAttribute('name');
                     newPos = this.getRegistry('position');
-                    newRotation = this.getRegistry('rotation');
+                    newRotation = this.getRegistry('rotation') || 0;
 
                     hadChanges = false;
 

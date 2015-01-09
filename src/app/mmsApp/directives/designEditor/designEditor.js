@@ -83,9 +83,15 @@ angular.module('mms.designVisualization.designEditor', [])
                     nodeService.createNode(designCtx, $rootScope.activeContainerId, metaId, msg || 'New wire' )
                         .then(function(node){
 
+                            nodeService.startTransaction(designCtx, msg || 'New wire details');
+
+                            console.log(wire.segments);
+
                             node.setRegistry('wireSegments', angular.copy(wire.segments));
                             node.makePointer('src', wire.end1.port.id );
                             node.makePointer('dst', wire.end2.port.id );
+
+                            nodeService.completeTransaction(designCtx);
 
                             wire.id = node.id;
                             diagramService.addWire( $rootScope.activeDiagramId, wire );
@@ -109,7 +115,7 @@ angular.module('mms.designVisualization.designEditor', [])
             nodeService.destroyNode(designCtx, wire.id, message || 'Deleting wire');
         });
 
-        $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
+        $rootScope.$on('componentDeletionMustBeDone', function ($event, components, msg) {
 
             var startDeletionOfComponent;
 
@@ -150,6 +156,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
             $rootScope.processing = true;
 
+            nodeService.startTransaction(designCtx, msg || 'Deleting design elements');
+
             if (angular.isArray(components)) {
 
                 angular.forEach(components, function (component) {
@@ -159,6 +167,8 @@ angular.module('mms.designVisualization.designEditor', [])
             } else {
                 startDeletionOfComponent(components);
             }
+
+            nodeService.completeTransaction(designCtx);
 
         });
 
@@ -173,6 +183,8 @@ angular.module('mms.designVisualization.designEditor', [])
                     var i;
 
                     i = 1;
+
+                    nodeService.startTransaction(designCtx, data.message);
 
                     angular.forEach(data.components, function (component) {
 
@@ -190,6 +202,8 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     });
 
+                    nodeService.completeTransaction(designCtx);
+
                 });
 
                 $scope.$on('componentsRotationChange', function (e, data) {
@@ -197,6 +211,8 @@ angular.module('mms.designVisualization.designEditor', [])
                     var i;
 
                     i = 1;
+
+                    nodeService.startTransaction(designCtx, data.message);
 
                     angular.forEach(data.components, function (component) {
 
@@ -213,6 +229,8 @@ angular.module('mms.designVisualization.designEditor', [])
                         i++;
 
                     });
+
+                    nodeService.completeTransaction(designCtx);
 
                 });
 
