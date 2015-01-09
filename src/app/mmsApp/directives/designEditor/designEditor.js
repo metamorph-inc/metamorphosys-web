@@ -64,6 +64,10 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
+        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire) {
+            nodeService.destroyNode(designCtx, wire.id, 'Deleting wire');
+        });
+
         $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
 
             var startDeletionOfComponent;

@@ -50,14 +50,14 @@ module.exports = function (
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function(routerType, id) {
+        angular.forEach($scope.routerTypes, function(routerType) {
 
             wiringMenu.push(
                 {
-                    id: id,
+                    id: routerType.id,
                     label: routerType.label,
                     action: function(){
-                        wiringService.routeWire( wire, routerType.type, routerType.params);
+                        wiringService.routeWire( wire, routerType.type, routerType.params, true);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 }
@@ -218,14 +218,14 @@ module.exports = function (
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function(routerType, id) {
+        angular.forEach($scope.routerTypes, function(routerType) {
                 var selected;
 
-                selected = routerType === $scope.selectedRouter;
+                selected = routerType.id === $scope.selectedRouter.id;
 
             wiringMenu.push(
                 {
-                    id: id,
+                    id: routerType.id,
                     label: routerType.label,
                     cssClass: selected ? 'selected' : 'not-selected',
                     iconClass: selected ? 'fa fa-check' : undefined,

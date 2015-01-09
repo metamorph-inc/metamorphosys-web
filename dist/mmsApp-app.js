@@ -1276,6 +1276,10 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
+        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire) {
+            nodeService.destroyNode(designCtx, wire.id, 'Deleting wire');
+        });
+
         $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
 
             var startDeletionOfComponent;
@@ -2894,8 +2898,14 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     $scope.$on('keyupOnDiagram', function($event, e) {
 
+        //console.log(e.keyCode);
+
+        if (e.keyCode === 16) { // Esc
+            cancelWire();
+        }
+
         if (e.keyCode === 27) { // Esc
-            $timeout(cancelWire());
+            cancelWire();
         }
 
     });
@@ -2963,14 +2973,14 @@ module.exports = function (
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function(routerType, id) {
+        angular.forEach($scope.routerTypes, function(routerType) {
 
             wiringMenu.push(
                 {
-                    id: id,
+                    id: routerType.id,
                     label: routerType.label,
                     action: function(){
-                        wiringService.routeWire( wire, routerType.type, routerType.params);
+                        wiringService.routeWire( wire, routerType.type, routerType.params, true);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 }
@@ -3131,14 +3141,14 @@ module.exports = function (
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function(routerType, id) {
+        angular.forEach($scope.routerTypes, function(routerType) {
                 var selected;
 
-                selected = routerType === $scope.selectedRouter;
+                selected = routerType.id === $scope.selectedRouter.id;
 
             wiringMenu.push(
                 {
-                    id: id,
+                    id: routerType.id,
                     label: routerType.label,
                     cssClass: selected ? 'selected' : 'not-selected',
                     iconClass: selected ? 'fa fa-check' : undefined,
@@ -3272,7 +3282,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.routerTypes = wiringService.getRouterTypes();
 
-        $scope.selectedRouter = $scope.routerTypes.elbowVertical;
+        $scope.selectedRouter = $scope.routerTypes[0];
 
         $scope.onDiagramMouseDown = function ($event) {
 
@@ -3529,7 +3539,8 @@ angular.module('mms.designVisualization.svgDiagram', [
         '$log',
         'diagramService',
         'gridService',
-        function ($rootScope, $log, diagramService, gridService) {
+        '$timeout',
+        function ($rootScope, $log, diagramService, gridService, $timeout) {
 
             return {
                 controller: 'SVGDiagramController',
@@ -3613,8 +3624,9 @@ angular.module('mms.designVisualization.svgDiagram', [
                     $element.bind('contextmenu', killContextMenu);
 
                     $element.keyup(function(e){
-
-                        scope.$emit('keyupOnDiagram', e);
+                        $timeout(function() {
+                            scope.$emit('keyupOnDiagram', e);
+                        });
 
                     });
 
@@ -6775,27 +6787,30 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         this.getRouterTypes = function () {
 
-            return {
+            return [
 
-                'elbowVertical': {
+                {
+                    id: 'elbowVertical',
                     label: 'Elbow - vertical first',
                     type: 'ElbowRouter',
                     params: 'verticalFirst'
                 },
 
-                'elbowHorizontal': {
+                {
+                    id: 'elbowHorizontal',
                     label: 'Elbow - horizontal first',
                     type: 'ElbowRouter',
                     params: 'horizontalFirst'
                 },
 
-                'simpleRouter': {
+                {
+                    id: 'simpleRouter',
                     label: 'Straight wire',
                     type: 'SimpleRouter'
                 }
 
 
-            };
+            ];
 
         };
 
@@ -6817,13 +6832,14 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         };
 
-        this.routeWire = function (wire, routerType, params) {
+        this.routeWire = function (wire, routerType, params, ignoreLeadIn) {
 
             var router,
                 simpleRouter,
                 endPositions,
-                s,
-                segments;
+                p1,
+                p2,
+                s1, s2, s3;
 
 
             simpleRouter = routers.SimpleRouter;
@@ -6836,44 +6852,44 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 if (endPositions) {
 
-                    segments = [];
+                    s1 = [];
+                    s2 = [];
+                    s3 = [];
 
-                    if (endPositions.end1.leadInPosition) {
+                    if (endPositions.end1.leadInPosition && !ignoreLeadIn) {
 
-                        s = simpleRouter.makeSegments([
+                        s1 = simpleRouter.makeSegments([
                             endPositions.end1,
                             endPositions.end1.leadInPosition
                         ]);
 
-                        s.isLeadin = true;
+                        p1 = endPositions.end1.leadInPosition;
 
-                        segments = segments.concat(s);
-
+                    } else {
+                        p1 = endPositions.end1;
                     }
 
-                    s = router.makeSegments([
-                        endPositions.end1.leadInPosition || endPositions.end1,
-                        endPositions.end2.leadInPosition || endPositions.end2
-                    ], params);
 
-                    segments = segments.concat(s);
+                    if (endPositions.end2.leadInPosition && !ignoreLeadIn) {
 
-                    if (endPositions.end2.leadInPosition) {
-
-                        s = simpleRouter.makeSegments([
+                        s3 = simpleRouter.makeSegments([
                             endPositions.end2.leadInPosition,
                             endPositions.end2
                         ]);
 
-                        s.isLeadin = true;
+                        p2 = endPositions.end2.leadInPosition;
 
-                        segments = segments.concat(s);
-
+                    } else {
+                        p2 = endPositions.end2;
                     }
 
-                    //console.log(segments);
+                    s2 = router.makeSegments([
+                        p1,
+                        p2
+                    ], params);
 
-                    wire.segments = segments;
+
+                    wire.segments = s1.concat(s2).concat(s3);
 
                 }
 
@@ -6961,7 +6977,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 //Simple-routing
 
-                self.routeWire(wire);
+                self.routeWire(wire, null, null, true);
             }
 
         };

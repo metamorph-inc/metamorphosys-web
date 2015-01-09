@@ -174,8 +174,14 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     $scope.$on('keyupOnDiagram', function($event, e) {
 
+        //console.log(e.keyCode);
+
+        if (e.keyCode === 16) { // Esc
+            cancelWire();
+        }
+
         if (e.keyCode === 27) { // Esc
-            $timeout(cancelWire());
+            cancelWire();
         }
 
     });

@@ -74,7 +74,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.routerTypes = wiringService.getRouterTypes();
 
-        $scope.selectedRouter = $scope.routerTypes.elbowVertical;
+        $scope.selectedRouter = $scope.routerTypes[0];
 
         $scope.onDiagramMouseDown = function ($event) {
 
@@ -331,7 +331,8 @@ angular.module('mms.designVisualization.svgDiagram', [
         '$log',
         'diagramService',
         'gridService',
-        function ($rootScope, $log, diagramService, gridService) {
+        '$timeout',
+        function ($rootScope, $log, diagramService, gridService, $timeout) {
 
             return {
                 controller: 'SVGDiagramController',
@@ -415,8 +416,9 @@ angular.module('mms.designVisualization.svgDiagram', [
                     $element.bind('contextmenu', killContextMenu);
 
                     $element.keyup(function(e){
-
-                        scope.$emit('keyupOnDiagram', e);
+                        $timeout(function() {
+                            scope.$emit('keyupOnDiagram', e);
+                        });
 
                     });
 

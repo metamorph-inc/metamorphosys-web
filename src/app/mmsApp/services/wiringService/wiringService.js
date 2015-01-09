@@ -20,27 +20,30 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         this.getRouterTypes = function () {
 
-            return {
+            return [
 
-                'elbowVertical': {
+                {
+                    id: 'elbowVertical',
                     label: 'Elbow - vertical first',
                     type: 'ElbowRouter',
                     params: 'verticalFirst'
                 },
 
-                'elbowHorizontal': {
+                {
+                    id: 'elbowHorizontal',
                     label: 'Elbow - horizontal first',
                     type: 'ElbowRouter',
                     params: 'horizontalFirst'
                 },
 
-                'simpleRouter': {
+                {
+                    id: 'simpleRouter',
                     label: 'Straight wire',
                     type: 'SimpleRouter'
                 }
 
 
-            };
+            ];
 
         };
 
@@ -62,13 +65,14 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         };
 
-        this.routeWire = function (wire, routerType, params) {
+        this.routeWire = function (wire, routerType, params, ignoreLeadIn) {
 
             var router,
                 simpleRouter,
                 endPositions,
-                s,
-                segments;
+                p1,
+                p2,
+                s1, s2, s3;
 
 
             simpleRouter = routers.SimpleRouter;
@@ -81,44 +85,44 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 if (endPositions) {
 
-                    segments = [];
+                    s1 = [];
+                    s2 = [];
+                    s3 = [];
 
-                    if (endPositions.end1.leadInPosition) {
+                    if (endPositions.end1.leadInPosition && !ignoreLeadIn) {
 
-                        s = simpleRouter.makeSegments([
+                        s1 = simpleRouter.makeSegments([
                             endPositions.end1,
                             endPositions.end1.leadInPosition
                         ]);
 
-                        s.isLeadin = true;
+                        p1 = endPositions.end1.leadInPosition;
 
-                        segments = segments.concat(s);
-
+                    } else {
+                        p1 = endPositions.end1;
                     }
 
-                    s = router.makeSegments([
-                        endPositions.end1.leadInPosition || endPositions.end1,
-                        endPositions.end2.leadInPosition || endPositions.end2
-                    ], params);
 
-                    segments = segments.concat(s);
+                    if (endPositions.end2.leadInPosition && !ignoreLeadIn) {
 
-                    if (endPositions.end2.leadInPosition) {
-
-                        s = simpleRouter.makeSegments([
+                        s3 = simpleRouter.makeSegments([
                             endPositions.end2.leadInPosition,
                             endPositions.end2
                         ]);
 
-                        s.isLeadin = true;
+                        p2 = endPositions.end2.leadInPosition;
 
-                        segments = segments.concat(s);
-
+                    } else {
+                        p2 = endPositions.end2;
                     }
 
-                    //console.log(segments);
+                    s2 = router.makeSegments([
+                        p1,
+                        p2
+                    ], params);
 
-                    wire.segments = segments;
+
+                    wire.segments = s1.concat(s2).concat(s3);
 
                 }
 
@@ -206,7 +210,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 //Simple-routing
 
-                self.routeWire(wire);
+                self.routeWire(wire, null, null, true);
             }
 
         };
