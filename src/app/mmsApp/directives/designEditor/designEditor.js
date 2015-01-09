@@ -64,8 +64,13 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
-        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire) {
-            nodeService.destroyNode(designCtx, wire.id, 'Deleting wire');
+        $rootScope.$on('wireSegmentsMustBeSaved', function ($event, wire, message) {
+            designLayoutService.setWireSegments(designCtx, wire.nodeId, angular.copy(wire.segments), message || 'Updating wire');
+        });
+
+        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire, message) {
+            $rootScope.processing = true;
+            nodeService.destroyNode(designCtx, wire.nodeId, message || 'Deleting wire');
         });
 
         $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
@@ -93,7 +98,7 @@ angular.module('mms.designVisualization.designEditor', [])
                         deleteMessage += ' with wires';
 
                         nodeIdsToDelete = wires.map(function (wire) {
-                            return wire.id;
+                            return wire.nodeId;
                         });
 
                     }

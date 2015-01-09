@@ -1276,8 +1276,13 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
-        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire) {
-            nodeService.destroyNode(designCtx, wire.id, 'Deleting wire');
+        $rootScope.$on('wireSegmentsMustBeSaved', function ($event, wire, message) {
+            designLayoutService.setWireSegments(designCtx, wire.nodeId, angular.copy(wire.segments), message || 'Updating wire');
+        });
+
+        $rootScope.$on('wireDeletionMustBeDone', function ($event, wire, message) {
+            $rootScope.processing = true;
+            nodeService.destroyNode(designCtx, wire.nodeId, message || 'Deleting wire');
         });
 
         $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
@@ -1305,7 +1310,7 @@ angular.module('mms.designVisualization.designEditor', [])
                         deleteMessage += ' with wires';
 
                         nodeIdsToDelete = wires.map(function (wire) {
-                            return wire.id;
+                            return wire.nodeId;
                         });
 
                     }
@@ -4758,6 +4763,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                         wire = new Wire({
                             id: element.id,
+                            nodeId: element.id,
                             end1: {
                                 component: sourcePort.parentComponent,
                                 port: sourcePort
@@ -4768,7 +4774,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                             }
                         });
 
-                        wiringService.routeWire(wire, 'ElbowRouter');
+                        if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+
+                            wire.segments = angular.copy(element.details.wireSegments);
+                            wiringService.adjustWireEndSegments(wire);
+
+                        } else {
+
+                            wiringService.routeWire(wire, 'ElbowRouter');
+
+                        }
 
                         diagram.addWire(wire);
 

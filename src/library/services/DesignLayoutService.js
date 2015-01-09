@@ -18,7 +18,18 @@ angular.module( 'cyphy.services' )
             'Container'
         ];
 
+        $log.debug('IN design layout service');
+
         watchers = {};
+
+        this.setWireSegments = function( context, nodeId, segments, msg) {
+
+            nodeService.loadNode(context, nodeId)
+                .then(function(node) {
+                    node.setRegistry( 'wireSegments', segments, msg);
+                });
+
+        };
 
         this.setPosition = function( context, nodeId, position, msg) {
 

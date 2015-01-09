@@ -395,6 +395,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                         wire = new Wire({
                             id: element.id,
+                            nodeId: element.id,
                             end1: {
                                 component: sourcePort.parentComponent,
                                 port: sourcePort
@@ -405,7 +406,16 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                             }
                         });
 
-                        wiringService.routeWire(wire, 'ElbowRouter');
+                        if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+
+                            wire.segments = angular.copy(element.details.wireSegments);
+                            wiringService.adjustWireEndSegments(wire);
+
+                        } else {
+
+                            wiringService.routeWire(wire, 'ElbowRouter');
+
+                        }
 
                         diagram.addWire(wire);
 
