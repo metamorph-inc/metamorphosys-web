@@ -11,7 +11,7 @@ define( [ 'logManager',
     "use strict";
 
     var path = require( 'path' ),
-        BSON_FILE = path.join( 'dump', 'CyPhy', 'NkLabsPrototype.bson' ),
+        BSON_FILE = path.join( 'dump', 'CyPhy', 'Template_Module_1x2.bson' ),
         logger = logManager.create( 'REST-COPYPROJECT' ),
         mongodb = require( 'mongodb' ),
         BSONStream = require( 'bson-stream' ),

@@ -1,0 +1,43 @@
+{
+    "cmd": "run_execution.cmd",
+    "resultArtifacts": [
+        {
+            "name": "dashboard",
+            "resultPatterns": [
+                "dashboard/**",
+                "designs/**",
+                "design-space/**",
+                "requirements/**",
+                "test-benches/**",
+                "results/*/testbench_manifest.json",
+                "results/results.metaresults.json",
+                "manifest.project.json",
+                "index.html",
+                "*.svg"
+            ]
+        },
+        {
+            "name": "logs",
+            "resultPatterns": [
+                "log/**",
+                "_FAILED.txt"
+            ]
+        },
+        {
+            "name": "all",
+            "resultPatterns": []
+        },
+        {
+            "name": "testBenchManifest",
+            "resultPatterns": [
+                "results/*/testbench_manifest.json"
+            ]
+        },
+        {
+            "name": "cfgAdm",
+            "resultPatterns": [
+                "designs/**"
+            ]
+        }
+    ]
+}

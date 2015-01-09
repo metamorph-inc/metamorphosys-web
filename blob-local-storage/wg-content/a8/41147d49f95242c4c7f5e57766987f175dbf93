@@ -1,0 +1,34 @@
+{
+  "UserId": "",
+  "Id": 0,
+  "IsRemote": false,
+  "VFUrl": "",
+  "Executions": [
+    {
+      "StartTime": "2015-01-08 12:42:28Z",
+      "StatusTraces": [
+        {
+          "Status": "Ready",
+          "TimeStamp": "2015-01-08 12:42:28Z"
+        },
+        {
+          "Status": "QueuedLocal",
+          "TimeStamp": "2015-01-08 12:42:28Z"
+        },
+        {
+          "Status": "RunningLocal",
+          "TimeStamp": "2015-01-08 12:42:28Z"
+        },
+        {
+          "Status": "Succeeded",
+          "TimeStamp": "2015-01-08 12:42:32Z"
+        }
+      ]
+    }
+  ],
+  "JobReceived": "2015-01-08 12:42:28Z",
+  "JobName": "CyPhy2Schematic_PlaceAndRoute_1x2",
+  "RunCommand": "placement.bat -i 0.5 -e 0.5",
+  "SizeOfSourcePackage": null,
+  "ToolSpecifics": null
+}

@@ -1,0 +1,20 @@
+# Ara 1x2 Template Module
+This model captures the 1x2-size "template" module design. The template was designed by Project Ara to provide all of the "boilerplate" necessary to build a platform-compatible module, leaving several common interfaces _(e.g.: GPIO, I2C)_ open for designers to connect their own unique capability.
+
+## Source
+The source of the design information is a December 2014 draft of the v0.2 MDK.
+
+## TODO
+- Better connector consolidation between the major subsystems
+- Layout constraints to match module placement requirements
+- Several component models are unfinished _(e.g.: categories, mpn)_
+
+## Issues
+- In the **Power_Subsystem**, the draft design calls for **C32** and **C33** to be 22uF, 6.3V capacitors. The OrCAD schematic and BOM call for different package sizes (0402 and 0201, respectively). However, no 22uF capacitors could be found in either of those sizes, so an 0603 package was used instead.
+- The schematic calls for a 19.2 MHz crystal with part number **ENA3889B**. No matching crystal oscillator component has yet been found, and similar components already in our library do not match the pinout defined in the diagram. The "stub" component included in the model includes no EAGLE schematic counterpart.
+- Component **D2** is part **TVN10201SPO**. The current version of that component uses an EAGLE device with name **TVN0102**, which may not be the correct device.
+- Component **U3** is **T6WR6XBG**, the **AP Bridge ASIC**, instead of the **GP Bridge ASIC** (**T6WR5XBG**) called for by the design. The two are largely pin-compatible.
+  - The connection to **PWM0/SD_DAT3** called for in the diagram is instead connected to **PWM0**. Not sure if the port is the same thing.
+- Layout Constraints
+  - The Exact constraint for U4 has an X value different from what it should be: 6.315mm vs 8.63mm. The true value of 8.63mm seems to push the thing past the center point of the 16.5mm board. The Y dimension has been adjusted by the same amount (5.08mm - 2.315mm = 2.765mm)
+  - The Exact constraint for J1 has been adjusted in the same way in both X & Y directions. Its true location should be x=9.563 y=8.53344
