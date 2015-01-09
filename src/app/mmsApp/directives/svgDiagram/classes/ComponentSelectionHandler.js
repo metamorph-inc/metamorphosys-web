@@ -21,18 +21,22 @@ module.exports = function($scope, diagramService, gridService, $log) {
         z = diagramService.getHighestZ();
         component = $scope.diagram.componentsById[ componentId ];
 
-        if ( isNaN( component.z ) ) {
-            component.z = z;
-            needsTobeReordered = true;
-        } else {
-            if ( component.z < z ) {
-                component.z = z + 1;
-                needsTobeReordered = true;
-            }
-        }
+        if (angular.isObject(component)) {
 
-        if ( needsTobeReordered ) {
-            gridService.reorderVisibleComponents( $scope.id );
+            if (isNaN(component.z)) {
+                component.z = z;
+                needsTobeReordered = true;
+            } else {
+                if (component.z < z) {
+                    component.z = z + 1;
+                    needsTobeReordered = true;
+                }
+            }
+
+            if (needsTobeReordered) {
+                gridService.reorderVisibleComponents($scope.id);
+            }
+
         }
 
     };

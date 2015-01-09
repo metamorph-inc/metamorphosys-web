@@ -13,7 +13,7 @@ angular.module('mms.designVisualization.svgDiagram', [
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
-        $scope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
+        $scope, $rootScope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
 
         var
 
@@ -61,6 +61,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         contextMenuHandler = new ContextMenuHandler(
             $scope,
+            $rootScope,
             diagramService,
             $timeout,
             contextmenuService,
@@ -372,9 +373,14 @@ angular.module('mms.designVisualization.svgDiagram', [
                                     gridService.setVisibleArea(id, visibleArea);
                                 });
 
+
                             scope.$emit('DiagramInitialized');
                         }
 
+                    });
+
+                    scope.$watch('visibleObjects.components', function(val) {
+                        console.log('visible objects', val);
                     });
 
                     $element.bind('contextmenu', killContextMenu);

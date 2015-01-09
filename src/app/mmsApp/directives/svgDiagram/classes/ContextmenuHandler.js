@@ -2,7 +2,8 @@
 
 'use strict';
 
-module.exports = function ($scope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
+module.exports = function (
+    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
 
     var
         onComponentContextmenu,
@@ -78,7 +79,23 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         }
                     }
                 ]
+            },
+            {
+                id: 'delete',
+                items: [
+                    {
+                        id: 'destroy',
+                        label: 'Destroy',
+                        iconClass: 'fa fa-trash-o',
+                        action: function () {
+
+                            $rootScope.$emit('componentDeletionMustBeDone', component);
+
+                        }
+                    }
+                ]
             }
+
         ];
 
         openMenu($event);

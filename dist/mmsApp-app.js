@@ -1227,7 +1227,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagramContainerConfig = {};
 
-        $rootScope.$on('ComponentInstantiationMustBeDone', function($event, componentData, position) {
+        $rootScope.$on('componentInstantiationMustBeDone', function($event, componentData, position) {
 
             var nodesToCopy;
 
@@ -1247,6 +1247,44 @@ angular.module('mms.designVisualization.designEditor', [])
                 };
 
                 nodeService.copyMoreNodes(designCtx, $rootScope.activeContainerId, nodesToCopy);
+            }
+
+        });
+
+        $rootScope.$on('componentDeletionMustBeDone', function($event, component) {
+
+            var i,
+                wires,
+                deleteMessage,
+                nodeIdsToDelete;
+
+            $rootScope.processing = true;
+
+            if (angular.isObject(component)) {
+
+                nodeIdsToDelete = [];
+
+                deleteMessage = 'Deleting design element';
+
+                wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
+
+                if (wires.length > 0) {
+
+                    deleteMessage += ' with wires';
+
+                    nodeIdsToDelete = wires.map(function(wire) {
+                        return wire.id;
+                    });
+
+                }
+
+                nodeIdsToDelete.unshift(component.id);
+
+                for (i = 0; i < nodeIdsToDelete.length; i++) {
+                    nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage );
+                }
+
+
             }
 
         });
@@ -1329,35 +1367,54 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                if (designStructureUpdateObject.updateType === 'newChild') {
+                switch(designStructureUpdateObject.type) {
 
-                    diagramService.createNewComponentFromFromCyPhyElement(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.data);
+                    case 'load':
 
-                    gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                        diagramService.createNewComponentFromFromCyPhyElement(
+                            $rootScope.activeDiagramId,
+                            designStructureUpdateObject.data);
 
-                    $rootScope.processing = false;
+                        gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+
+                        break;
+
+                    case 'unload':
+
+                        diagramService.deleteComponentOrWireById(
+                            $rootScope.activeDiagramId,
+                            designStructureUpdateObject.id);
+
+                        gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId, true);
+
+                        break;
+
+                    default :
+                    case 'update':
+
+                        if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                            diagramService.updateComponentsAndItsWiresPosition(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                designStructureUpdateObject.data.position
+                            );
+                        }
+
+                        if (designStructureUpdateObject.updateType === 'rotationChange') {
+
+                            diagramService.updateComponentsAndItsWiresRotation(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                designStructureUpdateObject.data.rotation
+                            );
+                        }
+
+                        break;
 
                 }
 
-                if (designStructureUpdateObject.updateType === 'positionChange') {
-
-                    diagramService.updateComponentsAndItsWiresPosition(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.id,
-                        designStructureUpdateObject.data.position
-                    );
-                }
-
-                if (designStructureUpdateObject.updateType === 'rotationChange') {
-
-                    diagramService.updateComponentsAndItsWiresRotation(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.id,
-                        designStructureUpdateObject.data.rotation
-                    );
-                }
+                $rootScope.processing = false;
 
             }).then(function (cyPhyLayout) {
 
@@ -1690,7 +1747,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     }
 
-                    $rootScope.$emit('ComponentInstantiationMustBeDone', component, position);
+                    $rootScope.$emit('componentInstantiationMustBeDone', component, position);
 
                 }
 
@@ -2549,18 +2606,22 @@ module.exports = function($scope, diagramService, gridService, $log) {
         z = diagramService.getHighestZ();
         component = $scope.diagram.componentsById[ componentId ];
 
-        if ( isNaN( component.z ) ) {
-            component.z = z;
-            needsTobeReordered = true;
-        } else {
-            if ( component.z < z ) {
-                component.z = z + 1;
-                needsTobeReordered = true;
-            }
-        }
+        if (angular.isObject(component)) {
 
-        if ( needsTobeReordered ) {
-            gridService.reorderVisibleComponents( $scope.id );
+            if (isNaN(component.z)) {
+                component.z = z;
+                needsTobeReordered = true;
+            } else {
+                if (component.z < z) {
+                    component.z = z + 1;
+                    needsTobeReordered = true;
+                }
+            }
+
+            if (needsTobeReordered) {
+                gridService.reorderVisibleComponents($scope.id);
+            }
+
         }
 
     };
@@ -2803,7 +2864,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
 
 'use strict';
 
-module.exports = function ($scope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
+module.exports = function (
+    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
 
     var
         onComponentContextmenu,
@@ -2879,7 +2941,23 @@ module.exports = function ($scope, diagramService, $timeout, contextmenuService,
                         }
                     }
                 ]
+            },
+            {
+                id: 'delete',
+                items: [
+                    {
+                        id: 'destroy',
+                        label: 'Destroy',
+                        iconClass: 'fa fa-trash-o',
+                        action: function () {
+
+                            $rootScope.$emit('componentDeletionMustBeDone', component);
+
+                        }
+                    }
+                ]
             }
+
         ];
 
         openMenu($event);
@@ -2967,7 +3045,7 @@ angular.module('mms.designVisualization.svgDiagram', [
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
-        $scope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
+        $scope, $rootScope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
 
         var
 
@@ -3015,6 +3093,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         contextMenuHandler = new ContextMenuHandler(
             $scope,
+            $rootScope,
             diagramService,
             $timeout,
             contextmenuService,
@@ -3326,9 +3405,14 @@ angular.module('mms.designVisualization.svgDiagram', [
                                     gridService.setVisibleArea(id, visibleArea);
                                 });
 
+
                             scope.$emit('DiagramInitialized');
                         }
 
+                    });
+
+                    scope.$watch('visibleObjects.components', function(val) {
+                        console.log('visible objects', val);
                     });
 
                     $element.bind('contextmenu', killContextMenu);
@@ -4257,7 +4341,10 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         portStuff = minePortsFromInterfaces(element, allPortsById);
 
         if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'C' && !isNaN(element.name.charAt(1))
+            element.name.charAt(0) === 'C' &&
+            ( !isNaN(element.name.charAt(1)) ||
+                element.name.charAt(1) === ' ' ||
+                element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -4484,17 +4571,17 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor) {
+    getDiagramElement = function(descriptor, portsCollector, zIndex) {
 
         var element;
 
         if (descriptor.baseName === 'AVMComponentModel') {
 
-            element = avmComponentModelParser(descriptor);
+            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
 
         } else if (descriptor.baseName === 'Connector') {
 
-            element = avmComponentModelParser(descriptor);
+            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
 
         }
 
@@ -4589,6 +4676,107 @@ Diagram.prototype.addWire = function (aWire) {
     }
 
 };
+
+Diagram.prototype.deleteWireById = function(anId) {
+
+    var wire,
+        self,
+        componentId,
+        index;
+
+    self = this;
+
+    wire = self.wiresById[anId];
+
+    if (angular.isObject(wire)) {
+
+        componentId = wire.end1.component.id;
+
+        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+
+        index = self.wiresByComponentId[componentId].indexOf(wire);
+
+        if (index >  -1) {
+            self.wiresByComponentId[componentId].splice(index,1);
+        }
+
+        componentId = wire.end2.component.id;
+
+        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+
+        index = self.wiresByComponentId[componentId].indexOf(wire);
+
+        if (index >  -1) {
+            self.wiresByComponentId[componentId].splice(index,1);
+        }
+
+        index = self.wires.indexOf(wire);
+        self.wires.splice(index, 1);
+
+        delete self.wiresById[wire.id];
+
+    }
+
+};
+
+Diagram.prototype.deleteComponentOrWireById = function(anId) {
+
+    var self,
+        element,
+        success,
+        index,
+
+        deleteAComponent;
+
+    self = this;
+
+    success = false;
+
+    element = self.componentsById[anId];
+
+    deleteAComponent = function(component) {
+
+        angular.forEach(self.wiresByComponentId[component.id], function(wire) {
+            self.deleteWireById(wire.id);
+        });
+
+        index = self.state.selectedComponentIds.indexOf(component.id);
+
+        if (index > -1) {
+            self.state.selectedComponentIds.splice(index, 1);
+        }
+
+        index = self.components.indexOf(component);
+        self.components.splice(index, 1);
+
+        delete self.wiresByComponentId[component.id];
+        delete self.componentsById[component.id];
+        component = null;
+
+    };
+
+    if (angular.isObject(element)) {
+
+        deleteAComponent(element);
+        success = true;
+
+    } else {
+
+        element = self.wiresById[anId];
+
+        if (angular.isObject(element)) {
+
+            self.deleteWireById(element.id);
+            success = true;
+
+        }
+
+    }
+
+    return success;
+
+};
+
 
 Diagram.prototype.getWiresForComponents = function (components) {
 
@@ -5217,15 +5405,18 @@ angular.module('mms.designVisualization.diagramService', [
 
             this.getWiresForComponents = function (diagramId, components) {
 
-                var diagram;
+                var diagram,
+                    wires;
 
                 diagram = diagrams[diagramId];
 
                 if (angular.isObject(diagram)) {
 
-                    diagram.getWiresForComponents(components);
+                    wires = diagram.getWiresForComponents(components);
 
                 }
+
+                return wires || [];
 
             };
 
@@ -5255,7 +5446,11 @@ angular.module('mms.designVisualization.diagramService', [
 
                 if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
 
-                    diagramComponent = cyPhyDiagramParser.getDiagramElement(diagramElementDescriptor);
+                    diagramComponent = cyPhyDiagramParser.getDiagramElement(
+                        diagramElementDescriptor,
+                        {},
+                        self.getHighestZ() + 1
+                    );
 
                     diagram.addComponent(diagramComponent);
 
@@ -5276,6 +5471,25 @@ angular.module('mms.designVisualization.diagramService', [
                 }
 
                 return diagram;
+
+            };
+
+            this.deleteComponentOrWireById = function(diagramId, elementId) {
+
+                var diagram,
+                    result;
+
+                result = false;
+
+                diagram = diagrams[diagramId];
+
+                if (diagram) {
+
+                    result = diagram.deleteComponentOrWireById(elementId);
+
+                }
+
+                return result;
 
             };
 
@@ -5513,7 +5727,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
-        this.invalidateVisibleDiagramComponents = function ( gridId ) {
+        this.invalidateVisibleDiagramComponents = function ( gridId, hard ) {
 
             var grid;
 
@@ -5521,10 +5735,24 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             if ( angular.isDefined( grid ) ) {
 
-                if ( !grid.insideVisibleDiagramComponentsRecalculate ) {
+                if (hard === true) {
 
-                    recalculateVisibleDiagramComponents(grid);
+                    grid.visibleWires = [];
+                    grid.visibleDiagramComponents = [];
 
+                    $timeout(function(){
+
+                        recalculateVisibleDiagramComponents(grid);
+
+                    });
+
+                } else {
+
+                    if (!grid.insideVisibleDiagramComponentsRecalculate) {
+
+                        recalculateVisibleDiagramComponents(grid);
+
+                    }
                 }
             }
 
@@ -5547,10 +5775,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 initialized: false
             };
 
-            return {
-                components: grid.visibleDiagramComponents,
-                wires: grid.visibleWires
-            };
+            return grid;
         };
 
 

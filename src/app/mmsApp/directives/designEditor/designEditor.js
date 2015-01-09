@@ -30,7 +30,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagramContainerConfig = {};
 
-        $rootScope.$on('ComponentInstantiationMustBeDone', function($event, componentData, position) {
+        $rootScope.$on('componentInstantiationMustBeDone', function($event, componentData, position) {
 
             var nodesToCopy;
 
@@ -50,6 +50,44 @@ angular.module('mms.designVisualization.designEditor', [])
                 };
 
                 nodeService.copyMoreNodes(designCtx, $rootScope.activeContainerId, nodesToCopy);
+            }
+
+        });
+
+        $rootScope.$on('componentDeletionMustBeDone', function($event, component) {
+
+            var i,
+                wires,
+                deleteMessage,
+                nodeIdsToDelete;
+
+            $rootScope.processing = true;
+
+            if (angular.isObject(component)) {
+
+                nodeIdsToDelete = [];
+
+                deleteMessage = 'Deleting design element';
+
+                wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
+
+                if (wires.length > 0) {
+
+                    deleteMessage += ' with wires';
+
+                    nodeIdsToDelete = wires.map(function(wire) {
+                        return wire.id;
+                    });
+
+                }
+
+                nodeIdsToDelete.unshift(component.id);
+
+                for (i = 0; i < nodeIdsToDelete.length; i++) {
+                    nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage );
+                }
+
+
             }
 
         });
@@ -132,35 +170,54 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                if (designStructureUpdateObject.updateType === 'newChild') {
+                switch(designStructureUpdateObject.type) {
 
-                    diagramService.createNewComponentFromFromCyPhyElement(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.data);
+                    case 'load':
 
-                    gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                        diagramService.createNewComponentFromFromCyPhyElement(
+                            $rootScope.activeDiagramId,
+                            designStructureUpdateObject.data);
 
-                    $rootScope.processing = false;
+                        gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+
+                        break;
+
+                    case 'unload':
+
+                        diagramService.deleteComponentOrWireById(
+                            $rootScope.activeDiagramId,
+                            designStructureUpdateObject.id);
+
+                        gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId, true);
+
+                        break;
+
+                    default :
+                    case 'update':
+
+                        if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                            diagramService.updateComponentsAndItsWiresPosition(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                designStructureUpdateObject.data.position
+                            );
+                        }
+
+                        if (designStructureUpdateObject.updateType === 'rotationChange') {
+
+                            diagramService.updateComponentsAndItsWiresRotation(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                designStructureUpdateObject.data.rotation
+                            );
+                        }
+
+                        break;
 
                 }
 
-                if (designStructureUpdateObject.updateType === 'positionChange') {
-
-                    diagramService.updateComponentsAndItsWiresPosition(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.id,
-                        designStructureUpdateObject.data.position
-                    );
-                }
-
-                if (designStructureUpdateObject.updateType === 'rotationChange') {
-
-                    diagramService.updateComponentsAndItsWiresRotation(
-                        $rootScope.activeDiagramId,
-                        designStructureUpdateObject.id,
-                        designStructureUpdateObject.data.rotation
-                    );
-                }
+                $rootScope.processing = false;
 
             }).then(function (cyPhyLayout) {
 

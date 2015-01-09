@@ -6592,6 +6592,8 @@ angular.module( 'cyphy.services' )
                 onChildUnload,
                 onChildUpdate,
 
+                deleteInElementsById,
+
                 getConnectorCompositionDetails,
                 parseNewChild,
                 findChildForNode,
@@ -6742,15 +6744,20 @@ angular.module( 'cyphy.services' )
 
             };
 
+            deleteInElementsById = function(id) {
+
+                angular.forEach(data.elements, function(category) {
+
+                    delete category[id];
+
+                });
+
+            };
+
+
             onChildUnload = function ( id ) {
 
-                var child;
-
-                child = findChildForNode( this );
-
-                if ( child ) {
-                    delete data.elements[ child.baseName ][ id ];
-                }
+                deleteInElementsById(id);
 
                 triggerUpdateListener( id, null, 'unload' );
 

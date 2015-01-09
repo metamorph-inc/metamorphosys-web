@@ -124,7 +124,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     }
 
-                    $rootScope.$emit('ComponentInstantiationMustBeDone', component, position);
+                    $rootScope.$emit('componentInstantiationMustBeDone', component, position);
 
                 }
 

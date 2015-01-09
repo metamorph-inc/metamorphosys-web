@@ -125,15 +125,18 @@ angular.module('mms.designVisualization.diagramService', [
 
             this.getWiresForComponents = function (diagramId, components) {
 
-                var diagram;
+                var diagram,
+                    wires;
 
                 diagram = diagrams[diagramId];
 
                 if (angular.isObject(diagram)) {
 
-                    diagram.getWiresForComponents(components);
+                    wires = diagram.getWiresForComponents(components);
 
                 }
+
+                return wires || [];
 
             };
 
@@ -163,7 +166,11 @@ angular.module('mms.designVisualization.diagramService', [
 
                 if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
 
-                    diagramComponent = cyPhyDiagramParser.getDiagramElement(diagramElementDescriptor);
+                    diagramComponent = cyPhyDiagramParser.getDiagramElement(
+                        diagramElementDescriptor,
+                        {},
+                        self.getHighestZ() + 1
+                    );
 
                     diagram.addComponent(diagramComponent);
 
@@ -184,6 +191,25 @@ angular.module('mms.designVisualization.diagramService', [
                 }
 
                 return diagram;
+
+            };
+
+            this.deleteComponentOrWireById = function(diagramId, elementId) {
+
+                var diagram,
+                    result;
+
+                result = false;
+
+                diagram = diagrams[diagramId];
+
+                if (diagram) {
+
+                    result = diagram.deleteComponentOrWireById(elementId);
+
+                }
+
+                return result;
 
             };
 

@@ -190,7 +190,10 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         portStuff = minePortsFromInterfaces(element, allPortsById);
 
         if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'C' && !isNaN(element.name.charAt(1))
+            element.name.charAt(0) === 'C' &&
+            ( !isNaN(element.name.charAt(1)) ||
+                element.name.charAt(1) === ' ' ||
+                element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -417,17 +420,17 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor) {
+    getDiagramElement = function(descriptor, portsCollector, zIndex) {
 
         var element;
 
         if (descriptor.baseName === 'AVMComponentModel') {
 
-            element = avmComponentModelParser(descriptor);
+            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
 
         } else if (descriptor.baseName === 'Connector') {
 
-            element = avmComponentModelParser(descriptor);
+            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
 
         }
 

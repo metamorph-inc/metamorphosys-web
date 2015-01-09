@@ -148,7 +148,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
-        this.invalidateVisibleDiagramComponents = function ( gridId ) {
+        this.invalidateVisibleDiagramComponents = function ( gridId, hard ) {
 
             var grid;
 
@@ -156,10 +156,24 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             if ( angular.isDefined( grid ) ) {
 
-                if ( !grid.insideVisibleDiagramComponentsRecalculate ) {
+                if (hard === true) {
 
-                    recalculateVisibleDiagramComponents(grid);
+                    grid.visibleWires = [];
+                    grid.visibleDiagramComponents = [];
 
+                    $timeout(function(){
+
+                        recalculateVisibleDiagramComponents(grid);
+
+                    });
+
+                } else {
+
+                    if (!grid.insideVisibleDiagramComponentsRecalculate) {
+
+                        recalculateVisibleDiagramComponents(grid);
+
+                    }
                 }
             }
 
@@ -182,10 +196,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 initialized: false
             };
 
-            return {
-                components: grid.visibleDiagramComponents,
-                wires: grid.visibleWires
-            };
+            return grid;
         };
 
 
