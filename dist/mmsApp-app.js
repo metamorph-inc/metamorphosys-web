@@ -3045,7 +3045,7 @@ module.exports = function (
                     id: routerType.id,
                     label: routerType.label,
                     action: function(){
-                        wiringService.routeWire( wire, routerType.type, routerType.params, true);
+                        wiringService.routeWire( wire, routerType.type, routerType.params);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 }
@@ -4694,8 +4694,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         if (angular.isString(element.name) &&
             element.name.charAt(0) === 'C' &&
             ( !isNaN(element.name.charAt(1)) ||
-                element.name.charAt(1) === ' ' ||
-                element.name.charAt(1) === '_')
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -4725,6 +4725,86 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'L' &&
+            ( !isNaN(element.name.charAt(1)) ||
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
+        ) {
+
+            // Cheap shot to figure if it is a capacitor
+
+            symbol = symbolManager.getSymbol('capacitor');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'R' &&
+            ( !isNaN(element.name.charAt(1)) ||
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
+        ) {
+
+            // Cheap shot to figure if it is a capacitor
+
+            symbol = symbolManager.getSymbol('resistor');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
                 }
 
             }
@@ -6982,6 +7062,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
             var router,
                 simpleRouter,
+                elbowRouter,
+
                 endPositions,
                 p1,
                 p2,
@@ -6989,6 +7071,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
 
             simpleRouter = routers.SimpleRouter;
+            elbowRouter = routers.ElbowRouter;
 
             router = routers[routerType] || simpleRouter;
 
@@ -7004,7 +7087,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                     if (endPositions.end1.leadInPosition && !ignoreLeadIn) {
 
-                        s1 = simpleRouter.makeSegments([
+                        s1 = elbowRouter.makeSegments([
                             endPositions.end1,
                             endPositions.end1.leadInPosition
                         ]);
@@ -7018,7 +7101,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                     if (endPositions.end2.leadInPosition && !ignoreLeadIn) {
 
-                        s3 = simpleRouter.makeSegments([
+                        s3 = elbowRouter.makeSegments([
                             endPositions.end2.leadInPosition,
                             endPositions.end2
                         ]);

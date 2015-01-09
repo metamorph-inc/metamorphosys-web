@@ -268,8 +268,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         if (angular.isString(element.name) &&
             element.name.charAt(0) === 'C' &&
             ( !isNaN(element.name.charAt(1)) ||
-                element.name.charAt(1) === ' ' ||
-                element.name.charAt(1) === '_')
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -299,6 +299,86 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'L' &&
+            ( !isNaN(element.name.charAt(1)) ||
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
+        ) {
+
+            // Cheap shot to figure if it is a capacitor
+
+            symbol = symbolManager.getSymbol('capacitor');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
+                }
+
+            }
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+
+        } else if (angular.isString(element.name) &&
+            element.name.charAt(0) === 'R' &&
+            ( !isNaN(element.name.charAt(1)) ||
+            element.name.charAt(1) === ' ' ||
+            element.name.charAt(1) === '_')
+        ) {
+
+            // Cheap shot to figure if it is a capacitor
+
+            symbol = symbolManager.getSymbol('resistor');
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: zIndex,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true
+            });
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
                 }
 
             }

@@ -69,6 +69,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
             var router,
                 simpleRouter,
+                elbowRouter,
+
                 endPositions,
                 p1,
                 p2,
@@ -76,6 +78,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
 
             simpleRouter = routers.SimpleRouter;
+            elbowRouter = routers.ElbowRouter;
 
             router = routers[routerType] || simpleRouter;
 
@@ -91,7 +94,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                     if (endPositions.end1.leadInPosition && !ignoreLeadIn) {
 
-                        s1 = simpleRouter.makeSegments([
+                        s1 = elbowRouter.makeSegments([
                             endPositions.end1,
                             endPositions.end1.leadInPosition
                         ]);
@@ -105,7 +108,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                     if (endPositions.end2.leadInPosition && !ignoreLeadIn) {
 
-                        s3 = simpleRouter.makeSegments([
+                        s3 = elbowRouter.makeSegments([
                             endPositions.end2.leadInPosition,
                             endPositions.end2
                         ]);

@@ -57,7 +57,7 @@ module.exports = function (
                     id: routerType.id,
                     label: routerType.label,
                     action: function(){
-                        wiringService.routeWire( wire, routerType.type, routerType.params, true);
+                        wiringService.routeWire( wire, routerType.type, routerType.params);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 }
