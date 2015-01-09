@@ -3416,8 +3416,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if ($event.which === 3) {
 
-                console.log(wire, segment);
-
                 contextMenuHandler.onWireContextmenu(wire, segment, $event);
 
 
@@ -4376,7 +4374,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         getDiagramElement,
         avmComponentModelParser,
         connectorParser,
+        containerParser,
         labelParser,
+        wireParser,
 
         Diagram,
         DiagramComponent,
@@ -4392,7 +4392,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     ComponentPort = require('./ComponentPort');
     Wire = require('./Wire.js');
 
-    minePortsFromInterfaces = function (element, collector) {
+    minePortsFromInterfaces = function (element) {
 
         var minX,
             maxX,
@@ -4484,11 +4484,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                 });
 
                 portInstances.push(newPort);
-
-                if (angular.isObject(collector)) {
-                    collector[innerConnector.id] = newPort;
-                }
-
+                
             });
         }
 
@@ -4511,7 +4507,51 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    connectorParser = function(element, allPortsById, zIndex) {
+    wireParser = function(element, diagram) {
+
+        var sourcePort,
+            destinationPort,
+            wire;
+
+        if (angular.isObject(element.details)) {
+
+            sourcePort = diagram.portsById[element.details.sourceId];
+            destinationPort = diagram.portsById[element.details.destinationId];
+
+            if (sourcePort && destinationPort) {
+
+                wire = new Wire({
+                    id: element.id,
+                    nodeId: element.id,
+                    end1: {
+                        component: sourcePort.parentComponent,
+                        port: sourcePort
+                    },
+                    end2: {
+                        component: destinationPort.parentComponent,
+                        port: destinationPort
+                    }
+                });
+
+                if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+
+                    wire.segments = angular.copy(element.details.wireSegments);
+                    wiringService.adjustWireEndSegments(wire);
+
+                } else {
+
+                    wiringService.routeWire(wire, 'ElbowRouter');
+
+                }
+
+            }
+        }
+
+        return wire;
+
+    };
+
+    connectorParser = function(element,  zIndex) {
         var portInstance,
             symbol,
             newDiagramComponent;
@@ -4538,24 +4578,59 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             portSymbol: symbol.ports.p1
         });
 
-        allPortsById[element.id] = portInstance;
-
         newDiagramComponent.registerPortInstances([portInstance]);
 
         return newDiagramComponent;
 
     };
 
-    avmComponentModelParser = function(element, allPortsById, zIndex) {
+    containerParser = function(element,  zIndex) {
+        var symbol,
+            newDiagramComponent,
+            portStuff;
+        
+        zIndex = zIndex || 0;
+        
+        portStuff = minePortsFromInterfaces(element);
+
+        symbol = symbolManager.makeBoxSymbol(element.name, {
+                showPortLabels: true
+            }, portStuff.portDescriptors,
+            {
+                minWidth: 200,
+                portWireLeadInIncrement: 8
+            });
+
+        newDiagramComponent = new DiagramComponent({
+            id: element.id,
+            label: labelParser(element.name),
+            x: element.position.x,
+            y: element.position.y,
+            z: zIndex,
+            rotation: 0,
+            scaleX: 1,
+            scaleY: 1,
+            symbol: symbol,
+            nonSelectable: false,
+            locationLocked: false,
+            draggable: true
+        });
+
+        newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+        return newDiagramComponent;
+
+    };
+
+    avmComponentModelParser = function(element,  zIndex) {
 
         var portStuff,
             newModelComponent,
             symbol;
-
-        allPortsById = allPortsById || {};
+        
         zIndex = zIndex || 0;
 
-        portStuff = minePortsFromInterfaces(element, allPortsById);
+        portStuff = minePortsFromInterfaces(element);
 
         if (angular.isString(element.name) &&
             element.name.charAt(0) === 'C' &&
@@ -4671,16 +4746,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     getDiagram = function (diagramElements) {
 
         var i,
-            symbol,
             newDiagramComponent,
 
-            allPortsById,
+            
 
             diagram,
             wire;
-
-
-        allPortsById = {};
 
 
         diagram = new Diagram();
@@ -4694,7 +4765,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.Connector, function (element) {
 
-                newDiagramComponent = connectorParser(element, allPortsById, i);
+                newDiagramComponent = connectorParser(element,  i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -4704,7 +4775,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
-                newDiagramComponent = avmComponentModelParser(element, allPortsById, i);
+                newDiagramComponent = avmComponentModelParser(element,  i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -4714,34 +4785,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.Container, function (element) {
 
-                var portStuff;
+                newDiagramComponent = containerParser(element,  i);
 
-                portStuff = minePortsFromInterfaces(element, allPortsById);
-
-                symbol = symbolManager.makeBoxSymbol(element.name, {
-                        showPortLabels: true
-                    }, portStuff.portDescriptors,
-                    {
-                        minWidth: 200,
-                        portWireLeadInIncrement: 8
-                    });
-
-                newDiagramComponent = new DiagramComponent({
-                    id: element.id,
-                    label: labelParser(element.name),
-                    x: element.position.x,
-                    y: element.position.y,
-                    z: i,
-                    rotation: 0,
-                    scaleX: 1,
-                    scaleY: 1,
-                    symbol: symbol,
-                    nonSelectable: false,
-                    locationLocked: false,
-                    draggable: true
-                });
-
-                newDiagramComponent.registerPortInstances(portStuff.portInstances);
                 diagram.addComponent(newDiagramComponent);
 
                 i++;
@@ -4751,44 +4796,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.ConnectorComposition, function (element) {
 
-                var sourcePort,
-                    destinationPort;
+                wire = wireParser(element, diagram);
 
-                if (angular.isObject(element.details)) {
-
-                    sourcePort = allPortsById[element.details.sourceId];
-                    destinationPort = allPortsById[element.details.destinationId];
-
-                    if (sourcePort && destinationPort) {
-
-                        wire = new Wire({
-                            id: element.id,
-                            nodeId: element.id,
-                            end1: {
-                                component: sourcePort.parentComponent,
-                                port: sourcePort
-                            },
-                            end2: {
-                                component: destinationPort.parentComponent,
-                                port: destinationPort
-                            }
-                        });
-
-                        if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
-
-                            wire.segments = angular.copy(element.details.wireSegments);
-                            wiringService.adjustWireEndSegments(wire);
-
-                        } else {
-
-                            wiringService.routeWire(wire, 'ElbowRouter');
-
-                        }
-
-                        diagram.addWire(wire);
-
-                    }
-                }
+                diagram.addWire(wire);
 
             });
 
@@ -4798,18 +4808,21 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor, portsCollector, zIndex) {
+    getDiagramElement = function(descriptor, zIndex) {
 
         var element;
 
         if (descriptor.baseName === 'AVMComponentModel') {
 
-            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
+            element = avmComponentModelParser(descriptor, zIndex);
 
         } else if (descriptor.baseName === 'Connector') {
 
-            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
+            element = avmComponentModelParser(descriptor, zIndex);
 
+        } else if (descriptor.baseName === 'Container') {
+
+            element = avmComponentModelParser(descriptor, zIndex);
         }
 
         return element;
@@ -4836,6 +4849,7 @@ var Diagram = function (descriptor) {
     this.wires = [];
     this.wiresById = {};
     this.wiresByComponentId = {};
+    this.portsById = {};
 
     this.config = {
         editable: true,
@@ -4852,11 +4866,20 @@ var Diagram = function (descriptor) {
 
 Diagram.prototype.addComponent = function (aDiagramComponent) {
 
+    var i,
+        port;
+
     if (angular.isObject(aDiagramComponent) && !angular.isDefined(this.componentsById[aDiagramComponent.id])) {
 
         this.componentsById[aDiagramComponent.id] = aDiagramComponent;
         this.components.push(aDiagramComponent);
 
+        for (i = 0; i < aDiagramComponent.portInstances.length; i++) {
+
+            port = aDiagramComponent.portInstances[i];
+            this.portsById[port.id] = port;
+
+        }
     }
 
 };
@@ -4946,22 +4969,19 @@ Diagram.prototype.deleteWireById = function(anId) {
 
 };
 
-Diagram.prototype.deleteComponentOrWireById = function(anId) {
+Diagram.prototype.deleteComponentById = function(anId) {
 
-    var self,
-        element,
-        success,
+    var i,
         index,
-
-        deleteAComponent;
+        self,
+        component;
 
     self = this;
 
-    success = false;
+    component = this.componentsById[anId];
 
-    element = self.componentsById[anId];
+    if (angular.isObject(component)) {
 
-    deleteAComponent = function(component) {
 
         angular.forEach(self.wiresByComponentId[component.id], function(wire) {
             self.deleteWireById(wire.id);
@@ -4978,13 +4998,32 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         delete self.wiresByComponentId[component.id];
         delete self.componentsById[component.id];
+
+        for (i = 0; i < component.portInstances.length; i++) {
+            delete this.portsById[component.portInstances[i].id];
+        }
+
         component = null;
 
-    };
+    }
+
+};
+
+Diagram.prototype.deleteComponentOrWireById = function(anId) {
+
+    var self,
+        element,
+        success;
+
+    self = this;
+
+    success = false;
+
+    element = self.componentsById[anId];
 
     if (angular.isObject(element)) {
 
-        deleteAComponent(element);
+        self.deleteComponentById(element.id);
         success = true;
 
     } else {
@@ -5699,7 +5738,6 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagramComponent = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        {},
                         self.getHighestZ() + 1
                     );
 

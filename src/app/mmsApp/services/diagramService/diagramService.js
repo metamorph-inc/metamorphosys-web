@@ -168,7 +168,6 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagramComponent = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        {},
                         self.getHighestZ() + 1
                     );
 

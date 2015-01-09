@@ -11,6 +11,7 @@ var Diagram = function (descriptor) {
     this.wires = [];
     this.wiresById = {};
     this.wiresByComponentId = {};
+    this.portsById = {};
 
     this.config = {
         editable: true,
@@ -27,11 +28,20 @@ var Diagram = function (descriptor) {
 
 Diagram.prototype.addComponent = function (aDiagramComponent) {
 
+    var i,
+        port;
+
     if (angular.isObject(aDiagramComponent) && !angular.isDefined(this.componentsById[aDiagramComponent.id])) {
 
         this.componentsById[aDiagramComponent.id] = aDiagramComponent;
         this.components.push(aDiagramComponent);
 
+        for (i = 0; i < aDiagramComponent.portInstances.length; i++) {
+
+            port = aDiagramComponent.portInstances[i];
+            this.portsById[port.id] = port;
+
+        }
     }
 
 };
@@ -121,22 +131,19 @@ Diagram.prototype.deleteWireById = function(anId) {
 
 };
 
-Diagram.prototype.deleteComponentOrWireById = function(anId) {
+Diagram.prototype.deleteComponentById = function(anId) {
 
-    var self,
-        element,
-        success,
+    var i,
         index,
-
-        deleteAComponent;
+        self,
+        component;
 
     self = this;
 
-    success = false;
+    component = this.componentsById[anId];
 
-    element = self.componentsById[anId];
+    if (angular.isObject(component)) {
 
-    deleteAComponent = function(component) {
 
         angular.forEach(self.wiresByComponentId[component.id], function(wire) {
             self.deleteWireById(wire.id);
@@ -153,13 +160,32 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         delete self.wiresByComponentId[component.id];
         delete self.componentsById[component.id];
+
+        for (i = 0; i < component.portInstances.length; i++) {
+            delete this.portsById[component.portInstances[i].id];
+        }
+
         component = null;
 
-    };
+    }
+
+};
+
+Diagram.prototype.deleteComponentOrWireById = function(anId) {
+
+    var self,
+        element,
+        success;
+
+    self = this;
+
+    success = false;
+
+    element = self.componentsById[anId];
 
     if (angular.isObject(element)) {
 
-        deleteAComponent(element);
+        self.deleteComponentById(element.id);
         success = true;
 
     } else {

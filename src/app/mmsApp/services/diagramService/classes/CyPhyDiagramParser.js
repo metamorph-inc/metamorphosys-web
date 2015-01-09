@@ -8,7 +8,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         getDiagramElement,
         avmComponentModelParser,
         connectorParser,
+        containerParser,
         labelParser,
+        wireParser,
 
         Diagram,
         DiagramComponent,
@@ -24,7 +26,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     ComponentPort = require('./ComponentPort');
     Wire = require('./Wire.js');
 
-    minePortsFromInterfaces = function (element, collector) {
+    minePortsFromInterfaces = function (element) {
 
         var minX,
             maxX,
@@ -116,11 +118,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                 });
 
                 portInstances.push(newPort);
-
-                if (angular.isObject(collector)) {
-                    collector[innerConnector.id] = newPort;
-                }
-
+                
             });
         }
 
@@ -143,7 +141,51 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    connectorParser = function(element, allPortsById, zIndex) {
+    wireParser = function(element, diagram) {
+
+        var sourcePort,
+            destinationPort,
+            wire;
+
+        if (angular.isObject(element.details)) {
+
+            sourcePort = diagram.portsById[element.details.sourceId];
+            destinationPort = diagram.portsById[element.details.destinationId];
+
+            if (sourcePort && destinationPort) {
+
+                wire = new Wire({
+                    id: element.id,
+                    nodeId: element.id,
+                    end1: {
+                        component: sourcePort.parentComponent,
+                        port: sourcePort
+                    },
+                    end2: {
+                        component: destinationPort.parentComponent,
+                        port: destinationPort
+                    }
+                });
+
+                if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+
+                    wire.segments = angular.copy(element.details.wireSegments);
+                    wiringService.adjustWireEndSegments(wire);
+
+                } else {
+
+                    wiringService.routeWire(wire, 'ElbowRouter');
+
+                }
+
+            }
+        }
+
+        return wire;
+
+    };
+
+    connectorParser = function(element,  zIndex) {
         var portInstance,
             symbol,
             newDiagramComponent;
@@ -170,24 +212,59 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             portSymbol: symbol.ports.p1
         });
 
-        allPortsById[element.id] = portInstance;
-
         newDiagramComponent.registerPortInstances([portInstance]);
 
         return newDiagramComponent;
 
     };
 
-    avmComponentModelParser = function(element, allPortsById, zIndex) {
+    containerParser = function(element,  zIndex) {
+        var symbol,
+            newDiagramComponent,
+            portStuff;
+        
+        zIndex = zIndex || 0;
+        
+        portStuff = minePortsFromInterfaces(element);
+
+        symbol = symbolManager.makeBoxSymbol(element.name, {
+                showPortLabels: true
+            }, portStuff.portDescriptors,
+            {
+                minWidth: 200,
+                portWireLeadInIncrement: 8
+            });
+
+        newDiagramComponent = new DiagramComponent({
+            id: element.id,
+            label: labelParser(element.name),
+            x: element.position.x,
+            y: element.position.y,
+            z: zIndex,
+            rotation: 0,
+            scaleX: 1,
+            scaleY: 1,
+            symbol: symbol,
+            nonSelectable: false,
+            locationLocked: false,
+            draggable: true
+        });
+
+        newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+        return newDiagramComponent;
+
+    };
+
+    avmComponentModelParser = function(element,  zIndex) {
 
         var portStuff,
             newModelComponent,
             symbol;
-
-        allPortsById = allPortsById || {};
+        
         zIndex = zIndex || 0;
 
-        portStuff = minePortsFromInterfaces(element, allPortsById);
+        portStuff = minePortsFromInterfaces(element);
 
         if (angular.isString(element.name) &&
             element.name.charAt(0) === 'C' &&
@@ -303,16 +380,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     getDiagram = function (diagramElements) {
 
         var i,
-            symbol,
             newDiagramComponent,
 
-            allPortsById,
+            
 
             diagram,
             wire;
-
-
-        allPortsById = {};
 
 
         diagram = new Diagram();
@@ -326,7 +399,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.Connector, function (element) {
 
-                newDiagramComponent = connectorParser(element, allPortsById, i);
+                newDiagramComponent = connectorParser(element,  i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -336,7 +409,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
-                newDiagramComponent = avmComponentModelParser(element, allPortsById, i);
+                newDiagramComponent = avmComponentModelParser(element,  i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -346,34 +419,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.Container, function (element) {
 
-                var portStuff;
+                newDiagramComponent = containerParser(element,  i);
 
-                portStuff = minePortsFromInterfaces(element, allPortsById);
-
-                symbol = symbolManager.makeBoxSymbol(element.name, {
-                        showPortLabels: true
-                    }, portStuff.portDescriptors,
-                    {
-                        minWidth: 200,
-                        portWireLeadInIncrement: 8
-                    });
-
-                newDiagramComponent = new DiagramComponent({
-                    id: element.id,
-                    label: labelParser(element.name),
-                    x: element.position.x,
-                    y: element.position.y,
-                    z: i,
-                    rotation: 0,
-                    scaleX: 1,
-                    scaleY: 1,
-                    symbol: symbol,
-                    nonSelectable: false,
-                    locationLocked: false,
-                    draggable: true
-                });
-
-                newDiagramComponent.registerPortInstances(portStuff.portInstances);
                 diagram.addComponent(newDiagramComponent);
 
                 i++;
@@ -383,44 +430,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             angular.forEach(diagramElements.ConnectorComposition, function (element) {
 
-                var sourcePort,
-                    destinationPort;
+                wire = wireParser(element, diagram);
 
-                if (angular.isObject(element.details)) {
-
-                    sourcePort = allPortsById[element.details.sourceId];
-                    destinationPort = allPortsById[element.details.destinationId];
-
-                    if (sourcePort && destinationPort) {
-
-                        wire = new Wire({
-                            id: element.id,
-                            nodeId: element.id,
-                            end1: {
-                                component: sourcePort.parentComponent,
-                                port: sourcePort
-                            },
-                            end2: {
-                                component: destinationPort.parentComponent,
-                                port: destinationPort
-                            }
-                        });
-
-                        if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
-
-                            wire.segments = angular.copy(element.details.wireSegments);
-                            wiringService.adjustWireEndSegments(wire);
-
-                        } else {
-
-                            wiringService.routeWire(wire, 'ElbowRouter');
-
-                        }
-
-                        diagram.addWire(wire);
-
-                    }
-                }
+                diagram.addWire(wire);
 
             });
 
@@ -430,18 +442,21 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor, portsCollector, zIndex) {
+    getDiagramElement = function(descriptor, zIndex) {
 
         var element;
 
         if (descriptor.baseName === 'AVMComponentModel') {
 
-            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
+            element = avmComponentModelParser(descriptor, zIndex);
 
         } else if (descriptor.baseName === 'Connector') {
 
-            element = avmComponentModelParser(descriptor, portsCollector, zIndex);
+            element = avmComponentModelParser(descriptor, zIndex);
 
+        } else if (descriptor.baseName === 'Container') {
+
+            element = avmComponentModelParser(descriptor, zIndex);
         }
 
         return element;
