@@ -1,6 +1,8 @@
 {
     "port": 8855,
 
+    "clientAppDir": "./src/app/mmsApp/",
+
     "mongoip": "127.0.0.1",
 
     "mongodatabase": "CyPhy",
