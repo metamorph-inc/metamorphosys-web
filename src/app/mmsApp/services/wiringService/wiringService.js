@@ -18,12 +18,38 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             };
 
+        this.getRouterTypes = function() {
+
+            return {
+
+                'elbowVertical' : {
+                    label: 'Elbow - vertical first',
+                    type: 'ElbowRouter',
+                    params: 'verticalFirst'
+                },
+
+                'elbowHorizontal' : {
+                    label: 'Elbow - horizontal first',
+                    type: 'ElbowRouter',
+                    params: 'horizontalFirst'
+                },
+
+                'simpleRouter' : {
+                    label: 'Straight wire',
+                    type: 'SimpleRouter'
+                }
+
+
+            };
+
+        };
+
         this.getSegmentsBetweenPositions = function ( endPositions, routerType, params ) {
 
             var segments,
                 router;
 
-            router = routers[ routerType ];
+            router = routers[ routerType ] || 'SimpleRouter';
 
             if ( angular.isObject( router ) && angular.isFunction( router.makeSegments ) ) {
                 segments = router.makeSegments(
@@ -42,7 +68,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
                 endPositions,
                 points;
 
-            routerType = routerType || 'ElbowRouter';
+            routerType = routerType || 'SimpleRouter';
 
             router = routers[ routerType ];
 
@@ -92,71 +118,70 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                 firstSegment = wire.segments[ 0 ];
 
-                if ( firstSegment.x1 !== endPositions.end1.x || firstSegment.y1 !== endPositions.end1.y ) {
+                if (firstSegment.router && firstSegment.router.type === 'ElbowRouter') {
 
-                    if ( firstSegment.router === 'ElbowRouter' ) {
+                    secondSegment = wire.segments[ 1 ];
 
-                        secondSegment = wire.segments[ 1 ];
+                    pos = {
+                        x: secondSegment.x2,
+                        y: secondSegment.y2
+                    };
 
-                        pos = {
-                            x: secondSegment.x2,
-                            y: secondSegment.y2
-                        };
+                    wire.segments.splice( 0, 2 );
 
-                        wire.segments.splice( 0, 2 );
+                } else {
 
-                    } else {
-                        pos = {
-                            x: firstSegment.x2,
-                            y: firstSegment.y2
-                        };
+                    // SimpleRouter
 
-                        wire.segments.splice( 0, 1 );
-                    }
+                    pos = {
+                        x: firstSegment.x2,
+                        y: firstSegment.y2
+                    };
 
-                    newSegments = self.getSegmentsBetweenPositions( {
-                        end1: endPositions.end1,
-                        end2: pos
-                    }, firstSegment.router );
-
-                    wire.segments = newSegments.concat( wire.segments );
-
+                    wire.segments.splice( 0, 1 );
                 }
+
+                newSegments = self.getSegmentsBetweenPositions( {
+                    end1: endPositions.end1,
+                    end2: pos
+                }, firstSegment.router.type, firstSegment.router.params );
+
+                wire.segments = newSegments.concat( wire.segments );
 
                 lastSegment = wire.segments[ wire.segments.length - 1 ];
 
-                if ( lastSegment.x2 !== endPositions.end2.x || lastSegment.y2 !== endPositions.end2.y ) {
+                if ( lastSegment.router && lastSegment.router.type === 'ElbowRouter' ) {
 
-                    if ( lastSegment.router === 'ElbowRouter' ) {
+                    secondToLastSegment = wire.segments[ wire.segments.length - 2 ];
 
-                        secondToLastSegment = wire.segments[ wire.segments.length - 2 ];
+                    pos = {
+                        x: secondToLastSegment.x1,
+                        y: secondToLastSegment.y1
+                    };
 
-                        pos = {
-                            x: secondToLastSegment.x1,
-                            y: secondToLastSegment.y1
-                        };
+                    wire.segments.splice( wire.segments.length - 2, 2 );
 
-                        wire.segments.splice( wire.segments.length - 2, 2 );
+                } else {
 
-                    } else {
-                        pos = {
-                            x: lastSegment.x1,
-                            y: lastSegment.y1
-                        };
+                    pos = {
+                        x: lastSegment.x1,
+                        y: lastSegment.y1
+                    };
 
-                        wire.segments.splice( wire.segments.length - 1, 1 );
-                    }
-
-                    newSegments = self.getSegmentsBetweenPositions( {
-                        end1: pos,
-                        end2: endPositions.end2
-                    }, lastSegment.router );
-
-                    wire.segments = wire.segments.concat( newSegments );
-
+                    wire.segments.splice( wire.segments.length - 1, 1 );
                 }
 
+                newSegments = self.getSegmentsBetweenPositions( {
+                    end1: pos,
+                    end2: endPositions.end2
+                }, lastSegment.router.type, lastSegment.router.params);
+
+                wire.segments = wire.segments.concat( newSegments );
+
             } else {
+
+                //Simple-routing
+
                 self.routeWire( wire );
             }
 

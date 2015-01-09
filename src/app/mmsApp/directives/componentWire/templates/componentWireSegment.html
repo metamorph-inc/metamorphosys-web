@@ -1,5 +1,6 @@
 <g class="component-wire-segment"
-   ng-click="onSegmentClick(wire, segment)">
+   ng-mousedown="onMouseDown(segment, $event)"
+   ng-mouseup="onMouseUp(segment, $event)">
       <line class="component-wire-segment-under"
             ng-attr-x1="{{segment.x1}}"
             ng-attr-y1="{{segment.y1}}"

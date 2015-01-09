@@ -35,8 +35,8 @@ var ElbowRouter = function () {
                 } else {
 
                     elbow = {
-                        x: point1.y,
-                        y: point2.x
+                        x: point2.x,
+                        y: point1.y
                     };
 
                 }
@@ -51,7 +51,11 @@ var ElbowRouter = function () {
                     x2: elbow.x,
                     y2: elbow.y,
 
-                    router: self.name,
+                    router: {
+                        type: self.name,
+                        params: method
+                    },
+
                     orientation: ( method === 'verticalFirst' ) ? 'vertical' : 'horizontal'
 
                 }, {
@@ -64,7 +68,11 @@ var ElbowRouter = function () {
                     x2: point2.x,
                     y2: point2.y,
 
-                    router: self.name,
+                    router: {
+                        type: self.name,
+                        params: method
+                    },
+
                     orientation: ( method === 'verticalFirst' ) ? 'horizontal' : 'vertical'
 
                 } );

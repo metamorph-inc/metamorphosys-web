@@ -71,7 +71,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
                         end1: $scope.newWireLine.activeSegmentStartPosition,
                         end2: port.getGridPosition()
                     },
-                    'ElbowRouter'
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
                 )
             ) );
 
@@ -115,7 +116,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
                             y: $event.pageY - $scope.elementOffset.top - 3
                         }
                     },
-                    'ElbowRouter'
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
                 )
             );
 

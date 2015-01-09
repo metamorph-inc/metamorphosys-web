@@ -1061,9 +1061,10 @@ angular.module(
 
         };
 
-        $scope.onSegmentClick = function ( wire, segment ) {
-            console.log( wire, segment );
-        };
+        //$scope.onSegmentClick = function ( wire, segment ) {
+        //    console.log( wire, segment );
+        //};
+
 
         $scope.segments = $scope.getSegments();
 
@@ -1079,7 +1080,21 @@ angular.module(
                 restrict: 'E',
                 replace: true,
                 templateUrl: '/mmsApp/templates/componentWire.html',
-                templateNamespace: 'SVG'
+                templateNamespace: 'SVG',
+                require: '^svgDiagram',
+                link: function(scope, element, attributes, svgDiagramController) {
+
+                    scope.onMouseUp = function ( segment, $event ) {
+                        svgDiagramController.onWireMouseUp( scope.wire, segment, $event );
+                    };
+
+                    scope.onMouseDown = function ( segment, $event ) {
+                        svgDiagramController.onWireMouseDown( scope.wire, segment, $event );
+                        $event.stopPropagation();
+                    };
+
+
+                }
             };
         }
 );
@@ -2776,7 +2791,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
                         end1: $scope.newWireLine.activeSegmentStartPosition,
                         end2: port.getGridPosition()
                     },
-                    'ElbowRouter'
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
                 )
             ) );
 
@@ -2820,7 +2836,8 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
                             y: $event.pageY - $scope.elementOffset.top - 3
                         }
                     },
-                    'ElbowRouter'
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
                 )
             );
 
@@ -2897,10 +2914,11 @@ module.exports = function($scope, diagramService, wiringService, gridService, $t
 'use strict';
 
 module.exports = function (
-    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
+    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
 
     var
         onComponentContextmenu,
+        onWireContextmenu,
         onPortContextmenu,
         onDiagramContextmenu,
         onDiagramMouseDown,
@@ -2909,7 +2927,7 @@ module.exports = function (
 
     $log.debug('Initializing context menus.');
 
-    openMenu = function($event) {
+    openMenu = function ($event) {
 
         contextmenuService.close();
 
@@ -2917,7 +2935,7 @@ module.exports = function (
 
             var openContextMenuEvent;
 
-                openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
+            openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
                 clientX: $event.clientX,
                 clientY: $event.clientY,
                 pageX: $event.pageX,
@@ -2933,8 +2951,66 @@ module.exports = function (
 
     };
 
-    onDiagramMouseDown = function() {
+    onDiagramMouseDown = function () {
         contextmenuService.close();
+    };
+
+    onWireContextmenu = function (wire, segment, $event) {
+
+        var wiringMenu;
+
+        wiringMenu = [];
+
+        angular.forEach($scope.routerTypes, function(routerType, id) {
+
+            wiringMenu.push(
+                {
+                    id: id,
+                    label: routerType.label,
+                    action: function(){
+                        wiringService.routeWire( wire, routerType.type, routerType.params);
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                }
+            );
+
+        });
+
+        $scope.contextMenuData = [
+            {
+                id: 'adjust',
+                items: [
+                    {
+                        id: 'redraw',
+                        label: 'Redraw line',
+                        menu: [
+                            {
+                                items: wiringMenu
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'delete',
+                items: [
+                    {
+                        id: 'destroy',
+                        label: 'Destroy wire',
+                        iconClass: 'fa fa-trash-o',
+                        action: function () {
+                            $rootScope.$emit('wireDeletionMustBeDone', wire);
+                        }
+                    }
+                ]
+            }
+
+        ];
+
+        openMenu($event);
+
+        $event.stopPropagation();
+
     };
 
     onComponentContextmenu = function (component, $event) {
@@ -2945,7 +3021,7 @@ module.exports = function (
 
         selectedComponents = $scope.diagram.getSelectedComponents();
 
-        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 0) {
+        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 1) {
 
             inSelection = true;
 
@@ -3049,6 +3125,32 @@ module.exports = function (
 
     onDiagramContextmenu = function ($event) {
 
+        var wiringMenu;
+
+        wiringMenu = [];
+
+        angular.forEach($scope.routerTypes, function(routerType, id) {
+                var selected;
+
+                selected = routerType === $scope.selectedRouter;
+
+            wiringMenu.push(
+                {
+                    id: id,
+                    label: routerType.label,
+                    cssClass: selected ? 'selected' : 'not-selected',
+                    iconClass: selected ? 'fa fa-check' : undefined,
+                    action: function () {
+
+                        $scope.selectedRouter = routerType;
+
+                    }
+                }
+            );
+
+        });
+
+
         $scope.contextMenuData = [
             {
                 id: 'testbenches',
@@ -3064,6 +3166,12 @@ module.exports = function (
                         actionData: {}
                     }
                 ]
+
+            },
+            {
+                id: 'wiringMethods',
+                label: 'Wiring method',
+                items: wiringMenu
             }
         ];
 
@@ -3075,6 +3183,9 @@ module.exports = function (
 
     this.onDiagramContextmenu = onDiagramContextmenu;
     this.onComponentContextmenu = onComponentContextmenu;
+
+    this.onWireContextmenu = onWireContextmenu;
+
     this.onPortContextmenu = onPortContextmenu;
     this.onDiagramMouseDown = onDiagramMouseDown;
 
@@ -3152,8 +3263,13 @@ angular.module('mms.designVisualization.svgDiagram', [
             $timeout,
             contextmenuService,
             operationsManager,
+            wiringService,
             $log
         );
+
+        $scope.routerTypes = wiringService.getRouterTypes();
+
+        $scope.selectedRouter = $scope.routerTypes.elbowVertical;
 
         $scope.onDiagramMouseDown = function ($event) {
 
@@ -3268,6 +3384,28 @@ angular.module('mms.designVisualization.svgDiagram', [
             } else {
 
                 componentDragHandler.onComponentMouseDown(component, $event);
+
+            }
+        };
+
+        this.onWireMouseUp = function (wire, segment, $event) {
+
+            $event.stopPropagation();
+
+        };
+
+        this.onWireMouseDown = function (wire, segment, $event) {
+
+            if ($event.which === 3) {
+
+                console.log(wire, segment);
+
+                contextMenuHandler.onWireContextmenu(wire, segment, $event);
+
+
+            } else {
+
+//                componentDragHandler.onWireMouseDown(component, $event);
 
             }
         };
@@ -5298,7 +5436,7 @@ Wire.prototype.isInViewPort = function ( viewPort, padding ) {
 
     shouldBeVisible = false;
 
-    if ( this.router.type === 'ElbowRouter' ) {
+    if ( this.router && this.router.type === 'ElbowRouter' ) {
 
         if ( angular.isArray( this.segments ) ) {
 
@@ -6509,8 +6647,8 @@ var ElbowRouter = function () {
                 } else {
 
                     elbow = {
-                        x: point1.y,
-                        y: point2.x
+                        x: point2.x,
+                        y: point1.y
                     };
 
                 }
@@ -6525,7 +6663,11 @@ var ElbowRouter = function () {
                     x2: elbow.x,
                     y2: elbow.y,
 
-                    router: self.name,
+                    router: {
+                        type: self.name,
+                        params: method
+                    },
+
                     orientation: ( method === 'verticalFirst' ) ? 'vertical' : 'horizontal'
 
                 }, {
@@ -6538,7 +6680,11 @@ var ElbowRouter = function () {
                     x2: point2.x,
                     y2: point2.y,
 
-                    router: self.name,
+                    router: {
+                        type: self.name,
+                        params: method
+                    },
+
                     orientation: ( method === 'verticalFirst' ) ? 'horizontal' : 'vertical'
 
                 } );
@@ -6577,6 +6723,10 @@ var SimpleRouter = function () {
                 point2 = points[ i + 1 ];
 
                 segments.push( {
+
+                    router: {
+                        type: 'SimpleRouter'
+                    },
 
                     type: 'line',
 
@@ -6620,12 +6770,38 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             };
 
+        this.getRouterTypes = function() {
+
+            return {
+
+                'elbowVertical' : {
+                    label: 'Elbow - vertical first',
+                    type: 'ElbowRouter',
+                    params: 'verticalFirst'
+                },
+
+                'elbowHorizontal' : {
+                    label: 'Elbow - horizontal first',
+                    type: 'ElbowRouter',
+                    params: 'horizontalFirst'
+                },
+
+                'simpleRouter' : {
+                    label: 'Straight wire',
+                    type: 'SimpleRouter'
+                }
+
+
+            };
+
+        };
+
         this.getSegmentsBetweenPositions = function ( endPositions, routerType, params ) {
 
             var segments,
                 router;
 
-            router = routers[ routerType ];
+            router = routers[ routerType ] || 'SimpleRouter';
 
             if ( angular.isObject( router ) && angular.isFunction( router.makeSegments ) ) {
                 segments = router.makeSegments(
@@ -6644,7 +6820,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
                 endPositions,
                 points;
 
-            routerType = routerType || 'ElbowRouter';
+            routerType = routerType || 'SimpleRouter';
 
             router = routers[ routerType ];
 
@@ -6694,71 +6870,70 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                 firstSegment = wire.segments[ 0 ];
 
-                if ( firstSegment.x1 !== endPositions.end1.x || firstSegment.y1 !== endPositions.end1.y ) {
+                if (firstSegment.router && firstSegment.router.type === 'ElbowRouter') {
 
-                    if ( firstSegment.router === 'ElbowRouter' ) {
+                    secondSegment = wire.segments[ 1 ];
 
-                        secondSegment = wire.segments[ 1 ];
+                    pos = {
+                        x: secondSegment.x2,
+                        y: secondSegment.y2
+                    };
 
-                        pos = {
-                            x: secondSegment.x2,
-                            y: secondSegment.y2
-                        };
+                    wire.segments.splice( 0, 2 );
 
-                        wire.segments.splice( 0, 2 );
+                } else {
 
-                    } else {
-                        pos = {
-                            x: firstSegment.x2,
-                            y: firstSegment.y2
-                        };
+                    // SimpleRouter
 
-                        wire.segments.splice( 0, 1 );
-                    }
+                    pos = {
+                        x: firstSegment.x2,
+                        y: firstSegment.y2
+                    };
 
-                    newSegments = self.getSegmentsBetweenPositions( {
-                        end1: endPositions.end1,
-                        end2: pos
-                    }, firstSegment.router );
-
-                    wire.segments = newSegments.concat( wire.segments );
-
+                    wire.segments.splice( 0, 1 );
                 }
+
+                newSegments = self.getSegmentsBetweenPositions( {
+                    end1: endPositions.end1,
+                    end2: pos
+                }, firstSegment.router.type, firstSegment.router.params );
+
+                wire.segments = newSegments.concat( wire.segments );
 
                 lastSegment = wire.segments[ wire.segments.length - 1 ];
 
-                if ( lastSegment.x2 !== endPositions.end2.x || lastSegment.y2 !== endPositions.end2.y ) {
+                if ( lastSegment.router && lastSegment.router.type === 'ElbowRouter' ) {
 
-                    if ( lastSegment.router === 'ElbowRouter' ) {
+                    secondToLastSegment = wire.segments[ wire.segments.length - 2 ];
 
-                        secondToLastSegment = wire.segments[ wire.segments.length - 2 ];
+                    pos = {
+                        x: secondToLastSegment.x1,
+                        y: secondToLastSegment.y1
+                    };
 
-                        pos = {
-                            x: secondToLastSegment.x1,
-                            y: secondToLastSegment.y1
-                        };
+                    wire.segments.splice( wire.segments.length - 2, 2 );
 
-                        wire.segments.splice( wire.segments.length - 2, 2 );
+                } else {
 
-                    } else {
-                        pos = {
-                            x: lastSegment.x1,
-                            y: lastSegment.y1
-                        };
+                    pos = {
+                        x: lastSegment.x1,
+                        y: lastSegment.y1
+                    };
 
-                        wire.segments.splice( wire.segments.length - 1, 1 );
-                    }
-
-                    newSegments = self.getSegmentsBetweenPositions( {
-                        end1: pos,
-                        end2: endPositions.end2
-                    }, lastSegment.router );
-
-                    wire.segments = wire.segments.concat( newSegments );
-
+                    wire.segments.splice( wire.segments.length - 1, 1 );
                 }
 
+                newSegments = self.getSegmentsBetweenPositions( {
+                    end1: pos,
+                    end2: endPositions.end2
+                }, lastSegment.router.type, lastSegment.router.params);
+
+                wire.segments = wire.segments.concat( newSegments );
+
             } else {
+
+                //Simple-routing
+
                 self.routeWire( wire );
             }
 

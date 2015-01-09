@@ -21,6 +21,10 @@ var SimpleRouter = function () {
 
                 segments.push( {
 
+                    router: {
+                        type: 'SimpleRouter'
+                    },
+
                     type: 'line',
 
                     x1: point1.x,

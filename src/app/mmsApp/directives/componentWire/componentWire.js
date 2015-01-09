@@ -27,9 +27,10 @@ angular.module(
 
         };
 
-        $scope.onSegmentClick = function ( wire, segment ) {
-            console.log( wire, segment );
-        };
+        //$scope.onSegmentClick = function ( wire, segment ) {
+        //    console.log( wire, segment );
+        //};
+
 
         $scope.segments = $scope.getSegments();
 
@@ -45,7 +46,21 @@ angular.module(
                 restrict: 'E',
                 replace: true,
                 templateUrl: '/mmsApp/templates/componentWire.html',
-                templateNamespace: 'SVG'
+                templateNamespace: 'SVG',
+                require: '^svgDiagram',
+                link: function(scope, element, attributes, svgDiagramController) {
+
+                    scope.onMouseUp = function ( segment, $event ) {
+                        svgDiagramController.onWireMouseUp( scope.wire, segment, $event );
+                    };
+
+                    scope.onMouseDown = function ( segment, $event ) {
+                        svgDiagramController.onWireMouseDown( scope.wire, segment, $event );
+                        $event.stopPropagation();
+                    };
+
+
+                }
             };
         }
 );

@@ -67,8 +67,13 @@ angular.module('mms.designVisualization.svgDiagram', [
             $timeout,
             contextmenuService,
             operationsManager,
+            wiringService,
             $log
         );
+
+        $scope.routerTypes = wiringService.getRouterTypes();
+
+        $scope.selectedRouter = $scope.routerTypes.elbowVertical;
 
         $scope.onDiagramMouseDown = function ($event) {
 
@@ -183,6 +188,28 @@ angular.module('mms.designVisualization.svgDiagram', [
             } else {
 
                 componentDragHandler.onComponentMouseDown(component, $event);
+
+            }
+        };
+
+        this.onWireMouseUp = function (wire, segment, $event) {
+
+            $event.stopPropagation();
+
+        };
+
+        this.onWireMouseDown = function (wire, segment, $event) {
+
+            if ($event.which === 3) {
+
+                console.log(wire, segment);
+
+                contextMenuHandler.onWireContextmenu(wire, segment, $event);
+
+
+            } else {
+
+//                componentDragHandler.onWireMouseDown(component, $event);
 
             }
         };

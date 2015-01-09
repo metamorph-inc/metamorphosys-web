@@ -3,10 +3,11 @@
 'use strict';
 
 module.exports = function (
-    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, $log) {
+    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
 
     var
         onComponentContextmenu,
+        onWireContextmenu,
         onPortContextmenu,
         onDiagramContextmenu,
         onDiagramMouseDown,
@@ -15,7 +16,7 @@ module.exports = function (
 
     $log.debug('Initializing context menus.');
 
-    openMenu = function($event) {
+    openMenu = function ($event) {
 
         contextmenuService.close();
 
@@ -23,7 +24,7 @@ module.exports = function (
 
             var openContextMenuEvent;
 
-                openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
+            openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
                 clientX: $event.clientX,
                 clientY: $event.clientY,
                 pageX: $event.pageX,
@@ -39,8 +40,66 @@ module.exports = function (
 
     };
 
-    onDiagramMouseDown = function() {
+    onDiagramMouseDown = function () {
         contextmenuService.close();
+    };
+
+    onWireContextmenu = function (wire, segment, $event) {
+
+        var wiringMenu;
+
+        wiringMenu = [];
+
+        angular.forEach($scope.routerTypes, function(routerType, id) {
+
+            wiringMenu.push(
+                {
+                    id: id,
+                    label: routerType.label,
+                    action: function(){
+                        wiringService.routeWire( wire, routerType.type, routerType.params);
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                }
+            );
+
+        });
+
+        $scope.contextMenuData = [
+            {
+                id: 'adjust',
+                items: [
+                    {
+                        id: 'redraw',
+                        label: 'Redraw line',
+                        menu: [
+                            {
+                                items: wiringMenu
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'delete',
+                items: [
+                    {
+                        id: 'destroy',
+                        label: 'Destroy wire',
+                        iconClass: 'fa fa-trash-o',
+                        action: function () {
+                            $rootScope.$emit('wireDeletionMustBeDone', wire);
+                        }
+                    }
+                ]
+            }
+
+        ];
+
+        openMenu($event);
+
+        $event.stopPropagation();
+
     };
 
     onComponentContextmenu = function (component, $event) {
@@ -51,7 +110,7 @@ module.exports = function (
 
         selectedComponents = $scope.diagram.getSelectedComponents();
 
-        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 0) {
+        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 1) {
 
             inSelection = true;
 
@@ -155,6 +214,32 @@ module.exports = function (
 
     onDiagramContextmenu = function ($event) {
 
+        var wiringMenu;
+
+        wiringMenu = [];
+
+        angular.forEach($scope.routerTypes, function(routerType, id) {
+                var selected;
+
+                selected = routerType === $scope.selectedRouter;
+
+            wiringMenu.push(
+                {
+                    id: id,
+                    label: routerType.label,
+                    cssClass: selected ? 'selected' : 'not-selected',
+                    iconClass: selected ? 'fa fa-check' : undefined,
+                    action: function () {
+
+                        $scope.selectedRouter = routerType;
+
+                    }
+                }
+            );
+
+        });
+
+
         $scope.contextMenuData = [
             {
                 id: 'testbenches',
@@ -170,6 +255,12 @@ module.exports = function (
                         actionData: {}
                     }
                 ]
+
+            },
+            {
+                id: 'wiringMethods',
+                label: 'Wiring method',
+                items: wiringMenu
             }
         ];
 
@@ -181,6 +272,9 @@ module.exports = function (
 
     this.onDiagramContextmenu = onDiagramContextmenu;
     this.onComponentContextmenu = onComponentContextmenu;
+
+    this.onWireContextmenu = onWireContextmenu;
+
     this.onPortContextmenu = onPortContextmenu;
     this.onDiagramMouseDown = onDiagramMouseDown;
 

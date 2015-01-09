@@ -23,7 +23,7 @@ Wire.prototype.isInViewPort = function ( viewPort, padding ) {
 
     shouldBeVisible = false;
 
-    if ( this.router.type === 'ElbowRouter' ) {
+    if ( this.router && this.router.type === 'ElbowRouter' ) {
 
         if ( angular.isArray( this.segments ) ) {
 
