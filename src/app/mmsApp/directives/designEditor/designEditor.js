@@ -287,6 +287,15 @@ angular.module('mms.designVisualization.designEditor', [])
                             );
                         }
 
+                        if (designStructureUpdateObject.updateType === 'detailsChange') {
+
+                            diagramService.updateWireSegments(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                angular.copy(designStructureUpdateObject.data.details.wireSegments)
+                            );
+                        }
+
                         break;
 
                 }

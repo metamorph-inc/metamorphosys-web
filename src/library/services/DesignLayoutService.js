@@ -208,6 +208,8 @@ angular.module('cyphy.services')
                             child.details = newDetails;
                             hadChanges = true;
 
+                            updateType = 'detailsChange';
+
                         }
 
                     }

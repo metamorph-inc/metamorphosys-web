@@ -109,6 +109,29 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
+            this.updateWireSegments = function( diagramId, wireId, newSegments) {
+
+                var diagram,
+                    wire;
+
+                console.log(newSegments);
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    wire = diagram.wiresById[wireId];
+
+                    if (angular.isObject(wire)) {
+
+                        wire.segments = newSegments;
+
+                    }
+
+                }
+
+            };
+
             this.addWire = function (diagramId, aWire) {
 
                 var diagram;

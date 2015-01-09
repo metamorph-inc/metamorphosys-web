@@ -1499,6 +1499,15 @@ angular.module('mms.designVisualization.designEditor', [])
                             );
                         }
 
+                        if (designStructureUpdateObject.updateType === 'detailsChange') {
+
+                            diagramService.updateWireSegments(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.id,
+                                angular.copy(designStructureUpdateObject.data.details.wireSegments)
+                            );
+                        }
+
                         break;
 
                 }
@@ -5711,6 +5720,29 @@ angular.module('mms.designVisualization.diagramService', [
 
                     } );
 
+
+                }
+
+            };
+
+            this.updateWireSegments = function( diagramId, wireId, newSegments) {
+
+                var diagram,
+                    wire;
+
+                console.log(newSegments);
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    wire = diagram.wiresById[wireId];
+
+                    if (angular.isObject(wire)) {
+
+                        wire.segments = newSegments;
+
+                    }
 
                 }
 
