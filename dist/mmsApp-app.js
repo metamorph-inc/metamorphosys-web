@@ -1228,7 +1228,12 @@ angular.module('mms.designVisualization.designEditor', [])
 
             setupDiagramEventHandlers,
             eventHandlersAreSet,
-            lastComponentInstantiationPosition;
+            lastComponentInstantiationPosition,
+
+            justCreatedWires;
+
+
+        justCreatedWires = [];
 
         $scope.diagram = null;
 
@@ -1276,13 +1281,44 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
+        $rootScope.$on('wireCreationMustBeDone', function ($event, wire, msg) {
+
+            $rootScope.processing = true;
+
+            nodeService.getMetaNodes(designCtx)
+                .then(function(meta) {
+
+                    var metaId;
+
+                    metaId = meta.byName.ConnectorComposition.id;
+
+                    nodeService.createNode(designCtx, $rootScope.activeContainerId, metaId, msg || 'New wire' )
+                        .then(function(node){
+
+                            node.setRegistry('wireSegments', angular.copy(wire.segments));
+                            node.makePointer('src', wire.end1.port.id );
+                            node.makePointer('dst', wire.end2.port.id );
+
+                            wire.id = node.id;
+                            diagramService.addWire( $rootScope.activeDiagramId, wire );
+                            gridService.invalidateVisibleDiagramComponents( $rootScope.activeDiagramId );
+
+
+                            $rootScope.processing = false;
+
+                        });
+
+                });
+
+        });
+
         $rootScope.$on('wireSegmentsMustBeSaved', function ($event, wire, message) {
-            designLayoutService.setWireSegments(designCtx, wire.nodeId, angular.copy(wire.segments), message || 'Updating wire');
+            designLayoutService.setWireSegments(designCtx, wire.id, angular.copy(wire.segments), message || 'Updating wire');
         });
 
         $rootScope.$on('wireDeletionMustBeDone', function ($event, wire, message) {
             $rootScope.processing = true;
-            nodeService.destroyNode(designCtx, wire.nodeId, message || 'Deleting wire');
+            nodeService.destroyNode(designCtx, wire.id, message || 'Deleting wire');
         });
 
         $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
@@ -1310,7 +1346,7 @@ angular.module('mms.designVisualization.designEditor', [])
                         deleteMessage += ' with wires';
 
                         nodeIdsToDelete = wires.map(function (wire) {
-                            return wire.nodeId;
+                            return wire.id;
                         });
 
                     }
@@ -1420,11 +1456,15 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     case 'load':
 
-                        diagramService.createNewComponentFromFromCyPhyElement(
-                            $rootScope.activeDiagramId,
-                            designStructureUpdateObject.data);
+                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                            justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                        gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                            diagramService.createNewComponentFromFromCyPhyElement(
+                                $rootScope.activeDiagramId,
+                                designStructureUpdateObject.data);
+
+                            gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                        }
 
                         break;
 
@@ -2804,13 +2844,6 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                     $scope.selectedRouter.params
                 )
             ) );
-
-
-        diagramService.addWire( $scope.id, wire );
-
-        $scope.diagram.wires[ wire.id ] = wire;
-
-        gridService.invalidateVisibleDiagramComponents( $scope.id );
 
         $rootScope.$emit('wireCreationMustBeDone', wire);
 
@@ -4445,12 +4478,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             allInterConnectors.sort(function (a, b) {
 
-                if (a.position.x > b.position.x) {
+                if (a.position.y > b.position.y) {
                     return 1;
                 }
 
-                if (a.position.x < b.position.x) {
-                    return 1;
+                if (a.position.y < b.position.y) {
+                    return -1;
                 }
 
                 return 0;
@@ -4513,7 +4546,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             destinationPort,
             wire;
 
-        if (angular.isObject(element.details)) {
+        if (angular.isObject(element.details) && angular.isObject(diagram)) {
 
             sourcePort = diagram.portsById[element.details.sourceId];
             destinationPort = diagram.portsById[element.details.destinationId];
@@ -4522,7 +4555,6 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 wire = new Wire({
                     id: element.id,
-                    nodeId: element.id,
                     end1: {
                         component: sourcePort.parentComponent,
                         port: sourcePort
@@ -4808,7 +4840,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor, zIndex) {
+    getDiagramElement = function(descriptor, zIndex, diagram) {
 
         var element;
 
@@ -4823,6 +4855,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         } else if (descriptor.baseName === 'Container') {
 
             element = avmComponentModelParser(descriptor, zIndex);
+
+        } else if (descriptor.baseName === 'ConnectorComposition') {
+
+            element = wireParser(descriptor, diagram);
+
         }
 
         return element;
@@ -5730,22 +5767,28 @@ angular.module('mms.designVisualization.diagramService', [
             this.createNewComponentFromFromCyPhyElement = function(diagramId, diagramElementDescriptor) {
 
                 var diagram,
-                    diagramComponent;
+                    newDiagramStuff;
 
                 diagram = diagrams[diagramId];
 
                 if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
 
-                    diagramComponent = cyPhyDiagramParser.getDiagramElement(
+                    newDiagramStuff = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        self.getHighestZ() + 1
+                        self.getHighestZ() + 1,
+                        diagram
                     );
 
-                    diagram.addComponent(diagramComponent);
+                    if (diagramElementDescriptor.baseName === 'ConnectorComposition') {
+                        diagram.addWire(newDiagramStuff);
+                    } else {
+                        diagram.addComponent(newDiagramStuff);
+                    }
+
 
                 }
 
-                return diagramComponent;
+                return newDiagramStuff;
 
             };
 

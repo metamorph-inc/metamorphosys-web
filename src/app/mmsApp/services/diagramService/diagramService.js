@@ -160,22 +160,28 @@ angular.module('mms.designVisualization.diagramService', [
             this.createNewComponentFromFromCyPhyElement = function(diagramId, diagramElementDescriptor) {
 
                 var diagram,
-                    diagramComponent;
+                    newDiagramStuff;
 
                 diagram = diagrams[diagramId];
 
                 if (angular.isObject(diagram) && angular.isObject(diagramElementDescriptor)) {
 
-                    diagramComponent = cyPhyDiagramParser.getDiagramElement(
+                    newDiagramStuff = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        self.getHighestZ() + 1
+                        self.getHighestZ() + 1,
+                        diagram
                     );
 
-                    diagram.addComponent(diagramComponent);
+                    if (diagramElementDescriptor.baseName === 'ConnectorComposition') {
+                        diagram.addWire(newDiagramStuff);
+                    } else {
+                        diagram.addComponent(newDiagramStuff);
+                    }
+
 
                 }
 
-                return diagramComponent;
+                return newDiagramStuff;
 
             };
 

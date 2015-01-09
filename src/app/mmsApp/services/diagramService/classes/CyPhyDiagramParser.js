@@ -79,12 +79,12 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             allInterConnectors.sort(function (a, b) {
 
-                if (a.position.x > b.position.x) {
+                if (a.position.y > b.position.y) {
                     return 1;
                 }
 
-                if (a.position.x < b.position.x) {
-                    return 1;
+                if (a.position.y < b.position.y) {
+                    return -1;
                 }
 
                 return 0;
@@ -147,7 +147,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             destinationPort,
             wire;
 
-        if (angular.isObject(element.details)) {
+        if (angular.isObject(element.details) && angular.isObject(diagram)) {
 
             sourcePort = diagram.portsById[element.details.sourceId];
             destinationPort = diagram.portsById[element.details.destinationId];
@@ -156,7 +156,6 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
                 wire = new Wire({
                     id: element.id,
-                    nodeId: element.id,
                     end1: {
                         component: sourcePort.parentComponent,
                         port: sourcePort
@@ -442,7 +441,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    getDiagramElement = function(descriptor, zIndex) {
+    getDiagramElement = function(descriptor, zIndex, diagram) {
 
         var element;
 
@@ -457,6 +456,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         } else if (descriptor.baseName === 'Container') {
 
             element = avmComponentModelParser(descriptor, zIndex);
+
+        } else if (descriptor.baseName === 'ConnectorComposition') {
+
+            element = wireParser(descriptor, diagram);
+
         }
 
         return element;

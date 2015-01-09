@@ -6,8 +6,8 @@
 
 'use strict';
 
-angular.module( 'cyphy.services' )
-    .service( 'designLayoutService', function ( $q, $timeout, nodeService, baseCyPhyService, $log ) {
+angular.module('cyphy.services')
+    .service('designLayoutService', function ($q, $timeout, nodeService, baseCyPhyService, $log) {
 
         var self = this,
             watchers,
@@ -22,43 +22,43 @@ angular.module( 'cyphy.services' )
 
         watchers = {};
 
-        this.setWireSegments = function( context, nodeId, segments, msg) {
+        this.setWireSegments = function (context, nodeId, segments, msg) {
 
             nodeService.loadNode(context, nodeId)
-                .then(function(node) {
-                    node.setRegistry( 'wireSegments', segments, msg);
+                .then(function (node) {
+                    node.setRegistry('wireSegments', segments, msg);
                 });
 
         };
 
-        this.setPosition = function( context, nodeId, position, msg) {
+        this.setPosition = function (context, nodeId, position, msg) {
 
             nodeService.loadNode(context, nodeId)
-                .then(function(node) {
-                    node.setRegistry( 'position', position, msg);
+                .then(function (node) {
+                    node.setRegistry('position', position, msg);
                 });
 
         };
 
-        this.setRotation = function( context, nodeId, angle, msg) {
+        this.setRotation = function (context, nodeId, angle, msg) {
 
             nodeService.loadNode(context, nodeId)
-                .then(function(node) {
-                    node.setRegistry( 'rotation', angle, msg);
+                .then(function (node) {
+                    node.setRegistry('rotation', angle, msg);
                 });
 
         };
 
-        this.setRotation = function( context, nodeId, rotation, msg) {
+        this.setRotation = function (context, nodeId, rotation, msg) {
 
             nodeService.loadNode(context, nodeId)
-                .then(function(node) {
-                    node.setRegistry( 'rotation', rotation, msg);
+                .then(function (node) {
+                    node.setRegistry('rotation', rotation, msg);
                 });
 
         };
 
-        this.watchDiagramElements = function ( parentContext, containerId, updateListener ) {
+        this.watchDiagramElements = function (parentContext, containerId, updateListener) {
 
             var deferred,
                 regionId,
@@ -92,37 +92,37 @@ angular.module( 'cyphy.services' )
             };
 
 
-            triggerUpdateListener = function ( id, data, eventType, updateType ) {
+            triggerUpdateListener = function (id, data, eventType, updateType) {
 
-                $timeout( function () {
-                    updateListener( {
+                $timeout(function () {
+                    updateListener({
                         id: id,
                         type: eventType,
                         updateType: updateType,
                         data: data
-                    } );
-                } );
+                    });
+                });
 
             };
 
-            findChildForNode = function ( node ) {
+            findChildForNode = function (node) {
 
                 var baseName,
                     child;
 
-                baseName = node.getMetaTypeName( meta );
+                baseName = node.getMetaTypeName(meta);
 
-                if ( baseName ) {
+                if (baseName) {
 
-                    data.elements[ baseName ] = data.elements[ baseName ] || {};
-                    child = data.elements[ baseName ][ node.getId() ];
+                    data.elements[baseName] = data.elements[baseName] || {};
+                    child = data.elements[baseName][node.getId()];
                 }
 
                 return child;
 
             };
 
-            getConnectorCompositionDetails = function ( connectorCompositionNode ) {
+            getConnectorCompositionDetails = function (connectorCompositionNode) {
 
                 var details,
                     sourcePtr,
@@ -132,15 +132,15 @@ angular.module( 'cyphy.services' )
                     destinationId,
                     wireSegments;
 
-                sourcePtr = connectorCompositionNode.getPointer( 'src' );
-                destinationPtr = connectorCompositionNode.getPointer( 'dst' );
-                wireSegments = connectorCompositionNode.getRegistry( 'wireSegments' );
+                sourcePtr = connectorCompositionNode.getPointer('src');
+                destinationPtr = connectorCompositionNode.getPointer('dst');
+                wireSegments = connectorCompositionNode.getRegistry('wireSegments');
 
-                if ( angular.isObject( sourcePtr ) ) {
+                if (angular.isObject(sourcePtr)) {
                     sourceId = sourcePtr.to;
                 }
 
-                if ( angular.isObject( destinationPtr ) ) {
+                if (angular.isObject(destinationPtr)) {
                     destinationId = destinationPtr.to;
                 }
 
@@ -166,23 +166,23 @@ angular.module( 'cyphy.services' )
 
                 // BaseName never changes, does it?
 
-                child = findChildForNode( this );
+                child = findChildForNode(this);
 
-                if ( child ) {
+                if (child) {
 
-                    newName = this.getAttribute( 'name' );
-                    newPos = this.getRegistry( 'position' );
-                    newRotation = this.getRegistry( 'rotation' );
+                    newName = this.getAttribute('name');
+                    newPos = this.getRegistry('position');
+                    newRotation = this.getRegistry('rotation');
 
                     hadChanges = false;
 
-                    if ( newName !== child.name ) {
+                    if (newName !== child.name) {
                         child.name = newName;
                         hadChanges = true;
 
                     }
 
-                    if ( newPos.x !== child.position.x || newPos.y !== child.position.y ) {
+                    if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
                         child.position = newPos;
 
                         hadChanges = true;
@@ -199,9 +199,9 @@ angular.module( 'cyphy.services' )
 
                     }
 
-                    if ( child.baseName === 'ConnectorComposition' ) {
+                    if (child.baseName === 'ConnectorComposition') {
 
-                        newDetails = getConnectorCompositionDetails( this );
+                        newDetails = getConnectorCompositionDetails(this);
 
                         if (!angular.equals(newDetails, child.details)) {
 
@@ -212,9 +212,9 @@ angular.module( 'cyphy.services' )
 
                     }
 
-                    if ( hadChanges ) {
+                    if (hadChanges) {
 
-                        triggerUpdateListener( child.id, child, 'update', updateType );
+                        triggerUpdateListener(child.id, child, 'update', updateType);
 
                     }
 
@@ -223,9 +223,9 @@ angular.module( 'cyphy.services' )
 
             };
 
-            deleteInElementsById = function(id) {
+            deleteInElementsById = function (id) {
 
-                angular.forEach(data.elements, function(category) {
+                angular.forEach(data.elements, function (category) {
 
                     delete category[id];
 
@@ -234,15 +234,15 @@ angular.module( 'cyphy.services' )
             };
 
 
-            onChildUnload = function ( id ) {
+            onChildUnload = function (id) {
 
                 deleteInElementsById(id);
 
-                triggerUpdateListener( id, null, 'unload' );
+                triggerUpdateListener(id, null, 'unload');
 
             };
 
-            parseNewChild = function ( node ) {
+            parseNewChild = function (node) {
 
                 var deferredParseResult,
                     parsePromises,
@@ -252,112 +252,106 @@ angular.module( 'cyphy.services' )
                     child;
 
                 deferredParseResult = $q.defer();
-                parsePromises = [  ];
+                parsePromises = [];
 
                 child = {
                     id: node.getId(),
-                    name: node.getAttribute( 'name' ),
-                    position: node.getRegistry( 'position' ),
-                    rotation: node.getRegistry( 'rotation' ),
+                    name: node.getAttribute('name'),
+                    position: node.getRegistry('position'),
+                    rotation: node.getRegistry('rotation'),
                     baseId: node.getBaseId()
                 };
 
-                child.baseName = node.getMetaTypeName( meta );
+                child.baseName = node.getMetaTypeName(meta);
 
-                if ( child.baseName ) {
+                if (child.baseName) {
 
-                    data.elements[ child.baseName ] = data.elements[ child.baseName ] || {};
-                    data.elements[ child.baseName ][ child.id ] = child;
+                    data.elements[child.baseName] = data.elements[child.baseName] || {};
+                    data.elements[child.baseName][child.id] = child;
 
                 }
 
-                node.onUpdate( onChildUpdate );
-                node.onUnload( onChildUnload );
+                node.onUpdate(onChildUpdate);
+                node.onUnload(onChildUnload);
 
 
                 // Getting connectors from inside where needed
 
-                if ( typesWithConnectordsInside.indexOf( child.baseName ) > -1 ) {
+                if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
 
-                    getInterfacesPromise = self.watchInterfaces( context, child.id, function ( /*interfaceUpdateData*/ ) {
+                    getInterfacesPromise = self.watchInterfaces(context, child.id, function (/*interfaceUpdateData*/) {
                         //TODO: see if anything has to be done with this
-                    } );
+                    });
 
-                    getInterfacesPromise.then( function ( interfaces ) {
+                    getInterfacesPromise.then(function (interfaces) {
                         child.interfaces = interfaces;
-                    } );
+                    });
 
-                    parsePromises.push( getInterfacesPromise );
+                    parsePromises.push(getInterfacesPromise);
                 }
 
-                if ( child.baseName === 'ConnectorComposition' ) {
+                if (child.baseName === 'ConnectorComposition') {
 
-                    child.details = getConnectorCompositionDetails( node );
+                    child.details = getConnectorCompositionDetails(node);
                 }
 
 
-                $q.all( parsePromises)
-                    .then(function(){
-                        deferredParseResult.resolve( child );
+                $q.all(parsePromises)
+                    .then(function () {
+                        deferredParseResult.resolve(child);
                     });
 
                 return deferredParseResult.promise;
 
             };
 
-            watchers[ parentContext.regionId ] = watchers[ parentContext.regionId ] || {};
-            watchers[ parentContext.regionId ][ regionId ] = context;
+            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
+            watchers[parentContext.regionId][regionId] = context;
 
-            nodeService.getMetaNodes( context )
-                .then( function ( metaNodes ) {
-                    //                    metaNamesById = {};
-                    //
-                    //                    angular.forEach( meta, function ( metaNode, name ) {
-                    //                        metaNamesById[ metaNode.id ] = name;
-                    //                    } );
+            nodeService.getMetaNodes(context)
+                .then(function (metaNodes) {
+
                     meta = metaNodes;
 
-                    nodeService.loadNode( context, containerId )
+                    nodeService.loadNode(context, containerId)
 
-                    .then( function ( rootNode ) {
-                        rootNode.loadChildren( context )
-                            .then( function ( childNodes ) {
+                        .then(function (rootNode) {
+                            rootNode.loadChildren(context)
+                                .then(function (childNodes) {
 
-                                var i,
-                                    childPromises;
+                                    var i,
+                                        childPromises;
 
-                                childPromises = [];
+                                    childPromises = [];
 
-                                for ( i = 0; i < childNodes.length; i += 1 ) {
-                                    childPromises.push( parseNewChild( childNodes[ i ] ) );
-                                }
+                                    for (i = 0; i < childNodes.length; i += 1) {
+                                        childPromises.push(parseNewChild(childNodes[i]));
+                                    }
 
-                                rootNode.onNewChildLoaded( function ( newNode) {
+                                    rootNode.onNewChildLoaded(function (newNode) {
 
-                                            parseNewChild(newNode)
-                                                .then(function (newChild) {
+                                        parseNewChild(newNode)
+                                            .then(function (newChild) {
 
-//                                                    console.log('new child', newChild);
+                                                triggerUpdateListener(
+                                                    newChild.id,
+                                                    newChild,
+                                                    'load',
+                                                    'newChild'
+                                                );
+                                            });
 
-                                                    triggerUpdateListener(
-                                                        newChild.id,
-                                                        newChild,
-                                                        'load',
-                                                        'newChild'
-                                                    );
-                                                });
+                                    });
 
-                                } );
+                                    $q.all(childPromises)
+                                        .then(function () {
 
-                                $q.all( childPromises )
-                                    .then( function () {
+                                            deferred.resolve(data);
+                                        });
 
-                                        deferred.resolve( data );
-                                    } );
-
-                            } );
-                    } );
-                } );
+                                });
+                        });
+                });
 
             return deferred.promise;
         };
@@ -365,28 +359,28 @@ angular.module( 'cyphy.services' )
         /**
          * See baseCyPhyService.watchInterfaces.
          */
-        this.watchInterfaces = function ( parentContext, id, updateListener ) {
-            return baseCyPhyService.watchInterfaces( watchers, parentContext, id, updateListener );
+        this.watchInterfaces = function (parentContext, id, updateListener) {
+            return baseCyPhyService.watchInterfaces(watchers, parentContext, id, updateListener);
         };
 
         /**
          * See baseCyPhyService.cleanUpAllRegions.
          */
-        this.cleanUpAllRegions = function ( parentContext ) {
-            baseCyPhyService.cleanUpAllRegions( watchers, parentContext );
+        this.cleanUpAllRegions = function (parentContext) {
+            baseCyPhyService.cleanUpAllRegions(watchers, parentContext);
         };
 
         /**
          * See baseCyPhyService.cleanUpRegion.
          */
-        this.cleanUpRegion = function ( parentContext, regionId ) {
-            baseCyPhyService.cleanUpRegion( watchers, parentContext, regionId );
+        this.cleanUpRegion = function (parentContext, regionId) {
+            baseCyPhyService.cleanUpRegion(watchers, parentContext, regionId);
         };
 
         /**
          * See baseCyPhyService.registerWatcher.
          */
-        this.registerWatcher = function ( parentContext, fn ) {
-            baseCyPhyService.registerWatcher( watchers, parentContext, fn );
+        this.registerWatcher = function (parentContext, fn) {
+            baseCyPhyService.registerWatcher(watchers, parentContext, fn);
         };
-    } );
+    });

@@ -76,13 +76,6 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                 )
             ) );
 
-
-        diagramService.addWire( $scope.id, wire );
-
-        $scope.diagram.wires[ wire.id ] = wire;
-
-        gridService.invalidateVisibleDiagramComponents( $scope.id );
-
         $rootScope.$emit('wireCreationMustBeDone', wire);
 
         $log.debug( 'Finish wire', wire );
