@@ -184,7 +184,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     i = 1;
 
-                    nodeService.startTransaction(designCtx, data.message);
+                    //nodeService.startTransaction(designCtx, data.message);
 
                     angular.forEach(data.components, function (component) {
 
@@ -202,7 +202,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     });
 
-                    nodeService.completeTransaction(designCtx);
+                    //nodeService.completeTransaction(designCtx);
 
                 });
 
@@ -212,7 +212,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     i = 1;
 
-                    nodeService.startTransaction(designCtx, data.message);
+                    //nodeService.startTransaction(designCtx, data.message);
 
                     angular.forEach(data.components, function (component) {
 
@@ -230,7 +230,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                     });
 
-                    nodeService.completeTransaction(designCtx);
+                    //nodeService.completeTransaction(designCtx);
 
                 });
 
