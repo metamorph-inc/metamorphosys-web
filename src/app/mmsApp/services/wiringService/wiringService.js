@@ -18,7 +18,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             };
 
-        this.getSegmentsBetweenPositions = function ( endPositions, routerType ) {
+        this.getSegmentsBetweenPositions = function ( endPositions, routerType, params ) {
 
             var segments,
                 router;
@@ -27,14 +27,16 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             if ( angular.isObject( router ) && angular.isFunction( router.makeSegments ) ) {
                 segments = router.makeSegments(
-                    [ endPositions.end1, endPositions.end2 ] );
+                    [ endPositions.end1, endPositions.end2 ],
+                    params
+                );
             }
 
             return segments;
 
         };
 
-        this.routeWire = function ( wire, routerType ) {
+        this.routeWire = function ( wire, routerType, params ) {
 
             var router,
                 endPositions,
@@ -62,11 +64,14 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                     points.push(endPositions.end2);
 
-                    wire.segments = router.makeSegments( points );
+                    wire.segments = router.makeSegments( points, params );
 
                 }
 
-                wire.routerType = routerType;
+                wire.router = {
+                    type: routerType,
+                    params: params
+                };
             }
 
         };

@@ -230,5 +230,29 @@ Diagram.prototype.updateComponentRotation = function (componentId, newRotation) 
 
 };
 
+Diagram.prototype.isComponentSelected = function (component) {
+
+    return this.state.selectedComponentIds.indexOf(component.id) > -1;
+
+};
+
+Diagram.prototype.getSelectedComponents = function () {
+
+    var self,
+        selectedComponents;
+
+    self = this;
+    selectedComponents = [];
+
+    angular.forEach(this.state.selectedComponentIds, function(componentId){
+
+        selectedComponents.push(self.componentsById[componentId]);
+
+    });
+
+    return selectedComponents;
+
+};
+
 
 module.exports = Diagram;

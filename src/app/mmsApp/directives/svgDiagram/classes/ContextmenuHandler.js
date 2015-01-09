@@ -45,6 +45,22 @@ module.exports = function (
 
     onComponentContextmenu = function (component, $event) {
 
+        var inSelection,
+            selectedComponents,
+            destroyLabel;
+
+        selectedComponents = $scope.diagram.getSelectedComponents();
+
+        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 0) {
+
+            inSelection = true;
+
+            destroyLabel = 'Destroy selected [' + selectedComponents.length + ']';
+
+        } else {
+            destroyLabel = 'Destroy';
+        }
+
         $scope.contextMenuData = [
             {
                 id: 'reposition',
@@ -85,11 +101,16 @@ module.exports = function (
                 items: [
                     {
                         id: 'destroy',
-                        label: 'Destroy',
+                        label: destroyLabel,
                         iconClass: 'fa fa-trash-o',
                         action: function () {
 
-                            $rootScope.$emit('componentDeletionMustBeDone', component);
+                            if (!inSelection) {
+                                $rootScope.$emit('componentDeletionMustBeDone', component);
+                            } else {
+                                $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
+                            }
+
 
                         }
                     }
@@ -136,13 +157,13 @@ module.exports = function (
 
         $scope.contextMenuData = [
             {
-                id: 'about',
+                id: 'testbenches',
                 items: [
                     {
-                        id: 'getStats',
-                        label: 'Statistics',
+                        id: 'generatePCB',
+                        label: 'Generate PCB',
                         disabled: true,
-                        iconClass: 'glyphicon glyphicon-plus',
+                        iconClass: 'fa fa-play',
                         action: function () {
                             console.log('Statistics');
                         },

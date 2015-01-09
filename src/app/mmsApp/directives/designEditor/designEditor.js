@@ -5,10 +5,9 @@
 // Move this to GME eventually
 
 angular.module('mms.designVisualization.designEditor', [])
-    .controller('DesignEditorController', function (
-        $scope, $rootScope, diagramService, $log, connectionHandling,
-        designService, $stateParams, designLayoutService, symbolManager, $timeout,
-        nodeService, gridService) {
+    .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
+                                                    designService, $stateParams, designLayoutService, symbolManager, $timeout,
+                                                    nodeService, gridService) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -30,11 +29,22 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagramContainerConfig = {};
 
-        $rootScope.$on('componentInstantiationMustBeDone', function($event, componentData, position) {
+        $rootScope.$on('componentInstantiationMustBeDone', function ($event, componentData, position) {
 
             var nodesToCopy;
 
             $rootScope.processing = true;
+
+            if (!position) {
+                position = gridService.getViewPortCenter($rootScope.activeDiagramId);
+            }
+
+            if (!position) {
+                position = {
+                    x: 0,
+                    y: 0
+                };
+            }
 
             lastComponentInstantiationPosition = position;
 
@@ -54,40 +64,55 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
-        $rootScope.$on('componentDeletionMustBeDone', function($event, component) {
+        $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
 
-            var i,
-                wires,
-                deleteMessage,
-                nodeIdsToDelete;
+            var startDeletionOfComponent;
+
+            startDeletionOfComponent = function (component) {
+
+                var i,
+                    wires,
+                    deleteMessage,
+                    nodeIdsToDelete;
+
+
+                if (angular.isObject(component)) {
+
+                    nodeIdsToDelete = [];
+
+                    deleteMessage = 'Deleting design element';
+
+                    wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
+
+                    if (wires.length > 0) {
+
+                        deleteMessage += ' with wires';
+
+                        nodeIdsToDelete = wires.map(function (wire) {
+                            return wire.id;
+                        });
+
+                    }
+
+                    nodeIdsToDelete.unshift(component.id);
+
+                    for (i = 0; i < nodeIdsToDelete.length; i++) {
+                        nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage);
+                    }
+
+                }
+            };
 
             $rootScope.processing = true;
 
-            if (angular.isObject(component)) {
+            if (angular.isArray(components)) {
 
-                nodeIdsToDelete = [];
+                angular.forEach(components, function (component) {
+                    startDeletionOfComponent(component);
+                });
 
-                deleteMessage = 'Deleting design element';
-
-                wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
-
-                if (wires.length > 0) {
-
-                    deleteMessage += ' with wires';
-
-                    nodeIdsToDelete = wires.map(function(wire) {
-                        return wire.id;
-                    });
-
-                }
-
-                nodeIdsToDelete.unshift(component.id);
-
-                for (i = 0; i < nodeIdsToDelete.length; i++) {
-                    nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage );
-                }
-
-
+            } else {
+                startDeletionOfComponent(components);
             }
 
         });
@@ -170,7 +195,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                switch(designStructureUpdateObject.type) {
+                switch (designStructureUpdateObject.type) {
 
                     case 'load':
 
@@ -225,7 +250,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
-                $timeout(function(){
+                $timeout(function () {
 
                     $rootScope.activeDiagramId = $rootScope.activeContainerId + '_' + ( new Date() ).toISOString();
 
@@ -241,20 +266,20 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 setupDiagramEventHandlers();
 
-                $timeout(function(){
+                $timeout(function () {
                     $rootScope.stopBusy();
                     $rootScope.unCover();
                 }, 500);
 
             });
 
-            $scope.fabClick = function() {
+            $scope.fabClick = function () {
 
                 $log.debug('Fab was clicked');
 
             };
 
-            $scope.$on('$destroy', function() {
+            $scope.$on('$destroy', function () {
 
                 $rootScope.unCovered = false;
 

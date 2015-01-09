@@ -56,6 +56,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             wiringService,
             gridService,
+            $timeout,
             $log
         );
 
@@ -379,12 +380,17 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     });
 
-                    scope.$watch('visibleObjects.components', function(val) {
-                        console.log('visible objects', val);
-                    });
+                    //scope.$watch('visibleObjects.components', function(val) {
+                    //    console.log('visible objects', val);
+                    //});
 
                     $element.bind('contextmenu', killContextMenu);
 
+                    $element.keyup(function(e){
+
+                        scope.$emit('keyupOnDiagram', e);
+
+                    });
 
                 }
 

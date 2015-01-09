@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, gridService, $log) {
+module.exports = function($scope, diagramService, wiringService, gridService, $timeout, $log) {
 
     var self = this,
 
@@ -168,6 +168,13 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
         }
     };
 
+    $scope.$on('keyupOnDiagram', function($event, e) {
+
+        if (e.keyCode === 27) { // Esc
+            $timeout(cancelWire());
+        }
+
+    });
 
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;

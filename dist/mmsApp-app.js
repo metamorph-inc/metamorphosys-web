@@ -1202,10 +1202,9 @@ module.exports = function(symbolManagerProvider) {
 // Move this to GME eventually
 
 angular.module('mms.designVisualization.designEditor', [])
-    .controller('DesignEditorController', function (
-        $scope, $rootScope, diagramService, $log, connectionHandling,
-        designService, $stateParams, designLayoutService, symbolManager, $timeout,
-        nodeService, gridService) {
+    .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
+                                                    designService, $stateParams, designLayoutService, symbolManager, $timeout,
+                                                    nodeService, gridService) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -1227,11 +1226,22 @@ angular.module('mms.designVisualization.designEditor', [])
 
         $scope.diagramContainerConfig = {};
 
-        $rootScope.$on('componentInstantiationMustBeDone', function($event, componentData, position) {
+        $rootScope.$on('componentInstantiationMustBeDone', function ($event, componentData, position) {
 
             var nodesToCopy;
 
             $rootScope.processing = true;
+
+            if (!position) {
+                position = gridService.getViewPortCenter($rootScope.activeDiagramId);
+            }
+
+            if (!position) {
+                position = {
+                    x: 0,
+                    y: 0
+                };
+            }
 
             lastComponentInstantiationPosition = position;
 
@@ -1251,40 +1261,55 @@ angular.module('mms.designVisualization.designEditor', [])
 
         });
 
-        $rootScope.$on('componentDeletionMustBeDone', function($event, component) {
+        $rootScope.$on('componentDeletionMustBeDone', function ($event, components) {
 
-            var i,
-                wires,
-                deleteMessage,
-                nodeIdsToDelete;
+            var startDeletionOfComponent;
+
+            startDeletionOfComponent = function (component) {
+
+                var i,
+                    wires,
+                    deleteMessage,
+                    nodeIdsToDelete;
+
+
+                if (angular.isObject(component)) {
+
+                    nodeIdsToDelete = [];
+
+                    deleteMessage = 'Deleting design element';
+
+                    wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
+
+                    if (wires.length > 0) {
+
+                        deleteMessage += ' with wires';
+
+                        nodeIdsToDelete = wires.map(function (wire) {
+                            return wire.id;
+                        });
+
+                    }
+
+                    nodeIdsToDelete.unshift(component.id);
+
+                    for (i = 0; i < nodeIdsToDelete.length; i++) {
+                        nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage);
+                    }
+
+                }
+            };
 
             $rootScope.processing = true;
 
-            if (angular.isObject(component)) {
+            if (angular.isArray(components)) {
 
-                nodeIdsToDelete = [];
+                angular.forEach(components, function (component) {
+                    startDeletionOfComponent(component);
+                });
 
-                deleteMessage = 'Deleting design element';
-
-                wires = diagramService.getWiresForComponents($rootScope.activeDiagramId, [component]);
-
-                if (wires.length > 0) {
-
-                    deleteMessage += ' with wires';
-
-                    nodeIdsToDelete = wires.map(function(wire) {
-                        return wire.id;
-                    });
-
-                }
-
-                nodeIdsToDelete.unshift(component.id);
-
-                for (i = 0; i < nodeIdsToDelete.length; i++) {
-                    nodeService.destroyNode(designCtx, nodeIdsToDelete[i], deleteMessage );
-                }
-
-
+            } else {
+                startDeletionOfComponent(components);
             }
 
         });
@@ -1367,7 +1392,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                switch(designStructureUpdateObject.type) {
+                switch (designStructureUpdateObject.type) {
 
                     case 'load':
 
@@ -1422,7 +1447,7 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
 
-                $timeout(function(){
+                $timeout(function () {
 
                     $rootScope.activeDiagramId = $rootScope.activeContainerId + '_' + ( new Date() ).toISOString();
 
@@ -1438,20 +1463,20 @@ angular.module('mms.designVisualization.designEditor', [])
 
                 setupDiagramEventHandlers();
 
-                $timeout(function(){
+                $timeout(function () {
                     $rootScope.stopBusy();
                     $rootScope.unCover();
                 }, 500);
 
             });
 
-            $scope.fabClick = function() {
+            $scope.fabClick = function () {
 
                 $log.debug('Fab was clicked');
 
             };
 
-            $scope.$on('$destroy', function() {
+            $scope.$on('$destroy', function () {
 
                 $rootScope.unCovered = false;
 
@@ -2682,7 +2707,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, gridService, $log) {
+module.exports = function($scope, diagramService, wiringService, gridService, $timeout, $log) {
 
     var self = this,
 
@@ -2848,6 +2873,13 @@ module.exports = function($scope, diagramService, wiringService, gridService, $l
         }
     };
 
+    $scope.$on('keyupOnDiagram', function($event, e) {
+
+        if (e.keyCode === 27) { // Esc
+            $timeout(cancelWire());
+        }
+
+    });
 
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;
@@ -2907,6 +2939,22 @@ module.exports = function (
 
     onComponentContextmenu = function (component, $event) {
 
+        var inSelection,
+            selectedComponents,
+            destroyLabel;
+
+        selectedComponents = $scope.diagram.getSelectedComponents();
+
+        if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 0) {
+
+            inSelection = true;
+
+            destroyLabel = 'Destroy selected [' + selectedComponents.length + ']';
+
+        } else {
+            destroyLabel = 'Destroy';
+        }
+
         $scope.contextMenuData = [
             {
                 id: 'reposition',
@@ -2947,11 +2995,16 @@ module.exports = function (
                 items: [
                     {
                         id: 'destroy',
-                        label: 'Destroy',
+                        label: destroyLabel,
                         iconClass: 'fa fa-trash-o',
                         action: function () {
 
-                            $rootScope.$emit('componentDeletionMustBeDone', component);
+                            if (!inSelection) {
+                                $rootScope.$emit('componentDeletionMustBeDone', component);
+                            } else {
+                                $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
+                            }
+
 
                         }
                     }
@@ -2998,13 +3051,13 @@ module.exports = function (
 
         $scope.contextMenuData = [
             {
-                id: 'about',
+                id: 'testbenches',
                 items: [
                     {
-                        id: 'getStats',
-                        label: 'Statistics',
+                        id: 'generatePCB',
+                        label: 'Generate PCB',
                         disabled: true,
-                        iconClass: 'glyphicon glyphicon-plus',
+                        iconClass: 'fa fa-play',
                         action: function () {
                             console.log('Statistics');
                         },
@@ -3088,6 +3141,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             diagramService,
             wiringService,
             gridService,
+            $timeout,
             $log
         );
 
@@ -3411,12 +3465,17 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     });
 
-                    scope.$watch('visibleObjects.components', function(val) {
-                        console.log('visible objects', val);
-                    });
+                    //scope.$watch('visibleObjects.components', function(val) {
+                    //    console.log('visible objects', val);
+                    //});
 
                     $element.bind('contextmenu', killContextMenu);
 
+                    $element.keyup(function(e){
+
+                        scope.$emit('keyupOnDiagram', e);
+
+                    });
 
                 }
 
@@ -4828,6 +4887,30 @@ Diagram.prototype.updateComponentRotation = function (componentId, newRotation) 
 
 };
 
+Diagram.prototype.isComponentSelected = function (component) {
+
+    return this.state.selectedComponentIds.indexOf(component.id) > -1;
+
+};
+
+Diagram.prototype.getSelectedComponents = function () {
+
+    var self,
+        selectedComponents;
+
+    self = this;
+    selectedComponents = [];
+
+    angular.forEach(this.state.selectedComponentIds, function(componentId){
+
+        selectedComponents.push(self.componentsById[componentId]);
+
+    });
+
+    return selectedComponents;
+
+};
+
 
 module.exports = Diagram;
 
@@ -5215,7 +5298,7 @@ Wire.prototype.isInViewPort = function ( viewPort, padding ) {
 
     shouldBeVisible = false;
 
-    if ( this.routerType === 'ElbowRouter' ) {
+    if ( this.router.type === 'ElbowRouter' ) {
 
         if ( angular.isArray( this.segments ) ) {
 
@@ -5795,6 +5878,27 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
             } else {
                 throw ( 'Grid was not defined!', gridId );
             }
+
+        };
+
+        this.getViewPortCenter = function ( gridId ) {
+
+            var grid,
+                center;
+
+                grid = grids[ gridId ];
+
+            if ( angular.isDefined( grid ) && angular.isObject(grid.viewPort) ) {
+
+                center = {
+
+                    x: (grid.viewPort.left + grid.viewPort.right) / 2,
+                    y: (grid.viewPort.top + grid.viewPort.bottom) / 2
+
+                };
+            }
+
+            return center;
 
         };
 
@@ -6516,7 +6620,7 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             };
 
-        this.getSegmentsBetweenPositions = function ( endPositions, routerType ) {
+        this.getSegmentsBetweenPositions = function ( endPositions, routerType, params ) {
 
             var segments,
                 router;
@@ -6525,14 +6629,16 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
             if ( angular.isObject( router ) && angular.isFunction( router.makeSegments ) ) {
                 segments = router.makeSegments(
-                    [ endPositions.end1, endPositions.end2 ] );
+                    [ endPositions.end1, endPositions.end2 ],
+                    params
+                );
             }
 
             return segments;
 
         };
 
-        this.routeWire = function ( wire, routerType ) {
+        this.routeWire = function ( wire, routerType, params ) {
 
             var router,
                 endPositions,
@@ -6560,11 +6666,14 @@ wiringServicesModule.service( 'wiringService', [ '$log', '$rootScope', '$timeout
 
                     points.push(endPositions.end2);
 
-                    wire.segments = router.makeSegments( points );
+                    wire.segments = router.makeSegments( points, params );
 
                 }
 
-                wire.routerType = routerType;
+                wire.router = {
+                    type: routerType,
+                    params: params
+                };
             }
 
         };

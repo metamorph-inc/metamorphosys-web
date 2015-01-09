@@ -38,7 +38,7 @@
 
         .node-label:hover,
         .node-label:active {
-            background-color: #DEDFE2;
+            background-color: rgba(218, 226, 244, 0.6);
         }
 
         ul.node-list ul.node-list {
@@ -58,7 +58,7 @@
         }
 
         .selected-node > .node-label {
-            background-color: rgba(218, 226, 244, 0.6);
+            background-color: rgba(137, 201, 255, 0.6);
         }
 
 
@@ -88,6 +88,8 @@
 
     .angucomplete-dropdown {
         width: 100%;
+        box-shadow: 0 2px 3px rgba(0,0,0,.1);
+        margin-top: 2px;
     }
 
     .angucomplete-row {

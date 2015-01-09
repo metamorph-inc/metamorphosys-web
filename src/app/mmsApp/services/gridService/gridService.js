@@ -219,6 +219,27 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
+        this.getViewPortCenter = function ( gridId ) {
+
+            var grid,
+                center;
+
+                grid = grids[ gridId ];
+
+            if ( angular.isDefined( grid ) && angular.isObject(grid.viewPort) ) {
+
+                center = {
+
+                    x: (grid.viewPort.left + grid.viewPort.right) / 2,
+                    y: (grid.viewPort.top + grid.viewPort.bottom) / 2
+
+                };
+            }
+
+            return center;
+
+        };
+
         this.reorderVisibleComponents = function ( gridId ) {
 
             var grid = grids[ gridId ];

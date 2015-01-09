@@ -4777,7 +4777,7 @@ module.exports = function() {
 
 'use strict';
 
-module.exports = function (symbolManager, $log) {
+module.exports = function (symbolManager, $log, $rootScope) {
 
     var config,
 
@@ -4816,22 +4816,31 @@ module.exports = function (symbolManager, $log) {
 
     $log.debug('In ComponentBrowserService');
 
-    getNodeContextmenu = function (/*node*/) {
+    getNodeContextmenu = function (node) {
 
-        var defaultNodeContextmenu = [
-            {
-                items: [
-                    {
-                        id: 'inspect',
-                        label: 'Inspect',
-                        disabled: true,
-                        iconClass: 'glyphicon glyphicon-zoom-in'
-                    }
-                ]
-            }
-        ];
+        var contextMenu;
 
-        return defaultNodeContextmenu;
+
+        if (childNodes.indexOf(node) > -1) {
+
+            contextMenu = [
+                {
+                    items: [
+                        {
+                            id: 'addToDesign',
+                            label: 'Add to design',
+                            iconClass: 'fa fa-plus-circle',
+                            action: function() {
+                                $rootScope.$emit('componentInstantiationMustBeDone', node);
+                            }
+                        }
+                    ]
+                }
+            ];
+
+        }
+
+        return contextMenu;
 
     };
 
@@ -6800,11 +6809,8 @@ angular.module( 'cyphy.services' )
 
                 if ( typesWithConnectordsInside.indexOf( child.baseName ) > -1 ) {
 
-                    getInterfacesPromise = self.watchInterfaces( context, child.id, function ( interfaceUpdateData ) {
-                        //TODO: finish this
-
-                        $log.warn( 'Connector update is not handled for this', interfaceUpdateData );
-
+                    getInterfacesPromise = self.watchInterfaces( context, child.id, function ( /*interfaceUpdateData*/ ) {
+                        //TODO: see if anything has to be done with this
                     } );
 
                     getInterfacesPromise.then( function ( interfaces ) {
