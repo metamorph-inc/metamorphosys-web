@@ -1,0 +1,32 @@
+$fob-button-bg: #178CFF;
+
+.testbench-actions {
+
+    witdh: 56px;
+    height: 56px;
+
+    position: absolute;
+
+    right: 28%;
+    bottom: 28px;
+
+    button.md-primary.md-fab.md-fab-bottom-right.run-button.md-button {
+
+        right: 0;
+        bottom: 0;
+
+        background-color: $fob-button-bg;
+        font-size: 140%;
+        line-height: 140%;
+
+        &:hover {
+            background-color: #ff7100 !important;
+        }
+    }
+
+    .md-gap,
+    .md-half-circle {
+        background-color: rgba(255,255,255,.4) !important;
+    }
+
+}

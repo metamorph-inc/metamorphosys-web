@@ -240,7 +240,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/svgDiagram/svgDiagram.js":23,"./directives/symbols/componentSymbol.js":26,"./libraryIncludes.js":34,"./services/connectionHandling/connectionHandling.js":35,"./services/diagramService/diagramService.js":42,"./services/gridService/gridService.js":43,"./services/operationsManager/operationsManager.js":44,"./services/projectHandling/projectHandling.js":45,"./services/wiringService/wiringService.js":50,"./utils.js":51,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/svgDiagram/svgDiagram.js":23,"./directives/symbols/componentSymbol.js":26,"./libraryIncludes.js":35,"./services/connectionHandling/connectionHandling.js":36,"./services/diagramService/diagramService.js":43,"./services/gridService/gridService.js":44,"./services/operationsManager/operationsManager.js":45,"./services/projectHandling/projectHandling.js":46,"./services/wiringService/wiringService.js":51,"./utils.js":52,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1216,7 +1216,11 @@ module.exports = function(symbolManagerProvider) {
 
 // Move this to GME eventually
 
-angular.module('mms.designVisualization.designEditor', [])
+require('../testbenchActions/testbenchActions.js');
+
+angular.module('mms.designVisualization.designEditor', [
+    'mms.testbenchActions'
+])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
                                                     nodeService, gridService) {
@@ -1596,7 +1600,7 @@ angular.module('mms.designVisualization.designEditor', [])
             };
         }]);
 
-},{"./classes/RandomSymbolGenerator":9}],11:[function(require,module,exports){
+},{"../testbenchActions/testbenchActions.js":34,"./classes/RandomSymbolGenerator":9}],11:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3011,7 +3015,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
 };
 
-},{"../../../services/diagramService/classes/Wire.js":41}],22:[function(require,module,exports){
+},{"../../../services/diagramService/classes/Wire.js":42}],22:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -4006,7 +4010,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":47,"../port/port.js":16,"./box/box.js":24,"./capacitor/capacitor.js":25,"./diode/diode.js":27,"./inductor/inductor.js":28,"./jFetP/jFetP.js":29,"./opAmp/opAmp.js":30,"./resistor/resistor.js":31,"./simpleConnector/simpleConnector.js":32,"./tvsDiode/tvsDiode.js":33}],27:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":48,"../port/port.js":16,"./box/box.js":24,"./capacitor/capacitor.js":25,"./diode/diode.js":27,"./inductor/inductor.js":28,"./jFetP/jFetP.js":29,"./opAmp/opAmp.js":30,"./resistor/resistor.js":31,"./simpleConnector/simpleConnector.js":32,"./tvsDiode/tvsDiode.js":33}],27:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4325,8 +4329,149 @@ angular.module(
     ]);
 
 },{}],34:[function(require,module,exports){
+/*globals angular*/
+
+'use strict';
+
+// Move this to GME eventually
+
+angular.module( 'mms.testbenchActions', [
+    'ngMaterial'
+] )
+    .controller('TestBenchActionsController', function(
+
+        $scope, $mdDialog, $mdToast, $log){
+
+        $scope.testbenchRuns = {
+
+            testPCBResult1: {
+
+                id: 'testPCBResult1',
+                timestamp: Date.now(),
+                visualUrl: '',
+                status: 'SUCCESS'
+
+
+            },
+
+            testPCBResult2: {
+
+                id: 'testPCBResult2',
+                timestamp: Date.now(),
+                visualUrl: '',
+                status: 'FAILED_TO_EXECUTE'
+
+
+            }
+
+
+        };
+
+        $scope.setBusy = function() {
+
+            $scope.busy = true;
+            $scope.tooltipMessage = 'PCB generation in progress...';
+
+        };
+
+        $scope.setReady = function() {
+
+            $scope.busy = false;
+            $scope.tooltipMessage = 'Generate PCB';
+
+        };
+
+        $scope.openSubscribeDialog = function(ev) {
+
+            function DialogController($scope, $mdDialog) {
+
+                $scope.user = {
+
+                };
+
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+                $scope.send = function(userFields) {
+                    $mdDialog.hide(userFields);
+                };
+            }
+
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: '/mmsApp/templates/subscribeDialog.html',
+                targetEvent: ev
+            })
+                .then(function(fields) {
+                    $log.debug('Subscription', fields);
+                }, function() {
+                    $log.debug('Subscription cancelled.');
+                });
+
+        };
+
+        $scope.showResults = function(ev, id) {
+
+            function DialogController($scope, $mdDialog, $window) {
+
+                $scope.designUrl = $window.location.href;
+
+
+                $scope.hide = function () {
+                    $mdDialog.hide();
+                };
+                $scope.close = function () {
+                    $mdDialog.hide();
+                };
+            }
+
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: '/mmsApp/templates/shareDialog.html',
+                targetEvent: ev
+            })
+                .then(function () {
+                });
+
+        };
+
+        $scope.startTestbench = function() {
+
+            $scope.setBusy();
+
+            $mdToast.show({
+
+                    'template': '<span>Jaaaa!</span>',
+                    'hideDelay': 0
+                }
+            );
+
+        };
+
+        $scope.setReady();
+//        $scope.showResults('testPCBResult');
+
+
+    })
+    .directive( 'testbenchActions', [
+        function () {
+
+            return {
+                controller: 'TestBenchActionsController',
+                restrict: 'E',
+                scope: true,
+                replace: true,
+                transclude: true,
+                templateUrl: '/mmsApp/templates/testbenchActions.html'
+            };
+        }] );
 
 },{}],35:[function(require,module,exports){
+
+},{}],36:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -4374,7 +4519,7 @@ angular.module('mms.connectionHandling', [])
 
     });
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4449,7 +4594,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
 module.exports = ComponentPort;
 
-},{"glMatrix":4}],37:[function(require,module,exports){
+},{"glMatrix":4}],38:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5005,7 +5150,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     this.getDiagramElement = getDiagramElement;
 };
 
-},{"./ComponentPort":36,"./Diagram":38,"./DiagramComponent.js":39,"./Wire.js":41}],38:[function(require,module,exports){
+},{"./ComponentPort":37,"./Diagram":39,"./DiagramComponent.js":40,"./Wire.js":42}],39:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5291,7 +5436,7 @@ Diagram.prototype.getSelectedComponents = function () {
 
 module.exports = Diagram;
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5493,7 +5638,7 @@ DiagramComponent.prototype.localToGlobal = function () {
 };
 
 module.exports = DiagramComponent;
-},{"glMatrix":4}],40:[function(require,module,exports){
+},{"glMatrix":4}],41:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5649,7 +5794,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":36,"./Diagram":38,"./DiagramComponent.js":39,"./Wire.js":41}],41:[function(require,module,exports){
+},{"./ComponentPort":37,"./Diagram":39,"./DiagramComponent.js":40,"./Wire.js":42}],42:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5737,7 +5882,7 @@ Wire.prototype.getEndPositions = function () {
 
 module.exports = Wire;
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -6064,7 +6209,7 @@ angular.module('mms.designVisualization.diagramService', [
         }
     ]);
 
-},{"./classes/ComponentPort":36,"./classes/CyPhyDiagramParser.js":37,"./classes/DiagramComponent.js":39,"./classes/DummyDiagramGenerator.js":40,"./classes/Wire.js":41}],43:[function(require,module,exports){
+},{"./classes/ComponentPort":37,"./classes/CyPhyDiagramParser.js":38,"./classes/DiagramComponent.js":40,"./classes/DummyDiagramGenerator.js":41,"./classes/Wire.js":42}],44:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6332,7 +6477,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
     }
 ] );
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6404,7 +6549,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
         }
     ];
 });
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -6534,7 +6679,7 @@ angular.module('mms.projectHandling', [])
 
     });
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -6579,7 +6724,7 @@ module.exports = function() {
     return symbolsByKeywords;
 };
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6876,7 +7021,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{"./classes/SymbolTypesSearchIndex":46}],48:[function(require,module,exports){
+},{"./classes/SymbolTypesSearchIndex":47}],49:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6967,7 +7112,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7016,7 +7161,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7240,7 +7385,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
     }
 ]);
 
-},{"./classes/ElbowRouter.js":48,"./classes/SimpleRouter.js":49}],51:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":49,"./classes/SimpleRouter.js":50}],52:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );

@@ -4,7 +4,11 @@
 
 // Move this to GME eventually
 
-angular.module('mms.designVisualization.designEditor', [])
+require('../testbenchActions/testbenchActions.js');
+
+angular.module('mms.designVisualization.designEditor', [
+    'mms.testbenchActions'
+])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
                                                     nodeService, gridService) {

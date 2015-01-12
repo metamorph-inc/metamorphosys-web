@@ -1,0 +1,24 @@
+<div class="testbench-actions">
+
+    <md-tooltip class="testbench-actions-tooltip"
+                ng-if="busy == true">
+        {{tooltipMessage}}
+    </md-tooltip>
+
+
+    <md-progress-circular
+        ng-if="busy == true"
+        class="md-hue-2" md-mode="indeterminate"></md-progress-circular>
+
+    <md-button
+        ng-if="busy != true"
+        class="md-primary md-fab md-fab-bottom-right run-button"
+        data-ng-click="startTestbench()">
+        <i class="fa fa-play" style="margin-left: 2px;"></i>
+
+        <md-tooltip class="testbench-actions-tooltip">
+            {{tooltipMessage}}
+        </md-tooltip>
+
+    </md-button>
+</div>
