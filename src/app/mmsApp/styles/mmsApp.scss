@@ -160,3 +160,20 @@ md-toast.failure {
     }
 
 }
+
+md-tabs.md-default-theme .md-header {
+    @include mmsBlueGradient();
+}
+
+md-tab {
+    cursor: pointer;
+}
+
+md-tabs.md-default-theme md-tabs-ink-bar {
+    color: $mmsAccent;
+    background-color: $mmsAccent;
+}
+
+.md-dialog-container {
+    background-color: rgba(0,0,0,.6) !important;
+}

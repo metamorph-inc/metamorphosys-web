@@ -82,15 +82,22 @@
     }
 
     .testbench-attachments-links {
-        position: absolute;
-        top: 23px;
-        right: 24px;
+
+        margin-top: 9px;
 
         list-style-type: none;
         padding-right: 0;
 
         li {
             display: inline-block;
+
+            a, a:hover {
+                text-decoration: none;
+            }
         }
+    }
+
+    .result-header {
+        position: relative;
     }
 }

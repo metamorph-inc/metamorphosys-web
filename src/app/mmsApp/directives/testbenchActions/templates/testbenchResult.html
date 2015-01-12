@@ -1,22 +1,24 @@
 <md-dialog
     class="testbench-result-dialog">
-    <h1 class="md-sticky-no-effect">{{result.name}}
-        <span class="header-extra" am-time-ago="result.timestamp"></span>
-    </h1>
-    <ul class="testbench-attachments-links">
-        <li data-ng-repeat="attachment in result.attachments">
-            <md-button class="md-raised md-primary"
-                ng-href="{{attachment.url}}"
-                target="_blank"
-                ><i class="fa fa-cloud-download"></i> {{attachment.name}}</md-button>
-        </li>
-    </ul>
+    <md-tabs md-selected="selectedIndex"
+        ng-if="results.length > 1"
+        md-stretch-tabs="never">
+        <md-tab ng-repeat="aResult in results"
+                md-on-select="setSelected($index)"
+                label="Result {{$index + 1}}">
+        </md-tab>
+    </md-tabs>
+    <div class="result-header">
+        <h1 class="md-sticky-no-effect">{{results[selectedIndex].name}}
+            <span class="header-extra" am-time-ago="results[selectedIndex].timestamp"></span>
+        </h1>
+    </div>
     <md-content>
         <div class="result-container">
             <div layout="column" flex="100">
                 <div class="testbench-visual-container" flex>
-                    <a ng-href="{{result.visualUrl}}" target="_blank" title="Open in new window">
-                        <img class="testbench-visual" ng-src="{{result.visualUrl}}"/>
+                    <a ng-href="{{results[selectedIndex].visualUrl}}" target="_blank" title="Open in new window">
+                        <img class="testbench-visual" ng-src="{{results[selectedIndex].visualUrl}}"/>
                     </a>
                 </div>
             </div>
@@ -24,6 +26,14 @@
     </md-content>
     <div class="md-actions" layout="row">
         <span flex></span>
+        <ul class="testbench-attachments-links">
+            <li data-ng-repeat="attachment in results[selectedIndex].attachments">
+                <md-button class="md-raised md-primary"
+                           ng-href="{{attachment.url}}"
+                    ><i class="fa fa-cloud-download"></i> {{attachment.name}}</md-button>
+            </li>
+        </ul>
+
         <md-button ng-click="close()" class="md-primary">
             Close
         </md-button>

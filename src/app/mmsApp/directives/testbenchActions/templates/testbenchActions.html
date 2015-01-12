@@ -21,11 +21,11 @@
         </md-tooltip>
     </md-button>
 
-    <div class="available-results-button">
+    <div class="available-results-button"
+         ng-if="testbenchResults.length > 0">
         <div class="available-results-stick"></div>
         <md-button class="md-raised md-primary"
-                   ng-if="testbenchResults.length > 0"
-                   ng-click="close()">
+                   ng-click="showResults()">
             available results <span class="badge">{{ testbenchResults.length }}</span>
         </md-button>
     </div>

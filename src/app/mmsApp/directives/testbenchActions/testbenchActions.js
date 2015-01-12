@@ -7,7 +7,7 @@
 angular.module('mms.testbenchActions', [
     'ngMaterial'
 ])
-    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast) {
+    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast, $timeout) {
 
         var progressMessage,
             tooltipMessage,
@@ -36,40 +36,56 @@ angular.module('mms.testbenchActions', [
         };
 
         $scope.testbenchResults = [
-
-            {
-
-                id: 'testPCBResult1',
-                name: 'Generated PCB',
-                timestamp: Date.now(),
-                visualUrl: 'images/testPCBResult.png',
-                attachments: [
-                    {
-                        name: 'Download Eagle file',
-                        url: 'http://google.com'
-                    }
-                ],
-                status: 'SUCCESS'
-
-
-            },
-
-            {
-
-                id: 'testPCBResult2',
-                name: 'Generated PCB',
-                timestamp: Date.now(),
-                visualUrl: 'images/testPCBResult.png',
-                attachments: [
-                    {
-                        name: 'Download Eagle file',
-                        url: 'http://google.com'
-                    }
-                ],
-                status: 'FAILURE'
-
-            }
-
+            //
+            //{
+            //
+            //    id: 'testPCBResult1',
+            //    name: 'Generated PCB 1',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'SUCCESS'
+            //
+            //
+            //},
+            //
+            //{
+            //
+            //    id: 'testPCBResult2',
+            //    name: 'Generated PCB 2',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'FAILURE'
+            //
+            //},
+            //
+            //{
+            //
+            //    id: 'testPCBResult3',
+            //    name: 'Generated PCB 3',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'FAILURE'
+            //
+            //}
+            //
 
         ];
 
@@ -91,9 +107,25 @@ angular.module('mms.testbenchActions', [
 
             var result;
 
-            function ShowResultsDialogController($scope, $mdDialog, result) {
+            function ShowResultsDialogController($scope, $mdDialog, results, currentResult) {
 
-                $scope.result = result;
+                $scope.results = results;
+                $scope.state = {
+                    currentResult: currentResult
+                };
+
+                $scope.selectedIndex = results.indexOf(currentResult);
+
+                $scope.setSelected = function (index) {
+
+                    $scope.selectedIndex = index;
+
+                    $timeout(function() {
+                        $scope.state.curretResult = results[index];
+                        console.log(results[index]);
+                    });
+
+                };
 
                 $scope.hide = function () {
                     $mdDialog.hide();
@@ -103,7 +135,11 @@ angular.module('mms.testbenchActions', [
                 };
             }
 
-            result = findResultById(id);
+            if (id !== undefined) {
+                result = findResultById(id);
+            } else {
+                result = $scope.testbenchResults[0];
+            }
 
             if (angular.isObject(result)) {
 
@@ -112,7 +148,8 @@ angular.module('mms.testbenchActions', [
                     controller: ShowResultsDialogController,
                     templateUrl: '/mmsApp/templates/testbenchResult.html',
                     locals: {
-                        result: result
+                        results: $scope.testbenchResults,
+                        currentResult: result
                     },
                     targetEvent: ev
                 })
@@ -162,12 +199,12 @@ angular.module('mms.testbenchActions', [
             }
 
             $mdToast.show({
-                    controller: 'TestbenchActionsToastController',
+                    controller: 'TestbenchResultToastController',
                     templateUrl: '/mmsApp/templates/testbenchResultToast.html',
                     locals: {
                         result: result,
                         message: message,
-                        showAction: function(id, $event){
+                        showAction: function (id, $event) {
                             $scope.showResults(id, $event);
 
                         }
@@ -197,7 +234,7 @@ angular.module('mms.testbenchActions', [
             };
         }])
 
-    .controller('TestbenchActionsToastController',
+    .controller('TestbenchResultToastController',
     function ($scope, $mdToast, message, result, showAction) {
 
         $scope.result = result;
@@ -212,7 +249,7 @@ angular.module('mms.testbenchActions', [
             $mdToast.hide();
         };
 
-        $scope.showResult = function($event) {
+        $scope.showResult = function ($event) {
 
             $scope.closeToast();
             showAction(result.id, $event);
@@ -220,4 +257,18 @@ angular.module('mms.testbenchActions', [
         };
 
 
+    })
+    .controller('TestbenchActionsToastController',
+    function ($scope, $mdToast, message) {
+
+
+        $scope.progressMessage = message || 'Job execution has started...';
+
+
+        $scope.closeToast = function () {
+            $mdToast.hide();
+        };
+
+
     });
+
