@@ -11,14 +11,17 @@
 
 .md-dialog-container h1 {
     border-bottom: 1px solid #ddd;
-    margin-bottom: .5em;
+    margin-bottom: 0;
     padding-bottom: 0.6em;
-    margin-left: -8px;
-    padding-left: 8px;
-    margin-right: -8px;
-    padding-right: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
     color: $mmsVeryDark
 }
+
+.md-actions {
+    border-bottom: 1px solid #ddd;
+}
+
 
 .main-navigator-container {
     .dropdown-navigator {
@@ -84,7 +87,7 @@ h1.main-view-header {
     padding: 0px 14px;
 }
 
-.version-number {
+.header-extra {
     font-size: 60%;
     color: $mmsBlueLight;
 }

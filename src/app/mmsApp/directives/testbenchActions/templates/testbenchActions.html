@@ -8,11 +8,11 @@
 
     <md-progress-circular
         ng-if="busy == true"
-        class="md-hue-2" md-mode="indeterminate"></md-progress-circular>
+        class="md-hue-2 testbench-busy" md-mode="indeterminate"></md-progress-circular>
 
     <md-button
         ng-if="busy != true"
-        class="md-primary md-fab md-fab-bottom-right run-button"
+        class="md-primary md-fab run-button"
         data-ng-click="startTestbench()">
         <i class="fa fa-play" style="margin-left: 2px;"></i>
 

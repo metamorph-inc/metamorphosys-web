@@ -4,20 +4,33 @@
 
 // Move this to GME eventually
 
-angular.module( 'mms.testbenchActions', [
+angular.module('mms.testbenchActions', [
     'ngMaterial'
-] )
-    .controller('TestBenchActionsController', function(
+])
+    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast, $log) {
 
-        $scope, $mdDialog, $mdToast, $log){
+        var progressMessage,
+            tooltipMessage,
+            progressTooltipMessage;
+
+        tooltipMessage = 'Generate PCB';
+        progressTooltipMessage = 'PCB generation in progress...';
+        progressMessage = 'PCB generation in progress. It will take a couple of minutes...';
 
         $scope.testbenchRuns = {
 
             testPCBResult1: {
 
                 id: 'testPCBResult1',
+                name: 'Generated PCB',
                 timestamp: Date.now(),
-                visualUrl: '',
+                visualUrl: 'images/testPCBResult.png',
+                attachments: [
+                    {
+                        name: 'Download Eagle file',
+                        url: 'http://google.com'
+                    }
+                ],
                 status: 'SUCCESS'
 
 
@@ -25,69 +38,44 @@ angular.module( 'mms.testbenchActions', [
 
             testPCBResult2: {
 
-                id: 'testPCBResult2',
+                id: 'testPCBResult1',
+                name: 'Generated PCB',
                 timestamp: Date.now(),
-                visualUrl: '',
-                status: 'FAILED_TO_EXECUTE'
-
+                visualUrl: 'images/testPCBResult.png',
+                attachments: [
+                    {
+                        name: 'Download Eagle file',
+                        url: 'http://google.com'
+                    }
+                ],
+                status: 'SUCCESS'
 
             }
 
 
         };
 
-        $scope.setBusy = function() {
+        $scope.setBusy = function () {
 
             $scope.busy = true;
-            $scope.tooltipMessage = 'PCB generation in progress...';
+            $scope.tooltipMessage = progressTooltipMessage;
 
         };
 
-        $scope.setReady = function() {
+        $scope.setReady = function () {
 
             $scope.busy = false;
-            $scope.tooltipMessage = 'Generate PCB';
+            $scope.tooltipMessage = tooltipMessage;
 
         };
 
-        $scope.openSubscribeDialog = function(ev) {
+        $scope.showResults = function (id, ev) {
 
-            function DialogController($scope, $mdDialog) {
+            function ShowResultsDialogController($scope, $mdDialog, result) {
 
-                $scope.user = {
+                console.log('eeee' + result);
 
-                };
-
-                $scope.hide = function() {
-                    $mdDialog.hide();
-                };
-                $scope.cancel = function() {
-                    $mdDialog.cancel();
-                };
-                $scope.send = function(userFields) {
-                    $mdDialog.hide(userFields);
-                };
-            }
-
-            $mdDialog.show({
-                controller: DialogController,
-                templateUrl: '/mmsApp/templates/subscribeDialog.html',
-                targetEvent: ev
-            })
-                .then(function(fields) {
-                    $log.debug('Subscription', fields);
-                }, function() {
-                    $log.debug('Subscription cancelled.');
-                });
-
-        };
-
-        $scope.showResults = function(ev, id) {
-
-            function DialogController($scope, $mdDialog, $window) {
-
-                $scope.designUrl = $window.location.href;
-
+                $scope.result = result;
 
                 $scope.hide = function () {
                     $mdDialog.hide();
@@ -98,8 +86,11 @@ angular.module( 'mms.testbenchActions', [
             }
 
             $mdDialog.show({
-                controller: DialogController,
-                templateUrl: '/mmsApp/templates/shareDialog.html',
+                controller: ShowResultsDialogController,
+                templateUrl: '/mmsApp/templates/testbenchResult.html',
+                locals: {
+                  result: $scope.testbenchRuns[id]
+                },
                 targetEvent: ev
             })
                 .then(function () {
@@ -107,33 +98,49 @@ angular.module( 'mms.testbenchActions', [
 
         };
 
-        $scope.startTestbench = function() {
+        $scope.startTestbench = function () {
 
             $scope.setBusy();
 
             $mdToast.show({
-
-                    'template': '<span>Jaaaa!</span>',
-                    'hideDelay': 0
+                    controller: 'TestbenchActionsToastController',
+                    templateUrl: '/mmsApp/templates/testbenchToast.html',
+                    locals: {
+                        message: progressMessage
+                    },
+                    hideDelay: 5000
                 }
             );
 
         };
 
         $scope.setReady();
-//        $scope.showResults('testPCBResult');
+        $scope.showResults('testPCBResult1');
 
 
     })
-    .directive( 'testbenchActions', [
+    .directive('testbenchActions', [
         function () {
 
             return {
-                controller: 'TestBenchActionsController',
+                controller: 'TestbenchActionsController',
                 restrict: 'E',
                 scope: true,
                 replace: true,
                 transclude: true,
                 templateUrl: '/mmsApp/templates/testbenchActions.html'
             };
-        }] );
+        }])
+
+    .controller('TestbenchActionsToastController',
+        function ($scope, $mdToast, message) {
+
+        $scope.progressMessage = message || 'Job execution has started...';
+
+
+        $scope.closeToast = function () {
+            $mdToast.hide();
+        };
+
+
+    });
