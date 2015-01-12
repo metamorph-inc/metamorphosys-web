@@ -706,7 +706,8 @@ module.exports = function () {
 
         selectProjectBranchWorkspaceAndDesign: function (
             $q, $stateParams, branchService, connectionHandling,
-            $log, $rootScope, projectHandling, $state, projectService, workspaceService, designService) {
+            $log, $rootScope, projectHandling, $state, projectService,
+            workspaceService, designService, testBenchService) {
 
             var deferred,
                 connectionId,
@@ -816,6 +817,28 @@ module.exports = function () {
                                             }
 
                                         });
+
+                                        testBenchService.watchTestBenches(
+                                            wsContext,
+                                            $rootScope.activeWorkSpace.id,
+                                            function(){}
+                                        ).then(function(testbenchesData) {
+
+                                                var hasFoundFirstTestbench;
+
+                                                angular.forEach(testbenchesData.testBenches, function(testbench){
+
+                                                    if (!hasFoundFirstTestbench) {
+
+                                                        hasFoundFirstTestbench = true;
+                                                        $rootScope.activeTestbench = testbench;
+                                                        $log.debug('Active testbench:', testbench);
+
+                                                    }
+
+                                                });
+
+                                            });
 
                                     } else {
 
@@ -4338,7 +4361,7 @@ angular.module(
 angular.module('mms.testbenchActions', [
     'ngMaterial'
 ])
-    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast, $timeout) {
+    .controller('TestbenchActionsController', function ($scope, $rootScope, $mdDialog, $mdToast, $timeout, testBenchService, $log) {
 
         var progressMessage,
             tooltipMessage,
@@ -4451,7 +4474,7 @@ angular.module('mms.testbenchActions', [
 
                     $scope.selectedIndex = index;
 
-                    $timeout(function() {
+                    $timeout(function () {
                         $scope.state.curretResult = results[index];
                         console.log(results[index]);
                     });
@@ -4492,6 +4515,14 @@ angular.module('mms.testbenchActions', [
 
         $scope.startTestbench = function () {
 
+            var onTestbenchFailed;
+
+            onTestbenchFailed = function(e) {
+                $log.error('Testbench execution failed!', e);
+                $scope.testbenchResultNotify();
+                $scope.setReady();
+            };
+
             $scope.setBusy();
 
             $mdToast.show({
@@ -4503,6 +4534,20 @@ angular.module('mms.testbenchActions', [
                     hideDelay: 5000
                 }
             );
+
+            testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
+                .then(function (result) {
+
+                    if (result && result.success === true) {
+                        console.log('testbench result', result);
+                    } else {
+                        onTestbenchFailed(result);
+                    }
+
+                }).
+                catch(function (e) {
+                    onTestbenchFailed(e);
+                });
 
         };
 

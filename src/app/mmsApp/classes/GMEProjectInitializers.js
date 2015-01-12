@@ -16,7 +16,8 @@ module.exports = function () {
 
         selectProjectBranchWorkspaceAndDesign: function (
             $q, $stateParams, branchService, connectionHandling,
-            $log, $rootScope, projectHandling, $state, projectService, workspaceService, designService) {
+            $log, $rootScope, projectHandling, $state, projectService,
+            workspaceService, designService, testBenchService) {
 
             var deferred,
                 connectionId,
@@ -126,6 +127,28 @@ module.exports = function () {
                                             }
 
                                         });
+
+                                        testBenchService.watchTestBenches(
+                                            wsContext,
+                                            $rootScope.activeWorkSpace.id,
+                                            function(){}
+                                        ).then(function(testbenchesData) {
+
+                                                var hasFoundFirstTestbench;
+
+                                                angular.forEach(testbenchesData.testBenches, function(testbench){
+
+                                                    if (!hasFoundFirstTestbench) {
+
+                                                        hasFoundFirstTestbench = true;
+                                                        $rootScope.activeTestbench = testbench;
+                                                        $log.debug('Active testbench:', testbench);
+
+                                                    }
+
+                                                });
+
+                                            });
 
                                     } else {
 
