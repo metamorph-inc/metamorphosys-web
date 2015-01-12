@@ -19,6 +19,15 @@
         <md-tooltip class="testbench-actions-tooltip">
             {{tooltipMessage}}
         </md-tooltip>
-
     </md-button>
+
+    <div class="available-results-button">
+        <div class="available-results-stick"></div>
+        <md-button class="md-raised md-primary"
+                   ng-if="testbenchResults.length > 0"
+                   ng-click="close()">
+            available results <span class="badge">{{ testbenchResults.length }}</span>
+        </md-button>
+    </div>
+
 </div>

@@ -7,19 +7,37 @@
 angular.module('mms.testbenchActions', [
     'ngMaterial'
 ])
-    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast, $log) {
+    .controller('TestbenchActionsController', function ($scope, $mdDialog, $mdToast) {
 
         var progressMessage,
             tooltipMessage,
-            progressTooltipMessage;
+            progressTooltipMessage,
+
+            findResultById;
 
         tooltipMessage = 'Generate PCB';
         progressTooltipMessage = 'PCB generation in progress...';
         progressMessage = 'PCB generation in progress. It will take a couple of minutes...';
 
-        $scope.testbenchRuns = {
+        findResultById = function (id) {
 
-            testPCBResult1: {
+            var result;
+
+            angular.forEach($scope.testbenchResults, function (aResult) {
+
+                if (aResult.id === id) {
+                    result = aResult;
+                }
+
+            });
+
+            return result;
+
+        };
+
+        $scope.testbenchResults = [
+
+            {
 
                 id: 'testPCBResult1',
                 name: 'Generated PCB',
@@ -36,9 +54,9 @@ angular.module('mms.testbenchActions', [
 
             },
 
-            testPCBResult2: {
+            {
 
-                id: 'testPCBResult1',
+                id: 'testPCBResult2',
                 name: 'Generated PCB',
                 timestamp: Date.now(),
                 visualUrl: 'images/testPCBResult.png',
@@ -48,12 +66,12 @@ angular.module('mms.testbenchActions', [
                         url: 'http://google.com'
                     }
                 ],
-                status: 'SUCCESS'
+                status: 'FAILURE'
 
             }
 
 
-        };
+        ];
 
         $scope.setBusy = function () {
 
@@ -71,9 +89,9 @@ angular.module('mms.testbenchActions', [
 
         $scope.showResults = function (id, ev) {
 
-            function ShowResultsDialogController($scope, $mdDialog, result) {
+            var result;
 
-                console.log('eeee' + result);
+            function ShowResultsDialogController($scope, $mdDialog, result) {
 
                 $scope.result = result;
 
@@ -85,16 +103,22 @@ angular.module('mms.testbenchActions', [
                 };
             }
 
-            $mdDialog.show({
-                controller: ShowResultsDialogController,
-                templateUrl: '/mmsApp/templates/testbenchResult.html',
-                locals: {
-                  result: $scope.testbenchRuns[id]
-                },
-                targetEvent: ev
-            })
-                .then(function () {
-                });
+            result = findResultById(id);
+
+            if (angular.isObject(result)) {
+
+
+                $mdDialog.show({
+                    controller: ShowResultsDialogController,
+                    templateUrl: '/mmsApp/templates/testbenchResult.html',
+                    locals: {
+                        result: result
+                    },
+                    targetEvent: ev
+                })
+                    .then(function () {
+                    });
+            }
 
         };
 
@@ -114,8 +138,49 @@ angular.module('mms.testbenchActions', [
 
         };
 
+        $scope.testbenchResultNotify = function (id) {
+
+            var result,
+
+                message,
+                delay;
+
+            result = findResultById(id);
+
+
+            if (angular.isObject(result) && result.status === 'SUCCESS') {
+
+                message = 'Generated PCB available.';
+                delay = 0;
+
+
+            } else {
+
+                message = 'PCB generation errored.';
+                delay = 0;
+
+            }
+
+            $mdToast.show({
+                    controller: 'TestbenchActionsToastController',
+                    templateUrl: '/mmsApp/templates/testbenchResultToast.html',
+                    locals: {
+                        result: result,
+                        message: message,
+                        showAction: function(id, $event){
+                            $scope.showResults(id, $event);
+
+                        }
+                    },
+                    hideDelay: delay
+                }
+            );
+
+        };
+
         $scope.setReady();
-        $scope.showResults('testPCBResult1');
+//        $scope.showResults('testPCBResult1');
+//        $scope.testbenchResultNotify('testPCBResult4');
 
 
     })
@@ -133,13 +198,25 @@ angular.module('mms.testbenchActions', [
         }])
 
     .controller('TestbenchActionsToastController',
-        function ($scope, $mdToast, message) {
+    function ($scope, $mdToast, message, result, showAction) {
+
+        $scope.result = result;
+
+        $scope.success = false;
+        $scope.success = result && result.status === 'SUCCESS';
 
         $scope.progressMessage = message || 'Job execution has started...';
 
 
         $scope.closeToast = function () {
             $mdToast.hide();
+        };
+
+        $scope.showResult = function($event) {
+
+            $scope.closeToast();
+            showAction(result.id, $event);
+
         };
 
 

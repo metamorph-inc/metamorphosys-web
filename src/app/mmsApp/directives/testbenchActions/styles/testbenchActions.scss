@@ -1,4 +1,4 @@
-$fob-button-bg: #178CFF;
+@import '../../../styles/colors';
 
 .testbench-actions {
 
@@ -26,9 +26,8 @@ $fob-button-bg: #178CFF;
 
     .md-gap,
     .md-half-circle {
-        background-color: rgba(255,255,255,.4) !important;
+        background-color: rgba(255, 255, 255, .4) !important;
     }
-
 
     .run-button,
     .testbench-busy {
@@ -36,8 +35,45 @@ $fob-button-bg: #178CFF;
         position: absolute;
     }
 
+    .available-results-button {
+        position: absolute;
+        top: 10px;
+        margin-left: 0;
+
+        left: 0;
+        opacity: 0;
+
+        transition: left 200ms, opacity 200ms;
+
+        .available-results-stick {
+            background-color: $light-blue;
+            height: 2px;
+            width: 40px;
+            position: absolute;
+            top: 50%;
+        }
+
+        button {
+            margin-left: 20px;
+        }
+    }
+
 }
 
+.testbench-actions:hover .available-results-button {
+    left: 100%;
+    opacity: 1;
+}
+
+.testbench-actions-tooltip {
+
+    color: $light-blue !important;
+
+    .md-background {
+        background-color: transparent !important;
+    }
+
+}
 
 .testbench-result-dialog {
 

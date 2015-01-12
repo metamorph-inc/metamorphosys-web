@@ -135,3 +135,28 @@ h1.main-view-header {
 
 .drag-handle {
 }
+
+.badge {
+    background-color: #E7EBF6;
+    color: rgb(102, 102, 102);
+}
+
+md-toast.success {
+    background-color: $mmsGreen !important;
+
+    .md-button.md-default-theme.md-raised {
+        margin-left: 20px;
+        background-color: rgba(0, 111, 10, 1);
+    }
+
+}
+
+md-toast.failure {
+    background-color: $mmsRed !important;
+
+    .md-button.md-default-theme.md-raised {
+        margin-left: 20px;
+        background-color: #6F1900;
+    }
+
+}
