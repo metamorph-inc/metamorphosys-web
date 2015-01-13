@@ -611,11 +611,11 @@ define( [ 'plugin/PluginConfig',
             intervalID = setInterval( function () {
                 // Get the job-info at intervals and check for a non-CREATED status.
                 self.executorClient.getInfo( artifactHash, function ( err, jInfo ) {
-                    self.logger.info( JSON.stringify( jInfo, null, 4 ) );
                     if ( jInfo.status === 'CREATED' || jInfo.status === 'RUNNING' ) {
                         // The job is still running..
                         return;
                     }
+                    self.logger.info( JSON.stringify( jInfo, null, 4 ) );
                     //noinspection JSLint
                     clearInterval( intervalID );
                     if ( jInfo.status === 'SUCCESS' ) {
