@@ -64,13 +64,11 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
     'mms.designVisualization.designEditor',
-
     'angucomplete-alt',
     'ngTouch',
-
     'ngMaterial',
-
-    'ang-drag-drop'
+    'ang-drag-drop',
+    'ngCookies'
 ]);
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
@@ -1246,7 +1244,7 @@ angular.module('mms.designVisualization.designEditor', [
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
-                                                    nodeService, gridService) {
+                                                    nodeService, gridService, $cookies) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -1584,6 +1582,14 @@ angular.module('mms.designVisualization.designEditor', [
                 $timeout(function () {
                     $rootScope.stopBusy();
                     $rootScope.unCover();
+
+                    if ($cookies.seenMMSWelcome !== 'true') {
+
+                        $rootScope.openHelpDialog();
+                        $cookies.seenMMSWelcome = 'true';
+
+                    }
+
                 }, 500);
 
             });
@@ -2156,7 +2162,7 @@ angular.module( 'mms.designVisualization.fabricCanvas', [] )
 // Move this to GME eventually
 
 angular.module( 'mms.headerButtons', [ ] )
-    .controller('HeaderButtonsController', function($scope, $mdDialog, $log){
+    .controller('HeaderButtonsController', function($scope, $rootScope, $mdDialog, $log){
 
         $scope.openSubscribeDialog = function(ev) {
 
@@ -2191,7 +2197,7 @@ angular.module( 'mms.headerButtons', [ ] )
         };
 
 
-        $scope.openHelpDialog = function(ev) {
+        $rootScope.openHelpDialog = $scope.openHelpDialog = function(ev) {
 
             function DialogController($scope, $mdDialog) {
 

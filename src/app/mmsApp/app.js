@@ -63,13 +63,11 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
     'mms.designVisualization.designEditor',
-
     'angucomplete-alt',
     'ngTouch',
-
     'ngMaterial',
-
-    'ang-drag-drop'
+    'ang-drag-drop',
+    'ngCookies'
 ]);
 
 CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {

@@ -5,7 +5,7 @@
 // Move this to GME eventually
 
 angular.module( 'mms.headerButtons', [ ] )
-    .controller('HeaderButtonsController', function($scope, $mdDialog, $log){
+    .controller('HeaderButtonsController', function($scope, $rootScope, $mdDialog, $log){
 
         $scope.openSubscribeDialog = function(ev) {
 
@@ -40,7 +40,7 @@ angular.module( 'mms.headerButtons', [ ] )
         };
 
 
-        $scope.openHelpDialog = function(ev) {
+        $rootScope.openHelpDialog = $scope.openHelpDialog = function(ev) {
 
             function DialogController($scope, $mdDialog) {
 
