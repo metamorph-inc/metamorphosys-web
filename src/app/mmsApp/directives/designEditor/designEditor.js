@@ -11,7 +11,7 @@ angular.module('mms.designVisualization.designEditor', [
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
-                                                    nodeService, gridService) {
+                                                    nodeService, gridService, $cookies) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -349,6 +349,14 @@ angular.module('mms.designVisualization.designEditor', [
                 $timeout(function () {
                     $rootScope.stopBusy();
                     $rootScope.unCover();
+
+                    if ($cookies.seenMMSWelcome !== 'true') {
+
+                        $rootScope.openHelpDialog();
+                        $cookies.seenMMSWelcome = 'true';
+
+                    }
+
                 }, 500);
 
             });
