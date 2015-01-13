@@ -5140,7 +5140,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             // Cheap shot to figure if it is a capacitor
 
-            symbol = symbolManager.getSymbol('capacitor');
+            symbol = symbolManager.getSymbol('inductor');
 
             newModelComponent = new DiagramComponent({
                 id: element.id,
