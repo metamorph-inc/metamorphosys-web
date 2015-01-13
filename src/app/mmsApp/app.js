@@ -20,6 +20,7 @@ require('./services/gridService/gridService.js');
 require('./services/wiringService/wiringService.js');
 
 require('./directives/headerButtons/headerButtons.js');
+require('./directives/socialMediaButtons/socialMediaButtons.js');
 
 require('./directives/diagramContainer/diagramContainer.js');
 require('./directives/fabricCanvas/fabricCanvas.js');
@@ -51,6 +52,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.connectionHandling',
     'mms.projectHandling',
     'mms.headerButtons',
+    'mms.socialMediaButtons',
 
     'mms.designVisualization.operationsManager',
     'mms.designVisualization.wiringService',
@@ -79,7 +81,6 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     gmeProjectInitializers = new GMEProjectInitializers();
 
     $urlRouterProvider.otherwise('/404');
-
 
     $stateProvider
 
@@ -128,11 +129,11 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
             action: function(item, ev) {
 
                 function DialogController($scope, $mdDialog) {
-                    $scope.hide = function () {
+                    $scope.hide = function() {
                         $mdDialog.hide();
                     };
-                    $scope.close = function () {
-                        $mdDialog.hide();
+                    $scope.close = function() {
+                        $mdDialog.cancel();
                     };
                 }
 

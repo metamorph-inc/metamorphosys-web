@@ -70,6 +70,8 @@ angular.module( 'mms.headerButtons', [ ] )
 
                 $scope.designUrl = $window.location.href;
 
+                $scope.mailtoUrl =
+                    'mailto:?subject=Check out my ARA module design&body=' + $scope.designUrl;
 
                 $scope.hide = function () {
                     $mdDialog.hide();

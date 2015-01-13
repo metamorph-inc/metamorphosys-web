@@ -1,0 +1,20 @@
+.social-media-buttons {
+    > ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 0;
+        margin-top: 1ex;
+
+        li {
+            display: inline-block;
+            margin-right: 1em;
+
+            height: 24px;
+            overflow: hidden;
+        }
+    }
+
+    .facebookShare {
+        display: inline-block;
+    };
+}
