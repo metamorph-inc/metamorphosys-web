@@ -182,12 +182,49 @@ angular.module('mms.testbenchActions', [
             );
 
             testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
-                .then(function (result) {
+                .then(function (resultData) {
 
-                    if (result && result.success === true) {
-                        console.log('testbench result', result);
+                    var newResult,
+                        visualUrl,
+                        downloadUrl,
+                        timestamp,
+                        hash,
+                        id;
+
+                    if (resultData && resultData.success === true) {
+
+                        $log.debug('testbench result', resultData);
+
+                        hash = resultData.artifacts['all.zip'].hash;
+
+                        visualUrl = '/rest/blob/view/' + hash + '/results/1x2_ara_module.png';
+                        downloadUrl = '/rest/blob/download/' + hash + '/results/1x2_ara_module.brd';
+
+                        timestamp = Date.now();
+                        id = hash + '_' + timestamp;
+
+                        newResult = {
+                            id: id,
+                            name: 'Generated PCB ' + $scope.testbenchResults.length + 1,
+                            timestamp: timestamp,
+                            visualUrl: visualUrl,
+                            attachments: [
+                                {
+                                    name: 'Download Eagle File',
+                                    url: downloadUrl
+                                }
+                            ],
+                            status: 'SUCCESS'
+                        };
+
+                        $scope.testbenchResults.push(newResult);
+
+                        $scope.testbenchResultNotify(id);
+                        $scope.setReady();
+
+
                     } else {
-                        onTestbenchFailed(result);
+                        onTestbenchFailed(resultData);
                     }
 
                 }).

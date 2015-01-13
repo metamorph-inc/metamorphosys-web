@@ -8464,7 +8464,46 @@ angular.module( 'cyphy.services' )
 
             return deferred.promise;
         };
+
+        this.getPluginArtifacts = function ( artieHashes ) {
+            var deferred = $q.defer(),
+                queueList = [],
+                i;
+
+            for ( i = 0; i < artieHashes.length; i += 1 ) {
+                queueList.push( fileService.getArtifact( artieHashes[ i ] ) );
+            }
+
+            if ( queueList.length === 0 ) {
+                deferred.resolve( '' );
+            } else {
+                $q.all( queueList )
+                    .then( function ( artifactsInfo ) {
+                        var j,
+                            downloadUrl,
+                            artieName,
+                            artifactsByName;
+
+                        artifactsByName = {};
+
+                        for ( j = 0; j < artifactsInfo.length; j += 1 ) {
+
+                            downloadUrl = fileService.getDownloadUrl( artifactsInfo[ j ].hash );
+                            artieName = artifactsInfo[ j ].artifact.name;
+
+                            artifactsByName[ artieName ] = angular.copy(artifactsInfo[ j ]);
+                            artifactsByName[ artieName].downloadUrl = downloadUrl;
+
+                        }
+                        deferred.resolve( artifactsByName );
+                    } );
+            }
+
+            return deferred.promise;
+        };
+
     } );
+
 },{}],32:[function(require,module,exports){
 /*globals angular, console*/
 
@@ -8578,16 +8617,16 @@ angular.module( 'cyphy.services' )
             //console.log(JSON.stringify(config));
             pluginService.runPlugin( context, 'TestBenchRunner', config )
                 .then( function ( result ) {
-                    var resultLight = {
+                    var extendedResult = {
                         success: result.success,
-                        artifactsHtml: '',
-                        messages: result.messages
+                        messages: result.messages,
+                        unparsedResult: result
                     };
-                    console.log( 'Result', result );
-                    pluginService.getPluginArtifactsHtml( result.artifacts )
-                        .then( function ( artifactsHtml ) {
-                            resultLight.artifactsHtml = artifactsHtml;
-                            deferred.resolve( resultLight );
+                    //console.log( 'Result', result );
+                    pluginService.getPluginArtifacts( result.artifacts )
+                        .then( function ( artifactsByName ) {
+                            extendedResult.artifacts = artifactsByName;
+                            deferred.resolve( extendedResult );
                         } );
                 } )
                 .
@@ -8957,6 +8996,7 @@ angular.module( 'cyphy.services' )
             baseCyPhyService.registerWatcher( watchers, parentContext, fn );
         };
     } );
+
 },{}],33:[function(require,module,exports){
 /*globals angular, console*/
 

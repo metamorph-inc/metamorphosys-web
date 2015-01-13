@@ -473,8 +473,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             i = 0;
 
-            diagram.config.width = 1000;
-            diagram.config.height = 1000;
+            diagram.config.width = 1500;
+            diagram.config.height = 1500;
 
             angular.forEach(diagramElements.Connector, function (element) {
 
