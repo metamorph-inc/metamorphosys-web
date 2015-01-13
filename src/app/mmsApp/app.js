@@ -128,14 +128,11 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
             action: function(item, ev) {
 
                 function DialogController($scope, $mdDialog) {
-                    $scope.hide = function() {
+                    $scope.hide = function () {
                         $mdDialog.hide();
                     };
-                    $scope.cancel = function() {
-                        $mdDialog.cancel();
-                    };
-                    $scope.answer = function(answer) {
-                        $mdDialog.hide(answer);
+                    $scope.close = function () {
+                        $mdDialog.hide();
                     };
                 }
 
