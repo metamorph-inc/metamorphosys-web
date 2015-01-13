@@ -1,5 +1,5 @@
 # Metamorphosys-Web #
-The *Metamorphosys* tools are used for electronics design and analysis.
+The **Metamorphosys** tools are used for electronics design and analysis.
 
 Development of the web interface is still in progress; we recommend accessing the [*live technology demo*](http://mmsapp.metamorphsoftware.com/dispatch/mmsapp) to take the prototype for a spin.
 
@@ -7,6 +7,9 @@ Development of the web interface is still in progress; we recommend accessing th
 [*Click here to launch the demo*](http://mmsapp.metamorphsoftware.com/dispatch/mmsapp)
 
 Starting from a 1x2 [Ara Module](http://www.projectara.com) template, the technology demo allows you to easily add components to your design and automatically generate a printed circuit board (PCB), with automatic PCB component placement and signal routing.
+
+## Limited Functionality ##
+The web interface is still early in development. Check out the [metamorphosys-desktop](https://github.com/metamorph-inc/metamorphosys-desktop) project to use the full capabilities of the **Metamorphosys** tools.
 
 # Deploying from Scratch #
 Alternatively, if you want to get the web interface running your own machine, follow the instructions below.
