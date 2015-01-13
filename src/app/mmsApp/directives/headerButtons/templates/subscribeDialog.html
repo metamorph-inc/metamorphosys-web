@@ -2,18 +2,18 @@
     <h1 class="md-sticky-no-effect">Get in touch!</h1>
     <md-content>
         <p>You love us. We love you... Let me give you a call when you are ready.</p>
-        <form>
+
+        <form name="contactForm" class="contact-form">
             <div class="row">
                 <span></span>
-                <md-text-float label="Name" ng-model="user.name"> </md-text-float>
-                <md-text-float label="eMail" ng-model="user.email" type="email" class="long"></md-text-float>
+                <md-text-float label="Name" ng-model="user.name"></md-text-float>
+                <md-text-float label="eMail" ng-model="user.email" name="email" class="long"
+                               type="email"></md-text-float>
+
+                    <!--<span class="error" ng-show="contactForm.email.$error.email">-->
+                      <!--Not valid email!</span>-->
+
             </div>
-            <!--<div class="row">-->
-                <!--<md-text-float label="City" ng-model="user.city"> </md-text-float>-->
-                <!--<md-text-float label="State" ng-model="user.state"> </md-text-float>-->
-                <!--<md-text-float label="Postal Code" ng-model="user.postalCode"> </md-text-float>-->
-            <!--</div>-->
-            <!--<md-text-float label="Country" ng-model="user.country" disabled> </md-text-float>-->
         </form>
 
     </md-content>

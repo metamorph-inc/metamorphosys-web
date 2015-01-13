@@ -77,6 +77,8 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     var GMEProjectInitializers,
         gmeProjectInitializers;
 
+    window.gapi = undefined;
+
     GMEProjectInitializers = require('./classes/GMEProjectInitializers');
     gmeProjectInitializers = new GMEProjectInitializers();
 

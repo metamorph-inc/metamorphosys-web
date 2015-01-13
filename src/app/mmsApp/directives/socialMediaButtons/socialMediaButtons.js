@@ -6,7 +6,7 @@
 
 angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
     .run(function($FB){
-        $FB.init('YOUR_APPID');
+        $FB.init('1517886365166675');
     })
     .controller('SocialMediaButtonsController', function(){
 

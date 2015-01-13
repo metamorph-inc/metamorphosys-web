@@ -78,6 +78,8 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
     var GMEProjectInitializers,
         gmeProjectInitializers;
 
+    window.gapi = undefined;
+
     GMEProjectInitializers = require('./classes/GMEProjectInitializers');
     gmeProjectInitializers = new GMEProjectInitializers();
 
@@ -2159,25 +2161,53 @@ angular.module( 'mms.designVisualization.fabricCanvas', [] )
 
 // Move this to GME eventually
 
-angular.module( 'mms.headerButtons', [ ] )
-    .controller('HeaderButtonsController', function($scope, $rootScope, $mdDialog, $log){
+angular.module('mms.headerButtons', [])
+    .controller('HeaderButtonsController', function ($scope, $rootScope, $mdDialog, $log, $http, $mdToast) {
 
-        $scope.openSubscribeDialog = function(ev) {
+        $scope.openSubscribeDialog = function (ev) {
 
             function DialogController($scope, $mdDialog) {
 
-                $scope.user = {
+                $scope.user = {};
 
-                };
-
-                $scope.hide = function() {
+                $scope.hide = function () {
                     $mdDialog.hide();
                 };
-                $scope.cancel = function() {
+                $scope.cancel = function () {
                     $mdDialog.cancel();
                 };
-                $scope.send = function(userFields) {
+                $scope.send = function (userFields) {
+
                     $mdDialog.hide(userFields);
+
+                    if ($scope.user && $scope.user.email) {
+
+                        $rootScope.processing = true;
+
+                        $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
+                            user: $scope.user.name,
+                            email: $scope.user.email
+                        }).success(function () {
+                            $rootScope.processing = false;
+
+
+
+                        }).
+                            error(function (data, status) {
+
+                                $log.error('Saving contact errored', data, status);
+                                $rootScope.processing = false;
+
+                            });
+
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .content('Your contact information was submitted. Thank you!')
+                        );
+
+
+                    }
+
                 };
             }
 
@@ -2186,16 +2216,16 @@ angular.module( 'mms.headerButtons', [ ] )
                 templateUrl: '/mmsApp/templates/subscribeDialog.html',
                 targetEvent: ev
             })
-                .then(function(fields) {
+                .then(function (fields) {
                     $log.debug('Subscription', fields);
-                }, function() {
+                }, function () {
                     $log.debug('Subscription cancelled.');
                 });
 
         };
 
 
-        $rootScope.openHelpDialog = $scope.openHelpDialog = function(ev) {
+        $rootScope.openHelpDialog = $scope.openHelpDialog = function (ev) {
 
             function DialogController($scope, $mdDialog) {
 
@@ -2219,7 +2249,7 @@ angular.module( 'mms.headerButtons', [ ] )
         };
 
 
-        $scope.openShareDialog = function(ev) {
+        $scope.openShareDialog = function (ev) {
 
             function DialogController($scope, $mdDialog, $window) {
 
@@ -2247,7 +2277,7 @@ angular.module( 'mms.headerButtons', [ ] )
 
 
     })
-    .directive( 'headerButtons', [ '$rootScope',
+    .directive('headerButtons', ['$rootScope',
         function () {
 
             return {
@@ -2257,7 +2287,7 @@ angular.module( 'mms.headerButtons', [ ] )
                 transclude: true,
                 templateUrl: '/mmsApp/templates/headerButtons.html'
             };
-        }] );
+        }]);
 
 },{}],16:[function(require,module,exports){
 /*globals angular*/
@@ -2485,7 +2515,7 @@ module.exports = resizeToWindowModule;
 
 angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
     .run(function($FB){
-        $FB.init('YOUR_APPID');
+        $FB.init('1517886365166675');
     })
     .controller('SocialMediaButtonsController', function(){
 
