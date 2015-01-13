@@ -2477,7 +2477,7 @@ resizeToWindowModule.directive('resizeToWindow', function ($window) {
 
 module.exports = resizeToWindowModule;
 },{}],19:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, gapi*/
 
 'use strict';
 
@@ -2499,7 +2499,12 @@ angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: '/mmsApp/templates/socialMediaButtons.html'
+                templateUrl: '/mmsApp/templates/socialMediaButtons.html',
+                link: function() {
+                    if (gapi !== undefined) {
+                        gapi.plus.go();
+                    }
+                }
             };
         }] );
 

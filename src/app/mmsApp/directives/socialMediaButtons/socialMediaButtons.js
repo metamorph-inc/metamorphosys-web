@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, gapi*/
 
 'use strict';
 
@@ -20,6 +20,11 @@ angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: '/mmsApp/templates/socialMediaButtons.html'
+                templateUrl: '/mmsApp/templates/socialMediaButtons.html',
+                link: function() {
+                    if (gapi !== undefined) {
+                        gapi.plus.go();
+                    }
+                }
             };
         }] );
