@@ -1,45 +1,46 @@
 <md-dialog>
-    <h1 class="md-sticky-no-effect">Metamorphosys Tech Demo<span class="header-extra">Dev.0.1.0.</span></h1>
+    <h1 class="md-sticky-no-effect">Metamorphosys Tech Demo <span class="header-extra">Dev.0.1.0.</span></h1>
     <md-content>
         <p>
             The <b>Metamorphosys</b> tools are used for the design and analysis of electronics, and have special
-            features for designing modules for Google's <i>Project Ara</i>.
-        </p>
-
-        <p>
-            In this tech demo, you will be able to quickly generate a circuit board design for an Ara Module with a 1x2
-            form-factor.
+            features for designing modules for Google's <i>Project Ara</i>. In this tech demo, you'll be able to quickly
+            generate a circuit board design for an Ara Module with a 1x2 form-factor.
         </p>
 
         <h2>What To Do</h2>
 
-        <div layout="row">
+        <div layout="row" layout-align="center center">
             <p flex="60">
-                1. Grab a sensor component from the <b><i>SENSORS</i></b> folder on the right.
+                Grab a sensor component from the <b><i>SENSORS</i></b> folder and drag it onto the canvas.
             </p>
 
             <p flex="40">
-                <img src="/extlib/dist/images/add_sensor.png" class="scale-it bordered"/>
+                <img src="/extlib/dist/images/add_sensor.png" class="scale-it bordered" style="margin-left: 1em;"/>
             </p>
         </div>
-        <div layout="row">
+
+        <div layout="row" layout-align="center center">
+            <p flex="40">
+                <img src="/extlib/dist/images/connect_stuff.png" class="scale-it bordered" style="margin-right: 1em;"/>
+            </p>
+
             <p flex="60">
-                2. Grab a sensor component from the <b><i>SENSORS</i></b> folder on the right.
+                Connect the sensor's power ports to the corresponding interfaces of the <b>Power System</b>. Then
+                connect its communication interface to the corresponding interface on the <b>GP ASIC</b>.
+            </p>
+        </div>
+
+        <div layout="row" layout-align="center center">
+            <p flex="60">
+                Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit
+                board)</i>
             </p>
 
             <p flex="40">
-                <img src="/extlib/dist/images/connect_stuff.png" class="scale-it bordered"/>
+                <img src="/extlib/dist/images/run_testbench.png" class="scale-it bordered" style="margin-left: 1em;"/>
             </p>
         </div>
-        <div layout="row">
-            <p flex="60">
-                3. Grab a sensor component from the <b><i>SENSORS</i></b> folder on the right.
-            </p>
 
-            <p flex="40">
-                <img src="/extlib/dist/images/run_testbench.png" class="scale-it bordered"/>
-            </p>
-        </div>
 
     </md-content>
     <div class="md-actions" layout="row">
