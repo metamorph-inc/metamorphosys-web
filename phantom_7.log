@@ -43,6 +43,38 @@
             <span class="ng-binding">Tue Jan 13 2015 16:20:00 GMT-0600 (CST) done 7</span>
         </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
             <span class="ng-binding">Tue Jan 13 2015 16:20:00 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:32 GMT-0600 (CST) done 8</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:32 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:49 GMT-0600 (CST) done 9</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:49 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:07 GMT-0600 (CST) done 10</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:07 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:23 GMT-0600 (CST) done 11</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:23 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:32 GMT-0600 (CST) done 12</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:32 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:37 GMT-0600 (CST) done 13</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:37 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:42 GMT-0600 (CST) done 14</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:42 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:46 GMT-0600 (CST) done 15</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:46 GMT-0600 (CST) PHANTOM DONE</span>
         </li><!-- end ngRepeat: log in logs track by $index -->
     
 

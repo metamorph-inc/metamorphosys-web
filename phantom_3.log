@@ -59,6 +59,22 @@
             <span class="ng-binding">Tue Jan 13 2015 16:19:48 GMT-0600 (CST) done 11</span>
         </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
             <span class="ng-binding">Tue Jan 13 2015 16:19:48 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:09 GMT-0600 (CST) done 12</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:09 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:34 GMT-0600 (CST) done 13</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:20:34 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:01 GMT-0600 (CST) done 14</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:01 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:17 GMT-0600 (CST) done 15</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:21:17 GMT-0600 (CST) PHANTOM DONE</span>
         </li><!-- end ngRepeat: log in logs track by $index -->
     
 
