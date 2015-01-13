@@ -9,7 +9,12 @@ Development of the web interface is still in progress; we recommend accessing th
 Starting from a 1x2 [Ara Module](http://www.projectara.com) template, the technology demo allows you to easily add components to your design and automatically generate a printed circuit board (PCB), with automatic PCB component placement and signal routing.
 
 ## Limited Functionality ##
-The web interface is still early in development. Check out the [metamorphosys-desktop](https://github.com/metamorph-inc/metamorphosys-desktop) project to use the full capabilities of the **Metamorphosys** tools.
+The web interface is still early in development. Check out the [metamorphosys-desktop](https://github.com/metamorph-inc/metamorphosys-desktop) project to use the full capabilities of the **Metamorphosys** tools, including:
+- analog and digital behavior simulation
+- export-for-manufacturing
+- app-to-firmware comms prototyping
+- parts cost estimation
+- much larger component library (thousands of components)
 
 # Deploying from Scratch #
 Alternatively, if you want to get the web interface running your own machine, follow the instructions below.
