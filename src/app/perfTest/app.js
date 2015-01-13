@@ -70,7 +70,7 @@ angular.module( 'CyPhyApp' )
                     window.location.origin + '"> webgme interface</a>.' );
                 fatal( reason );
             } );
-        } )( "Template_Module_1x2" )
+        } )( "Test_Template_Module_1x2" )
             .then( function ( project ) {
                 context = {
                     db: databaseId,
@@ -85,7 +85,7 @@ angular.module( 'CyPhyApp' )
             } )
             .then( function () {
                 return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ),
-                    '#1e28896c0d52371d56cf725a1e76ffbdfd318637' );
+                    "#6552a37a4b5147cb87089ceeddc46c8852441eef" );
             } )
             .then( function ( branchId ) {
                 return $timeout( function () {
@@ -143,7 +143,7 @@ angular.module( 'CyPhyApp' )
             var deferred = $q.defer();
             value.onUpdate(function () {
                     count++; log("done " + count);
-                    if (count < 10) {
+                    if (count < 15) {
                         deferred.resolve($timeout(setattr, 2));
                         //deferred.resolve(setattr);
                         return;

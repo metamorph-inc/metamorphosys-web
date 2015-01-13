@@ -9,7 +9,7 @@ page.onConsoleMessage = function ( msg, lineNum, sourceId ) {
     consolelog = consolelog + msg + "\n";
 };
 
-page.open( 'http://localhost:8855/extlib/src/app/perfTest/index.html', function ( status ) {
+page.open( args[1] + '/extlib/src/app/perfTest/index.html', function ( status ) {
     if ( status !== 'success' ) {
         console.log( 'FAIL to load the address' );
         phantom.exit( 2 );
@@ -21,12 +21,12 @@ page.open( 'http://localhost:8855/extlib/src/app/perfTest/index.html', function 
                 .innerHTML;
         } );
 
-        fs.write( 'phantom_' + args[ 1 ] + '.log', log + "\n\n" + consolelog, 'w' );
+        fs.write( 'phantom_' + args[2] + '.log', log + "\n\n" + consolelog, 'w' );
 
         if ( log.indexOf( 'PHANTOM DONE' ) !== -1 ) {
             //system.stdout.writeLine(log);
-            system.stdout.writeLine( args[ 1 ] + ' success' );
+            system.stdout.writeLine( args[2] + ' success' );
             phantom.exit();
         }
-    }, 100 );
+    }, 150 );
 } );
