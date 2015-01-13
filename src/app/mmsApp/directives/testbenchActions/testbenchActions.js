@@ -91,14 +91,14 @@ angular.module('mms.testbenchActions', [
 
         $scope.setBusy = function () {
 
-            $scope.busy = true;
+            $rootScope.runningTestbench = $scope.busy = true;
             $scope.tooltipMessage = progressTooltipMessage;
 
         };
 
         $scope.setReady = function () {
 
-            $scope.busy = false;
+            $rootScope.runningTestbench = $scope.busy = false;
             $scope.tooltipMessage = tooltipMessage;
 
         };
@@ -159,7 +159,7 @@ angular.module('mms.testbenchActions', [
 
         };
 
-        $scope.startTestbench = function () {
+        $rootScope.startTestbench = $scope.startTestbench = function () {
 
             var onTestbenchFailed;
 

@@ -247,10 +247,10 @@ module.exports = function (
                     {
                         id: 'generatePCB',
                         label: 'Generate PCB',
-                        disabled: true,
+                        disabled: !angular.isFunction($rootScope.startTestbench) || $rootScope.runningTestbench,
                         iconClass: 'fa fa-play',
                         action: function () {
-                            console.log('Statistics');
+                            $rootScope.startTestbench();
                         },
                         actionData: {}
                     }

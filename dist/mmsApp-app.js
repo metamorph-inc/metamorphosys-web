@@ -3371,10 +3371,10 @@ module.exports = function (
                     {
                         id: 'generatePCB',
                         label: 'Generate PCB',
-                        disabled: true,
+                        disabled: !angular.isFunction($rootScope.startTestbench) || $rootScope.runningTestbench,
                         iconClass: 'fa fa-play',
                         action: function () {
-                            console.log('Statistics');
+                            $rootScope.startTestbench();
                         },
                         actionData: {}
                     }
@@ -4552,14 +4552,14 @@ angular.module('mms.testbenchActions', [
 
         $scope.setBusy = function () {
 
-            $scope.busy = true;
+            $rootScope.runningTestbench = $scope.busy = true;
             $scope.tooltipMessage = progressTooltipMessage;
 
         };
 
         $scope.setReady = function () {
 
-            $scope.busy = false;
+            $rootScope.runningTestbench = $scope.busy = false;
             $scope.tooltipMessage = tooltipMessage;
 
         };
@@ -4620,7 +4620,7 @@ angular.module('mms.testbenchActions', [
 
         };
 
-        $scope.startTestbench = function () {
+        $rootScope.startTestbench = $scope.startTestbench = function () {
 
             var onTestbenchFailed;
 
