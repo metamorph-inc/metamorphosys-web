@@ -2162,7 +2162,7 @@ angular.module( 'mms.designVisualization.fabricCanvas', [] )
 // Move this to GME eventually
 
 angular.module('mms.headerButtons', [])
-    .controller('HeaderButtonsController', function ($scope, $rootScope, $mdDialog, $log, $http, $mdToast) {
+    .controller('HeaderButtonsController', function ($scope, $rootScope, $mdDialog, $log, $http, $mdToast, $cookies) {
 
         $scope.openSubscribeDialog = function (ev) {
 
@@ -2186,7 +2186,8 @@ angular.module('mms.headerButtons', [])
 
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
                             user: $scope.user.name,
-                            email: $scope.user.email
+                            email: $scope.user.email,
+                            webgmeSid: $cookies.webgmeSid
                         }).success(function () {
                             $rootScope.processing = false;
 
