@@ -4571,7 +4571,7 @@ angular.module('mms.testbenchActions', [
 
                         newResult = {
                             id: id,
-                            name: 'Generated PCB ' + $scope.testbenchResults.length + 1,
+                            name: 'Generated PCB ' + ( $scope.testbenchResults.length + 1 ),
                             timestamp: timestamp,
                             visualUrl: visualUrl,
                             attachments: [
