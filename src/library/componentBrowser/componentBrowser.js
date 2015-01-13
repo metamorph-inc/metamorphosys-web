@@ -184,9 +184,7 @@ angular.module( 'cyphy.components' )
 
                             parentHeight = $parent.innerHeight();
 
-                            //parentHeight=$treeNavigatorNodesElement.parent().innerHeight();
-
-                            console.log('--------------', parentHeight-headerPartHeight-10);
+                            //console.log('--------------', parentHeight-headerPartHeight-10);
 
                             $treeNavigatorNodesElement.outerHeight(parentHeight-headerPartHeight-10);
 

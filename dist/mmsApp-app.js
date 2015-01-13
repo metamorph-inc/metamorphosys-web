@@ -4901,7 +4901,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                 });
 
                 portInstances.push(newPort);
-                
+
             });
         }
 
@@ -5004,9 +5004,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         var symbol,
             newDiagramComponent,
             portStuff;
-        
+
         zIndex = zIndex || 0;
-        
+
         portStuff = minePortsFromInterfaces(element);
 
         symbol = symbolManager.makeBoxSymbol(element.name, {
@@ -5043,7 +5043,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         var portStuff,
             newModelComponent,
             symbol;
-        
+
         zIndex = zIndex || 0;
 
         portStuff = minePortsFromInterfaces(element);
@@ -5244,7 +5244,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         var i,
             newDiagramComponent,
 
-            
+
 
             diagram,
             wire;
@@ -5256,8 +5256,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             i = 0;
 
-            diagram.config.width = 2000;
-            diagram.config.height = 2000;
+            diagram.config.width = 1000;
+            diagram.config.height = 1000;
 
             angular.forEach(diagramElements.Connector, function (element) {
 
