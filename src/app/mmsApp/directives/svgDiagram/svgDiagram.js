@@ -324,7 +324,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         });
 
-        //$rootScope.snapToGrid = true;
+        $rootScope.snapToGrid = true;
 
     })
     .directive('svgDiagram', [

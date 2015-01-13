@@ -205,7 +205,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
             portWireLength: 20,
             portSpacing: 20,
-            topPortPadding: 25,
+            topPortPadding: 20,
             bottomPortPadding: 0,
             portLabelHorizontalPadding: 5,
             portLabelVerticalPadding: 3,
