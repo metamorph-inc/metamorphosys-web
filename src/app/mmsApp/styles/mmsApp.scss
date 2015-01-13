@@ -19,7 +19,7 @@
 }
 
 .md-actions {
-    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
 }
 
 
@@ -184,4 +184,8 @@ img.scale-it {
 
 img.bordered {
     border: 1px solid #ddd;
+}
+
+.about-dialog {
+    max-width: 800px;
 }

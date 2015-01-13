@@ -24,7 +24,10 @@
         }
     }
 
-    .md-gap,
+    .md-gap {
+        background-color: transparent;
+    }
+
     .md-half-circle {
         background-color: rgba(255, 255, 255, .4) !important;
     }
@@ -77,6 +80,15 @@
 
 .testbench-result-dialog {
 
+    width: 670px;
+
+    .testbench-visual-container {
+        display: inline-block;
+        position: relative;
+        width: 628px;
+        height: 300px;
+    }
+
     .testbench-visual {
         -webkit-transform: rotate(90deg);
         -moz-transform: rotate(90deg);
@@ -84,7 +96,12 @@
         -ms-transform: rotate(90deg);
         transform: rotate(90deg);
 
-        max-width: 100%;
+        position: absolute;
+        top: 0;
+        margin-left: 160px;
+        margin-top: -170px;
+        width: 300px;
+        left: 0;
     }
 
     .testbench-attachments-links {
