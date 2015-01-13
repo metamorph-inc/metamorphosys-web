@@ -71,7 +71,7 @@ module.exports = function (
                 items: [
                     {
                         id: 'redraw',
-                        label: 'Redraw line',
+                        label: 'Redraw wire',
                         menu: [
                             {
                                 items: wiringMenu
@@ -106,7 +106,33 @@ module.exports = function (
 
         var inSelection,
             selectedComponents,
-            destroyLabel;
+            destroyLabel,
+            wiringMenu;
+
+        wiringMenu = [];
+
+        angular.forEach($scope.routerTypes, function(routerType) {
+
+            wiringMenu.push(
+                {
+                    id: routerType.id,
+                    label: routerType.label,
+                    action: function(){
+
+                        var wires = $scope.diagram.getWiresForComponents([component]);
+
+                        angular.forEach(wires, function(wire) {
+
+                            wiringService.routeWire(wire, routerType.type, routerType.params);
+                            $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+
+                        });
+                    }
+                }
+            );
+
+        });
+
 
         selectedComponents = $scope.diagram.getSelectedComponents();
 
@@ -152,6 +178,20 @@ module.exports = function (
                             operation.commit();
 
                         }
+                    }
+                ]
+            },
+            {
+                id: 'adjust',
+                items: [
+                    {
+                        id: 'redraw',
+                        label: 'Redraw all wires',
+                        menu: [
+                            {
+                                items: wiringMenu
+                            }
+                        ]
                     }
                 ]
             },
