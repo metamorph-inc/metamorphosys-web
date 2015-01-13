@@ -116,6 +116,29 @@ angular.module( 'cyphy.components' )
                 node = selectedObject.originalObject;
 
                 componentBrowserService.showNode(node.id);
+
+                $timeout(function(){
+
+                    var $nodeLi,
+                        y;
+
+                    if ($scope.$treeNavigatorNodesElement) {
+                        $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
+
+                        if ($nodeLi.length) {
+
+                            y = ($nodeLi.offset().top -
+                                $scope.$treeNavigatorNodesElement.offset().top) +
+                                $scope.$treeNavigatorNodesElement.scrollTop();
+
+                            $scope.$treeNavigatorNodesElement.animate({
+                               scrollTop: y
+                            }, 500);
+
+                        }
+                    }
+
+                }, 100);
             }
 
         });
@@ -154,6 +177,8 @@ angular.module( 'cyphy.components' )
                         }
 
                         $treeNavigatorNodesElement = $treeNavigatorNodesElement || element.find('nav > div.tree-navigator-nodes');
+                        scope.$treeNavigatorNodesElement = $treeNavigatorNodesElement;
+
 
                         if ($treeNavigatorNodesElement.length) {
 
