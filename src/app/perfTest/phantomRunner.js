@@ -4,15 +4,20 @@ var page = require( 'webpage' )
 var args = system.args;
 var fs = require( 'fs' );
 
+function exit(code) {
+setTimeout(function(){
+    phantom.exit(code);
+}, 0);
+}
+
 var consolelog = '';
 page.onConsoleMessage = function ( msg, lineNum, sourceId ) {
     consolelog = consolelog + msg + "\n";
 };
-
 page.open( args[1] + '/extlib/src/app/perfTest/index.html', function ( status ) {
     if ( status !== 'success' ) {
-        console.log( 'FAIL to load the address' );
-        phantom.exit( 2 );
+        console.log( 'FAIL to load the address: ' + status );
+        return exit( 2 );
     }
     setInterval( function () {
         //page.render('example.png');
@@ -26,7 +31,7 @@ page.open( args[1] + '/extlib/src/app/perfTest/index.html', function ( status ) 
         if ( log.indexOf( 'PHANTOM DONE' ) !== -1 ) {
             //system.stdout.writeLine(log);
             system.stdout.writeLine( args[2] + ' success' );
-            phantom.exit();
+            return exit();
         }
     }, 150 );
 } );
