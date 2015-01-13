@@ -5351,7 +5351,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
 };
 
 },{"./ClassNamesToSymbolTypes":20}],22:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, $*/
 'use strict';
 
 var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
@@ -5360,7 +5360,9 @@ var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
 angular.module( 'cyphy.components' )
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
-    function ( $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService ) {
+    function (
+        $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService, $timeout
+    ) {
         var
             addInterfaceWatcher,
 
@@ -5389,6 +5391,10 @@ angular.module( 'cyphy.components' )
 
 
         $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
+
+        $timeout(function(){
+            $scope.adjustTreeNavigatorSize();
+        }, 20);
 
 
         // Getting the data
@@ -5468,18 +5474,68 @@ angular.module( 'cyphy.components' )
         });
 
     } )
-    .directive( 'componentBrowser', function () {
+    .directive( 'componentBrowser', function ($window) {
 
         return {
             restrict: 'E',
             scope: {
                 workspaceId: '=workspaceId',
                 connectionId: '=connectionId',
-                avmIds: '=avmIds'
+                avmIds: '=avmIds',
+                autoHeight: '=autoHeight'
             },
             replace: true,
             templateUrl: '/cyphy-components/templates/componentBrowser.html',
-            controller: 'ComponentBrowserController'
+            controller: 'ComponentBrowserController',
+            link: function(scope, element) {
+
+                var $treeNavigatorNodesElement,
+                    $parent,
+                    headerPartHeight,
+                    $windowElement;
+
+                $parent = $(element.parent());
+
+                scope.adjustTreeNavigatorSize = function() {
+
+                    var parentHeight;
+
+                    if (scope.autoHeight) {
+
+                        if (headerPartHeight === undefined) {
+                            headerPartHeight = element.find('.header-part').outerHeight();
+                        }
+
+                        $treeNavigatorNodesElement = $treeNavigatorNodesElement || element.find('nav > div.tree-navigator-nodes');
+
+                        if ($treeNavigatorNodesElement.length) {
+
+                            parentHeight = $parent.innerHeight();
+
+                            //parentHeight=$treeNavigatorNodesElement.parent().innerHeight();
+
+                            console.log('--------------', parentHeight-headerPartHeight-10);
+
+                            $treeNavigatorNodesElement.outerHeight(parentHeight-headerPartHeight-10);
+
+                        }
+                    }
+                };
+
+                $windowElement = angular.element($window);
+
+                $windowElement.bind(
+                    'resize', scope.adjustTreeNavigatorSize
+                );
+
+                scope.$on('destroy', function(){
+
+                    $windowElement.unbind(
+                        'resize', scope.adjustTreeNavigatorSize
+                    );
+
+                });
+            }
         };
     } );
 

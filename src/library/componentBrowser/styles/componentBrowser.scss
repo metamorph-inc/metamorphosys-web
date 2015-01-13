@@ -6,6 +6,10 @@
 
         font-size: 95%;
 
+        > .tree-navigator-nodes {
+            overflow: auto;
+        }
+
         li {
             position: relative;
         }

@@ -116,12 +116,12 @@ h1.main-view-header {
     border-left: 1px solid rgba(0,0,0,.12);
 
     h2 {
-        padding: 0 1ex;
-        margin-bottom: 1ex;
+        padding: 1ex 1ex;
+        margin: 0;
         color: #555;
     }
 
-    overflow: auto;
+    overflow: hidden;
 }
 
 .on-drag-enter {
