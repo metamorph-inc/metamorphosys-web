@@ -6408,6 +6408,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         var self = this,
 
+            gridSize,
+
             grids = {},
 
             numberOfChangesAllowedInOneCycle = 1,
@@ -6420,6 +6422,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
             recalculateVisibleDiagramComponents,
             _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
+
+        gridSize = 5;
 
         recalculateVisibleWires = function ( grid ) {
 
@@ -6657,6 +6661,35 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                 } );
             }
+
+        };
+
+        this.getNearestGridPosition = function(position) {
+
+            var x,
+                y;
+
+            x = 0;
+            y = 0;
+
+            if (!isNaN(gridSize)) {
+                gridSize  = 1;
+            }
+
+            if (angular.isObject(position)) {
+
+                x = position.x || 0;
+                y = position.y || 0;
+
+                x = ( Math.round( x / gridSize ) * gridSize );
+                y = ( Math.round( y / gridSize ) * gridSize );
+
+            }
+
+            return {
+                x: x,
+                y: y
+            };
 
         };
 
