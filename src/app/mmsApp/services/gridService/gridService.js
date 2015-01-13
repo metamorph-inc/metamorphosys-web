@@ -25,7 +25,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
             _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
 
-        gridSize = 5;
+        gridSize = 10;
 
         recalculateVisibleWires = function ( grid ) {
 
@@ -266,15 +266,19 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
-        this.getNearestGridPosition = function(position) {
+        this.getSnappedPosition = function(position) {
 
             var x,
                 y;
 
+            if ($rootScope.snapToGrid !== true) {
+                return position;
+            }
+
             x = 0;
             y = 0;
 
-            if (!isNaN(gridSize)) {
+            if (isNaN(gridSize)) {
                 gridSize  = 1;
             }
 
@@ -285,6 +289,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                 x = ( Math.round( x / gridSize ) * gridSize );
                 y = ( Math.round( y / gridSize ) * gridSize );
+
+                console.log(gridSize, x, y);
 
             }
 

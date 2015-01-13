@@ -2481,7 +2481,7 @@ module.exports = resizeToWindowModule;
 
 'use strict';
 
-module.exports = function($scope, diagramService, wiringService, operationsManager, $timeout, $log) {
+module.exports = function ($scope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
 
     var self = this,
         getOffsetToMouse,
@@ -2504,7 +2504,7 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
         cancelDrag;
 
 
-    getOffsetToMouse = function ( $event ) {
+    getOffsetToMouse = function ($event) {
 
         var offset;
 
@@ -2527,30 +2527,30 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
         dragTargetsDescriptor = possibbleDragTargetsDescriptor;
         possibbleDragTargetsDescriptor = null;
 
-        $log.debug( 'Dragging', dragTargetsDescriptor );
+        $log.debug('Dragging', dragTargetsDescriptor);
 
     };
 
-    cancelDrag = function() {
+    cancelDrag = function () {
 
         possibbleDragTargetsDescriptor = null;
 
-        if ( dragTargetsDescriptor ) {
+        if (dragTargetsDescriptor) {
 
-            angular.forEach( dragTargetsDescriptor.targets, function ( target ) {
+            angular.forEach(dragTargetsDescriptor.targets, function (target) {
 
                 target.component.setPosition(
                     target.originalPosition.x,
                     target.originalPosition.y
                 );
 
-            } );
+            });
 
-            angular.forEach( dragTargetsDescriptor.affectedWires, function ( wire ) {
+            angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
 
-                wiringService.adjustWireEndSegments( wire );
+                wiringService.adjustWireEndSegments(wire);
 
-            } );
+            });
 
             dragTargetsDescriptor = null;
 
@@ -2591,48 +2591,54 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         dragTargetsDescriptor = null;
 
-        $log.debug( 'Finish dragging' );
+        $log.debug('Finish dragging');
 
     };
 
     wireUpdateWait = 20;
     dragTargetsWiresUpdatePromises = {};
 
-    dragTargetsWiresUpdate = function(affectedWires) {
+    dragTargetsWiresUpdate = function (affectedWires) {
 
-        angular.forEach(affectedWires, function(wire) {
+        angular.forEach(affectedWires, function (wire) {
 
             $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
 
-            dragTargetsWiresUpdatePromises[wire.id] = $timeout(function(){
-                wiringService.adjustWireEndSegments( wire );
+            dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
+                wiringService.adjustWireEndSegments(wire);
             }, wireUpdateWait);
 
         });
 
     };
 
-    onDiagramMouseMove = function($event) {
+    onDiagramMouseMove = function ($event) {
 
         var offset,
             i,
-            target;
+            target,
+            snappedPosition;
 
-        if ( possibbleDragTargetsDescriptor ) {
+        if (possibbleDragTargetsDescriptor) {
             startDrag();
         }
 
-        if ( dragTargetsDescriptor ) {
+        if (dragTargetsDescriptor) {
 
             offset = getOffsetToMouse($event);
 
-            for (i=0; i < dragTargetsDescriptor.targets.length; i++) {
+            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
 
                 target = dragTargetsDescriptor.targets[i];
 
+                snappedPosition = gridService.getSnappedPosition({
+                    x: offset.x + target.deltaToCursor.x,
+                    y: offset.y + target.deltaToCursor.y
+                });
+
                 target.component.setPosition(
-                    offset.x + target.deltaToCursor.x,
-                    offset.y + target.deltaToCursor.y
+                    snappedPosition.x,
+                    snappedPosition.y
                 );
 
             }
@@ -2643,34 +2649,34 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
     };
 
-    onDiagramMouseUp = function($event) {
+    onDiagramMouseUp = function ($event) {
 
         possibbleDragTargetsDescriptor = null;
 
-        if ( dragTargetsDescriptor ) {
+        if (dragTargetsDescriptor) {
             finishDrag();
             $event.stopPropagation();
         }
 
     };
 
-    onDiagramMouseLeave = function(/*$event*/) {
+    onDiagramMouseLeave = function (/*$event*/) {
 
         cancelDrag();
 
     };
 
-    onWindowBlur = function(/*$event*/) {
+    onWindowBlur = function (/*$event*/) {
 
         cancelDrag();
 
     };
 
-    onComponentMouseUp = function(component, $event) {
+    onComponentMouseUp = function (component, $event) {
 
         possibbleDragTargetsDescriptor = null;
 
-        if ( dragTargetsDescriptor ) {
+        if (dragTargetsDescriptor) {
             finishDrag();
             $event.stopPropagation();
         }
@@ -2684,9 +2690,9 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         componentsToDrag = [];
 
-        getDragDescriptor = function ( component ) {
+        getDragDescriptor = function (component) {
 
-            var offset = getOffsetToMouse( $event );
+            var offset = getOffsetToMouse($event);
 
             return {
                 component: component,
@@ -2704,38 +2710,38 @@ module.exports = function($scope, diagramService, wiringService, operationsManag
 
         $scope.diagram.config = $scope.diagram.config || {};
 
-        if ( $scope.diagram.config.editable === true &&
+        if ($scope.diagram.config.editable === true &&
             component.nonSelectable !== true &&
-            component.locationLocked !== true ) {
+            component.locationLocked !== true) {
 
             $event.stopPropagation();
 
             possibbleDragTargetsDescriptor = {
-                targets: [ getDragDescriptor( component ) ]
+                targets: [getDragDescriptor(component)]
             };
 
-            componentsToDrag.push( component );
+            componentsToDrag.push(component);
 
-            if ( $scope.diagram.state.selectedComponentIds.indexOf( component.id ) > -1 ) {
+            if ($scope.diagram.state.selectedComponentIds.indexOf(component.id) > -1) {
 
                 // Drag along other selected components
 
-                angular.forEach( $scope.diagram.state.selectedComponentIds, function ( selectedComponentId ) {
+                angular.forEach($scope.diagram.state.selectedComponentIds, function (selectedComponentId) {
 
                     var selectedComponent;
 
-                    if ( component.id !== selectedComponentId ) {
+                    if (component.id !== selectedComponentId) {
 
-                        selectedComponent = $scope.diagram.componentsById[ selectedComponentId ];
+                        selectedComponent = $scope.diagram.componentsById[selectedComponentId];
 
-                        possibbleDragTargetsDescriptor.targets.push( getDragDescriptor(
-                            selectedComponent ) );
+                        possibbleDragTargetsDescriptor.targets.push(getDragDescriptor(
+                            selectedComponent));
 
-                        componentsToDrag.push( selectedComponent );
+                        componentsToDrag.push(selectedComponent);
 
                     }
 
-                } );
+                });
             }
 
             possibbleDragTargetsDescriptor.affectedWires = $scope.diagram.getWiresForComponents(
@@ -3373,6 +3379,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             wiringService,
             operationsManager,
             $timeout,
+            gridService,
             $log
         );
 
@@ -3654,6 +3661,8 @@ angular.module('mms.designVisualization.svgDiagram', [
             }
 
         });
+
+        //$rootScope.snapToGrid = true;
 
     })
     .directive('svgDiagram', [
@@ -4542,12 +4551,49 @@ angular.module('mms.testbenchActions', [
             );
 
             testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
-                .then(function (result) {
+                .then(function (resultData) {
 
-                    if (result && result.success === true) {
-                        console.log('testbench result', result);
+                    var newResult,
+                        visualUrl,
+                        downloadUrl,
+                        timestamp,
+                        hash,
+                        id;
+
+                    if (resultData && resultData.success === true) {
+
+                        $log.debug('testbench result', resultData);
+
+                        hash = resultData.artifacts['all.zip'].hash;
+
+                        visualUrl = '/rest/blob/view/' + hash + '/results/1x2_ara_module.png';
+                        downloadUrl = '/rest/blob/download/' + hash + '/results/1x2_ara_module.brd';
+
+                        timestamp = Date.now();
+                        id = hash + '_' + timestamp;
+
+                        newResult = {
+                            id: id,
+                            name: 'Generated PCB ' + $scope.testbenchResults.length + 1,
+                            timestamp: timestamp,
+                            visualUrl: visualUrl,
+                            attachments: [
+                                {
+                                    name: 'Download Eagle File',
+                                    url: downloadUrl
+                                }
+                            ],
+                            status: 'SUCCESS'
+                        };
+
+                        $scope.testbenchResults.push(newResult);
+
+                        $scope.testbenchResultNotify(id);
+                        $scope.setReady();
+
+
                     } else {
-                        onTestbenchFailed(result);
+                        onTestbenchFailed(resultData);
                     }
 
                 }).
@@ -5256,8 +5302,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             i = 0;
 
-            diagram.config.width = 1000;
-            diagram.config.height = 1000;
+            diagram.config.width = 1500;
+            diagram.config.height = 1500;
 
             angular.forEach(diagramElements.Connector, function (element) {
 
@@ -6423,7 +6469,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
             _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
 
-        gridSize = 5;
+        gridSize = 10;
 
         recalculateVisibleWires = function ( grid ) {
 
@@ -6664,15 +6710,19 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
-        this.getNearestGridPosition = function(position) {
+        this.getSnappedPosition = function(position) {
 
             var x,
                 y;
 
+            if ($rootScope.snapToGrid !== true) {
+                return position;
+            }
+
             x = 0;
             y = 0;
 
-            if (!isNaN(gridSize)) {
+            if (isNaN(gridSize)) {
                 gridSize  = 1;
             }
 
@@ -6683,6 +6733,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                 x = ( Math.round( x / gridSize ) * gridSize );
                 y = ( Math.round( y / gridSize ) * gridSize );
+
+                console.log(gridSize, x, y);
 
             }
 

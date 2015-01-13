@@ -41,6 +41,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             wiringService,
             operationsManager,
             $timeout,
+            gridService,
             $log
         );
 
@@ -322,6 +323,8 @@ angular.module('mms.designVisualization.svgDiagram', [
             }
 
         });
+
+        //$rootScope.snapToGrid = true;
 
     })
     .directive('svgDiagram', [
