@@ -45,3 +45,5 @@ started addon null
 Node already loaded.. 
 Node already loaded.. /1
 Node already loaded.. /759732751
+started addon The socket.io is disconnected
+ERROR - 16:19:08.919 [client] - The socket.io is disconnected
