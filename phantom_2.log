@@ -1,0 +1,43 @@
+
+        <!-- ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">init</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:08 GMT-0600 (CST) db open</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:18 GMT-0600 (CST) meta loaded</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:18 GMT-0600 (CST) children: 3</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:19 GMT-0600 (CST) children: 3</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:19 GMT-0600 (CST) children: 106</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:20 GMT-0600 (CST) children2: 8</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:14:20 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:15:10 GMT-0600 (CST) done 1</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:15:10 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:15:54 GMT-0600 (CST) done 2</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:15:54 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:17:07 GMT-0600 (CST) done 3</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:17:07 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:18:19 GMT-0600 (CST) done 4</span>
+        </li><!-- end ngRepeat: log in logs track by $index --><li ng-repeat="log in logs track by $index" class="ng-scope">
+            <span class="ng-binding">Tue Jan 13 2015 16:18:19 GMT-0600 (CST) set</span>
+        </li><!-- end ngRepeat: log in logs track by $index -->
+    
+
+WebGME Client is available.
+WebGME client library is ready to use.
+WebGMEGlobal not defined - cannot get plugins.
+stopAddOn Error: addon loading
+Node already loaded.. 
+Node already loaded.. /1
+Node already loaded.. /759732751
