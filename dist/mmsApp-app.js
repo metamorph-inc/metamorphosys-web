@@ -2213,7 +2213,7 @@ angular.module( 'mms.headerButtons', [ ] )
 
             $mdDialog.show({
                 controller: DialogController,
-                templateUrl: '/mmsApp/templates/helpDialog.html',
+                templateUrl: '/mmsApp/templates/aboutDialog.html',
                 targetEvent: ev
             })
                 .then(function () {
