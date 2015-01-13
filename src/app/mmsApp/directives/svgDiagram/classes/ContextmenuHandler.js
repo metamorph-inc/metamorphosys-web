@@ -258,6 +258,27 @@ module.exports = function (
 
             },
             {
+                id: 'gridSettings',
+                items: [
+                    {
+                        id: 'snapToGrid',
+                        label: 'Snap to grid',
+                        cssClass: $rootScope.snapToGrid ? 'selected' : 'not-selected',
+                        iconClass: $rootScope.snapToGrid ? 'fa fa-check' : undefined,
+                        action: function () {
+
+                            if ($rootScope.snapToGrid === true) {
+                                $rootScope.snapToGrid = false;
+                            } else {
+                                $rootScope.snapToGrid = true;
+                            }
+                        },
+                        actionData: {}
+                    }
+                ]
+
+            },
+            {
                 id: 'wiringMethods',
                 label: 'Wiring method',
                 items: wiringMenu

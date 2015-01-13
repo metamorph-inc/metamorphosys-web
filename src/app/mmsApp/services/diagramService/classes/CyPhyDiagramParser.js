@@ -429,7 +429,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                 }, portStuff.portDescriptors,
                 {
                     minWidth: 200,
-                    portWireLeadInIncrement: 8
+                    portWireLeadInIncrement: 10
                 });
 
             newModelComponent = new DiagramComponent({

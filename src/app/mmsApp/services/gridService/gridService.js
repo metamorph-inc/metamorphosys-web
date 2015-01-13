@@ -290,7 +290,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 x = ( Math.round( x / gridSize ) * gridSize );
                 y = ( Math.round( y / gridSize ) * gridSize );
 
-                console.log(gridSize, x, y);
+                //console.log(gridSize, x, y);
 
             }
 

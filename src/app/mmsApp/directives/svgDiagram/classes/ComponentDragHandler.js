@@ -152,10 +152,11 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
                 target = dragTargetsDescriptor.targets[i];
 
-                snappedPosition = gridService.getSnappedPosition({
-                    x: offset.x + target.deltaToCursor.x,
-                    y: offset.y + target.deltaToCursor.y
-                });
+                snappedPosition = gridService.getSnappedPosition(
+                    {
+                        x: offset.x + target.deltaToCursor.x,
+                        y: offset.y + target.deltaToCursor.y
+                    });
 
                 target.component.setPosition(
                     snappedPosition.x,

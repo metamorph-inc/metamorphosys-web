@@ -2694,10 +2694,11 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
                 target = dragTargetsDescriptor.targets[i];
 
-                snappedPosition = gridService.getSnappedPosition({
-                    x: offset.x + target.deltaToCursor.x,
-                    y: offset.y + target.deltaToCursor.y
-                });
+                snappedPosition = gridService.getSnappedPosition(
+                    {
+                        x: offset.x + target.deltaToCursor.x,
+                        y: offset.y + target.deltaToCursor.y
+                    });
 
                 target.component.setPosition(
                     snappedPosition.x,
@@ -3019,6 +3020,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseMove = function($event) {
 
+        var snappedPosition;
+
         if ( wireStart ) {
 
 
@@ -3027,13 +3030,18 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
             $scope.newWireLine.activeSegmentStartPosition =
                 $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
 
+            snappedPosition = gridService.getSnappedPosition(
+                {
+                    x: $event.pageX - $scope.elementOffset.left - 3,
+                    y: $event.pageY - $scope.elementOffset.top - 3
+                }
+            );
+
+
             $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
                 wiringService.getSegmentsBetweenPositions( {
                         end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: {
-                            x: $event.pageX - $scope.elementOffset.left - 3,
-                            y: $event.pageY - $scope.elementOffset.top - 3
-                        }
+                        end2: snappedPosition
                     },
                     $scope.selectedRouter.type,
                     $scope.selectedRouter.params
@@ -3367,6 +3375,27 @@ module.exports = function (
                         iconClass: 'fa fa-play',
                         action: function () {
                             console.log('Statistics');
+                        },
+                        actionData: {}
+                    }
+                ]
+
+            },
+            {
+                id: 'gridSettings',
+                items: [
+                    {
+                        id: 'snapToGrid',
+                        label: 'Snap to grid',
+                        cssClass: $rootScope.snapToGrid ? 'selected' : 'not-selected',
+                        iconClass: $rootScope.snapToGrid ? 'fa fa-check' : undefined,
+                        action: function () {
+
+                            if ($rootScope.snapToGrid === true) {
+                                $rootScope.snapToGrid = false;
+                            } else {
+                                $rootScope.snapToGrid = true;
+                            }
                         },
                         actionData: {}
                     }
@@ -5321,7 +5350,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                 }, portStuff.portDescriptors,
                 {
                     minWidth: 200,
-                    portWireLeadInIncrement: 8
+                    portWireLeadInIncrement: 10
                 });
 
             newModelComponent = new DiagramComponent({
@@ -6797,7 +6826,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 x = ( Math.round( x / gridSize ) * gridSize );
                 y = ( Math.round( y / gridSize ) * gridSize );
 
-                console.log(gridSize, x, y);
+                //console.log(gridSize, x, y);
 
             }
 

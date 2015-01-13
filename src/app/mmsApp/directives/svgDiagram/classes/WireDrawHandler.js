@@ -95,6 +95,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseMove = function($event) {
 
+        var snappedPosition;
+
         if ( wireStart ) {
 
 
@@ -103,13 +105,18 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
             $scope.newWireLine.activeSegmentStartPosition =
                 $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
 
+            snappedPosition = gridService.getSnappedPosition(
+                {
+                    x: $event.pageX - $scope.elementOffset.left - 3,
+                    y: $event.pageY - $scope.elementOffset.top - 3
+                }
+            );
+
+
             $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
                 wiringService.getSegmentsBetweenPositions( {
                         end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: {
-                            x: $event.pageX - $scope.elementOffset.left - 3,
-                            y: $event.pageY - $scope.elementOffset.top - 3
-                        }
+                        end2: snappedPosition
                     },
                     $scope.selectedRouter.type,
                     $scope.selectedRouter.params
