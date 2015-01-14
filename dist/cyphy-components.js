@@ -7741,20 +7741,20 @@ angular.module( 'cyphy.services' )
             //console.log(JSON.stringify(config));
             pluginService.runPlugin( context, 'TestBenchRunner', config )
                 .then( function ( result ) {
-                    var resultLight = {
+                    var extendedResult = {
                         success: result.success,
-                        artifactsHtml: '',
-                        messages: result.messages
+                        messages: result.messages,
+                        unparsedResult: result
                     };
-                    console.log( 'Result', result );
-                    pluginService.getPluginArtifactsHtml( result.artifacts )
-                        .then( function ( artifactsHtml ) {
-                            resultLight.artifactsHtml = artifactsHtml;
-                            deferred.resolve( resultLight );
+                    //console.log( 'Result', result );
+                    pluginService.getPluginArtifacts( result.artifacts )
+                        .then( function ( artifactsByName ) {
+                            extendedResult.artifacts = artifactsByName;
+                            deferred.resolve( extendedResult );
                         } );
                 } )
                 .
-            catch ( function ( reason ) {
+                catch ( function ( reason ) {
                 deferred.reject( 'Something went terribly wrong, ' + reason );
             } );
 
@@ -8120,6 +8120,7 @@ angular.module( 'cyphy.services' )
             baseCyPhyService.registerWatcher( watchers, parentContext, fn );
         };
     } );
+
 },{}],29:[function(require,module,exports){
 /*globals angular, console*/
 
