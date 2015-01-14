@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -179,9 +179,17 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('AppController', function ($rootScope) {
+CyPhyApp.controller('AppController', function ($rootScope, $cookies) {
 
     $rootScope.busy = true;
+
+    ga('create', 'UA-58522767-1', {
+        'userId': $cookies.webgmeSid
+    });
+
+    // ga('send', 'pageview'); disable this if you use angulartics
+
+
     //window.dragStart = function(evt) {
     //    console.log('--------------' + evt);
     //    evt.dataTransfer.effectAllowed = 'copy';
@@ -2216,23 +2224,15 @@ angular.module('mms.headerButtons', [])
 
                     if ($scope.user && $scope.user.email) {
 
-                        $rootScope.processing = true;
-
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
                             user: $scope.user.name,
                             email: $scope.user.email,
                             webgmeSid: $cookies.webgmeSid
                         }).success(function () {
-                            $rootScope.processing = false;
-
-
 
                         }).
                             error(function (data, status) {
-
                                 $log.error('Saving contact errored', data, status);
-                                $rootScope.processing = false;
-
                             });
 
                         $mdToast.show(

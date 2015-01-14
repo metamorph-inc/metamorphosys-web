@@ -25,23 +25,15 @@ angular.module('mms.headerButtons', [])
 
                     if ($scope.user && $scope.user.email) {
 
-                        $rootScope.processing = true;
-
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
                             user: $scope.user.name,
                             email: $scope.user.email,
                             webgmeSid: $cookies.webgmeSid
                         }).success(function () {
-                            $rootScope.processing = false;
-
-
 
                         }).
                             error(function (data, status) {
-
                                 $log.error('Saving contact errored', data, status);
-                                $rootScope.processing = false;
-
                             });
 
                         $mdToast.show(

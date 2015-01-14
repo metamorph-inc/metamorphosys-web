@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -178,9 +178,17 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('AppController', function ($rootScope) {
+CyPhyApp.controller('AppController', function ($rootScope, $cookies) {
 
     $rootScope.busy = true;
+
+    ga('create', 'UA-58522767-1', {
+        'userId': $cookies.webgmeSid
+    });
+
+    // ga('send', 'pageview'); disable this if you use angulartics
+
+
     //window.dragStart = function(evt) {
     //    console.log('--------------' + evt);
     //    evt.dataTransfer.effectAllowed = 'copy';
