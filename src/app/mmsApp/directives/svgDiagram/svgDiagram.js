@@ -232,6 +232,27 @@ angular.module('mms.designVisualization.svgDiagram', [
             }
         };
 
+        this.onWireCornerMouseUp = function (wire, segment, $event) {
+
+            wireDragHandler.onWireMouseUp(wire, segment, $event);
+            $event.stopPropagation();
+
+        };
+
+        this.onWireCornerMouseDown = function (wire, segment, $event) {
+
+            if ($event.which === 3) {
+
+                contextMenuHandler.onWireContextmenu(wire, segment, $event);
+
+
+            } else {
+
+                wireDragHandler.onWireMouseDown(wire, segment, $event, true);
+
+            }
+        };
+
         this.isEditable = function () {
 
             $scope.diagram.config = $scope.diagram.config || {};

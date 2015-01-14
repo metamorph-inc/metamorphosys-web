@@ -1,0 +1,7 @@
+<rect class="component-wire-corner"
+      ng-if="!$last"
+      ng-mousedown="onCornerMouseDown(segment, $event)"
+      ng-mouseup="onCornerMouseUp(segment, $event)"
+      ng-attr-x="{{segment.x2 - 2}}"
+      ng-attr-y="{{segment.y2 - 2}}"
+      width="4" height="4" fill="black" stroke-width="1"/>

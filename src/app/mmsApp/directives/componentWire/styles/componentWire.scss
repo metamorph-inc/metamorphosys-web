@@ -25,6 +25,21 @@
 
   }
 
+
+  .component-wire-corner {
+    display: none;
+  }
+
+  &:hover {
+    .component-wire-corner {
+      display: block;
+    }
+
+    .component-wire-corner:hover {
+      fill: #ff7100;
+    }
+
+  }
 }
 
 .diagram-container.editable {

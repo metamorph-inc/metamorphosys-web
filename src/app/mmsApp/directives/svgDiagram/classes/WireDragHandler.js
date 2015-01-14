@@ -102,48 +102,80 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
                 target = dragTargetsDescriptor.targets[i];
 
-                snappedPosition1 = gridService.getSnappedPosition(
-                    {
-                        x: offset.x + target.deltaToCursor1.x,
-                        y: offset.y + target.deltaToCursor1.y
-                    });
 
-                snappedPosition2 = gridService.getSnappedPosition(
-                    {
-                        x: offset.x + target.deltaToCursor2.x,
-                        y: offset.y + target.deltaToCursor2.y
-                    });
+                if (!target.wasCorner) {
 
-
-                target.wire.segments[target.segmentIndex - 1] =
-                    wiringService.getSegmentsBetweenPositions(
+                    snappedPosition1 = gridService.getSnappedPosition(
                         {
-                            end1: {
-                                x: target.wire.segments[target.segmentIndex - 1].x1,
-                                y: target.wire.segments[target.segmentIndex - 1].y1
+                            x: offset.x + target.deltaToCursor1.x,
+                            y: offset.y + target.deltaToCursor1.y
+                        });
+
+                    snappedPosition2 = gridService.getSnappedPosition(
+                        {
+                            x: offset.x + target.deltaToCursor2.x,
+                            y: offset.y + target.deltaToCursor2.y
+                        });
+
+
+                    target.wire.segments[target.segmentIndex - 1] =
+                        wiringService.getSegmentsBetweenPositions(
+                            {
+                                end1: {
+                                    x: target.wire.segments[target.segmentIndex - 1].x1,
+                                    y: target.wire.segments[target.segmentIndex - 1].y1
+                                },
+                                end2: snappedPosition1
                             },
-                            end2: snappedPosition1
-                        },
-                        'SimpleRouter')[0];
+                            'SimpleRouter')[0];
 
-                target.wire.segments[target.segmentIndex] =
-                    wiringService.getSegmentsBetweenPositions(
+                    target.wire.segments[target.segmentIndex] =
+                        wiringService.getSegmentsBetweenPositions(
+                            {
+                                end1: snappedPosition1,
+                                end2: snappedPosition2
+                            }, 'SimpleRouter')[0];
+
+                    target.wire.segments[target.segmentIndex + 1] =
+                        wiringService.getSegmentsBetweenPositions(
+                            {
+                                end1: snappedPosition2,
+                                end2: {
+                                    x: target.wire.segments[target.segmentIndex + 1].x2,
+                                    y: target.wire.segments[target.segmentIndex + 1].y2
+                                }
+                            },
+                            'SimpleRouter')[0];
+                } else {
+
+                    snappedPosition2 = gridService.getSnappedPosition(
                         {
-                            end1: snappedPosition1,
-                            end2: snappedPosition2
-                        }, 'SimpleRouter')[0];
+                            x: offset.x + target.deltaToCursor2.x,
+                            y: offset.y + target.deltaToCursor2.y
+                        });
 
-                target.wire.segments[target.segmentIndex + 1] =
-                    wiringService.getSegmentsBetweenPositions(
-                        {
-                            end1: snappedPosition2,
-                            end2: {
-                                x: target.wire.segments[target.segmentIndex + 1].x2,
-                                y: target.wire.segments[target.segmentIndex + 1].y2
-                            }
-                        },
-                        'SimpleRouter')[0];
+                    target.wire.segments[target.segmentIndex] =
+                        wiringService.getSegmentsBetweenPositions(
+                            {
+                                end1: {
+                                    x: target.wire.segments[target.segmentIndex].x1,
+                                    y: target.wire.segments[target.segmentIndex].y1
+                                },
+                                end2: snappedPosition2
+                            }, 'SimpleRouter')[0];
 
+                    target.wire.segments[target.segmentIndex + 1] =
+                        wiringService.getSegmentsBetweenPositions(
+                            {
+                                end1: snappedPosition2,
+                                end2: {
+                                    x: target.wire.segments[target.segmentIndex + 1].x2,
+                                    y: target.wire.segments[target.segmentIndex + 1].y2
+                                }
+                            },
+                            'SimpleRouter')[0];
+
+                }
             }
 
         }
@@ -184,7 +216,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
     };
 
-    onWireMouseDown = function (wire, segment, $event) {
+    onWireMouseDown = function (wire, segment, $event, wasCorner) {
 
         var getDragDescriptor,
             indexOfSegment;
@@ -198,6 +230,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
                 segment: segment,
                 segmentIndex: sIndex,
                 originalSegments: angular.copy(wire.segments),
+                wasCorner: wasCorner,
                 deltaToCursor1: {
                     x: segment.x1 - offset.x,
                     y: segment.y1 - offset.y
@@ -216,7 +249,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             indexOfSegment = wire.segments.indexOf(segment);
 
-            if (indexOfSegment > 0 && indexOfSegment < wire.segments.length - 1) {
+            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < wire.segments.length - 1) {
 
                 $scope.diagram.config = $scope.diagram.config || {};
 

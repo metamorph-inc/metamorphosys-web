@@ -3,10 +3,12 @@
 'use strict';
 
 require( './componentWireSegment' );
+require( './componentWireCorner' );
 
 angular.module(
     'mms.designVisualization.componentWire', [
-        'mms.designVisualization.componentWire.segment'
+        'mms.designVisualization.componentWire.segment',
+        'mms.designVisualization.componentWire.corner'
     ]
 )
     .controller( 'ComponentWireController', function ( $scope ) {
@@ -59,6 +61,14 @@ angular.module(
                         $event.stopPropagation();
                     };
 
+                    scope.onCornerMouseUp = function ( segment, $event ) {
+                        svgDiagramController.onWireCornerMouseUp( scope.wire, segment, $event );
+                    };
+
+                    scope.onCornerMouseDown = function ( segment, $event ) {
+                        svgDiagramController.onWireCornerMouseDown( scope.wire, segment, $event );
+                        $event.stopPropagation();
+                    };
 
                 }
             };
