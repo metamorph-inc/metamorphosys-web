@@ -7627,7 +7627,46 @@ angular.module( 'cyphy.services' )
 
             return deferred.promise;
         };
+
+        this.getPluginArtifacts = function ( artieHashes ) {
+            var deferred = $q.defer(),
+                queueList = [],
+                i;
+
+            for ( i = 0; i < artieHashes.length; i += 1 ) {
+                queueList.push( fileService.getArtifact( artieHashes[ i ] ) );
+            }
+
+            if ( queueList.length === 0 ) {
+                deferred.resolve( '' );
+            } else {
+                $q.all( queueList )
+                    .then( function ( artifactsInfo ) {
+                        var j,
+                            downloadUrl,
+                            artieName,
+                            artifactsByName;
+
+                        artifactsByName = {};
+
+                        for ( j = 0; j < artifactsInfo.length; j += 1 ) {
+
+                            downloadUrl = fileService.getDownloadUrl( artifactsInfo[ j ].hash );
+                            artieName = artifactsInfo[ j ].artifact.name;
+
+                            artifactsByName[ artieName ] = angular.copy(artifactsInfo[ j ]);
+                            artifactsByName[ artieName].downloadUrl = downloadUrl;
+
+                        }
+                        deferred.resolve( artifactsByName );
+                    } );
+            }
+
+            return deferred.promise;
+        };
+
     } );
+
 },{}],28:[function(require,module,exports){
 /*globals angular, console*/
 
