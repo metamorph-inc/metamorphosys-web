@@ -238,7 +238,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/socialMediaButtons/socialMediaButtons.js":19,"./directives/svgDiagram/svgDiagram.js":24,"./directives/symbols/componentSymbol.js":27,"./libraryIncludes.js":36,"./services/connectionHandling/connectionHandling.js":37,"./services/diagramService/diagramService.js":44,"./services/gridService/gridService.js":45,"./services/operationsManager/operationsManager.js":46,"./services/projectHandling/projectHandling.js":47,"./services/wiringService/wiringService.js":52,"./utils.js":53,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":10,"./directives/diagramContainer/diagramContainer.js":12,"./directives/fabricCanvas/fabricCanvas.js":14,"./directives/headerButtons/headerButtons.js":15,"./directives/resizing/resizeToHeight.js":17,"./directives/resizing/resizeToWindow.js":18,"./directives/socialMediaButtons/socialMediaButtons.js":19,"./directives/svgDiagram/svgDiagram.js":25,"./directives/symbols/componentSymbol.js":28,"./libraryIncludes.js":37,"./services/connectionHandling/connectionHandling.js":38,"./services/diagramService/diagramService.js":45,"./services/gridService/gridService.js":46,"./services/operationsManager/operationsManager.js":47,"./services/projectHandling/projectHandling.js":48,"./services/wiringService/wiringService.js":53,"./utils.js":54,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1629,7 +1629,7 @@ angular.module('mms.designVisualization.designEditor', [
             };
         }]);
 
-},{"../testbenchActions/testbenchActions.js":35,"./classes/RandomSymbolGenerator":9}],11:[function(require,module,exports){
+},{"../testbenchActions/testbenchActions.js":36,"./classes/RandomSymbolGenerator":9}],11:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2927,6 +2927,271 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
 'use strict';
 
+module.exports = function ($scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
+
+    var self = this,
+        getOffsetToMouse,
+        possibbleDragTargetsDescriptor,
+        dragTargetsDescriptor,
+
+        wireUpdateWait,
+        dragTargetsWiresUpdatePromises,
+
+        onDiagramMouseUp,
+        onDiagramMouseMove,
+        onDiagramMouseLeave,
+        onWindowBlur,
+        onWireMouseUp,
+        onWireMouseDown,
+
+        startDrag,
+        finishDrag,
+        cancelDrag;
+
+
+    getOffsetToMouse = function ($event) {
+
+        var offset;
+
+        offset = {
+            x: $event.pageX - $scope.elementOffset.left,
+            y: $event.pageY - $scope.elementOffset.top
+        };
+
+        return offset;
+
+    };
+
+
+    startDrag = function () {
+
+        self.dragging = true;
+
+        //self.dragOperation = operationsManager.initNew('setComponentPosition');
+
+        dragTargetsDescriptor = possibbleDragTargetsDescriptor;
+        possibbleDragTargetsDescriptor = null;
+
+        $log.debug('Dragging wire', dragTargetsDescriptor);
+
+    };
+
+    cancelDrag = function () {
+
+        possibbleDragTargetsDescriptor = null;
+
+        if (dragTargetsDescriptor) {
+
+            angular.forEach(dragTargetsDescriptor.targets, function (target) {
+
+                target.component.setPosition(
+                    target.originalPosition.x,
+                    target.originalPosition.y
+                );
+
+            });
+
+            angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+
+                wiringService.adjustWireEndSegments(wire);
+
+            });
+
+            dragTargetsDescriptor = null;
+
+        }
+
+        self.dragging = false;
+
+    };
+
+    finishDrag = function () {
+
+        angular.forEach(dragTargetsDescriptor.targets, function (target) {
+            $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+        });
+
+        self.dragging = false;
+
+        dragTargetsDescriptor = null;
+
+        $log.debug('Finish dragging');
+
+    };
+
+    wireUpdateWait = 20;
+    dragTargetsWiresUpdatePromises = {};
+
+    onDiagramMouseMove = function ($event) {
+
+        var offset,
+            i,
+            target,
+            snappedPosition1,
+            snappedPosition2;
+
+        if (possibbleDragTargetsDescriptor) {
+            startDrag();
+        }
+
+        if (dragTargetsDescriptor) {
+
+            offset = getOffsetToMouse($event);
+
+            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
+
+                target = dragTargetsDescriptor.targets[i];
+
+                snappedPosition1 = gridService.getSnappedPosition(
+                    {
+                        x: offset.x + target.deltaToCursor1.x,
+                        y: offset.y + target.deltaToCursor1.y
+                    });
+
+                snappedPosition2 = gridService.getSnappedPosition(
+                    {
+                        x: offset.x + target.deltaToCursor2.x,
+                        y: offset.y + target.deltaToCursor2.y
+                    });
+
+
+                target.wire.segments[target.segmentIndex - 1] =
+                    wiringService.getSegmentsBetweenPositions(
+                        {
+                            end1: {
+                                x: target.wire.segments[target.segmentIndex - 1].x1,
+                                y: target.wire.segments[target.segmentIndex - 1].y1
+                            },
+                            end2: snappedPosition1
+                        },
+                        'SimpleRouter')[0];
+
+                target.wire.segments[target.segmentIndex] =
+                    wiringService.getSegmentsBetweenPositions(
+                        {
+                            end1: snappedPosition1,
+                            end2: snappedPosition2
+                        }, 'SimpleRouter')[0];
+
+                target.wire.segments[target.segmentIndex + 1] =
+                    wiringService.getSegmentsBetweenPositions(
+                        {
+                            end1: snappedPosition2,
+                            end2: {
+                                x: target.wire.segments[target.segmentIndex + 1].x2,
+                                y: target.wire.segments[target.segmentIndex + 1].y2
+                            }
+                        },
+                        'SimpleRouter')[0];
+
+            }
+
+        }
+
+    };
+
+    onDiagramMouseUp = function ($event) {
+
+        possibbleDragTargetsDescriptor = null;
+
+        if (dragTargetsDescriptor) {
+            finishDrag();
+            $event.stopPropagation();
+        }
+
+    };
+
+    onDiagramMouseLeave = function (/*$event*/) {
+
+        cancelDrag();
+
+    };
+
+    onWindowBlur = function (/*$event*/) {
+
+        cancelDrag();
+
+    };
+
+    onWireMouseUp = function (wire, segment, $event) {
+
+        possibbleDragTargetsDescriptor = null;
+
+        if (dragTargetsDescriptor) {
+            finishDrag();
+            $event.stopPropagation();
+        }
+
+    };
+
+    onWireMouseDown = function (wire, segment, $event) {
+
+        var getDragDescriptor,
+            indexOfSegment;
+
+        getDragDescriptor = function (wire, segment, sIndex) {
+
+            var offset = getOffsetToMouse($event);
+
+            return {
+                wire: wire,
+                segment: segment,
+                segmentIndex: sIndex,
+                originalSegments: angular.copy(wire.segments),
+                deltaToCursor1: {
+                    x: segment.x1 - offset.x,
+                    y: segment.y1 - offset.y
+                },
+                deltaToCursor2: {
+                    x: segment.x2 - offset.x,
+                    y: segment.y2 - offset.y
+                }
+
+            };
+
+
+        };
+
+        if (angular.isObject(wire) && angular.isObject(segment)) {
+
+            indexOfSegment = wire.segments.indexOf(segment);
+
+            if (indexOfSegment > 0 && indexOfSegment < wire.segments.length - 1) {
+
+                $scope.diagram.config = $scope.diagram.config || {};
+
+                if ($scope.diagram.config.editable === true &&
+                    wire.nonSelectable !== true &&
+                    wire.locationLocked !== true) {
+
+                    $event.stopPropagation();
+
+                    possibbleDragTargetsDescriptor = {
+                        targets: [getDragDescriptor(wire, segment, indexOfSegment)]
+                    };
+
+                }
+
+            }
+        }
+    };
+
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
+    this.onWindowBlur = onWindowBlur;
+    this.onWireMouseUp = onWireMouseUp;
+    this.onWireMouseDown = onWireMouseDown;
+
+    return this;
+
+};
+
+},{}],23:[function(require,module,exports){
+/*globals angular*/
+
+'use strict';
+
 module.exports = function($scope, $rootScope, diagramService, wiringService, gridService, $timeout, $log) {
 
     var self = this,
@@ -3121,7 +3386,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
 };
 
-},{"../../../services/diagramService/classes/Wire.js":43}],23:[function(require,module,exports){
+},{"../../../services/diagramService/classes/Wire.js":44}],24:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -3467,7 +3732,7 @@ module.exports = function (
 
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -3493,6 +3758,9 @@ angular.module('mms.designVisualization.svgDiagram', [
             ComponentDragHandler = require('./classes/ComponentDragHandler'),
             componentDragHandler,
 
+            WireDragHandler = require('./classes/WireDragHandler'),
+            wireDragHandler,
+
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
@@ -3507,6 +3775,17 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         componentDragHandler = new ComponentDragHandler(
             $scope,
+            diagramService,
+            wiringService,
+            operationsManager,
+            $timeout,
+            gridService,
+            $log
+        );
+
+        wireDragHandler = new WireDragHandler(
+            $scope,
+            $rootScope,
             diagramService,
             wiringService,
             operationsManager,
@@ -3567,10 +3846,10 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseUp = function ($event) {
 
             componentDragHandler.onDiagramMouseUp($event);
+            wireDragHandler.onDiagramMouseUp($event);
             wireDrawHandler.onDiagramMouseUp($event);
 
         };
-
 
         $scope.onDiagramClick = function (/*$event*/) {
 
@@ -3580,6 +3859,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseMove = function ($event) {
 
             componentDragHandler.onDiagramMouseMove($event);
+            wireDragHandler.onDiagramMouseMove($event);
             wireDrawHandler.onDiagramMouseMove($event);
 
         };
@@ -3599,6 +3879,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseLeave = function ($event) {
 
             componentDragHandler.onDiagramMouseLeave($event);
+            wireDragHandler.onDiagramMouseLeave($event);
             wireDrawHandler.onDiagramMouseLeave($event);
 
         };
@@ -3606,6 +3887,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $$window.blur(function ($event) {
 
             componentDragHandler.onWindowBlur($event);
+            wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
 
         });
@@ -3666,6 +3948,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onWireMouseUp = function (wire, segment, $event) {
 
+            wireDragHandler.onWireMouseUp(wire, segment, $event);
             $event.stopPropagation();
 
         };
@@ -3679,7 +3962,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             } else {
 
-//                componentDragHandler.onWireMouseDown(component, $event);
+                wireDragHandler.onWireMouseDown(wire, segment, $event);
 
             }
         };
@@ -3899,7 +4182,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":20,"./classes/ComponentSelectionHandler":21,"./classes/WireDrawHandler":22,"./classes/contextMenuHandler":23}],25:[function(require,module,exports){
+},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":20,"./classes/ComponentSelectionHandler":21,"./classes/WireDragHandler":22,"./classes/WireDrawHandler":23,"./classes/contextMenuHandler":24}],26:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -3965,7 +4248,7 @@ angular.module(
                 templateNamespace: 'SVG'
             };
         } );
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4005,7 +4288,7 @@ angular.module(
             });
         }
     ]);
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -4180,7 +4463,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":49,"../port/port.js":16,"./box/box.js":25,"./capacitor/capacitor.js":26,"./diode/diode.js":28,"./inductor/inductor.js":29,"./jFetP/jFetP.js":30,"./opAmp/opAmp.js":31,"./resistor/resistor.js":32,"./simpleConnector/simpleConnector.js":33,"./tvsDiode/tvsDiode.js":34}],28:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":50,"../port/port.js":16,"./box/box.js":26,"./capacitor/capacitor.js":27,"./diode/diode.js":29,"./inductor/inductor.js":30,"./jFetP/jFetP.js":31,"./opAmp/opAmp.js":32,"./resistor/resistor.js":33,"./simpleConnector/simpleConnector.js":34,"./tvsDiode/tvsDiode.js":35}],29:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4221,7 +4504,7 @@ angular.module(
         }
     ]);
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4261,7 +4544,7 @@ angular.module(
             });
         }
     ]);
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4308,7 +4591,7 @@ angular.module(
             });
         }
     ]);
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4369,7 +4652,7 @@ angular.module(
             });
         }
     ]);
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4409,7 +4692,7 @@ angular.module(
             });
         }
     ]);
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4457,7 +4740,7 @@ angular.module(
         };
     });
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4498,7 +4781,7 @@ angular.module(
         }
     ]);
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4833,9 +5116,9 @@ angular.module('mms.testbenchActions', [
     });
 
 
-},{}],36:[function(require,module,exports){
-
 },{}],37:[function(require,module,exports){
+
+},{}],38:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -4883,7 +5166,7 @@ angular.module('mms.connectionHandling', [])
 
     });
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4958,7 +5241,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
 module.exports = ComponentPort;
 
-},{"glMatrix":4}],39:[function(require,module,exports){
+},{"glMatrix":4}],40:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5514,7 +5797,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     this.getDiagramElement = getDiagramElement;
 };
 
-},{"./ComponentPort":38,"./Diagram":40,"./DiagramComponent.js":41,"./Wire.js":43}],40:[function(require,module,exports){
+},{"./ComponentPort":39,"./Diagram":41,"./DiagramComponent.js":42,"./Wire.js":44}],41:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5800,7 +6083,7 @@ Diagram.prototype.getSelectedComponents = function () {
 
 module.exports = Diagram;
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6002,7 +6285,7 @@ DiagramComponent.prototype.localToGlobal = function () {
 };
 
 module.exports = DiagramComponent;
-},{"glMatrix":4}],42:[function(require,module,exports){
+},{"glMatrix":4}],43:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6158,7 +6441,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":38,"./Diagram":40,"./DiagramComponent.js":41,"./Wire.js":43}],43:[function(require,module,exports){
+},{"./ComponentPort":39,"./Diagram":41,"./DiagramComponent.js":42,"./Wire.js":44}],44:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6246,7 +6529,7 @@ Wire.prototype.getEndPositions = function () {
 
 module.exports = Wire;
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -6573,7 +6856,7 @@ angular.module('mms.designVisualization.diagramService', [
         }
     ]);
 
-},{"./classes/ComponentPort":38,"./classes/CyPhyDiagramParser.js":39,"./classes/DiagramComponent.js":41,"./classes/DummyDiagramGenerator.js":42,"./classes/Wire.js":43}],45:[function(require,module,exports){
+},{"./classes/ComponentPort":39,"./classes/CyPhyDiagramParser.js":40,"./classes/DiagramComponent.js":42,"./classes/DummyDiagramGenerator.js":43,"./classes/Wire.js":44}],46:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6880,7 +7163,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
     }
 ] );
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6952,7 +7235,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
         }
     ];
 });
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -7082,7 +7365,7 @@ angular.module('mms.projectHandling', [])
 
     });
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -7127,7 +7410,7 @@ module.exports = function() {
     return symbolsByKeywords;
 };
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7424,7 +7707,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{"./classes/SymbolTypesSearchIndex":48}],50:[function(require,module,exports){
+},{"./classes/SymbolTypesSearchIndex":49}],51:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7515,7 +7798,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7564,7 +7847,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7788,7 +8071,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
     }
 ]);
 
-},{"./classes/ElbowRouter.js":50,"./classes/SimpleRouter.js":51}],53:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":51,"./classes/SimpleRouter.js":52}],54:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );

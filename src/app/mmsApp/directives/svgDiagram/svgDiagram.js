@@ -23,6 +23,9 @@ angular.module('mms.designVisualization.svgDiagram', [
             ComponentDragHandler = require('./classes/ComponentDragHandler'),
             componentDragHandler,
 
+            WireDragHandler = require('./classes/WireDragHandler'),
+            wireDragHandler,
+
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
@@ -37,6 +40,17 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         componentDragHandler = new ComponentDragHandler(
             $scope,
+            diagramService,
+            wiringService,
+            operationsManager,
+            $timeout,
+            gridService,
+            $log
+        );
+
+        wireDragHandler = new WireDragHandler(
+            $scope,
+            $rootScope,
             diagramService,
             wiringService,
             operationsManager,
@@ -97,10 +111,10 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseUp = function ($event) {
 
             componentDragHandler.onDiagramMouseUp($event);
+            wireDragHandler.onDiagramMouseUp($event);
             wireDrawHandler.onDiagramMouseUp($event);
 
         };
-
 
         $scope.onDiagramClick = function (/*$event*/) {
 
@@ -110,6 +124,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseMove = function ($event) {
 
             componentDragHandler.onDiagramMouseMove($event);
+            wireDragHandler.onDiagramMouseMove($event);
             wireDrawHandler.onDiagramMouseMove($event);
 
         };
@@ -129,6 +144,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseLeave = function ($event) {
 
             componentDragHandler.onDiagramMouseLeave($event);
+            wireDragHandler.onDiagramMouseLeave($event);
             wireDrawHandler.onDiagramMouseLeave($event);
 
         };
@@ -136,6 +152,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         $$window.blur(function ($event) {
 
             componentDragHandler.onWindowBlur($event);
+            wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
 
         });
@@ -196,6 +213,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onWireMouseUp = function (wire, segment, $event) {
 
+            wireDragHandler.onWireMouseUp(wire, segment, $event);
             $event.stopPropagation();
 
         };
@@ -209,7 +227,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             } else {
 
-//                componentDragHandler.onWireMouseDown(component, $event);
+                wireDragHandler.onWireMouseDown(wire, segment, $event);
 
             }
         };
