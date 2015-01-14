@@ -11,10 +11,24 @@ module.exports = function (
         onPortContextmenu,
         onDiagramContextmenu,
         onDiagramMouseDown,
+        getOffsetToMouse,
 
         openMenu;
 
     $log.debug('Initializing context menus.');
+
+    getOffsetToMouse = function ($event) {
+
+        var offset;
+
+        offset = {
+            x: $event.pageX - $scope.elementOffset.left,
+            y: $event.pageY - $scope.elementOffset.top
+        };
+
+        return offset;
+
+    };
 
     openMenu = function ($event) {
 
@@ -134,12 +148,68 @@ module.exports = function (
                                 $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                             }
                         }
-
                     ]
-
                 }
-
             );
+
+        } else {
+
+            $scope.contextMenuData.unshift(
+
+                {
+
+                    id: 'cornerManipulation',
+                    items: [
+                        {
+                            id: 'addCorner',
+                            label: 'Add corner',
+                            iconClass: 'fa fa-plus',
+                            action: function () {
+
+                                var sIndex,
+                                    newSegment,
+                                    newPosition;
+
+                                sIndex = wire.segments.indexOf(segment);
+
+                                newPosition = getOffsetToMouse($event);
+
+                                newSegment = wiringService.getSegmentsBetweenPositions(
+                                    {
+                                        end1: {
+                                            x: newPosition.x,
+                                            y: newPosition.y
+                                        },
+
+                                        end2: {
+                                            x: segment.x2,
+                                            y: segment.y2
+                                        }
+                                    }, 'SimpleRouter')[0];
+
+
+                                wire.segments[ sIndex ] = wiringService.getSegmentsBetweenPositions(
+                                    {
+                                        end1: {
+                                            x: segment.x1,
+                                            y: segment.y1
+                                        },
+
+                                        end2: {
+                                            x: newPosition.x,
+                                            y: newPosition.y
+                                        }
+                                    }, 'SimpleRouter')[0];
+
+                                wire.segments.splice(sIndex + 1, 0, newSegment);
+
+                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            }
+                        }
+                    ]
+                }
+            );
+
 
         }
 
