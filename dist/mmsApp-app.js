@@ -2934,9 +2934,6 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         possibbleDragTargetsDescriptor,
         dragTargetsDescriptor,
 
-        wireUpdateWait,
-        dragTargetsWiresUpdatePromises,
-
         onDiagramMouseUp,
         onDiagramMouseMove,
         onDiagramMouseLeave,
@@ -2984,16 +2981,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             angular.forEach(dragTargetsDescriptor.targets, function (target) {
 
-                target.component.setPosition(
-                    target.originalPosition.x,
-                    target.originalPosition.y
-                );
-
-            });
-
-            angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
-
-                wiringService.adjustWireEndSegments(wire);
+                target.wire.segments = target.originalSegments;
 
             });
 
@@ -3018,9 +3006,6 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         $log.debug('Finish dragging');
 
     };
-
-    wireUpdateWait = 20;
-    dragTargetsWiresUpdatePromises = {};
 
     onDiagramMouseMove = function ($event) {
 
