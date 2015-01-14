@@ -5930,30 +5930,34 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         } else {
 
-            symbol = symbolManager.makeBoxSymbol(element.name, {
-                    showPortLabels: true
-                }, portStuff.portDescriptors,
-                {
-                    minWidth: 200,
-                    portWireLeadInIncrement: 10
+            if (element.name !== 'pcb') {
+                symbol = symbolManager.makeBoxSymbol(element.name, {
+                        showPortLabels: true
+                    }, portStuff.portDescriptors,
+                    {
+                        minWidth: 200,
+                        portWireLeadInIncrement: 10
+                    });
+
+                newModelComponent = new DiagramComponent({
+                    id: element.id,
+                    label: labelParser(element.name),
+                    x: element.position.x,
+                    y: element.position.y,
+                    z: zIndex,
+                    rotation: 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                    symbol: symbol,
+                    nonSelectable: false,
+                    locationLocked: false,
+                    draggable: true
                 });
 
-            newModelComponent = new DiagramComponent({
-                id: element.id,
-                label: labelParser(element.name),
-                x: element.position.x,
-                y: element.position.y,
-                z: zIndex,
-                rotation: 0,
-                scaleX: 1,
-                scaleY: 1,
-                symbol: symbol,
-                nonSelectable: false,
-                locationLocked: false,
-                draggable: true
-            });
 
-            newModelComponent.registerPortInstances(portStuff.portInstances);
+                newModelComponent.registerPortInstances(portStuff.portInstances);
+                
+            }
 
         }
 
