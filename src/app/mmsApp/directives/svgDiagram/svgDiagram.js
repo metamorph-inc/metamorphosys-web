@@ -162,7 +162,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onComponentMouseUp = function (component, $event) {
 
-            if (!componentDragHandler.dragging) {
+            if (!componentDragHandler.dragging && !wireDrawHandler.wiring) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
                 $event.stopPropagation();
