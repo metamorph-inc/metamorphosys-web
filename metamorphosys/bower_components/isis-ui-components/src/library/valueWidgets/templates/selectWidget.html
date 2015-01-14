@@ -1,0 +1,28 @@
+<div class="select-widget"
+     ng-switch on="widgetMode">
+
+    <div ng-switch-when="display">{{$parent.getDisplayValue()}}</div>
+    <div ng-switch-when="edit">
+        <select ng-if="!modelConfig.multiple"
+                placeholder="{{placeHolder}}"
+                name="{{inputConfig.name}}"
+                id="{{inputConfig.id}}"
+                ng-disabled="widgetDisabled"
+                class="form-control"
+                ng-model="myValue.value"
+                ng-options="option.label for option in optionsList">
+            <option value="">{{placeHolder}}&nbsp;</option>
+        </select>
+        <select ng-if="modelConfig.multiple"
+                placeholder="{{placeHolder}}"
+                name="{{inputConfig.name}}"
+                id="{{inputConfig.id}}"
+                ng-disabled="widgetDisabled"
+                multiple="true"
+                class="form-control"
+                ng-model="myValue.value"
+                ng-options="option.label for option in optionsList">
+        </select>
+    </div>
+
+</div>

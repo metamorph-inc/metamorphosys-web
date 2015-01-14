@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Component xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" SchemaVersion="2.5" ID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" Name="Formulas" Version="" xmlns="avm">
+  <Property xmlns:q1="avm" xsi:type="q1:PrimitiveProperty" Name="OutP1" OnDataSheet="false" ID="property.id-f9532d9c-574f-484f-922a-0dac0e8ee0f3" XPosition="714" YPosition="294" xmlns="">
+    <Value ID="id-f9532d9c-574f-484f-922a-0dac0e8ee0f3" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-35501718-0fd4-4e56-a701-13d7c2d91dbe" />
+    </Value>
+  </Property>
+  <Property xmlns:q2="avm" xsi:type="q2:PrimitiveProperty" Name="OutP2" OnDataSheet="false" ID="property.id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" XPosition="721" YPosition="343" xmlns="">
+    <Value ID="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q2:DerivedValue" ValueSource="id-f9532d9c-574f-484f-922a-0dac0e8ee0f3" />
+    </Value>
+  </Property>
+  <Property xmlns:q3="avm" xsi:type="q3:PrimitiveProperty" Name="P2" OnDataSheet="false" ID="property.id-bd5d3652-a30e-43ae-9e16-18420833ea1b" XPosition="294" YPosition="357" xmlns="">
+    <Value ID="id-bd5d3652-a30e-43ae-9e16-18420833ea1b" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q3:FixedValue">
+        <Value />
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Property xmlns:q4="avm" xsi:type="q4:PrimitiveProperty" Name="P1" OnDataSheet="true" ID="property.id-5d71b2a8-48f3-448b-b5b5-a08512741486" XPosition="133" YPosition="273" xmlns="">
+    <Value ID="id-5d71b2a8-48f3-448b-b5b5-a08512741486" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q4:DerivedValue" ValueSource="id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571" />
+    </Value>
+  </Property>
+  <Property xmlns:q5="avm" xsi:type="q5:PrimitiveProperty" Name="UnusedParameter" ID="param.id-833c6c3e-cab8-4723-bb29-2ea816e890a5" XPosition="140" YPosition="49" xmlns="">
+    <Value ID="id-833c6c3e-cab8-4723-bb29-2ea816e890a5" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q5:ParametricValue">
+        <AssignedValue xsi:type="q5:FixedValue">
+          <Value />
+        </AssignedValue>
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Property xmlns:q6="avm" xsi:type="q6:PrimitiveProperty" Name="Parameter" ID="param.id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571" XPosition="140" YPosition="147" xmlns="">
+    <Value ID="id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571" DimensionType="Scalar" Dimensions="" DataType="String">
+      <ValueExpression xsi:type="q6:ParametricValue">
+        <AssignedValue xsi:type="q6:FixedValue">
+          <Value />
+        </AssignedValue>
+      </ValueExpression>
+    </Value>
+  </Property>
+  <Classifications xmlns="" />
+  <Formula xmlns:q7="avm" xsi:type="q7:SimpleFormula" ID="id-09f67b39-79b5-4ce8-a465-bf50ee8269b9" Name="SimpleFormula" XPosition="476" YPosition="224" Operation="Multiplication" Operand="id-5d71b2a8-48f3-448b-b5b5-a08512741486 id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571 id-bd5d3652-a30e-43ae-9e16-18420833ea1b" xmlns="" />
+  <Formula xmlns:q8="avm" xsi:type="q8:ComplexFormula" ID="id-35501718-0fd4-4e56-a701-13d7c2d91dbe" Name="CustomFormula" XPosition="658" YPosition="196" Expression="Parameter*8 + P2" xmlns="">
+    <Operand Symbol="P2" ValueSource="id-bd5d3652-a30e-43ae-9e16-18420833ea1b" />
+    <Operand Symbol="Parameter" ValueSource="id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571" />
+  </Formula>
+</Component>

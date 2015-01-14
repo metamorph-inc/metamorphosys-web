@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ComponentAssembly" DesignID="{8504b8d9-ef48-40f0-a0b0-410483ad8049}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ComponentAssembly" xmlns="">
+    <Container xsi:type="q1:Compound" YPosition="196" XPosition="735" Name="ComponentAssembly">
+      <Property xsi:type="q1:PrimitiveProperty" Name="OutP3" OnDataSheet="true" ID="property.id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" XPosition="721" YPosition="343">
+        <Value ID="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" DimensionType="Scalar" Dimensions="" DataType="String">
+          <ValueExpression xsi:type="q1:DerivedValue" ValueSource="5fb50551-57eb-4887-b971-87714f557597" />
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="OutP2" OnDataSheet="true" ID="property.9fe49b85-3dc1-4e5e-b467-2040e91b327c" XPosition="49" YPosition="161">
+        <Value ID="9fe49b85-3dc1-4e5e-b467-2040e91b327c" DimensionType="Scalar" Dimensions="" DataType="String">
+          <ValueExpression xsi:type="q1:DerivedValue" ValueSource="888d2066-f6ca-406d-b1ee-c1e3aedc721e" />
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="294" YPosition="168" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{117fa808-d54f-497d-8781-126cb5da02f9}" Name="Formulas">
+        <PrimitivePropertyInstance IDinComponentModel="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6">
+          <Value ID="5fb50551-57eb-4887-b971-87714f557597" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-f9532d9c-574f-484f-922a-0dac0e8ee0f3">
+          <Value ID="4bd14588-ee05-4d3b-8c42-ef291958191a" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-5d71b2a8-48f3-448b-b5b5-a08512741486">
+          <Value ID="cf08721f-daa6-4b08-9cf4-dd921cee7ef2" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-bd5d3652-a30e-43ae-9e16-18420833ea1b">
+          <Value ID="10969c90-275e-4c2e-ac99-055c197d696f" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-833c6c3e-cab8-4723-bb29-2ea816e890a5">
+          <Value ID="f387b08d-5a17-489c-807b-06e3924469ca" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571">
+          <Value ID="5e244ae3-c2ff-45b3-9108-6ce9b720088e" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="9fe49b85-3dc1-4e5e-b467-2040e91b327c" />
+          </Value>
+        </PrimitivePropertyInstance>
+      </ComponentInstance>
+    </Container>
+    <Property xsi:type="q1:PrimitiveProperty" Name="Property1" OnDataSheet="false" ID="property.id-3c589e20-ebf3-44a5-a092-8ef50191e51f" XPosition="112" YPosition="42">
+      <Value ID="id-3c589e20-ebf3-44a5-a092-8ef50191e51f" DimensionType="Scalar" Dimensions="" DataType="String">
+        <ValueExpression xsi:type="q1:FixedValue">
+          <Value />
+        </ValueExpression>
+      </Value>
+    </Property>
+    <Property xsi:type="q1:PrimitiveProperty" Name="Property2" OnDataSheet="false" ID="property.id-74d0dff6-199e-44c2-aa05-8bdda2c37128" XPosition="1036" YPosition="245">
+      <Value ID="id-74d0dff6-199e-44c2-aa05-8bdda2c37128" DimensionType="Scalar" Dimensions="" DataType="String">
+        <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" />
+      </Value>
+    </Property>
+    <ComponentInstance XPosition="336" YPosition="175" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{08fc2ad0-3b24-4ae1-a7c4-038b16acc811}" Name="Formulas">
+      <PrimitivePropertyInstance IDinComponentModel="id-5d71b2a8-48f3-448b-b5b5-a08512741486">
+        <Value ID="aa943928-db0d-4b4c-b8f6-21176488aead" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-bd5d3652-a30e-43ae-9e16-18420833ea1b">
+        <Value ID="60a3f1f8-553c-48e9-9875-9b2f27c869c0" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6">
+        <Value ID="888d2066-f6ca-406d-b1ee-c1e3aedc721e" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-f9532d9c-574f-484f-922a-0dac0e8ee0f3">
+        <Value ID="43482e0f-ea38-4097-80ff-2bd086b0e765" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-833c6c3e-cab8-4723-bb29-2ea816e890a5">
+        <Value ID="c24c66c9-9626-4150-857d-e1c00c015e6a" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571">
+        <Value ID="863a99f9-dbd2-4cf4-b39d-58be6bb1a58d" DimensionType="Scalar" Dimensions="" DataType="String">
+          <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-3c589e20-ebf3-44a5-a092-8ef50191e51f" />
+        </Value>
+      </PrimitivePropertyInstance>
+    </ComponentInstance>
+  </RootContainer>
+</Design>

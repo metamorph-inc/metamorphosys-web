@@ -1,0 +1,5 @@
+#!/bin/sh
+# Copy this file to /.git/hooks without changing the name.
+
+# Runnig prettify
+node node_modules/gulp/bin/gulp.js prettify

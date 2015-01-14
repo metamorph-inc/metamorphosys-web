@@ -1,0 +1,35 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Test Bench</h3>
+    </div>
+    <div class="modal-body drop-box-edit-test-bench" ng-file-drop="onDroppedFiles($files)"
+         ng-file-drag-over-class="dragOverClass($event)">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="title">Name</span>
+                <input type="text" class="form-control" data-ng-model="data.name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <span class="title">Description</span>
+                <textarea class="form-control edit-description" data-ng-model="data.description"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <span class="title">Test Bench Zip File [drop files here]</span>
+                <br>
+                <a ng-if="data.fileInfo.name" ng-href="{{data.fileInfo.url}}">{{data.fileInfo.name}}</a>
+            </div>
+            <div class="col-md-6">
+                <span class="title">Test Bench Path</span>
+                <input type="text" class="form-control" data-ng-model="data.path">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>

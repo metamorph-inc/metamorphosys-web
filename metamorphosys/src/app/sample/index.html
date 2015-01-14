@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- Include CSS library dependencies -->
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
+    <link type="text/css" href="/extlib/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Include CSS isis-ui-components -->
+    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.css">
+
+    <!-- Include CSS cyphy-components -->
+
+    <title></title>
+</head>
+<body>
+
+<!-- TODO: add your html here -->
+<div data-ng-include="'/sample/templates/MyView.html'"></div>
+
+<!-- Include library dependencies -->
+<script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/extlib/bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="/extlib/bower_components/angular/angular.js"></script>
+<script src="/extlib/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="/extlib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/extlib/bower_components//angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/extlib/bower_components/angular-ui-utils/ui-utils.min.js"></script>
+<script src="/extlib/bower_components/ng-grid/build/ng-grid.min.js"></script>
+<script src="/extlib/bower_components/angular-ui-utils/ui-utils.min.js"></script>
+
+
+<!-- Include WebGME libraries -->
+<!--  client -->
+<script src="/extlib/node_modules/webgme/dist/webgme.classes.build.js"></script>
+<!--  angular module services-->
+<!--<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>-->
+<script src="/extlib/node_modules/ng-gme/dist/ng-gme.js"></script>
+
+<!-- Include isis-ui-components -->
+<script src="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.js"></script>
+<script src="/extlib/bower_components/isis-ui-components/dist/isis-ui-components-templates.js"></script>
+
+<!-- Include cyphy-components -->
+<script src="/extlib/dist/cyphy-components.js"></script>
+<script src="/extlib/dist/cyphy-components-templates.js"></script>
+
+<!-- Include application -->
+<script src="/extlib/dist/sample-app.js"></script>
+<script src="/extlib/dist/sample-app-templates.js"></script>
+
+<!-- Start the main application -->
+<script type="text/javascript">
+    var clientLoaded,
+            timeout = 5000, // 10 seconds
+            waitCounter = 0,
+            i,
+            success,
+            usedClasses = ["Client"],
+            interval = 200, // 100 milliseconds interval
+            waitForLoadId = setInterval(function () {
+                if (window.WebGMEGlobal &&
+                    window.WebGMEGlobal.classes) {
+                    // TODO: check for all classes that we use
+                    clearInterval(waitForLoadId);
+                    success = true;
+
+                    for (i = 0; i < usedClasses.length; i += 1) {
+                        if (window.WebGMEGlobal.classes.hasOwnProperty(usedClasses[i])) {
+                            console.log('WebGME ' + usedClasses[i] + ' is available.');
+                        } else {
+                            console.error('WebGME ' + usedClasses[i] + ' was not found.');
+                            success = false;
+                        }
+                    }
+
+                    if (success) {
+                        console.log('WebGME client library is ready to use.');
+                        clientLoaded();
+                    }
+                } else {
+                    console.log('Waiting for WebGME client library to load.');
+                    waitCounter += 1;
+                    if (waitCounter >= timeout / interval) {
+                        clearInterval(waitForLoadId);
+                        console.error('WebGME client library was not loaded within a reasonable time. (' + (timeout / 1000) + ' s)');
+                    }
+                }
+            }, interval);
+
+    clientLoaded = function () {
+        // main entry point of the app.js
+        // once the webgme Client is loaded and ready we can use it.
+
+        angular.bootstrap(document, ['CyPhyApp']);
+    };
+</script>
+
+</body>
+</html>

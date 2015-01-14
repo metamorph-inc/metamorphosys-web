@@ -1,0 +1,10 @@
+
+.item-list {
+    ul.list-group {
+      li.item-list-item {
+        &.top-level-system-under-test {
+          background-color: lightyellow;
+        }
+      }
+    }
+  }

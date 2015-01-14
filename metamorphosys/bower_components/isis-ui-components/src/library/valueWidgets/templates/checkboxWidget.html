@@ -1,0 +1,36 @@
+<div class="checkbox-widget widget"
+     ng-class="widgetMode"
+     ng-disabled="widgetDisabled"
+     ng-switch on="widgetMode">
+
+    <div ng-switch-when="display">
+        <div ng-switch on="myValue.value">
+            <div ng-switch-when="true">
+                <i class="glyphicon glyphicon-ok"></i>
+            </div>
+            <div ng-switch-when="false">
+                <i class="glyphicon glyphicon-remove"></i>
+            </div>
+            <div ng-switch-when="undefined">
+                {{modelConfig.placeHolder}}
+            </div>
+        </div>
+
+    </div>
+    <div ng-switch-when="edit">
+        <div class="btn-group btn-group-sm">
+            <label class="btn btn-sm btn-default"
+                   ng-disabled="widgetDisabled"
+                   ng-model="myValue.value"
+                   btn-radio="true">{{trueLabel}}</label>
+            <label class="btn btn-sm btn-default"
+                   ng-disabled="widgetDisabled"
+                   ng-model="myValue.value"
+                   btn-radio="false">{{falseLabel}}</label>
+        </div>
+        <input type="hidden"
+               name="{{inputConfig.name}}"
+               id="{{inputConfig.id}}">
+    </div>
+
+</div>

@@ -1,0 +1,60 @@
+{
+    "/1/35": {
+        "ID": 35,
+        "attributes": {
+            "name": "bolt_hex__generic__m14x2p0x60_10p9_blo",
+            "Classifications": "Bolt_Hex",
+            "SchemaVersion": "1.0",
+            "Version": "30July13",
+            "ID": "0249ca2a-aa17-4c06-a312-67b83c4e0317",
+            "Resource": "hash"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/7"
+        },
+        "collection": {},
+        "path": "/1/35",
+        "parent": "/1",
+        "children": [
+            "/1/35/36"
+        ]
+    },
+    "/1/35/36": {
+        "ID": 36,
+        "attributes": {
+            "name": "CADModel",
+            "Type": "CAD"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {},
+        "path": "/1/35/36",
+        "parent": "/1/35",
+        "children": []
+    }
+}

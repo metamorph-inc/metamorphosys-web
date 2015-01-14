@@ -1,0 +1,545 @@
+{
+    "/1/35": {
+        "ID": 35,
+        "attributes": {
+            "name": "Formulas",
+            "SchemaVersion": "2.5",
+            "Version": "",
+            "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
+            "Resource": "hash"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/7"
+        },
+        "collection": {},
+        "path": "/1/35",
+        "parent": "/1",
+        "children": [
+            "/1/35/36",
+            "/1/35/37",
+            "/1/35/38",
+            "/1/35/39",
+            "/1/35/40",
+            "/1/35/41",
+            "/1/35/42",
+            "/1/35/43",
+            "/1/35/44",
+            "/1/35/45",
+            "/1/35/46",
+            "/1/35/47",
+            "/1/35/48",
+            "/1/35/49",
+            "/1/35/50",
+            "/1/35/51"
+        ]
+    },
+    "/1/35/36": {
+        "ID": 36,
+        "attributes": {
+            "name": "OutP1",
+            "ID": "id-f9532d9c-574f-484f-922a-0dac0e8ee0f3",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 714,
+                "y": 294
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {
+            "dst": [
+                "/1/35/44"
+            ],
+            "src": [
+                "/1/35/45"
+            ]
+        },
+        "path": "/1/35/36",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/37": {
+        "ID": 37,
+        "attributes": {
+            "name": "OutP2",
+            "ID": "id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 721,
+                "y": 343
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {
+            "dst": [
+                "/1/35/45"
+            ]
+        },
+        "path": "/1/35/37",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/38": {
+        "ID": 38,
+        "attributes": {
+            "name": "P2",
+            "ID": "id-bd5d3652-a30e-43ae-9e16-18420833ea1b",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 294,
+                "y": 357
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {
+            "src": [
+                "/1/35/50",
+                "/1/35/51"
+            ]
+        },
+        "path": "/1/35/38",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/39": {
+        "ID": 39,
+        "attributes": {
+            "name": "P1",
+            "ID": "id-5d71b2a8-48f3-448b-b5b5-a08512741486",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 133,
+                "y": 273
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {
+            "dst": [
+                "/1/35/46"
+            ],
+            "src": [
+                "/1/35/49"
+            ]
+        },
+        "path": "/1/35/39",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/40": {
+        "ID": 40,
+        "attributes": {
+            "name": "UnusedParameter",
+            "ID": "id-833c6c3e-cab8-4723-bb29-2ea816e890a5",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Parametric",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 140,
+                "y": 49
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {},
+        "path": "/1/35/40",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/41": {
+        "ID": 41,
+        "attributes": {
+            "name": "Parameter",
+            "ID": "id-fc8ea8fa-fe8a-4e0d-9d47-14f17d41d571",
+            "Value": "",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Parametric",
+            "DataType": "String"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 140,
+                "y": 147
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {
+            "src": [
+                "/1/35/46",
+                "/1/35/47",
+                "/1/35/48"
+            ]
+        },
+        "path": "/1/35/41",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/42": {
+        "ID": 42,
+        "attributes": {
+            "name": "SimpleFormula",
+            "Method": "Multiplication"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 476,
+                "y": 224
+            }
+        },
+        "pointers": {
+            "base": "/33"
+        },
+        "collection": {
+            "dst": [
+                "/1/35/47",
+                "/1/35/49",
+                "/1/35/50"
+            ]
+        },
+        "path": "/1/35/42",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/43": {
+        "ID": 43,
+        "attributes": {
+            "name": "CustomFormula",
+            "Expression": "Parameter*8 + P2"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 658,
+                "y": 196
+            }
+        },
+        "pointers": {
+            "base": "/30"
+        },
+        "collection": {
+            "src": [
+                "/1/35/44"
+            ],
+            "dst": [
+                "/1/35/48",
+                "/1/35/51"
+            ]
+        },
+        "path": "/1/35/43",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/44": {
+        "ID": 44,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/43",
+            "dst": "/1/35/36"
+        },
+        "collection": {},
+        "path": "/1/35/44",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/45": {
+        "ID": 45,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/36",
+            "dst": "/1/35/37"
+        },
+        "collection": {},
+        "path": "/1/35/45",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/46": {
+        "ID": 46,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/41",
+            "dst": "/1/35/39"
+        },
+        "collection": {},
+        "path": "/1/35/46",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/47": {
+        "ID": 47,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/41",
+            "dst": "/1/35/42"
+        },
+        "collection": {},
+        "path": "/1/35/47",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/48": {
+        "ID": 48,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/41",
+            "dst": "/1/35/43"
+        },
+        "collection": {},
+        "path": "/1/35/48",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/49": {
+        "ID": 49,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/39",
+            "dst": "/1/35/42"
+        },
+        "collection": {},
+        "path": "/1/35/49",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/50": {
+        "ID": 50,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/38",
+            "dst": "/1/35/42"
+        },
+        "collection": {},
+        "path": "/1/35/50",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/51": {
+        "ID": 51,
+        "attributes": {
+            "name": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/27",
+            "src": "/1/35/38",
+            "dst": "/1/35/43"
+        },
+        "collection": {},
+        "path": "/1/35/51",
+        "parent": "/1/35",
+        "children": []
+    }
+}

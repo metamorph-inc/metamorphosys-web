@@ -1,0 +1,16 @@
+<div class="interface-details">
+    <h5>Connectors</h5>
+    <ul class="connector-list">
+        <li class="connector-list-item" ng-repeat="conn in details.connectors"> {{conn.name}}</li>
+    </ul>
+    <h5>Properties</h5>
+    <ul class="property-list">
+        <li class="property-list-item" ng-repeat="prop in details.properties">
+            {{prop.name}} [{{prop.dataType}}] {{prop.valueType}} <span ng-if="prop.derived"> (is derived)</span>
+        </li>
+    </ul>
+    <h5>Ports</h5>
+    <ul class="port-list">
+        <li class="port-list-item" ng-repeat="port in details.ports"> {{port.name}} [{{port.type}}] {{port.class}}</li>
+    </ul>
+</div>

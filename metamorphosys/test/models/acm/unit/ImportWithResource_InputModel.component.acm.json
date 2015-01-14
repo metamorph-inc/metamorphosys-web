@@ -1,0 +1,306 @@
+{
+    "/1/35": {
+        "ID": 35,
+        "attributes": {
+            "name": "Cross_Drive_without_TC",
+            "Version": "",
+            "Resource": "hash"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/7"
+        },
+        "collection": {},
+        "path": "/1/35",
+        "parent": "/1",
+        "children": [
+            "/1/35/36",
+            "/1/35/37",
+            "/1/35/38",
+            "/1/35/39",
+            "/1/35/40",
+            "/1/35/41",
+            "/1/35/42",
+            "/1/35/43",
+            "/1/35/44"
+        ]
+    },
+    "/1/35/36": {
+        "ID": 36,
+        "attributes": {
+            "name": "Fluid Input",
+            "Type": "ModelicaConnector",
+            "Class": "Modelica.Fluid.Interfaces.FluidPort_a",
+            "ID": "id1"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/35/36",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/37": {
+        "ID": 37,
+        "attributes": {
+            "name": "Fluid Output",
+            "Type": "ModelicaConnector",
+            "Class": "Modelica.Fluid.Interfaces.FluidPort_a",
+            "ID": "id2"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/35/37",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/38": {
+        "ID": 38,
+        "attributes": {
+            "name": "Main Bearing",
+            "Type": "ModelicaConnector",
+            "Class": "Modelica.Mechanics.MultiBody.Interfaces.FlangeWithBearing",
+            "ID": "id3"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/35/38",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/39": {
+        "ID": 39,
+        "attributes": {
+            "name": "Mount 1",
+            "Type": "ModelicaConnector",
+            "Class": "Modelica.Mechanics.MultiBody.Interfaces.Frame",
+            "ID": "id4"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/15"
+        },
+        "collection": {},
+        "path": "/1/35/39",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/40": {
+        "ID": 40,
+        "attributes": {
+            "name": "Height",
+            "Unit": "meter",
+            "ID": "ID10",
+            "Value": "0.1",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "Real"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {},
+        "path": "/1/35/40",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/41": {
+        "ID": 41,
+        "attributes": {
+            "name": "Length",
+            "Unit": "meter",
+            "ID": "ID11",
+            "Value": "0.1",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "Real"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {},
+        "path": "/1/35/41",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/42": {
+        "ID": 42,
+        "attributes": {
+            "name": "Width",
+            "Unit": "meter",
+            "ID": "ID12",
+            "Value": "0.1",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "Real"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {},
+        "path": "/1/35/42",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/43": {
+        "ID": 43,
+        "attributes": {
+            "name": "Mass",
+            "Unit": "kilogram",
+            "ID": "ID13",
+            "Value": "1",
+            "Minimum": "-inf",
+            "Maximum": "inf",
+            "ValueType": "Fixed",
+            "DataType": "Real"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/20"
+        },
+        "collection": {},
+        "path": "/1/35/43",
+        "parent": "/1/35",
+        "children": []
+    },
+    "/1/35/44": {
+        "ID": 44,
+        "attributes": {
+            "name": "ModelicaModel",
+            "Type": "Modelica",
+            "Class": "C2M2L_Ext.C2M2L_Delivered_Component_Implementations.Drive_Line.Cross_Drive_Transmission.Cross_Drive_without_TC"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/16"
+        },
+        "collection": {},
+        "path": "/1/35/44",
+        "parent": "/1/35",
+        "children": []
+    }
+}

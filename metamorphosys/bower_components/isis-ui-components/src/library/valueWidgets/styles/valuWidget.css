@@ -1,0 +1,18 @@
+.value-widget {
+  max-width: 100%;
+  position: relative; }
+  .value-widget .value-widget-body {
+    display: inline-block; }
+  .value-widget label {
+    color: #555; }
+  .value-widget .value-display {
+    padding: 1ex; }
+  .value-widget.ng-invalid input,
+  .value-widget.ng-invalid textarea {
+    border-left: 3px solid #ff0022;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    color: #ff0022; }
+  .value-widget.ng-invalid .value-display {
+    border-left: 3px solid #ff0022;
+    color: #ff0022; }

@@ -1,0 +1,11 @@
+<div class="compound-widget"
+     ng-class="unresponsive? config.mode : ('col-lg-8 col-md-8 col-sm-8 col-xs-12 ' + config.mode)"
+     ng-init="displayValue = value.getDisplayValue(value)">
+    <i class="glyphicon"
+       ng-click="value.widget.expanded = !value.widget.expanded;"
+       ng-class="{'glyphicon-chevron-down': value.widget.expanded, 'glyphicon-chevron-right': !value.widget.expanded}"></i>
+    {{displayValue}}
+    <div collapse="!value.widget.expanded" class="compound-container">
+        <property-group items="value.value" config="config"></property-group>
+    </div>
+</div>

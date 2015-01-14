@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--<html data-ng-app="WebGMEApp">-->
+<html>
+<head>
+    <title>WebCyPhy</title>
+
+    <!-- CSS libraries -->
+    <!--<link href="/css/main.css" type="text/css" rel="stylesheet"/>-->
+
+    <!-- Load main.js with RequireJS and launch the app from there -->
+    <script data-main="js/main" src="/lib/require/require.min.js"></script>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+</head>
+<body ng-class="{'loading': appIsLoading}">
+
+<div data-ng-controller="MainNavigatorController" class="main-navigator-container">
+    <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
+</div>
+
+<div growl></div>
+
+<div data-ng-view>
+
+</div>
+<!--<footer data-ng-controller="ServerInfoController" class="server-info">-->
+    <!--<a href="../../../rest/external/serverinfo/all" target="_blank">-->
+        <!--WebGme-CyPhy {{model.version}} served with node {{model.node}} on {{model.osName}}.</a>-->
+<!--</footer>-->
+</body>
+</html>

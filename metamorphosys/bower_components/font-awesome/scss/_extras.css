@@ -1,0 +1,62 @@
+/*
+Syntax error: Undefined variable: "$fa-css-prefix".
+        on line 7 of _extras.scss
+
+2:  * -------------------------- *\/
+3: 
+4: /* Stacked and layered icon *\/
+5: 
+6: /* Animated rotating icon *\/
+7: .#{$fa-css-prefix}-spin {
+8:   -webkit-animation: spin 2s infinite linear;
+9:   -moz-animation: spin 2s infinite linear;
+10:   -o-animation: spin 2s infinite linear;
+11:   animation: spin 2s infinite linear;
+12: }
+
+Backtrace:
+_extras.scss:7
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/script/tree/node.rb:50:in `perform'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:503:in `block in run_interp_no_strip'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:501:in `map'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:501:in `run_interp_no_strip'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:511:in `run_interp'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:381:in `visit_rule'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:152:in `block in visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/stack.rb:79:in `block in with_base'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/stack.rb:121:in `with_frame'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/stack.rb:79:in `with_base'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:152:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:52:in `map'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:161:in `block in visit_children'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:173:in `with_environment'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:160:in `visit_children'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:180:in `visit_root'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:151:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/root_node.rb:36:in `css_tree'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/tree/root_node.rb:20:in `render'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/engine.rb:274:in `render'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/plugin/compiler.rb:414:in `update_stylesheet'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/plugin/compiler.rb:189:in `block in update_stylesheets'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/plugin/compiler.rb:186:in `each'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/plugin/compiler.rb:186:in `update_stylesheets'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/plugin.rb:82:in `update_stylesheets'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/exec.rb:489:in `watch_or_update'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/exec.rb:346:in `process_result'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/exec.rb:43:in `parse'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/lib/sass/exec.rb:22:in `parse!'
+/Library/Ruby/Gems/2.0.0/gems/sass-3.3.7/bin/scss:13:in `<top (required)>'
+/usr/bin/scss:23:in `load'
+/usr/bin/scss:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined variable: \"$fa-css-prefix\".\A         on line 7 of _extras.scss\A \A 2:  * -------------------------- */\A 3: \A 4: /* Stacked and layered icon */\A 5: \A 6: /* Animated rotating icon */\A 7: .#{$fa-css-prefix}-spin {\A 8:   -webkit-animation: spin 2s infinite linear;\A 9:   -moz-animation: spin 2s infinite linear;\A 10:   -o-animation: spin 2s infinite linear;\A 11:   animation: spin 2s infinite linear;\A 12: }"; }

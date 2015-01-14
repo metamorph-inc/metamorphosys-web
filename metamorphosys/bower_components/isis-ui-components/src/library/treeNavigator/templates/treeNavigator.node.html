@@ -1,0 +1,7 @@
+<li title="{{ node.label }}"
+    data-ng-class="getNodeClass(node)">
+
+    <tree-navigator-node-label></tree-navigator-node-label>
+
+    <tree-navigator-node-list nodes="node.children" config="config"></tree-navigator-node-list>
+</li>

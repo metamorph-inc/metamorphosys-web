@@ -1,0 +1,60 @@
+{
+    "/1/35": {
+        "ID": 35,
+        "attributes": {
+            "name": "bolt_hex__generic__m4x0p7x6_8p8_zin",
+            "Classifications": "Bolt_Hex",
+            "SchemaVersion": "1.0",
+            "Version": "19July13",
+            "ID": "10c290d3-97d8-4254-bd26-7eb4e72a8d03",
+            "Resource": "hash"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "pointers": {
+            "base": "/7"
+        },
+        "collection": {},
+        "path": "/1/35",
+        "parent": "/1",
+        "children": [
+            "/1/35/36"
+        ]
+    },
+    "/1/35/36": {
+        "ID": 36,
+        "attributes": {
+            "name": "Connector",
+            "ID": ""
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/10"
+        },
+        "collection": {},
+        "path": "/1/35/36",
+        "parent": "/1/35",
+        "children": []
+    }
+}

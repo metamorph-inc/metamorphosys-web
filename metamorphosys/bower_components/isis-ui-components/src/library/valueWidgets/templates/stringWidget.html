@@ -1,0 +1,26 @@
+<div class="string-widget widget"
+     ng-class="widgetMode"
+     ng-switch on="widgetMode">
+    <div ng-switch-when="display" class="value-display">{{$parent.getDisplayValue()}}</div>
+    <div ng-switch-when="edit">
+        <input ng-if="!widgetConfig.multiLine"
+               type="text"
+               class="form-control"
+               placeholder="{{placeHolder}}"
+               ng-model="myValue.value"
+               name="{{inputConfig.name}}"
+               id="{{inputConfig.id}}"
+               ng-disabled="widgetDisabled"
+               auto-complete="widgetConfig.autoCompleteItems"
+               ui-mask="{{widgetConfig.mask}}">
+        <textarea ng-if="widgetConfig.multiLine"
+                  class="form-control"
+                  placeholder="{{placeHolder}}"
+                  ng-model="myValue.value"
+                  name="{{inputConfig.name}}"
+                  id="{{inputConfig.id}}"
+                  rows="{{widgetConfig.rows}}"
+                  cols="{{widgetConfig.cols}}"
+                  ng-disabled="widgetDisabled"></textarea>
+    </div>
+</div>

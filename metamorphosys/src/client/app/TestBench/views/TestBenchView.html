@@ -1,0 +1,68 @@
+<article class="test-bench-details">
+<header>
+    <h1 class="test-bench-name">{{ testBench.name }}</h1>
+    <div class="test-bench-description">{{ testBench.description }}</div>
+    <!--<h3> {{testBench.tlsutId}} </h3>-->
+</header>
+
+<div class="metrics">
+    <header>
+        <h4 class="metrics-header">Metrics</h4>
+    </header>
+    <ul class="metrics-list">
+        <li class="metrics-list-item" data-ng-repeat="metric in testBench.metrics | orderObjectBy: 'name'">
+            {{metric.name}} - {{metric.description}}
+        </li>
+    </ul>
+</div>
+
+<div class="parameters">
+    <header>
+        <h4 class="parameters-header">Parameters</h4>
+    </header>
+    <ul class="parameters-list">
+        <li class="parameters-list-item" data-ng-repeat="param in testBench.parameters | orderObjectBy: 'name'">
+            {{param.name}} {{param.value}} ({{param.dataType}}) - {{param.description}}
+        </li>
+    </ul>
+</div>
+
+<div class="properties">
+    <header>
+        <h4 class="properties-header">Properties</h4>
+    </header>
+    <ul class="properties-list">
+        <li class="properties-list-item" data-ng-repeat="prop in testBench.properties | orderObjectBy: 'name'">
+            {{prop.name}} {{prop.value}} ({{prop.dataType}}) - {{prop.description}}
+        </li>
+    </ul>
+</div>
+
+<div class="top-level-system-under-test">
+    <header>
+        <h2 class="top-level-system-under-test-header">Top Level System Under Test</h2>
+    </header>
+    {{tlsut.name}} ({{testBench.tlsutId}})
+    <!--<h3 class="configuration-sets-header">Configuration Sets</h3>-->
+    <!--<ul class="configuration-sets-list">-->
+        <!--<li class="properties-list-item" data-ng-repeat="cfgSet in tlsut.cfgSets | orderObjectBy: 'name'">-->
+            <!--{{cfgSet.name}} ({{cfgSet.id}})-->
+            <!--<ul class="configuration-list">-->
+                <!--<li class="configuration-list-item" data-ng-repeat="cfg in cfgSet.cfgs | orderObjectBy: 'name'">-->
+                    <!--<button ng-click="runTestBench(cfg.id)"> Run </button> {{cfg.name}} ({{cfg.id}})-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</li>-->
+    <!--</ul>-->
+</div>
+
+
+    <script type="text/ng-template" id="details.html">
+        <desert-configurations data-item="listData.items[$index]"></desert-configurations>
+    </script>
+
+    <div class="tlsut-item-list">
+        <item-list list-data="listData" config="config" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"></item-list>
+    </div>
+
+</article>

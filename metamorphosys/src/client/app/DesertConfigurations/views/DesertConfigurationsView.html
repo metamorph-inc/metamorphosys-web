@@ -1,0 +1,9 @@
+<div class="desert-configuration-set">
+    <form>
+        <ul>
+            <li data-ng-repeat="configuration in data.configurations | orderBy: 'name'">
+                <input type="checkbox" data-ng-model="configuration.checked" data-ng-change="notify(configuration)"> {{ configuration.name }}
+            </li>
+        </ul>
+    </form>
+</div>

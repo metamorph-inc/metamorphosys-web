@@ -1,0 +1,23 @@
+.main-navigator-container .dropdown-navigator {
+  background: linear-gradient(white, #eeeeee);
+  border-bottom: 1px solid #ddd;
+  color: #222; }
+  .main-navigator-container .dropdown-navigator > li:not(.separator):hover {
+    color: #fff;
+    background-color: #222; }
+  .main-navigator-container .dropdown-navigator li.cyphy-root {
+    background-image: url(../images/cyphy-icon.png);
+    background-position: 8px 3px;
+    background-repeat: no-repeat; }
+    .main-navigator-container .dropdown-navigator li.cyphy-root .label-container {
+      padding-left: 46px; }
+
+body.loading .main-navigator-container li.cyphy-root {
+  background-image: url(../images/cyphy-icon.png); }
+
+.server-info {
+  font-size: 80%;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  width: 94%; }

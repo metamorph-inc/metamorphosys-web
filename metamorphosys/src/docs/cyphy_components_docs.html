@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html data-ng-app="cyphy.demoApp">
+<head>
+    <title>CyPhy Components Documentation</title>
+
+    <link type="text/css" rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="../../bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="../../bower_components/angular-growl/build/angular-growl.min.css">
+    <link type="text/css" href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="../../bower_components/isis-ui-components/dist/isis-ui-components.css">
+
+    <link type="text/css" rel="stylesheet" href="cyphy-components-docs.css">
+    <link type="text/css" rel="stylesheet" href="../cyphy-components.css">
+
+</head>
+<body>
+<div growl></div>
+<div ng-controller="CyPhyComponentsDemoController" class="container">
+
+    <h1>cyphy.ui.components</h1>
+
+    <section ng-repeat="component in components" id="{{ component.name }}">
+        <div class="page-header">
+            <h1>{{ component.name }}
+                <small>(cyphy.ui.{{ component.name }})</small>
+            </h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 show-grid" ng-include="component.template">
+
+            </div>
+            <div btf-markdown class="col-md-6" ng-include="component.docs">
+            </div>
+        </div>
+            <div class="row">
+                <tabset class="col-md-12" ng-if="component.sources">
+                    <tab ng-repeat="sourceFile in component.sources"
+                         heading="{{sourceFile.fileName}}"
+                         select="selectedSourceFile=sourceFile">
+                        <div ui-codemirror
+                             ui-codemirror-opts="sourceFile.viewerOptions"
+                             ng-model="sourceFile.code"
+                             ui-refresh="selectedSourceFile"
+                             >
+
+                        </div>
+                    </tab>
+                </tabset>
+            </div>
+
+    </section>
+
+</div>
+<!--<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>-->
+<!--<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>-->
+<!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>-->
+
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../../bower_components/angular/angular.js"></script>
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="../../bower_components/angular-ui-utils/ui-utils.min.js"></script>
+<script src="../../bower_components/ng-grid/build/ng-grid.min.js"></script>
+
+<script src="../../bower_components/isis-ui-components/dist/isis-ui-components.js"></script>
+<script src="../../bower_components/isis-ui-components/dist/isis-ui-components-templates.js"></script>
+
+
+<script src="../cyphy-components.js"></script>
+<script src="../cyphy-components-templates.js"></script>
+
+<script src="cyphy-components-docs.js"></script>
+<script src="cyphy-components-doc-templates.js"></script>
+
+</body>
+</html>

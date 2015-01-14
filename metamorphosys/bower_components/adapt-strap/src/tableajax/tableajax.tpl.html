@@ -1,0 +1,112 @@
+<div class="ad-table-ajax-container" ng-if="items.paging.totalPages || localConfig.loadingData || !attrs.itemsNotFoundMessage">
+  <table class="ad-sticky-table" ng-class="attrs.tableClasses || 'table'" ng-if="localConfig.tableMaxHeight">
+    <tr class="ad-user-select-none">
+      <th data-ng-repeat="definition in columnDefinition"
+          ng-click="sortByColumn(definition)"
+          ng-class="{'ad-cursor-pointer': definition.sortKey}"
+          ng-style="{'width': definition.width}">
+        <div class="pull-right" ng-if="definition.sortKey && localConfig.predicate == definition.sortKey">
+          <i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i>
+          <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i>
+        </div>
+        <div class="pull-right" ng-if="definition.sortKey && localConfig.predicate != definition.sortKey">
+          <i ng-class="iconClasses.sortable"></i>
+        </div>
+        <div ng-if="definition.columnHeaderTemplate"
+             ng-bind-html="definition.columnHeaderTemplate"></div>
+        <div ng-if="definition.columnHeaderDisplayName"
+             ng-bind="definition.columnHeaderDisplayName"></div>
+      </th>
+    </tr>
+  </table>
+  <div class="ad-table-container" ng-style="{'max-height': localConfig.tableMaxHeight}">
+    <table ng-class="attrs.tableClasses || 'table'">
+      <tr class="ad-user-select-none" ng-if="!localConfig.tableMaxHeight">
+        <th data-ng-repeat="definition in columnDefinition"
+            ng-click="sortByColumn(definition)"
+            ng-class="{'ad-cursor-pointer': definition.sortKey}"
+            ng-style="{'width': definition.width}">
+          <div class="pull-right"
+               ng-if="definition.sortKey && localConfig.predicate == definition.sortKey">
+            <i ng-class="iconClasses.sortAscending" ng-hide="localConfig.reverse"></i>
+            <i ng-class="iconClasses.sortDescending" ng-show="localConfig.reverse"></i>
+          </div>
+          <div class="pull-right"
+               ng-if="definition.sortKey && localConfig.predicate != definition.sortKey">
+            <i ng-class="iconClasses.sortable"></i>
+          </div>
+          <div ng-if="definition.columnHeaderTemplate"
+               ng-bind-html="definition.columnHeaderTemplate"></div>
+          <div ng-if="definition.columnHeaderDisplayName"
+               ng-bind="definition.columnHeaderDisplayName"></div>
+        </th>
+      </tr>
+      <tr data-ng-repeat="item in items.list">
+        <td data-ng-repeat="definition in columnDefinition"
+            ng-style="{'width': definition.width}">
+          <div ng-if="definition.templateUrl">
+            <ng-include src="definition.templateUrl"></ng-include>
+          </div>
+          <div ng-if="definition.template">
+            <span ad-compile-template="definition.template"></span>
+          </div>
+          <div ng-if="!definition.templateUrl && !definition.template">
+            {{ adStrapUtils.applyFilter(adStrapUtils.getObjectProperty(item, definition.displayProperty, item), definition.cellFilter) }}
+          </div>
+        </td>
+      </tr>
+    </table>
+    <ad-loading-overlay loading="localConfig.loadingData"></ad-loading-overlay>
+  </div>
+  <div class="row">
+    <div class="col-md-8 col-sm-8">
+      <div class="pull-left"
+           ng-class="attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm'"
+           ng-show="items.paging.totalPages > 1">
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadPage(1)"
+                ng-disabled="items.paging.currentPage == 1">
+          <i ng-class="iconClasses.firstPage"></i>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadPreviousPage()"
+                ng-disabled="items.paging.currentPage == 1">
+          <i ng-class="iconClasses.previousPage"></i>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-repeat="page in localConfig.pagingArray"
+                ng-class="{active: items.paging.currentPage == page}"
+                ng-click="loadPage(page)">{{ page }}
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadNextPage()"
+                ng-disabled="items.paging.currentPage == items.paging.totalPages">
+          <i ng-class="iconClasses.nextPage"></i>
+        </button>
+        <button type="button"
+                class="btn btn-default"
+                ng-click="loadLastPage()"
+                ng-disabled="items.paging.currentPage == items.paging.totalPages">
+          <i ng-class="iconClasses.lastPage"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-4">
+      <div class="pull-right" ng-class="attrs.paginationBtnGroupClasses || 'btn-group btn-group-sm'">
+        <button type="button"
+                class="btn btn-default"
+                ng-repeat="size in items.paging.pageSizes"
+                ng-class="{active: items.paging.pageSize == size}"
+                ng-click="pageSizeChanged(size)">{{ size }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-if="!items.paging.totalPages && !localConfig.loadingData && attrs.itemsNotFoundMessage">
+  <div class="alert alert-info" role="alert">{{ attrs.itemsNotFoundMessage }}</div>
+</div>

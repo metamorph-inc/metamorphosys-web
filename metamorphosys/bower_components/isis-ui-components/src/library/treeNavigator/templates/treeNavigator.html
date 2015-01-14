@@ -1,0 +1,18 @@
+<nav class="tree-navigator">
+    <tree-navigator-header data-ng-if="config.scopeMenu || config.preferencesMenu"></tree-navigator-header>
+
+    <div class="tree-navigator-nodes">
+
+        <tree-navigator-node-label
+             data-ng-if="config.showRootLabel"
+             ng-init="node=treeData">
+
+        </tree-navigator-node-label>
+
+        <tree-navigator-node-list
+                ng-init="nodes=treeData.children"
+                nodes="treeData.children"
+                config="config"></tree-navigator-node-list>
+
+    </div>
+</nav>

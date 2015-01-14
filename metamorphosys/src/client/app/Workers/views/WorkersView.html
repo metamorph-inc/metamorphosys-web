@@ -1,0 +1,35 @@
+<article class="workers">
+<header>
+    <h3 class="workers-name">Workers</h3>
+</header>
+
+<div class="row">
+
+<div class="workers col-lg-12 col-md-18 col-sm-36 col-xs-36">
+
+    <!--<div data-ng-show="Object.keys(dataModel.workers).length === 0">-->
+        <!--No workers attached to this deployment.-->
+    <!--</div>-->
+        <ul class="list-group">
+             <!--One container item-->
+            <li class="list-group-item" data-ng-repeat="worker in dataModel.workers | orderObjectBy: 'clientId'">
+
+                <!-- Header -->
+                <a class="worker-name" href="">{{ worker.clientId }}</a>
+                <ul class="jobs">
+                    <li data-ng-repeat="job in worker.jobs">
+                        <span>{{job.status}} :: {{job.createTime}}</span>
+                    </li>
+                </ul>
+                <ul class="stats">
+                    <li class="list-group-item pull-left" data-ng-repeat="label in worker.labels">
+                        <span class="cyphy-tag dark-blue">{{label}}</span>
+                    </li>
+                </ul>
+                <!--<div>{{ component.description }}</div>-->
+            </li>
+        </ul>
+</div>
+
+</div>
+</article>

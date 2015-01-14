@@ -1,0 +1,55 @@
+<div class="ad-tree-browser-container"
+     ng-class="{'tree-bordered': attrs.bordered}">
+    <div data-level="0" class="tree-view">
+        <div class="tree">
+            <script type="text/ng-template" id="{{ localConfig.rendererTemplateId }}">
+                <div class="content"
+                     ng-style="{'padding-left': level * (attrs.childrenPadding || 15) + 'px'}"
+                     ng-class="{{ attrs.rowNgClass }}">
+                    <div class="content-holder">
+                        <div class="toggle">
+                            <i ng-if="!item._ad_expanded && hasChildren(item) && !item._ad_loading"
+                               ng-class="iconClasses.expand"
+                               ng-click="toggle($event,item)"></i>
+                            <i ng-if="item._ad_expanded && !item._ad_loading"
+                               ng-class="iconClasses.collapse"
+                               ng-click="toggle($event,item)"></i>
+                            <span ng-if="item._ad_loading">
+                                <i ng-class="iconClasses.loadingSpinner"></i>
+                            </span>
+                        </div>
+                        <div class="node-content">
+                          <ng-include ng-if="attrs.nodeTemplateUrl" src="attrs.nodeTemplateUrl"></ng-include>
+                          <span ng-if="!attrs.nodeTemplateUrl">{{ item.name || "" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="item._ad_expanded">
+                    <div class="tree-level tree-sub-level"
+                         onLoad="level=level+1"
+                         ng-repeat="item in item[attrs.childNode]"
+                         ng-include="'{{ localConfig.rendererTemplateId }}'">
+                    </div>
+                </div>
+            </script>
+            <div>
+                <div class="tree-level tree-header-level border"
+                     ng-if="attrs.nodeHeaderUrl">
+                    <div class="content"
+                         ng-style="{'padding-left': (attrs.childrenPadding || 15) + 'px'}">
+                        <div class="content-holder">
+                            <div class="toggle"></div>
+                            <div class="node-content ad-user-select-none"
+                                 ng-include="attrs.nodeHeaderUrl"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tree-level tree-top-level border"
+                     onload="level = 1"
+                     ng-repeat="item in treeRoot[attrs.childNode]"
+                     ng-include="'{{ localConfig.rendererTemplateId }}'">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

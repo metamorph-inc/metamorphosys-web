@@ -1,0 +1,45 @@
+<div data-ng-controller="ValueWidgetsDemoController" style="height: 1000px; overflow-x:auto; padding: 0 1ex;">
+    <button type="button" class="btn btn-default" ng-model="inputsDisabled" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+        Disable all
+    </button>
+    <table class="table table-condensed">
+        <thead>
+            <th>Mode: edit</th>
+            <th>Mode: display</th>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="widgetDescriptor in widgets">
+                <td style="max-width: 250px; overflow-x: hidden; text-overflow: ellipsis;">
+                    <value-widget
+
+                        ng-model="widgetDescriptor.model"
+                        model-config="widgetDescriptor.modelConfigEdit"
+
+                        input-config="widgetDescriptor.inputConfig"
+
+                        widget-type="widgetDescriptor.widgetType"
+                        widget-mode="'edit'"
+                        widget-config="widgetDescriptor.widgetConfigEdit"
+                        widget-disabled="inputsDisabled">
+
+                    </value-widget>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden; text-overflow: ellipsis;">
+                    <value-widget
+
+                        ng-model="widgetDescriptor.model"
+                        model-config="widgetDescriptor.modelConfigDisplay"
+
+                        input-config="widgetDescriptor.inputConfig"
+
+                        widget-type="widgetDescriptor.widgetType"
+                        widget-mode="'display'"
+                        widget-config="widgetDescriptor.widgetConfigDisplay"
+                        widget-disabled="inputsDisabled">
+
+                    </value-widget>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,15 @@
+<div class="workspace-details-view">
+    <h1 class="main-view-header">Workspace details</h1>
+    <div class="components col-lg-4">
+        <h3><span class="fa fa-puzzle-piece"></span> Components</h3>
+        <component-list data-connection-id="'my-db-connection-id'" workspace-id=dataModel.workspaceId></component-list>
+    </div>
+    <div class="design-spaces col-lg-4">
+        <h3><span class="fa fa-cubes"></span> Design Spaces</h3>
+        <design-list data-connection-id="'my-db-connection-id'" workspace-id=dataModel.workspaceId></design-list>
+    </div>
+    <div class="test-benches col-lg-4">
+        <h3><span class="glyphicon glyphicon-saved"></span> Test Benches</h3>
+        <test-bench-list data-connection-id="'my-db-connection-id'" workspace-id=dataModel.workspaceId></test-bench-list>
+    </div>
+</div>

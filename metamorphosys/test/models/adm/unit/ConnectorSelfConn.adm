@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ConnectorSelfConn" DesignID="{84574a1f-83a0-4948-bdda-b4f9ff35af23}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ConnectorSelfConn" xmlns="">
+    <Connector ConnectorComposition="" ID="id-ce0ff617-0144-4f98-b0e9-2def71dec2ee" ApplyJoinData="" XPosition="301" YPosition="154" Definition="" Name="Connector">
+      <Role xmlns:q2="cad" xsi:type="q2:Axis" ID="id-6d122e11-d26d-41e3-a418-09ac8c8d2927" PortMap="id-1bbb408d-93d9-49ec-af98-e160cfc6b9f8" Notes="" XPosition="105" Definition="" YPosition="84" Name="Axis" DatumName="" />
+      <Role xmlns:q3="cad" xsi:type="q3:Point" ID="id-1bbb408d-93d9-49ec-af98-e160cfc6b9f8" PortMap="id-6d122e11-d26d-41e3-a418-09ac8c8d2927" Notes="" XPosition="105" Definition="" YPosition="203" Name="Point" DatumName="" />
+    </Connector>
+  </RootContainer>
+</Design>

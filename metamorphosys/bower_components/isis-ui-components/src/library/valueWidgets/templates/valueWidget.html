@@ -1,0 +1,10 @@
+<div class="value-widget">
+    <label ng-if="widgetConfig.label" for="{{inputConfig.id}}">{{widgetConfig.label}}</label>
+    <value-widget-body tooltip="{{widgetConfig.tooltip}}"
+                       tooltip-placement="{{widgetConfig.autoCompleteItems ? 'top' : 'bottom'}}"
+                       tooltip-append-to-body="true"
+                    ></value-widget-body>
+    <validation-error-marker
+            error-messages="validatorMessages"
+            embedded="widgetConfig.errorMessagesEmbedded"></validation-error-marker>
+</div>

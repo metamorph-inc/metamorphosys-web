@@ -1,0 +1,17 @@
+<form>
+    <div class="modal-header">
+        <h3 class="modal-title">Edit Component</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <span class="title">Description</span>
+                <textarea class="form-control edit-description" data-ng-model="data.description"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
