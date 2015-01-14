@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -96,6 +96,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
         } else {
             message = 'Dragging ' + components[0].label;
         }
+
+        ga('send', 'event', 'component', 'drag', components[0].label);
 
         $scope.$emit('componentsPositionChange', {
             diagramId: $scope.diagram.id,

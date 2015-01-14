@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -80,6 +80,11 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         $log.debug( 'Finish wire', wire );
 
+        ga('send', 'event', 'wire', 'newWire', {
+            end1: wireStart.component.id,
+            end2: component.id
+        });
+
         wireStart = null;
         $scope.newWireLine = null;
 
@@ -91,6 +96,9 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         $scope.newWireLine = null;
         wireStart = null;
         self.wiring = false;
+
+        ga('send', 'event', 'wire', 'cancelNewWire');
+
     };
 
     onDiagramMouseMove = function($event) {

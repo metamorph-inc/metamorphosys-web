@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -107,6 +107,8 @@ angular.module('mms.testbenchActions', [
 
             var result;
 
+            ga('send', 'event', 'testbench', 'result', id);
+
             function ShowResultsDialogController($scope, $mdDialog, results, currentResult) {
 
                 $scope.results = results;
@@ -181,6 +183,8 @@ angular.module('mms.testbenchActions', [
                 }
             );
 
+            ga('send', 'event', 'testbench', 'start');
+
             testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
                 .then(function (resultData) {
 
@@ -222,9 +226,13 @@ angular.module('mms.testbenchActions', [
                         $scope.testbenchResultNotify(id);
                         $scope.setReady();
 
+                        ga('send', 'event', 'testbench', 'received');
+
 
                     } else {
                         onTestbenchFailed(resultData);
+
+                        ga('send', 'event', 'testbench', 'failed');
                     }
 
                 }).

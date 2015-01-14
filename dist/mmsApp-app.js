@@ -1812,7 +1812,7 @@ module.exports = function ($scope, $timeout, $log) {
 };
 
 },{}],13:[function(require,module,exports){
-/*globals angular, $*/
+/*globals angular, ga, $*/
 
 'use strict';
 
@@ -1937,6 +1937,8 @@ angular.module('mms.designVisualization.diagramContainer', [
                         };
 
                     }
+
+                    ga('send', 'event', 'avmComponent', 'dropped', component.id);
 
                     $rootScope.$emit('componentInstantiationMustBeDone', component, position);
 
@@ -2197,7 +2199,7 @@ angular.module( 'mms.designVisualization.fabricCanvas', [] )
         }
     ] );
 },{}],16:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -2224,6 +2226,10 @@ angular.module('mms.headerButtons', [])
 
                     if ($scope.user && $scope.user.email) {
 
+                        $scope.emailDesign = function() {
+                            ga('send', 'event', 'submitEmail', 'click');
+                        };
+
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
                             user: $scope.user.name,
                             email: $scope.user.email,
@@ -2245,6 +2251,8 @@ angular.module('mms.headerButtons', [])
 
                 };
             }
+
+            ga('send', 'event', 'subscribeDialog', 'open');
 
             $mdDialog.show({
                 controller: DialogController,
@@ -2274,6 +2282,8 @@ angular.module('mms.headerButtons', [])
                 };
             }
 
+            ga('send', 'event', 'helpDialog', 'open');
+
             $mdDialog.show({
                 controller: DialogController,
                 templateUrl: '/mmsApp/templates/aboutDialog.html',
@@ -2293,6 +2303,10 @@ angular.module('mms.headerButtons', [])
                 $scope.mailtoUrl =
                     'mailto:?subject=Check out my ARA module design&body=' + $scope.designUrl;
 
+                $scope.emailDesign = function() {
+                    ga('send', 'event', 'emailDesign', 'click');
+                };
+
                 $scope.hide = function () {
                     $mdDialog.hide();
                 };
@@ -2300,6 +2314,8 @@ angular.module('mms.headerButtons', [])
                     $mdDialog.hide();
                 };
             }
+
+            ga('send', 'event', 'shareDialog', 'open');
 
             $mdDialog.show({
                 controller: DialogController,
@@ -2574,7 +2590,7 @@ angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
         }] );
 
 },{}],21:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -2672,6 +2688,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
         } else {
             message = 'Dragging ' + components[0].label;
         }
+
+        ga('send', 'event', 'component', 'drag', components[0].label);
 
         $scope.$emit('componentsPositionChange', {
             diagramId: $scope.diagram.id,
@@ -2957,7 +2975,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 };
 
 },{}],23:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -3031,6 +3049,13 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         angular.forEach(dragTargetsDescriptor.targets, function (target) {
             $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+
+            if (target.wasCorner) {
+                ga('send', 'event', 'corner', 'drag', target.wire.id);
+            } else {
+                ga('send', 'event', 'wire', 'drag', target.wire.id);
+            }
+
         });
 
         self.dragging = false;
@@ -3240,7 +3265,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 };
 
 },{}],24:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -3322,6 +3347,11 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         $log.debug( 'Finish wire', wire );
 
+        ga('send', 'event', 'wire', 'newWire', {
+            end1: wireStart.component.id,
+            end2: component.id
+        });
+
         wireStart = null;
         $scope.newWireLine = null;
 
@@ -3333,6 +3363,9 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         $scope.newWireLine = null;
         wireStart = null;
         self.wiring = false;
+
+        ga('send', 'event', 'wire', 'cancelNewWire');
+
     };
 
     onDiagramMouseMove = function($event) {
@@ -3439,7 +3472,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 };
 
 },{"../../../services/diagramService/classes/Wire.js":45}],25:[function(require,module,exports){
-/*globals angular, $*/
+/*globals angular, ga, $*/
 
 'use strict';
 
@@ -3503,6 +3536,13 @@ module.exports = function (
 
         var wiringMenu;
 
+
+        if (wasCorner) {
+            ga('send', 'event', 'corner', 'contextmenu');
+        } else {
+            ga('send', 'event', 'wire', 'contextmenu');
+        }
+
         wiringMenu = [];
 
         angular.forEach($scope.routerTypes, function(routerType) {
@@ -3543,6 +3583,9 @@ module.exports = function (
                         label: 'Destroy wire',
                         iconClass: 'fa fa-trash-o',
                         action: function () {
+
+                            ga('send', 'event', 'wire', 'destroy', wire.id);
+
                             $rootScope.$emit('wireDeletionMustBeDone', wire);
                         }
                     }
@@ -3585,6 +3628,8 @@ module.exports = function (
                                     }, 'SimpleRouter')[0];
 
                                 wire.segments.splice(sIndex, 1);
+
+                                ga('send', 'event', 'corner', 'destroy', wire.id, sIndex);
 
                                 $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                             }
@@ -3644,6 +3689,8 @@ module.exports = function (
 
                                 wire.segments.splice(sIndex + 1, 0, newSegment);
 
+                                ga('send', 'event', 'corner', 'add', wire.id, sIndex);
+
                                 $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                             }
                         }
@@ -3669,6 +3716,8 @@ module.exports = function (
 
         wiringMenu = [];
 
+        ga('send', 'event', 'component', 'contextmenu');
+
         angular.forEach($scope.routerTypes, function(routerType) {
 
             wiringMenu.push(
@@ -3680,6 +3729,8 @@ module.exports = function (
                         var wires = $scope.diagram.getWiresForComponents([component]);
 
                         angular.forEach(wires, function(wire) {
+
+                            ga('send', 'event', 'wire', 'redraw', wire.id);
 
                             wiringService.routeWire(wire, routerType.type, routerType.params);
                             $rootScope.$emit('wireSegmentsMustBeSaved', wire);
@@ -3716,6 +3767,8 @@ module.exports = function (
 
                             var operation;
 
+                            ga('send', 'event', 'component', 'rotate', component.id);
+
                             operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(90);
                             operation.commit();
@@ -3730,6 +3783,8 @@ module.exports = function (
                             var operation;
 
                             console.log('Rotating anti-clockwise');
+
+                            ga('send', 'event', 'component', 'rotate', component.id);
 
                             operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(-90);
@@ -3761,6 +3816,8 @@ module.exports = function (
                         label: destroyLabel,
                         iconClass: 'fa fa-trash-o',
                         action: function () {
+
+                            ga('send', 'event', 'component', 'destroy', component.id);
 
                             if (!inSelection) {
                                 $rootScope.$emit('componentDeletionMustBeDone', component);
@@ -3816,6 +3873,8 @@ module.exports = function (
 
         wiringMenu = [];
 
+        ga('send', 'event', 'diagram', 'contextmenu');
+
         angular.forEach($scope.routerTypes, function(routerType) {
                 var selected;
 
@@ -3828,6 +3887,8 @@ module.exports = function (
                     cssClass: selected ? 'selected' : 'not-selected',
                     iconClass: selected ? 'fa fa-check' : undefined,
                     action: function () {
+
+                        ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
 
                         $scope.selectedRouter = routerType;
 
@@ -3870,6 +3931,9 @@ module.exports = function (
                             } else {
                                 $rootScope.snapToGrid = true;
                             }
+
+                            ga('send', 'event', 'diagram', 'changeSnapToGrid', $rootScope.snapToGrid);
+
                         },
                         actionData: {}
                     }
@@ -4972,7 +5036,7 @@ angular.module(
     ]);
 
 },{}],37:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -5081,6 +5145,8 @@ angular.module('mms.testbenchActions', [
 
             var result;
 
+            ga('send', 'event', 'testbench', 'result', id);
+
             function ShowResultsDialogController($scope, $mdDialog, results, currentResult) {
 
                 $scope.results = results;
@@ -5155,6 +5221,8 @@ angular.module('mms.testbenchActions', [
                 }
             );
 
+            ga('send', 'event', 'testbench', 'start');
+
             testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
                 .then(function (resultData) {
 
@@ -5196,9 +5264,13 @@ angular.module('mms.testbenchActions', [
                         $scope.testbenchResultNotify(id);
                         $scope.setReady();
 
+                        ga('send', 'event', 'testbench', 'received');
+
 
                     } else {
                         onTestbenchFailed(resultData);
+
+                        ga('send', 'event', 'testbench', 'failed');
                     }
 
                 }).

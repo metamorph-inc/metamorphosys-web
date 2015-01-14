@@ -1,4 +1,4 @@
-/*globals angular, $*/
+/*globals angular, ga, $*/
 
 'use strict';
 
@@ -62,6 +62,13 @@ module.exports = function (
 
         var wiringMenu;
 
+
+        if (wasCorner) {
+            ga('send', 'event', 'corner', 'contextmenu');
+        } else {
+            ga('send', 'event', 'wire', 'contextmenu');
+        }
+
         wiringMenu = [];
 
         angular.forEach($scope.routerTypes, function(routerType) {
@@ -102,6 +109,9 @@ module.exports = function (
                         label: 'Destroy wire',
                         iconClass: 'fa fa-trash-o',
                         action: function () {
+
+                            ga('send', 'event', 'wire', 'destroy', wire.id);
+
                             $rootScope.$emit('wireDeletionMustBeDone', wire);
                         }
                     }
@@ -144,6 +154,8 @@ module.exports = function (
                                     }, 'SimpleRouter')[0];
 
                                 wire.segments.splice(sIndex, 1);
+
+                                ga('send', 'event', 'corner', 'destroy', wire.id, sIndex);
 
                                 $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                             }
@@ -203,6 +215,8 @@ module.exports = function (
 
                                 wire.segments.splice(sIndex + 1, 0, newSegment);
 
+                                ga('send', 'event', 'corner', 'add', wire.id, sIndex);
+
                                 $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                             }
                         }
@@ -228,6 +242,8 @@ module.exports = function (
 
         wiringMenu = [];
 
+        ga('send', 'event', 'component', 'contextmenu');
+
         angular.forEach($scope.routerTypes, function(routerType) {
 
             wiringMenu.push(
@@ -239,6 +255,8 @@ module.exports = function (
                         var wires = $scope.diagram.getWiresForComponents([component]);
 
                         angular.forEach(wires, function(wire) {
+
+                            ga('send', 'event', 'wire', 'redraw', wire.id);
 
                             wiringService.routeWire(wire, routerType.type, routerType.params);
                             $rootScope.$emit('wireSegmentsMustBeSaved', wire);
@@ -275,6 +293,8 @@ module.exports = function (
 
                             var operation;
 
+                            ga('send', 'event', 'component', 'rotate', component.id);
+
                             operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(90);
                             operation.commit();
@@ -289,6 +309,8 @@ module.exports = function (
                             var operation;
 
                             console.log('Rotating anti-clockwise');
+
+                            ga('send', 'event', 'component', 'rotate', component.id);
 
                             operation = operationsManager.initNew('rotateComponents', component);
                             operation.set(-90);
@@ -320,6 +342,8 @@ module.exports = function (
                         label: destroyLabel,
                         iconClass: 'fa fa-trash-o',
                         action: function () {
+
+                            ga('send', 'event', 'component', 'destroy', component.id);
 
                             if (!inSelection) {
                                 $rootScope.$emit('componentDeletionMustBeDone', component);
@@ -375,6 +399,8 @@ module.exports = function (
 
         wiringMenu = [];
 
+        ga('send', 'event', 'diagram', 'contextmenu');
+
         angular.forEach($scope.routerTypes, function(routerType) {
                 var selected;
 
@@ -387,6 +413,8 @@ module.exports = function (
                     cssClass: selected ? 'selected' : 'not-selected',
                     iconClass: selected ? 'fa fa-check' : undefined,
                     action: function () {
+
+                        ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
 
                         $scope.selectedRouter = routerType;
 
@@ -429,6 +457,9 @@ module.exports = function (
                             } else {
                                 $rootScope.snapToGrid = true;
                             }
+
+                            ga('send', 'event', 'diagram', 'changeSnapToGrid', $rootScope.snapToGrid);
+
                         },
                         actionData: {}
                     }

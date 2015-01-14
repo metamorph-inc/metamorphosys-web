@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -72,6 +72,13 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         angular.forEach(dragTargetsDescriptor.targets, function (target) {
             $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+
+            if (target.wasCorner) {
+                ga('send', 'event', 'corner', 'drag', target.wire.id);
+            } else {
+                ga('send', 'event', 'wire', 'drag', target.wire.id);
+            }
+
         });
 
         self.dragging = false;

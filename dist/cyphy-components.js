@@ -4773,7 +4773,7 @@ module.exports = function() {
     };
 };
 },{}],21:[function(require,module,exports){
-/*globals angular */
+/*globals angular, ga */
 
 'use strict';
 
@@ -4831,6 +4831,9 @@ module.exports = function (symbolManager, $log, $rootScope) {
                             label: 'Add to design',
                             iconClass: 'fa fa-plus-circle',
                             action: function() {
+
+                                ga('send', 'event', 'avmComponent', 'createFromContextmenu');
+
                                 $rootScope.$emit('componentInstantiationMustBeDone', node);
                             }
                         }
@@ -5351,7 +5354,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
 };
 
 },{"./ClassNamesToSymbolTypes":20}],22:[function(require,module,exports){
-/*globals angular, $*/
+/*globals angular, $, ga*/
 'use strict';
 
 var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
@@ -5490,6 +5493,8 @@ angular.module( 'cyphy.components' )
 
                         }
                     }
+
+                    ga('send', 'event', 'componentBrowser', 'search', node.label);
 
                 }, 100);
             }

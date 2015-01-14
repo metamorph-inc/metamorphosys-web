@@ -1,4 +1,4 @@
-/*globals angular, $*/
+/*globals angular, ga, $*/
 
 'use strict';
 
@@ -123,6 +123,8 @@ angular.module('mms.designVisualization.diagramContainer', [
                         };
 
                     }
+
+                    ga('send', 'event', 'avmComponent', 'dropped', component.id);
 
                     $rootScope.$emit('componentInstantiationMustBeDone', component, position);
 

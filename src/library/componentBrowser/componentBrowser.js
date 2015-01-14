@@ -1,4 +1,4 @@
-/*globals angular, $*/
+/*globals angular, $, ga*/
 'use strict';
 
 var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
@@ -137,6 +137,8 @@ angular.module( 'cyphy.components' )
 
                         }
                     }
+
+                    ga('send', 'event', 'componentBrowser', 'search', node.label);
 
                 }, 100);
             }

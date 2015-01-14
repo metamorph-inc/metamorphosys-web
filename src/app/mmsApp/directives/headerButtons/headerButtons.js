@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -25,6 +25,10 @@ angular.module('mms.headerButtons', [])
 
                     if ($scope.user && $scope.user.email) {
 
+                        $scope.emailDesign = function() {
+                            ga('send', 'event', 'submitEmail', 'click');
+                        };
+
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
                             user: $scope.user.name,
                             email: $scope.user.email,
@@ -46,6 +50,8 @@ angular.module('mms.headerButtons', [])
 
                 };
             }
+
+            ga('send', 'event', 'subscribeDialog', 'open');
 
             $mdDialog.show({
                 controller: DialogController,
@@ -75,6 +81,8 @@ angular.module('mms.headerButtons', [])
                 };
             }
 
+            ga('send', 'event', 'helpDialog', 'open');
+
             $mdDialog.show({
                 controller: DialogController,
                 templateUrl: '/mmsApp/templates/aboutDialog.html',
@@ -94,6 +102,10 @@ angular.module('mms.headerButtons', [])
                 $scope.mailtoUrl =
                     'mailto:?subject=Check out my ARA module design&body=' + $scope.designUrl;
 
+                $scope.emailDesign = function() {
+                    ga('send', 'event', 'emailDesign', 'click');
+                };
+
                 $scope.hide = function () {
                     $mdDialog.hide();
                 };
@@ -101,6 +113,8 @@ angular.module('mms.headerButtons', [])
                     $mdDialog.hide();
                 };
             }
+
+            ga('send', 'event', 'shareDialog', 'open');
 
             $mdDialog.show({
                 controller: DialogController,

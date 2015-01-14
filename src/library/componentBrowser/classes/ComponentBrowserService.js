@@ -1,4 +1,4 @@
-/*globals angular */
+/*globals angular, ga */
 
 'use strict';
 
@@ -56,6 +56,9 @@ module.exports = function (symbolManager, $log, $rootScope) {
                             label: 'Add to design',
                             iconClass: 'fa fa-plus-circle',
                             action: function() {
+
+                                ga('send', 'event', 'avmComponent', 'createFromContextmenu');
+
                                 $rootScope.$emit('componentInstantiationMustBeDone', node);
                             }
                         }
