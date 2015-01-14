@@ -3944,6 +3944,19 @@ module.exports = function (
                 id: 'wiringMethods',
                 label: 'Wiring method',
                 items: wiringMenu
+            },
+            {
+                id: 'printMenu',
+                items: [
+                    {
+                        id: 'printDiagram',
+                        label: 'Print diagram',
+                        iconClass: 'glyphicon glyphicon-print',
+                        action: function() {
+                            window.print();
+                        }
+                    }
+                ]
             }
         ];
 
@@ -5956,7 +5969,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
 
                 newModelComponent.registerPortInstances(portStuff.portInstances);
-                
+
             }
 
         }

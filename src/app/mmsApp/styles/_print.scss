@@ -1,0 +1,25 @@
+@media print {
+
+    .sidebar {
+        display: none;
+
+    }
+
+    .header-buttons {
+        display: none;
+    }
+
+    .contextmenu {
+        display: none;
+    }
+
+    .diagram-content-pane,
+    .jspContainer,
+    .jspPane {
+        width: 100% !important;
+    }
+
+    .testbench-actions {
+        display: none;
+    }
+}

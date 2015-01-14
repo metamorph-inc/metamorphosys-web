@@ -450,7 +450,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
 
                 newModelComponent.registerPortInstances(portStuff.portInstances);
-                
+
             }
 
         }
