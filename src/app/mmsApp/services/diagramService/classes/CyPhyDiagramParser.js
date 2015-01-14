@@ -227,7 +227,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         portStuff = minePortsFromInterfaces(element);
 
         symbol = symbolManager.makeBoxSymbol(element.name, {
-                showPortLabels: true
+                showPortLabels: true,
+                limitLabelWidthTo: 150
             }, portStuff.portDescriptors,
             {
                 minWidth: 200,
@@ -426,10 +427,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             if (element.name !== 'pcb') {
                 symbol = symbolManager.makeBoxSymbol(element.name, {
-                        showPortLabels: true
+                        showPortLabels: true,
+                        limitLabelWidthTo: 170
                     }, portStuff.portDescriptors,
                     {
-                        minWidth: 200,
+                        minWidth: 220,
                         portWireLeadInIncrement: 10
                     });
 

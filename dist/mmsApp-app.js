@@ -4641,6 +4641,7 @@ symbolsModule.directive(
                     svgDiagramController,
 
                     $el,
+                    $labelElement,
                     compiledSymbol,
                     symbolDirective;
 
@@ -4710,6 +4711,51 @@ symbolsModule.directive(
                     svgDiagramController.unregisterComponentElement( scope.component.id );
                 } );
 
+                // Label ellipsis
+
+                function perfectEllipsis(textSelector, textString, maxWidth) {
+                    var textObject = textSelector[0];
+
+                    if (!textString) {
+                        textObject.textContent = '';
+                        return;
+                    }
+
+                    textObject.textContent = textString;
+                    maxWidth = maxWidth || 120;
+                    var strLength = textString.length;
+                    var width = textObject.getSubStringLength(0, strLength);
+
+                    // ellipsis is needed
+                    if (width >= maxWidth) {
+                        textObject.textContent = '...' + textString;
+                        strLength += 3;
+
+                        // guess truncate position
+                        var i = Math.floor(strLength * maxWidth / width) + 1;
+
+                        // refine by expansion if necessary
+                        while (++i < strLength && textObject.getSubStringLength(0, i) < maxWidth){}
+
+                        // refine by reduction if necessary
+                        while (--i > 3 && textObject.getSubStringLength(0, i) > maxWidth){}
+
+                        textObject.textContent = textString.substring(0, i-3) + '...';
+                    }
+                }
+
+                $labelElement = element.find('.component-label');
+
+                if (scope.component.symbol.limitLabelWidthTo && !isNaN(scope.component.symbol.limitLabelWidthTo)) {
+
+                    scope.$watch('component.label', function(labelText) {
+
+                        if (labelText) {
+                            perfectEllipsis($labelElement, labelText, scope.component.symbol.limitLabelWidthTo);
+                        }
+
+                    });
+                }
             }
         };
     }
@@ -5746,7 +5792,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         portStuff = minePortsFromInterfaces(element);
 
         symbol = symbolManager.makeBoxSymbol(element.name, {
-                showPortLabels: true
+                showPortLabels: true,
+                limitLabelWidthTo: 150
             }, portStuff.portDescriptors,
             {
                 minWidth: 200,
@@ -5945,10 +5992,11 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             if (element.name !== 'pcb') {
                 symbol = symbolManager.makeBoxSymbol(element.name, {
-                        showPortLabels: true
+                        showPortLabels: true,
+                        limitLabelWidthTo: 170
                     }, portStuff.portDescriptors,
                     {
-                        minWidth: 200,
+                        minWidth: 220,
                         portWireLeadInIncrement: 10
                     });
 
