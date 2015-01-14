@@ -8,59 +8,72 @@
             generate a circuit board design for an Ara Module with a 1x2 form-factor.
         </p>
 
-        <h2>What To Do</h2>
+        <p><b>Tutorial exercise:</b></p>
+        <md-card>
+            <div layout="row" layout-align="center center">
+                <div flex="55">
+                    <p>
+                        Grab a sensor component from the <b>SENSORS</b> folder and drag it onto the canvas.
+                    </p>
 
-        <div layout="row" layout-align="center center">
-            <p flex="55">
-                Grab a sensor component from the <b><i>SENSORS</i></b> folder and drag it onto the canvas.
-            </p>
+                    <p>
+                        As an alternate method, you can also right-click on the chosen component and select
+                        <i>"Add to design"</i> from the context-menu.
+                    </p>
+                </div>
 
-            <p flex="5"></p>
+                <p flex="5"></p>
 
-            <p flex="40">
-                <img src="/extlib/dist/images/add_sensor.png" class="scale-it bordered"/>
-            </p>
-        </div>
+                <p flex="40">
+                    <img src="/extlib/dist/images/add_sensor.png" class="scale-it bordered"/>
+                </p>
+            </div>
+        </md-card>
+        <md-card>
+            <div layout="row" layout-align="center center">
+                <p flex="40">
+                    <img src="/extlib/dist/images/connect_stuff.png" class="scale-it bordered"/>
+                </p>
 
-        <div layout="row" layout-align="center center">
-            <p flex="40">
-                <img src="/extlib/dist/images/connect_stuff.png" class="scale-it bordered"/>
-            </p>
+                <p flex="5"></p>
 
-            <p flex="5"></p>
+                <div flex="55">
+                    <p>
+                        Connect the sensor's power ports to the corresponding interfaces of the <b>Power System</b>.
+                        Then
+                        connect its communication interface to the corresponding interface on the <b>GP ASIC</b>.
+                    </p>
+                </div>
+            </div>
+        </md-card>
+        <md-card>
+            <div layout="row" layout-align="center center">
+                <p flex="55">
+                    Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit
+                    board)</i>. This can take a few minutes.
+                </p>
 
-            <p flex="55">
-                Connect the sensor's power ports to the corresponding interfaces of the <b>Power System</b>. Then
-                connect its communication interface to the corresponding interface on the <b>GP ASIC</b>.
-            </p>
-        </div>
+                <p flex="5"></p>
 
-        <div layout="row" layout-align="center center">
-            <p flex="55">
-                Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit
-                board)</i>
-            </p>
+                <p flex="40">
+                    <img src="/extlib/dist/images/run_testbench.png" class="scale-it bordered"/>
+                </p>
+            </div>
+        </md-card>
+        <md-card>
+            <div layout="row" layout-align="center center">
+                <p flex="40">
+                    <img src="/extlib/dist/images/show_results.png" class="scale-it bordered"/>
+                </p>
 
-            <p flex="5"></p>
+                <p flex="5"></p>
 
-            <p flex="40">
-                <img src="/extlib/dist/images/run_testbench.png" class="scale-it bordered"/>
-            </p>
-        </div>
-
-        <div layout="row" layout-align="center center">
-            <p flex="40">
-                <img src="/extlib/dist/images/show_results.png" class="scale-it bordered"/>
-            </p>
-
-            <p flex="5"></p>
-
-            <p flex="55">
-                After reviewing the results, iterate on your design by making changes, adding more components, and
-                generating new PCBs.
-            </p>
-        </div>
-
+                <p flex="55">
+                    After reviewing the results, iterate on your design by making changes, adding more components, and
+                    generating new PCBs.
+                </p>
+            </div>
+        </md-card>
     </md-content>
     <div class="md-actions" layout="row">
         <social-media-buttons id="social-media"></social-media-buttons>
