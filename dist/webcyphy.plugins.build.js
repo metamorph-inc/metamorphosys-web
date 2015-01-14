@@ -5217,6 +5217,10 @@ require.alias("superagent/lib/client.js", "superagent/index.js");if (typeof expo
 }})();
 /**
  * Created by Zsolt on 5/21/2014.
+ * 
+ * THIS IS A THROW AWAY CODE AND IMPLEMENTATION.
+ *
+ * TEMPORARY CODE AND IMPLEMENTATION.
  *
  */
 
@@ -5230,7 +5234,7 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
         //console.log(isNode);
         if (this.isNodeJS) {
-            var config = WebGMEGlobal.getConfig();
+            var config = webGMEGlobal.getConfig();
             this.server = '127.0.0.1';
             this.serverPort = config.port;
             this.httpsecure = config.httpsecure;
@@ -5251,8 +5255,8 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
         this.executorUrl = this.executorUrl + '/rest/external/executor/'; // TODO: any ways to ask for this or get it from the configuration?
         if (parameters.executorNonce) {
             this.executorNonce = parameters.executorNonce;
-        } else if (typeof WebGMEGlobal !== "undefined" && typeof WebGMEGlobal.getConfig !== "undefined") {
-            var webGMEConfig = WebGMEGlobal.getConfig();
+        } else if (typeof webGMEGlobal !== "undefined") {
+            var webGMEConfig = webGMEGlobal.getConfig();
             if (webGMEConfig.executorNonce) {
                 this.executorNonce = webGMEConfig.executorNonce;
             }
@@ -5390,7 +5394,6 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
     return ExecutorClient;
 });
-
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
  *
@@ -11298,6 +11301,12 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
         } ];
     };
 
+    AdmExporter.prototype.getPositionUInt32 = function ( node ) {
+        var pos = this.core.getRegistry( node, 'position' );
+        return { x: Math.min(pos.x >>> 0, Math.pow(2, 31) - 1), // make UInt32 ∩ Int32
+                 y: Math.min(pos.y >>> 0, Math.pow(2, 31) - 1)
+                 };
+    };
 
     /**
      * Main function for the plugin to execute. This will perform the execution.
@@ -11517,7 +11526,7 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
 
     AdmExporter.prototype.addComponentInstance = function ( node, parent, containerData, callback ) {
         var self = this,
-            pos = self.core.getRegistry( node, 'position' ),
+            pos = self.getPositionUInt32( node ),
             nodeName = self.core.getAttribute( node, 'name' ),
             acmHash,
             componentID = self.core.getAttribute( node, 'ID' ),
@@ -11525,8 +11534,8 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
                 "@Name": nodeName,
                 "@ComponentID": componentID,
                 "@ID": self.core.getGuid( node ),
-                "@XPosition": Math.floor( pos.x ),
-                "@YPosition": Math.floor( pos.y ),
+                "@XPosition": pos.x,
+                "@YPosition": pos.y,
                 "PortInstance": [],
                 "PrimitivePropertyInstance": [],
                 "ConnectorInstance": []
@@ -11842,7 +11851,7 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
     //<editor-fold desc="=========================== Properties/ValueFlows ==========================">
     AdmExporter.prototype.addProperty = function ( node, parent, containerData, callback ) {
         var self = this,
-            pos = self.core.getRegistry( node, 'position' ),
+            pos = self.getPositionUInt32( node ),
             parentType = self.core.getAttribute( self.getMetaType( parent ), 'name' ),
             collectionNames = self.core.getCollectionNames( node ),
             valueType = self.core.getAttribute( node, 'ValueType' ),
@@ -11860,8 +11869,8 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
                     "@xsi:type": "q1:PrimitiveProperty",
                     "@Name": self.core.getAttribute( node, 'name' ),
                     "@ID": null,
-                    "@XPosition": Math.floor( pos.x ),
-                    "@YPosition": Math.floor( pos.y ),
+                    "@XPosition": pos.x,
+                    "@YPosition": pos.y,
                     "Value": {
                         "@ID": id,
                         "@DimensionType": "Scalar",
@@ -12006,7 +12015,7 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
 
     AdmExporter.prototype.addFormula = function ( node, parent, containerData, isSimple, callback ) {
         var self = this,
-            pos = self.core.getRegistry( node, 'position' ),
+            pos = self.getPositionUInt32( node ),
             collectionNames = self.core.getCollectionNames( node ),
             formulaName = self.core.getAttribute( node, 'name' ),
             data,
@@ -12022,8 +12031,8 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
                     "@xsi:type": "q1:SimpleFormula",
                     "@ID": id,
                     "@Name": formulaName,
-                    "@XPosition": Math.floor( pos.x ),
-                    "@YPosition": Math.floor( pos.y ),
+                    "@XPosition": pos.x,
+                    "@YPosition": pos.y,
                     "@Operation": self.core.getAttribute( node, 'Method' ),
                     "@Operand": ''
                 };
@@ -12037,8 +12046,8 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
                     "@xsi:type": "q1:ComplexFormula",
                     "@ID": id,
                     "@Name": formulaName,
-                    "@XPosition": Math.floor( pos.x ),
-                    "@YPosition": Math.floor( pos.y ),
+                    "@XPosition": pos.x,
+                    "@YPosition": pos.y,
                     "@Expression": self.core.getAttribute( node, 'Expression' ),
                     "Operand": []
                 };
@@ -12413,9 +12422,9 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
             };
 
         if ( !isRoot ) {
-            pos = self.core.getRegistry( node, 'position' );
-            containerData[ "@XPosition" ] = Math.floor( pos.x );
-            containerData[ "@YPosition" ] = Math.floor( pos.y );
+            pos = self.getPositionUInt32( node );
+            containerData[ "@XPosition" ] = pos.x;
+            containerData[ "@YPosition" ] = pos.y;
         }
 
         return containerData;
@@ -12428,15 +12437,15 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
             data;
 
         if ( parentType === 'Container' ) {
-            pos = self.core.getRegistry( node, 'position' );
+            pos = self.getPositionUInt32( node );
             data = {
                 "@Name": self.core.getAttribute( node, 'name' ),
                 "@ID": self.core.getGuid( node ),
                 "@ConnectorComposition": '',
                 "@ApplyJoinData": '',
                 "@Definition": '',
-                "@XPosition": Math.floor( pos.x ),
-                "@YPosition": Math.floor( pos.y ),
+                "@XPosition": pos.x,
+                "@YPosition": pos.y,
                 "Role": []
             };
         } else if ( parentType === 'AVMComponentModel' ) {
@@ -12465,15 +12474,15 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
             attr;
 
         if ( parentType === 'Container' || parentType === 'Connector' ) {
-            pos = self.core.getRegistry( node, 'position' );
+            pos = self.getPositionUInt32( node );
             data = {
                 '@ID': self.core.getGuid( node ),
                 '@PortMap': '',
                 '@Name': domainNodeName,
                 '@Notes': '',
                 '@Definition': '',
-                "@XPosition": Math.floor( pos.x ),
-                "@YPosition": Math.floor( pos.y )
+                "@XPosition": pos.x,
+                "@YPosition": pos.y
             };
             if ( typeName === 'ModelicaConnector' ) {
                 attributes = {
@@ -12558,6 +12567,7 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
 
     return AdmExporter;
 } );
+
 /**
  * Generated by PluginGenerator from webgme on Mon Nov 03 2014 15:50:38 GMT-0600 (Central Standard Time).
  */
