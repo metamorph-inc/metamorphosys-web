@@ -5993,10 +5993,10 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             if (element.name !== 'pcb') {
                 symbol = symbolManager.makeBoxSymbol(element.name, {
                         showPortLabels: true,
-                        limitLabelWidthTo: 170
+                        limitLabelWidthTo: 150
                     }, portStuff.portDescriptors,
                     {
-                        minWidth: 220,
+                        minWidth: 200,
                         portWireLeadInIncrement: 10
                     });
 
