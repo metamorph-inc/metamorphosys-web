@@ -1,0 +1,79 @@
+{
+  "Status": "OK", 
+  "CopyTestResults": false, 
+  "Parameters": [
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000174", 
+      "Value": "1", 
+      "Range": "-inf..inf", 
+      "ID": "8e967fdc-d2b4-4328-94ec-711f59547ca7", 
+      "Unit": "Millimeter", 
+      "Name": "boardEdgeSpace"
+    }, 
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000173", 
+      "Value": "0.5", 
+      "Range": "-inf..inf", 
+      "ID": "da4058e4-1429-46b6-ab36-c0e49d00448b", 
+      "Unit": "Millimeter", 
+      "Name": "interChipSpace"
+    }, 
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000003", 
+      "Value": "6autoroute.ctl", 
+      "Range": "-inf..inf", 
+      "ID": "31c2041b-6d80-40aa-a351-ded2ef237648", 
+      "Unit": "", 
+      "Name": "autorouterConfig"
+    }, 
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000171", 
+      "Value": "16.5", 
+      "Range": "-inf..inf", 
+      "ID": "dcf6e047-f9aa-41ad-8acc-b8108a8f3e5c", 
+      "Unit": "Millimeter", 
+      "Name": "boardWidth"
+    }, 
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000172", 
+      "Value": "39.15", 
+      "Range": "-inf..inf", 
+      "ID": "abe2023c-5a12-4ab4-ad58-e575e07ba6b6", 
+      "Unit": "Millimeter", 
+      "Name": "boardHeight"
+    }
+  ], 
+  "TierLevel": 0, 
+  "Artifacts": [], 
+  "VisualizationArtifacts": [], 
+  "DesignName": "Template_Module_1x2", 
+  "Metrics": [], 
+  "DesignID": "{f3cdcb88-5132-4d6f-ab4f-9cb399525c56}", 
+  "Dependencies": [], 
+  "Steps": [
+    {
+      "ExecutionCompletionTimestamp": "2015-01-14T11:42:32.936000", 
+      "Status": "OK", 
+      "Description": null, 
+      "Parameters": [], 
+      "ExecutionStartTimestamp": "2015-01-14T11:41:44.972000", 
+      "PreProcess": null, 
+      "PostProcess": null, 
+      "Invocation": "placement.bat -i 0.5 -e 1", 
+      "LogFile": "log/log2015-01-14T114144.972000.log", 
+      "Type": null
+    }
+  ], 
+  "TestBench": "PlaceAndRoute_1x2", 
+  "Created": "2015-01-14T17:41:36.8163388Z"
+}

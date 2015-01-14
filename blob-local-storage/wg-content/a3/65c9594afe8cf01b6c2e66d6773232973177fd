@@ -1,0 +1,27 @@
+2015-01-14 11:12:34,298 - root - DEBUG - Components found in directory : ['C14__3655b29b_c1fe_461b_8f16_b249a1d603d1.zip', 'C21__f50a4854_bc10_4b34_87b2_8137fa70243a.zip', 'C25__58bf9921_47f9_4596_8808_0c3429871d76.zip', 'C30__44429c57_327c_498b_aea9_907e17744256.zip', 'C4__c83a91b8_dae6_4919_a609_1273d255d666.zip', 'C5__a60b0f08_f3d2_45f8_9aa9_2a1e1a2a987d.zip', 'C_0201_1.0n_25V_10%_X7R__c83a91b8_dae6_4919_a609_1273d255d666.zip', 'D14__9dc44b5b_1a85_47e8_9d00_1f0af1c007e3.zip', 'D2__eb06c1a4_f420_4ce0_99a9_3c350c79cfef.zip', 'D7__cc49c67a_5d04_49ac_aeeb_908a09cda2e5.zip', 'Debug_Breakout__c471c89e_d18e_48b1_96da_f81f77c607c3.zip', 'HSIC_Breakout__06e8aadd_19e7_4a9b_a48d_7cfa1dcb8025.zip', 'J1__4d241e5a_df9c_45c5_9ead_89758f52f03a.zip', 'L6__a35af4f3_82e9_4856_b607_af37eccd9da9.zip', 'L_0806_1.0uH_25%_1.4A_shielded_Murata__a35af4f3_82e9_4856_b607_af37eccd9da9.zip', 'pcb__4eaa87f0_b9fe_48f4_8c9f_5b4029886c0f.zip', 'Q1__6032f181_9271_4efa_b930_c966be40bda5.zip', 'R25__90c92a3d_9bb0_49aa_b5f7_1f0bcbf8e21a.zip', 'R31__dff1671d_eb41_4717_a827_593f9c3da4ec.zip', 'R44__791b4bf3_6533_48bd_ad74_97fef040c294.zip', 'R52__26ad790b_7996_4058_bb31_d5dd60283a30.zip', 'R54__73d5c32a_cfc4_4977_935e_76d0ed1c811c.zip', 'R58__50b6d196_7182_4513_847e_fc7928eb9dc5.zip', 'R60__677aed73_7027_4687_8d09_6c7d9465095e.zip', 'R61__1d6bc608_3405_4cc5_8ceb_74885f462937.zip', 'R_0201_0.0_0.05W_JUMPER%_Thick_Film__791b4bf3_6533_48bd_ad74_97fef040c294.zip', 'SDIO_Breakout__e5a26a82_dd18_4346_9ac3_f8635eeab9af.zip', 'U11__6e2e591d_2773_4d76_a6a4_5a9de589ae8c.zip', 'U12__5e254174_aac9_4621_aaef_9c14c31a2d19.zip', 'U13__ae3abf61_488d_476f_ac23_cbc1f9af3783.zip', 'U14__843ec7b1_5990_4de7_97c8_3c542f4a3a38.zip', 'U15__1c2570d1_62b5_4d62_a03f_29ae7980ab77.zip', 'U16__e23f1bf8_b30d_4504_8b46_aa8227efaecf.zip', 'U17__3ed93341_33c6_46ca_b9e8_f8fc42032581.zip', 'U3__69d3aad1_33e0_4ba5_8aad_48d42d3853db.zip', 'U4__fd9dc9b7_1f94_45dc_90e7_70df9c235818.zip', 'U6__4b511512_72f2_440c_8005_fef95dc58f54.zip', 'U8__92371c5c_e08b_44b0_82eb_546fa1c81d71.zip', 'UART_Breakout__474afd2c_b6fc_479d_bbdd_d0219c304c61.zip', 'Unipro_Breakout__932640e4_02c3_4d4d_add8_9392ccb56c8a.zip', 'WakeBus_Breakout__6f067ed7_d43e_4797_88d2_9e52b52be3cb.zip', 'Y1__c2815fed_57ca_41b0_8492_050d72b5eb46.zip']
+2015-01-14 11:12:34,907 - root - INFO - (1) Components extracted...
+2015-01-14 11:12:34,907 - root - DEBUG - About to parse .xme, mga will be saved to c:\Users\adam\Documents\repos\mms-webcyphy\node_modules\webgme-domain-tools\executor_worker\executor-temp\6adf5f2164a281d48755c269787745f735a46ff6\testbenches.mga
+2015-01-14 11:12:34,938 - root - DEBUG - Xme info :
+2015-01-14 11:12:34,938 - root - DEBUG -   paradigm     : CyPhyML
+2015-01-14 11:12:34,938 - root - DEBUG -   paradigm_v   : 14.10-t3
+2015-01-14 11:12:34,986 - root - DEBUG -   paradigm_guid: bf5fd01d-f835-4e6a-bdb9-281e96fb5c6a
+2015-01-14 11:12:34,986 - root - DEBUG -   basename     : RootFolder
+2015-01-14 11:12:34,986 - root - DEBUG -   version      : 
+2015-01-14 11:12:35,750 - root - DEBUG - Mga saved to testbenches.mga
+2015-01-14 11:12:35,845 - root - INFO - (2) Mga created...
+2015-01-14 11:12:35,845 - root - DEBUG - Did not find CyPhyComponentImporterCL.exe in bin directory.
+2015-01-14 11:12:35,845 - root - DEBUG - Assuming developer machine, looking in src directory...
+2015-01-14 11:12:35,845 - root - INFO - About to call : "C:\Users\adam\Documents\repos\tonka\META\src\CyPhyComponentImporterCL\bin\Release\CyPhyComponentImporterCL.exe" -r "components_extracted" "c:\Users\adam\Documents\repos\mms-webcyphy\node_modules\webgme-domain-tools\executor_worker\executor-temp\6adf5f2164a281d48755c269787745f735a46ff6\testbenches.mga"
+2015-01-14 11:12:36,766 - root - ERROR - Subprocess call failed!
+  return-code   : -532462766
+  console output: 
+
+
+Unhandled Exception: System.IO.PathTooLongException: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+   at System.IO.PathHelper.GetFullPathName()
+   at System.IO.Path.NormalizePath(String path, Boolean fullCheck, Int32 maxPathLength, Boolean expandShortPaths)
+   at System.IO.Path.GetFullPathInternal(String path)
+   at System.IO.Path.GetFullPath(String path)
+   at CyPhyComponentImporterCL.CyPhyComponentImporterCL.Main(String[] args) in c:\Users\adam\Documents\repos\tonka\META\src\CyPhyComponentImporterCL\CyPhyComponentImporterCL.cs:line 127
+
+2015-01-14 11:12:36,766 - root - ERROR - Components could not be imported!

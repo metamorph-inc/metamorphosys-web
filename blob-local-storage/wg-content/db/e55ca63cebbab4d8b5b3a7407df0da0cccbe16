@@ -1,0 +1,13 @@
+2015-01-14 11:12:36,766 - root - ERROR - Subprocess call failed!
+  return-code   : -532462766
+  console output: 
+
+
+Unhandled Exception: System.IO.PathTooLongException: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+   at System.IO.PathHelper.GetFullPathName()
+   at System.IO.Path.NormalizePath(String path, Boolean fullCheck, Int32 maxPathLength, Boolean expandShortPaths)
+   at System.IO.Path.GetFullPathInternal(String path)
+   at System.IO.Path.GetFullPath(String path)
+   at CyPhyComponentImporterCL.CyPhyComponentImporterCL.Main(String[] args) in c:\Users\adam\Documents\repos\tonka\META\src\CyPhyComponentImporterCL\CyPhyComponentImporterCL.cs:line 127
+
+2015-01-14 11:12:36,766 - root - ERROR - Components could not be imported!

@@ -1,0 +1,25 @@
+EAGLE AutoRouter Statistics:
+
+Job           : C:/executor_worker/executor-temp/f733d91d62560c1cbe2112648dc21f3592d9e3f0/results/lodvecvt/schema.brd
+
+Start at      : 12:31:59 (1/14/2015)
+End at        : 12:32:05 (1/14/2015)
+Elapsed time  : 00:00:06
+
+Signals       :    54   RoutingGrid: 4.92126 mil  Layers: 6
+Connections   :   200   predefined:  0 ( 0 Vias )
+
+Router memory :   539280
+
+Passname          :     Route
+
+Time per pass     :  00:00:06
+Number of Ripups  :         2
+max. Level        :         1
+max. Total        :        21
+
+Routed            :       200
+Vias              :       156
+Resolution        :   100.0 %
+
+Final             : 100.0% finished

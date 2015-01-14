@@ -1,0 +1,22 @@
+
+c:\Users\adam\Documents\repos\mms-webcyphy\node_modules\webgme-domain-tools\executor_worker\executor-temp\6adf5f2164a281d48755c269787745f735a46ff6>echo off 
+
+HKEY_LOCAL_MACHINE\software\META
+    META_PATH    REG_SZ    C:\Users\adam\Documents\repos\tonka\META\
+
+2015-01-14 11:12:34,907 - root - INFO - (1) Components extracted...
+2015-01-14 11:12:35,845 - root - INFO - (2) Mga created...
+2015-01-14 11:12:35,845 - root - INFO - About to call : "C:\Users\adam\Documents\repos\tonka\META\src\CyPhyComponentImporterCL\bin\Release\CyPhyComponentImporterCL.exe" -r "components_extracted" "c:\Users\adam\Documents\repos\mms-webcyphy\node_modules\webgme-domain-tools\executor_worker\executor-temp\6adf5f2164a281d48755c269787745f735a46ff6\testbenches.mga"
+2015-01-14 11:12:36,766 - root - ERROR - Subprocess call failed!
+  return-code   : -532462766
+  console output: 
+
+
+Unhandled Exception: System.IO.PathTooLongException: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+   at System.IO.PathHelper.GetFullPathName()
+   at System.IO.Path.NormalizePath(String path, Boolean fullCheck, Int32 maxPathLength, Boolean expandShortPaths)
+   at System.IO.Path.GetFullPathInternal(String path)
+   at System.IO.Path.GetFullPath(String path)
+   at CyPhyComponentImporterCL.CyPhyComponentImporterCL.Main(String[] args) in c:\Users\adam\Documents\repos\tonka\META\src\CyPhyComponentImporterCL\CyPhyComponentImporterCL.cs:line 127
+
+2015-01-14 11:12:36,766 - root - ERROR - Components could not be imported!

@@ -1,0 +1,39 @@
+2015-01-14T12:30:23 - [Debug] - Start main method for master interpreter.
+2015-01-14T12:30:23 - [Debug] - Start copying dashboard sync.
+2015-01-14T12:30:26 - [Debug] - Generate project manifest.
+2015-01-14T12:30:26 - [Debug] - Project manifest was generated c:\executor_worker\executor-temp\f733d91d62560c1cbe2112648dc21f3592d9e3f0\manifest.project.json
+2015-01-14T12:30:26 - [Debug] - Project directory: c:\executor_worker\executor-temp\f733d91d62560c1cbe2112648dc21f3592d9e3f0
+2015-01-14T12:30:26 - [Debug] - Configuration Template_Module_1x2 [ComponentAssembly] was resolved to:  Template_Module_1x2 [ComponentAssembly]
+2015-01-14T12:30:26 - [Info] - Number of configurations to execute: 1
+2015-01-14T12:30:26 - [Debug] - Wait for dashboard copy to finish
+2015-01-14T12:30:26 - [Debug] - Dashboard copy finished
+2015-01-14T12:30:26 - [Debug] - Processing 1 out of 1 [0 success(es) and 0 failure(s)]
+2015-01-14T12:30:26 - [Debug] - Configuration /@ComponentAssemblies|kind=ComponentAssemblies|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0
+2015-01-14T12:30:26 - [Debug] - Starting analysis model processor
+2015-01-14T12:30:26 - [Debug] - Preparing analysis model processor
+2015-01-14T12:30:26 - [Debug] - Turning off addons for perfomance reasons: ConstraintManager, CyPhyAddOn, CyPhyDecoratorAddon, CyPhyMdaoAddOn, CyPhySignalBlocksAddOn
+2015-01-14T12:30:27 - [Debug] - Getting analysis model processor instance for TestBench type
+2015-01-14T12:30:27 - [Debug] - Got TestBenchTypeProcessor for TestBench /@Testing|kind=Testing|relpos=0/@PlaceAndRoute_1x2|kind=TestBench|relpos=0
+2015-01-14T12:30:27 - [Debug] - ComponentAssembly was specified as configuration. Start expanding it. /@ComponentAssemblies|kind=ComponentAssemblies|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0
+2015-01-14T12:30:27 - [Debug] - Expand finished for /@ComponentAssemblies|kind=ComponentAssemblies|relpos=0/@Template_Module_1x2|kind=ComponentAssembly|relpos=0
+2015-01-14T12:30:27 - [Debug] - [SKIP] Calling design space exporter, since the test bench is defined over a design and not a design space.
+2015-01-14T12:30:27 - [Debug] - Calling design exporter
+2015-01-14T12:30:29 - [Debug] - Design exporter succeeded.
+2015-01-14T12:30:29 - [Debug] - Saving test bench definition
+2015-01-14T12:30:29 - [Debug] - Saving test bench definition succeeded.
+2015-01-14T12:30:29 - [Debug] - Saving test bench manifest
+2015-01-14T12:30:29 - [Debug] - Saving test bench manifest succeeded.
+2015-01-14T12:30:29 - [Debug] - Serializing Project manifest file with updates.
+2015-01-14T12:30:29 - [Debug] - Project manifest was successfully saved.
+2015-01-14T12:30:29 - [Debug] - Execution is non interactive, not showing interpreter configuration forms. Using settings from files.
+2015-01-14T12:30:29 - [Debug] - Running interpreters. Keeping temp models: False
+2015-01-14T12:30:41 - [Debug] - Interpreters finished.
+2015-01-14T12:30:41 - [Debug] - Not posting to the job manager
+2015-01-14T12:30:41 - [Debug] - Removing temporary models.
+2015-01-14T12:30:41 - [Debug] - Temporary models are removed.
+2015-01-14T12:30:41 - [Debug] - Turning addons back on: ConstraintManager, CyPhyAddOn, CyPhyDecoratorAddon, CyPhyMdaoAddOn, CyPhySignalBlocksAddOn
+2015-01-14T12:30:41 - [Debug] - Analysis model processor is done
+2015-01-14T12:30:41 - [Debug] - Generate dashboard script files
+2015-01-14T12:30:41 - [Debug] - Dashboard script files generated
+2015-01-14T12:30:41 - [Info] -  Summary 
+2015-01-14T12:30:41 - [Success] -  <a href="mga:id-0065-00000006">PlaceAndRoute_1x2</a> <a href="mga:id-0065-000005d9">Template_Module_1x2</a>  

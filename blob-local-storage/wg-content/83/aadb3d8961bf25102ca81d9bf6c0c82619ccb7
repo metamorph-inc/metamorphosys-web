@@ -1,0 +1,86 @@
+2015-01-14T11:16:12 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C14__3655b29b_c1fe_461b_8f16_b249a1d603d1\C_0201_100n_6.3V_10%_X5R.acm
+2015-01-14T11:16:14 - [Info] - Imported <a href="mga:id-0065-00000466">C_0201_100n_6.3V_10%_X5R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:14 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C21__f50a4854_bc10_4b34_87b2_8137fa70243a\C_0603_22u_6.3V_20%_X5R.acm
+2015-01-14T11:16:15 - [Info] - Imported <a href="mga:id-0065-0000046b">C_0603_22u_6.3V_20%_X5R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:15 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C25__58bf9921_47f9_4596_8808_0c3429871d76\C_0201_100p_25V_5%_C0G.acm
+2015-01-14T11:16:17 - [Info] - Imported <a href="mga:id-0065-00000470">C_0201_100p_25V_5%_C0G</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:17 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C30__44429c57_327c_498b_aea9_907e17744256\C_0402_10u_10V_20%_X5R.acm
+2015-01-14T11:16:18 - [Info] - Imported <a href="mga:id-0065-00000475">C_0402_10u_10V_20%_X5R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:18 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C4__c83a91b8_dae6_4919_a609_1273d255d666\C_0201_1.0n_25V_10%_X7R.acm
+2015-01-14T11:16:20 - [Info] - Imported <a href="mga:id-0065-0000047a">C_0201_1.0n_25V_10%_X7R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:20 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C5__a60b0f08_f3d2_45f8_9aa9_2a1e1a2a987d\C_0201_10n_10V_10%_X5R.acm
+2015-01-14T11:16:21 - [Info] - Imported <a href="mga:id-0065-0000047f">C_0201_10n_10V_10%_X5R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:21 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\C_0201_1.0n_25V_10%_X7R__c83a91b8_dae6_4919_a609_1273d255d666\C_0201_1.0n_25V_10%_X7R.acm
+2015-01-14T11:16:23 - [Info] - Imported <a href="mga:id-0065-00000484">C_0201_1.0n_25V_10%_X7R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-01-14T11:16:23 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\D14__9dc44b5b_1a85_47e8_9d00_1f0af1c007e3\CTS05S40.acm
+2015-01-14T11:16:24 - [Info] - Imported <a href="mga:id-0065-00000489">CTS05S40</a> to folder <i>RootFolder/Components/ara_components</i>
+2015-01-14T11:16:24 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\D2__eb06c1a4_f420_4ce0_99a9_3c350c79cfef\TVN10201SP0.acm
+2015-01-14T11:16:25 - [Info] - Imported <a href="mga:id-0065-0000048d">TVN10201SP0</a> to folder <i>RootFolder/Components/ara_components</i>
+2015-01-14T11:16:25 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\D7__cc49c67a_5d04_49ac_aeeb_908a09cda2e5\TEA10201V15A0.acm
+2015-01-14T11:16:26 - [Info] - Imported <a href="mga:id-0065-00000491">TEA10201V15A0</a> to folder <i>RootFolder/Components/ara_components</i>
+2015-01-14T11:16:26 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\Debug_Breakout__c471c89e_d18e_48b1_96da_f81f77c607c3\Debug_Breakout.acm
+2015-01-14T11:16:28 - [Info] - Imported <a href="mga:id-0065-00000495">Debug_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:16:28 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\HSIC_Breakout__06e8aadd_19e7_4a9b_a48d_7cfa1dcb8025\HSIC_Breakout.acm
+2015-01-14T11:16:29 - [Info] - Imported <a href="mga:id-0065-000004a2">HSIC_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:16:29 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\J1__4d241e5a_df9c_45c5_9ead_89758f52f03a\Q01P00693A2N.acm
+2015-01-14T11:16:32 - [Info] - Imported <a href="mga:id-0065-000004a6">Q01P00693A2N</a> to folder <i>RootFolder/Components/ara_components</i>
+2015-01-14T11:16:32 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\L6__a35af4f3_82e9_4856_b607_af37eccd9da9\L_0806_1.0uH_25%_1.4A_shielded_Murata.acm
+2015-01-14T11:16:34 - [Info] - Imported <a href="mga:id-0065-000004b4">L_0806_1.0uH_25%_1.4A_shielded_Murata</a> to folder <i>RootFolder/Components/passive_components/inductors/single_components</i>
+2015-01-14T11:16:34 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\L_0806_1.0uH_25%_1.4A_shielded_Murata__a35af4f3_82e9_4856_b607_af37eccd9da9\L_0806_1.0uH_25%_1.4A_shielded_Murata.acm
+2015-01-14T11:16:36 - [Info] - Imported <a href="mga:id-0065-000004b9">L_0806_1.0uH_25%_1.4A_shielded_Murata</a> to folder <i>RootFolder/Components/passive_components/inductors/single_components</i>
+2015-01-14T11:16:36 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\pcb__4eaa87f0_b9fe_48f4_8c9f_5b4029886c0f\pcb.acm
+2015-01-14T11:16:36 - [Info] - Imported <a href="mga:id-0065-000004be">pcb</a> to folder <i>RootFolder/Components/pcb_board</i>
+2015-01-14T11:16:36 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\Q1__6032f181_9271_4efa_b930_c966be40bda5\DMN2005LP4K_7B.acm
+2015-01-14T11:16:38 - [Info] - Imported <a href="mga:id-0065-000004bf">DMN2005LP4K_7B</a> to folder <i>RootFolder/Components/semiconductors_and_actives/discretes/transistors/mosfets/n_channel_mosfet</i>
+2015-01-14T11:16:38 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R25__90c92a3d_9bb0_49aa_b5f7_1f0bcbf8e21a\R_0201_1.00k_0.05W_1%_Thick_Film.acm
+2015-01-14T11:16:40 - [Info] - Imported <a href="mga:id-0065-000004c4">R_0201_1.00k_0.05W_1%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:40 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R31__dff1671d_eb41_4717_a827_593f9c3da4ec\R_0201_10k_0.05W_5%_Thick_Film.acm
+2015-01-14T11:16:43 - [Info] - Imported <a href="mga:id-0065-000004c9">R_0201_10k_0.05W_5%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:43 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R44__791b4bf3_6533_48bd_ad74_97fef040c294\R_0201_0.0_0.05W_JUMPER%_Thick_Film.acm
+2015-01-14T11:16:45 - [Info] - Imported <a href="mga:id-0065-000004ce">R_0201_0.0_0.05W_JUMPER%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:45 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R52__26ad790b_7996_4058_bb31_d5dd60283a30\R_0201_620k_0.05W_1%_Thick_Film.acm
+2015-01-14T11:16:48 - [Info] - Imported <a href="mga:id-0065-000004d3">R_0201_620k_0.05W_1%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:48 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R54__73d5c32a_cfc4_4977_935e_76d0ed1c811c\R_0201_196k_0.05W_1%_Thick_Film.acm
+2015-01-14T11:16:50 - [Info] - Imported <a href="mga:id-0065-000004d8">R_0201_196k_0.05W_1%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:50 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R58__50b6d196_7182_4513_847e_fc7928eb9dc5\R_0201_1.0M_0.05W_5%_Thick_Film.acm
+2015-01-14T11:16:53 - [Info] - Imported <a href="mga:id-0065-000004dd">R_0201_1.0M_0.05W_5%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:53 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R60__677aed73_7027_4687_8d09_6c7d9465095e\R_0201_10M_0.05W_5%_Thick_Film.acm
+2015-01-14T11:16:55 - [Info] - Imported <a href="mga:id-0065-000004e2">R_0201_10M_0.05W_5%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:55 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R61__1d6bc608_3405_4cc5_8ceb_74885f462937\R_0201_100k_0.05W_5%_Thick_Film.acm
+2015-01-14T11:16:58 - [Info] - Imported <a href="mga:id-0065-000004e7">R_0201_100k_0.05W_5%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:16:58 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R_0201_0.0_0.05W_JUMPER%_Thick_Film__791b4bf3_6533_48bd_ad74_97fef040c294\R_0201_0.0_0.05W_JUMPER%_Thick_Film.acm
+2015-01-14T11:17:01 - [Info] - Imported <a href="mga:id-0065-000004ec">R_0201_0.0_0.05W_JUMPER%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:17:01 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\R_0201_1.0M_0.05W_5%_Thick_Film__50b6d196_7182_4513_847e_fc7928eb9dc5\R_0201_1.0M_0.05W_5%_Thick_Film.acm
+2015-01-14T11:17:03 - [Info] - Imported <a href="mga:id-0065-000004f1">R_0201_1.0M_0.05W_5%_Thick_Film</a> to folder <i>RootFolder/Components/passive_components/resistors/single_components</i>
+2015-01-14T11:17:03 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\SDIO_Breakout__e5a26a82_dd18_4346_9ac3_f8635eeab9af\SDIO_Breakout.acm
+2015-01-14T11:17:06 - [Info] - Imported <a href="mga:id-0065-000004f6">SDIO_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:17:06 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U11__6e2e591d_2773_4d76_a6a4_5a9de589ae8c\MAX44269EWL_T.acm
+2015-01-14T11:17:10 - [Info] - Imported <a href="mga:id-0065-000004fe">MAX44269EWL_T</a> to folder <i>RootFolder/Components/semiconductors_and_actives/amplifiers_buffers/comparators</i>
+2015-01-14T11:17:10 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U12__5e254174_aac9_4621_aaef_9c14c31a2d19\MAX9025EBT_T.acm
+2015-01-14T11:17:13 - [Info] - Imported <a href="mga:id-0065-00000509">MAX9025EBT_T</a> to folder <i>RootFolder/Components/semiconductors_and_actives/amplifiers_buffers/comparators</i>
+2015-01-14T11:17:13 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U13__ae3abf61_488d_476f_ac23_cbc1f9af3783\TS5A22362YZPR.acm
+2015-01-14T11:17:17 - [Info] - Imported <a href="mga:id-0065-00000511">TS5A22362YZPR</a> to folder <i>RootFolder/Components/semiconductors_and_actives/logic_standard/switches</i>
+2015-01-14T11:17:17 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U14__843ec7b1_5990_4de7_97c8_3c542f4a3a38\TCA6416AZQSR.acm
+2015-01-14T11:17:25 - [Info] - Imported <a href="mga:id-0065-0000051d">TCA6416AZQSR</a> to folder <i>RootFolder/Components/semiconductors_and_actives/interface_ics</i>
+2015-01-14T11:17:25 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U15__1c2570d1_62b5_4d62_a03f_29ae7980ab77\TPS826711.acm
+2015-01-14T11:17:28 - [Info] - Imported <a href="mga:id-0065-00000537">TPS826711</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/dc_dc_converters</i>
+2015-01-14T11:17:28 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U16__e23f1bf8_b30d_4504_8b46_aa8227efaecf\TPS82674.acm
+2015-01-14T11:17:30 - [Info] - Imported <a href="mga:id-0065-0000053e">TPS82674</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/voltage_regulators</i>
+2015-01-14T11:17:30 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U17__3ed93341_33c6_46ca_b9e8_f8fc42032581\TPS82676.acm
+2015-01-14T11:17:32 - [Info] - Imported <a href="mga:id-0065-00000545">TPS82676</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/dc_dc_converters</i>
+2015-01-14T11:17:32 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U3__69d3aad1_33e0_4ba5_8aad_48d42d3853db\T6WR6XBG.acm
+2015-01-14T11:18:18 - [Info] - Imported <a href="mga:id-0065-0000054c">T6WR6XBG</a> to folder <i>RootFolder/Components/ara_components</i>
+2015-01-14T11:18:18 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U4__fd9dc9b7_1f94_45dc_90e7_70df9c235818\N25Q016A11.acm
+2015-01-14T11:18:23 - [Info] - Imported <a href="mga:id-0065-000005b4">N25Q016A11</a> to folder <i>RootFolder/Components/semiconductors_and_actives/memory/flash</i>
+2015-01-14T11:18:23 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U6__4b511512_72f2_440c_8005_fef95dc58f54\TPS3895A.acm
+2015-01-14T11:18:27 - [Info] - Imported <a href="mga:id-0065-000005be">TPS3895A</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/voltage_supervisors</i>
+2015-01-14T11:18:27 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\U8__92371c5c_e08b_44b0_82eb_546fa1c81d71\TPS630250YFFR.acm
+2015-01-14T11:18:33 - [Info] - Imported <a href="mga:id-0065-000005c6">TPS630250YFFR</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/voltage_regulators</i>
+2015-01-14T11:18:33 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\UART_Breakout__474afd2c_b6fc_479d_bbdd_d0219c304c61\UART_Breakout.acm
+2015-01-14T11:18:36 - [Info] - Imported <a href="mga:id-0065-000005d2">UART_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:18:36 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\Unipro_Breakout__932640e4_02c3_4d4d_add8_9392ccb56c8a\Unipro_Breakout.acm
+2015-01-14T11:18:42 - [Info] - Imported <a href="mga:id-0065-000005d8">Unipro_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:18:42 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\WakeBus_Breakout__6f067ed7_d43e_4797_88d2_9e52b52be3cb\WakeBus_Breakout.acm
+2015-01-14T11:18:44 - [Info] - Imported <a href="mga:id-0065-000005e2">WakeBus_Breakout</a> to folder <i>RootFolder/Components/model_utilities/breakout_components</i>
+2015-01-14T11:18:44 - [Debug] - Importing c:\executor_worker\executor-temp\ff5b4fe96e7d74e9fe70129f29e6ea1d1187e2da\components_extracted\Y1__c2815fed_57ca_41b0_8492_050d72b5eb46\TXCO_19p2_MHz.acm
+2015-01-14T11:18:46 - [Info] - Imported <a href="mga:id-0065-000005e8">TXCO_19p2_MHz</a> to folder <i>RootFolder/Components/ara_components</i>

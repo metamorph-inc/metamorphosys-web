@@ -1,0 +1,25 @@
+EAGLE AutoRouter Statistics:
+
+Job           : C:/executor_worker/executor-temp/58a8b78b60bbee26aeb17238833dd9298839fdc5/results/jelagwm4/schema.brd
+
+Start at      : 11:47:04 (1/14/2015)
+End at        : 11:47:11 (1/14/2015)
+Elapsed time  : 00:00:07
+
+Signals       :    54   RoutingGrid: 4.92126 mil  Layers: 6
+Connections   :   206   predefined:  0 ( 0 Vias )
+
+Router memory :   539280
+
+Passname          :     Route
+
+Time per pass     :  00:00:07
+Number of Ripups  :         3
+max. Level        :         1
+max. Total        :        62
+
+Routed            :       206
+Vias              :       166
+Resolution        :   100.0 %
+
+Final             : 100.0% finished

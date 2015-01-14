@@ -1,0 +1,27 @@
+{
+  "Project": {
+    "Components": [],
+    "DesignSpaceModels": [],
+    "Configurations": [
+      "./designs/Template_Module_1x2.adm"
+    ],
+    "TestBenches": [
+      "./test-benches/PlaceAndRoute_1x2.testbench.json"
+    ],
+    "Results": {
+      "UrlHints": [
+        "./results/results.metaresults.json"
+      ]
+    },
+    "Requirements": {
+      "UrlHints": [
+        "./requirements/requirements.json"
+      ],
+      "id": "",
+      "vfLink": "",
+      "text": ""
+    },
+    "CyPhyProjectFileName": "testbenches.mga",
+    "LastModified": "2015-01-14 11-41-35"
+  }
+}

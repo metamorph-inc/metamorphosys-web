@@ -1,0 +1,4169 @@
+
+{
+	"boardHeight" : 39.150,
+	"boardTemplate" : "c:\\executor_worker\\executor-temp\\58a8b78b60bbee26aeb17238833dd9298839fdc5\\components\\e2zzbu35\\template.brd",
+	"boardWidth" : 16.50,
+	"constraints" : null,
+	"numLayers" : 2,
+	"packages" : 
+	[
+		
+		{
+			"ComponentID" : "3984c486-06e4-8978-de55-7b0c259dddbb",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 0,
+			"name" : "D1",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 0,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 11.10,
+			"y" : 21.10
+		},
+		
+		{
+			"ComponentID" : "bae11d2c-31ac-099c-380b-b7983c1bd878",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.350,
+			"layer" : 1,
+			"name" : "D2",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_AB0",
+			"pkg_idx" : 1,
+			"rotation" : 0,
+			"width" : 1.39350,
+			"x" : 9.50,
+			"y" : 2.30
+		},
+		
+		{
+			"ComponentID" : "80aeccd5-1b9a-e71e-5160-febe00c1a903",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 9.20750,
+			"layer" : 1,
+			"multiLayer" : true,
+			"name" : "J1",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "INDUCTIVE_MEDIA_CONVERTER",
+			"pkg_idx" : 2,
+			"rotation" : 0,
+			"width" : 10.22350,
+			"x" : 2.90,
+			"y" : 3.20
+		},
+		
+		{
+			"ComponentID" : "6bd3bfd7-4eb9-62fe-5b42-c74be6e80624",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C4",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 3,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.60,
+			"y" : 11.50
+		},
+		
+		{
+			"ComponentID" : "8ea0e165-103e-80d8-ad25-34f0b2d37e0e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C5",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 4,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.60,
+			"y" : 13.60
+		},
+		
+		{
+			"ComponentID" : "4a67f273-d626-5df2-c7cf-a467a323cb5f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C10",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 5,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.60,
+			"y" : 15.70
+		},
+		
+		{
+			"ComponentID" : "54ef7489-8b38-906a-3327-4a5a6d5d2ea2",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 1,
+			"name" : "C11",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 6,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 9.50,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "7e677cc3-7692-401a-0122-b4f94d9ddbdc",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 1,
+			"name" : "C12",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 7,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 11.60,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "d5b467af-9c25-d0ee-61f4-f98e1624074b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C13",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 8,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 4.90,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "a460ef1f-dc4a-1bba-0b7e-719b3cfca7c5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C14",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 9,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 4.90,
+			"y" : 13.0
+		},
+		
+		{
+			"ComponentID" : "43791956-ac62-2ddc-6397-49ac139d3d90",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C15",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 10,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.70,
+			"y" : 20.90
+		},
+		
+		{
+			"ComponentID" : "386e85de-e809-b7a4-3014-14866f146e28",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C16",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 11,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.70,
+			"y" : 23.0
+		},
+		
+		{
+			"ComponentID" : "9dedb95b-3447-4432-a41c-1837595ed953",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C17",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 12,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 11.30,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "06cafefa-3aa8-44fc-3362-00913f8a592e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C18",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 13,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 11.30,
+			"y" : 13.20
+		},
+		
+		{
+			"ComponentID" : "4c77a88f-0610-0b01-b8d2-7db98cb8920c",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.90,
+			"layer" : 0,
+			"name" : "C19",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0603",
+			"pkg_idx" : 14,
+			"rotation" : 1,
+			"width" : 2.20,
+			"x" : 4.90,
+			"y" : 15.10
+		},
+		
+		{
+			"ComponentID" : "111ea1dc-2c66-762d-e213-11003e9f1367",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C20",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 15,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 11.10,
+			"y" : 23.50
+		},
+		
+		{
+			"ComponentID" : "5f818caa-ba25-c540-b56a-76566bf3bf5f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.90,
+			"layer" : 0,
+			"name" : "C21",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0603",
+			"pkg_idx" : 16,
+			"rotation" : 1,
+			"width" : 2.20,
+			"x" : 14.60,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "4c327620-3fd6-3f19-e223-647b4e5f175f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C22",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 17,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 13.20,
+			"y" : 23.50
+		},
+		
+		{
+			"ComponentID" : "a4f7319c-eec7-49b5-8c36-83000cb80e17",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C23",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 18,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 14.50,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "8ebe3605-19a4-c49f-9c5d-c8fa383af0b5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C24",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 19,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 6.20,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "34087a49-9092-a648-70ec-f1249b54949d",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C25",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 20,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 8.300000000000001,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "91c3cc74-1836-70b4-cfc4-b0a2f4b074fa",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C8",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 21,
+			"rotation" : 0,
+			"width" : 1.5240,
+			"x" : 1.0,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "fb294a8a-a62b-990b-aefc-e88ac342bfec",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C9",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 22,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 3.10,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "7d21083d-836c-b68b-a985-2be8d0782667",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 1,
+			"name" : "D10",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 23,
+			"rotation" : 0,
+			"width" : 1.360250,
+			"x" : 11.40,
+			"y" : 2.30
+		},
+		
+		{
+			"ComponentID" : "134fded3-f802-ec57-5ed4-efad3ad7e749",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 1,
+			"name" : "D3",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 24,
+			"rotation" : 0,
+			"width" : 1.360250,
+			"x" : 13.30,
+			"y" : 2.30
+		},
+		
+		{
+			"ComponentID" : "30ff36bb-ebaa-91bf-eb44-dc2229a50833",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 1,
+			"name" : "D4",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 25,
+			"rotation" : 0,
+			"width" : 1.360250,
+			"x" : 13.70,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "2330b830-faea-6248-b0bc-b6eae1bdb62d",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 0,
+			"name" : "D5",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 26,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 10.40,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "32f5281d-72e7-8e1a-4915-1aef922dbd5b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 0,
+			"name" : "D6",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 27,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 13.40,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "8f8ad381-7dda-a1b7-8c54-97cf7dd9328b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 0,
+			"name" : "D7",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 28,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 13.70,
+			"y" : 2.90
+		},
+		
+		{
+			"ComponentID" : "beab7394-b865-222f-cc73-5f3e94af6a3b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 1,
+			"name" : "D8",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 29,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 1.0,
+			"y" : 13.0
+		},
+		
+		{
+			"ComponentID" : "29c2c5cd-cf23-41c5-a4b4-fa2b4392dcf9",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.330,
+			"layer" : 0,
+			"name" : "D9",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "2_PIN_EIA0201",
+			"pkg_idx" : 30,
+			"rotation" : 1,
+			"width" : 1.360250,
+			"x" : 13.70,
+			"y" : 4.80
+		},
+		
+		{
+			"ComponentID" : "eab7ec83-f022-cfdb-5e5e-89c5f1ad1daa",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R10",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 31,
+			"rotation" : 1,
+			"width" : 0.760,
+			"x" : 13.40,
+			"y" : 13.20
+		},
+		
+		{
+			"ComponentID" : "0ecab69b-9e09-c37d-25d8-fc7eea3ae62e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R11",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 32,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 7.0
+		},
+		
+		{
+			"ComponentID" : "ea7f3c3f-4750-b830-04f3-1d271a2f011a",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R12",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 33,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 8.199999999999999
+		},
+		
+		{
+			"ComponentID" : "e67ea69f-0bae-3d22-088b-efb62ae6e220",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R13",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 34,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 9.40
+		},
+		
+		{
+			"ComponentID" : "632bf9d8-9005-f09f-01fb-781cf098252e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R14",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 35,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 10.60
+		},
+		
+		{
+			"ComponentID" : "105ae847-fb1c-fc79-1154-15911f70186f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R15",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 36,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 11.80
+		},
+		
+		{
+			"ComponentID" : "18fddadf-5689-7536-029f-4cebe520ff19",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R16",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 37,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 3.20
+		},
+		
+		{
+			"ComponentID" : "a89d4769-df6c-de75-633c-76a1ab1438b4",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R17",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 38,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 4.40
+		},
+		
+		{
+			"ComponentID" : "a914a577-6f00-4823-2635-3d2afa0ddf77",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R18",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 39,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 5.60
+		},
+		
+		{
+			"ComponentID" : "6126ab31-7ab2-9cf1-0de0-74178a3b437c",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R19",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 40,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 6.80
+		},
+		
+		{
+			"ComponentID" : "b8b13fbf-0d71-c720-1283-be522ca8e77d",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R20",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 41,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 8.0
+		},
+		
+		{
+			"ComponentID" : "c2a2024e-cdf3-82e1-93fd-a6d57ed268a8",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R21",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 42,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 9.199999999999999
+		},
+		
+		{
+			"ComponentID" : "e7739b7e-022c-f12f-d68a-2d2a95defbe6",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R24",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 43,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 10.40
+		},
+		
+		{
+			"ComponentID" : "00660116-019b-c75e-a7b1-1d9f7dfbe0c2",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R25",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 44,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 11.60
+		},
+		
+		{
+			"ComponentID" : "e1fe887d-c9de-eeef-5aa3-e01e69559f03",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 1,
+			"name" : "R27",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 45,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 13.70,
+			"y" : 12.80
+		},
+		
+		{
+			"ComponentID" : "9a572692-8d0f-343e-cfdf-0f20ec8533fa",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R28",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 46,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "4b12ce2a-9894-7c3d-0aee-010b712ae139",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R29",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 47,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "0bc8e845-c2cb-4576-808c-57e20ab86263",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R30",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 48,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "0678c262-f5b8-7192-9d95-8d5addb88818",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R31",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 49,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "b8caa147-016d-c5ca-2be0-888b3bdd1785",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R32",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 50,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "b2b92399-6535-85ed-4721-db6acc9bf188",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R33",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 51,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 21.50
+		},
+		
+		{
+			"ComponentID" : "52124cea-c85a-e79f-54d1-39cf6ea23acb",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R34",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 52,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "29a0cd2e-5221-2ac6-d14f-ab1b0f0cadd3",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R35",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 53,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "172c5c9b-a472-aa2d-c8d5-159c7c14183d",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R37",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 54,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "0de50ece-536f-eed1-7cbd-ae8b77be5c4e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R38",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 55,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "dc5e47f3-1e3b-dc05-dcfc-7e0e716da9d0",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R39",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 56,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "3a9ea298-1a9e-fef2-809e-2777192d099c",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R40",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 57,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 22.70
+		},
+		
+		{
+			"ComponentID" : "acce3752-2277-414c-cf6c-cd6a06b63025",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R41",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 58,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 8.800000000000001,
+			"y" : 23.60
+		},
+		
+		{
+			"ComponentID" : "34a22cc5-f269-0937-bb08-b4cd6498a2fe",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R42",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 59,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "35fa31ea-f948-28c9-9d50-dd6e2430fbf8",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R43",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 60,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "5f19ef01-a358-36e0-985e-694846d9cdef",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R44",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 61,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "89dd24e4-f782-6060-b0a8-31dbed5de73a",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R45",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 62,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "329bbb67-f79e-3847-5ac4-9575a8261a88",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R46",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 63,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "c80c5848-2f7e-452b-2ed8-67546e38a7f8",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R47",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 64,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 23.90
+		},
+		
+		{
+			"ComponentID" : "885fc697-7669-8595-79f8-613a19bef8c5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R6",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 65,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 8.800000000000001,
+			"y" : 24.80
+		},
+		
+		{
+			"ComponentID" : "f2dd9599-0fc3-08cb-fc66-576f106c7f42",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R7",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 66,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 10.10,
+			"y" : 24.80
+		},
+		
+		{
+			"ComponentID" : "578b1561-b7fe-5287-f130-6e85d0b30eba",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R78",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 67,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 11.40,
+			"y" : 24.80
+		},
+		
+		{
+			"ComponentID" : "d0c7b9d9-1da5-41e7-0627-519326ebe237",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R79",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 68,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 12.70,
+			"y" : 25.60
+		},
+		
+		{
+			"ComponentID" : "dcb4a00a-e549-78e4-37a5-e6d466e89e8e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R8",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 69,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "93170ac9-15c5-d3a9-a1cd-1e24582abfc3",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R80",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 70,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "28fb8b3e-0406-61c4-873a-80abb924124b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R81",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 71,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "f66e9798-3e68-b228-4e28-27af07c190fd",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R82",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 72,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "5410e1db-3edb-50d4-6896-41620e6a622e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R83",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 73,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "3ffef187-5b34-3f50-60ca-d1b4f14f6412",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R84",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 74,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 25.10
+		},
+		
+		{
+			"ComponentID" : "8c4682a7-cf7c-1ef6-2af4-b80202f0c27b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R85",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 75,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 8.800000000000001,
+			"y" : 26.0
+		},
+		
+		{
+			"ComponentID" : "d57ffa42-5e42-73d5-c56d-9d966fa6ad5f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R88",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 76,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 10.10,
+			"y" : 26.0
+		},
+		
+		{
+			"ComponentID" : "8a262ebf-2ee4-15ce-8893-3e1f9603d108",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R89",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 77,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 11.40,
+			"y" : 26.0
+		},
+		
+		{
+			"ComponentID" : "feaeea0b-8391-cff4-3493-e665480e605f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R9",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 78,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 12.70,
+			"y" : 26.80
+		},
+		
+		{
+			"ComponentID" : "226a0c17-f8e3-e8da-7392-4db06585a53b",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 1.96350,
+			"layer" : 0,
+			"name" : "U13",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "10_DSBGA",
+			"pkg_idx" : 79,
+			"rotation" : 0,
+			"width" : 1.71350,
+			"x" : 8.800000000000001,
+			"y" : 21.10
+		},
+		
+		{
+			"ComponentID" : "9e00a2b5-d909-b205-3023-f011f5e4f90c",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 2.50850,
+			"layer" : 0,
+			"name" : "U14",
+			"originX" : -0.20,
+			"originY" : 0.0,
+			"package" : "24_BUMP_ZQS",
+			"pkg_idx" : 80,
+			"rotation" : 0,
+			"width" : 2.74850,
+			"x" : 12.10,
+			"y" : 17.80
+		},
+		
+		{
+			"ComponentID" : "8bb5a98e-d82c-4af6-154c-48b2f7e6c9da",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 4.280,
+			"layer" : 0,
+			"multiLayer" : true,
+			"name" : "U3",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "BGA107",
+			"pkg_idx" : 81,
+			"rotation" : 0,
+			"width" : 4.280,
+			"x" : 6.50,
+			"y" : 13.0
+		},
+		
+		{
+			"ComponentID" : "4c6e65e2-73d1-5449-5848-929a2c8eaad1",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 1.98850,
+			"layer" : 1,
+			"name" : "U4",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "8_BUMP_XFCSP",
+			"pkg_idx" : 82,
+			"rotation" : 1,
+			"width" : 1.28850,
+			"x" : 1.0,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "91a7376f-8abb-4937-ad61-8f4c1ced13fb",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 1.41350,
+			"layer" : 1,
+			"name" : "U6",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "6_PIN_DRY",
+			"pkg_idx" : 83,
+			"rotation" : 0,
+			"width" : 1.67850,
+			"x" : 3.50,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "feadfd91-986e-4109-258a-9457eabc6d62",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.550,
+			"layer" : 0,
+			"name" : "C30",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0402",
+			"pkg_idx" : 84,
+			"rotation" : 0,
+			"width" : 1.50,
+			"x" : 1.0,
+			"y" : 13.0
+		},
+		
+		{
+			"ComponentID" : "427b1339-6b69-06ce-77e8-cffa91650b7e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.90,
+			"layer" : 0,
+			"name" : "C32",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0603",
+			"pkg_idx" : 85,
+			"rotation" : 1,
+			"width" : 2.20,
+			"x" : 14.60,
+			"y" : 3.70
+		},
+		
+		{
+			"ComponentID" : "2dee491a-9694-8a9d-f289-7910705a6fac",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.90,
+			"layer" : 0,
+			"name" : "C33",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0603",
+			"pkg_idx" : 86,
+			"rotation" : 1,
+			"width" : 2.20,
+			"x" : 14.60,
+			"y" : 6.40
+		},
+		
+		{
+			"ComponentID" : "7b86430a-efac-732c-ef8c-21a25e7c4e6a",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 2.80,
+			"layer" : 0,
+			"name" : "L6",
+			"originX" : 0.0,
+			"originY" : -0.30,
+			"package" : "L_0806",
+			"pkg_idx" : 87,
+			"rotation" : 0,
+			"width" : 2.80,
+			"x" : 8.800000000000001,
+			"y" : 17.80
+		},
+		
+		{
+			"ComponentID" : "9230af0d-db64-89ac-75e6-e8ca81e2f384",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R52",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 88,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 14.0,
+			"y" : 27.20
+		},
+		
+		{
+			"ComponentID" : "45e8a0c4-798d-08ea-90b1-53dc8e6d72c5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R53",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 89,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "7900bab1-4127-af10-a2c4-b60eed100c86",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R54",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 90,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "0738292d-166c-06f9-18a4-051a4943ef4e",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R55",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 91,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "c56c10c1-503e-a9a6-2784-c3f38adc2d65",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R92",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 92,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "c620a92f-29cc-18db-e5dd-f27d93ca2b75",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R93",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 93,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "12a147f3-b6d1-b383-76fe-3241a29cd706",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R94",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 94,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 26.30
+		},
+		
+		{
+			"ComponentID" : "c3cb4d24-0188-966c-7fd0-ac7280a2846a",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R95",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 95,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 8.800000000000001,
+			"y" : 27.20
+		},
+		
+		{
+			"ComponentID" : "db36695c-e9a1-8b96-fc2c-8531cefa2377",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R96",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 96,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 10.10,
+			"y" : 27.20
+		},
+		
+		{
+			"ComponentID" : "9c58dd08-c44d-bf1d-8a14-1c67749c0f04",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R97",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 97,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 11.40,
+			"y" : 27.20
+		},
+		
+		{
+			"ComponentID" : "aacb36dc-0974-b4bb-d3ac-11c5bcbfbdee",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 3.20,
+			"layer" : 0,
+			"name" : "U15",
+			"originX" : 0.0,
+			"originY" : 0.20,
+			"package" : "MICRO-SIP",
+			"pkg_idx" : 98,
+			"rotation" : 0,
+			"width" : 3.40,
+			"x" : 1.0,
+			"y" : 17.80
+		},
+		
+		{
+			"ComponentID" : "8449b0c9-f0f4-9656-b398-111571c3f727",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 3.20,
+			"layer" : 0,
+			"name" : "U16",
+			"originX" : 0.0,
+			"originY" : 0.20,
+			"package" : "MICRO-SIP",
+			"pkg_idx" : 99,
+			"rotation" : 0,
+			"width" : 3.40,
+			"x" : 1.0,
+			"y" : 14.10
+		},
+		
+		{
+			"ComponentID" : "96f6b080-791b-9446-e77e-64a9b73748ac",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 3.20,
+			"layer" : 0,
+			"name" : "U17",
+			"originX" : 0.0,
+			"originY" : 0.20,
+			"package" : "MICRO-SIP",
+			"pkg_idx" : 100,
+			"rotation" : 0,
+			"width" : 3.40,
+			"x" : 4.90,
+			"y" : 17.80
+		},
+		
+		{
+			"ComponentID" : "1e275ddf-4c42-3bc1-fb95-52e85ae6c6f5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 2.00350,
+			"layer" : 0,
+			"name" : "U8",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "20_BUMP_YFF",
+			"pkg_idx" : 101,
+			"rotation" : 0,
+			"width" : 2.00350,
+			"x" : 12.10,
+			"y" : 20.90
+		},
+		
+		{
+			"ComponentID" : "05cb6c79-d9f0-41da-aac8-5e6fa0ec32f7",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C36",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 102,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 1.0,
+			"y" : 2.30
+		},
+		
+		{
+			"ComponentID" : "9c932de2-1364-88b5-8f24-db4a1c59eccb",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 0,
+			"name" : "C37",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 103,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 1.0,
+			"y" : 4.40
+		},
+		
+		{
+			"ComponentID" : "cef240f7-bfd3-8cf1-22b5-5427851f70e5",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7635000000000001,
+			"layer" : 0,
+			"name" : "D12",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "2_PIN_CTS",
+			"pkg_idx" : 104,
+			"rotation" : 1,
+			"width" : 1.56350,
+			"x" : 1.0,
+			"y" : 6.50
+		},
+		
+		{
+			"ComponentID" : "8215f78f-22f9-3890-ee69-c2435754e38f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7635000000000001,
+			"layer" : 0,
+			"name" : "D13",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "2_PIN_CTS",
+			"pkg_idx" : 105,
+			"rotation" : 1,
+			"width" : 1.56350,
+			"x" : 1.0,
+			"y" : 8.60
+		},
+		
+		{
+			"ComponentID" : "0f671a2d-4f46-b866-c1a7-3a1d1e49302f",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7635000000000001,
+			"layer" : 0,
+			"name" : "D14",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "2_PIN_CTS",
+			"pkg_idx" : 106,
+			"rotation" : 1,
+			"width" : 1.56350,
+			"x" : 1.0,
+			"y" : 10.70
+		},
+		
+		{
+			"ComponentID" : "93f3dab4-aca6-59bf-ea64-cedc817ded60",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7635000000000001,
+			"layer" : 1,
+			"name" : "D15",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "2_PIN_CTS",
+			"pkg_idx" : 107,
+			"rotation" : 1,
+			"width" : 1.56350,
+			"x" : 1.0,
+			"y" : 2.80
+		},
+		
+		{
+			"ComponentID" : "a950dc7b-b958-48c7-4fc5-eee40f8a9ecd",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "Q1",
+			"originX" : -0.40,
+			"originY" : 0.0,
+			"package" : "DMN2005LP4K",
+			"pkg_idx" : 108,
+			"rotation" : 1,
+			"width" : 1.81350,
+			"x" : 14.60,
+			"y" : 9.10
+		},
+		
+		{
+			"ComponentID" : "732e7e7e-61b3-28f2-4c70-a023a33c3f18",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R58",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 109,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 12.70,
+			"y" : 28.0
+		},
+		
+		{
+			"ComponentID" : "5721a308-8d05-8216-25e4-072201a247c9",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R59",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 110,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 14.0,
+			"y" : 28.40
+		},
+		
+		{
+			"ComponentID" : "9591e5ea-9e6f-bf01-edf8-d038caa1dc18",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R60",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 111,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 1.0,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "4ae35ef7-6f2d-d2d0-fc9a-904bd8efda55",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R61",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 112,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 2.30,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "58be6c31-a6a3-0e4f-5c5f-808dd079d519",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R62",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 113,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 3.60,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "86f13988-86dd-a4b9-8b37-70b5ed3ed743",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R63",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 114,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 4.90,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "847d69f4-9ac8-4360-a1b7-9090a3c17d16",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R64",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 115,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 6.20,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "6ac5a3a0-bfdb-0c55-8fd6-0e97b7b82347",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R65",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 116,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 7.50,
+			"y" : 27.50
+		},
+		
+		{
+			"ComponentID" : "561192f2-6b77-bae1-77aa-9acf9bf1eba9",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 1.40350,
+			"layer" : 1,
+			"name" : "U11",
+			"originX" : -0.20,
+			"originY" : 0.10,
+			"package" : "9_BUMP_WLP",
+			"pkg_idx" : 117,
+			"rotation" : 0,
+			"width" : 1.40350,
+			"x" : 5.70,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "089428c4-0304-c3c1-143c-e053c03f4964",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 1.53850,
+			"layer" : 1,
+			"name" : "U12",
+			"originX" : -0.30,
+			"originY" : 0.0,
+			"package" : "6_BUMP_UCSP",
+			"pkg_idx" : 118,
+			"rotation" : 0,
+			"width" : 1.28850,
+			"x" : 7.70,
+			"y" : 1.0
+		},
+		
+		{
+			"ComponentID" : "0d901082-deb5-7c36-9c6d-f5c39a6cb54d",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.7620,
+			"layer" : 1,
+			"name" : "C_0201_1.0n_25V_10%_X7R",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "C0201",
+			"pkg_idx" : 119,
+			"rotation" : 1,
+			"width" : 1.5240,
+			"x" : 1.0,
+			"y" : 4.90
+		},
+		
+		{
+			"ComponentID" : "9a935e5d-ff20-7512-b97d-32800fe32bb0",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 2.80,
+			"layer" : 0,
+			"name" : "L_0806_1.0uH_25%_1.4A_shielded_Murata",
+			"originX" : 0.0,
+			"originY" : -0.30,
+			"package" : "L_0806",
+			"pkg_idx" : 120,
+			"rotation" : 0,
+			"width" : 2.80,
+			"x" : 11.30,
+			"y" : 14.50
+		},
+		
+		{
+			"ComponentID" : "3062d8b9-d5b6-273a-6469-db645fe76e05",
+			"constraints" : null,
+			"doNotPlace" : null,
+			"height" : 0.70,
+			"layer" : 0,
+			"name" : "R_0201_0.0_0.05W_JUMPER%_Thick_Film",
+			"originX" : 0.0,
+			"originY" : 0.0,
+			"package" : "R_0201",
+			"pkg_idx" : 121,
+			"rotation" : 0,
+			"width" : 0.760,
+			"x" : 8.800000000000001,
+			"y" : 28.40
+		}
+	],
+	"signals" : 
+	[
+		
+		{
+			"name" : "N$0",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D1",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C5",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R40",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U13",
+					"pad" : "D2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D6",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D7",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C16",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C17",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C24",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D10",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U6",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U14",
+					"pad" : "E2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "ADDR",
+					"package" : "U14",
+					"pad" : "B5"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D3",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C25",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C23",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R6",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C18",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D8",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C22",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C21",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C8",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C10",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C11",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C9",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VSS",
+					"package" : "U4",
+					"pad" : "D2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R24",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R25",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D9",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D4",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C20",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C19",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C15",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C14",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C12",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C13",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D5",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U11",
+					"pad" : "B1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R60",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C37",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R64",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C36",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "SOURCE",
+					"package" : "Q1",
+					"pad" : "S"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VEE",
+					"package" : "U12",
+					"pad" : "A3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R_0201_0.0_0.05W_JUMPER%_THICK_FILM",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "L_0806_1.0UH_25%_1.4A_SHIELDED_MURATA",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C_0201_1.0N_25V_10%_X7R",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U16",
+					"pad" : "C1 C2 C3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C30",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U17",
+					"pad" : "C1 C2 C3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C32",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R54",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$2",
+					"package" : "C33",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U15",
+					"pad" : "C1 C2 C3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U8",
+					"pad" : "C4"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C2",
+					"package" : "D2",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "J1",
+					"pad" : "12"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$1",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D1",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "DET/WAKE",
+					"package" : "J1",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "+INB",
+					"package" : "U11",
+					"pad" : "C2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R60",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "+INA",
+					"package" : "U11",
+					"pad" : "A2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "IN+",
+					"package" : "U12",
+					"pad" : "B1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R61",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$2",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D2",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCC",
+					"package" : "U12",
+					"pad" : "A1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C37",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCC",
+					"package" : "U11",
+					"pad" : "B3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C36",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R55",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VIN",
+					"package" : "U16",
+					"pad" : "A2 A3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R94",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VIN",
+					"package" : "U17",
+					"pad" : "A2 A3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C30",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R53",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VIN",
+					"package" : "U8",
+					"pad" : "E1 E2 E3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R96",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VINA",
+					"package" : "U8",
+					"pad" : "E4"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R92",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VIN",
+					"package" : "U15",
+					"pad" : "A2 A3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCONN",
+					"package" : "J1",
+					"pad" : "3"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$3",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MRXD1P",
+					"package" : "J1",
+					"pad" : "10"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D9",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$4",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MRXD1N",
+					"package" : "J1",
+					"pad" : "11"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D10",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$5",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MRXDOP",
+					"package" : "J1",
+					"pad" : "7"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D7",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$6",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MTXD1P",
+					"package" : "J1",
+					"pad" : "8"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D5",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$7",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MRXDON",
+					"package" : "J1",
+					"pad" : "6"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D8",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$8",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MTXDOP",
+					"package" : "J1",
+					"pad" : "5"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D3",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$9",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MTXDON",
+					"package" : "J1",
+					"pad" : "4"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D4",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$10",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "MTXD1N",
+					"package" : "J1",
+					"pad" : "9"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C1",
+					"package" : "D6",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$11",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C5",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R9",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R41",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R78",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R81",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R80",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R79",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R7",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "SENSE",
+					"package" : "U6",
+					"pad" : "3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C24",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCC",
+					"package" : "U6",
+					"pad" : "6"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCCP",
+					"package" : "U14",
+					"pad" : "B4"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCCL",
+					"package" : "U14",
+					"pad" : "B3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R31",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R32",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R29",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R27",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R8",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VCC",
+					"package" : "U4",
+					"pad" : "A1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C23",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C21",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C22",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R11",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C19",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C20",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VDDIO",
+					"package" : "U3",
+					"pad" : "G5"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VDDIO1",
+					"package" : "U3",
+					"pad" : "G9"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C15",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C14",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C12",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C13",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R12",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R10",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R59",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R58",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VOUT",
+					"package" : "U15",
+					"pad" : "A1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$12",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C10",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C11",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C16",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C17",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VOUT",
+					"package" : "U16",
+					"pad" : "A1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C8",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C9",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$13",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C18",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R_0201_0.0_0.05W_JUMPER%_THICK_FILM",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C_0201_1.0N_25V_10%_X7R",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "L_0806_1.0UH_25%_1.4A_SHIELDED_MURATA",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VOUT",
+					"package" : "U17",
+					"pad" : "A1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$14",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C25",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "CT",
+					"package" : "U6",
+					"pad" : "5"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$15",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R10",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R84",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R80",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R63",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$16",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R11",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VPP/W#/DQ2",
+					"package" : "U4",
+					"pad" : "C2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$17",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R12",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "HOLD#/DQ3",
+					"package" : "U4",
+					"pad" : "B1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$18",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R28",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "COM1",
+					"package" : "U13",
+					"pad" : "B1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$19",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R30",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "COM2",
+					"package" : "U13",
+					"pad" : "B3"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$20",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R33",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "OUTA",
+					"package" : "U11",
+					"pad" : "A3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R58",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$21",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R33",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R78",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$22",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R34",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "OUTB",
+					"package" : "U11",
+					"pad" : "C3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R59",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$23",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R34",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R79",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$24",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R35",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GATE",
+					"package" : "Q1",
+					"pad" : "G"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$25",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R37",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "A",
+					"package" : "D13",
+					"pad" : "A"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$26",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R39",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "SENSE_OUT",
+					"package" : "U6",
+					"pad" : "4"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$27",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R41",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "ENABLE",
+					"package" : "U6",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$28",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R6",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "GND",
+					"package" : "U3",
+					"pad" : "A2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$29",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R7",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "IN1",
+					"package" : "U13",
+					"pad" : "D1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "IN2",
+					"package" : "U13",
+					"pad" : "D3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "S#",
+					"package" : "U4",
+					"pad" : "A2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$30",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R81",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R65",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R85",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$31",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R88",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "HSIC_STROBE",
+					"package" : "U3",
+					"pad" : "H1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$32",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R89",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "HSIC_DATA",
+					"package" : "U3",
+					"pad" : "G1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$33",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "NC2",
+					"package" : "U13",
+					"pad" : "C3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "DQ1",
+					"package" : "U4",
+					"pad" : "B2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$34",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "V+",
+					"package" : "U13",
+					"pad" : "A2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R52",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "VOUT",
+					"package" : "U8",
+					"pad" : "A1 A2 A3"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C32",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "A",
+					"name" : "P$1",
+					"package" : "C33",
+					"pad" : "1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$35",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "NC1",
+					"package" : "U13",
+					"pad" : "C1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "DQ0",
+					"package" : "U4",
+					"pad" : "D1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$36",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "L6",
+					"pad" : "2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "L2",
+					"package" : "U8",
+					"pad" : "B1 B2 B3"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$37",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "L6",
+					"pad" : "1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "L1",
+					"package" : "U8",
+					"pad" : "D1 D2 D3"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$38",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R52",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R54",
+					"pad" : "P$1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$39",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R53",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "EN",
+					"package" : "U8",
+					"pad" : "D4"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$40",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R55",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "PFM/PWM",
+					"package" : "U8",
+					"pad" : "B4"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$41",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R92",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "MODE",
+					"package" : "U15",
+					"pad" : "B1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$42",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R93",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "EN",
+					"package" : "U15",
+					"pad" : "B2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$43",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R93",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C",
+					"package" : "D12",
+					"pad" : "C"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C",
+					"package" : "D15",
+					"pad" : "C"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C",
+					"package" : "D13",
+					"pad" : "C"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "C",
+					"package" : "D14",
+					"pad" : "C"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R97",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R95",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$44",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R94",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "MODE",
+					"package" : "U17",
+					"pad" : "B1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$45",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R95",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "EN",
+					"package" : "U17",
+					"pad" : "B2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$46",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R96",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "MODE",
+					"package" : "U16",
+					"pad" : "B1"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$47",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R97",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "EN",
+					"package" : "U16",
+					"pad" : "B2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$48",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "A",
+					"package" : "D12",
+					"pad" : "A"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "OUT",
+					"package" : "U12",
+					"pad" : "A2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$49",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "A",
+					"package" : "D14",
+					"pad" : "A"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R63",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$50",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "A",
+					"package" : "D15",
+					"pad" : "A"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R65",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$51",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "DRAIN",
+					"package" : "Q1",
+					"pad" : "D"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R61",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$52",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R62",
+					"pad" : "P$2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "-INA",
+					"package" : "U11",
+					"pad" : "A1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "2",
+					"package" : "R64",
+					"pad" : "P$2"
+				}
+			]
+		},
+		
+		{
+			"name" : "N$53",
+			"pins" : 
+			[
+				
+				{
+					"gate" : "G$1",
+					"name" : "1",
+					"package" : "R62",
+					"pad" : "P$1"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "IN-",
+					"package" : "U12",
+					"pad" : "B3"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "REF",
+					"package" : "U12",
+					"pad" : "B2"
+				},
+				
+				{
+					"gate" : "G$1",
+					"name" : "-INB",
+					"package" : "U11",
+					"pad" : "C1"
+				}
+			]
+		}
+	]
+}
