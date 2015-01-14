@@ -3485,7 +3485,7 @@ module.exports = function (
         contextmenuService.close();
     };
 
-    onWireContextmenu = function (wire, segment, $event) {
+    onWireContextmenu = function (wire, segment, $event, wasCorner) {
 
         var wiringMenu;
 
@@ -3536,6 +3536,53 @@ module.exports = function (
             }
 
         ];
+
+        if (wasCorner) {
+
+            $scope.contextMenuData.unshift(
+
+                {
+
+                    id: 'cornerManipulation',
+                    items: [
+                        {
+                            id: 'destroyCorner',
+                            label: 'Destroy corner',
+                            iconClass: 'fa fa-minus',
+                            action: function () {
+
+                                var sIndex,
+                                    nextSegment;
+
+                                sIndex = wire.segments.indexOf(segment);
+
+                                nextSegment = wire.segments[ sIndex + 1 ];
+
+                                wire.segments[ sIndex + 1 ] = wiringService.getSegmentsBetweenPositions(
+                                    {
+                                        end1: {
+                                            x: segment.x1,
+                                            y: segment.y1
+                                        },
+                                        end2: {
+                                            x: nextSegment.x2,
+                                            y: nextSegment.y2
+                                        }
+                                    }, 'SimpleRouter')[0];
+
+                                wire.segments.splice(sIndex, 1);
+
+                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            }
+                        }
+
+                    ]
+
+                }
+
+            );
+
+        }
 
         openMenu($event);
 
@@ -4030,7 +4077,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if ($event.which === 3) {
 
-                contextMenuHandler.onWireContextmenu(wire, segment, $event);
+                contextMenuHandler.onWireContextmenu(wire, segment, $event, true);
 
 
             } else {

@@ -243,7 +243,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if ($event.which === 3) {
 
-                contextMenuHandler.onWireContextmenu(wire, segment, $event);
+                contextMenuHandler.onWireContextmenu(wire, segment, $event, true);
 
 
             } else {
