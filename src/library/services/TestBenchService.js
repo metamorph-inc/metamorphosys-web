@@ -123,7 +123,7 @@ angular.module( 'cyphy.services' )
                         } );
                 } )
                 .
-                catch ( function ( reason ) {
+            catch ( function ( reason ) {
                 deferred.reject( 'Something went terribly wrong, ' + reason );
             } );
 

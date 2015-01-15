@@ -92,8 +92,8 @@ angular.module( 'cyphy.services' )
                             downloadUrl = fileService.getDownloadUrl( artifactsInfo[ j ].hash );
                             artieName = artifactsInfo[ j ].artifact.name;
 
-                            artifactsByName[ artieName ] = angular.copy(artifactsInfo[ j ]);
-                            artifactsByName[ artieName].downloadUrl = downloadUrl;
+                            artifactsByName[ artieName ] = angular.copy( artifactsInfo[ j ] );
+                            artifactsByName[ artieName ].downloadUrl = downloadUrl;
 
                         }
                         deferred.resolve( artifactsByName );
