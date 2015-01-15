@@ -140,38 +140,22 @@ angular.module( 'cyphy.services' )
                 data = {
                     regionId: regionId,
                     meta: null, // META nodes - needed when creating new nodes...
-                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>,
+                    //  tlsutId: <string>, path: <string>, results: <string>, file: <string>}
                 },
                 onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        newPath = this.getAttribute( 'ID' ),
-                        newResults = this.getAttribute( 'Results' ),
-                        newFiles = this.getAttribute( 'TestBenchFiles' ),
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO',
+                        path: 'ID',
+                        results: 'Results',
+                        file: 'TestBenchFiles'
+                    },
                         newTlsut = this.getPointer( 'TopLevelSystemUnderTest' )
                             .to,
-                        hadChanges = false,
-                        tlsutChanged = false;
-                    if ( newName !== data.testBench.name ) {
-                        data.testBench.name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.testBench.description ) {
-                        data.testBench.description = newDesc;
-                        hadChanges = true;
-                    }
-                    if ( newPath !== data.testBench.path ) {
-                        data.testBench.path = newPath;
-                        hadChanges = true;
-                    }
-                    if ( newResults !== data.testBench.results ) {
-                        data.testBench.results = newResults;
-                        hadChanges = true;
-                    }
-                    if ( newFiles !== data.testBench.files ) {
-                        data.testBench.files = newFiles;
-                        hadChanges = true;
-                    }
+                        tlsutChanged = false,
+                        hadChanges = self.checkForAttributeUpdates( data.testBench, this, keyToAttr );
+
                     if ( newTlsut !== data.testBench.tlsutId ) {
                         data.testBench.tlsutId = newTlsut;
                         hadChanges = true;
@@ -268,16 +252,16 @@ angular.module( 'cyphy.services' )
                 },
                 onUpdate = function ( id ) {
                     var keyToAttr = {
-                            name: 'name',
-                            description: 'INFO',
-                            path: 'ID',
-                            results: 'Results',
-                            file: 'TestBenchFiles'
-                        },
-                        hadChanges = self.checkForAttributeUpdates( data.testBenches[ id ], this, keyToAttr );;
+                        name: 'name',
+                        description: 'INFO',
+                        path: 'ID',
+                        results: 'Results',
+                        file: 'TestBenchFiles'
+                    },
+                        hadChanges = self.checkForAttributeUpdates( data.testBenches[ id ], this, keyToAttr );
 
                     if ( hadChanges ) {
-                        triggerUpdateListener (id, data.testBenches[ id ], 'update');
+                        triggerUpdateListener( id, data.testBenches[ id ], 'update' );
                     }
                 },
                 onUnload = function ( id ) {
@@ -298,7 +282,7 @@ angular.module( 'cyphy.services' )
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
                                 } else if ( childNode.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = childNode.getId();
-                                    addNewTestBench(testBenchId, childNode);
+                                    addNewTestBench( testBenchId, childNode );
                                 }
                             }
 
@@ -307,8 +291,9 @@ angular.module( 'cyphy.services' )
                                     watchFromFolderRec( newChild, meta );
                                 } else if ( newChild.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = newChild.getId();
-                                    addNewTestBench(testBenchId, newChild);
-                                    triggerUpdateListener(testBenchId, data.testBenches[ testBenchId ], 'load' );
+                                    addNewTestBench( testBenchId, newChild );
+                                    triggerUpdateListener( testBenchId, data.testBenches[ testBenchId ],
+                                        'load' );
                                 }
                             } );
                             if ( queueList.length === 0 ) {
