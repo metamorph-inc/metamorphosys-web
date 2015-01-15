@@ -2231,7 +2231,7 @@ angular.module('mms.headerButtons', [])
                         };
 
                         $http.post('http://mmsapp.metamorphsoftware.com/subscribe', {
-                            user: $scope.user.name,
+                            name: $scope.user.name,
                             email: $scope.user.email,
                             webgmeSid: $cookies.webgmeSid
                         }).success(function () {
