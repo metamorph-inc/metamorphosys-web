@@ -88,6 +88,9 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                         $rootScope.initializing = false;
                         $rootScope.busy = false;
 
+                        document.body.style.display = 'none';
+                        document.body.offsetHeight = document.body.offsetHeight;
+                        document.body.style.display = '';
                     };
 
                     $rootScope.unCover = function() {

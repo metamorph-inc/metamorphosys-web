@@ -32,6 +32,7 @@ require('./directives/resizing/resizeToHeight.js');
 require('./directives/resizing/resizeToWindow.js');
 
 require('./directives/busyCover/busyCover.js');
+require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
 
@@ -64,6 +65,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
+    'mms.designVisualization.processingCover',
     'mms.designVisualization.designEditor',
     'angucomplete-alt',
     'ngTouch',
@@ -211,7 +213,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
-    $rootScope.processing = true;
+    $rootScope.setProcessing();
 
     if ($rootScope.wsContext) {
 
@@ -227,7 +229,7 @@ CyPhyApp.controller('CreateDesignController', function (
         projectHandling.cloneMaster()
             .then(function (data) {
 
-            $rootScope.processing = false;
+            $rootScope.stopProcessing();
             $log.debug('New project creation successful', data);
             $state.go('editor.branch', {
                 projectId: $scope.projectId,
@@ -238,7 +240,7 @@ CyPhyApp.controller('CreateDesignController', function (
         .catch(function (data, status) {
 
             $log.debug('New project creation failed', status);
-            $rootScope.processing = false;
+            $rootScope.stopProcessing();
             growl.error('An error occured while project creation. Please retry later.');
 
         });

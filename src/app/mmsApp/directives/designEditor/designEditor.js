@@ -42,7 +42,7 @@ angular.module('mms.designVisualization.designEditor', [
 
             var nodesToCopy;
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             if (!position) {
                 position = gridService.getViewPortCenter($rootScope.activeDiagramId);
@@ -75,7 +75,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         $rootScope.$on('wireCreationMustBeDone', function ($event, wire, msg) {
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             nodeService.getMetaNodes(designCtx)
                 .then(function(meta) {
@@ -102,7 +102,7 @@ angular.module('mms.designVisualization.designEditor', [
                             gridService.invalidateVisibleDiagramComponents( $rootScope.activeDiagramId );
 
 
-                            $rootScope.processing = false;
+                            $rootScope.stopProcessing();
 
                         });
 
@@ -115,7 +115,7 @@ angular.module('mms.designVisualization.designEditor', [
         });
 
         $rootScope.$on('wireDeletionMustBeDone', function ($event, wire, message) {
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
             nodeService.destroyNode(designCtx, wire.id, message || 'Deleting wire');
         });
 
@@ -158,7 +158,7 @@ angular.module('mms.designVisualization.designEditor', [
                 }
             };
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             nodeService.startTransaction(designCtx, msg || 'Deleting design elements');
 
@@ -266,15 +266,18 @@ angular.module('mms.designVisualization.designEditor', [
 
                     case 'load':
 
-                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
-                            justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
+                        $timeout(function() {
 
-                            diagramService.createNewComponentFromFromCyPhyElement(
-                                $rootScope.activeDiagramId,
-                                designStructureUpdateObject.data);
+                            if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                                justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                            gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
-                        }
+                                diagramService.createNewComponentFromFromCyPhyElement(
+                                    $rootScope.activeDiagramId,
+                                    designStructureUpdateObject.data);
+
+                                gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                            }
+                        });
 
                         break;
 
@@ -322,7 +325,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 }
 
-                $rootScope.processing = false;
+                $rootScope.stopProcessing();
 
             }).then(function (cyPhyLayout) {
 

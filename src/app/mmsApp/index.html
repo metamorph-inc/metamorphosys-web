@@ -45,15 +45,13 @@
 </div>
 <div ui-view class="main-view-container" resize-to-window height-is-less-with="51"></div>
 
+<header-buttons></header-buttons>
+
 <busy-cover>
     <div ui-view="onCover"></div>
 </busy-cover>
 
-<header-buttons></header-buttons>
-
-<div class="processing-cover"
-     ng-if="processing"
-        ></div>
+<processing-cover></processing-cover>
 
 <!-- Include library dependencies -->
 <script src="/extlib/bower_components/jquery/dist/jquery.min.js"></script>

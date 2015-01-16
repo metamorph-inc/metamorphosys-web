@@ -33,6 +33,7 @@ require('./directives/resizing/resizeToHeight.js');
 require('./directives/resizing/resizeToWindow.js');
 
 require('./directives/busyCover/busyCover.js');
+require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
 
@@ -65,6 +66,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
+    'mms.designVisualization.processingCover',
     'mms.designVisualization.designEditor',
     'angucomplete-alt',
     'ngTouch',
@@ -212,7 +214,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
     $scope.projectId = $stateParams.projectId;
     $scope.errored = false;
-    $rootScope.processing = true;
+    $rootScope.setProcessing();
 
     if ($rootScope.wsContext) {
 
@@ -228,7 +230,7 @@ CyPhyApp.controller('CreateDesignController', function (
         projectHandling.cloneMaster()
             .then(function (data) {
 
-            $rootScope.processing = false;
+            $rootScope.stopProcessing();
             $log.debug('New project creation successful', data);
             $state.go('editor.branch', {
                 projectId: $scope.projectId,
@@ -239,14 +241,14 @@ CyPhyApp.controller('CreateDesignController', function (
         .catch(function (data, status) {
 
             $log.debug('New project creation failed', status);
-            $rootScope.processing = false;
+            $rootScope.stopProcessing();
             growl.error('An error occured while project creation. Please retry later.');
 
         });
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":11,"./directives/diagramContainer/diagramContainer.js":13,"./directives/fabricCanvas/fabricCanvas.js":15,"./directives/headerButtons/headerButtons.js":16,"./directives/resizing/resizeToHeight.js":18,"./directives/resizing/resizeToWindow.js":19,"./directives/socialMediaButtons/socialMediaButtons.js":20,"./directives/svgDiagram/svgDiagram.js":26,"./directives/symbols/componentSymbol.js":29,"./libraryIncludes.js":38,"./services/connectionHandling/connectionHandling.js":39,"./services/diagramService/diagramService.js":46,"./services/gridService/gridService.js":47,"./services/operationsManager/operationsManager.js":48,"./services/projectHandling/projectHandling.js":49,"./services/wiringService/wiringService.js":54,"./utils.js":55,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":11,"./directives/diagramContainer/diagramContainer.js":13,"./directives/fabricCanvas/fabricCanvas.js":15,"./directives/headerButtons/headerButtons.js":16,"./directives/processingCover/processingCover.js":18,"./directives/resizing/resizeToHeight.js":19,"./directives/resizing/resizeToWindow.js":20,"./directives/socialMediaButtons/socialMediaButtons.js":21,"./directives/svgDiagram/svgDiagram.js":27,"./directives/symbols/componentSymbol.js":30,"./libraryIncludes.js":39,"./services/connectionHandling/connectionHandling.js":40,"./services/diagramService/diagramService.js":47,"./services/gridService/gridService.js":48,"./services/operationsManager/operationsManager.js":49,"./services/projectHandling/projectHandling.js":50,"./services/wiringService/wiringService.js":55,"./utils.js":56,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1048,6 +1050,9 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                         $rootScope.initializing = false;
                         $rootScope.busy = false;
 
+                        document.body.style.display = 'none';
+                        document.body.offsetHeight = document.body.offsetHeight;
+                        document.body.style.display = '';
                     };
 
                     $rootScope.unCover = function() {
@@ -1060,6 +1065,7 @@ angular.module( 'mms.designVisualization.busyCover', [] )
 
             };
         }] );
+
 },{}],7:[function(require,module,exports){
 /*globals angular*/
 
@@ -1317,7 +1323,7 @@ angular.module('mms.designVisualization.designEditor', [
 
             var nodesToCopy;
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             if (!position) {
                 position = gridService.getViewPortCenter($rootScope.activeDiagramId);
@@ -1350,7 +1356,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         $rootScope.$on('wireCreationMustBeDone', function ($event, wire, msg) {
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             nodeService.getMetaNodes(designCtx)
                 .then(function(meta) {
@@ -1377,7 +1383,7 @@ angular.module('mms.designVisualization.designEditor', [
                             gridService.invalidateVisibleDiagramComponents( $rootScope.activeDiagramId );
 
 
-                            $rootScope.processing = false;
+                            $rootScope.stopProcessing();
 
                         });
 
@@ -1390,7 +1396,7 @@ angular.module('mms.designVisualization.designEditor', [
         });
 
         $rootScope.$on('wireDeletionMustBeDone', function ($event, wire, message) {
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
             nodeService.destroyNode(designCtx, wire.id, message || 'Deleting wire');
         });
 
@@ -1433,7 +1439,7 @@ angular.module('mms.designVisualization.designEditor', [
                 }
             };
 
-            $rootScope.processing = true;
+            $rootScope.setProcessing();
 
             nodeService.startTransaction(designCtx, msg || 'Deleting design elements');
 
@@ -1541,15 +1547,18 @@ angular.module('mms.designVisualization.designEditor', [
 
                     case 'load':
 
-                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
-                            justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
+                        $timeout(function() {
 
-                            diagramService.createNewComponentFromFromCyPhyElement(
-                                $rootScope.activeDiagramId,
-                                designStructureUpdateObject.data);
+                            if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                                justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                            gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
-                        }
+                                diagramService.createNewComponentFromFromCyPhyElement(
+                                    $rootScope.activeDiagramId,
+                                    designStructureUpdateObject.data);
+
+                                gridService.invalidateVisibleDiagramComponents($rootScope.activeDiagramId);
+                            }
+                        });
 
                         break;
 
@@ -1597,7 +1606,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 }
 
-                $rootScope.processing = false;
+                $rootScope.stopProcessing();
 
             }).then(function (cyPhyLayout) {
 
@@ -1671,7 +1680,7 @@ angular.module('mms.designVisualization.designEditor', [
             };
         }]);
 
-},{"../testbenchActions/testbenchActions.js":37,"./classes/RandomSymbolGenerator":10}],12:[function(require,module,exports){
+},{"../testbenchActions/testbenchActions.js":38,"./classes/RandomSymbolGenerator":10}],12:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2431,6 +2440,37 @@ angular.module(
 
 },{}],18:[function(require,module,exports){
 /*globals angular*/
+
+'use strict';
+
+// Move this to GME eventually
+
+angular.module( 'mms.designVisualization.processingCover', [] )
+    .directive( 'processingCover', [ '$rootScope', '$timeout',
+        function ($rootScope) {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: '/mmsApp/templates/processingCover.html',
+                link: function (/*scope, element*/) {
+
+                    $rootScope.setProcessing = function() {
+                        $rootScope.processing = true;
+                    };
+
+                    $rootScope.stopProcessing = function() {
+                        $rootScope.processing = false;
+                    };
+
+                }
+
+            };
+        }] );
+
+},{}],19:[function(require,module,exports){
+/*globals angular*/
 'use strict';
 
 var resizeToHeightModule = angular.module('mms.resizeToHeight', []);
@@ -2478,7 +2518,7 @@ resizeToHeightModule.directive('resizeToHeight', function ($window) {
 });
 
 module.exports = resizeToHeightModule;
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -2557,7 +2597,7 @@ resizeToWindowModule.directive('resizeToWindow', function ($window) {
 });
 
 module.exports = resizeToWindowModule;
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*globals angular, gapi*/
 
 'use strict';
@@ -2589,7 +2629,7 @@ angular.module( 'mms.socialMediaButtons', [ 'djds4rce.angular-socialshare' ] )
             };
         }] );
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -2879,7 +2919,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2974,7 +3014,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -3264,7 +3304,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -3471,7 +3511,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
 };
 
-},{"../../../services/diagramService/classes/Wire.js":45}],25:[function(require,module,exports){
+},{"../../../services/diagramService/classes/Wire.js":46}],26:[function(require,module,exports){
 /*globals angular, ga, $*/
 
 'use strict';
@@ -3978,7 +4018,7 @@ module.exports = function (
 
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -4451,7 +4491,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":21,"./classes/ComponentSelectionHandler":22,"./classes/WireDragHandler":23,"./classes/WireDrawHandler":24,"./classes/contextMenuHandler":25}],27:[function(require,module,exports){
+},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":22,"./classes/ComponentSelectionHandler":23,"./classes/WireDragHandler":24,"./classes/WireDrawHandler":25,"./classes/contextMenuHandler":26}],28:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4517,7 +4557,7 @@ angular.module(
                 templateNamespace: 'SVG'
             };
         } );
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4557,7 +4597,7 @@ angular.module(
             });
         }
     ]);
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -4778,7 +4818,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":51,"../port/port.js":17,"./box/box.js":27,"./capacitor/capacitor.js":28,"./diode/diode.js":30,"./inductor/inductor.js":31,"./jFetP/jFetP.js":32,"./opAmp/opAmp.js":33,"./resistor/resistor.js":34,"./simpleConnector/simpleConnector.js":35,"./tvsDiode/tvsDiode.js":36}],30:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":52,"../port/port.js":17,"./box/box.js":28,"./capacitor/capacitor.js":29,"./diode/diode.js":31,"./inductor/inductor.js":32,"./jFetP/jFetP.js":33,"./opAmp/opAmp.js":34,"./resistor/resistor.js":35,"./simpleConnector/simpleConnector.js":36,"./tvsDiode/tvsDiode.js":37}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4819,7 +4859,7 @@ angular.module(
         }
     ]);
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4859,7 +4899,7 @@ angular.module(
             });
         }
     ]);
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4906,7 +4946,7 @@ angular.module(
             });
         }
     ]);
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4967,7 +5007,7 @@ angular.module(
             });
         }
     ]);
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5007,7 +5047,7 @@ angular.module(
             });
         }
     ]);
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5055,7 +5095,7 @@ angular.module(
         };
     });
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5096,7 +5136,7 @@ angular.module(
         }
     ]);
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -5439,9 +5479,9 @@ angular.module('mms.testbenchActions', [
     });
 
 
-},{}],38:[function(require,module,exports){
-
 },{}],39:[function(require,module,exports){
+
+},{}],40:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -5489,7 +5529,7 @@ angular.module('mms.connectionHandling', [])
 
     });
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5564,7 +5604,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
 module.exports = ComponentPort;
 
-},{"glMatrix":4}],41:[function(require,module,exports){
+},{"glMatrix":4}],42:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6126,7 +6166,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     this.getDiagramElement = getDiagramElement;
 };
 
-},{"./ComponentPort":40,"./Diagram":42,"./DiagramComponent.js":43,"./Wire.js":45}],42:[function(require,module,exports){
+},{"./ComponentPort":41,"./Diagram":43,"./DiagramComponent.js":44,"./Wire.js":46}],43:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6412,7 +6452,7 @@ Diagram.prototype.getSelectedComponents = function () {
 
 module.exports = Diagram;
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6614,7 +6654,7 @@ DiagramComponent.prototype.localToGlobal = function () {
 };
 
 module.exports = DiagramComponent;
-},{"glMatrix":4}],44:[function(require,module,exports){
+},{"glMatrix":4}],45:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6770,7 +6810,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":40,"./Diagram":42,"./DiagramComponent.js":43,"./Wire.js":45}],45:[function(require,module,exports){
+},{"./ComponentPort":41,"./Diagram":43,"./DiagramComponent.js":44,"./Wire.js":46}],46:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6858,7 +6898,7 @@ Wire.prototype.getEndPositions = function () {
 
 module.exports = Wire;
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -7185,7 +7225,7 @@ angular.module('mms.designVisualization.diagramService', [
         }
     ]);
 
-},{"./classes/ComponentPort":40,"./classes/CyPhyDiagramParser.js":41,"./classes/DiagramComponent.js":43,"./classes/DummyDiagramGenerator.js":44,"./classes/Wire.js":45}],47:[function(require,module,exports){
+},{"./classes/ComponentPort":41,"./classes/CyPhyDiagramParser.js":42,"./classes/DiagramComponent.js":44,"./classes/DummyDiagramGenerator.js":45,"./classes/Wire.js":46}],48:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7492,7 +7532,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
     }
 ] );
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7564,7 +7604,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
         }
     ];
 });
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -7694,7 +7734,7 @@ angular.module('mms.projectHandling', [])
 
     });
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -7739,7 +7779,7 @@ module.exports = function() {
     return symbolsByKeywords;
 };
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8036,7 +8076,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{"./classes/SymbolTypesSearchIndex":50}],52:[function(require,module,exports){
+},{"./classes/SymbolTypesSearchIndex":51}],53:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8127,7 +8167,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8176,7 +8216,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8400,7 +8440,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
     }
 ]);
 
-},{"./classes/ElbowRouter.js":52,"./classes/SimpleRouter.js":53}],55:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":53,"./classes/SimpleRouter.js":54}],56:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );
