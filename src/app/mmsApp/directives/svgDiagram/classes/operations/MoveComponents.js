@@ -1,81 +1,122 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
-module.exports =  function($rootScope, wiringService) {
+module.exports = function ($rootScope, wiringService, gridService, $timeout) {
 
-    return function() {
+    return function () {
 
-        this.init = function (diagram, component) {
+        var dragTargetsDescriptor,
+            dragTargetsWiresUpdate,
+            wireUpdateWait,
+            dragTargetsWiresUpdatePromises,
 
-            this.diagram = diagram;
-            this.component = component;
+            diagram;
+
+        wireUpdateWait = 20;
+        dragTargetsWiresUpdatePromises = {};
+
+        dragTargetsWiresUpdate = function (affectedWires) {
+
+            angular.forEach(affectedWires, function (wire) {
+
+                $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
+
+                dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
+                    wiringService.adjustWireEndSegments(wire);
+                }, wireUpdateWait);
+
+            });
+
         };
 
-        this.set = function (angle) {
-            this.angle = angle;
+
+        this.init = function (aDiagram) {
+            diagram = aDiagram;
         };
 
-        this.cancel = function() {
+        this.set = function (offset) {
+
+            var i,
+                target,
+                snappedPosition;
+
+            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
+
+                target = dragTargetsDescriptor.targets[i];
+
+                snappedPosition = gridService.getSnappedPosition(
+                    {
+                        x: offset.x + target.deltaToCursor.x,
+                        y: offset.y + target.deltaToCursor.y
+                    });
+
+                target.component.setPosition(
+                    snappedPosition.x,
+                    snappedPosition.y
+                );
+
+            }
+
+            dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
+
+        };
+
+        this.cancel = function () {
+
+            if (angular.isObject(dragTargetsDescriptor)) {
+
+                angular.forEach(dragTargetsDescriptor.targets, function (target) {
+
+                    target.component.setPosition(
+                        target.originalPosition.x,
+                        target.originalPosition.y
+                    );
+
+                });
+
+                angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+
+                    wiringService.adjustWireEndSegments(wire);
+
+                });
+
+                dragTargetsDescriptor = null;
+
+            }
 
         };
 
         this.commit = function () {
 
-            var componentsToRotate,
-                component,
-                angle,
-                affectedWires,
-                message;
+            var message,
+                components;
 
-            componentsToRotate = [];
-
-            component = this.component;
-            angle = this.angle;
-
-            componentsToRotate.push(this.component);
-
-            if (this.diagram.state.selectedComponentIds.indexOf(this.component.id) > -1) {
-
-                angular.forEach(this.diagram.state.selectedComponentIds, function (selectedComponentId) {
-
-                    var selectedComponent;
-
-                    if (component.id !== selectedComponentId) {
-
-                        selectedComponent = this.diagram.componentsById   [selectedComponentId];
-
-                        componentsToRotate.push(selectedComponent);
-
-                    }
-
+            components = dragTargetsDescriptor.targets.map(
+                function (target) {
+                    return target.component;
                 });
-            }
 
-            affectedWires = this.diagram.getWiresForComponents(
-                componentsToRotate
-            );
-
-            angular.forEach(componentsToRotate, function (component) {
-                component.rotate(angle);
-            });
-
-
-            angular.forEach(affectedWires, function (wire) {
-                wiringService.adjustWireEndSegments(wire);
-            });
-
-            if (componentsToRotate.length > 1) {
-                message = 'Rotating selection by ' + angle + 'deg';
+            if (components.length > 1) {
+                message = 'Dragging selection';
             } else {
-                message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                message = 'Dragging ' + components[0].label;
             }
 
-            $rootScope.$emit('componentsRotationChange', {
-                diagramId: this.diagram.id,
-                components: componentsToRotate,
+            $rootScope.$emit('componentsPositionChange', {
+                diagramId: diagram.id,
+                components: components,
                 message: message
             });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'drag', components[0].label);
+            }
+
+            //$scope.$emit('wiresChange', {
+            //    diagramId: $scope.diagram.id,
+            //    wires: dragTargetsDescriptor.affectedWires
+            //});
 
         };
     };

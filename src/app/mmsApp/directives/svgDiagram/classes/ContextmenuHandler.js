@@ -293,8 +293,6 @@ module.exports = function (
 
                             var operation;
 
-                            ga('send', 'event', 'component', 'rotate', component.id);
-
                             operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
                             operation.set(90);
                             operation.commit();
@@ -309,8 +307,6 @@ module.exports = function (
                             var operation;
 
                             console.log('Rotating anti-clockwise');
-
-                            ga('send', 'event', 'component', 'rotate', component.id);
 
                             operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
                             operation.set(-90);

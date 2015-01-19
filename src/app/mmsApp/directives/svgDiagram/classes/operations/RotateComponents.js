@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -72,6 +72,10 @@ module.exports =  function($rootScope, wiringService) {
                 components: componentsToRotate,
                 message: message
             });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'rotate', component.id);
+            }
 
         };
     };

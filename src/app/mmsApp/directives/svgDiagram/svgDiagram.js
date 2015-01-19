@@ -101,7 +101,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         operationsManager.registerOperation({
             id: 'moveComponents',
-            operationClass: new ComponentMover($rootScope, wiringService)
+            operationClass: new ComponentMover($rootScope, wiringService, gridService, $timeout)
         });
 
         //
