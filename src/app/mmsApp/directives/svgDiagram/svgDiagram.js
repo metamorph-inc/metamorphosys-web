@@ -94,21 +94,24 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseDown = function ($event) {
 
 
-
             if ($event.which === 3) {
-
                 contextMenuHandler.onDiagramContextmenu($event);
-
             } else {
-
                 contextMenuHandler.onDiagramMouseDown($event);
-
             }
 
         };
 
-
         $scope.onDiagramMouseUp = function ($event) {
+
+            if (!componentDragHandler.dragging &&
+                !wireDrawHandler.wiring &&
+                !wireDragHandler.dragging &&
+                $event.which !== 3 ) {
+
+                $scope.diagram.state.selectedComponentIds = [];
+
+            }
 
             componentDragHandler.onDiagramMouseUp($event);
             wireDragHandler.onDiagramMouseUp($event);
@@ -164,7 +167,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
-                !wireDragHandler.dragging ) {
+                !wireDragHandler.dragging &&
+                $event.which !== 3 ) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
                 $event.stopPropagation();

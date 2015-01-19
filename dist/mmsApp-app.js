@@ -1050,9 +1050,9 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                         $rootScope.initializing = false;
                         $rootScope.busy = false;
 
-                        document.body.style.display = 'none';
-                        document.body.offsetHeight = document.body.offsetHeight;
-                        document.body.style.display = '';
+                        //document.body.style.display = 'none';
+                        //document.body.offsetHeight = document.body.offsetHeight;
+                        //document.body.style.display = '';
                     };
 
                     $rootScope.unCover = function() {
@@ -3445,11 +3445,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
     onDiagramMouseUp = function() {
 
         if ( wireStart ) {
-
             addCornerToNewWireLine();
-
-        } else {
-            $scope.diagram.state.selectedComponentIds = [];
         }
 
     };
@@ -4115,21 +4111,24 @@ angular.module('mms.designVisualization.svgDiagram', [
         $scope.onDiagramMouseDown = function ($event) {
 
 
-
             if ($event.which === 3) {
-
                 contextMenuHandler.onDiagramContextmenu($event);
-
             } else {
-
                 contextMenuHandler.onDiagramMouseDown($event);
-
             }
 
         };
 
-
         $scope.onDiagramMouseUp = function ($event) {
+
+            if (!componentDragHandler.dragging &&
+                !wireDrawHandler.wiring &&
+                !wireDragHandler.dragging &&
+                $event.which !== 3 ) {
+
+                $scope.diagram.state.selectedComponentIds = [];
+
+            }
 
             componentDragHandler.onDiagramMouseUp($event);
             wireDragHandler.onDiagramMouseUp($event);
@@ -4185,7 +4184,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
-                !wireDragHandler.dragging ) {
+                !wireDragHandler.dragging &&
+                $event.which !== 3 ) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
                 $event.stopPropagation();
