@@ -295,7 +295,7 @@ module.exports = function (
 
                             ga('send', 'event', 'component', 'rotate', component.id);
 
-                            operation = operationsManager.initNew('rotateComponents', component);
+                            operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
                             operation.set(90);
                             operation.commit();
                         }
@@ -312,7 +312,7 @@ module.exports = function (
 
                             ga('send', 'event', 'component', 'rotate', component.id);
 
-                            operation = operationsManager.initNew('rotateComponents', component);
+                            operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
                             operation.set(-90);
                             operation.commit();
 

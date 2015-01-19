@@ -22,8 +22,11 @@ angular.module('mms.designVisualization.designEditor', [
             eventHandlersAreSet,
             lastComponentInstantiationPosition,
 
-            justCreatedWires;
+            justCreatedWires,
 
+            diagramEventHandlersForGME;
+
+        diagramEventHandlersForGME = require('./classes/DiagramEventHandlersForGME.js');
 
         justCreatedWires = [];
 
@@ -180,64 +183,9 @@ angular.module('mms.designVisualization.designEditor', [
 
             if (!eventHandlersAreSet) {
 
+                diagramEventHandlersForGME(designCtx, $rootScope, designLayoutService, $timeout);
+
                 eventHandlersAreSet = true;
-
-                $scope.$on('componentsPositionChange', function (e, data) {
-
-                    var i;
-
-                    i = 1;
-
-                    //nodeService.startTransaction(designCtx, data.message);
-
-                    angular.forEach(data.components, function (component) {
-
-                        $timeout(function () {
-
-                            designLayoutService.setPosition(
-                                designCtx,
-                                component.id,
-                                component.getPosition(),
-                                data.message
-                            );
-                        }, 10 * i);
-
-                        i++;
-
-                    });
-
-                    //nodeService.completeTransaction(designCtx);
-
-                });
-
-                $scope.$on('componentsRotationChange', function (e, data) {
-
-                    var i;
-
-                    i = 1;
-
-                    //nodeService.startTransaction(designCtx, data.message);
-
-                    angular.forEach(data.components, function (component) {
-
-                        $timeout(function () {
-
-                            designLayoutService.setRotation(
-                                designCtx,
-                                component.id,
-                                component.rotation,
-                                data.message
-                            );
-                        }, 10 * i);
-
-                        i++;
-
-                    });
-
-                    //nodeService.completeTransaction(designCtx);
-
-                });
-
             }
         };
 

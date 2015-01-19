@@ -34,9 +34,13 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             componentElements,
 
+            ComponentRotator = require('./classes/operations/RotateComponents.js'),
+
             $$window;
 
         $$window = $($window);
+
+        // Setting up handlers
 
         componentDragHandler = new ComponentDragHandler(
             $scope,
@@ -86,6 +90,13 @@ angular.module('mms.designVisualization.svgDiagram', [
             wiringService,
             $log
         );
+
+        // Setting up operations
+
+        operationsManager.registerOperation({
+            id: 'rotateComponents',
+            operationClass: new ComponentRotator($rootScope, wiringService)
+        });
 
         $scope.routerTypes = wiringService.getRouterTypes();
 
@@ -284,86 +295,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             delete componentElements[id];
 
         };
-
-        operationsManager.registerOperation({
-            id: 'rotateComponents',
-            operationClass: function() {
-
-                this.init = function(component) {
-
-                    this.component = component;
-                };
-
-                this.set = function(angle) {
-                    this.angle = angle;
-                };
-
-                this.commit = function() {
-
-                    var componentsToRotate,
-                        component,
-                        angle,
-                        affectedWires,
-                        message;
-
-                    componentsToRotate = [];
-
-                    component = this.component;
-                    angle = this.angle;
-
-                    componentsToRotate.push( this.component );
-
-                    if ( $scope.diagram.state.selectedComponentIds.indexOf( this.component.id ) > -1 ) {
-
-                        angular.forEach( $scope.diagram.state.selectedComponentIds, function ( selectedComponentId ) {
-
-                            var selectedComponent;
-
-                            if ( component.id !== selectedComponentId ) {
-
-                                selectedComponent = $scope.diagram.componentsById   [ selectedComponentId ];
-
-                                componentsToRotate.push( selectedComponent );
-
-                            }
-
-                        } );
-                    }
-
-                    affectedWires = $scope.diagram.getWiresForComponents(
-                        componentsToRotate
-                    );
-
-                    angular.forEach(componentsToRotate, function(component) {
-                        component.rotate(angle);
-                    });
-
-
-                    angular.forEach( affectedWires, function ( wire ) {
-                        wiringService.adjustWireEndSegments( wire );
-                    } );
-
-                    if (componentsToRotate.length > 1) {
-                        message = 'Rotating selection by ' + angle + 'deg';
-                    } else {
-                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
-                    }
-
-                    $scope.$emit('componentsRotationChange', {
-                        diagramId: $scope.diagram.id,
-                        components: componentsToRotate,
-                        message: message
-                    });
-
-                    //$scope.$emit('wiresChange', {
-                    //    diagramId: $scope.diagram.id,
-                    //    wires: affectedWires
-                    //});
-
-                };
-            }
-
-        });
 
         $rootScope.snapToGrid = true;
 
