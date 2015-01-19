@@ -35,6 +35,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentElements,
 
             ComponentRotator = require('./classes/operations/RotateComponents.js'),
+            ComponentMover = require('./classes/operations/MoveComponents.js'),
 
             $$window;
 
@@ -97,6 +98,13 @@ angular.module('mms.designVisualization.svgDiagram', [
             id: 'rotateComponents',
             operationClass: new ComponentRotator($rootScope, wiringService)
         });
+
+        operationsManager.registerOperation({
+            id: 'moveComponents',
+            operationClass: new ComponentMover($rootScope, wiringService)
+        });
+
+        //
 
         $scope.routerTypes = wiringService.getRouterTypes();
 
