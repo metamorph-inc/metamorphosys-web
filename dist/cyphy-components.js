@@ -4084,7 +4084,8 @@ angular.module( 'cyphy.components' )
                                 db: context.db,
                                 regionId: context.regionId + '_watchTestBenches'
                             },
-                            testBench: item
+                            testBench: item,
+                            modal: $modal
                         },
                         action: testBenchService.editTestBenchFn
                     } ]
@@ -4097,7 +4098,8 @@ angular.module( 'cyphy.components' )
                         actionData: {
                             id: item.id,
                             name: item.title,
-                            context: context
+                            context: context,
+                            modal: $modal
                         },
                         action: testBenchService.deleteFn
                     } ]
@@ -7674,13 +7676,13 @@ angular.module( 'cyphy.services' )
  */
 
 angular.module( 'cyphy.services' )
-    .service( 'testBenchService', function ( $q, $timeout, $modal, nodeService, baseCyPhyService, pluginService ) {
+    .service( 'testBenchService', function ( $q, $timeout, nodeService, baseCyPhyService, pluginService ) {
         'use strict';
         var self = this,
             watchers = {};
 
         this.editTestBenchFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
                 controller: 'TestBenchEditController',
                 //size: size,
@@ -7716,7 +7718,7 @@ angular.module( 'cyphy.services' )
         };
 
         this.deleteFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/SimpleModal.html',
                 controller: 'SimpleModalController',
                 resolve: {

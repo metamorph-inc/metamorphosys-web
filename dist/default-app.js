@@ -461,24 +461,33 @@ angular.module( 'CyPhyApp' )
                 numCfgs = configurations.length,
                 invokeTestBenchRunner = function ( configuration ) {
                     testBenchService.runTestBench( context, testBenchId, configuration.id )
-                        .then( function ( resultLight ) {
-                            var j;
-                            if ( resultLight.success ) {
+                        .then( function ( result ) {
+                            var j,
+                                key,
+                                artifactsHtml = '';
+                            // Build up artifacts html for growling.
+                            for ( key in result.artifacts ) {
+                                if ( result.artifacts.hasOwnProperty( key ) ) {
+                                    artifactsHtml += '<br> <a href="' + result.artifacts[ key ].downloadUrl +
+                                        '">' + key + '</a>';
+                                }
+                            }
+                            if ( result.success ) {
                                 growl.success( 'TestBench run successfully on ' + configuration.name + '.' +
-                                    resultLight.artifactsHtml, {
+                                    artifactsHtml, {
                                         ttl: -1
                                     } );
                             } else {
                                 growl.error( 'TestBench run failed on ' + configuration.name + '.' +
-                                    resultLight.artifactsHtml, {
+                                    artifactsHtml, {
                                         ttl: -1
                                     } );
-                                for ( j = 0; j < resultLight.messages.length; j += 1 ) {
-                                    if ( growl.hasOwnProperty( resultLight.messages[ j ].severity ) ) {
-                                        growl[ resultLight.messages[ j ].severity ]( resultLight.messages[
+                                for ( j = 0; j < result.messages.length; j += 1 ) {
+                                    if ( growl.hasOwnProperty( result.messages[ j ].severity ) ) {
+                                        growl[ result.messages[ j ].severity ]( result.messages[
                                             j ].message );
                                     } else {
-                                        growl.warning( resultLight.messages[ j ].message );
+                                        growl.warning( result.messages[ j ].message );
                                     }
                                 }
                             }
@@ -540,6 +549,7 @@ angular.module( 'CyPhyApp' )
                 } );
         } );
     } );
+
 },{}],4:[function(require,module,exports){
 /*globals angular, console */
 

@@ -82,7 +82,8 @@ angular.module( 'cyphy.components' )
                                 db: context.db,
                                 regionId: context.regionId + '_watchTestBenches'
                             },
-                            testBench: item
+                            testBench: item,
+                            modal: $modal
                         },
                         action: testBenchService.editTestBenchFn
                     } ]
@@ -95,7 +96,8 @@ angular.module( 'cyphy.components' )
                         actionData: {
                             id: item.id,
                             name: item.title,
-                            context: context
+                            context: context,
+                            modal: $modal
                         },
                         action: testBenchService.deleteFn
                     } ]

@@ -6,13 +6,13 @@
  */
 
 angular.module( 'cyphy.services' )
-    .service( 'testBenchService', function ( $q, $timeout, $modal, nodeService, baseCyPhyService, pluginService ) {
+    .service( 'testBenchService', function ( $q, $timeout, nodeService, baseCyPhyService, pluginService ) {
         'use strict';
         var self = this,
             watchers = {};
 
         this.editTestBenchFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
                 controller: 'TestBenchEditController',
                 //size: size,
@@ -48,7 +48,7 @@ angular.module( 'cyphy.services' )
         };
 
         this.deleteFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/SimpleModal.html',
                 controller: 'SimpleModalController',
                 resolve: {
