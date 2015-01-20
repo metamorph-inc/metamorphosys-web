@@ -1,4 +1,5 @@
 .social-media-buttons {
+
     > ul {
         list-style-type: none;
         padding-left: 0;
@@ -8,13 +9,26 @@
         li {
             display: inline-block;
             margin-right: 1em;
+            vertical-align: top;
 
-            height: 24px;
+            height: 30px;
             overflow: hidden;
+
+            position: relative;
+
+        }
+    }
+
+    .facebookShare-container {
+        margin-top: -1px;
+        height: 20px;
+
+        i.pluginButtonIcon {
+            margin: 0 4px !important;
         }
     }
 
     .facebookShare {
-        display: inline-block;
+        //display: inline-block;
     };
 }
