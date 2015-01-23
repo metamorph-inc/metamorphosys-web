@@ -102,9 +102,10 @@ define( [
 
     AdmExporter.prototype.getPositionUInt32 = function ( node ) {
         var pos = this.core.getRegistry( node, 'position' );
-        return { x: Math.min(pos.x >>> 0, Math.pow(2, 31) - 1), // make UInt32 ∩ Int32
-                 y: Math.min(pos.y >>> 0, Math.pow(2, 31) - 1)
-                 };
+        return {
+            x: Math.min( pos.x >>> 0, Math.pow( 2, 31 ) - 1 ), // make UInt32 ∩ Int32
+            y: Math.min( pos.y >>> 0, Math.pow( 2, 31 ) - 1 )
+        };
     };
 
     /**

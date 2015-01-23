@@ -53,7 +53,7 @@ angular.module( 'CyPhyApp', [
         } ];
         $rootScope.mainNavigator = $scope.navigator;
     } )
-    .run( function ( $state, growl, dataStoreService, projectService ) {
+    .run( function ( $state, growl, dataStoreService, projectService, branchService ) {
         'use strict';
         var connectionId = 'my-db-connection-id';
 
@@ -63,6 +63,17 @@ angular.module( 'CyPhyApp', [
             .then( function () {
                 // select default project and branch (master)
                 return projectService.selectProject( connectionId, 'ADMEditor' );
+            } )
+            .then( function () {
+                dataStoreService.watchConnectionState( connectionId, function ( eventType ) {
+                    console.log( 'watchConnectionState: ' + eventType );
+                } );
+                return branchService.selectBranch( connectionId, 'master' );
+            } )
+            .then( function () {
+                branchService.watchBranchState( 'my-db-connection-id', function ( eventType ) {
+                    console.log( 'watchBranchState: ' + eventType );
+                } );
             } )
             .
         catch ( function ( reason ) {
