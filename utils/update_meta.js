@@ -4,8 +4,7 @@ var cyphyRootDir = PATH.resolve(__dirname, '..');
 var fs = require('fs');
 var webGme = require('webgme');
 var CONFIG = WebGMEGlobal.getConfig();
-var requirejs = require('requirejs');
-require(PATH.resolve(cyphyRootDir, 'test-conf.js'));
+var requirejs = require(PATH.resolve(cyphyRootDir, 'test-conf.js')).requirejs;
 require(PATH.resolve(__dirname, 'JSON2_ordered'));
 
 var CyPhyConfig = require(PATH.resolve(cyphyRootDir, "config.json"));

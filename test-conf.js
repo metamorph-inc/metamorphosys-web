@@ -3,14 +3,14 @@
  *
  * Author: Zsolt Lattmann
  *
- * Server side configuration file for all tests.
+ * Configuration for server-side mocha tests.
  */
 
 var PATH = require('path');
 
 var CONFIG = require('./config.json');
 var webgme = require('webgme');
-var requirejs = require('requirejs');
+var requirejs = global.WebGMEGlobal.requirejs;
 WebGMEGlobal.setConfig(CONFIG);
 var requirejsBase = WebGMEGlobal.baseDir;
 
@@ -26,6 +26,8 @@ if (CONFIG.test_paths) {
         paths:paths
     });
 }
+
+exports.requirejs = requirejs;
 
 if (require.main === module) {
 
