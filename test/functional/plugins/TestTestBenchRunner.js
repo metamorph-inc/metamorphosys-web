@@ -18,12 +18,14 @@ describe('TestBenchRunner', function () {
     var Artifact;
     var acmTemplates;
     var admTemplates;
+    var jszip;
     before(function (done) {
-        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
+        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates', 'jszip'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_, jszip_) {
             BlobClient = BlobClient_;
             Artifact = Artifact_;
             acmTemplates = acmTemplates_;
             admTemplates = admTemplates_;
+            jszip = jszip_;
             done();
         });
     });
@@ -46,24 +48,34 @@ describe('TestBenchRunner', function () {
 
     it('TestBenchRunner', function (done) {
         var pluginName = 'TestBenchRunner',
-            testPoint = '/1007576016/1059726760/686890673';
+            testPoint = '/1007576016/1059726760/686890673',
+            bc = newBlobClient(),
+            zip = new jszip();
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
-            projectName: projectName,
-            pluginName: pluginName,
-            activeNode: testPoint,
-            pluginConfig: {  }
-        }, function (err, result) {
-            chai.expect(err).to.equal(null);
-            chai.expect(result.getSuccess()).to.equal(true);
-            var bc = newBlobClient();
-            bc.getSubObject(result.artifacts[0], 'executor_config.json', function (err, res) {
-                if (err) {
-                    return done(err);
-                }
-                res = JSON.parse(res);
-                chai.expect(res.cmd).to.equal('run_execution.cmd');
-                done();
+        zip.file('testbench.xme', '<fake xme>', {date : new Date("December 25, 2007 00:00:01")});
+        bc.putFile('testbench.zip', zip.generate(), function (err, hash) {
+            if (err) {
+                return done(err);
+            }
+            // console.log(hash); // 95f5f253ec1bd748cf668024c0d51b9cc9f565f3
+
+            webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+                projectName: projectName,
+                pluginName: pluginName,
+                activeNode: testPoint,
+                pluginConfig: {}
+            }, function (err, result) {
+                chai.expect(err).to.equal(null);
+                chai.expect(result.getSuccess()).to.equal(true);
+                var bc = newBlobClient();
+                bc.getSubObject(result.artifacts[0], 'executor_config.json', function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    res = JSON.parse(res);
+                    chai.expect(res.cmd).to.equal('run_execution.cmd');
+                    done();
+                });
             });
         });
     });

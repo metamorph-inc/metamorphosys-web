@@ -1355,7 +1355,7 @@
     "0e9a7224-3fb6-bdc9-b9ec-1b56696d34ec": {
       "attributes": {
         "ID": "9fec54cf-6be4-477f-9351-94b0a52caad8",
-        "Resource": "9bb5511eef3e01350ab9664e6eb64d6ac42a3883",
+        "Resource": "95f5f253ec1bd748cf668024c0d51b9cc9f565f3",
         "SchemaVersion": "2.5",
         "Version": "",
         "name": "Modelica"
@@ -3724,7 +3724,7 @@
     "db059935-fd26-a01d-fc92-5df61aa21f95": {
       "attributes": {
         "ID": "/TestBenches/CyPhy2Modelica",
-        "TestBenchFiles": "dac1e7d3e304ad8db16b9ff90a1f6813ce112358"
+        "TestBenchFiles": "95f5f253ec1bd748cf668024c0d51b9cc9f565f3"
       },
       "base": "9fab1244-f449-d3c0-bfdc-f166f724e3f2",
       "meta": {
