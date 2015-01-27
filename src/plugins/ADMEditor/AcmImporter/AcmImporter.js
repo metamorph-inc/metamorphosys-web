@@ -568,16 +568,13 @@ define( [ 'plugin/PluginConfig',
                         valueInfo.value = getValueText( avmPropValueExpression.AssignedValue );
                     }
                     if ( avmPropValueExpression.hasOwnProperty( 'Default' ) ) {
-                        valueInfo.
-                        default = getValueText( avmPropValueExpression.Default );
+                        valueInfo.default = getValueText( avmPropValueExpression.Default );
                     } else {
-                        valueInfo.
-                        default = valueInfo.value;
+                        valueInfo.default = valueInfo.value;
                     }
                 } else if ( valueType === 'avm:FixedValue' ) {
                     valueInfo.value = getValueText( avmPropValueExpression );
-                    valueInfo.
-                    default = valueInfo.value;
+                    valueInfo.default = valueInfo.value;
                 } else if ( valueType === 'avm:DerivedValue' ) {
                     if ( avmValueObject.hasOwnProperty( '@ID' ) ) {
                         dstId = avmValueObject[ '@ID' ];
