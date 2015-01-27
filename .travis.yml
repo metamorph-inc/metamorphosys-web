@@ -4,7 +4,7 @@ node_js:
   - "0.10"
 services: mongodb
 before_script:
-  - "node app.js"
+  - node app.js &
   - sleep 3 # give Web server some time to bind to sockets, etc
 script:
   - "npm run test_all"
