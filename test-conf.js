@@ -11,6 +11,7 @@ var PATH = require('path');
 var CONFIG = require('./config.json');
 var webgme = require('webgme');
 var requirejs = global.WebGMEGlobal.requirejs;
+CONFIG.loglevel = 0;
 WebGMEGlobal.setConfig(CONFIG);
 var requirejsBase = WebGMEGlobal.baseDir;
 
@@ -26,6 +27,9 @@ if (CONFIG.test_paths) {
         paths:paths
     });
 }
+requirejs(['logManager'], function (LogManager) {
+    LogManager.setLogLevel(0);
+});
 
 exports.requirejs = requirejs;
 

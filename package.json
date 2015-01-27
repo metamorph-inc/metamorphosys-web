@@ -73,7 +73,8 @@
     "test_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
     "test_cover_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context cover node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
     "//": "functional tests require the app to be running",
-    "test_functional_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context test node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/functional",
+    "test_functional_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context cover node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/functional",
+    "test_all_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
     "jsdoc": "node_modules/.bin/jsdoc src -r",
     "plugin": "node node_modules/webgme/bin/run_plugin.js -c config.json"
   }
