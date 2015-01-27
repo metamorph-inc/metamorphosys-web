@@ -6,7 +6,7 @@ cd %~dp0..
 
 where forever || exit /b !ERRORLEVEL!
 
-del C:\Users\kevin\Documents\webgme-cyphy\cyphy_functional_server_*.log
+del cyphy_functional_server_*.log
 
 cmd /c forever stop cyphy_functional_server
 
