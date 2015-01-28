@@ -1613,7 +1613,7 @@ angular.module('mms.designVisualization.designEditor', [
         }]);
 
 },{"../testbenchActions/testbenchActions.js":41,"./classes/RandomSymbolGenerator":10,"./operationCommitHandlersForGME.js":12}],12:[function(require,module,exports){
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -1647,6 +1647,10 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
 
             });
 
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'rotate', data.components[0].id);
+            }
+
             deferred.resolve();
 
             //nodeService.completeTransaction(designCtx);
@@ -1679,6 +1683,11 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 i++;
 
             });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'drag', data.components[0].label);
+            }
+
 
             //nodeService.completeTransaction(designCtx);
 
@@ -3937,7 +3946,7 @@ module.exports = function (
 };
 
 },{}],28:[function(require,module,exports){
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -4059,10 +4068,6 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             message: message
                         });
 
-                    if (angular.isFunction(ga)) {
-                        ga('send', 'event', 'component', 'drag', components[0].label);
-                    }
-
                     //$scope.$emit('wiresChange', {
                     //    diagramId: $scope.diagram.id,
                     //    wires: dragTargetsDescriptor.affectedWires
@@ -4075,7 +4080,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
     });
 
 },{}],29:[function(require,module,exports){
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -4162,11 +4167,6 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                         }
                     );
 
-                    if (angular.isFunction(ga)) {
-                        ga('send', 'event', 'component', 'rotate', component.id);
-                    }
-
-
                 };
             }
         });
@@ -4181,8 +4181,8 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
 
 require('../componentWire/componentWire.js');
 
-require('./classes/operations/moveComponents.js');
-require('./classes/operations/rotateComponents.js');
+require('./operations/moveComponents.js');
+require('./operations/rotateComponents.js');
 
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
@@ -4579,7 +4579,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/WireDragHandler":25,"./classes/WireDrawHandler":26,"./classes/contextMenuHandler":27,"./classes/operations/moveComponents.js":28,"./classes/operations/rotateComponents.js":29}],31:[function(require,module,exports){
+},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/WireDragHandler":25,"./classes/WireDrawHandler":26,"./classes/contextMenuHandler":27,"./operations/moveComponents.js":28,"./operations/rotateComponents.js":29}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';

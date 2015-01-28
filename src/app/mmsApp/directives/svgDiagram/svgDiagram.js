@@ -6,8 +6,8 @@
 
 require('../componentWire/componentWire.js');
 
-require('./classes/operations/moveComponents.js');
-require('./classes/operations/rotateComponents.js');
+require('./operations/moveComponents.js');
+require('./operations/rotateComponents.js');
 
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',

@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -32,6 +32,10 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
 
             });
 
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'rotate', data.components[0].id);
+            }
+
             deferred.resolve();
 
             //nodeService.completeTransaction(designCtx);
@@ -64,6 +68,11 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 i++;
 
             });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'drag', data.components[0].label);
+            }
+
 
             //nodeService.completeTransaction(designCtx);
 

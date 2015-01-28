@@ -1,4 +1,4 @@
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -84,11 +84,6 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                             message: message
                         }
                     );
-
-                    if (angular.isFunction(ga)) {
-                        ga('send', 'event', 'component', 'rotate', component.id);
-                    }
-
 
                 };
             }

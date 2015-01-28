@@ -1,4 +1,4 @@
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -119,10 +119,6 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             components: components,
                             message: message
                         });
-
-                    if (angular.isFunction(ga)) {
-                        ga('send', 'event', 'component', 'drag', components[0].label);
-                    }
 
                     //$scope.$emit('wiresChange', {
                     //    diagramId: $scope.diagram.id,
