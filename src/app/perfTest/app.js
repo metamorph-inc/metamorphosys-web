@@ -66,7 +66,7 @@ angular.module( 'CyPhyApp' )
                 } )
                 .
             catch ( function ( reason ) {
-                log( 'ADMEditor does not exist. Create and import it using the <a href="' +
+                log( 'Project does not exist. Create and import it using the <a href="' +
                     window.location.origin + '"> webgme interface</a>.' );
                 fatal( reason );
             } );

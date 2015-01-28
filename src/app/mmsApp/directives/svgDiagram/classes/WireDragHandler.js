@@ -1,4 +1,4 @@
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -7,7 +7,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
     var self = this,
         getOffsetToMouse,
         possibbleDragTargetsDescriptor,
-        dragTargetsDescriptor,
+
+        moveOperation,
 
         onDiagramMouseUp,
         onDiagramMouseMove,
@@ -39,12 +40,10 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         self.dragging = true;
 
-        //self.dragOperation = operationsManager.initNew('setComponentPosition');
+        moveOperation = operationsManager.initNew('MoveWires', $scope.diagram, possibbleDragTargetsDescriptor);
 
-        dragTargetsDescriptor = possibbleDragTargetsDescriptor;
+        $log.debug('Dragging wire', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;
-
-        $log.debug('Dragging wire', dragTargetsDescriptor);
 
     };
 
@@ -52,15 +51,10 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
+        if (angular.isObject(moveOperation)) {
 
-            angular.forEach(dragTargetsDescriptor.targets, function (target) {
-
-                target.wire.segments = target.originalSegments;
-
-            });
-
-            dragTargetsDescriptor = null;
+            moveOperation.cancel();
+            moveOperation = null;
 
         }
 
@@ -70,120 +64,43 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
     finishDrag = function () {
 
-        angular.forEach(dragTargetsDescriptor.targets, function (target) {
-            $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+        //angular.forEach(dragTargetsDescriptor.targets, function (target) {
+        //    $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+        //
+        //    if (target.wasCorner) {
+        //        ga('send', 'event', 'corner', 'drag', target.wire.id);
+        //    } else {
+        //        ga('send', 'event', 'wire', 'drag', target.wire.id);
+        //    }
+        //
+        //});
 
-            if (target.wasCorner) {
-                ga('send', 'event', 'corner', 'drag', target.wire.id);
-            } else {
-                ga('send', 'event', 'wire', 'drag', target.wire.id);
-            }
+        if (angular.isObject(moveOperation)) {
 
-        });
+            moveOperation.finish();
+            moveOperation = null;
 
-        self.dragging = false;
+            self.dragging = false;
 
-        dragTargetsDescriptor = null;
+            $log.debug('Finish wire dragging');
 
-        $log.debug('Finish dragging');
+        }
 
     };
 
     onDiagramMouseMove = function ($event) {
 
-        var offset,
-            i,
-            target,
-            snappedPosition1,
-            snappedPosition2;
+        var offset;
 
         if (possibbleDragTargetsDescriptor) {
             startDrag();
         }
 
-        if (dragTargetsDescriptor) {
+        if (moveOperation) {
 
             offset = getOffsetToMouse($event);
 
-            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
-
-                target = dragTargetsDescriptor.targets[i];
-
-
-                if (!target.wasCorner) {
-
-                    snappedPosition1 = gridService.getSnappedPosition(
-                        {
-                            x: offset.x + target.deltaToCursor1.x,
-                            y: offset.y + target.deltaToCursor1.y
-                        });
-
-                    snappedPosition2 = gridService.getSnappedPosition(
-                        {
-                            x: offset.x + target.deltaToCursor2.x,
-                            y: offset.y + target.deltaToCursor2.y
-                        });
-
-
-                    target.wire.segments[target.segmentIndex - 1] =
-                        wiringService.getSegmentsBetweenPositions(
-                            {
-                                end1: {
-                                    x: target.wire.segments[target.segmentIndex - 1].x1,
-                                    y: target.wire.segments[target.segmentIndex - 1].y1
-                                },
-                                end2: snappedPosition1
-                            },
-                            'SimpleRouter')[0];
-
-                    target.wire.segments[target.segmentIndex] =
-                        wiringService.getSegmentsBetweenPositions(
-                            {
-                                end1: snappedPosition1,
-                                end2: snappedPosition2
-                            }, 'SimpleRouter')[0];
-
-                    target.wire.segments[target.segmentIndex + 1] =
-                        wiringService.getSegmentsBetweenPositions(
-                            {
-                                end1: snappedPosition2,
-                                end2: {
-                                    x: target.wire.segments[target.segmentIndex + 1].x2,
-                                    y: target.wire.segments[target.segmentIndex + 1].y2
-                                }
-                            },
-                            'SimpleRouter')[0];
-                } else {
-
-                    snappedPosition2 = gridService.getSnappedPosition(
-                        {
-                            x: offset.x + target.deltaToCursor2.x,
-                            y: offset.y + target.deltaToCursor2.y
-                        });
-
-                    target.wire.segments[target.segmentIndex] =
-                        wiringService.getSegmentsBetweenPositions(
-                            {
-                                end1: {
-                                    x: target.wire.segments[target.segmentIndex].x1,
-                                    y: target.wire.segments[target.segmentIndex].y1
-                                },
-                                end2: snappedPosition2
-                            }, 'SimpleRouter')[0];
-
-                    target.wire.segments[target.segmentIndex + 1] =
-                        wiringService.getSegmentsBetweenPositions(
-                            {
-                                end1: snappedPosition2,
-                                end2: {
-                                    x: target.wire.segments[target.segmentIndex + 1].x2,
-                                    y: target.wire.segments[target.segmentIndex + 1].y2
-                                }
-                            },
-                            'SimpleRouter')[0];
-
-                }
-            }
+            moveOperation.set(offset);
 
         }
 
@@ -193,22 +110,20 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onDiagramMouseLeave = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
     onWindowBlur = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
@@ -216,17 +131,16 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onWireMouseDown = function (wire, segment, $event, wasCorner) {
 
         var getDragDescriptor,
-            indexOfSegment;
+            indexOfSegment,
+            primartyTargetDescriptor;
 
         getDragDescriptor = function (wire, segment, sIndex) {
 
@@ -266,8 +180,11 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
                     $event.stopPropagation();
 
+                    primartyTargetDescriptor = getDragDescriptor(wire, segment, indexOfSegment);
+
                     possibbleDragTargetsDescriptor = {
-                        targets: [getDragDescriptor(wire, segment, indexOfSegment)]
+                        primaryTarget: primartyTargetDescriptor,
+                        targets: [ primartyTargetDescriptor ]
                     };
 
                 }

@@ -1,4 +1,4 @@
-/*globals angular, ga*/
+/*globals angular*/
 
 'use strict';
 
@@ -7,11 +7,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
     var self = this,
         getOffsetToMouse,
         possibbleDragTargetsDescriptor,
-        dragTargetsDescriptor,
 
-        dragTargetsWiresUpdate,
-        wireUpdateWait,
-        dragTargetsWiresUpdatePromises,
+        moveOperation,
 
         onDiagramMouseUp,
         onDiagramMouseMove,
@@ -43,12 +40,10 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         self.dragging = true;
 
-        //self.dragOperation = operationsManager.initNew('setComponentPosition');
+        moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
-        dragTargetsDescriptor = possibbleDragTargetsDescriptor;
+        $log.debug('Dragging', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;
-
-        $log.debug('Dragging', dragTargetsDescriptor);
 
     };
 
@@ -56,24 +51,10 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
+        if (angular.isObject(moveOperation)) {
 
-            angular.forEach(dragTargetsDescriptor.targets, function (target) {
-
-                target.component.setPosition(
-                    target.originalPosition.x,
-                    target.originalPosition.y
-                );
-
-            });
-
-            angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
-
-                wiringService.adjustWireEndSegments(wire);
-
-            });
-
-            dragTargetsDescriptor = null;
+            moveOperation.cancel();
+            moveOperation = null;
 
         }
 
@@ -83,91 +64,33 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
     finishDrag = function () {
 
-        var message,
-            components;
 
-        components = dragTargetsDescriptor.targets.map(
-            function (target) {
-                return target.component;
-            });
+        if (angular.isObject(moveOperation)) {
 
-        if (components.length > 1) {
-            message = 'Dragging selection';
-        } else {
-            message = 'Dragging ' + components[0].label;
+            moveOperation.finish();
+            moveOperation = null;
+
+            self.dragging = false;
+
+            $log.debug('Finish dragging');
+
         }
-
-        ga('send', 'event', 'component', 'drag', components[0].label);
-
-        $scope.$emit('componentsPositionChange', {
-            diagramId: $scope.diagram.id,
-            components: components,
-            message: message
-        });
-
-        //$scope.$emit('wiresChange', {
-        //    diagramId: $scope.diagram.id,
-        //    wires: dragTargetsDescriptor.affectedWires
-        //});
-
-        self.dragging = false;
-
-        dragTargetsDescriptor = null;
-
-        $log.debug('Finish dragging');
-
-    };
-
-    wireUpdateWait = 20;
-    dragTargetsWiresUpdatePromises = {};
-
-    dragTargetsWiresUpdate = function (affectedWires) {
-
-        angular.forEach(affectedWires, function (wire) {
-
-            $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
-
-            dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
-                wiringService.adjustWireEndSegments(wire);
-            }, wireUpdateWait);
-
-        });
 
     };
 
     onDiagramMouseMove = function ($event) {
 
-        var offset,
-            i,
-            target,
-            snappedPosition;
+        var offset;
 
         if (possibbleDragTargetsDescriptor) {
             startDrag();
         }
 
-        if (dragTargetsDescriptor) {
+        if (moveOperation) {
 
             offset = getOffsetToMouse($event);
 
-            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
-
-                target = dragTargetsDescriptor.targets[i];
-
-                snappedPosition = gridService.getSnappedPosition(
-                    {
-                        x: offset.x + target.deltaToCursor.x,
-                        y: offset.y + target.deltaToCursor.y
-                    });
-
-                target.component.setPosition(
-                    snappedPosition.x,
-                    snappedPosition.y
-                );
-
-            }
-
-            dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
+            moveOperation.set(offset);
 
         }
 
@@ -177,22 +100,20 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onDiagramMouseLeave = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
     onWindowBlur = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
@@ -200,17 +121,16 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (dragTargetsDescriptor) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onComponentMouseDown = function (component, $event) {
 
         var componentsToDrag,
-            getDragDescriptor;
+            getDragDescriptor,
+            primaryTargetDescriptor;
 
         componentsToDrag = [];
 
@@ -240,8 +160,11 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
             $event.stopPropagation();
 
+            primaryTargetDescriptor = getDragDescriptor(component);
+
             possibbleDragTargetsDescriptor = {
-                targets: [getDragDescriptor(component)]
+                primaryTarget: primaryTargetDescriptor,
+                targets: [ primaryTargetDescriptor ]
             };
 
             componentsToDrag.push(component);

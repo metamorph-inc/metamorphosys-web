@@ -4,6 +4,7 @@ angular.module( 'CyPhyApp', [
     'gme.services',
     'cyphy.components'
 ] )
+    .service( '$modal', function () {} )
     .run( function ( dataStoreService, projectService, branchService, nodeService, workspaceService, componentService,
         designService, testBenchService ) {
         'use strict';
@@ -11,20 +12,29 @@ angular.module( 'CyPhyApp', [
             host: window.location.basename
         } )
             .then( function () {
+
                 console.log( 'Connected ...' );
                 return projectService.selectProject( 'my-db-connection-id', 'ADMEditor' );
+
             } )
             .then( function () {
                 console.log( 'Project selected...' );
+                dataStoreService.watchConnectionState( 'my-db-connection-id', function ( eventType ) {
+                    console.log( 'watchConnectionState' + eventType );
+                } );
                 return branchService.selectBranch( 'my-db-connection-id', 'master' );
             } )
             .then( function () {
+                branchService.watchBranchState( 'my-db-connection-id', function ( eventType ) {
+                    console.log( 'watchBranchState' + eventType );
+                } );
                 console.log( 'Branch selected...' );
             } )
             .
         catch ( function ( reason ) {
             console.error( reason );
         } );
+
 
         //        branchService.on({db: 'my-db-connection-id', projectId: 'ADMEditor', branchId: 'master'}, 'initialize', function (currentContext) {
         //            console.log('branchService initialized..');
@@ -51,7 +61,7 @@ angular.module( 'CyPhyApp', [
 
                     runOnceAlready = false;
 
-                    angular.foreEach( data.workspaces, function ( v, key ) {
+                    angular.forEach( data.workspaces, function ( v, key ) {
 
                         if ( runOnceAlready === false ) {
 
