@@ -248,7 +248,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":12,"./directives/diagramContainer/diagramContainer.js":14,"./directives/fabricCanvas/fabricCanvas.js":16,"./directives/headerButtons/headerButtons.js":17,"./directives/processingCover/processingCover.js":19,"./directives/resizing/resizeToHeight.js":20,"./directives/resizing/resizeToWindow.js":21,"./directives/socialMediaButtons/socialMediaButtons.js":22,"./directives/svgDiagram/svgDiagram.js":30,"./directives/symbols/componentSymbol.js":33,"./libraryIncludes.js":42,"./services/connectionHandling/connectionHandling.js":43,"./services/diagramService/diagramService.js":50,"./services/gridService/gridService.js":51,"./services/operationsManager/operationsManager.js":52,"./services/projectHandling/projectHandling.js":53,"./services/wiringService/wiringService.js":58,"./utils.js":59,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":11,"./directives/diagramContainer/diagramContainer.js":14,"./directives/fabricCanvas/fabricCanvas.js":16,"./directives/headerButtons/headerButtons.js":17,"./directives/processingCover/processingCover.js":19,"./directives/resizing/resizeToHeight.js":20,"./directives/resizing/resizeToWindow.js":21,"./directives/socialMediaButtons/socialMediaButtons.js":22,"./directives/svgDiagram/svgDiagram.js":30,"./directives/symbols/componentSymbol.js":33,"./libraryIncludes.js":42,"./services/connectionHandling/connectionHandling.js":43,"./services/diagramService/diagramService.js":50,"./services/gridService/gridService.js":51,"./services/operationsManager/operationsManager.js":52,"./services/projectHandling/projectHandling.js":53,"./services/wiringService/wiringService.js":58,"./utils.js":59,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1190,72 +1190,6 @@ angular.module(
     }
 );
 },{}],10:[function(require,module,exports){
-/*globals angular*/
-
-'use strict';
-
-module.exports = function(designCtx, $rootScope, designLayoutService, $timeout) {
-
-    $rootScope.$on('componentsRotationChange', function (e, data) {
-
-        var i;
-
-        i = 1;
-
-        //nodeService.startTransaction(designCtx, data.message);
-
-        angular.forEach(data.components, function (component) {
-
-            $timeout(function () {
-
-                designLayoutService.setRotation(
-                    designCtx,
-                    component.id,
-                    component.rotation,
-                    data.message
-                );
-            }, 10 * i);
-
-            i++;
-
-        });
-
-        //nodeService.completeTransaction(designCtx);
-
-    });
-
-
-    $rootScope.$on('componentsPositionChange', function (e, data) {
-
-        var i;
-
-        i = 1;
-
-        //nodeService.startTransaction(designCtx, data.message);
-
-        angular.forEach(data.components, function (component) {
-
-            $timeout(function () {
-
-                designLayoutService.setPosition(
-                    designCtx,
-                    component.id,
-                    component.getPosition(),
-                    data.message
-                );
-            }, 10 * i);
-
-            i++;
-
-        });
-
-        //nodeService.completeTransaction(designCtx);
-
-    });
-
-};
-
-},{}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = function(symbolManagerProvider) {
@@ -1344,7 +1278,7 @@ module.exports = function(symbolManagerProvider) {
 
 };
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -1352,9 +1286,11 @@ module.exports = function(symbolManagerProvider) {
 // Move this to GME eventually
 
 require('../testbenchActions/testbenchActions.js');
+require('./operationCommitHandlersForGME.js');
 
 angular.module('mms.designVisualization.designEditor', [
-    'mms.testbenchActions'
+    'mms.testbenchActions',
+    'mms.designVisualization.operations.gmeCommitHandlers'
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
@@ -1365,15 +1301,9 @@ angular.module('mms.designVisualization.designEditor', [
 
             designCtx,
 
-            setupDiagramEventHandlers,
-            eventHandlersAreSet,
             lastComponentInstantiationPosition,
 
-            justCreatedWires,
-
-            diagramEventHandlersForGME;
-
-        diagramEventHandlersForGME = require('./classes/DiagramEventHandlersForGME.js');
+            justCreatedWires;
 
         justCreatedWires = [];
 
@@ -1381,7 +1311,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
 
-        designCtx = {
+        $rootScope.designCtx = designCtx = {
             db: $scope.mainGMEConnectionId,
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
@@ -1526,16 +1456,6 @@ angular.module('mms.designVisualization.designEditor', [
 
         });
 
-        setupDiagramEventHandlers = function () {
-
-            if (!eventHandlersAreSet) {
-
-                diagramEventHandlersForGME(designCtx, $rootScope, designLayoutService, $timeout);
-
-                eventHandlersAreSet = true;
-            }
-        };
-
         if ($stateParams.containerId === 'dummy') {
 
             RandomSymbolGenerator = require('./classes/RandomSymbolGenerator');
@@ -1642,8 +1562,6 @@ angular.module('mms.designVisualization.designEditor', [
 
                 $log.debug('Drawing diagram:', $scope.diagram);
 
-                setupDiagramEventHandlers();
-
                 $timeout(function () {
                     $rootScope.stopBusy();
                     $rootScope.unCover();
@@ -1694,7 +1612,82 @@ angular.module('mms.designVisualization.designEditor', [
             };
         }]);
 
-},{"../testbenchActions/testbenchActions.js":41,"./classes/DiagramEventHandlersForGME.js":10,"./classes/RandomSymbolGenerator":11}],13:[function(require,module,exports){
+},{"../testbenchActions/testbenchActions.js":41,"./classes/RandomSymbolGenerator":10,"./operationCommitHandlersForGME.js":12}],12:[function(require,module,exports){
+/*globals angular*/
+
+'use strict';
+
+angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
+    .run(function (operationsManager, $rootScope, designLayoutService, $timeout, $q) {
+
+        operationsManager.registerCommitHandler('RotateComponents', function (data) {
+
+            var i,
+                deferred;
+
+            i = 1;
+
+            deferred = $q.defer();
+
+            //nodeService.startTransaction(designCtx, data.message);
+
+            angular.forEach(data.components, function (component) {
+
+                $timeout(function () {
+
+                    designLayoutService.setRotation(
+                        $rootScope.designCtx,
+                        component.id,
+                        component.rotation,
+                        data.message
+                    );
+                }, 10 * i);
+
+                i++;
+
+            });
+
+            deferred.resolve();
+
+            //nodeService.completeTransaction(designCtx);
+
+            return deferred.promise;
+
+        });
+
+
+        operationsManager.registerCommitHandler('MoveComponents', function (data) {
+
+            var i;
+
+            i = 1;
+
+            //nodeService.startTransaction(designCtx, data.message);
+
+            angular.forEach(data.components, function (component) {
+
+                $timeout(function () {
+
+                    designLayoutService.setPosition(
+                        $rootScope.designCtx,
+                        component.id,
+                        component.getPosition(),
+                        data.message
+                    );
+                }, 10 * i);
+
+                i++;
+
+            });
+
+            //nodeService.completeTransaction(designCtx);
+
+        });
+
+    }
+);
+
+},{}],13:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -2713,7 +2706,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         if (angular.isObject(moveOperation)) {
 
-            moveOperation.commit();
+            moveOperation.finish();
             moveOperation = null;
 
             self.dragging = false;
@@ -3738,7 +3731,7 @@ module.exports = function (
 
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(90);
-                            operation.commit();
+                            operation.finish();
                         }
                     },
                     {
@@ -3753,7 +3746,7 @@ module.exports = function (
 
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(-90);
-                            operation.commit();
+                            operation.finish();
 
                         }
                     }
@@ -3952,8 +3945,12 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
     .run(function (operationsManager, $rootScope, wiringService, gridService, $timeout) {
 
+        var type;
+
+        type = 'MoveComponents';
+
         operationsManager.registerOperation({
-            id: 'MoveComponents',
+            type: type,
             operationClass: function () {
 
                 var dragTargetsDescriptor,
@@ -4038,7 +4035,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                 };
 
-                this.commit = function () {
+                this.finish = function () {
 
                     var message,
                         components;
@@ -4054,11 +4051,13 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         message = 'Dragging ' + components[0].label;
                     }
 
-                    $rootScope.$emit('componentsPositionChange', {
-                        diagramId: diagram.id,
-                        components: components,
-                        message: message
-                    });
+                    operationsManager.commitOperation(
+                        type,
+                        {
+                            diagramId: diagram.id,
+                            components: components,
+                            message: message
+                        });
 
                     if (angular.isFunction(ga)) {
                         ga('send', 'event', 'component', 'drag', components[0].label);
@@ -4084,8 +4083,12 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
 
     .run(function (operationsManager, $rootScope, wiringService) {
 
+        var type;
+
+        type = 'RotateComponents';
+
         operationsManager.registerOperation({
-            id: 'RotateComponents',
+            type: type,
             operationClass: function () {
 
                 var diagram,
@@ -4101,7 +4104,7 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                     angle = anAngle;
                 };
 
-                this.commit = function () {
+                this.finish = function () {
 
                     var componentsToRotate,
                         component,
@@ -4150,15 +4153,19 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                         message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
                     }
 
-                    $rootScope.$emit('componentsRotationChange', {
-                        diagramId: diagram.id,
-                        components: componentsToRotate,
-                        message: message
-                    });
+                    operationsManager.commitOperation(
+                        type,
+                        {
+                            diagramId: diagram.id,
+                            components: componentsToRotate,
+                            message: message
+                        }
+                    );
 
                     if (angular.isFunction(ga)) {
                         ga('send', 'event', 'component', 'rotate', component.id);
                     }
+
 
                 };
             }
@@ -4174,8 +4181,8 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
 
 require('../componentWire/componentWire.js');
 
-require('./classes/operations/MoveComponents.js');
-require('./classes/operations/RotateComponents.js');
+require('./classes/operations/moveComponents.js');
+require('./classes/operations/rotateComponents.js');
 
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
@@ -4572,7 +4579,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/WireDragHandler":25,"./classes/WireDrawHandler":26,"./classes/contextMenuHandler":27,"./classes/operations/MoveComponents.js":28,"./classes/operations/RotateComponents.js":29}],31:[function(require,module,exports){
+},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/WireDragHandler":25,"./classes/WireDrawHandler":26,"./classes/contextMenuHandler":27,"./classes/operations/moveComponents.js":28,"./classes/operations/rotateComponents.js":29}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5568,47 +5575,68 @@ angular.module('mms.testbenchActions', [
 'use strict';
 
 angular.module('mms.connectionHandling', [])
-    .service('connectionHandling', function ($q, dataStoreService) {
 
-        var mainConnectionId,
-            mainConnectionEstablished,
+    .provider('connectionHandling', function ConnectionHandlingProvider() {
 
-            dataStorePromise;
+        var self,
+            mainConnectionId,
+            mainConnectionEstablished;
+
+        self = this;
 
         mainConnectionId = 'main-db-connection-id';
         mainConnectionEstablished = false;
 
-        this.establishMainGMEConnection = function() {
-
-            var deferred;
-
-            deferred = $q.defer();
-
-            if (!dataStorePromise && !mainConnectionEstablished) {
-
-                dataStorePromise = dataStoreService.connectToDatabase(mainConnectionId, {
-                    host: window.location.basename
-                }).then(function () {
-
-                    mainConnectionEstablished = true;
-
-                    deferred.resolve();
-
-                });
-
-            } else {
-                deferred.resolve();
-            }
-
-            return deferred.promise;
-
-        };
-
-        this.getMainGMEConnectionId = function(){
+        this.getMainGMEConnectionId = function () {
             return mainConnectionId;
         };
 
-    });
+        this.$get = ['$q', 'dataStoreService',
+
+            function ($q, dataStoreService) {
+
+                var ConnectionHandling;
+
+                ConnectionHandling = function() {
+
+                    var dataStorePromise;
+
+                    this.establishMainGMEConnection = function () {
+
+                        var deferred;
+
+                        deferred = $q.defer();
+
+                        if (!dataStorePromise && !mainConnectionEstablished) {
+
+                            dataStorePromise = dataStoreService.connectToDatabase(mainConnectionId, {
+                                host: window.location.basename
+                            }).then(function () {
+
+                                mainConnectionEstablished = true;
+
+                                deferred.resolve();
+
+                            });
+
+                        } else {
+                            deferred.resolve();
+                        }
+
+                        return deferred.promise;
+
+                    };
+
+                    this.getMainGMEConnectionId = self.getMainGMEConnectionId;
+                };
+
+                return new ConnectionHandling();
+
+            }
+        ];
+
+    }
+);
 
 },{}],44:[function(require,module,exports){
 /*globals angular*/
@@ -7623,40 +7651,99 @@ var operationsManagerModule = angular.module(
 
 operationsManagerModule.provider('operationsManager', function OperationsManagerProvider() {
     var self,
-        availableOperations;
+        availableOperations,
+        journal;
 
     self = this;
+
+    journal = [];
 
     availableOperations = {};
 
     this.registerOperation = function (operationDescriptor) {
 
         if (angular.isObject(operationDescriptor) &&
-            angular.isString(operationDescriptor.id)) {
-            availableOperations[ operationDescriptor.id ] = operationDescriptor.operationClass;
+            angular.isString(operationDescriptor.type)) {
+            availableOperations[operationDescriptor.type] = operationDescriptor;
         }
     };
 
-    this.$get = [
+    this.registerCommitHandler = function (operationType, commitHandler) {
 
-        function () {
+        var operation;
+
+        operation = availableOperations[operationType];
+
+        if (angular.isObject(operation) &&
+            angular.isFunction(commitHandler)) {
+
+            operation.commitHandlers = operation.commitHandlers || [];
+            operation.commitHandlers.push(commitHandler);
+
+        }
+    };
+
+    this.$get = [ '$q',
+
+        function ($q) {
 
             var OperationsManager;
 
             OperationsManager = function () {
 
                 this.registerOperation = self.registerOperation;
+                this.registerCommitHandler = self.registerCommitHandler;
 
                 this.getAvailableOperations = function () {
                     return availableOperations;
                 };
 
-                this.initNew = function (operationId) {
+                this.commitOperation = function (operationType, footPrint) {
+
+                    var operation,
+                        deferred,
+                        handlerPromises,
+                        result;
+
+                    handlerPromises = [];
+                    operation = availableOperations[operationType];
+
+                    if (angular.isObject(operation) && angular.isArray(operation.commitHandlers)) {
+
+                        angular.forEach(operation.commitHandlers, function(commitHandler) {
+                            handlerPromises.push(commitHandler(footPrint));
+                        });
+
+                        result = $q.all(handlerPromises);
+
+                    } else {
+
+                        deferred = $q.defer();
+                        result = deferred.promise;
+                        deferred.resolve();
+
+                    }
+
+                    return result;
+
+                };
+
+                this.logOperation = function (operationType, footPrint) {
+
+                    journal.push({
+                        type: operationType,
+                        footPrint: footPrint,
+                        timeStamp: Date.now()
+                    });
+
+                };
+
+                this.initNew = function (operationType) {
 
                     var OperationClass,
                         operationInstance;
 
-                    OperationClass = availableOperations[ operationId ];
+                    OperationClass = availableOperations[operationType].operationClass;
 
                     if (angular.isFunction(OperationClass)) {
 

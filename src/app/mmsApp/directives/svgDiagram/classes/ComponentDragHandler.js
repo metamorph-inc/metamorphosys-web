@@ -67,7 +67,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         if (angular.isObject(moveOperation)) {
 
-            moveOperation.commit();
+            moveOperation.finish();
             moveOperation = null;
 
             self.dragging = false;

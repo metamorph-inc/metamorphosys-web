@@ -295,7 +295,7 @@ module.exports = function (
 
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(90);
-                            operation.commit();
+                            operation.finish();
                         }
                     },
                     {
@@ -310,7 +310,7 @@ module.exports = function (
 
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(-90);
-                            operation.commit();
+                            operation.finish();
 
                         }
                     }

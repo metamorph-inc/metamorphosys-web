@@ -5,9 +5,11 @@
 // Move this to GME eventually
 
 require('../testbenchActions/testbenchActions.js');
+require('./operationCommitHandlersForGME.js');
 
 angular.module('mms.designVisualization.designEditor', [
-    'mms.testbenchActions'
+    'mms.testbenchActions',
+    'mms.designVisualization.operations.gmeCommitHandlers'
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
@@ -18,15 +20,9 @@ angular.module('mms.designVisualization.designEditor', [
 
             designCtx,
 
-            setupDiagramEventHandlers,
-            eventHandlersAreSet,
             lastComponentInstantiationPosition,
 
-            justCreatedWires,
-
-            diagramEventHandlersForGME;
-
-        diagramEventHandlersForGME = require('./classes/DiagramEventHandlersForGME.js');
+            justCreatedWires;
 
         justCreatedWires = [];
 
@@ -34,7 +30,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
 
-        designCtx = {
+        $rootScope.designCtx = designCtx = {
             db: $scope.mainGMEConnectionId,
             regionId: 'Design_' + ( new Date() ).toISOString()
         };
@@ -179,16 +175,6 @@ angular.module('mms.designVisualization.designEditor', [
 
         });
 
-        setupDiagramEventHandlers = function () {
-
-            if (!eventHandlersAreSet) {
-
-                diagramEventHandlersForGME(designCtx, $rootScope, designLayoutService, $timeout);
-
-                eventHandlersAreSet = true;
-            }
-        };
-
         if ($stateParams.containerId === 'dummy') {
 
             RandomSymbolGenerator = require('./classes/RandomSymbolGenerator');
@@ -294,8 +280,6 @@ angular.module('mms.designVisualization.designEditor', [
 
 
                 $log.debug('Drawing diagram:', $scope.diagram);
-
-                setupDiagramEventHandlers();
 
                 $timeout(function () {
                     $rootScope.stopBusy();

@@ -6,8 +6,12 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
 
     .run(function (operationsManager, $rootScope, wiringService) {
 
+        var type;
+
+        type = 'RotateComponents';
+
         operationsManager.registerOperation({
-            id: 'RotateComponents',
+            type: type,
             operationClass: function () {
 
                 var diagram,
@@ -23,7 +27,7 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                     angle = anAngle;
                 };
 
-                this.commit = function () {
+                this.finish = function () {
 
                     var componentsToRotate,
                         component,
@@ -72,15 +76,19 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                         message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
                     }
 
-                    $rootScope.$emit('componentsRotationChange', {
-                        diagramId: diagram.id,
-                        components: componentsToRotate,
-                        message: message
-                    });
+                    operationsManager.commitOperation(
+                        type,
+                        {
+                            diagramId: diagram.id,
+                            components: componentsToRotate,
+                            message: message
+                        }
+                    );
 
                     if (angular.isFunction(ga)) {
                         ga('send', 'event', 'component', 'rotate', component.id);
                     }
+
 
                 };
             }

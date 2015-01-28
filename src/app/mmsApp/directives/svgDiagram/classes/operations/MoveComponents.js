@@ -6,8 +6,12 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
     .run(function (operationsManager, $rootScope, wiringService, gridService, $timeout) {
 
+        var type;
+
+        type = 'MoveComponents';
+
         operationsManager.registerOperation({
-            id: 'MoveComponents',
+            type: type,
             operationClass: function () {
 
                 var dragTargetsDescriptor,
@@ -92,7 +96,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                 };
 
-                this.commit = function () {
+                this.finish = function () {
 
                     var message,
                         components;
@@ -108,11 +112,13 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         message = 'Dragging ' + components[0].label;
                     }
 
-                    $rootScope.$emit('componentsPositionChange', {
-                        diagramId: diagram.id,
-                        components: components,
-                        message: message
-                    });
+                    operationsManager.commitOperation(
+                        type,
+                        {
+                            diagramId: diagram.id,
+                            components: components,
+                            message: message
+                        });
 
                     if (angular.isFunction(ga)) {
                         ga('send', 'event', 'component', 'drag', components[0].label);
