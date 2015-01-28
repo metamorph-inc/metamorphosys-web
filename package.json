@@ -48,7 +48,8 @@
     "yargs": "^1.3.1",
     "svgmin": "~0.1.0",
     "gulp-svgstore": "~3.0.0",
-    "gulp-svgmin": "~1.0.0"
+    "gulp-svgmin": "~1.0.0",
+    "q": "^1.1.2"
   },
   "browserify": {
     "transform": [
@@ -80,7 +81,10 @@
     "test_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
     "test_cover_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context cover node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
     "//": "functional tests require the app to be running",
-    "test_functional_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context test node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/functional",
+    "test_functional": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
+    "test_functional_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
+    "test_all": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
+    "test_all_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
     "jsdoc": "node_modules/.bin/jsdoc src -r",
     "plugin": "node node_modules/webgme/bin/run_plugin.js -c config.json"
   }

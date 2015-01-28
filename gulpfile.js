@@ -518,6 +518,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         registerAppWatchers(applications[i]);
     }
 
+    gulp.watch('src/plugins/**', ['rjs-build']);
     return cb;
 });
 

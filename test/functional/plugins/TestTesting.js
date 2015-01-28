@@ -1,25 +1,56 @@
-/*globals window, WebGMEGlobal, require, describe, it */
+/*globals window, WebGMEGlobal, require, describe, it,before */
 
 
 if (typeof window === 'undefined') {
 
     // server-side setup
     var webgme = require('webgme');
-    var webgmeConfig = require('../../../config.json');
-    WebGMEGlobal.setConfig(webgmeConfig);
+    var requirejs = require("../../../test-conf.js").requirejs;
+    var webgme = require('webgme');
 
     var chai = require('chai');
 }
 
 describe('TestTesting', function () {
     'use strict';
+    var projectName = 'TestTesting',
+        updateMeta,
+        commitHash; // TODO: restore master to this commit before each test (but then 'AdmImporter should succeed on ValueFlow' will fail)
+
+    var BlobClient;
+    var Artifact;
+    var acmTemplates;
+    var admTemplates;
+    before(function (done) {
+        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
+            BlobClient = BlobClient_;
+            Artifact = Artifact_;
+            acmTemplates = acmTemplates_;
+            admTemplates = admTemplates_;
+            done();
+        });
+    });
+
+    before(function (done) {
+        requirejs(
+            ['utils/update_meta.js'],
+            function (updateMeta_) {
+                updateMeta = updateMeta_;
+
+                updateMeta.withProject(WebGMEGlobal.getConfig(), projectName, function (project) {
+                    return updateMeta.importLibrary(WebGMEGlobal.getConfig(), projectName, 'master', 'test/models/SimpleModelica.json', project)
+                        .then(function (commitHash_) {
+                            commitHash = commitHash_;
+                            done();
+                        });
+                });
+            });
+    });
 
     it('AdmExporter should fail on AtmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmExporter',
-            testPoint = '/1937510081/1067632681/267370409',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AdmExporter',
+            testPoint = '/1007576016/1059726760/686890673',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -33,11 +64,9 @@ describe('TestTesting', function () {
     });
 
     it('AdmImporter should fail on AtmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmImporter',
-            testPoint = '/1937510081/1067632681/267370409',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AdmImporter',
+            testPoint = '/1007576016/1059726760/686890673',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -51,11 +80,9 @@ describe('TestTesting', function () {
     });
 
     it('AcmImporter should fail on AtmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AcmImporter',
-            testPoint = '/1937510081/1067632681/267370409',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AcmImporter',
+            testPoint = '/1007576016/1059726760/686890673',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -69,11 +96,9 @@ describe('TestTesting', function () {
     });
 
     it('AdmImporter should fail on AcmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmImporter',
-            testPoint = '/1937510081/1096423255/1226230639',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AdmImporter',
+            testPoint = '/1007576016/1671134528',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -87,11 +112,9 @@ describe('TestTesting', function () {
     });
 
     it('AdmExporter should fail on AcmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmExporter',
-            testPoint = '/1937510081/1096423255/1226230639',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AdmExporter',
+            testPoint = '/1007576016/1671134528',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -105,11 +128,9 @@ describe('TestTesting', function () {
     });
 
     it('AcmImporter should fail on AcmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AcmImporter',
-            testPoint = '/1937510081/1096423255/1226230639',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AcmImporter',
+            testPoint = '/1007576016/1671134528/1332252948',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -122,13 +143,10 @@ describe('TestTesting', function () {
         });
     });
 
-    it.skip('AdmExporter should succeed on WheelADM', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmExporter',
-            testPoint = '/1937510081/640868054/1855432438',
-            expectedSuccess = true,
-            assetHash = '';
-
+    it('AdmExporter should succeed on WheelADM', function (done) {
+        var pluginName = 'AdmExporter',
+            testPoint = '/1007576016/1659905525/1591506645',
+            expectedSuccess = true;
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
             pluginName: pluginName,
@@ -141,11 +159,9 @@ describe('TestTesting', function () {
     });
 
     it('AdmImporter should fail on AdmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmImporter',
-            testPoint = '/1937510081/1067632681/267370409',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AdmImporter',
+            testPoint = '/1007576016/1659905525/1591506645',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -159,11 +175,9 @@ describe('TestTesting', function () {
     });
 
     it('AcmImporter should fail on AdmAsActiveNode', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AcmImporter',
-            testPoint = '/1937510081/1067632681/267370409',
-            expectedSuccess = false,
-            assetHash = '';
+        var pluginName = 'AcmImporter',
+            testPoint = '/1007576016/1659905525/1591506645',
+            expectedSuccess = false;
 
         webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
             projectName: projectName,
@@ -176,41 +190,62 @@ describe('TestTesting', function () {
         });
     });
 
-    it.skip('AcmImporter should succeed on ImportDamper', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AcmImporter',
-            testPoint = '/1937510081/977006072/311681776',
-            expectedSuccess = true,
-            assetHash = 'cdf0bf15cbd31f0b4b07a2deb7a47abcd952d8be';
+    function newBlobClient() {
+        return new BlobClient({
+            server: 'localhost',
+            serverPort: WebGMEGlobal.getConfig().port,
+            httpsecure: false
+        });
+    }
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
-            projectName: projectName,
-            pluginName: pluginName,
-            activeNode: testPoint,
-            pluginConfig: { UploadedFile: assetHash }
-        }, function (err, result) {
-            chai.expect(err).to.equal(null);
-            chai.expect(result.getSuccess()).to.equal(expectedSuccess);
-            done();
+    it('AcmImporter should succeed on Formulas', function (done) {
+        var pluginName = 'AcmImporter',
+            testPoint = '/1007576016/1671134528',
+            expectedSuccess = true,
+            artifact = new Artifact('Formulas.zip', newBlobClient());
+
+        artifact.addFiles({'component.acm': acmTemplates['Formulas.acm']}, function (err, hashes) {
+            if (err) {
+                return done(err);
+            }
+            artifact.save(function (err, hash) {
+                if (err) {
+                    return done(err);
+                }
+                webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+                    projectName: projectName,
+                    pluginName: pluginName,
+                    activeNode: testPoint,
+                    pluginConfig: { UploadedFile: hash }
+                }, function (err, result) {
+                    chai.expect(err).to.equal(null);
+                    chai.expect(result.getSuccess()).to.equal(expectedSuccess);
+                    done();
+                });
+            });
         });
     });
 
-    it.skip('AdmImporter should succeed on ImportWheel', function (done) {
-        var projectName = 'ADMEditor',
-            pluginName = 'AdmImporter',
-            testPoint = '/1937510081/799069300/1883835269/1367508869',
+    it('AdmImporter should succeed on ValueFlow', function (done) {
+        var pluginName = 'AdmImporter',
+            testPoint = '/1007576016/1659905525',
             expectedSuccess = true,
-            assetHash = '1b40c20526b7eb0c454abc0f5bd6bc3d3e864e54';
+            bc = newBlobClient();
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
-            projectName: projectName,
-            pluginName: pluginName,
-            activeNode: testPoint,
-            pluginConfig: { admFile: assetHash }
-        }, function (err, result) {
-            chai.expect(err).to.equal(null);
-            chai.expect(result.getSuccess()).to.equal(expectedSuccess);
-            done();
+        bc.putFile("ValueFlow.adm", admTemplates['ValueFlow.adm'], function(err, hash) {
+            if (err) {
+                return done(err);
+            }
+            webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+                projectName: projectName,
+                pluginName: pluginName,
+                activeNode: testPoint,
+                pluginConfig: { admFile: hash }
+            }, function (err, result) {
+                chai.expect(err).to.equal(null);
+                chai.expect(result.getSuccess()).to.equal(expectedSuccess);
+                done();
+            });
         });
     });
 
