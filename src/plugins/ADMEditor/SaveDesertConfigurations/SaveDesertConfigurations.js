@@ -137,6 +137,7 @@ define( [ 'plugin/PluginConfig',
         var self = this,
             i,
             configData,
+            aa,
             configNode;
         for ( i = 0; i < configurations.length; i += 1 ) {
             configData = configurations[ i ];
@@ -145,7 +146,8 @@ define( [ 'plugin/PluginConfig',
                 base: MetaTypes.DesertConfiguration
             } );
             self.core.setAttribute( configNode, 'name', configData.name );
-            self.core.setAttribute( configNode, 'AlternativeAssignment', JSON.stringify( configData.alternativeAssignments ) );
+            aa = JSON.stringify( configData.alternativeAssignments );
+            self.core.setAttribute( configNode, 'AlternativeAssignments', aa );
         }
 
     };

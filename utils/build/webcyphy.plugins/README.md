@@ -1,8 +1,8 @@
 # Building guidelines
 
-## webcyphy.plugins.build   
+## webcyphy.plugins.build
 
-   * !!! webcyphy.plugins.build.js is currently not generated automatically so please whenever you make update to the project, recreate it !!!
+   * webcyphy.plugins.build.js is currently not generated automatically during npm updates so whenever you update libraries run it.
    * The makefile to build webcyphy.plugins.build.js is build\cbuild.js. To build you have to use the requirejs's optimizer with the cbuild.js make file.
 ```
     //example executing from build directory - works on 

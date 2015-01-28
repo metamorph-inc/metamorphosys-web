@@ -57,7 +57,8 @@ angular.module( 'CyPhyApp' )
         //    }).then(
         future = ( function ( projectName ) {
             return dataStoreService.connectToDatabase( databaseId, {
-                host: window.location.basename
+                host: window.location.basename,
+                storageKeyType: "rand160bytes"
             } )
                 .then( function () {
                     // select default project and branch (master)
@@ -139,7 +140,6 @@ angular.module( 'CyPhyApp' )
         var setattr = function (c) {
             log('set');
 
-            value.setAttribute('Value', Math.random() * 10000);
             var deferred = $q.defer();
             value.onUpdate(function () {
                     count++; log("done " + count);
@@ -151,6 +151,7 @@ angular.module( 'CyPhyApp' )
                     log( 'PHANTOM DONE' );
                     deferred.resolve(null);
                 });
+            value.setAttribute('Value', Math.random() * 10000);
             return deferred.promise;
         }
         future.then(setattr);

@@ -582,16 +582,13 @@ define( [ 'plugin/PluginConfig',
                         valueInfo.value = getValueText( avmPropValueExpression.AssignedValue );
                     }
                     if ( avmPropValueExpression.hasOwnProperty( 'Default' ) ) {
-                        valueInfo.
-                        default = getValueText( avmPropValueExpression.Default );
+                        valueInfo.default = getValueText( avmPropValueExpression.Default );
                     } else {
-                        valueInfo.
-                        default = valueInfo.value;
+                        valueInfo.default = valueInfo.value;
                     }
                 } else if ( valueType === 'avm:FixedValue' ) {
                     valueInfo.value = getValueText( avmPropValueExpression );
-                    valueInfo.
-                    default = valueInfo.value;
+                    valueInfo.default = valueInfo.value;
                 } else if ( valueType === 'avm:DerivedValue' ) {
                     if ( avmValueObject.hasOwnProperty( '@ID' ) ) {
                         dstId = avmValueObject[ '@ID' ];
@@ -744,7 +741,7 @@ define( [ 'plugin/PluginConfig',
                 } else if ( contentType === 'object' && contentName.indexOf( '.zip' ) > -1 ) {
                     single = true;
                 } else {
-                    var msg = 'Uploaded file "' + contentName + '" was not valid.';
+                    var msg = 'Uploaded file "' + contentName + '" must be a .zip';
                     self.createMessage( self.activeNode, msg, 'error' );
                     self.logger.error( msg );
                     getAcmCallback( msg );
@@ -767,6 +764,10 @@ define( [ 'plugin/PluginConfig',
                         numberAcmFiles,
                         acmJson;
 
+                    if (zipFile.file( /\.zip$/).length === 0 && zipFile.file( /\.acm$/).length) {
+                        single = true; // support complex blobs with acm files
+                    }
+
                     if ( single ) {
                         acmJson = self.getAcmJsonFromZip( zipFile, contentName );
 
@@ -778,7 +779,7 @@ define( [ 'plugin/PluginConfig',
 
                     } else if ( multi ) {
 
-                        acmObjects = zipFile.file( /\.zip/ );
+                        acmObjects = zipFile.file( /\.zip$/ );
                         numberAcmFiles = acmObjects.length;
 
                         for ( var i = 0; i < numberAcmFiles; i += 1 ) {
@@ -810,7 +811,7 @@ define( [ 'plugin/PluginConfig',
         var self = this,
             converterResult,
             acmName = acmZipName.split( '.' )[ 0 ],
-            acmXml = acmZip.file( /\.acm/ ),
+            acmXml = acmZip.file( /\.acm$/ ),
             msg;
 
         if ( acmXml.length === 1 ) {
