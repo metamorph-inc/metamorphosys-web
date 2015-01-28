@@ -117,7 +117,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         {
                             diagramId: diagram.id,
                             components: components,
-                            message: message
+                            message: message,
+                            primaryTarget: dragTargetsDescriptor.primaryTarget
                         });
 
                     //$scope.$emit('wiresChange', {

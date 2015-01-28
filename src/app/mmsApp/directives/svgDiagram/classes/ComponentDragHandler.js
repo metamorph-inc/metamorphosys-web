@@ -129,7 +129,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
     onComponentMouseDown = function (component, $event) {
 
         var componentsToDrag,
-            getDragDescriptor;
+            getDragDescriptor,
+            primaryTargetDescriptor;
 
         componentsToDrag = [];
 
@@ -159,8 +160,11 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
             $event.stopPropagation();
 
+            primaryTargetDescriptor = getDragDescriptor(component);
+
             possibbleDragTargetsDescriptor = {
-                targets: [getDragDescriptor(component)]
+                primaryTarget: primaryTargetDescriptor,
+                targets: [ primaryTargetDescriptor ]
             };
 
             componentsToDrag.push(component);

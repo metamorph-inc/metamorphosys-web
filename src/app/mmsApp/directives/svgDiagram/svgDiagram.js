@@ -8,13 +8,17 @@ require('../componentWire/componentWire.js');
 
 require('./operations/moveComponents.js');
 require('./operations/rotateComponents.js');
+require('./operations/moveWires.js');
 
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire',
+
     'mms.designVisualization.operationsManager',
     'mms.designVisualization.operations.moveComponents',
     'mms.designVisualization.operations.rotateComponents',
+    'mms.designVisualization.operations.moveWire',
+
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
