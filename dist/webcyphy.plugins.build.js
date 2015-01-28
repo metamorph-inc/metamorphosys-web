@@ -11423,9 +11423,10 @@ define( 'plugin/AdmExporter/AdmExporter/AdmExporter',[
 
     AdmExporter.prototype.getPositionUInt32 = function ( node ) {
         var pos = this.core.getRegistry( node, 'position' );
-        return { x: Math.min(pos.x >>> 0, Math.pow(2, 31) - 1), // make UInt32 ∩ Int32
-                 y: Math.min(pos.y >>> 0, Math.pow(2, 31) - 1)
-                 };
+        return {
+            x: Math.min( pos.x >>> 0, Math.pow( 2, 31 ) - 1 ), // make UInt32 ∩ Int32
+            y: Math.min( pos.y >>> 0, Math.pow( 2, 31 ) - 1 )
+        };
     };
 
     /**
@@ -13742,19 +13743,22 @@ define( 'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',[ 'plugin/Plugi
         filesToAdd[ 'execute.py' ] = self.exec_py;
         executorConfig = JSON.stringify( {
             cmd: 'run_execution.cmd',
-            resultArtifacts: [ {
-                name: 'dashboard',
-                resultPatterns: [ 'dashboard/**', 'designs/**', 'design-space/**', 'requirements/**',
-                    'test-benches/**', 'results/*/testbench_manifest.json',
-                    'results/results.metaresults.json',
-                    'manifest.project.json', 'index.html', '*.svg'
-                ]
-            }, {
+            resultArtifacts: [
+            //    {
+            //    name: 'dashboard',
+            //    resultPatterns: [ 'dashboard/**', 'designs/**', 'design-space/**', 'requirements/**',
+            //        'test-benches/**', 'results/*/testbench_manifest.json',
+            //        'results/results.metaresults.json',
+            //        'manifest.project.json', 'index.html', '*.svg'
+            //    ]
+            //},
+            {
                 name: 'logs',
                 resultPatterns: [ 'log/**', '_FAILED.txt' ]
             }, {
                 name: 'all',
-                resultPatterns: []
+            // resultPatterns: [ 'results/', 'log/**', '_FAILED.txt']
+                resultPatterns: [ 'results/*brd', 'results/*png', 'log/**', 'results/*/log/*', '_FAILED.txt']
             }, {
                 name: 'testBenchManifest',
                 resultPatterns: [ 'results/*/testbench_manifest.json' ]
@@ -13832,7 +13836,9 @@ define( 'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',[ 'plugin/Plugi
                         callback( null, false );
                         return;
                     }
-                    self.core.setAttribute( testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard );
+                    if (jInfo.resultHashes.dashboard) {
+                        self.core.setAttribute( testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard );
+                    }
                     // Save data that is needed for storing data result node.
                     self.resultsData = {
                         cfgAdm: jInfo.resultHashes.cfgAdm,

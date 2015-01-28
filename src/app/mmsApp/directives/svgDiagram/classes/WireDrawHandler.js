@@ -138,11 +138,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
     onDiagramMouseUp = function() {
 
         if ( wireStart ) {
-
             addCornerToNewWireLine();
-
-        } else {
-            $scope.diagram.state.selectedComponentIds = [];
         }
 
     };

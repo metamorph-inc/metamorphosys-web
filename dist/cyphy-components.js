@@ -4103,7 +4103,8 @@ angular.module( 'cyphy.components' )
                                 db: context.db,
                                 regionId: context.regionId + '_watchTestBenches'
                             },
-                            testBench: item
+                            testBench: item,
+                            modal: $modal
                         },
                         action: testBenchService.editTestBenchFn
                     } ]
@@ -4116,7 +4117,8 @@ angular.module( 'cyphy.components' )
                         actionData: {
                             id: item.id,
                             name: item.title,
-                            context: context
+                            context: context,
+                            modal: $modal
                         },
                         action: testBenchService.deleteFn
                     } ]
@@ -6815,9 +6817,12 @@ angular.module('cyphy.services')
 
                     }
 
-                    if (newRotation !== child.rotation) {
+                    if ( newRotation !== child.rotation ) {
 
                         child.rotation = newRotation;
+
+                        hadChanges = true;
+                        updateType = 'rotationChange';
 
                         hadChanges = true;
                         updateType = 'rotationChange';
@@ -8518,13 +8523,13 @@ angular.module( 'cyphy.services' )
  */
 
 angular.module( 'cyphy.services' )
-    .service( 'testBenchService', function ( $q, $timeout, $modal, nodeService, baseCyPhyService, pluginService ) {
+    .service( 'testBenchService', function ( $q, $timeout, nodeService, baseCyPhyService, pluginService ) {
         'use strict';
         var self = this,
             watchers = {};
 
         this.editTestBenchFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/TestBenchEdit.html',
                 controller: 'TestBenchEditController',
                 //size: size,
@@ -8560,7 +8565,7 @@ angular.module( 'cyphy.services' )
         };
 
         this.deleteFn = function ( data ) {
-            var modalInstance = $modal.open( {
+            var modalInstance = data.modal.open( {
                 templateUrl: '/cyphy-components/templates/SimpleModal.html',
                 controller: 'SimpleModalController',
                 resolve: {
@@ -8652,38 +8657,22 @@ angular.module( 'cyphy.services' )
                 data = {
                     regionId: regionId,
                     meta: null, // META nodes - needed when creating new nodes...
-                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>}
+                    testBench: {} // {id: <string>, name: <string>, description: <string>, node <NodeObj>,
+                    //  tlsutId: <string>, path: <string>, results: <string>, file: <string>}
                 },
                 onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        newPath = this.getAttribute( 'ID' ),
-                        newResults = this.getAttribute( 'Results' ),
-                        newFiles = this.getAttribute( 'TestBenchFiles' ),
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO',
+                        path: 'ID',
+                        results: 'Results',
+                        file: 'TestBenchFiles'
+                    },
                         newTlsut = this.getPointer( 'TopLevelSystemUnderTest' )
                             .to,
-                        hadChanges = false,
-                        tlsutChanged = false;
-                    if ( newName !== data.testBench.name ) {
-                        data.testBench.name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.testBench.description ) {
-                        data.testBench.description = newDesc;
-                        hadChanges = true;
-                    }
-                    if ( newPath !== data.testBench.path ) {
-                        data.testBench.path = newPath;
-                        hadChanges = true;
-                    }
-                    if ( newResults !== data.testBench.results ) {
-                        data.testBench.results = newResults;
-                        hadChanges = true;
-                    }
-                    if ( newFiles !== data.testBench.files ) {
-                        data.testBench.files = newFiles;
-                        hadChanges = true;
-                    }
+                        tlsutChanged = false,
+                        hadChanges = self.checkForAttributeUpdates( data.testBench, this, keyToAttr );
+
                     if ( newTlsut !== data.testBench.tlsutId ) {
                         data.testBench.tlsutId = newTlsut;
                         hadChanges = true;
@@ -8757,52 +8746,44 @@ angular.module( 'cyphy.services' )
                     testBenches: {} // testBench {id: <string>, name: <string>, description: <string>,
                     //            path: <string>, results: <hash|string>, files: <hash|string> }
                 },
-                onUpdate = function ( id ) {
-                    var newName = this.getAttribute( 'name' ),
-                        newDesc = this.getAttribute( 'INFO' ),
-                        newPath = this.getAttribute( 'ID' ),
-                        newResults = this.getAttribute( 'Results' ),
-                        newFiles = this.getAttribute( 'TestBenchFiles' ),
-                        hadChanges = false;
-                    if ( newName !== data.testBenches[ id ].name ) {
-                        data.testBenches[ id ].name = newName;
-                        hadChanges = true;
-                    }
-                    if ( newDesc !== data.testBenches[ id ].description ) {
-                        data.testBenches[ id ].description = newDesc;
-                        hadChanges = true;
-                    }
-                    if ( newPath !== data.testBenches[ id ].path ) {
-                        data.testBenches[ id ].path = newPath;
-                        hadChanges = true;
-                    }
-                    if ( newResults !== data.testBenches[ id ].results ) {
-                        data.testBenches[ id ].results = newResults;
-                        hadChanges = true;
-                    }
-                    if ( newFiles !== data.testBenches[ id ].files ) {
-                        data.testBenches[ id ].files = newFiles;
-                        hadChanges = true;
-                    }
-                    if ( hadChanges ) {
-                        $timeout( function () {
-                            updateListener( {
-                                id: id,
-                                type: 'update',
-                                data: data.testBenches[ id ]
-                            } );
+                triggerUpdateListener = function ( id, data, eventType ) {
+                    $timeout( function () {
+                        updateListener( {
+                            id: id,
+                            data: data,
+                            type: eventType
                         } );
+                    } );
+                },
+                addNewTestBench = function ( id, node ) {
+                    data.testBenches[ id ] = {
+                        id: id,
+                        name: node.getAttribute( 'name' ),
+                        description: node.getAttribute( 'INFO' ),
+                        path: node.getAttribute( 'ID' ),
+                        results: node.getAttribute( 'Results' ),
+                        files: node.getAttribute( 'TestBenchFiles' )
+                    };
+                    node.onUnload( onUnload );
+                    node.onUpdate( onUpdate );
+                },
+                onUpdate = function ( id ) {
+                    var keyToAttr = {
+                        name: 'name',
+                        description: 'INFO',
+                        path: 'ID',
+                        results: 'Results',
+                        file: 'TestBenchFiles'
+                    },
+                        hadChanges = self.checkForAttributeUpdates( data.testBenches[ id ], this, keyToAttr );
+
+                    if ( hadChanges ) {
+                        triggerUpdateListener( id, data.testBenches[ id ], 'update' );
                     }
                 },
                 onUnload = function ( id ) {
                     delete data.testBenches[ id ];
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: 'unload',
-                            data: null
-                        } );
-                    } );
+                    triggerUpdateListener( id, null, 'unload' );
                 },
                 watchFromFolderRec = function ( folderNode, meta ) {
                     var recDeferred = $q.defer();
@@ -8818,16 +8799,7 @@ angular.module( 'cyphy.services' )
                                     queueList.push( watchFromFolderRec( childNode, meta ) );
                                 } else if ( childNode.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = childNode.getId();
-                                    data.testBenches[ testBenchId ] = {
-                                        id: testBenchId,
-                                        name: childNode.getAttribute( 'name' ),
-                                        description: childNode.getAttribute( 'INFO' ),
-                                        path: childNode.getAttribute( 'ID' ),
-                                        results: childNode.getAttribute( 'Results' ),
-                                        files: childNode.getAttribute( 'TestBenchFiles' )
-                                    };
-                                    childNode.onUnload( onUnload );
-                                    childNode.onUpdate( onUpdate );
+                                    addNewTestBench( testBenchId, childNode );
                                 }
                             }
 
@@ -8836,23 +8808,9 @@ angular.module( 'cyphy.services' )
                                     watchFromFolderRec( newChild, meta );
                                 } else if ( newChild.isMetaTypeOf( meta.byName.AVMTestBenchModel ) ) {
                                     testBenchId = newChild.getId();
-                                    data.testBenches[ testBenchId ] = {
-                                        id: testBenchId,
-                                        name: newChild.getAttribute( 'name' ),
-                                        description: newChild.getAttribute( 'INFO' ),
-                                        path: newChild.getAttribute( 'ID' ),
-                                        results: newChild.getAttribute( 'Results' ),
-                                        files: newChild.getAttribute( 'TestBenchFiles' )
-                                    };
-                                    newChild.onUnload( onUnload );
-                                    newChild.onUpdate( onUpdate );
-                                    $timeout( function () {
-                                        updateListener( {
-                                            id: testBenchId,
-                                            type: 'load',
-                                            data: data.testBenches[ testBenchId ]
-                                        } );
-                                    } );
+                                    addNewTestBench( testBenchId, newChild );
+                                    triggerUpdateListener( testBenchId, data.testBenches[ testBenchId ],
+                                        'load' );
                                 }
                             } );
                             if ( queueList.length === 0 ) {
@@ -8968,6 +8926,10 @@ angular.module( 'cyphy.services' )
                 } );
 
             return deferred.promise;
+        };
+
+        this.checkForAttributeUpdates = function ( data, node, keyToAttr ) {
+            return baseCyPhyService.checkForAttributeUpdates( data, node, keyToAttr );
         };
 
         /**
