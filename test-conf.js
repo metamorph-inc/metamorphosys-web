@@ -9,6 +9,7 @@
 var PATH = require('path');
 
 var CONFIG = require('./config.json');
+CONFIG.mongodatabase = 'CyPhyFunctional';
 var webgme = require('webgme');
 var requirejs = global.WebGMEGlobal.requirejs;
 CONFIG.loglevel = 0;
