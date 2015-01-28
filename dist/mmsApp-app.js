@@ -2710,12 +2710,17 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
     finishDrag = function () {
 
-        moveOperation.commit();
-        moveOperation = null;
 
-        self.dragging = false;
+        if (angular.isObject(moveOperation)) {
 
-        $log.debug('Finish dragging');
+            moveOperation.commit();
+            moveOperation = null;
+
+            self.dragging = false;
+
+            $log.debug('Finish dragging');
+
+        }
 
     };
 
@@ -2741,22 +2746,20 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (moveOperation) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onDiagramMouseLeave = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
     onWindowBlur = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
@@ -2764,10 +2767,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (moveOperation) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
@@ -3958,7 +3959,9 @@ module.exports = function ($rootScope, wiringService, gridService, $timeout) {
         var dragTargetsDescriptor,
             dragTargetsWiresUpdate,
             wireUpdateWait,
-            dragTargetsWiresUpdatePromises;
+            dragTargetsWiresUpdatePromises,
+
+            diagram;
 
         wireUpdateWait = 20;
         dragTargetsWiresUpdatePromises = {};
@@ -3978,10 +3981,9 @@ module.exports = function ($rootScope, wiringService, gridService, $timeout) {
         };
 
 
-        this.init = function (diagram, component) {
-
-            this.diagram = diagram;
-            this.component = component;
+        this.init = function (aDiagram, possibleDragTargetDescriptor) {
+            diagram = aDiagram;
+            dragTargetsDescriptor = possibleDragTargetDescriptor;
         };
 
         this.set = function (offset) {
@@ -4053,7 +4055,7 @@ module.exports = function ($rootScope, wiringService, gridService, $timeout) {
             }
 
             $rootScope.$emit('componentsPositionChange', {
-                diagramId: this.diagram.id,
+                diagramId: diagram.id,
                 components: components,
                 message: message
             });

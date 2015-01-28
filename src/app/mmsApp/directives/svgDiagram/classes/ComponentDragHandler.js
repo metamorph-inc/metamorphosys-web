@@ -64,12 +64,17 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
     finishDrag = function () {
 
-        moveOperation.commit();
-        moveOperation = null;
 
-        self.dragging = false;
+        if (angular.isObject(moveOperation)) {
 
-        $log.debug('Finish dragging');
+            moveOperation.commit();
+            moveOperation = null;
+
+            self.dragging = false;
+
+            $log.debug('Finish dragging');
+
+        }
 
     };
 
@@ -95,22 +100,20 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (moveOperation) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 
     onDiagramMouseLeave = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
     onWindowBlur = function (/*$event*/) {
 
-        cancelDrag();
+        finishDrag();
 
     };
 
@@ -118,10 +121,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         possibbleDragTargetsDescriptor = null;
 
-        if (moveOperation) {
-            finishDrag();
-            $event.stopPropagation();
-        }
+        finishDrag();
+        $event.stopPropagation();
 
     };
 

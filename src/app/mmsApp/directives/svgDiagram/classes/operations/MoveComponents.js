@@ -31,8 +31,9 @@ module.exports = function ($rootScope, wiringService, gridService, $timeout) {
         };
 
 
-        this.init = function (aDiagram) {
+        this.init = function (aDiagram, possibleDragTargetDescriptor) {
             diagram = aDiagram;
+            dragTargetsDescriptor = possibleDragTargetDescriptor;
         };
 
         this.set = function (offset) {
