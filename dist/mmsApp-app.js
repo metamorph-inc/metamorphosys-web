@@ -2686,7 +2686,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         self.dragging = true;
 
-        moveOperation = operationsManager.initNew('moveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
+        moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
         $log.debug('Dragging', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;
@@ -3736,7 +3736,7 @@ module.exports = function (
 
                             var operation;
 
-                            operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
+                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(90);
                             operation.commit();
                         }
@@ -3751,7 +3751,7 @@ module.exports = function (
 
                             console.log('Rotating anti-clockwise');
 
-                            operation = operationsManager.initNew('rotateComponents', $scope.diagram, component);
+                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(-90);
                             operation.commit();
 
@@ -3948,211 +3948,222 @@ module.exports = function (
 
 'use strict';
 
-module.exports = function ($rootScope, wiringService, gridService, $timeout) {
+angular.module('mms.designVisualization.operations.moveComponents', [])
 
-    return function () {
+    .run(function (operationsManager, $rootScope, wiringService, gridService, $timeout) {
 
-        var dragTargetsDescriptor,
-            dragTargetsWiresUpdate,
-            wireUpdateWait,
-            dragTargetsWiresUpdatePromises,
+        operationsManager.registerOperation({
+            id: 'MoveComponents',
+            operationClass: function () {
 
-            diagram;
+                var dragTargetsDescriptor,
+                    dragTargetsWiresUpdate,
+                    wireUpdateWait,
+                    dragTargetsWiresUpdatePromises,
 
-        wireUpdateWait = 20;
-        dragTargetsWiresUpdatePromises = {};
+                    diagram;
 
-        dragTargetsWiresUpdate = function (affectedWires) {
+                wireUpdateWait = 20;
+                dragTargetsWiresUpdatePromises = {};
 
-            angular.forEach(affectedWires, function (wire) {
+                dragTargetsWiresUpdate = function (affectedWires) {
 
-                $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
+                    angular.forEach(affectedWires, function (wire) {
 
-                dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
-                    wiringService.adjustWireEndSegments(wire);
-                }, wireUpdateWait);
+                        $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
 
-            });
+                        dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
+                            wiringService.adjustWireEndSegments(wire);
+                        }, wireUpdateWait);
 
-        };
-
-
-        this.init = function (aDiagram, possibleDragTargetDescriptor) {
-            diagram = aDiagram;
-            dragTargetsDescriptor = possibleDragTargetDescriptor;
-        };
-
-        this.set = function (offset) {
-
-            var i,
-                target,
-                snappedPosition;
-
-            for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
-
-                target = dragTargetsDescriptor.targets[i];
-
-                snappedPosition = gridService.getSnappedPosition(
-                    {
-                        x: offset.x + target.deltaToCursor.x,
-                        y: offset.y + target.deltaToCursor.y
                     });
 
-                target.component.setPosition(
-                    snappedPosition.x,
-                    snappedPosition.y
-                );
+                };
 
+
+                this.init = function (aDiagram, possibleDragTargetDescriptor) {
+                    diagram = aDiagram;
+                    dragTargetsDescriptor = possibleDragTargetDescriptor;
+                };
+
+                this.set = function (offset) {
+
+                    var i,
+                        target,
+                        snappedPosition;
+
+                    for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
+
+                        target = dragTargetsDescriptor.targets[i];
+
+                        snappedPosition = gridService.getSnappedPosition(
+                            {
+                                x: offset.x + target.deltaToCursor.x,
+                                y: offset.y + target.deltaToCursor.y
+                            });
+
+                        target.component.setPosition(
+                            snappedPosition.x,
+                            snappedPosition.y
+                        );
+
+                    }
+
+                    dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
+
+                };
+
+                this.cancel = function () {
+
+                    if (angular.isObject(dragTargetsDescriptor)) {
+
+                        angular.forEach(dragTargetsDescriptor.targets, function (target) {
+
+                            target.component.setPosition(
+                                target.originalPosition.x,
+                                target.originalPosition.y
+                            );
+
+                        });
+
+                        angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+
+                            wiringService.adjustWireEndSegments(wire);
+
+                        });
+
+                        dragTargetsDescriptor = null;
+
+                    }
+
+                };
+
+                this.commit = function () {
+
+                    var message,
+                        components;
+
+                    components = dragTargetsDescriptor.targets.map(
+                        function (target) {
+                            return target.component;
+                        });
+
+                    if (components.length > 1) {
+                        message = 'Dragging selection';
+                    } else {
+                        message = 'Dragging ' + components[0].label;
+                    }
+
+                    $rootScope.$emit('componentsPositionChange', {
+                        diagramId: diagram.id,
+                        components: components,
+                        message: message
+                    });
+
+                    if (angular.isFunction(ga)) {
+                        ga('send', 'event', 'component', 'drag', components[0].label);
+                    }
+
+                    //$scope.$emit('wiresChange', {
+                    //    diagramId: $scope.diagram.id,
+                    //    wires: dragTargetsDescriptor.affectedWires
+                    //});
+
+                };
             }
+        });
 
-            dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
-
-        };
-
-        this.cancel = function () {
-
-            if (angular.isObject(dragTargetsDescriptor)) {
-
-                angular.forEach(dragTargetsDescriptor.targets, function (target) {
-
-                    target.component.setPosition(
-                        target.originalPosition.x,
-                        target.originalPosition.y
-                    );
-
-                });
-
-                angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
-
-                    wiringService.adjustWireEndSegments(wire);
-
-                });
-
-                dragTargetsDescriptor = null;
-
-            }
-
-        };
-
-        this.commit = function () {
-
-            var message,
-                components;
-
-            components = dragTargetsDescriptor.targets.map(
-                function (target) {
-                    return target.component;
-                });
-
-            if (components.length > 1) {
-                message = 'Dragging selection';
-            } else {
-                message = 'Dragging ' + components[0].label;
-            }
-
-            $rootScope.$emit('componentsPositionChange', {
-                diagramId: diagram.id,
-                components: components,
-                message: message
-            });
-
-            if (angular.isFunction(ga)) {
-                ga('send', 'event', 'component', 'drag', components[0].label);
-            }
-
-            //$scope.$emit('wiresChange', {
-            //    diagramId: $scope.diagram.id,
-            //    wires: dragTargetsDescriptor.affectedWires
-            //});
-
-        };
-    };
-
-};
+    });
 
 },{}],29:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
 
-module.exports =  function($rootScope, wiringService) {
+angular.module('mms.designVisualization.operations.rotateComponents', [])
 
-    return function() {
+    .run(function (operationsManager, $rootScope, wiringService) {
 
-        this.init = function (diagram, component) {
+        operationsManager.registerOperation({
+            id: 'RotateComponents',
+            operationClass: function () {
 
-            this.diagram = diagram;
-            this.component = component;
-        };
+                var diagram,
+                    angle;
 
-        this.set = function (angle) {
-            this.angle = angle;
-        };
+                this.init = function (aDiagram, component) {
 
-        this.commit = function () {
+                    diagram = aDiagram;
+                    this.component = component;
+                };
 
-            var componentsToRotate,
-                component,
-                angle,
-                affectedWires,
-                message;
+                this.set = function (anAngle) {
+                    angle = anAngle;
+                };
 
-            componentsToRotate = [];
+                this.commit = function () {
 
-            component = this.component;
-            angle = this.angle;
+                    var componentsToRotate,
+                        component,
+                        affectedWires,
+                        message;
 
-            componentsToRotate.push(this.component);
+                    componentsToRotate = [];
 
-            if (this.diagram.state.selectedComponentIds.indexOf(this.component.id) > -1) {
+                    component = this.component;
 
-                angular.forEach(this.diagram.state.selectedComponentIds, function (selectedComponentId) {
+                    componentsToRotate.push(this.component);
 
-                    var selectedComponent;
+                    if (diagram.state.selectedComponentIds.indexOf(this.component.id) > -1) {
 
-                    if (component.id !== selectedComponentId) {
+                        angular.forEach(diagram.state.selectedComponentIds, function (selectedComponentId) {
 
-                        selectedComponent = this.diagram.componentsById   [selectedComponentId];
+                            var selectedComponent;
 
-                        componentsToRotate.push(selectedComponent);
+                            if (component.id !== selectedComponentId) {
 
+                                selectedComponent = diagram.componentsById   [selectedComponentId];
+
+                                componentsToRotate.push(selectedComponent);
+
+                            }
+
+                        });
                     }
 
-                });
+                    affectedWires = diagram.getWiresForComponents(
+                        componentsToRotate
+                    );
+
+                    angular.forEach(componentsToRotate, function (component) {
+                        component.rotate(angle);
+                    });
+
+
+                    angular.forEach(affectedWires, function (wire) {
+                        wiringService.adjustWireEndSegments(wire);
+                    });
+
+                    if (componentsToRotate.length > 1) {
+                        message = 'Rotating selection by ' + angle + 'deg';
+                    } else {
+                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                    }
+
+                    $rootScope.$emit('componentsRotationChange', {
+                        diagramId: diagram.id,
+                        components: componentsToRotate,
+                        message: message
+                    });
+
+                    if (angular.isFunction(ga)) {
+                        ga('send', 'event', 'component', 'rotate', component.id);
+                    }
+
+                };
             }
-
-            affectedWires = this.diagram.getWiresForComponents(
-                componentsToRotate
-            );
-
-            angular.forEach(componentsToRotate, function (component) {
-                component.rotate(angle);
-            });
-
-
-            angular.forEach(affectedWires, function (wire) {
-                wiringService.adjustWireEndSegments(wire);
-            });
-
-            if (componentsToRotate.length > 1) {
-                message = 'Rotating selection by ' + angle + 'deg';
-            } else {
-                message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
-            }
-
-            $rootScope.$emit('componentsRotationChange', {
-                diagramId: this.diagram.id,
-                components: componentsToRotate,
-                message: message
-            });
-
-            if (angular.isFunction(ga)) {
-                ga('send', 'event', 'component', 'rotate', component.id);
-            }
-
-        };
-    };
-};
+        });
+    });
 
 },{}],30:[function(require,module,exports){
 /*globals angular, $*/
@@ -4163,10 +4174,15 @@ module.exports =  function($rootScope, wiringService) {
 
 require('../componentWire/componentWire.js');
 
+require('./classes/operations/MoveComponents.js');
+require('./classes/operations/RotateComponents.js');
+
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire',
     'mms.designVisualization.operationsManager',
+    'mms.designVisualization.operations.moveComponents',
+    'mms.designVisualization.operations.rotateComponents',
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
@@ -4190,9 +4206,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             contextMenuHandler,
 
             componentElements,
-
-            ComponentRotator = require('./classes/operations/RotateComponents.js'),
-            ComponentMover = require('./classes/operations/MoveComponents.js'),
 
             $$window;
 
@@ -4249,17 +4262,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
-        // Setting up operations
-
-        operationsManager.registerOperation({
-            id: 'rotateComponents',
-            operationClass: new ComponentRotator($rootScope, wiringService)
-        });
-
-        operationsManager.registerOperation({
-            id: 'moveComponents',
-            operationClass: new ComponentMover($rootScope, wiringService, gridService, $timeout)
-        });
 
         //
 
@@ -7643,14 +7645,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
 
             OperationsManager = function () {
 
-                this.registerOperation = function (operationDescriptor) {
-
-                    if (angular.isObject(operationDescriptor) &&
-                        angular.isString(operationDescriptor.id)) {
-                        availableOperations[ operationDescriptor.id ] = operationDescriptor.operationClass;
-                    }
-
-                };
+                this.registerOperation = self.registerOperation;
 
                 this.getAvailableOperations = function () {
                     return availableOperations;
@@ -7683,6 +7678,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
         }
     ];
 });
+
 },{}],53:[function(require,module,exports){
 /*globals angular */
 

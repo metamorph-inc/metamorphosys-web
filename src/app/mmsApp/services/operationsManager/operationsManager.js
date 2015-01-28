@@ -29,14 +29,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
 
             OperationsManager = function () {
 
-                this.registerOperation = function (operationDescriptor) {
-
-                    if (angular.isObject(operationDescriptor) &&
-                        angular.isString(operationDescriptor.id)) {
-                        availableOperations[ operationDescriptor.id ] = operationDescriptor.operationClass;
-                    }
-
-                };
+                this.registerOperation = self.registerOperation;
 
                 this.getAvailableOperations = function () {
                     return availableOperations;

@@ -2,81 +2,87 @@
 
 'use strict';
 
-module.exports =  function($rootScope, wiringService) {
+angular.module('mms.designVisualization.operations.rotateComponents', [])
 
-    return function() {
+    .run(function (operationsManager, $rootScope, wiringService) {
 
-        this.init = function (diagram, component) {
+        operationsManager.registerOperation({
+            id: 'RotateComponents',
+            operationClass: function () {
 
-            this.diagram = diagram;
-            this.component = component;
-        };
+                var diagram,
+                    angle;
 
-        this.set = function (angle) {
-            this.angle = angle;
-        };
+                this.init = function (aDiagram, component) {
 
-        this.commit = function () {
+                    diagram = aDiagram;
+                    this.component = component;
+                };
 
-            var componentsToRotate,
-                component,
-                angle,
-                affectedWires,
-                message;
+                this.set = function (anAngle) {
+                    angle = anAngle;
+                };
 
-            componentsToRotate = [];
+                this.commit = function () {
 
-            component = this.component;
-            angle = this.angle;
+                    var componentsToRotate,
+                        component,
+                        affectedWires,
+                        message;
 
-            componentsToRotate.push(this.component);
+                    componentsToRotate = [];
 
-            if (this.diagram.state.selectedComponentIds.indexOf(this.component.id) > -1) {
+                    component = this.component;
 
-                angular.forEach(this.diagram.state.selectedComponentIds, function (selectedComponentId) {
+                    componentsToRotate.push(this.component);
 
-                    var selectedComponent;
+                    if (diagram.state.selectedComponentIds.indexOf(this.component.id) > -1) {
 
-                    if (component.id !== selectedComponentId) {
+                        angular.forEach(diagram.state.selectedComponentIds, function (selectedComponentId) {
 
-                        selectedComponent = this.diagram.componentsById   [selectedComponentId];
+                            var selectedComponent;
 
-                        componentsToRotate.push(selectedComponent);
+                            if (component.id !== selectedComponentId) {
 
+                                selectedComponent = diagram.componentsById   [selectedComponentId];
+
+                                componentsToRotate.push(selectedComponent);
+
+                            }
+
+                        });
                     }
 
-                });
+                    affectedWires = diagram.getWiresForComponents(
+                        componentsToRotate
+                    );
+
+                    angular.forEach(componentsToRotate, function (component) {
+                        component.rotate(angle);
+                    });
+
+
+                    angular.forEach(affectedWires, function (wire) {
+                        wiringService.adjustWireEndSegments(wire);
+                    });
+
+                    if (componentsToRotate.length > 1) {
+                        message = 'Rotating selection by ' + angle + 'deg';
+                    } else {
+                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                    }
+
+                    $rootScope.$emit('componentsRotationChange', {
+                        diagramId: diagram.id,
+                        components: componentsToRotate,
+                        message: message
+                    });
+
+                    if (angular.isFunction(ga)) {
+                        ga('send', 'event', 'component', 'rotate', component.id);
+                    }
+
+                };
             }
-
-            affectedWires = this.diagram.getWiresForComponents(
-                componentsToRotate
-            );
-
-            angular.forEach(componentsToRotate, function (component) {
-                component.rotate(angle);
-            });
-
-
-            angular.forEach(affectedWires, function (wire) {
-                wiringService.adjustWireEndSegments(wire);
-            });
-
-            if (componentsToRotate.length > 1) {
-                message = 'Rotating selection by ' + angle + 'deg';
-            } else {
-                message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
-            }
-
-            $rootScope.$emit('componentsRotationChange', {
-                diagramId: this.diagram.id,
-                components: componentsToRotate,
-                message: message
-            });
-
-            if (angular.isFunction(ga)) {
-                ga('send', 'event', 'component', 'rotate', component.id);
-            }
-
-        };
-    };
-};
+        });
+    });

@@ -40,7 +40,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         self.dragging = true;
 
-        moveOperation = operationsManager.initNew('moveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
+        moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
         $log.debug('Dragging', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;

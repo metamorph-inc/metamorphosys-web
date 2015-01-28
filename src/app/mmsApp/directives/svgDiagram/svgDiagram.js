@@ -6,10 +6,15 @@
 
 require('../componentWire/componentWire.js');
 
+require('./classes/operations/MoveComponents.js');
+require('./classes/operations/RotateComponents.js');
+
 angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire',
     'mms.designVisualization.operationsManager',
+    'mms.designVisualization.operations.moveComponents',
+    'mms.designVisualization.operations.rotateComponents',
     'isis.ui.contextmenu'
 ])
     .controller('SVGDiagramController', function (
@@ -33,9 +38,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             contextMenuHandler,
 
             componentElements,
-
-            ComponentRotator = require('./classes/operations/RotateComponents.js'),
-            ComponentMover = require('./classes/operations/MoveComponents.js'),
 
             $$window;
 
@@ -92,17 +94,6 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
-        // Setting up operations
-
-        operationsManager.registerOperation({
-            id: 'rotateComponents',
-            operationClass: new ComponentRotator($rootScope, wiringService)
-        });
-
-        operationsManager.registerOperation({
-            id: 'moveComponents',
-            operationClass: new ComponentMover($rootScope, wiringService, gridService, $timeout)
-        });
 
         //
 
