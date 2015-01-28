@@ -25,6 +25,7 @@
     "32f297fa-f9ee-df8d-151c-01f19934793e": "647669121",
     "3317c9c6-6c44-1a06-a476-11f77d722b34": "1993805430",
     "386ee9e0-cd9b-25f0-2944-89587dd90484": "982375584",
+    "3e223dbc-998f-e965-9d15-99085fd445ff": "749469140",
     "40339fcc-164f-f128-a43c-00afde9077c1": "228082221",
     "428911c8-137b-2fc7-2388-8266e7aeff44": "385953479",
     "58fcb797-8a06-2976-9632-d281b3c1ddd2": "1045980796",
@@ -34,8 +35,10 @@
     "7415ce26-35a6-0365-89b9-539ed60b8429": "439641945",
     "768a6ddd-0cca-fd2c-253c-065374d55978": "663092595",
     "79f0cc09-f068-284b-5473-efcf5dfa3497": "1949671222",
+    "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": "1669293789",
     "7fd023cc-47ef-948a-a258-14c2d8c612cf": "1659905525",
     "818a8efa-a6d8-47b5-8d1a-c0d8212fd194": "1059726760",
+    "87018874-0598-6ca4-a7b3-4e1dd2bfe926": "236224320",
     "8b1e277e-0f88-a58b-4aff-51c74250671d": "398267330",
     "8e59be89-5899-3619-872d-c2222292cd73": "1671134528",
     "9001f172-4258-ceaa-86e9-f6e80b85853d": "891929219",
@@ -63,6 +66,7 @@
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": "91705197",
     "f0400217-6eb4-dec9-4806-3264e7f90265": "368674801",
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": "126974487",
+    "f26a44de-edb5-57c8-fd0f-242811b7816c": "24011457",
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": "488584186",
     "f9f20885-6316-a7b6-2196-8299f45692ff": "1474284259"
   },
@@ -113,9 +117,12 @@
       "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
       "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
       "3317c9c6-6c44-1a06-a476-11f77d722b34": {},
+      "3e223dbc-998f-e965-9d15-99085fd445ff": {},
       "58fcb797-8a06-2976-9632-d281b3c1ddd2": {},
       "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
       "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
+      "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {},
+      "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {},
       "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
       "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
       "97a00dee-7375-3637-ec08-b62588d4d71d": {},
@@ -134,6 +141,7 @@
       "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {},
       "edf95f43-efbd-5c2c-6384-6ab74c160c17": {},
       "f0508110-9a11-3b6d-ea42-2193bf0485e0": {},
+      "f26a44de-edb5-57c8-fd0f-242811b7816c": {},
       "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {},
       "f9f20885-6316-a7b6-2196-8299f45692ff": {}
     },
@@ -205,6 +213,16 @@
             "SetID": "MetaAspectSet_4d5d204e-f520-ca21-01d9-1a9565f9b9c2",
             "order": 6,
             "title": "Tests"
+          },
+          {
+            "SetID": "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1",
+            "order": 0,
+            "title": "META"
+          },
+          {
+            "SetID": "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35",
+            "order": 7,
+            "title": "LayoutConstraints"
           }
         ],
         "ProjectRegistry": {
@@ -296,6 +314,16 @@
           },
           {
             "attributes": {},
+            "guid": "3e223dbc-998f-e965-9d15-99085fd445ff",
+            "registry": {
+              "position": {
+                "x": 900,
+                "y": 365
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "58fcb797-8a06-2976-9632-d281b3c1ddd2",
             "registry": {
               "position": {
@@ -321,6 +349,26 @@
               "position": {
                 "x": 18,
                 "y": 304
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "79f7f205-38e6-9ca1-0fde-c0ca16f622f7",
+            "registry": {
+              "position": {
+                "x": 291,
+                "y": 539
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "registry": {
+              "position": {
+                "x": 717,
+                "y": 253
               }
             }
           },
@@ -516,6 +564,16 @@
           },
           {
             "attributes": {},
+            "guid": "f26a44de-edb5-57c8-fd0f-242811b7816c",
+            "registry": {
+              "position": {
+                "x": 876,
+                "y": 551
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
             "registry": {
               "position": {
@@ -531,6 +589,18 @@
               "position": {
                 "x": 675,
                 "y": 486
+              }
+            }
+          }
+        ],
+        "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1": [
+          {
+            "attributes": {},
+            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "registry": {
+              "position": {
+                "x": 100,
+                "y": 100
               }
             }
           }
@@ -613,6 +683,68 @@
               "position": {
                 "x": 499,
                 "y": 350
+              }
+            }
+          }
+        ],
+        "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": [
+          {
+            "attributes": {},
+            "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "registry": {
+              "position": {
+                "x": 376,
+                "y": 138
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "3e223dbc-998f-e965-9d15-99085fd445ff",
+            "registry": {
+              "position": {
+                "x": 256,
+                "y": 493
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "79f7f205-38e6-9ca1-0fde-c0ca16f622f7",
+            "registry": {
+              "position": {
+                "x": 527,
+                "y": 495
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "registry": {
+              "position": {
+                "x": 580,
+                "y": 329
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "registry": {
+              "position": {
+                "x": 577,
+                "y": 105
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "f26a44de-edb5-57c8-fd0f-242811b7816c",
+            "registry": {
+              "position": {
+                "x": 775,
+                "y": 490
               }
             }
           }
@@ -2048,6 +2180,7 @@
             "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
             "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
             "97a00dee-7375-3637-ec08-b62588d4d71d",
             "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
             "cb92c02d-84cf-f104-938b-b7de6641f8e5",
@@ -2067,9 +2200,11 @@
             -1,
             -1,
             -1,
+            -1,
             -1
           ],
           "maxItems": [
+            -1,
             -1,
             -1,
             -1,
@@ -2140,6 +2275,70 @@
         }
       },
       "sets": {}
+    },
+    "3e223dbc-998f-e965-9d15-99085fd445ff": {
+      "attributes": {
+        "Layer": "Top",
+        "Rotation": "",
+        "X": null,
+        "Y": null,
+        "name": "ExactLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "Layer": {
+            "default": "Top",
+            "enum": [
+              "Top",
+              "Bottom"
+            ],
+            "type": "string"
+          },
+          "Rotation": {
+            "default": "",
+            "enum": [
+              "0",
+              "90",
+              "180",
+              "270"
+            ],
+            "type": "string"
+          },
+          "X": {
+            "default": null,
+            "type": "float"
+          },
+          "Y": {
+            "default": null,
+            "type": "float"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 746,
+          "y": 258
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "40339fcc-164f-f128-a43c-00afde9077c1": {
       "attributes": {
@@ -2615,6 +2814,60 @@
       },
       "sets": {}
     },
+    "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
+      "attributes": {
+        "LayerRange": "",
+        "XRange": "",
+        "YRange": "",
+        "name": "RangeLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "LayerRange": {
+            "default": "",
+            "enum": [
+              "Top",
+              "Bottom",
+              "Either"
+            ],
+            "type": "string"
+          },
+          "XRange": {
+            "default": "",
+            "type": "string"
+          },
+          "YRange": {
+            "default": "",
+            "type": "string"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      }
+    },
     "7fd023cc-47ef-948a-a258-14c2d8c612cf": {
       "attributes": {},
       "base": "1f35a3aa-321d-359f-7838-242bc2d08ae5",
@@ -2678,6 +2931,53 @@
         }
       },
       "sets": {}
+    },
+    "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
+      "attributes": {
+        "name": "LayoutConstraint"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "pointers": {
+          "ConstraintTarget": {
+            "items": [
+              "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+            ],
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              -1
+            ]
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 838,
+          "y": 163
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "8b1e277e-0f88-a58b-4aff-51c74250671d": {
       "attributes": {
@@ -4095,7 +4395,11 @@
               "Modelica",
               "CAD",
               "Cyber",
-              "Manufacturing"
+              "Manufacturing",
+              "RF",
+              "EDA",
+              "SystemC",
+              "SPICE"
             ],
             "type": "string"
           },
@@ -4243,6 +4547,10 @@
             "default": "",
             "type": "string"
           },
+          "ID": {
+            "default": "",
+            "type": "string"
+          },
           "Type": {
             "default": "",
             "enum": [
@@ -4250,13 +4558,12 @@
               "CadPoint",
               "CadAxis",
               "CadPlane",
-              "CadCoordinateSystem"
+              "CadCoordinateSystem",
+              "RFPort",
+              "SchematicPin",
+              "SystemCPort"
             ],
             "type": "string"
-          },
-          "ID": {
-            "type": "string",
-            "default": ""
           },
           "INFO": {
             "default": "",
@@ -4287,6 +4594,66 @@
         }
       },
       "sets": {}
+    },
+    "f26a44de-edb5-57c8-fd0f-242811b7816c": {
+      "attributes": {
+        "XOffset": null,
+        "YOffset": null,
+        "name": "RelativeLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "XOffset": {
+            "default": null,
+            "type": "float"
+          },
+          "YOffset": {
+            "default": null,
+            "type": "float"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "pointers": {
+          "OriginComponent": {
+            "items": [
+              "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+            ],
+            "min": 1,
+            "max": 1,
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              1
+            ]
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "OriginComponent": null,
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      }
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
       "attributes": {
@@ -4374,7 +4741,7 @@
           }
         },
         "pointers": {
-          "src": {
+          "dst": {
             "items": [
               "f0508110-9a11-3b6d-ea42-2193bf0485e0"
             ],
@@ -4387,7 +4754,7 @@
               1
             ]
           },
-          "dst": {
+          "src": {
             "items": [
               "f0508110-9a11-3b6d-ea42-2193bf0485e0"
             ],
