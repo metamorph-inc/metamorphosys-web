@@ -160,6 +160,18 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
     $rootScope.$watch('activeDesign', function (activeDesign) {
 
+        var parseDesignName;
+
+        parseDesignName = function(originalName) {
+
+            var result;
+
+            result = originalName.replace(/_/g, ' ');
+
+            return result;
+
+        };
+
         if (activeDesign && activeDesign.id) {
 
 
@@ -167,7 +179,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
             $scope.navigator.items.push({
                 id: 'design',
-                label: activeDesign.name
+                label: parseDesignName(activeDesign.name)
                 //action: function () {
                 //    $window.open('/?project=' + projectId);
                 //}
