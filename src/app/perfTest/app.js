@@ -42,7 +42,7 @@ angular.module( 'CyPhyApp' )
         $scope.logs = [ 'init' ];
 
         log = function ( message ) {
-            $scope.logs.push( new Date() + " " + message );
+            $scope.logs.push( new Date() + ' ' + message );
             //$scope.$apply();
         };
 
@@ -53,7 +53,7 @@ angular.module( 'CyPhyApp' )
         future = ( function ( projectName ) {
             return dataStoreService.connectToDatabase( databaseId, {
                 host: window.location.basename,
-                storageKeyType: "rand160bytes"
+                storageKeyType: 'rand160bytes'
             } )
                 .then( function () {
                     // select default project and branch (master)
@@ -66,7 +66,7 @@ angular.module( 'CyPhyApp' )
                     window.location.origin + '"> webgme interface</a>.' );
                 fatal( reason );
             } );
-        } )( "SimpleModelica" )
+        } )( 'SimpleModelica' )
             .then( function ( project ) {
                 context = {
                     db: databaseId,
@@ -153,28 +153,27 @@ angular.module( 'CyPhyApp' )
             return deferred.promise;
         };
         var j = 0;
-        setattr = function (c) {
+        setattr = function () {
             var i,
-                deferreds = [],
                 deferred = $q.defer();
             value.onUpdate(function () {
                 log('set ' + i);
                 console.log('set ' + i + ' ' + j);
-                if (j > 40 * 20) {
-                    deferred.resolve();
-                    deferred = $q.defer();
-                    log( 'PHANTOM DONE' );
-                } else {
-                    deferred.resolve($timeout(setattr, 10));
-                    deferred = $q.defer();
+                if (value.getAttribute('Value') >= j) {
+                    if (j >= 20 * 40) {
+                        log('PHANTOM DONE');
+                        deferred.resolve();
+                    } else {
+                        deferred.resolve($timeout(setattr, 10));
+                    }
                 }
             });
             value.onUnload(function () {
                 debugger;
             });
-            for (i = 0; i < 20; i++) {
-                j++;
-                value.setAttribute('Value', j);
+            j += 20;
+            for (i = 1; i <= 20; i++) {
+                value.setAttribute('Value', i + j - 20);
             }
             return deferred;
         };
