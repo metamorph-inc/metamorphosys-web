@@ -38,8 +38,11 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
-            ContextMenuHandler = require('./classes/contextMenuHandler'),
+            ContextMenuHandler = require('./classes/ContextMenuHandler'),
             contextMenuHandler,
+
+            PanHandler = require('./classes/PanHandler'),
+            panHandler,
 
             componentElements,
 
@@ -98,6 +101,10 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
+        panHandler = new PanHandler(
+            $scope,
+            $log
+        );
 
         //
 
@@ -107,11 +114,13 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.onDiagramMouseDown = function ($event) {
 
-
             if ($event.which === 3) {
                 contextMenuHandler.onDiagramContextmenu($event);
             } else {
+
                 contextMenuHandler.onDiagramMouseDown($event);
+                panHandler.onDiagramMouseDown($event);
+
             }
 
         };
@@ -130,6 +139,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseUp($event);
             wireDragHandler.onDiagramMouseUp($event);
             wireDrawHandler.onDiagramMouseUp($event);
+            panHandler.onDiagramMouseUp($event);
 
         };
 
@@ -143,6 +153,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseMove($event);
             wireDragHandler.onDiagramMouseMove($event);
             wireDrawHandler.onDiagramMouseMove($event);
+            panHandler.onDiagramMouseMove($event);
 
         };
 

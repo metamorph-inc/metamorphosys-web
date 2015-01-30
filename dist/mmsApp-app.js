@@ -260,7 +260,7 @@ CyPhyApp.controller('CreateDesignController', function (
 
 });
 
-},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":11,"./directives/diagramContainer/diagramContainer.js":14,"./directives/fabricCanvas/fabricCanvas.js":16,"./directives/headerButtons/headerButtons.js":17,"./directives/processingCover/processingCover.js":19,"./directives/resizing/resizeToHeight.js":20,"./directives/resizing/resizeToWindow.js":21,"./directives/socialMediaButtons/socialMediaButtons.js":22,"./directives/svgDiagram/svgDiagram.js":31,"./directives/symbols/componentSymbol.js":34,"./libraryIncludes.js":43,"./services/connectionHandling/connectionHandling.js":44,"./services/diagramService/diagramService.js":51,"./services/gridService/gridService.js":52,"./services/operationsManager/operationsManager.js":53,"./services/projectHandling/projectHandling.js":54,"./services/wiringService/wiringService.js":59,"./utils.js":60,"ngDragDrop":3}],2:[function(require,module,exports){
+},{"./classes/GMEProjectInitializers":5,"./directives/busyCover/busyCover.js":6,"./directives/designEditor/designEditor":11,"./directives/diagramContainer/diagramContainer.js":14,"./directives/fabricCanvas/fabricCanvas.js":16,"./directives/headerButtons/headerButtons.js":17,"./directives/processingCover/processingCover.js":19,"./directives/resizing/resizeToHeight.js":20,"./directives/resizing/resizeToWindow.js":21,"./directives/socialMediaButtons/socialMediaButtons.js":22,"./directives/svgDiagram/svgDiagram.js":32,"./directives/symbols/componentSymbol.js":35,"./libraryIncludes.js":44,"./services/connectionHandling/connectionHandling.js":45,"./services/diagramService/diagramService.js":52,"./services/gridService/gridService.js":53,"./services/operationsManager/operationsManager.js":54,"./services/projectHandling/projectHandling.js":55,"./services/wiringService/wiringService.js":60,"./utils.js":61,"ngDragDrop":3}],2:[function(require,module,exports){
 // Array.prototype.find - MIT License (c) 2013 Paul Miller <http://paulmillr.com>
 // For all details and docs: https://github.com/paulmillr/array.prototype.find
 // Fixes and tests supplied by Duncan Hall <http://duncanhall.net> 
@@ -1624,7 +1624,7 @@ angular.module('mms.designVisualization.designEditor', [
             };
         }]);
 
-},{"../testbenchActions/testbenchActions.js":42,"./classes/RandomSymbolGenerator":10,"./operationCommitHandlersForGME.js":12}],12:[function(require,module,exports){
+},{"../testbenchActions/testbenchActions.js":43,"./classes/RandomSymbolGenerator":10,"./operationCommitHandlersForGME.js":12}],12:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -3002,416 +3002,6 @@ module.exports = function($scope, diagramService, gridService, $log) {
 };
 
 },{}],25:[function(require,module,exports){
-/*globals angular*/
-
-'use strict';
-
-module.exports = function ($scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
-
-    var self = this,
-        getOffsetToMouse,
-        possibbleDragTargetsDescriptor,
-
-        moveOperation,
-
-        onDiagramMouseUp,
-        onDiagramMouseMove,
-        onDiagramMouseLeave,
-        onWindowBlur,
-        onWireMouseUp,
-        onWireMouseDown,
-
-        startDrag,
-        finishDrag,
-        cancelDrag;
-
-
-    getOffsetToMouse = function ($event) {
-
-        var offset;
-
-        offset = {
-            x: $event.pageX - $scope.elementOffset.left,
-            y: $event.pageY - $scope.elementOffset.top
-        };
-
-        return offset;
-
-    };
-
-
-    startDrag = function () {
-
-        self.dragging = true;
-
-        moveOperation = operationsManager.initNew('MoveWires', $scope.diagram, possibbleDragTargetsDescriptor);
-
-        $log.debug('Dragging wire', possibbleDragTargetsDescriptor);
-        possibbleDragTargetsDescriptor = null;
-
-    };
-
-    cancelDrag = function () {
-
-        possibbleDragTargetsDescriptor = null;
-
-        if (angular.isObject(moveOperation)) {
-
-            moveOperation.cancel();
-            moveOperation = null;
-
-        }
-
-        self.dragging = false;
-
-    };
-
-    finishDrag = function () {
-
-        //angular.forEach(dragTargetsDescriptor.targets, function (target) {
-        //    $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
-        //
-        //    if (target.wasCorner) {
-        //        ga('send', 'event', 'corner', 'drag', target.wire.id);
-        //    } else {
-        //        ga('send', 'event', 'wire', 'drag', target.wire.id);
-        //    }
-        //
-        //});
-
-        if (angular.isObject(moveOperation)) {
-
-            moveOperation.finish();
-            moveOperation = null;
-
-            self.dragging = false;
-
-            $log.debug('Finish wire dragging');
-
-        }
-
-    };
-
-    onDiagramMouseMove = function ($event) {
-
-        var offset;
-
-        if (possibbleDragTargetsDescriptor) {
-            startDrag();
-        }
-
-        if (moveOperation) {
-
-            offset = getOffsetToMouse($event);
-
-            moveOperation.set(offset);
-
-        }
-
-    };
-
-    onDiagramMouseUp = function ($event) {
-
-        possibbleDragTargetsDescriptor = null;
-
-        finishDrag();
-        $event.stopPropagation();
-
-    };
-
-    onDiagramMouseLeave = function (/*$event*/) {
-
-        finishDrag();
-
-    };
-
-    onWindowBlur = function (/*$event*/) {
-
-        finishDrag();
-
-    };
-
-    onWireMouseUp = function (wire, segment, $event) {
-
-        possibbleDragTargetsDescriptor = null;
-
-        finishDrag();
-        $event.stopPropagation();
-
-    };
-
-    onWireMouseDown = function (wire, segment, $event, wasCorner) {
-
-        var getDragDescriptor,
-            indexOfSegment,
-            primartyTargetDescriptor;
-
-        getDragDescriptor = function (wire, segment, sIndex) {
-
-            var offset = getOffsetToMouse($event);
-
-            return {
-                wire: wire,
-                segment: segment,
-                segmentIndex: sIndex,
-                originalSegments: angular.copy(wire.segments),
-                wasCorner: wasCorner,
-                deltaToCursor1: {
-                    x: segment.x1 - offset.x,
-                    y: segment.y1 - offset.y
-                },
-                deltaToCursor2: {
-                    x: segment.x2 - offset.x,
-                    y: segment.y2 - offset.y
-                }
-
-            };
-
-
-        };
-
-        if (angular.isObject(wire) && angular.isObject(segment)) {
-
-            indexOfSegment = wire.segments.indexOf(segment);
-
-            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < wire.segments.length - 1) {
-
-                $scope.diagram.config = $scope.diagram.config || {};
-
-                if ($scope.diagram.config.editable === true &&
-                    wire.nonSelectable !== true &&
-                    wire.locationLocked !== true) {
-
-                    $event.stopPropagation();
-
-                    primartyTargetDescriptor = getDragDescriptor(wire, segment, indexOfSegment);
-
-                    possibbleDragTargetsDescriptor = {
-                        primaryTarget: primartyTargetDescriptor,
-                        targets: [ primartyTargetDescriptor ]
-                    };
-
-                }
-
-            }
-        }
-    };
-
-    this.onDiagramMouseUp = onDiagramMouseUp;
-    this.onDiagramMouseMove = onDiagramMouseMove;
-    this.onDiagramMouseLeave = onDiagramMouseLeave;
-    this.onWindowBlur = onWindowBlur;
-    this.onWireMouseUp = onWireMouseUp;
-    this.onWireMouseDown = onWireMouseDown;
-
-    return this;
-
-};
-
-},{}],26:[function(require,module,exports){
-/*globals angular, ga*/
-
-'use strict';
-
-module.exports = function($scope, $rootScope, diagramService, wiringService, gridService, $timeout, $log) {
-
-    var self = this,
-
-        Wire = require( '../../../services/diagramService/classes/Wire.js' ),
-
-        wireStart,
-
-        startWire,
-        addCornerToNewWireLine,
-        finishWire,
-        cancelWire,
-
-        onDiagramMouseUp,
-        onDiagramMouseMove,
-        onDiagramMouseLeave,
-        onWindowBlur,
-        onPortMouseDown;
-
-
-
-    startWire = function (component, port) {
-
-        wireStart = {
-            component: component,
-            port: port
-        };
-
-        $log.debug( 'Starting wire', wireStart );
-
-        self.wiring = true;
-
-    };
-
-    addCornerToNewWireLine = function () {
-
-        var lastSegment;
-
-        $scope.newWireLine.lockedSegments = $scope.newWireLine.segments;
-
-        lastSegment = $scope.newWireLine.lockedSegments[ $scope.newWireLine.lockedSegments.length - 1 ];
-
-        $scope.newWireLine.activeSegmentStartPosition = {
-            x: lastSegment.x2,
-            y: lastSegment.y2
-        };
-
-    };
-
-    finishWire = function ( component, port ) {
-
-        var wire = new Wire( {
-            id: 'new-wire-' + Math.round( Math.random() * 10000 ),
-            end1: {
-                component: wireStart.component,
-                port: wireStart.port
-            },
-            end2: {
-                component: component,
-                port: port
-            }
-        } );
-
-        wire.segments = angular.copy(
-            $scope.newWireLine.lockedSegments.concat(
-                wiringService.getSegmentsBetweenPositions( {
-                        end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: port.getGridPosition()
-                    },
-                    $scope.selectedRouter.type,
-                    $scope.selectedRouter.params
-                )
-            ) );
-
-        $rootScope.$emit('wireCreationMustBeDone', wire);
-
-        $log.debug( 'Finish wire', wire );
-
-        ga('send', 'event', 'wire', 'newWire', {
-            end1: wireStart.component.id,
-            end2: component.id
-        });
-
-        wireStart = null;
-        $scope.newWireLine = null;
-
-        self.wiring = false;
-
-    };
-
-    cancelWire = function () {
-        $scope.newWireLine = null;
-        wireStart = null;
-        self.wiring = false;
-
-        ga('send', 'event', 'wire', 'cancelNewWire');
-
-    };
-
-    onDiagramMouseMove = function($event) {
-
-        var snappedPosition;
-
-        if ( wireStart ) {
-
-
-            $scope.newWireLine = $scope.newWireLine || {};
-            $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
-            $scope.newWireLine.activeSegmentStartPosition =
-                $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
-
-            snappedPosition = gridService.getSnappedPosition(
-                {
-                    x: $event.pageX - $scope.elementOffset.left - 3,
-                    y: $event.pageY - $scope.elementOffset.top - 3
-                }
-            );
-
-
-            $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
-                wiringService.getSegmentsBetweenPositions( {
-                        end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: snappedPosition
-                    },
-                    $scope.selectedRouter.type,
-                    $scope.selectedRouter.params
-                )
-            );
-
-        }
-
-    };
-
-    onDiagramMouseUp = function() {
-
-        if ( wireStart ) {
-            addCornerToNewWireLine();
-        }
-
-    };
-
-    onPortMouseDown = function( component, port, $event ) {
-
-        if ( wireStart ) {
-
-            $event.stopPropagation();
-
-            if ( wireStart.port !== port ) {
-                finishWire( component, port );
-            } else {
-                cancelWire();
-            }
-
-        } else {
-
-            startWire(component, port);
-            $event.stopPropagation();
-
-        }
-
-    };
-
-    onDiagramMouseLeave = function(/*$event*/) {
-        if (self.wiring) {
-            cancelWire();
-        }
-    };
-
-    onWindowBlur = function(/*$event*/) {
-        if (self.wiring) {
-            cancelWire();
-        }
-    };
-
-    $scope.$on('keyupOnDiagram', function($event, e) {
-
-        //console.log(e.keyCode);
-
-        if (e.keyCode === 16) { // Esc
-            cancelWire();
-        }
-
-        if (e.keyCode === 27) { // Esc
-            cancelWire();
-        }
-
-    });
-
-    this.onDiagramMouseUp = onDiagramMouseUp;
-    this.onDiagramMouseMove = onDiagramMouseMove;
-    this.onDiagramMouseLeave = onDiagramMouseLeave;
-    this.onWindowBlur = onWindowBlur;
-    this.onPortMouseDown = onPortMouseDown;
-
-    return this;
-
-};
-
-},{"../../../services/diagramService/classes/Wire.js":50}],27:[function(require,module,exports){
 /*globals angular, ga, $*/
 
 'use strict';
@@ -3914,7 +3504,472 @@ module.exports = function (
 
 };
 
+},{}],26:[function(require,module,exports){
+/*globals angular*/
+
+'use strict';
+
+module.exports = function ($scope, $log) {
+
+    var
+        getOffsetToMouse,
+
+        dragStartPosition,
+
+        onDiagramMouseDown,
+        onDiagramMouseMove,
+        onDiagramMouseUp;
+
+    getOffsetToMouse = function ($event) {
+
+        var offset;
+
+        offset = {
+            x: $event.pageX - $scope.elementOffset.left,
+            y: $event.pageY - $scope.elementOffset.top
+        };
+
+        return offset;
+
+    };
+
+    onDiagramMouseMove = function ($event) {
+
+        console.log($event.which);
+
+    };
+
+
+    onDiagramMouseDown = function($event) {
+
+        dragStartPosition = getOffsetToMouse($event);
+
+    };
+
+    onDiagramMouseUp = function($event) {
+        dragStartPosition = null;
+    };
+
+
+    this.onDiagramMouseDown = onDiagramMouseDown;
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+
+    return this;
+
+};
+
+},{}],27:[function(require,module,exports){
+/*globals angular*/
+
+'use strict';
+
+module.exports = function ($scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
+
+    var self = this,
+        getOffsetToMouse,
+        possibbleDragTargetsDescriptor,
+
+        moveOperation,
+
+        onDiagramMouseUp,
+        onDiagramMouseMove,
+        onDiagramMouseLeave,
+        onWindowBlur,
+        onWireMouseUp,
+        onWireMouseDown,
+
+        startDrag,
+        finishDrag,
+        cancelDrag;
+
+
+    getOffsetToMouse = function ($event) {
+
+        var offset;
+
+        offset = {
+            x: $event.pageX - $scope.elementOffset.left,
+            y: $event.pageY - $scope.elementOffset.top
+        };
+
+        return offset;
+
+    };
+
+
+    startDrag = function () {
+
+        self.dragging = true;
+
+        moveOperation = operationsManager.initNew('MoveWires', $scope.diagram, possibbleDragTargetsDescriptor);
+
+        $log.debug('Dragging wire', possibbleDragTargetsDescriptor);
+        possibbleDragTargetsDescriptor = null;
+
+    };
+
+    cancelDrag = function () {
+
+        possibbleDragTargetsDescriptor = null;
+
+        if (angular.isObject(moveOperation)) {
+
+            moveOperation.cancel();
+            moveOperation = null;
+
+        }
+
+        self.dragging = false;
+
+    };
+
+    finishDrag = function () {
+
+        //angular.forEach(dragTargetsDescriptor.targets, function (target) {
+        //    $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
+        //
+        //    if (target.wasCorner) {
+        //        ga('send', 'event', 'corner', 'drag', target.wire.id);
+        //    } else {
+        //        ga('send', 'event', 'wire', 'drag', target.wire.id);
+        //    }
+        //
+        //});
+
+        if (angular.isObject(moveOperation)) {
+
+            moveOperation.finish();
+            moveOperation = null;
+
+            self.dragging = false;
+
+            $log.debug('Finish wire dragging');
+
+        }
+
+    };
+
+    onDiagramMouseMove = function ($event) {
+
+        var offset;
+
+        if (possibbleDragTargetsDescriptor) {
+            startDrag();
+        }
+
+        if (moveOperation) {
+
+            offset = getOffsetToMouse($event);
+
+            moveOperation.set(offset);
+
+        }
+
+    };
+
+    onDiagramMouseUp = function ($event) {
+
+        possibbleDragTargetsDescriptor = null;
+
+        finishDrag();
+        $event.stopPropagation();
+
+    };
+
+    onDiagramMouseLeave = function (/*$event*/) {
+
+        finishDrag();
+
+    };
+
+    onWindowBlur = function (/*$event*/) {
+
+        finishDrag();
+
+    };
+
+    onWireMouseUp = function (wire, segment, $event) {
+
+        possibbleDragTargetsDescriptor = null;
+
+        finishDrag();
+        $event.stopPropagation();
+
+    };
+
+    onWireMouseDown = function (wire, segment, $event, wasCorner) {
+
+        var getDragDescriptor,
+            indexOfSegment,
+            primartyTargetDescriptor;
+
+        getDragDescriptor = function (wire, segment, sIndex) {
+
+            var offset = getOffsetToMouse($event);
+
+            return {
+                wire: wire,
+                segment: segment,
+                segmentIndex: sIndex,
+                originalSegments: angular.copy(wire.segments),
+                wasCorner: wasCorner,
+                deltaToCursor1: {
+                    x: segment.x1 - offset.x,
+                    y: segment.y1 - offset.y
+                },
+                deltaToCursor2: {
+                    x: segment.x2 - offset.x,
+                    y: segment.y2 - offset.y
+                }
+
+            };
+
+
+        };
+
+        if (angular.isObject(wire) && angular.isObject(segment)) {
+
+            indexOfSegment = wire.segments.indexOf(segment);
+
+            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < wire.segments.length - 1) {
+
+                $scope.diagram.config = $scope.diagram.config || {};
+
+                if ($scope.diagram.config.editable === true &&
+                    wire.nonSelectable !== true &&
+                    wire.locationLocked !== true) {
+
+                    $event.stopPropagation();
+
+                    primartyTargetDescriptor = getDragDescriptor(wire, segment, indexOfSegment);
+
+                    possibbleDragTargetsDescriptor = {
+                        primaryTarget: primartyTargetDescriptor,
+                        targets: [ primartyTargetDescriptor ]
+                    };
+
+                }
+
+            }
+        }
+    };
+
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
+    this.onWindowBlur = onWindowBlur;
+    this.onWireMouseUp = onWireMouseUp;
+    this.onWireMouseDown = onWireMouseDown;
+
+    return this;
+
+};
+
 },{}],28:[function(require,module,exports){
+/*globals angular, ga*/
+
+'use strict';
+
+module.exports = function($scope, $rootScope, diagramService, wiringService, gridService, $timeout, $log) {
+
+    var self = this,
+
+        Wire = require( '../../../services/diagramService/classes/Wire.js' ),
+
+        wireStart,
+
+        startWire,
+        addCornerToNewWireLine,
+        finishWire,
+        cancelWire,
+
+        onDiagramMouseUp,
+        onDiagramMouseMove,
+        onDiagramMouseLeave,
+        onWindowBlur,
+        onPortMouseDown;
+
+
+
+    startWire = function (component, port) {
+
+        wireStart = {
+            component: component,
+            port: port
+        };
+
+        $log.debug( 'Starting wire', wireStart );
+
+        self.wiring = true;
+
+    };
+
+    addCornerToNewWireLine = function () {
+
+        var lastSegment;
+
+        $scope.newWireLine.lockedSegments = $scope.newWireLine.segments;
+
+        lastSegment = $scope.newWireLine.lockedSegments[ $scope.newWireLine.lockedSegments.length - 1 ];
+
+        $scope.newWireLine.activeSegmentStartPosition = {
+            x: lastSegment.x2,
+            y: lastSegment.y2
+        };
+
+    };
+
+    finishWire = function ( component, port ) {
+
+        var wire = new Wire( {
+            id: 'new-wire-' + Math.round( Math.random() * 10000 ),
+            end1: {
+                component: wireStart.component,
+                port: wireStart.port
+            },
+            end2: {
+                component: component,
+                port: port
+            }
+        } );
+
+        wire.segments = angular.copy(
+            $scope.newWireLine.lockedSegments.concat(
+                wiringService.getSegmentsBetweenPositions( {
+                        end1: $scope.newWireLine.activeSegmentStartPosition,
+                        end2: port.getGridPosition()
+                    },
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
+                )
+            ) );
+
+        $rootScope.$emit('wireCreationMustBeDone', wire);
+
+        $log.debug( 'Finish wire', wire );
+
+        ga('send', 'event', 'wire', 'newWire', {
+            end1: wireStart.component.id,
+            end2: component.id
+        });
+
+        wireStart = null;
+        $scope.newWireLine = null;
+
+        self.wiring = false;
+
+    };
+
+    cancelWire = function () {
+        $scope.newWireLine = null;
+        wireStart = null;
+        self.wiring = false;
+
+        ga('send', 'event', 'wire', 'cancelNewWire');
+
+    };
+
+    onDiagramMouseMove = function($event) {
+
+        var snappedPosition;
+
+        if ( wireStart ) {
+
+
+            $scope.newWireLine = $scope.newWireLine || {};
+            $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
+            $scope.newWireLine.activeSegmentStartPosition =
+                $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
+
+            snappedPosition = gridService.getSnappedPosition(
+                {
+                    x: $event.pageX - $scope.elementOffset.left - 3,
+                    y: $event.pageY - $scope.elementOffset.top - 3
+                }
+            );
+
+
+            $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
+                wiringService.getSegmentsBetweenPositions( {
+                        end1: $scope.newWireLine.activeSegmentStartPosition,
+                        end2: snappedPosition
+                    },
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
+                )
+            );
+
+        }
+
+    };
+
+    onDiagramMouseUp = function() {
+
+        if ( wireStart ) {
+            addCornerToNewWireLine();
+        }
+
+    };
+
+    onPortMouseDown = function( component, port, $event ) {
+
+        if ( wireStart ) {
+
+            $event.stopPropagation();
+
+            if ( wireStart.port !== port ) {
+                finishWire( component, port );
+            } else {
+                cancelWire();
+            }
+
+        } else {
+
+            startWire(component, port);
+            $event.stopPropagation();
+
+        }
+
+    };
+
+    onDiagramMouseLeave = function(/*$event*/) {
+        if (self.wiring) {
+            cancelWire();
+        }
+    };
+
+    onWindowBlur = function(/*$event*/) {
+        if (self.wiring) {
+            cancelWire();
+        }
+    };
+
+    $scope.$on('keyupOnDiagram', function($event, e) {
+
+        //console.log(e.keyCode);
+
+        if (e.keyCode === 16) { // Esc
+            cancelWire();
+        }
+
+        if (e.keyCode === 27) { // Esc
+            cancelWire();
+        }
+
+    });
+
+    this.onDiagramMouseUp = onDiagramMouseUp;
+    this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
+    this.onWindowBlur = onWindowBlur;
+    this.onPortMouseDown = onPortMouseDown;
+
+    return this;
+
+};
+
+},{"../../../services/diagramService/classes/Wire.js":51}],29:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4049,7 +4104,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
     });
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4238,7 +4293,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
 
     });
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4331,7 +4386,7 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
         });
     });
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -4372,8 +4427,11 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
-            ContextMenuHandler = require('./classes/contextMenuHandler'),
+            ContextMenuHandler = require('./classes/ContextMenuHandler'),
             contextMenuHandler,
+
+            PanHandler = require('./classes/PanHandler'),
+            panHandler,
 
             componentElements,
 
@@ -4432,6 +4490,10 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
+        panHandler = new PanHandler(
+            $scope,
+            $log
+        );
 
         //
 
@@ -4441,11 +4503,13 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.onDiagramMouseDown = function ($event) {
 
-
             if ($event.which === 3) {
                 contextMenuHandler.onDiagramContextmenu($event);
             } else {
+
                 contextMenuHandler.onDiagramMouseDown($event);
+                panHandler.onDiagramMouseDown($event);
+
             }
 
         };
@@ -4464,6 +4528,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseUp($event);
             wireDragHandler.onDiagramMouseUp($event);
             wireDrawHandler.onDiagramMouseUp($event);
+            panHandler.onDiagramMouseUp($event);
 
         };
 
@@ -4477,6 +4542,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseMove($event);
             wireDragHandler.onDiagramMouseMove($event);
             wireDrawHandler.onDiagramMouseMove($event);
+            panHandler.onDiagramMouseMove($event);
 
         };
 
@@ -4742,7 +4808,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         }
     ]);
 
-},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/WireDragHandler":25,"./classes/WireDrawHandler":26,"./classes/contextMenuHandler":27,"./operations/moveComponents.js":28,"./operations/moveWires.js":29,"./operations/rotateComponents.js":30}],32:[function(require,module,exports){
+},{"../componentWire/componentWire.js":7,"./classes/ComponentDragHandler":23,"./classes/ComponentSelectionHandler":24,"./classes/ContextMenuHandler":25,"./classes/PanHandler":26,"./classes/WireDragHandler":27,"./classes/WireDrawHandler":28,"./operations/moveComponents.js":29,"./operations/moveWires.js":30,"./operations/rotateComponents.js":31}],33:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4808,7 +4874,7 @@ angular.module(
                 templateNamespace: 'SVG'
             };
         } );
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -4848,7 +4914,7 @@ angular.module(
             });
         }
     ]);
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*globals angular, $*/
 
 'use strict';
@@ -5069,7 +5135,7 @@ symbolsModule.directive(
     }
 );
 
-},{"../../services/symbolServices/symbolServices.js":56,"../port/port.js":18,"./box/box.js":32,"./capacitor/capacitor.js":33,"./diode/diode.js":35,"./inductor/inductor.js":36,"./jFetP/jFetP.js":37,"./opAmp/opAmp.js":38,"./resistor/resistor.js":39,"./simpleConnector/simpleConnector.js":40,"./tvsDiode/tvsDiode.js":41}],35:[function(require,module,exports){
+},{"../../services/symbolServices/symbolServices.js":57,"../port/port.js":18,"./box/box.js":33,"./capacitor/capacitor.js":34,"./diode/diode.js":36,"./inductor/inductor.js":37,"./jFetP/jFetP.js":38,"./opAmp/opAmp.js":39,"./resistor/resistor.js":40,"./simpleConnector/simpleConnector.js":41,"./tvsDiode/tvsDiode.js":42}],36:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5110,7 +5176,7 @@ angular.module(
         }
     ]);
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5150,7 +5216,7 @@ angular.module(
             });
         }
     ]);
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5197,7 +5263,7 @@ angular.module(
             });
         }
     ]);
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5258,7 +5324,7 @@ angular.module(
             });
         }
     ]);
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5298,7 +5364,7 @@ angular.module(
             });
         }
     ]);
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5346,7 +5412,7 @@ angular.module(
         };
     });
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5387,7 +5453,7 @@ angular.module(
         }
     ]);
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /*globals angular, ga*/
 
 'use strict';
@@ -5730,9 +5796,9 @@ angular.module('mms.testbenchActions', [
     });
 
 
-},{}],43:[function(require,module,exports){
-
 },{}],44:[function(require,module,exports){
+
+},{}],45:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -5801,7 +5867,7 @@ angular.module('mms.connectionHandling', [])
     }
 );
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -5876,7 +5942,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
 module.exports = ComponentPort;
 
-},{"glMatrix":4}],46:[function(require,module,exports){
+},{"glMatrix":4}],47:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6438,7 +6504,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     this.getDiagramElement = getDiagramElement;
 };
 
-},{"./ComponentPort":45,"./Diagram":47,"./DiagramComponent.js":48,"./Wire.js":50}],47:[function(require,module,exports){
+},{"./ComponentPort":46,"./Diagram":48,"./DiagramComponent.js":49,"./Wire.js":51}],48:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6724,7 +6790,7 @@ Diagram.prototype.getSelectedComponents = function () {
 
 module.exports = Diagram;
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -6926,7 +6992,7 @@ DiagramComponent.prototype.localToGlobal = function () {
 };
 
 module.exports = DiagramComponent;
-},{"glMatrix":4}],49:[function(require,module,exports){
+},{"glMatrix":4}],50:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7082,7 +7148,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
     this.getDiagram = getDiagram;
 };
 
-},{"./ComponentPort":45,"./Diagram":47,"./DiagramComponent.js":48,"./Wire.js":50}],50:[function(require,module,exports){
+},{"./ComponentPort":46,"./Diagram":48,"./DiagramComponent.js":49,"./Wire.js":51}],51:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7170,7 +7236,7 @@ Wire.prototype.getEndPositions = function () {
 
 module.exports = Wire;
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -7497,7 +7563,7 @@ angular.module('mms.designVisualization.diagramService', [
         }
     ]);
 
-},{"./classes/ComponentPort":45,"./classes/CyPhyDiagramParser.js":46,"./classes/DiagramComponent.js":48,"./classes/DummyDiagramGenerator.js":49,"./classes/Wire.js":50}],52:[function(require,module,exports){
+},{"./classes/ComponentPort":46,"./classes/CyPhyDiagramParser.js":47,"./classes/DiagramComponent.js":49,"./classes/DummyDiagramGenerator.js":50,"./classes/Wire.js":51}],53:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7804,7 +7870,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
     }
 ] );
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -7929,7 +7995,7 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
     ];
 });
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*globals angular */
 
 'use strict';
@@ -8059,7 +8125,7 @@ angular.module('mms.projectHandling', [])
 
     });
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
@@ -8104,7 +8170,7 @@ module.exports = function() {
     return symbolsByKeywords;
 };
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8401,7 +8467,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
     ];
 } );
 
-},{"./classes/SymbolTypesSearchIndex":55}],57:[function(require,module,exports){
+},{"./classes/SymbolTypesSearchIndex":56}],58:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8492,7 +8558,7 @@ var ElbowRouter = function () {
 };
 
 module.exports = ElbowRouter;
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8541,7 +8607,7 @@ var SimpleRouter = function () {
 };
 
 module.exports = SimpleRouter;
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /*globals angular*/
 
 'use strict';
@@ -8765,7 +8831,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
     }
 ]);
 
-},{"./classes/ElbowRouter.js":57,"./classes/SimpleRouter.js":58}],60:[function(require,module,exports){
+},{"./classes/ElbowRouter.js":58,"./classes/SimpleRouter.js":59}],61:[function(require,module,exports){
 'use strict';
 
 require( 'Array.prototype.find' );
