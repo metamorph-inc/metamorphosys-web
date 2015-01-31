@@ -161,7 +161,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             var result = '';
 
-            if (componentDragHandler.dragging) {
+            if (componentDragHandler.dragging || panHandler.dragging) {
                 result += 'dragging';
             }
 
@@ -174,6 +174,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseLeave($event);
             wireDragHandler.onDiagramMouseLeave($event);
             wireDrawHandler.onDiagramMouseLeave($event);
+            panHandler.onDiagramMouseLeave($event);
 
         };
 
@@ -182,6 +183,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onWindowBlur($event);
             wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
+            panHandler.onWindowBlur($event);
 
         });
 

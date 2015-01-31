@@ -1873,6 +1873,16 @@ module.exports = function ($scope, $timeout, $log) {
         jspReinit();
     });
 
+    $scope.$on('contentPan', function($event, distance) {{
+
+        if (angular.isObject(jsp)) {
+
+            $log.debug('Reinitializing JSP.');
+            jsp.scrollBy(-distance.x, -distance.y);
+
+        }
+
+    }});
 
     onWindowResize = function() {
         jspReinit();
@@ -2760,6 +2770,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
     finishDrag = function () {
 
+        possibbleDragTargetsDescriptor = null;
 
         if (angular.isObject(moveOperation)) {
 
@@ -2793,8 +2804,6 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
     };
 
     onDiagramMouseUp = function ($event) {
-
-        possibbleDragTargetsDescriptor = null;
 
         finishDrag();
         $event.stopPropagation();
@@ -3511,14 +3520,49 @@ module.exports = function (
 
 module.exports = function ($scope, $log) {
 
-    var
+    var self,
         getOffsetToMouse,
 
-        dragStartPosition,
+        earlierPosition,
 
         onDiagramMouseDown,
         onDiagramMouseMove,
-        onDiagramMouseUp;
+        onDiagramMouseUp,
+
+        onDiagramMouseLeave,
+        onWindowBlur,
+
+        startDrag,
+        finishDrag;
+
+    self = this;
+
+    startDrag = function () {
+
+        self.dragging = true;
+
+        //moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
+
+        $log.debug('Panning');
+
+    };
+
+    finishDrag = function () {
+
+        earlierPosition = null;
+
+        if (self.dragging === true) {
+
+            //moveOperation.finish();
+            //moveOperation = null;
+
+            self.dragging = false;
+
+            $log.debug('Finish panning');
+
+        }
+
+    };
 
     getOffsetToMouse = function ($event) {
 
@@ -3535,25 +3579,62 @@ module.exports = function ($scope, $log) {
 
     onDiagramMouseMove = function ($event) {
 
-        console.log($event.which);
+        var currentPosition,
+            translation;
+
+        if (angular.isObject(earlierPosition)) {
+
+            if (!self.dragging) {
+                startDrag();
+            }
+
+            currentPosition = getOffsetToMouse($event);
+
+            translation = {
+                x: currentPosition.x - earlierPosition.x,
+                y: currentPosition.y - earlierPosition.y
+            };
+
+            earlierPosition = currentPosition;
+
+            $scope.$emit('contentPan', translation);
+
+        }
 
     };
 
 
     onDiagramMouseDown = function($event) {
 
-        dragStartPosition = getOffsetToMouse($event);
+        earlierPosition = getOffsetToMouse($event);
 
     };
 
     onDiagramMouseUp = function($event) {
-        dragStartPosition = null;
+
+        finishDrag();
+        $event.stopPropagation();
+
+    };
+
+    onDiagramMouseLeave = function (/*$event*/) {
+
+        finishDrag();
+
+    };
+
+    onWindowBlur = function (/*$event*/) {
+
+        finishDrag();
+
     };
 
 
     this.onDiagramMouseDown = onDiagramMouseDown;
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;
+    this.onDiagramMouseLeave = onDiagramMouseLeave;
+    this.onWindowBlur = onWindowBlur;
 
     return this;
 
@@ -3637,6 +3718,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         //
         //});
 
+        possibbleDragTargetsDescriptor = null;
+
         if (angular.isObject(moveOperation)) {
 
             moveOperation.finish();
@@ -3669,8 +3752,6 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
     };
 
     onDiagramMouseUp = function ($event) {
-
-        possibbleDragTargetsDescriptor = null;
 
         finishDrag();
         $event.stopPropagation();
@@ -4550,7 +4631,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             var result = '';
 
-            if (componentDragHandler.dragging) {
+            if (componentDragHandler.dragging || panHandler.dragging) {
                 result += 'dragging';
             }
 
@@ -4563,6 +4644,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseLeave($event);
             wireDragHandler.onDiagramMouseLeave($event);
             wireDrawHandler.onDiagramMouseLeave($event);
+            panHandler.onDiagramMouseLeave($event);
 
         };
 
@@ -4571,6 +4653,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onWindowBlur($event);
             wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
+            panHandler.onWindowBlur($event);
 
         });
 

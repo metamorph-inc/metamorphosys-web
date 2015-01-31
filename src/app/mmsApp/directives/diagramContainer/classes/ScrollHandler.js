@@ -126,6 +126,16 @@ module.exports = function ($scope, $timeout, $log) {
         jspReinit();
     });
 
+    $scope.$on('contentPan', function($event, distance) {{
+
+        if (angular.isObject(jsp)) {
+
+            $log.debug('Reinitializing JSP.');
+            jsp.scrollBy(-distance.x, -distance.y);
+
+        }
+
+    }});
 
     onWindowResize = function() {
         jspReinit();
