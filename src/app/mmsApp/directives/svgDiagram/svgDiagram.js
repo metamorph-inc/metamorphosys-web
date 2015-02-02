@@ -130,6 +130,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
                 !wireDragHandler.dragging &&
+                !panHandler.panning &&
                 $event.which !== 3 ) {
 
                 $scope.diagram.state.selectedComponentIds = [];
@@ -161,8 +162,16 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             var result = '';
 
-            if (componentDragHandler.dragging || panHandler.dragging) {
-                result += 'dragging';
+            if (componentDragHandler.dragging) {
+                result += ' dragging';
+            }
+
+            if (panHandler.panning) {
+                result += ' panning';
+            }
+
+            if (panHandler.pannable) {
+                result += ' pannable';
             }
 
             return result;
@@ -195,6 +204,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
                 !wireDragHandler.dragging &&
+                !panHandler.panning &&
                 $event.which !== 3 ) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
@@ -204,6 +214,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             } else {
                 componentDragHandler.onComponentMouseUp(component, $event);
+                panHandler.onComponentMouseUp($event);
             }
         };
 
@@ -220,6 +231,10 @@ angular.module('mms.designVisualization.svgDiagram', [
         };
 
         this.onPortMouseUp = function (component, port, $event) {
+
+            if (panHandler.panning ) {
+                panHandler.onPortMouseUp($event);
+            }
 
             $event.stopPropagation();
 
@@ -410,7 +425,24 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     $element.keyup(function(e){
                         $timeout(function() {
+
+                            scope.pressedKey = null;
+
                             scope.$emit('keyupOnDiagram', e);
+
+                        });
+
+                    });
+
+                    $element.keydown(function(e){
+
+
+                        $timeout(function() {
+
+                            scope.pressedKey = e.keyCode;
+
+                            scope.$emit('keydownOnDiagram', e);
+
                         });
 
                     });

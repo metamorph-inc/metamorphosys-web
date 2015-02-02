@@ -1877,8 +1877,8 @@ module.exports = function ($scope, $timeout, $log) {
 
         if (angular.isObject(jsp)) {
 
-            $log.debug('Reinitializing JSP.');
-            jsp.scrollBy(-distance.x, -distance.y);
+//            $log.debug('jsp.scrollBy', distance);
+            jsp.scrollBy(-distance.x, -distance.y, false);
 
         }
 
@@ -2109,7 +2109,8 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
 
-                    var $element;
+                    var $element,
+                        $contentPane;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
@@ -2130,11 +2131,32 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     $element = scope.$element = $(element);
 
+                    $contentPane = $element.find('.diagram-content-pane');
+
+
                     //scope.$watch(function(){
                     //    return $element.attr('class');
                     //}, function(cssClass){
                     //    console.log(cssClass);
                     //});
+
+                    window.onkeydown = function(e) {
+                        if(e.keyCode === 32 && e.target === document.body) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    };
+
+                    console.log($contentPane.length);
+                    $contentPane.keydown(function(e) {
+
+                        console.log(e.target);
+                        if(e.keyCode === 32) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+
 
                     scope.$contentPane = element.find('>.diagram-content-pane');
 
@@ -3539,7 +3561,7 @@ module.exports = function ($scope, $log) {
 
     startDrag = function () {
 
-        self.dragging = true;
+        self.pannable = false;
 
         //moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
@@ -3550,13 +3572,14 @@ module.exports = function ($scope, $log) {
     finishDrag = function () {
 
         earlierPosition = null;
+        self.pannable = false;
 
-        if (self.dragging === true) {
+        if (self.panning === true) {
 
             //moveOperation.finish();
             //moveOperation = null;
 
-            self.dragging = false;
+            self.panning = false;
 
             $log.debug('Finish panning');
 
@@ -3584,11 +3607,14 @@ module.exports = function ($scope, $log) {
 
         if (angular.isObject(earlierPosition)) {
 
-            if (!self.dragging) {
+            if (!self.panning) {
                 startDrag();
             }
 
-            currentPosition = getOffsetToMouse($event);
+            currentPosition = {
+                x: $event.pageX,
+                y: $event.pageY
+            };
 
             translation = {
                 x: currentPosition.x - earlierPosition.x,
@@ -3606,7 +3632,15 @@ module.exports = function ($scope, $log) {
 
     onDiagramMouseDown = function($event) {
 
-        earlierPosition = getOffsetToMouse($event);
+        if ($scope.pressedKey === 32) {
+
+            self.panning = true;
+
+            earlierPosition = {
+                x: $event.pageX,
+                y: $event.pageY
+            };
+        }
 
     };
 
@@ -3630,11 +3664,25 @@ module.exports = function ($scope, $log) {
     };
 
 
+    $scope.$on('keydownOnDiagram', function($event, $originalEvent) {
+
+        if ($originalEvent.keyCode === 32) {
+            self.pannable = true;
+        }
+
+    });
+
+    $scope.$on('keyupOnDiagram', function() {
+        self.pannable = false;
+    });
+
     this.onDiagramMouseDown = onDiagramMouseDown;
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;
     this.onDiagramMouseLeave = onDiagramMouseLeave;
     this.onWindowBlur = onWindowBlur;
+    this.onComponentMouseUp = onDiagramMouseUp;
+    this.onPortMouseUp = onDiagramMouseUp;
 
     return this;
 
@@ -4600,6 +4648,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
                 !wireDragHandler.dragging &&
+                !panHandler.panning &&
                 $event.which !== 3 ) {
 
                 $scope.diagram.state.selectedComponentIds = [];
@@ -4631,8 +4680,16 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             var result = '';
 
-            if (componentDragHandler.dragging || panHandler.dragging) {
-                result += 'dragging';
+            if (componentDragHandler.dragging) {
+                result += ' dragging';
+            }
+
+            if (panHandler.panning) {
+                result += ' panning';
+            }
+
+            if (panHandler.pannable) {
+                result += ' pannable';
             }
 
             return result;
@@ -4665,6 +4722,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             if (!componentDragHandler.dragging &&
                 !wireDrawHandler.wiring &&
                 !wireDragHandler.dragging &&
+                !panHandler.panning &&
                 $event.which !== 3 ) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
@@ -4674,6 +4732,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             } else {
                 componentDragHandler.onComponentMouseUp(component, $event);
+                panHandler.onComponentMouseUp($event);
             }
         };
 
@@ -4690,6 +4749,10 @@ angular.module('mms.designVisualization.svgDiagram', [
         };
 
         this.onPortMouseUp = function (component, port, $event) {
+
+            if (panHandler.panning ) {
+                panHandler.onPortMouseUp($event);
+            }
 
             $event.stopPropagation();
 
@@ -4880,7 +4943,24 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     $element.keyup(function(e){
                         $timeout(function() {
+
+                            scope.pressedKey = null;
+
                             scope.$emit('keyupOnDiagram', e);
+
+                        });
+
+                    });
+
+                    $element.keydown(function(e){
+
+
+                        $timeout(function() {
+
+                            scope.pressedKey = e.keyCode;
+
+                            scope.$emit('keydownOnDiagram', e);
+
                         });
 
                     });

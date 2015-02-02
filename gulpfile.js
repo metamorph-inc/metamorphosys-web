@@ -57,7 +57,8 @@ var argv = require('yargs').argv,
         libraryImages: [
             'src/**/*.png',
             'src/**/*.jpg',
-            'src/**/*.svg'
+            'src/**/*.svg',
+            'src/**/*.cur'
         ]
     },
 

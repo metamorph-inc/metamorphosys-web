@@ -212,7 +212,8 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
 
-                    var $element;
+                    var $element,
+                        $contentPane;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
@@ -233,11 +234,32 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     $element = scope.$element = $(element);
 
+                    $contentPane = $element.find('.diagram-content-pane');
+
+
                     //scope.$watch(function(){
                     //    return $element.attr('class');
                     //}, function(cssClass){
                     //    console.log(cssClass);
                     //});
+
+                    window.onkeydown = function(e) {
+                        if(e.keyCode === 32 && e.target === document.body) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    };
+
+                    console.log($contentPane.length);
+                    $contentPane.keydown(function(e) {
+
+                        console.log(e.target);
+                        if(e.keyCode === 32) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+
 
                     scope.$contentPane = element.find('>.diagram-content-pane');
 

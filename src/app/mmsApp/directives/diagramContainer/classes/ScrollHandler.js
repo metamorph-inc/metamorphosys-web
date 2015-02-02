@@ -130,8 +130,8 @@ module.exports = function ($scope, $timeout, $log) {
 
         if (angular.isObject(jsp)) {
 
-            $log.debug('Reinitializing JSP.');
-            jsp.scrollBy(-distance.x, -distance.y);
+//            $log.debug('jsp.scrollBy', distance);
+            jsp.scrollBy(-distance.x, -distance.y, false);
 
         }
 

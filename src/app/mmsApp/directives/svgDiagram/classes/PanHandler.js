@@ -23,7 +23,7 @@ module.exports = function ($scope, $log) {
 
     startDrag = function () {
 
-        self.dragging = true;
+        self.pannable = false;
 
         //moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
@@ -34,13 +34,14 @@ module.exports = function ($scope, $log) {
     finishDrag = function () {
 
         earlierPosition = null;
+        self.pannable = false;
 
-        if (self.dragging === true) {
+        if (self.panning === true) {
 
             //moveOperation.finish();
             //moveOperation = null;
 
-            self.dragging = false;
+            self.panning = false;
 
             $log.debug('Finish panning');
 
@@ -68,11 +69,14 @@ module.exports = function ($scope, $log) {
 
         if (angular.isObject(earlierPosition)) {
 
-            if (!self.dragging) {
+            if (!self.panning) {
                 startDrag();
             }
 
-            currentPosition = getOffsetToMouse($event);
+            currentPosition = {
+                x: $event.pageX,
+                y: $event.pageY
+            };
 
             translation = {
                 x: currentPosition.x - earlierPosition.x,
@@ -90,7 +94,15 @@ module.exports = function ($scope, $log) {
 
     onDiagramMouseDown = function($event) {
 
-        earlierPosition = getOffsetToMouse($event);
+        if ($scope.pressedKey === 32) {
+
+            self.panning = true;
+
+            earlierPosition = {
+                x: $event.pageX,
+                y: $event.pageY
+            };
+        }
 
     };
 
@@ -114,11 +126,25 @@ module.exports = function ($scope, $log) {
     };
 
 
+    $scope.$on('keydownOnDiagram', function($event, $originalEvent) {
+
+        if ($originalEvent.keyCode === 32) {
+            self.pannable = true;
+        }
+
+    });
+
+    $scope.$on('keyupOnDiagram', function() {
+        self.pannable = false;
+    });
+
     this.onDiagramMouseDown = onDiagramMouseDown;
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;
     this.onDiagramMouseLeave = onDiagramMouseLeave;
     this.onWindowBlur = onWindowBlur;
+    this.onComponentMouseUp = onDiagramMouseUp;
+    this.onPortMouseUp = onDiagramMouseUp;
 
     return this;
 
