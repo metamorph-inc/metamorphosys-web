@@ -409,12 +409,18 @@ define( [
     AdmExporter.prototype.addConnector = function ( node, parent, containerData, callback ) {
         var self = this,
             parentType = self.core.getAttribute( self.getMetaType( parent ), 'name' ),
+            errMsg,
             data = self.getConnectorData( node, parent );
 
         if ( parentType === 'Container' ) {
             containerData.Connector.push( data );
         } else if ( parentType === 'AVMComponentModel' ) {
             containerData.ConnectorInstance.push( data );
+        } else {
+            errMsg = 'Unexpected parentType in addConnector: ' + parentType;
+            self.logger.error( errMsg );
+            callback( errMsg );
+            return;
         }
 
         self.addRoles( node, data, function ( err ) {
@@ -636,9 +642,11 @@ define( [
                             }
                         } else {
                             callback( 'Unexpected Connector grandParentMetaType ' + grandParentMetaType );
+                            return;
                         }
                     } else {
                         callback( 'Unexpected Connector parentMetaType ' + parentMetaType );
+                        return;
                     }
                 }
                 callback( null, id );
@@ -978,8 +986,8 @@ define( [
                                 'name' );
                             if ( parentMetaType === 'AVMComponentModel' ) {
                                 if ( self.shouldBeGenerated( valueSourceParent ) ) {
-                                    valueSourceId = 'id-' + self.core.getGuid( valueSourceParent ) + '-' + self
-                                        .core.getAttribute( valueSource, 'ID' );
+                                    valueSourceId = 'id-' + self.core.getGuid( valueSourceParent ) + '-' +
+                                        self.core.getAttribute( valueSource, 'ID' );
                                 }
                             } else if ( parentMetaType === 'Container' ) {
                                 //If parent of parent is alternative, then only add if parent is in AA.
@@ -1010,9 +1018,10 @@ define( [
                         }
                     };
                 };
-                if ( counter === 0 ) {
+                if ( valueFlows.length === 0 ) {
                     self.logger.warning( 'Formula "' + formulaName + '" did not have any incoming value flows.' );
                     addFormulaData( [], error );
+                    return;
                 }
                 for ( i = 0; i < valueFlows.length; i += 1 ) {
                     if ( self.core.hasPointer( valueFlows[ i ], 'src' ) ) {
@@ -1069,6 +1078,10 @@ define( [
             };
 
         containerData.ValueFlowMux.push( mux );
+        if (valueFlows.length === 0) {
+            callback(null, mux[ '@ID' ]);
+            return;
+        }
         for ( i = 0; i < valueFlows.length; i += 1 ) {
             if ( self.core.hasPointer( valueFlows[ i ], 'src' ) ) {
                 self.core.loadPointer( valueFlows[ i ], 'src', counterCallback );
@@ -1088,10 +1101,11 @@ define( [
             parentType = self.core.getAttribute( self.getMetaType( targetParent ), 'name' ),
             atValueFlowNode = function ( valueFlow ) {
                 var srcId;
-                counter -= 1;
+                //counter -= 1;
                 if ( !self.core.hasPointer( valueFlow, 'src' ) ) {
                     self.createMessage( valueFlow, 'ValueFlow Connection with no src exists in design.', 'error' );
                     error += 'A valueFlow with only one direction pointer exists in model.';
+                    counter -= 1;
                     if ( counter <= 0 ) {
                         callback( error, null );
                     }
@@ -1106,8 +1120,8 @@ define( [
                             src = self.core.getParent( valueSourceNode );
                             srcParentMetaType = self.core.getAttribute( self.getMetaType( src ), 'name' );
                             if ( srcParentMetaType === 'AVMComponentModel' ) {
-                                if ( parentType === 'AVMComponentModel' && self.core.getPath( src ) === self.core
-                                    .getPath( targetParent ) ) {
+                                if ( parentType === 'AVMComponentModel' && self.core.getPath( src ) ===
+                                        self.core.getPath( targetParent ) ) {
                                     self.logger.info( 'Skipping connection within same ACM : ' +
                                         self.core.getAttribute( targetNode, 'name' ) );
                                 } else {
@@ -1136,12 +1150,17 @@ define( [
                                 finalSrcId = srcId;
                             }
                         }
-                        if ( counter <= 0 ) {
+                        counter -= 1;
+                        if ( counter === 0 ) {
                             callback( error, finalSrcId );
                         }
                     } );
                 }
             };
+        if (valueFlows.length === 0) {
+            callback(null);
+            return;
+        }
         for ( i = 0; i < valueFlows.length; i += 1 ) {
             atValueFlowNode( valueFlows[ i ] );
         }
