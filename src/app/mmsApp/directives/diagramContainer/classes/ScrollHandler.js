@@ -79,8 +79,24 @@ module.exports = function ($scope, $timeout, $log) {
 
             .bind('jsp-initialised',
             function () {
+
+                var spaceBarKiller;
+
                 jspPane = $scope.$contentPane.find('.jspPane');
                 updateVisibleArea();
+
+                spaceBarKiller = function(e) {
+
+                    console.log('.jspPane', e.target, e.keyCode);
+                    if(e.keyCode === 32) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                };
+
+                jspPane.keydown(spaceBarKiller);
+
             }
         )
             .bind('jsp-scroll-y', function (event, aScrollPositionY) {

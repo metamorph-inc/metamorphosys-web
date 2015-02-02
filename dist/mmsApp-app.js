@@ -1826,8 +1826,24 @@ module.exports = function ($scope, $timeout, $log) {
 
             .bind('jsp-initialised',
             function () {
+
+                var spaceBarKiller;
+
                 jspPane = $scope.$contentPane.find('.jspPane');
                 updateVisibleArea();
+
+                spaceBarKiller = function(e) {
+
+                    console.log('.jspPane', e.target, e.keyCode);
+                    if(e.keyCode === 32) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                };
+
+                jspPane.keydown(spaceBarKiller);
+
             }
         )
             .bind('jsp-scroll-y', function (event, aScrollPositionY) {
@@ -2110,7 +2126,9 @@ angular.module('mms.designVisualization.diagramContainer', [
                 link: function (scope, element) {
 
                     var $element,
-                        $contentPane;
+                        $contentPane,
+                        spaceBarKiller,
+                        spaceBarKiller2;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
@@ -2148,14 +2166,29 @@ angular.module('mms.designVisualization.diagramContainer', [
                     };
 
                     console.log($contentPane.length);
-                    $contentPane.keydown(function(e) {
 
-                        console.log(e.target);
+                    spaceBarKiller = function(e) {
+
+                        console.log('.diagram-content-pane', e.target, e.keyCode);
                         if(e.keyCode === 32) {
                             e.preventDefault();
                             return false;
                         }
-                    });
+
+                    };
+
+                    spaceBarKiller2 = function(e) {
+
+                        console.log('.diagram-container', e.target, e.keyCode);
+                        if(e.keyCode === 32) {
+                            e.preventDefault();
+                            return false;
+                        }
+
+                    };
+
+                    $contentPane.keydown(spaceBarKiller);
+                    $element.keydown(spaceBarKiller2);
 
 
                     scope.$contentPane = element.find('>.diagram-content-pane');
