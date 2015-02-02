@@ -42,7 +42,7 @@ angular.module( 'CyPhyApp' )
         $scope.logs = [ 'init' ];
 
         log = function ( message ) {
-            $scope.logs.push( new Date() + " " + message );
+            $scope.logs.push( new Date() + ' ' + message );
             //$scope.$apply();
         };
 
@@ -58,7 +58,7 @@ angular.module( 'CyPhyApp' )
         future = ( function ( projectName ) {
             return dataStoreService.connectToDatabase( databaseId, {
                 host: window.location.basename,
-                storageKeyType: "rand160bytes"
+                storageKeyType: 'rand160bytes'
             } )
                 .then( function () {
                     // select default project and branch (master)
@@ -67,11 +67,11 @@ angular.module( 'CyPhyApp' )
                 } )
                 .
             catch ( function ( reason ) {
-                log( 'Project does not exist. Create and import it using the <a href="' +
+                log( 'Project "' + projectName + '" does not exist. Create and import it using the <a href="' +
                     window.location.origin + '"> webgme interface</a>.' );
                 fatal( reason );
             } );
-        } )( "Test_Template_Module_1x2" )
+        } )( 'SimpleModelica' )
             .then( function ( project ) {
                 context = {
                     db: databaseId,
@@ -85,8 +85,11 @@ angular.module( 'CyPhyApp' )
                 }, TIMEOUT );
             } )
             .then( function () {
+                return branchService.getBranches( databaseId);
+            })
+            .then( function (branches) {
                 return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ),
-                    "#6552a37a4b5147cb87089ceeddc46c8852441eef" );
+                    branches.filter(function (o) { return o.name === 'master'; })[0].commitId );
             } )
             .then( function ( branchId ) {
                 return $timeout( function () {
@@ -121,22 +124,22 @@ angular.module( 'CyPhyApp' )
             } )
             .then( function ( children ) {
                 log( 'children: ' + children.length );
-                attiny = children.filter( function ( child ) {
-                    return child.getAttribute( 'name' ) === 'R_0201_620k_0.05W_1%_Thick_Film';
+                acm = children.filter( function ( child ) {
+                    return child.getAttribute( 'name' ) === 'Modelica';
                 } )[ 0 ];
-                return attiny.loadChildren();
+                return acm.loadChildren();
             } );
         future = future.then(function (children) {
             log('children2: ' + children.length);
-            var c = children.filter(function (child) {
-                return child.getAttribute('name') === 'R';
+            var prop = children.filter(function (child) {
+                return child.getAttribute('name') === 'Prop';
             })[0];
-            value = c;
-            return c;
+            value = prop;
+            return prop;
         });
         var count = 0;
         var value;
-        var attiny;
+        var acm;
         var setattr = function (c) {
             log('set');
 
@@ -153,7 +156,32 @@ angular.module( 'CyPhyApp' )
                 });
             value.setAttribute('Value', Math.random() * 10000);
             return deferred.promise;
-        }
+        };
+        var j = 0;
+        setattr = function () {
+            var i,
+                deferred = $q.defer();
+            value.onUpdate(function () {
+                log('set ' + i);
+                console.log('set ' + i + ' ' + j);
+                if (value.getAttribute('Value') >= j) {
+                    if (j >= 20 * 40) {
+                        log('PHANTOM DONE');
+                        deferred.resolve();
+                    } else {
+                        deferred.resolve($timeout(setattr, 10));
+                    }
+                }
+            });
+            value.onUnload(function () {
+                debugger;
+            });
+            j += 20;
+            for (i = 1; i <= 20; i++) {
+                value.setAttribute('Value', i + j - 20);
+            }
+            return deferred;
+        };
         future.then(setattr);
         //.catch ( fatal );
     } );
