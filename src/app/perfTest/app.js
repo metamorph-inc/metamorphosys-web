@@ -187,7 +187,6 @@ angular.module( 'CyPhyApp' )
                         return (function () {
                             var getBranchTries = 0,
                                 testBranchResult = function () {
-                                    // FIXME: getBranches takes a long time (>40 sec!)
                                     return branchService.getBranches(databaseId).then(function (branches) {
                                         var client = dataStoreService.getDatabaseConnection(databaseId).client,
                                             clientCommit = client.getActualCommit(),
