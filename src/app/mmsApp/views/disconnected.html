@@ -1,0 +1,11 @@
+<div class="container" ng-if="!loading">
+
+    <div class="bs-callout bs-callout-danger" ng-if="!page.leftBehind">
+        <h4 class="header">Lost connection to server</h4>
+
+        <p><b>=[)------------------------ x -----------------------(]=</b></p>
+        <br/>
+        <md-button ng-click="page.clickRetry()" class="md-raised md-primary">Retry</md-button>
+
+    </div>
+</div>

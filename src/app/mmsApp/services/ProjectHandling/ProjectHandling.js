@@ -87,6 +87,11 @@ angular.module('mms.projectHandling', [])
                             deferred.reject(error);
                         });
 
+                    branchService.watchBranchState( connectionId, function ( event ) {
+                        $log.debug.log( 'watchBranchState', event );
+                    } );
+
+
                 });
 
             return deferred.promise;

@@ -19,9 +19,9 @@ angular.module('mms.connectionHandling', [])
             return mainConnectionId;
         };
 
-        this.$get = ['$q', 'dataStoreService',
+        this.$get = ['$rootScope', '$q', 'dataStoreService', '$log', '$timeout',
 
-            function ($q, dataStoreService) {
+            function ($rootScope, $q, dataStoreService, $log, $timeout) {
 
                 var ConnectionHandling;
 
@@ -41,6 +41,17 @@ angular.module('mms.connectionHandling', [])
                                 host: window.location.basename
                             }).then(function () {
 
+                                dataStoreService.watchConnectionState( mainConnectionId, function ( connectionEvent ) {
+
+                                    $log.debug( 'watchConnectionState', connectionEvent );
+
+                                    $timeout(function(){
+                                        $rootScope.disconnected  = ( connectionEvent !== 'connected' );
+                                    });
+
+
+                                } );
+
                                 mainConnectionEstablished = true;
 
                                 deferred.resolve();
@@ -48,6 +59,7 @@ angular.module('mms.connectionHandling', [])
                             });
 
                         } else {
+
                             deferred.resolve();
                         }
 

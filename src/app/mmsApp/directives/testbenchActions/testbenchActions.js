@@ -36,56 +36,56 @@ angular.module('mms.testbenchActions', [
         };
 
         $scope.testbenchResults = [
-            //
-            //{
-            //
-            //    id: 'testPCBResult1',
-            //    name: 'Generated PCB 1',
-            //    timestamp: Date.now(),
-            //    visualUrl: 'images/testPCBResult.png',
-            //    attachments: [
-            //        {
-            //            name: 'Download Eagle file',
-            //            url: 'http://google.com'
-            //        }
-            //    ],
-            //    status: 'SUCCESS'
-            //
-            //
-            //},
-            //
-            //{
-            //
-            //    id: 'testPCBResult2',
-            //    name: 'Generated PCB 2',
-            //    timestamp: Date.now(),
-            //    visualUrl: 'images/testPCBResult.png',
-            //    attachments: [
-            //        {
-            //            name: 'Download Eagle file',
-            //            url: 'http://google.com'
-            //        }
-            //    ],
-            //    status: 'FAILURE'
-            //
-            //},
-            //
-            //{
-            //
-            //    id: 'testPCBResult3',
-            //    name: 'Generated PCB 3',
-            //    timestamp: Date.now(),
-            //    visualUrl: 'images/testPCBResult.png',
-            //    attachments: [
-            //        {
-            //            name: 'Download Eagle file',
-            //            url: 'http://google.com'
-            //        }
-            //    ],
-            //    status: 'FAILURE'
-            //
-            //}
-            //
+
+            {
+
+                id: 'testPCBResult1',
+                name: 'Generated PCB 1',
+                timestamp: Date.now(),
+                visualUrl: 'images/testPCBResult.png',
+                attachments: [
+                    {
+                        name: 'Download Eagle file',
+                        url: 'http://google.com'
+                    }
+                ],
+                status: 'SUCCESS'
+
+
+            },
+
+            {
+
+                id: 'testPCBResult2',
+                name: 'Generated PCB 2',
+                timestamp: Date.now(),
+                visualUrl: 'images/testPCBResult.png',
+                attachments: [
+                    {
+                        name: 'Download Eagle file',
+                        url: 'http://google.com'
+                    }
+                ],
+                status: 'FAILURE'
+
+            },
+
+            {
+
+                id: 'testPCBResult3',
+                name: 'Generated PCB 3',
+                timestamp: Date.now(),
+                visualUrl: 'images/testPCBResult.png',
+                attachments: [
+                    {
+                        name: 'Download Eagle file',
+                        url: 'http://google.com'
+                    }
+                ],
+                status: 'FAILURE'
+
+            }
+
 
         ];
 
