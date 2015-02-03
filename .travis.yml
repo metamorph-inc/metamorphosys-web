@@ -3,7 +3,11 @@ node_js:
   - "0.11"
   - "0.10"
 services: mongodb
-before_install: npm install -g protractor@1.6.1
+before_install:
+ - npm install -g protractor@1.6.1
+install:
+  - npm install
+  - webdriver-manager update --standalone
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
@@ -12,6 +16,6 @@ before_script:
   - sleep 3 # give Web server some time to bind to sockets, etc
 script:
   - "npm run test_all"
-  - protractor protractor_conf.js
+  - protractor --browser firefox protractor_conf.js
 after_failure:
   - cat nohup.out
