@@ -13,3 +13,5 @@ before_script:
 script:
   - "npm run test_all"
   - protractor protractor_conf.js
+after_failure:
+  - cat nohup.out
