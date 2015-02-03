@@ -1,7 +1,6 @@
 This app simulates what a user might do, so that we can run many copies of this app and load test the server.
 
 Setup:
-Import test\models\SimpleModelica.json as SimpleModelica
 npm install phantomjs
 
 Run:

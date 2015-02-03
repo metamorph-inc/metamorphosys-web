@@ -1,12 +1,7 @@
 /*globals angular, console*/
 
 var TIMEOUT = 0;
-// uncomment this and the meta nodes won't be loaded:
 //TIMEOUT = 1000;
-
-var fatal = function ( err ) {
-    console.log( err );
-};
 
 var CyPhyApp = angular.module( 'CyPhyApp', [
     'ui.router',
@@ -74,9 +69,24 @@ angular.module( 'CyPhyApp' )
                 } )
                 .
             catch ( function ( reason ) {
+                if (reason.message.indexOf('Project does not exist') !== -1) {
+                    return $http.get('/extlib/test/models/SimpleModelica.json')
+                        .then(function (res) {
+                            var deferred = $q.defer();
+                            var client = dataStoreService.getDatabaseConnection(databaseId).client;
+                            client.createProjectFromFileAsync(projectName, res.data, function(err) {
+                                if (err) {
+                                    return deferred.reject(err);
+                                }
+                                log('project imported');
+                                deferred.resolve();
+                            });
+                            return deferred.promise;
+                        }).catch(fail);
+                }
                 log( 'Project "' + projectName + '" does not exist. Create and import it using the <a href="' +
                     window.location.origin + '"> webgme interface</a>.' );
-                fatal( reason );
+                fail( reason );
             } );
         } )( 'SimpleModelica' )
             .then( function ( project ) {
@@ -178,7 +188,7 @@ angular.module( 'CyPhyApp' )
                 deferred = $q.defer();
             value.onUpdate(function () {
                 log('set ' + i + ' ' + j);
-                console.log('set ' + i + ' ' + j);
+                // console.log('set ' + i + ' ' + j);
                 progress(j);
                 var valuePath = value.getId();
                 if (value.getAttribute('Value') === j && latest < j) {
@@ -243,6 +253,6 @@ angular.module( 'CyPhyApp' )
             }
             return deferred;
         };
+        future.catch(fail);
         future.then(setattr);
-        //.catch ( fatal );
     } );
