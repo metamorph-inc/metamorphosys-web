@@ -1,11 +1,11 @@
 <div class="container">
 
-    <div class="bs-callout bs-callout-danger">
+    <div class="bs-callout bs-callout-danger" ng-if="!page.leftBehind">
         <h4 class="header">Something went wrong!</h4>
 
         <p><b>¯\_(⊙︿⊙)_/¯</b></p>
         <br/>
-        <md-button href="http://mmsapp.metamorphsoftware.com/dispatch/mmsapp" class="md-raised md-primary">Retry</md-button>
+        <md-button ng-click="page.clickRetry()" class="md-raised md-primary">Retry</md-button>
 
     </div>
 </div>

@@ -15,5 +15,8 @@
   ],
   "dependencies": {
     "isis-ui-components": "*"
+  },
+  "resolutions": {
+    "angular-material": "~0.7.1"
   }
 }

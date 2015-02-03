@@ -2,8 +2,6 @@
 
 'use strict';
 
-// Move this to GME eventually
-
 angular.module( 'mms.designVisualization.busyCover', [] )
     .directive( 'busyCover', [ '$rootScope',
         function ($rootScope) {

@@ -174,6 +174,7 @@ module.exports = function () {
                     .catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening branch errored:', $stateParams.projectId, reason);
+                        deferred.reject();
                         $state.go('404', {
                             projectId: $stateParams.projectId
                         });
@@ -193,6 +194,7 @@ module.exports = function () {
                     }).catch(function (reason) {
                         $rootScope.loading = false;
                         $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                        deferred.reject();
                         $state.go('404', {
                             projectId: $stateParams.projectId
                         });
@@ -248,6 +250,7 @@ module.exports = function () {
                 .catch(function (reason) {
                     $rootScope.loading = false;
                     $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                    deferred.reject();
                     $state.go('404', {
                         projectId: $stateParams.projectId
                     });
