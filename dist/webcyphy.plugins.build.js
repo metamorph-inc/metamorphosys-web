@@ -5316,7 +5316,7 @@ define('executor/ExecutorClient',['superagent'], function (superagent) {
 
     ExecutorClient.prototype.getAllInfo = function (callback) {
 
-        this.sendHttpRequest('GET', this.executorUrl, function (err, response) {
+        this.sendHttpRequest('GET', this.getInfoURL(), function (err, response) {
             if (err) {
                 callback(err);
                 return;
