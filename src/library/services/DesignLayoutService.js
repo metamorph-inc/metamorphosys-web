@@ -190,12 +190,9 @@ angular.module('cyphy.services')
 
                     }
 
-                    if ( newRotation !== child.rotation ) {
+                    if ( !(child.rotation === undefined && newRotation === 0) && newRotation !== child.rotation ) {
 
                         child.rotation = newRotation;
-
-                        hadChanges = true;
-                        updateType = 'rotationChange';
 
                         hadChanges = true;
                         updateType = 'rotationChange';

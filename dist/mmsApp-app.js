@@ -112,10 +112,10 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider
             resolve: {
                 selectProject: gmeProjectInitializers.selectProject
             },
-            controller: 'CreateDesignController',
             views: {
                 'onCover': {
-                    template: null
+                    template: null,
+                    controller: 'CreateDesignController'
                 }
             }
 
@@ -220,7 +220,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q) {
+CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log) {
 
     var stateBeforeWentWrong;
 
@@ -292,6 +292,28 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q)
 
         }
 
+        $log.debug('stateChangeSuccess', to);
+
+
+    });
+
+
+    $rootScope.$on('$stateChangeStart', function (ev, to) {
+
+        $log.debug('stateChangeStart', to);
+
+    });
+
+    $rootScope.$on('$stateChangeError', function (ev, to) {
+
+        $log.debug('stateChangeError', to);
+
+    });
+
+    $rootScope.$on('$stateNotFound', function (ev, to) {
+
+        $log.debug('stateNotFound', to);
+
     });
 
 });
@@ -299,9 +321,11 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q)
 CyPhyApp.controller('EditorViewController', function () {
 });
 
-CyPhyApp.controller('NotFoundController', function ($rootScope) {
+CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
 
     var self = this;
+
+    $log.debug('in NotFoundController');
 
     this.clickRetry = function () {
 
@@ -1039,36 +1063,24 @@ module.exports = function () {
             connectionHandling.establishMainGMEConnection()
                 .then(function(){
 
-
                     projectService.selectProject(connectionHandling.getMainGMEConnectionId(), $stateParams.projectId)
                         .then(function (projectId) {
 
                             $log.debug('Project selected', projectId);
                             $rootScope.projectId = projectId;
 
-                            //projectHandling.findFirstBranch()
-                            //    .then(function(branchId){
-                            //
-                            //        $stateParams.branchId = branchId;
-                            //
-                            //        console.log('First branch', branchId);
-                            //
-                            //        deferred.resolve();
-                            //
-                            //        $timeout(function() {
-                            //            $state.go('editor.branch', {
-                            //                projectId: projectId,
-                            //                branchId: branchId
-                            //            });
-                            //        });
-                            //
-                            //
-                            //    });
-
-
                             deferred.resolve(projectId);
 
+                        })
+                        .catch(function (reason) {
+                            $rootScope.loading = false;
+                            $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                            deferred.reject();
+                            $state.go('404', {
+                                projectId: $stateParams.projectId
+                            });
                         });
+
                 })
                 .catch(function (reason) {
                     $rootScope.loading = false;
@@ -1495,8 +1507,6 @@ angular.module('mms.designVisualization.designEditor', [
                     nodeService.createNode(designCtx, $rootScope.activeContainerId, metaId, msg || 'New wire' )
                         .then(function(node){
 
-                            console.log(wire.segments);
-
                             node.setRegistry('wireSegments', angular.copy(wire.segments));
                             node.makePointer('src', wire.end1.port.id );
                             node.makePointer('dst', wire.end2.port.id );
@@ -1714,7 +1724,7 @@ angular.module('mms.designVisualization.designEditor', [
                 $rootScope.unCovered = false;
 
                 if ($scope.designCtx) {
-                    $log.debug('Celaning up designLayout watchers');
+                    $log.debug('Cleaning up designLayout watchers');
                     designLayoutService.cleanUpAllRegions($scope.designCtx);
                 }
 
@@ -5541,54 +5551,54 @@ angular.module('mms.testbenchActions', [
 
         $scope.testbenchResults = [
 
-            {
-
-                id: 'testPCBResult1',
-                name: 'Generated PCB 1',
-                timestamp: Date.now(),
-                visualUrl: 'images/testPCBResult.png',
-                attachments: [
-                    {
-                        name: 'Download Eagle file',
-                        url: 'http://google.com'
-                    }
-                ],
-                status: 'SUCCESS'
-
-
-            },
-
-            {
-
-                id: 'testPCBResult2',
-                name: 'Generated PCB 2',
-                timestamp: Date.now(),
-                visualUrl: 'images/testPCBResult.png',
-                attachments: [
-                    {
-                        name: 'Download Eagle file',
-                        url: 'http://google.com'
-                    }
-                ],
-                status: 'FAILURE'
-
-            },
-
-            {
-
-                id: 'testPCBResult3',
-                name: 'Generated PCB 3',
-                timestamp: Date.now(),
-                visualUrl: 'images/testPCBResult.png',
-                attachments: [
-                    {
-                        name: 'Download Eagle file',
-                        url: 'http://google.com'
-                    }
-                ],
-                status: 'FAILURE'
-
-            }
+            //{
+            //
+            //    id: 'testPCBResult1',
+            //    name: 'Generated PCB 1',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'SUCCESS'
+            //
+            //
+            //},
+            //
+            //{
+            //
+            //    id: 'testPCBResult2',
+            //    name: 'Generated PCB 2',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'FAILURE'
+            //
+            //},
+            //
+            //{
+            //
+            //    id: 'testPCBResult3',
+            //    name: 'Generated PCB 3',
+            //    timestamp: Date.now(),
+            //    visualUrl: 'images/testPCBResult.png',
+            //    attachments: [
+            //        {
+            //            name: 'Download Eagle file',
+            //            url: 'http://google.com'
+            //        }
+            //    ],
+            //    status: 'FAILURE'
+            //
+            //}
 
 
         ];

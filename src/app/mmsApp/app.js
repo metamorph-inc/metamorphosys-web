@@ -111,10 +111,10 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider
             resolve: {
                 selectProject: gmeProjectInitializers.selectProject
             },
-            controller: 'CreateDesignController',
             views: {
                 'onCover': {
-                    template: null
+                    template: null,
+                    controller: 'CreateDesignController'
                 }
             }
 
@@ -219,7 +219,7 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q) {
+CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log) {
 
     var stateBeforeWentWrong;
 
@@ -291,6 +291,28 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q)
 
         }
 
+        $log.debug('stateChangeSuccess', to);
+
+
+    });
+
+
+    $rootScope.$on('$stateChangeStart', function (ev, to) {
+
+        $log.debug('stateChangeStart', to);
+
+    });
+
+    $rootScope.$on('$stateChangeError', function (ev, to) {
+
+        $log.debug('stateChangeError', to);
+
+    });
+
+    $rootScope.$on('$stateNotFound', function (ev, to) {
+
+        $log.debug('stateNotFound', to);
+
     });
 
 });
@@ -298,9 +320,11 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q)
 CyPhyApp.controller('EditorViewController', function () {
 });
 
-CyPhyApp.controller('NotFoundController', function ($rootScope) {
+CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
 
     var self = this;
+
+    $log.debug('in NotFoundController');
 
     this.clickRetry = function () {
 

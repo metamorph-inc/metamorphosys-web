@@ -88,8 +88,6 @@ angular.module('mms.designVisualization.designEditor', [
                     nodeService.createNode(designCtx, $rootScope.activeContainerId, metaId, msg || 'New wire' )
                         .then(function(node){
 
-                            console.log(wire.segments);
-
                             node.setRegistry('wireSegments', angular.copy(wire.segments));
                             node.makePointer('src', wire.end1.port.id );
                             node.makePointer('dst', wire.end2.port.id );
@@ -307,7 +305,7 @@ angular.module('mms.designVisualization.designEditor', [
                 $rootScope.unCovered = false;
 
                 if ($scope.designCtx) {
-                    $log.debug('Celaning up designLayout watchers');
+                    $log.debug('Cleaning up designLayout watchers');
                     designLayoutService.cleanUpAllRegions($scope.designCtx);
                 }
 

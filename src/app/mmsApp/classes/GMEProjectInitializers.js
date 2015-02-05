@@ -216,36 +216,24 @@ module.exports = function () {
             connectionHandling.establishMainGMEConnection()
                 .then(function(){
 
-
                     projectService.selectProject(connectionHandling.getMainGMEConnectionId(), $stateParams.projectId)
                         .then(function (projectId) {
 
                             $log.debug('Project selected', projectId);
                             $rootScope.projectId = projectId;
 
-                            //projectHandling.findFirstBranch()
-                            //    .then(function(branchId){
-                            //
-                            //        $stateParams.branchId = branchId;
-                            //
-                            //        console.log('First branch', branchId);
-                            //
-                            //        deferred.resolve();
-                            //
-                            //        $timeout(function() {
-                            //            $state.go('editor.branch', {
-                            //                projectId: projectId,
-                            //                branchId: branchId
-                            //            });
-                            //        });
-                            //
-                            //
-                            //    });
-
-
                             deferred.resolve(projectId);
 
+                        })
+                        .catch(function (reason) {
+                            $rootScope.loading = false;
+                            $log.debug('Opening project errored:', $stateParams.projectId, reason);
+                            deferred.reject();
+                            $state.go('404', {
+                                projectId: $stateParams.projectId
+                            });
                         });
+
                 })
                 .catch(function (reason) {
                     $rootScope.loading = false;
