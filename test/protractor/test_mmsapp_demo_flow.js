@@ -1,7 +1,10 @@
-/*global describe,it,browser,expect,by,before,beforeAll,element*/
+/*global describe,it,browser,expect,by,before,beforeAll,element, afterAll*/
 describe('Metamorphosys Tech Demo Flow', function () {
     var q = require('q'),
-        projectName;
+        projectName,
+        url,
+        otherBrowser;
+
 
     beforeAll(function loadTestProject(done) {
         if (false) {
@@ -20,6 +23,20 @@ describe('Metamorphosys Tech Demo Flow', function () {
         }
     });
 
+    afterAll(function(done) {
+        // Calling quit will remove the browser.
+        // You can choose to not quit the browser, and protractor will quit all of
+        // them for you when it exits (i.e. if you need a static number of browsers
+        // throughout all of your tests). However, I'm forking browsers in my tests
+        // and don't want to pile up my browser count.
+        if (otherBrowser) {
+            otherBrowser.quit().then(function() {
+                done();
+            });
+        } else {
+            done();
+        }
+    });
 
     it('Should create and load new design', function () {
         browser.get('http://localhost:8855/extlib/src/app/mmsApp/#/createDesign/' + projectName);
@@ -43,7 +60,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
 
     }, 1000 * 60 * 2);
-
 
     it('Should have about dialog open', function () {
 
@@ -71,7 +87,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     }, 5000);
 
-
     it('Should have component browser', function () {
 
         var componentBrowser,
@@ -84,7 +99,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
         expect(browser.isElementPresent(componentSearchInput)).toEqual(true);
 
     });
-
 
     it('Component search should return search results', function() {
 
@@ -143,7 +157,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             sensors;
 
         sensorCategoryExpander = element(by.css('.component-browser li[title=sensors] .node-expander'));
-        childrenList = element(by.css('.component-browser li[title=sensors] .node-list'));
+        childrenList = element(by.css('.component-browser li[title=sensors] > .node-list'));
         sensors = childrenList.all(by.css('li'));
 
         sensorCategoryExpander.click()
@@ -159,6 +173,22 @@ describe('Metamorphosys Tech Demo Flow', function () {
                     });
 
             });
+
+    });
+
+    it('Should be able to navigate to same project and design in other browser', function() {
+
+        otherBrowser = browser.forkNewDriverInstance(true);
+
+        expect(otherBrowser).not.toEqual(browser);
+        expect(otherBrowser.driver).not.toEqual(browser.driver);
+
+        browser.driver.getCurrentUrl().then(function(currentUrl) {
+
+            expect(otherBrowser.driver.getCurrentUrl()).toMatch(currentUrl);
+
+        });
+
 
     });
 
