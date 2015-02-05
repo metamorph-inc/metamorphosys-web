@@ -3,7 +3,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
     var q = require('q'),
         projectName,
         url,
-        otherBrowser;
+        b2;
 
 
     beforeAll(function loadTestProject(done) {
@@ -29,8 +29,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
         // them for you when it exits (i.e. if you need a static number of browsers
         // throughout all of your tests). However, I'm forking browsers in my tests
         // and don't want to pile up my browser count.
-        if (otherBrowser) {
-            otherBrowser.quit().then(function() {
+        if (b2) {
+            b2.quit().then(function() {
                 done();
             });
         } else {
@@ -77,13 +77,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
         )
             .then(function(){
 
+                expect(browser.isElementPresent(aboutDialog)).toEqual(true);
                 expect(closeButton.isDisplayed()).toBeTruthy();
                 closeButton.click();
 
             });
-
-        expect(browser.isElementPresent(aboutDialog)).toEqual(true);
-
 
     }, 5000);
 
@@ -178,17 +176,56 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     it('Should be able to navigate to same project and design in other browser', function() {
 
-        otherBrowser = browser.forkNewDriverInstance(true);
+        var diagramContainer,
+            closeButton;
 
-        expect(otherBrowser).not.toEqual(browser);
-        expect(otherBrowser.driver).not.toEqual(browser.driver);
+        b2 = browser.forkNewDriverInstance(true);
+
+        expect(b2).not.toEqual(browser);
+        expect(b2.driver).not.toEqual(browser.driver);
 
         browser.driver.getCurrentUrl().then(function(currentUrl) {
 
-            expect(otherBrowser.driver.getCurrentUrl()).toMatch(currentUrl);
+            expect(b2.driver.getCurrentUrl()).toMatch(currentUrl);
 
         });
 
+        diagramContainer = b2.element(by.css('div.diagram-container'));
+
+        expect(b2.getTitle()).toEqual('Metamorphosys');
+
+        b2.wait(function () {
+
+                return diagramContainer.isPresent();
+            },
+            5000,
+            'diagramContainer not found'
+        ).then(function(){
+
+
+            });
+
+        expect(b2.isElementPresent(diagramContainer)).toEqual(true);
+        expect(b2.element.all(by.css('text.component-label')).count()).toEqual(4);
+
+        closeButton = b2.element(by.css('.about-dialog .md-actions button.md-primary'));
+        closeButton.click();
+
+    });
+
+    it('Should be able to create component instance by dragging', function() {
+
+        var componentElementDragHandler,
+            svgDiagram;
+
+        componentElementDragHandler = element(by.css('li[title="3 Axis Accelerometer"] .label-and-extra-info'));
+        svgDiagram = element(by.css('.diagram-container'));
+
+        browser.driver.actions().
+            mouseMove(componentElementDragHandler, {x:10, y:10}).
+            mouseDown().
+            mouseMove(svgDiagram, {x: 10, y: 10}).
+            perform();
 
     });
 
