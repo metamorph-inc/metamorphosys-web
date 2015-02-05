@@ -1,3 +1,4 @@
+/*global describe,it,browser,expect,by,before,element*/
 describe('perfTest', function() {
   it('should not fork', function() {
     browser.get('http://localhost:8855/extlib/src/app/perfTest/');
