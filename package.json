@@ -7,8 +7,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "webgme": "https://github.com/webgme/webgme/tarball/master",
-    "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
+    "webgme": "https://github.com/webgme/webgme/tarball/%23120_domain-tools_migration",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
     "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"

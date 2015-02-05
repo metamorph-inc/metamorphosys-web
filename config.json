@@ -12,26 +12,24 @@
     "visualizerDescriptors": ["./Visualizers.json"],
 
     "pluginBasePaths": [
-        "./node_modules/webgme-domain-tools/src/plugins/META",
-        "./node_modules/webgme-domain-tools/src/plugins/Examples",
+        "./node_modules/webgme/src/plugin/coreplugins",
         "./src/plugins/ADMEditor"
     ],
 
     "rextrast": {
-        "executor": "./node_modules/webgme-domain-tools/src/rest/executor/Executor",
+        "executor": "./node_modules/webgme/src/middleware/executor/Executor",
         "desert": "./src/rest/desert/Desert",
         "serverinfo": "./src/rest/serverInfo/ServerInfo"
     },
 
     "paths": {
-        "ejs": "./node_modules/webgme-domain-tools/support/ejs/ejs.min",
-        "xmljsonconverter": "./node_modules/webgme-domain-tools/lib/xmljsonconverter",
-        "sax": "./node_modules/webgme-domain-tools/support/sax/sax",
-        "panels": "./node_modules/webgme-domain-tools/src/panels",
-        "widgets": "./node_modules/webgme-domain-tools/src/widgets",
+        "ejs": "./node_modules/webgme/src/common/util/ejs",
+        "xmljsonconverter": "./utils/xmljsonconverter",
+        "sax": "./vendor/sax/sax",
+
         "panels/ProjectAnalyzer": "./src/panels/ProjectAnalyzer",
         "widgets/ProjectAnalyzer": "./src/widgets/ProjectAnalyzer",
-        "executor": "./node_modules/webgme-domain-tools/src/rest/executor",
+        "executor": "./node_modules/webgme/src/middleware/executor",
         "desert": "./src/rest/desert",
         "serverinfo": "./src/rest/serverInfo",
         "CyPhyApp" : "./src/client",
