@@ -16,7 +16,7 @@
         xmljsonconverter: './utils/xmljsonconverter',
         sax: './vendor/sax/sax',
         jszip: './node_modules/webgme/node_modules/jszip/dist/jszip',
-        ejs: '../node_modules/webgme/src/common/util/ejs',
+        ejs: './node_modules/webgme/src/common/util/ejs',
         executor: './node_modules/webgme/src/middleware/executor',
         superagent: './node_modules/webgme/node_modules/superagent/superagent',
         'plugin/AdmExporter': './src/plugins/ADMEditor',
