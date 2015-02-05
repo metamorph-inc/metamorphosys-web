@@ -38,7 +38,7 @@
     },
 
     "test_paths": {
-        "mocks": "./node_modules/webgme-domain-tools/test/mocks",
+        "mocks": "./test/mocks",
         "test/models": "./test/models",
         "test/lib": "./test/lib"
     }

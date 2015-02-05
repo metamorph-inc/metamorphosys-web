@@ -1,0 +1,140 @@
+# Core Mock #
+
+- [ ] addMember
+- [ ] buildPath
+- [ ] clearMetaRules
+- [ ] copyData
+- [x] copyNode(node, parent)
+- [ ] copyNodes(nodes, parent)
+- [ ] createChild
+- [x] createNode(parameters)
+- [ ] createRoot
+- [ ] createSet
+- [ ] delAspectMeta
+- [ ] delAspectMetaTarget
+- [ ] delAttribute
+- [ ] delAttributeDescriptor
+- [ ] delAttributeMeta
+- [ ] delChildMeta
+- [ ] delConstraint
+- [ ] delMember
+- [ ] delMemberAttribute
+- [ ] delMemberRegistry
+- [ ] delNodeDescriptor
+- [ ] delPointerDescriptor
+- [ ] delPointerMeta
+- [ ] delPointerMetaTarget
+- [ ] delRegistry
+- [ ] deleteData
+- [ ] deleteNode
+- [ ] deletePointer
+- [ ] deleteProperty
+- [ ] deleteSet
+- [ ] getAncestor
+- [x] getAttribute(node, name)
+- [ ] getAttributeDescriptor
+- [ ] getAttributeMeta
+- [ ] getAttributeNames
+- [x] getBase(node)
+- [ ] getBaseRoot
+- [ ] getBaseType
+- [ ] getChild
+- [x] getChildrenPaths(node)
+- [x] getChildrenRelids(node)
+- [x] getCollectionNames(node)
+- [x] getCollectionPaths(node, name)
+- [ ] getCommonPathPrefixData
+- [ ] getConstraint
+- [ ] getConstraintNames
+- [ ] getCoreTree
+- [ ] getData
+- [ ] getDataForSingleHash
+- [ ] getDescendant
+- [ ] getDescendantByPath
+- [x] getGuid(node)
+- [ ] getHash
+- [ ] getJsonMeta
+- [ ] getKeys
+- [ ] getLevel
+- [x] getMemberAttribute
+- [x] getMemberAttributeNames
+- [x] getMemberPaths(node, name)
+- [x] getMemberRegistry
+- [x] getMemberRegistryNames
+- [ ] getMiddleGuid
+- [ ] getNodeDescriptor
+- [ ] getOutsidePointerPath
+- [ ] getOwnAttribute
+- [ ] getOwnAttributeNames
+- [ ] getOwnConstraintNames
+- [ ] getOwnJsonMeta
+- [x] getOwnPointerNames(node)
+- [x] getOwnPointerPath(node, name)
+- [ ] getOwnRegistry
+- [ ] getOwnRegistryNames
+- [x] getParent(node)
+- [x] getPath(node)
+- [ ] getPointerDescriptor
+- [x] getPointerNames(node)
+- [x] getPointerPath(node, name)
+- [ ] getProperty
+- [x] getRegistry(node, name)
+- [ ] getRegistryNames
+- [ ] getRelid
+- [ ] getRoot
+- [x] getSetNames(node)
+- [x] getSetNumbers(node)
+- [ ] getTypeRoot
+- [ ] getValidAspectNames
+- [ ] getValidAttributeNames
+- [ ] getValidPointerNames
+- [ ] getValidSetNames
+- [x] hasPointer(node, name)
+- [ ] isAncestor
+- [ ] isEmpty
+- [ ] isHashed
+- [ ] isInstanceOf
+- [ ] isMemberOf
+- [ ] isMutable
+- [ ] isObject
+- [ ] isTypeOf
+- [ ] isValidAttributeValueOf
+- [ ] isValidChildOf
+- [ ] isValidNode
+- [ ] isValidPath
+- [ ] isValidRelid
+- [ ] isValidTargetOf
+- [ ] joinPaths
+- [x] loadByPath(rootNode, pathToObject, callback)
+- [ ] loadChild
+- [x] loadChildren(node, callback)
+- [x] loadCollection(node, name, callback)
+- [x] loadPointer
+- [ ] loadRoot
+- [ ] loadSubTree
+- [ ] loadTree
+- [ ] moveNode
+- [ ] mutate
+- [ ] normalize
+- [ ] persist
+- [ ] setAspectMetaTarget
+- [x] setAttribute(node, name, value)
+- [ ] setAttributeDescriptor
+- [ ] setAttributeMeta
+- [ ] setBase
+- [ ] setChildMeta
+- [ ] setChildrenMetaLimits
+- [ ] setConstraint
+- [ ] setData
+- [ ] setGuid
+- [ ] setHashed
+- [ ] setMemberAttribute
+- [ ] setMemberRegistry
+- [ ] setNodeDescriptor
+- [ ] setPointer
+- [ ] setPointerDescriptor
+- [ ] setPointerMetaLimits
+- [ ] setPointerMetaTarget
+- [ ] setProperty
+- [x] setRegistry(node, name, value)
+- [ ] splitPath
