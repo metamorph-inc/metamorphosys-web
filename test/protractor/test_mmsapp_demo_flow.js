@@ -17,7 +17,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         $rootScope2;
 
 
-    require('./lib/find_by_text');
+    require('./lib/find_diagramComponent_by_labelText.js');
 
     beforeAll(function loadTestProject(done) {
         if (false) {
