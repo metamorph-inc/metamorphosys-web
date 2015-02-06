@@ -12,12 +12,25 @@ var CyPhyApp = angular.module( 'CyPhyApp', [
 
     } );
 
-// TODO: require all of your controllers
-//require('./views/MyView/MyViewController');
+var CyPhyApp = angular.module( 'CyPhyApp',
+    [
+        'ui.router',
+        'gme.services',
+] );
 
+CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
-angular.module( 'CyPhyApp' )
-    .controller( 'MyViewController', function ( $q, $scope, $timeout, $http, dataStoreService, projectService,
+    $urlRouterProvider.otherwise('/test?iterations=10');
+
+    $stateProvider
+        .state('test', {
+            url: '/test?iterations',
+            controller: 'PerfController',
+            template: '<div class="main-navigator-container"><ul id="log"><li ng-repeat="log in logs track by $index"> <span>{{log}}</span> </li> </ul></div>'
+    });
+});
+
+CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $stateParams, dataStoreService, projectService,
         nodeService, branchService ) {
         'use strict';
 
@@ -30,7 +43,8 @@ angular.module( 'CyPhyApp' )
             meta,
             context,
             failed = false,
-            branchId;
+            branchId,
+            iterations = $stateParams['iterations'] || 10;
 
         $scope.logs = [ 'init' ];
 
@@ -193,7 +207,7 @@ angular.module( 'CyPhyApp' )
                 var valuePath = value.getId();
                 if (value.getAttribute('Value') === j && latest < j) {
                     latest = j;
-                    if (j >= step * 20) {
+                    if (j >= step * iterations) {
                         return (function () {
                             var getBranchTries = 0,
                                 testBranchResult = function () {
