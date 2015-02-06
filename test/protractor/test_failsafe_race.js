@@ -1,13 +1,12 @@
 /*global describe,it,browser,expect,by,before,element*/
 describe('perfTest', function() {
   it('should not fork', function() {
-    browser.get('http://localhost:8855/extlib/src/app/perfTest/');
+    var iterations = 3;
+    browser.get('/extlib/src/app/perfTest/#/test?iterations=' + iterations);
 
     expect(browser.getTitle()).toEqual('perfTest');
 
-    browser.sleep(4000)
-
-    for (var i = 40; i <= 800; i += 40) {
+    for (var i = 40; i <= 40 * iterations; i += 40) {
         (function (i) {
             browser.wait(function(){
                 return element(by.id('progress_'+i)).isPresent();
