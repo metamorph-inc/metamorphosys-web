@@ -1,10 +1,23 @@
-/*global describe,it,browser,expect,by,before,beforeAll,element, afterAll*/
+/*global describe,it,browser,expect,by,before,beforeAll,element, afterAll, $, angular*/
+
 describe('Metamorphosys Tech Demo Flow', function () {
+
     var q = require('q'),
+        dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
+
+        gmeEventTimeLimit = 5000,
+
         projectName,
         url,
-        b2;
 
+        b1,
+        b2,
+
+        $rootScope1,
+        $rootScope2;
+
+
+    require('./lib/find_by_text');
 
     beforeAll(function loadTestProject(done) {
         if (false) {
@@ -21,16 +34,17 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 });
             });
         }
+
     });
 
-    afterAll(function(done) {
+    afterAll(function (done) {
         // Calling quit will remove the browser.
         // You can choose to not quit the browser, and protractor will quit all of
         // them for you when it exits (i.e. if you need a static number of browsers
         // throughout all of your tests). However, I'm forking browsers in my tests
         // and don't want to pile up my browser count.
         if (b2) {
-            b2.quit().then(function() {
+            b2.quit().then(function () {
                 done();
             });
         } else {
@@ -39,7 +53,10 @@ describe('Metamorphosys Tech Demo Flow', function () {
     });
 
     it('Should create and load new design', function () {
+
         browser.get('http://localhost:8855/extlib/src/app/mmsApp/#/createDesign/' + projectName);
+
+        b1 = browser;
 
         var diagramContainer;
 
@@ -53,7 +70,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
             },
             5000,
             'diagramContainer not found'
-        );
+        ).then(function () {
+
+                //$rootScope1 = angular.element(document).scope();
+
+            });
 
         expect(browser.isElementPresent(diagramContainer)).toEqual(true);
         expect(element.all(by.css('text.component-label')).count()).toEqual(4);
@@ -75,7 +96,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             2000,
             'aboutDialog not found'
         )
-            .then(function(){
+            .then(function () {
 
                 expect(browser.isElementPresent(aboutDialog)).toEqual(true);
                 expect(closeButton.isDisplayed()).toBeTruthy();
@@ -139,7 +160,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Shoud display Sensors category', function() {
+    it('Shoud display Sensors category', function () {
 
         var sensorCategoryItem;
 
@@ -148,7 +169,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Sensors category should expand and show sensors', function(){
+    it('Sensors category should expand and show sensors', function () {
 
         var sensorCategoryExpander,
             childrenList,
@@ -159,14 +180,14 @@ describe('Metamorphosys Tech Demo Flow', function () {
         sensors = childrenList.all(by.css('li'));
 
         sensorCategoryExpander.click()
-            .then(function(){
+            .then(function () {
 
-                browser.wait(function(){
-                   return childrenList.isDisplayed();
-                },
-                1000,
-                'no sensors in category')
-                    .then(function(){
+                browser.wait(function () {
+                        return childrenList.isDisplayed();
+                    },
+                    1000,
+                    'no sensors in category')
+                    .then(function () {
                         expect(sensors.count()).toBeGreaterThan(0);
                     });
 
@@ -213,19 +234,42 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Should be able to create component instance by dragging', function() {
+    it('Should be able to create component instance by dragging', function () {
 
-        var componentElementDragHandler,
-            svgDiagram;
+        var componentBox,
+            otherComponentBox;
 
-        componentElementDragHandler = element(by.css('li[title="3 Axis Accelerometer"] .label-and-extra-info'));
-        svgDiagram = element(by.css('.diagram-container'));
+        componentBox = element(by.diagramComponentLabel('3 Axis Accelerometer'));
+        otherComponentBox = b2.element(by.diagramComponentLabel('3 Axis Accelerometer'));
 
-        browser.driver.actions().
-            mouseMove(componentElementDragHandler, {x:10, y:10}).
-            mouseDown().
-            mouseMove(svgDiagram, {x: 10, y: 10}).
-            perform();
+        browser.driver.executeScript(dragAndDropHelper)
+            .then(function () {
+                browser.driver.executeScript(function () {
+
+                    $('li[title="3 Axis Accelerometer"] .label-and-extra-info').simulateDragDrop({
+                        dropTarget: $('.diagram-container')
+                    });
+
+                }).then(function () {
+
+                    //browser.sleep(5000);
+
+                    browser.wait(function () {
+                            return componentBox.isPresent();
+                        },
+                        gmeEventTimeLimit,
+                        'New component not created'
+                    );
+
+                    b2.wait(function () {
+                            return otherComponentBox.isPresent();
+                        },
+                        gmeEventTimeLimit,
+                        'New component not created in other window'
+                    );
+
+                });
+            });
 
     });
 

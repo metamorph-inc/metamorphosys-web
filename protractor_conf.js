@@ -4,5 +4,6 @@ exports.config = {
 //    'test/protractor/test_failsafe_race.js',
     'test/protractor/test_mmsapp_demo_flow.js'
   ],
-  framework: 'jasmine2'
+  framework: 'jasmine2',
+  rootElement: 'body'
 };
