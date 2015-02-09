@@ -11,7 +11,7 @@ by.addLocator('diagramComponentLabel',
 
             componentBoxes = using.querySelectorAll('g.component-container .symbol.box');
 
-        // Return an array of buttons with the text.
+        // Return an array of components with the text.
         return Array.prototype.filter.call(componentBoxes, function (box) {
 
             var label;

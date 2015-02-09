@@ -1,17 +1,19 @@
-/*global describe,it,browser,expect,by,before,beforeAll,element, afterAll, $, angular*/
+/*global describe,it,browser,expect,by,before,beforeAll,element, afterAll, $, angular, protractor*/
 
 describe('Metamorphosys Tech Demo Flow', function () {
 
     var q = require('q'),
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
 
-        gmeEventTimeLimit = 5000,
+        gmeEventTimeLimit = 2000,
+        uiEventTimeLimit = 200,
 
         projectName,
         url,
 
-        b1,
-        b2,
+        browser2,
+
+        targetComponentLabel = '3 Axis Accelerometer',
 
         $rootScope1,
         $rootScope2;
@@ -43,8 +45,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
         // them for you when it exits (i.e. if you need a static number of browsers
         // throughout all of your tests). However, I'm forking browsers in my tests
         // and don't want to pile up my browser count.
-        if (b2) {
-            b2.quit().then(function () {
+        if (browser2) {
+            browser2.quit().then(function () {
                 done();
             });
         } else {
@@ -55,8 +57,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
     it('Should create and load new design', function () {
 
         browser.get('http://localhost:8855/extlib/src/app/mmsApp/#/createDesign/' + projectName);
-
-        b1 = browser;
 
         var diagramContainer;
 
@@ -195,41 +195,41 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Should be able to navigate to same project and design in other browser', function() {
+    it('Should be able to navigate to same project and design in other browser', function () {
 
         var diagramContainer,
             closeButton;
 
-        b2 = browser.forkNewDriverInstance(true);
+        browser2 = browser.forkNewDriverInstance(true);
 
-        expect(b2).not.toEqual(browser);
-        expect(b2.driver).not.toEqual(browser.driver);
+        expect(browser2).not.toEqual(browser);
+        expect(browser2.driver).not.toEqual(browser.driver);
 
-        browser.driver.getCurrentUrl().then(function(currentUrl) {
+        browser.driver.getCurrentUrl().then(function (currentUrl) {
 
-            expect(b2.driver.getCurrentUrl()).toMatch(currentUrl);
+            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
 
         });
 
-        diagramContainer = b2.element(by.css('div.diagram-container'));
+        diagramContainer = browser2.element(by.css('div.diagram-container'));
 
-        expect(b2.getTitle()).toEqual('Metamorphosys');
+        expect(browser2.getTitle()).toEqual('Metamorphosys');
 
-        b2.wait(function () {
+        browser2.wait(function () {
 
                 return diagramContainer.isPresent();
             },
             5000,
             'diagramContainer not found'
-        ).then(function(){
+        ).then(function () {
 
 
             });
 
-        expect(b2.isElementPresent(diagramContainer)).toEqual(true);
-        expect(b2.element.all(by.css('text.component-label')).count()).toEqual(4);
+        expect(browser2.isElementPresent(diagramContainer)).toEqual(true);
+        expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(4);
 
-        closeButton = b2.element(by.css('.about-dialog .md-actions button.md-primary'));
+        closeButton = browser2.element(by.css('.about-dialog .md-actions button.md-primary'));
         closeButton.click();
 
     });
@@ -239,8 +239,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
         var componentBox,
             otherComponentBox;
 
-        componentBox = element(by.diagramComponentLabel('3 Axis Accelerometer'));
-        otherComponentBox = b2.element(by.diagramComponentLabel('3 Axis Accelerometer'));
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
         browser.driver.executeScript(dragAndDropHelper)
             .then(function () {
@@ -261,7 +261,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                         'New component not created'
                     );
 
-                    b2.wait(function () {
+                    browser2.wait(function () {
                             return otherComponentBox.isPresent();
                         },
                         gmeEventTimeLimit,
@@ -270,6 +270,141 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
                 });
             });
+
+    });
+
+    it('Should be able to rotate new component box from  context menu', function () {
+
+        var componentBox,
+            otherComponentBox,
+            rotateCWButton,
+            rotateCCWButton;
+
+        componentBox = browser.findElement(by.diagramComponentLabel(targetComponentLabel));
+        rotateCWButton = element(by.css('.contextmenu .action-rotateCW'));
+
+        otherComponentBox = browser2.findElement(by.diagramComponentLabel(targetComponentLabel));
+        rotateCCWButton = browser2.element(by.css('.contextmenu .action-rotateCCW'));
+
+        browser.actions().mouseMove(componentBox).perform();
+        browser.actions().click(protractor.Button.RIGHT).perform();
+
+        browser.sleep(uiEventTimeLimit);
+
+        browser.actions().click(rotateCWButton).perform();
+
+        browser.sleep(gmeEventTimeLimit);
+
+        browser2.driver.executeScript(function (targetComponentLabel) {
+
+            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a)/Math.PI*180;
+
+        }, targetComponentLabel).then(function (angle) {
+            expect(angle).toEqual(90);
+        });
+
+        browser2.actions().mouseMove(otherComponentBox).perform();
+        browser2.actions().click(protractor.Button.RIGHT).perform();
+
+        browser2.sleep(uiEventTimeLimit);
+
+        browser2.actions().click(rotateCCWButton).perform();
+
+        browser.sleep(gmeEventTimeLimit);
+
+        browser.driver.executeScript(function (targetComponentLabel) {
+
+            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a)/Math.PI*180;
+
+        }, targetComponentLabel).then(function (angle) {
+            expect(angle).toEqual(0);
+        });
+
+    });
+
+
+    it('Should be able to move component box', function () {
+
+        var componentBox,
+            otherComponentBox,
+            moveBy;
+
+        moveBy = {
+            x: 500,
+            y: 0
+        };
+
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser.element(by.diagramComponentLabel(targetComponentLabel));
+
+        browser.driver.executeScript(function (targetComponentLabel) {
+
+            var m;
+
+            m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+
+            return {
+                x: m.e,
+                y: m.f
+            };
+
+        }, targetComponentLabel).then(function (originalPosition) {
+
+            browser.actions().mouseMove(componentBox).perform();
+            browser.actions().mouseDown().perform();
+
+            browser.sleep(uiEventTimeLimit);
+
+            browser.actions().mouseMove({
+                x: originalPosition.x + 1,
+                y: 0
+            }).perform();
+
+            browser.sleep(uiEventTimeLimit);
+
+            browser.actions().mouseMove({
+                x: originalPosition.x + moveBy.x,
+                y: originalPosition.y + moveBy.y
+            }).perform();
+
+            browser.sleep(uiEventTimeLimit);
+
+            browser.actions().mouseUp().perform();
+
+            browser.sleep(gmeEventTimeLimit);
+
+            browser.driver.executeScript(function (targetComponentLabel) {
+
+                    var m;
+
+                    m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+
+                    return {
+                        x: m.e,
+                        y: m.f
+                    };
+
+                }, targetComponentLabel).then(function (newPosition1) {
+
+
+                browser2.driver.executeScript(function (targetComponentLabel) {
+
+                    var m;
+
+                    m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+
+                    return {
+                        x: m.e,
+                        y: m.f
+                    };
+
+                }, targetComponentLabel).then(function (newPosition2) {
+
+                    expect(newPosition1).toEqual(newPosition2);
+
+                });
+            });
+        });
 
     });
 
