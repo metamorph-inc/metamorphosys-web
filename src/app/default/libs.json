@@ -33,5 +33,7 @@
         "./bower_components/isis-ui-components/dist/isis-ui-components.css"
     ],
 
-    "fonts": []
+    "fonts": [
+        "./bower_components/bootstrap/dist/fonts/*"
+    ]
 }
