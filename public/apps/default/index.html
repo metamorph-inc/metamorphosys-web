@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
 
     <!-- Include CSS library dependencies -->
-    <% _.forEach(styles, function(style) { %><link rel="stylesheet" type="text/css" href="<%- style %>">
-    <% }); %>
+    <link rel="stylesheet" type="text/css" href="libs/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-growl.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/adapt-strap.css">
+    <link rel="stylesheet" type="text/css" href="libs/isis-ui-components.css">
+    
 
     <!-- Include CSS cyphy-components -->
     <link type="text/css" rel="stylesheet" href="../../cyphy-library/cyphy-components.css">
@@ -24,8 +29,20 @@
 <div ui-view></div>
 
 <!-- Include library dependencies -->
-<% _.forEach(scripts, function(script) { %><script src="<%- script %>"></script>
-<% }); %>
+<script src="libs/jquery.min.js"></script>
+<script src="libs/jquery-ui.min.js"></script>
+<script src="libs/bootstrap.min.js"></script>
+<script src="libs/angular.js"></script>
+<script src="libs/angular-ui-router.min.js"></script>
+<script src="libs/ui-bootstrap-tpls.js"></script>
+<script src="libs/ui-utils.min.js"></script>
+<script src="libs/ng-grid.min.js"></script>
+<script src="libs/ui-utils.min.js"></script>
+<script src="libs/ng-gme.js"></script>
+<script src="libs/isis-ui-components.js"></script>
+<script src="libs/isis-ui-components-templates.js"></script>
+<script src="libs/webgme.classes.build.js"></script>
+
 
 <script src="../../gme_plugins_for_cyphy/webcyphy.plugins.build.js"></script>
 
