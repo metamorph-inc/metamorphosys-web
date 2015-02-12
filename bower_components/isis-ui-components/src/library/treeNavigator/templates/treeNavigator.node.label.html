@@ -25,8 +25,9 @@
             <span class="noname"
                   data-ng-dblclick="nodeDblClick($event, node)"
                   data-ng-if="!node.label">No name</span>
-        <div data-ng-if="node.extraInfo"
-              class="node-extra-info" ng-include="config.extraInfoTemplateUrl"></div>
+            <span data-ng-if="node.extraInfo">
+                <div class="node-extra-info" ng-include="config.extraInfoTemplateUrl"></div>
+            </span>
         </span>
     </span>
     <i data-ng-if="node.childrenCount && config.folderIconClass"

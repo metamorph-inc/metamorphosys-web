@@ -436,6 +436,12 @@ registerAppTasks = function (appName) {
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
+            gulp.src(appLibs.misc)
+                .pipe(rename(function (path) {
+                    path.dirname = 'libs';
+                }))
+                .pipe(gulp.dest(appBuildRoot));
+
         }
 
     });

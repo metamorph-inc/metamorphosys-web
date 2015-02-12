@@ -36,6 +36,11 @@
     ],
 
     "fonts": [
-        "./bower_components/bootstrap/dist/fonts/*"
+        "./bower_components/bootstrap/dist/fonts/*",
+        "./bower_components/font-awesome/fonts/*"
+    ],
+
+    "misc": [
+        "./bower_components/angular-moment/angular-moment.min.js.map"
     ]
 }
