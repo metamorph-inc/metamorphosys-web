@@ -7,9 +7,6 @@
     <% _.forEach(styles, function(style) { %><link rel="stylesheet" type="text/css" href="<%- style %>">
     <% }); %>
 
-    <!-- Include CSS cyphy-components -->
-    <link type="text/css" rel="stylesheet" href="../../cyphy-library/cyphy-components.css">
-
     <title></title>
 </head>
 <body>
@@ -21,9 +18,9 @@
 <% _.forEach(scripts, function(script) { %><script src="<%- script %>"></script>
 <% }); %>
 
-<!-- Include application -->
-<script src="scripts/sample-app.js"></script>
-<script src="scripts/sample-app-templates.js"></script>
+<!-- Include application and templates-->
+<script src="<%= appFilePath %>"></script>
+<script src="<%= templateFilePath %>"></script>
 
 <!-- Start the main application -->
 <script type="text/javascript">
