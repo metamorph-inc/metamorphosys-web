@@ -120,4 +120,4 @@ angular.module( 'CyPhyApp', [
 },{}]},{},[1])
 
 
-//# sourceMappingURL=servicetest-app.js.map
+//# sourceMappingURL=serviceTest-app.js.map

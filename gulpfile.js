@@ -8,6 +8,8 @@ var argv = require('yargs').argv,
     debug = !argv.production,
     debugShim = false, //this is for toggling browserify shim debug
 
+    doNotCompileApps = ['clientTest', 'perfTest'],
+
     libraryName = 'cyphy-components',
     libraryTemplatesModule = 'cyphy.components.templates',
 
@@ -113,6 +115,12 @@ function loadAppLibs(appName) {
     }
 
     return appLibs;
+}
+
+function getDirectories(srcpath) {
+    return fs.readdirSync(srcpath).filter(function(file) {
+        return fs.statSync(path.join(srcpath, file)).isDirectory();
+    });
 }
 
 gulp.task('clean-build', function () {
@@ -304,10 +312,16 @@ gulp.task('compile-library',
 
 
 // Application tasks
-var applications = ['default', 'sample', 'servicetest'],
+var applications,
     i,
     registerAppTasks,
     gulpAppTaskNames = [];
+
+applications = getDirectories( sourcePaths.appSourcesFolders ).filter(
+    function(folder) {
+        return doNotCompileApps.indexOf(folder) === -1;
+    }
+)
 
 registerAppTasks = function (appName) {
 

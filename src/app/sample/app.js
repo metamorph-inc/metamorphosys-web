@@ -16,8 +16,6 @@ angular.module( 'CyPhyApp', [
 ] )
     .run( function () {
 
-        console.log('e');
-
     } );
 
 // TODO: require all of your controllers
