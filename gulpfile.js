@@ -342,6 +342,7 @@ registerAppTasks = function (appName) {
             return appSourceRoot + imageType;
         }),
 
+        stylesFilePath = 'styles/' + appName + '-app.css',
         appFilePath = 'scripts/' + appName + '-app.js',
         templateFilePath = 'scripts/' + appName + '-app-templates.js',
 
@@ -520,6 +521,7 @@ registerAppTasks = function (appName) {
 
         gulp.src(appIndexFile)
             .pipe(template({
+                stylesFilePath: stylesFilePath,
                 appFilePath: appFilePath,
                 templateFilePath: templateFilePath,
                 scripts: scriptFileNames,

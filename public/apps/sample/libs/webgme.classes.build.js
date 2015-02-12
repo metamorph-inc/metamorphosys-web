@@ -1,4 +1,10 @@
-var GME = GME || {}; GME.classes = GME.classes || {};(function(){/** vim: et:ts=4:sw=4:sts=4
+// define global GME variable
+var GME = GME || {};
+
+// property to access GME class definitions
+GME.classes = GME.classes || {};
+
+(function(){/** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.15 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
@@ -9467,7 +9473,7 @@ define('storage/client',[ "util/assert", "util/guid" ], function (ASSERT, GUID) 
                 } else {
                     //we should try to reconnect
                     callback(null);
-                    socket.socket.reconnect();
+                    //socket.socket.reconnect();
                 }
             } else {
                 var guid = GUID(), firstConnection = true;
@@ -9481,8 +9487,9 @@ define('storage/client',[ "util/assert", "util/guid" ], function (ASSERT, GUID) 
                         'connect timeout': 10,
                         'reconnection delay': 1,
                         'force new connection': true,
-                        'reconnect': false,
-                        'query':"webGMESessionId="+options.webGMESessionId
+                        'reconnect': false, // FIXME: should we set it to true?
+                        'query':"webGMESessionId="+options.webGMESessionId, //this option is only used when some user initiated server function connects to the webgme server
+                        'transports': ['websocket']
                     });
 
                     socket.on('connect', function () {
@@ -9532,13 +9539,11 @@ define('storage/client',[ "util/assert", "util/guid" ], function (ASSERT, GUID) 
                 };
 
                 if (options.type === 'browser') {
-                    require([ _hostAddress + "/socket.io/socket.io.js" ], function () {
-                        IO = io;
+                    require([ _hostAddress + "/socket.io/socket.io.js" ], function (io) {
+                        IO = io || window.io;
                         IOReady();
                     });
                 } else {
-                    /*IO = require("socket.io-client");
-                     IOReady();*/
                     require([ 'socket.io-client' ], function (io) {
                         IO = io;
                         IOReady();
@@ -11694,6 +11699,7 @@ define('util/url',[],function(){
     }
     function removeSpecialChars(text){
         text = text.replace(/%23/g,'#');
+        text = text.replace(/%26/g,'&');
         text = text.replace(/%2f/g,'/');text = text.replace(/%2F/g,'/');
         return text;
     }
@@ -11702,6 +11708,7 @@ define('util/url',[],function(){
             return text;
         }
         text = text.replace(/#/g,'%23');
+        text = text.replace(/&/g,'%26');
         text = text.replace(/\//g,'%2F');
         return text;
     }
@@ -20549,6 +20556,182 @@ define('blob/BlobClient',['./Artifact', 'blob/BlobMetadata', 'superagent'], func
 
     return BlobClient;
 });
+/**
+ * Created by Zsolt on 5/21/2014.
+ *
+ */
+
+
+define('executor/ExecutorClient',['superagent'], function (superagent) {
+
+    var ExecutorClient = function (parameters) {
+        parameters = parameters || {};
+        this.isNodeJS = (typeof window === 'undefined') && (typeof process === "object");
+        this.isNodeWebkit = (typeof window === 'object') && (typeof process === "object");
+
+        //console.log(isNode);
+        if (this.isNodeJS) {
+            var config = WebGMEGlobal.getConfig();
+            this.server = '127.0.0.1';
+            this.serverPort = config.port;
+            this.httpsecure = config.httpsecure;
+
+            this._clientSession = null; // parameters.sessionId;;
+        }
+        this.server = parameters.server || this.server;
+        this.serverPort = parameters.serverPort || this.serverPort;
+        this.httpsecure = (parameters.httpsecure !== undefined) ? parameters.httpsecure : this.httpsecure;
+        if (this.isNodeJS) {
+            this.http = this.httpsecure ? require('https') : require('http');
+        }
+        this.executorUrl = '';
+        if (this.httpsecure !== undefined && this.server && this.serverPort) {
+            this.executorUrl = (this.httpsecure ? 'https://' : 'http://') + this.server + ':' + this.serverPort;
+        }
+        // TODO: TOKEN???
+        this.executorUrl = this.executorUrl + '/rest/external/executor/'; // TODO: any ways to ask for this or get it from the configuration?
+        if (parameters.executorNonce) {
+            this.executorNonce = parameters.executorNonce;
+        } else if (typeof WebGMEGlobal !== "undefined" && typeof WebGMEGlobal.getConfig !== "undefined") {
+            var webGMEConfig = WebGMEGlobal.getConfig();
+            if (webGMEConfig.executorNonce) {
+                this.executorNonce = webGMEConfig.executorNonce;
+            }
+        }
+    };
+
+    ExecutorClient.prototype.getInfoURL = function (hash) {
+        var metadataBase = this.executorUrl + 'info';
+        if (hash) {
+            return metadataBase + '/' + hash;
+        } else {
+            return metadataBase;
+        }
+    };
+
+
+    ExecutorClient.prototype.getCreateURL = function (hash) {
+        var metadataBase = this.executorUrl + 'create';
+        if (hash) {
+            return metadataBase + '/' + hash;
+        } else {
+            return metadataBase;
+        }
+    };
+
+    ExecutorClient.prototype.createJob = function (jobInfo, callback) {
+        if (typeof jobInfo === 'string') {
+            jobInfo = { hash: jobInfo }; // old API
+        }
+        this.sendHttpRequestWithData('POST', this.getCreateURL(jobInfo.hash), jobInfo, function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, JSON.parse(response));
+        });
+    };
+
+    ExecutorClient.prototype.updateJob = function (jobInfo, callback) {
+        this.sendHttpRequestWithData('POST', this.executorUrl + 'update/' + jobInfo.hash, jobInfo, function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, response);
+        });
+    };
+
+    ExecutorClient.prototype.getInfo = function (hash, callback) {
+        this.sendHttpRequest('GET', this.getInfoURL(hash), function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, JSON.parse(response));
+        });
+    };
+
+    ExecutorClient.prototype.getAllInfo = function (callback) {
+
+        this.sendHttpRequest('GET', this.getInfoURL(), function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, JSON.parse(response));
+        });
+    };
+
+    ExecutorClient.prototype.getInfoByStatus = function (status, callback) {
+
+        this.sendHttpRequest('GET', this.executorUrl + '?status=' + status, function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, JSON.parse(response));
+        });
+    };
+
+    ExecutorClient.prototype.getWorkersInfo = function (callback) {
+
+        this.sendHttpRequest('GET', this.executorUrl + 'worker', function (err, response) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            callback(null, JSON.parse(response));
+        });
+    };
+
+    ExecutorClient.prototype.sendHttpRequest = function (method, url, callback) {
+        return this.sendHttpRequestWithData(method, url, null, callback);
+    };
+
+    ExecutorClient.prototype.sendHttpRequestWithData = function (method, url, data, callback) {
+        var req = new superagent.Request(method, url);
+        if (this.executorNonce) {
+            req.set('x-executor-nonce', this.executorNonce);
+        }
+        if (data) {
+            req.send(data);
+        }
+        req.end(function (err, res) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            if (res.status > 399) {
+                callback(res.status, res.text);
+            } else {
+                callback(null, res.text);
+            }
+        });
+    };
+
+    ExecutorClient.prototype._ensureAuthenticated = function (options, callback) {
+        //this function enables the session of the client to be authenticated
+        //TODO currently this user does not have a session, so it has to upgrade the options always!!!
+//        if (options.headers) {
+//            options.headers.webgmeclientsession = this._clientSession;
+//        } else {
+//            options.headers = {
+//                'webgmeclientsession': this._clientSession
+//            }
+//        }
+        callback(null, options);
+    };
+
+    return ExecutorClient;
+});
+
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
  *
@@ -21879,16 +22062,107 @@ define('js/Utils/InterpreterManager',['core/core',
     return InterpreterManager;
 });
 
+/*globals define, document, console, eval, GME*/
+
 define('webgme.classes',
-  [
-    'client',
-    'blob/BlobClient',
-    'js/Utils/InterpreterManager'
-  ], function (Client, BlobClient, InterpreterManager) {
-    GME.classes.Client = Client;
-    GME.classes.BlobClient = BlobClient;
-    GME.classes.InterpreterManager = InterpreterManager;
-  });
+    [
+        'client',
+        'blob/BlobClient',
+        'executor/ExecutorClient',
+        'js/Utils/InterpreterManager'
+    ], function (Client, BlobClient, ExecutorClient, InterpreterManager) {
+
+        // Setting global classes
+
+        GME.classes.Client = Client;
+        GME.classes.BlobClient = BlobClient;
+        GME.classes.ExecutorClient = ExecutorClient;
+        GME.classes.InterpreterManager = InterpreterManager;
+
+        // Pure JavaScript equivalent to jQuery's $.ready() from https://github.com/jfriend00/docReady
+
+        (function(funcName, baseObj) {
+            // The public function name defaults to window.docReady
+            // but you can pass in your own object and own function name and those will be used
+            // if you want to put them in a different namespace
+            funcName = funcName || "docReady";
+            baseObj = baseObj || window;
+            var readyList = [];
+            var readyFired = false;
+            var readyEventHandlersInstalled = false;
+
+            // call this when the document is ready
+            // this function protects itself against being called more than once
+            function ready() {
+                if (!readyFired) {
+                    // this must be set to true before we start calling callbacks
+                    readyFired = true;
+                    for (var i = 0; i < readyList.length; i++) {
+                        // if a callback here happens to add new ready handlers,
+                        // the docReady() function will see that it already fired
+                        // and will schedule the callback to run right after
+                        // this event loop finishes so all handlers will still execute
+                        // in order and no new ones will be added to the readyList
+                        // while we are processing the list
+                        readyList[i].fn.call(window, readyList[i].ctx);
+                    }
+                    // allow any closures held by these functions to free
+                    readyList = [];
+                }
+            }
+
+            function readyStateChange() {
+                if ( document.readyState === "complete" ) {
+                    ready();
+                }
+            }
+
+            // This is the one public interface
+            // docReady(fn, context);
+            // the context argument is optional - if present, it will be passed
+            // as an argument to the callback
+            baseObj[funcName] = function(callback, context) {
+                // if ready has already fired, then just schedule the callback
+                // to fire asynchronously, but right away
+                if (readyFired) {
+                    setTimeout(function() {callback(context);}, 1);
+                    return;
+                } else {
+                    // add the function and context to the list
+                    readyList.push({fn: callback, ctx: context});
+                }
+                // if document already ready to go, schedule the ready function to run
+                if (document.readyState === "complete") {
+                    setTimeout(ready, 1);
+                } else if (!readyEventHandlersInstalled) {
+                    // otherwise if we don't have event handlers installed, install them
+                    if (document.addEventListener) {
+                        // first choice is DOMContentLoaded event
+                        document.addEventListener("DOMContentLoaded", ready, false);
+                        // backup is window load event
+                        window.addEventListener("load", ready, false);
+                    } else {
+                        // must be IE
+                        document.attachEvent("onreadystatechange", readyStateChange);
+                        window.attachEvent("onload", ready);
+                    }
+                    readyEventHandlersInstalled = true;
+                }
+            }
+        })("docReady", window);
+
+        // See if there is handler attached to body tag when ready
+
+        docReady(function() {
+
+            if (document.body.getAttribute("on-gme-init")) {
+                eval(document.body.getAttribute("on-gme-init"));
+            } else {
+                console.warn('To use GME, define a javascript function and set the body element\'s on-gme-init property.');
+            }
+        });
+
+    });
 
 
 require(["webgme.classes"]);
