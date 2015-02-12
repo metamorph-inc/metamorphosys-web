@@ -735,6 +735,7 @@ define( [
             if ( type === 'RelativeLayoutConstraint' ) {
                 copyAttrIfSet( 'XOffset' );
                 copyAttrIfSet( 'YOffset' );
+                copyAttrIfSet( 'RelativeLayer' );
                 var origin = self.componentInstances.filter( function ( ci ) {
                     return ci.id === featureData[ '@Origin' ];
                 } );
@@ -763,6 +764,7 @@ define( [
                 }
                 self.core.setAttribute( feature, 'LayerRange', 'Either' );
                 copyAttrIfSet( 'LayerRange' );
+                copyAttrIfSet( 'Type' );
             }
             self.core.setAttribute( feature, 'name', type );
             constraintTargets.forEach( function ( componentInstance ) {

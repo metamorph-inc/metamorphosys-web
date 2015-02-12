@@ -686,9 +686,15 @@ define( [
                 copyAttrIfSet( 'XOffset' );
                 copyAttrIfSet( 'YOffset' );
                 data[ '@Origin' ] = self.core.getGuid( origin );
+
+                var val = self.core.getAttribute( node, 'RelativeLayer' );
+                if ( val !== undefined && val !== 'Either' ) {
+                    data[ '@RelativeLayer' ] = val;
+                }
             }
             if ( type === 'RangeLayoutConstraint' ) {
                 copyAttrIfSet( 'LayerRange' );
+                copyAttrIfSet( 'Type' );
                 var setRange = function ( xOrY ) {
                     var range = self.core.getAttribute( node, xOrY + 'Range' );
                     if ( range !== undefined ) {
