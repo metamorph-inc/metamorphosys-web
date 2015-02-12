@@ -108,7 +108,7 @@ function loadAppLibs(appName) {
 
     if (fs.existsSync(appLibsJSON)) {
 
-        appLibs = require(appLibsJSON)
+        appLibs = JSON.parse(fs.readFileSync(appLibsJSON, 'utf8'));
 
     }
 
