@@ -1,5 +1,7 @@
 /*globals angular*/
 
+'use strict';
+
 angular.module( 'CyPhyApp', [
     'ui.router',
 
@@ -13,6 +15,8 @@ angular.module( 'CyPhyApp', [
     'cyphy.sample.templates'
 ] )
     .run( function () {
+
+        console.log('e');
 
     } );
 

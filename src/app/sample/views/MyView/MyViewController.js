@@ -1,7 +1,7 @@
 /*globals angular, console */
 
-angular.module( 'CyPhyApp.MyViewController' )
-    .controller( 'MyViewController', function ( $scope, DataStoreService, ProjectService ) {
+angular.module( 'CyPhyApp' )
+    .controller( 'MyViewController', function ( $scope, dataStoreService, projectService ) {
         'use strict';
 
         console.log( 'MyViewController' );
@@ -11,13 +11,13 @@ angular.module( 'CyPhyApp.MyViewController' )
             projectIds: []
         };
 
-        DataStoreService.connectToDatabase( 'my-db-connection-id', {
+        dataStoreService.connectToDatabase( 'my-db-connection-id', {
             host: window.location.basename
         } )
             .then( function () {
                 console.log( 'connected' );
 
-                ProjectService.getProjects( 'my-db-connection-id' )
+                projectService.getProjects( 'my-db-connection-id' )
                     .then( function ( projectIds ) {
                         $scope.model.projectIds = projectIds;
                     } )

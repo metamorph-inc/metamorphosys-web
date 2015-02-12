@@ -594,20 +594,27 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 
 
     registerAppWatchers = function (appName) {
-        var appSources = ['./src/app/' + appName + '/**/*.js'],
-            appModuleScript = './src/app/' + appName + '/app.js',
 
-            appTemplates = ['src/app/' + appName + '/views/**/*.html'],
-            appTemplateModule = 'cyphy.' + appName + '.templates',
+        var
+            appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
 
-            appStyles = ['src/app/' + appName + '/**/*.scss'];
+            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js' ],
 
-        gulp.watch(appModuleScript, ['compile-' + appName + '-app']);
-        gulp.watch(appSources, ['compile-' + appName + '-app']);
-        gulp.watch(appTemplates, ['compile-' + appName + '-app-templates']);
-        gulp.watch(appStyles, ['compile-' + appName + '-app-styles']);
-//        gulp.watch(sourcePaths.libraryImages, [ 'compile-' + appName + '-app-images']);
+            appHtmls = [ appSourceRoot + '**/*.html'],
 
+            appLibs = appSourceRoot + 'libs.json',
+
+            appStyles = [ appSourceRoot + '/**/*.scss'],
+
+            appImages = sourcePaths.appImagePatterns.map(function(imageType) {
+                return appSourceRoot + imageType;
+            });
+
+        gulp.watch(appSources, [ 'compile-' + appName + '-scripts' ]);
+        gulp.watch(appHtmls, [ 'compile-' + appName + '-templates' ]);
+        gulp.watch(appStyles, [ 'compile-' + appName + '-styles' ]);
+        gulp.watch(appImages, [ 'compile-' + appName + '-images' ]);
+        gulp.watch(appLibs, [ 'compile-' + appName ]);
     };
 
     for (i = 0; i < applications.length; i += 1) {
