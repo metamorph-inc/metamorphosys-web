@@ -20,7 +20,11 @@
         "./bower_components/isis-ui-components/dist/isis-ui-components.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
 
-        "./node_modules/webgme/dist/webgme.classes.build.js"
+        "./node_modules/webgme/dist/webgme.classes.build.js",
+
+        "./public/cyphy-library/cyphy-components.js",
+        "./public/cyphy-library/cyphy-components-templates.js"
+
     ],
 
     "styles": [

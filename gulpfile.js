@@ -99,6 +99,21 @@ function swallowError(error) {
     this.emit('end');
 }
 
+function loadAppLibs(appName) {
+
+    var appLibs,
+        appLibsJSON;
+
+    appLibsJSON = sourcePaths.appSourcesFolders + appName  + '/libs.json';
+
+    if (fs.existsSync(appLibsJSON)) {
+
+        appLibs = require(appLibsJSON)
+
+    }
+
+    return appLibs;
+}
 
 gulp.task('clean-build', function () {
     return gulp.src(buildRoot).pipe(clean());
@@ -305,9 +320,6 @@ registerAppTasks = function (appName) {
         appIndexFile = appSourceRoot + 'index.html',
         appTemplates = [appSourceRoot + '*/**/*.html'],
 
-        appLibs,
-        appLibsListing = appSourceRoot + '/libs.json',
-
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
         appStyles = [appSourceRoot + '/**/*.scss'],
@@ -316,14 +328,6 @@ registerAppTasks = function (appName) {
             return appSourceRoot + imageType;
         });
 
-
-    fs.exists(appLibsListing, function (exists) {
-
-        if (exists) {
-            appLibs = require(appLibsListing)
-        }
-
-    });
 
     gulp.task('lint-' + appName, function () {
 
@@ -373,7 +377,10 @@ registerAppTasks = function (appName) {
 
         var styleMapFileNames,
             scriptMapFileNames,
-            scriptMapMapFileNames;
+            scriptMapMapFileNames,
+            appLibs;
+
+        appLibs = loadAppLibs(appName);
 
         if (appLibs) {
 
@@ -430,17 +437,21 @@ registerAppTasks = function (appName) {
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
-            gulp.src(appLibs.fonts)
-                .pipe(rename(function (path) {
-                    path.dirname = 'fonts';
-                }))
-                .pipe(gulp.dest(appBuildRoot));
+            if (appLibs.fonts) {
+                gulp.src(appLibs.fonts)
+                    .pipe(rename(function (path) {
+                        path.dirname = 'fonts';
+                    }))
+                    .pipe(gulp.dest(appBuildRoot));
+            }
 
-            gulp.src(appLibs.misc)
-                .pipe(rename(function (path) {
-                    path.dirname = 'libs';
-                }))
-                .pipe(gulp.dest(appBuildRoot));
+            if (appLibs.misc) {
+                gulp.src(appLibs.misc)
+                    .pipe(rename(function (path) {
+                        path.dirname = 'libs';
+                    }))
+                    .pipe(gulp.dest(appBuildRoot));
+            }
 
         }
 
@@ -449,9 +460,12 @@ registerAppTasks = function (appName) {
     gulp.task('compile-' + appName + '-templates', function () {
 
         var scriptFileNames,
-            styleFileNames;
+            styleFileNames,
+            appLibs;
 
         console.log('Compiling ' + appName + '-app-templates...');
+
+        appLibs = loadAppLibs(appName);
 
         gulp.src(appTemplates)
             .pipe(rename(function (path) {
@@ -470,6 +484,8 @@ registerAppTasks = function (appName) {
                 return 'libs/' + path.basename(fileName);
             });
 
+        } else {
+            scriptFileNames = [];
         }
 
         if (appLibs && appLibs.styles) {
@@ -478,6 +494,8 @@ registerAppTasks = function (appName) {
                 return 'libs/' + path.basename(fileName);
             });
 
+        } else {
+            styleFileNames = [];
         }
 
         gulp.src(appIndexFile)
@@ -546,12 +564,18 @@ for (i = 0; i < applications.length; i += 1) {
     registerAppTasks(applications[i]);
 }
 
-gulp.task('rjs-build', shell.task(['node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js']));
+gulp.task('build-plugins', shell.task(['node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js']));
 
 gulp.task('compile-all', function (cb) {
-    runSequence('clean-build', [
-        'compile-docs', 'compile-library', 'rjs-build'
-    ].concat(gulpAppTaskNames), cb);
+    runSequence(
+        'clean-build',
+        [
+            'compile-docs',
+            'compile-library'
+        ],
+        'build-plugins',
+        gulpAppTaskNames,
+        cb);
 });
 
 
@@ -608,7 +632,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 
             appHtmls = [ appSourceRoot + '**/*.html'],
 
-            appLibs = appSourceRoot + 'libs.json',
+            appLibsJSON = appSourceRoot + 'libs.json',
 
             appStyles = [ appSourceRoot + '/**/*.scss'],
 
@@ -620,13 +644,13 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         gulp.watch(appHtmls, [ 'compile-' + appName + '-templates' ]);
         gulp.watch(appStyles, [ 'compile-' + appName + '-styles' ]);
         gulp.watch(appImages, [ 'compile-' + appName + '-images' ]);
-        gulp.watch(appLibs, [ 'compile-' + appName ]);
+        gulp.watch(appLibsJSON, [ 'compile-' + appName ]);
     };
 
     for (i = 0; i < applications.length; i += 1) {
         registerAppWatchers(applications[i]);
     }
 
-    gulp.watch('src/plugins/**', ['rjs-build']);
+    gulp.watch('src/plugins/**', ['build-plugins']);
     return cb;
 });
