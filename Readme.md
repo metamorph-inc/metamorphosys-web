@@ -22,7 +22,7 @@ Alternatively, if you want to get the web interface running your own machine, fo
 1. Install [nodejs](http://nodejs.org/download/)
 2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database (recommended for initial use)
 3. Clone this repository, and navigate
-4. Install *nods-js* dependencies with `npm install`
+4. Install *node-js* dependencies with `npm install`
 5. In a separate process, start the *MongoDB* server with `mongod --dbpath mongodatabase`, and leave it running
 6. Preload the *MongoDB* by running `mongorestore`
 7. Start the server with `node app.js` or `npm start`
