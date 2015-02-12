@@ -88,7 +88,11 @@ var argv = require('yargs').argv,
     prettify = require('gulp-js-prettify'),
     shell = require('gulp-shell'),
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+
+    svgstore = require('gulp-svgstore'),
+    svgmin = require('gulp-svgmin');
+
 
 // Utility tasks
 
@@ -336,7 +340,9 @@ registerAppTasks = function (appName) {
 
         appTemplateModule = 'cyphy.' + appName + '.templates',
 
-        appStyles = [appSourceRoot + '/**/*.scss'],
+        appStyles = [appSourceRoot + '**/*.scss'],
+
+        appSvgSymbols = [appSourceRoot + '**/symbols/**/*.svg'],
 
         appImages = sourcePaths.appImagePatterns.map(function (imageType) {
             return appSourceRoot + imageType;
@@ -344,11 +350,14 @@ registerAppTasks = function (appName) {
 
         stylesFilePath = 'styles/' + appName + '-app.css',
         appFilePath = 'scripts/' + appName + '-app.js',
-        templateFilePath = 'scripts/' + appName + '-app-templates.js',
+        templateFilePath = 'scripts/' + appName + '-app-templates.js';
 
-        templateFile;
-
-
+    gulp.task('generate-svg-map-' + appName, function () {
+        return gulp.src( appSvgSymbols )
+            .pipe(svgmin())
+            .pipe(svgstore({ fileName: 'symbols.svg', prefix: 'icon-' }))
+            .pipe(gulp.dest( appBuildRoot + 'images/' ));
+    });
 
     gulp.task('lint-' + appName, function () {
 
@@ -570,6 +579,7 @@ registerAppTasks = function (appName) {
     gulp.task('compile-' + appName,
         [
             'compile-' + appName + '-scripts',
+            'generate-svg-map-' + appName,
             'compile-' + appName + '-templates',
             'compile-' + appName + '-styles',
             'compile-' + appName + '-images',
