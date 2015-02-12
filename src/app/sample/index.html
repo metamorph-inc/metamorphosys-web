@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
 
     <!-- Include CSS library dependencies -->
-    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/jquery-ui/themes/black-tie/jquery-ui.css">
-    <link type="text/css" href="/extlib/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- Include CSS isis-ui-components -->
-    <link type="text/css" rel="stylesheet" href="/extlib/bower_components/isis-ui-components/dist/isis-ui-components.css">
+    <% _.forEach(styles, function(style) { %><link rel="stylesheet" type="text/css" href="<%- style %>">
+    <% }); %>
 
     <!-- Include CSS cyphy-components -->
+    <link type="text/css" rel="stylesheet" href="../../cyphy-library/cyphy-components.css">
 
     <title></title>
 </head>

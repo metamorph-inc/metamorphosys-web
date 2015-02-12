@@ -11,7 +11,9 @@ angular.module( 'CyPhyApp', [
     'cyphy.components',
 
     // app specific templates
-    'cyphy.sample.templates'
+    'cyphy.sample.templates',
+
+    'CyPhyApp.MyViewController'
 ] )
     .run( function () {
 
@@ -22,7 +24,7 @@ require( './views/MyView/MyViewController' );
 },{"./views/MyView/MyViewController":2}],2:[function(require,module,exports){
 /*globals angular, console */
 
-angular.module( 'CyPhyApp' )
+angular.module( 'CyPhyApp.MyViewController', [ 'gme.services' ] )
     .controller( 'MyViewController', function ( $scope, DataStoreService, ProjectService ) {
         'use strict';
 

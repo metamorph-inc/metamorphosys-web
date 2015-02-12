@@ -20,7 +20,9 @@ angular.module( 'cyphy.components', [
     'angularFileUpload',
     'angular-growl',
     'ngSanitize',
-    'adaptv.adaptStrap'
+    'adaptv.adaptStrap',
+    'gme.services'
+
 ] )
     .config( [ 'growlProvider',
         function ( growlProvider ) {

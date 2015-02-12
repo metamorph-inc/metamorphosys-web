@@ -1,6 +1,6 @@
 /*globals angular, console */
 
-angular.module( 'CyPhyApp' )
+angular.module( 'CyPhyApp.MyViewController' )
     .controller( 'MyViewController', function ( $scope, DataStoreService, ProjectService ) {
         'use strict';
 
