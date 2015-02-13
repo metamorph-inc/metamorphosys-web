@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" href="/extlib/mms.ico" type="image/x-icon">
+    <link rel="icon" href="/extlib/mms.ico" type="image/x-icon">
+
+    <!-- Fonts -->
+
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>
+
+    <!-- Include CSS library dependencies -->
+    <link rel="stylesheet" type="text/css" href="libs/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/adapt-strap.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/jquery.jscrollpane.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-socialshare.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/angucomplete.css">
+    <link rel="stylesheet" type="text/css" href="libs/panzoomwidget.css">
+    <link rel="stylesheet" type="text/css" href="libs/angular-growl.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="libs/adapt-strap.css">
+    <link rel="stylesheet" type="text/css" href="libs/ng-gme.css">
+    <link rel="stylesheet" type="text/css" href="libs/isis-ui-components.css">
+    <link rel="stylesheet" type="text/css" href="libs/cyphy-components.css">
+    
+
+    <!-- Include App Styles-->
+    <link type="text/css" rel="stylesheet" href="styles/mmsApp-app.css">
+
+    <title>Metamorphosys</title>
+</head>
+<body class="mms-app ng-cloak" data-ng-controller="AppController" on-gme-init="angular.bootstrap(document, ['CyPhyApp']);">
+<div growl></div>
+<div data-ng-controller="MainNavigatorController"
+     class="main-navigator-container">
+    <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
+</div>
+<div ui-view="mainView" class="main-view-container" resize-to-window height-is-less-with="51"></div>
+
+<header-buttons></header-buttons>
+
+<busy-cover>
+    <div ui-view="onCover"></div>
+</busy-cover>
+
+<processing-cover></processing-cover>
+
+<!-- Include library dependencies -->
+<script src="libs/jquery.min.js"></script>
+<script src="libs/angular.js"></script>
+<script src="libs/ng-gme.js"></script>
+<script src="libs/isis-ui-components.js"></script>
+<script src="libs/isis-ui-components-templates.js"></script>
+<script src="libs/webgme.classes.build.js"></script>
+<script src="libs/webcyphy.plugins.build.js"></script>
+<script src="libs/cyphy-components.js"></script>
+<script src="libs/cyphy-components-templates.js"></script>
+
+
+<!-- Include application and templates-->
+<script src="scripts/mmsApp-app.js"></script>
+<script src="scripts/mmsApp-app-templates.js"></script>
+
+<!-- Social media -->
+<script src="http://platform.twitter.com/widgets.js"></script>
+
+<!-- Google analytics -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+</script>
+
+</body>
+</html>

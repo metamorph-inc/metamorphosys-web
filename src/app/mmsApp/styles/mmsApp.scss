@@ -1,7 +1,6 @@
 @import 'colors';
 @import '_bootstrap_overrides.scss';
 @import '_material_overrides.scss';
-@import '../../../../bower_components/angular-ui-layout/ui-layout.css';
 @import 'print';
 
 .mms-app {
@@ -63,7 +62,7 @@
             background-color: rgba(0,0,68,.2);
 
             .label-container {
-                background-image: url(./images/mms-icon-bright.png);
+                background-image: url(../images/mms-icon-bright.png);
                 background-position: 8px 10px;
                 background-repeat: no-repeat;
 
