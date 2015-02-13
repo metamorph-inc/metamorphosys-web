@@ -8,7 +8,7 @@
 
     "debug": true,
 
-    "storageKeyType": "rand320Bits",
+    "storageKeyType": "rand160Bits",
 
     "decoratorpaths": ["./src/decorators"],
 
