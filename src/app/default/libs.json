@@ -13,7 +13,6 @@
 
         "./bower_components/angular-ui-utils/ui-utils.min.js",
         "./bower_components/ng-grid/build/ng-grid.min.js",
-        "./bower_components/angular-ui-utils/ui-utils.min.js",
 
         "./node_modules/ng-gme/dist/ng-gme.js",
 
@@ -36,7 +35,11 @@
         "./bower_components/font-awesome/css/font-awesome.min.css",
         "./bower_components/adapt-strap/dist/adapt-strap.css",
 
-        "./bower_components/isis-ui-components/dist/isis-ui-components.css"
+        "./node_modules/ng-gme/dist/ng-gme.css",
+
+        "./bower_components/isis-ui-components/dist/isis-ui-components.css",
+
+        "./public/cyphy-library/cyphy-components.css"
     ],
 
     "fonts": [
