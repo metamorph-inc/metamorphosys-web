@@ -10,15 +10,6 @@
     <!-- Include App Styles-->
     <link type="text/css" rel="stylesheet" href="<%= stylesFilePath %>">
 
-
-    <!-- Include library dependencies -->
-    <% _.forEach(scripts, function(script) { %><script src="<%- script %>"></script>
-    <% }); %>
-
-    <!-- Include application and templates-->
-    <script src="<%= appFilePath %>"></script>
-    <script src="<%= templateFilePath %>"></script>
-
     <title></title>
 </head>
 <body on-gme-init="angular.bootstrap(document, ['CyPhyApp']);">
@@ -29,6 +20,14 @@
     <dropdown-navigator data-navigator="navigator"></dropdown-navigator>
 </div>
 <div ui-view></div>
+
+<!-- Include library dependencies -->
+<% _.forEach(scripts, function(script) { %><script src="<%- script %>"></script>
+<% }); %>
+
+<!-- Include application and templates-->
+<script src="<%= appFilePath %>"></script>
+<script src="<%= templateFilePath %>"></script>
 
 </body>
 </html>

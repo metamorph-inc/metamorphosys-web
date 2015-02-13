@@ -1,0 +1,26 @@
+.item-list ul.list-group li.item-list-item.top-level-system-under-test {
+  background-color: lightyellow; }
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlcyI6WyJzcmMvbGlicmFyeS9EZXNpZ25MaXN0L3N0eWxlcy9EZXNpZ25MaXN0LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBR0EsV0FBVyxFQUFFLFlBQVksRUFBRSxlQUFlO0VBRWhDLGtCQUFrQiIsInNvdXJjZXNDb250ZW50IjpbIlxuLml0ZW0tbGlzdCB7XG4gICAgdWwubGlzdC1ncm91cCB7XG4gICAgICBsaS5pdGVtLWxpc3QtaXRlbSB7XG4gICAgICAgICYudG9wLWxldmVsLXN5c3RlbS11bmRlci10ZXN0IHtcbiAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBsaWdodHllbGxvdztcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH1cbiAgfVxuIl19*/
+input.drop-box-edit-test-bench {
+  padding: 2ex 1em;
+  border: 1px solid transparent; }
+  input.drop-box-edit-test-bench.dragover {
+    border: 1px dashed #666; }
+    input.drop-box-edit-test-bench.dragover.bg-success {
+      background-color: #dff0d8; }
+    input.drop-box-edit-test-bench.dragover.bg-danger {
+      background-color: #f2dede; }
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlcyI6WyJzcmMvbGlicmFyeS9UZXN0QmVuY2hMaXN0L3N0eWxlcy9UZXN0QmVuY2hFZGl0LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsS0FBSztFQUNILFNBQVM7RUFDVCxRQUFRO0VBQVYsS0FBSyx5QkFBeUI7SUFFMUIsUUFBUTtJQUFaLEtBQUsseUJBQXlCLFNBQVM7TUFFakMsa0JBQWtCO0lBQ3hCLEtBQUsseUJBQXlCLFNBQVM7TUFFakMsa0JBQWtCIiwic291cmNlc0NvbnRlbnQiOlsiaW5wdXQuZHJvcC1ib3gtZWRpdC10ZXN0LWJlbmNoIHtcbiAgcGFkZGluZzogMmV4IDFlbTtcbiAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICYuZHJhZ292ZXIge1xuICAgIGJvcmRlcjogMXB4IGRhc2hlZCAjNjY2O1xuICAgICYuYmctc3VjY2VzcyB7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZGZmMGQ4O1xuICAgIH1cbiAgICAmLmJnLWRhbmdlciB7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjJkZWRlO1xuICAgIH1cbiAgfVxufSJdfQ==*/
+form.drop-box-new-workspace {
+  padding: 2ex 1em;
+  border: 1px solid transparent; }
+  form.drop-box-new-workspace.dragover {
+    border: 1px dashed #666; }
+    form.drop-box-new-workspace.dragover.bg-success {
+      background-color: #dff0d8; }
+    form.drop-box-new-workspace.dragover.bg-danger {
+      background-color: #f2dede; }
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiIiwic291cmNlcyI6WyJzcmMvbGlicmFyeS9Xb3Jrc3BhY2VMaXN0L3N0eWxlcy9Xb3Jrc3BhY2VOZXdJdGVtLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsSUFBSTtFQUNGLFNBQVM7RUFDVCxRQUFRO0VBQVYsSUFBSSx1QkFBdUI7SUFFdkIsUUFBUTtJQUFaLElBQUksdUJBQXVCLFNBQVM7TUFFOUIsa0JBQWtCO0lBQ3hCLElBQUksdUJBQXVCLFNBQVM7TUFFOUIsa0JBQWtCIiwic291cmNlc0NvbnRlbnQiOlsiZm9ybS5kcm9wLWJveC1uZXctd29ya3NwYWNlIHtcbiAgcGFkZGluZzogMmV4IDFlbTtcbiAgYm9yZGVyOiAxcHggc29saWQgdHJhbnNwYXJlbnQ7XG4gICYuZHJhZ292ZXIge1xuICAgIGJvcmRlcjogMXB4IGRhc2hlZCAjNjY2O1xuICAgICYuYmctc3VjY2VzcyB7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZGZmMGQ4O1xuICAgIH1cbiAgICAmLmJnLWRhbmdlciB7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjJkZWRlO1xuICAgIH1cbiAgfVxufSJdfQ==*/

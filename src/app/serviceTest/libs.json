@@ -13,7 +13,6 @@
 
         "./bower_components/angular-ui-utils/ui-utils.min.js",
         "./bower_components/ng-grid/build/ng-grid.min.js",
-        "./bower_components/angular-ui-utils/ui-utils.min.js",
 
         "./node_modules/ng-gme/dist/ng-gme.js",
 
