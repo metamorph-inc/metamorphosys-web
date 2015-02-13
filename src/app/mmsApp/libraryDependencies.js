@@ -28,5 +28,5 @@ require('hamster');
 require('angular-panhandler');
 require('angular-mousewheel');
 require('panzoom');
-require('mousewheel');
+require('mousewheel')($);
 require('jscrollpane')($);

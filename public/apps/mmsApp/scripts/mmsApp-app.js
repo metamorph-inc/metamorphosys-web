@@ -19741,7 +19741,7 @@ require('hamster');
 require('angular-panhandler');
 require('angular-mousewheel');
 require('panzoom');
-require('mousewheel');
+require('mousewheel')($);
 require('jscrollpane')($);
 
 },{"Array.prototype.find":2,"angucomplete-alt":3,"angular-animate":4,"angular-aria":5,"angular-cookies":8,"angular-material":9,"angular-mousewheel":10,"angular-panhandler":13,"angular-socialshare":14,"angular-ui-codemirror":16,"bootstrap":19,"chance":20,"codemirrorCSS":21,"glMatrix":22,"hammerjs":23,"hamster":24,"jquery-ui":25,"jscrollpane":26,"mousewheel":27,"ng-grid":28,"ngDragDrop":11,"ngTouch":15,"panzoom":12,"showdown":86,"ui-bootstrap":7,"ui-bootstrap-tpls":6,"ui-router":17,"ui-utils":18}],69:[function(require,module,exports){
