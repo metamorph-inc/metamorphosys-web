@@ -56,7 +56,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     it('Should create and load new design', function () {
 
-        browser.get('http://localhost:8855/extlib/src/app/mmsApp/#/createDesign/' + projectName);
+        browser.get('http://localhost:8855/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
         var diagramContainer;
 
