@@ -21,8 +21,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
     'isis.ui.contextmenu'
 ])
-    .controller('SVGDiagramController', function (
-        $scope, $rootScope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
+    .controller('SVGDiagramController', function ($scope, $rootScope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
 
         var
 
@@ -38,8 +37,11 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
-            ContextMenuHandler = require('./classes/contextMenuHandler'),
+            ContextMenuHandler = require('./classes/ContextMenuHandler'),
             contextMenuHandler,
+
+            DeleteHandler = require('./classes/DeleteHandler'),
+            deleteHandler,
 
             componentElements,
 
@@ -98,6 +100,9 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
+        deleteHandler = new DeleteHandler(
+            $scope
+        );
 
         //
 
@@ -118,10 +123,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.onDiagramMouseUp = function ($event) {
 
-            if (!componentDragHandler.dragging &&
-                !wireDrawHandler.wiring &&
-                !wireDragHandler.dragging &&
-                $event.which !== 3 ) {
+            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging &&
+                $event.which !== 3) {
 
                 $scope.diagram.state.selectedComponentIds = [];
 
@@ -179,10 +182,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onComponentMouseUp = function (component, $event) {
 
-            if (!componentDragHandler.dragging &&
-                !wireDrawHandler.wiring &&
-                !wireDragHandler.dragging &&
-                $event.which !== 3 ) {
+            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging &&
+                $event.which !== 3) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
                 $event.stopPropagation();
@@ -196,7 +197,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         this.onPortMouseDown = function (component, port, $event) {
 
-            if ( !wireDrawHandler.wiring && $event.which === 3 ) {
+            if (!wireDrawHandler.wiring && $event.which === 3) {
 
                 contextMenuHandler.onPortContextmenu(component, port, $event);
 
@@ -325,11 +326,13 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     var id,
                         $element,
-                        killContextMenu;
+
+                        killContextMenu,
+                        killDelete;
 
                     $element = $(element);
 
-                    killContextMenu = function($event) {
+                    killContextMenu = function ($event) {
 
                         $log.debug('killing default contextmenu');
 
@@ -345,7 +348,7 @@ angular.module('mms.designVisualization.svgDiagram', [
                     //   console.log(cssClass);
                     //});
 
-                    scope.$watch('diagram', function(newDiagramValue) {
+                    scope.$watch('diagram', function (newDiagramValue) {
 
                         if (newDiagramValue) {
 
@@ -395,9 +398,54 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     $element.bind('contextmenu', killContextMenu);
 
-                    $element.keyup(function(e){
-                        $timeout(function() {
+                    $element.keyup(function (e) {
+
+                        $timeout(function () {
                             scope.$emit('keyupOnDiagram', e);
+                        });
+
+                    });
+
+                    killDelete = function (event) {
+
+                        var d,
+                            doPrevent;
+
+                        if (event.keyCode === 8) { // Delete
+
+                            doPrevent = true;
+
+                            d = event.srcElement || event.target;
+
+                            console.log(d.tagName);
+
+                            if ((d.tagName.toUpperCase() === 'INPUT' &&
+                                (
+                                d.type.toUpperCase() === 'TEXT' ||
+                                d.type.toUpperCase() === 'PASSWORD' ||
+                                d.type.toUpperCase() === 'FILE' ||
+                                d.type.toUpperCase() === 'EMAIL' ||
+                                d.type.toUpperCase() === 'SEARCH' ||
+                                d.type.toUpperCase() === 'DATE' )
+                                ) ||
+                                d.tagName.toUpperCase() === 'TEXTAREA') {
+                                doPrevent = d.readOnly || d.disabled;
+                            }
+
+                        }
+
+                        if (doPrevent) {
+                            event.preventDefault();
+                        }
+
+                    };
+
+                    $(document).bind('keydown', function (event) {
+
+                        killDelete(event);
+
+                        $timeout(function () {
+                            scope.$emit('keydownOnDocument', event);
                         });
 
                     });
