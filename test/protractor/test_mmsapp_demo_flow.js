@@ -4,6 +4,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     var q = require('q'),
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
+        hasClass = require('./lib/has_class.js'),
 
         gmeEventTimeLimit = 2000,
         uiEventTimeLimit = 200,
@@ -335,7 +336,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         };
 
         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-        otherComponentBox = browser.element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
         browser.driver.executeScript(function (targetComponentLabel) {
 
@@ -405,6 +406,52 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 });
             });
         });
+
+    });
+
+    it('Should be able to selected component clickin on it', function () {
+
+        var componentBox;
+
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+
+        componentBox.click();
+
+        browser.wait(function () {
+
+                return hasClass(componentBox, 'selected');
+            },
+            gmeEventTimeLimit,
+            'element did not get selected'
+        );
+
+        browser.sleep(5000);
+
+    });
+
+    it('Should be able to trash selected component box by hitting DELETE key', function () {
+
+        var componentBox,
+            otherComponentBox;
+
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
+
+        browser.driver.executeScript(function (targetComponentLabel) {
+
+            var e;
+
+            e = jQuery.Event("keydown");
+            e.keyCode=8;
+
+            $(document).trigger(e);
+
+        });
+
+        browser.sleep(gmeEventTimeLimit);
+
+        expect(browser.isElementPresent(componentBox)).toEqual(false);
+        expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
 
     });
 

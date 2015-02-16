@@ -418,21 +418,21 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                             d = event.srcElement || event.target;
 
-                            console.log(d.tagName);
+                            if(d.tagName) {
 
-                            if ((d.tagName.toUpperCase() === 'INPUT' &&
-                                (
-                                d.type.toUpperCase() === 'TEXT' ||
-                                d.type.toUpperCase() === 'PASSWORD' ||
-                                d.type.toUpperCase() === 'FILE' ||
-                                d.type.toUpperCase() === 'EMAIL' ||
-                                d.type.toUpperCase() === 'SEARCH' ||
-                                d.type.toUpperCase() === 'DATE' )
-                                ) ||
-                                d.tagName.toUpperCase() === 'TEXTAREA') {
-                                doPrevent = d.readOnly || d.disabled;
+                                if ((d.tagName.toUpperCase() === 'INPUT' &&
+                                    (
+                                    d.type.toUpperCase() === 'TEXT' ||
+                                    d.type.toUpperCase() === 'PASSWORD' ||
+                                    d.type.toUpperCase() === 'FILE' ||
+                                    d.type.toUpperCase() === 'EMAIL' ||
+                                    d.type.toUpperCase() === 'SEARCH' ||
+                                    d.type.toUpperCase() === 'DATE' )
+                                    ) ||
+                                    d.tagName.toUpperCase() === 'TEXTAREA') {
+                                    doPrevent = d.readOnly || d.disabled;
+                                }
                             }
-
                         }
 
                         if (doPrevent) {
