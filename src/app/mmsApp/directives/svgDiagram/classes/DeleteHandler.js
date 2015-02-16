@@ -7,7 +7,7 @@ module.exports = function ($scope, $rootScope) {
     $scope.$on('keydownOnDocument', function ($event, event) {
 
 
-        if (event.keyCode === 8) {
+        if (event.keyCode === 8 || event.keyCode === 46) {
 
             if ($scope.diagram.state.selectedComponentIds.length) {
 
