@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function ($scope) {
+module.exports = function ($scope, $rootScope) {
 
     $scope.$on('keydownOnDocument', function ($event, event) {
 
@@ -11,7 +11,7 @@ module.exports = function ($scope) {
 
             if ($scope.diagram.state.selectedComponentIds.length) {
 
-                console.log('should delete selected');
+                $rootScope.$emit('componentDeletionMustBeDone', $scope.diagram.getSelectedComponents());
 
             }
 

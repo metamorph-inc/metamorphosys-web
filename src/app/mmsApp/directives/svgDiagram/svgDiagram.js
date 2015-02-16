@@ -101,7 +101,8 @@ angular.module('mms.designVisualization.svgDiagram', [
         );
 
         deleteHandler = new DeleteHandler(
-            $scope
+            $scope,
+            $rootScope
         );
 
         //
