@@ -1,91 +1,137 @@
 {
-  "name": "webgme-cyphy",
-  "version": "0.1.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/webgme/webgme-cyphy"
-  },
-  "license": "MIT",
-  "dependencies": {
-  "bson-stream": "0.0.4",
-  "webgme": "https://github.com/webgme/webgme/tarball/perf_investigation",
-    "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
-    "requirejs": "=2.1.11",
-    "winreg": "=0.0.12",
-    "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
-  },
-  "devDependencies": {
-    "angular-markdown-directive": "^0.3.0",
-    "angular-sanitize": "0.0.1",
-    "bower": ">=1.3.9",
-    "browserify": "^5.10.1",
-    "browserify-shim": "^3.7.0",
-    "chai": ">=1.9.0",
-    "code-mirror": "~3.22.0",
-    "connect-livereload": "^0.4.0",
-    "cssify": "~0.6.0",
-    "express": "^4.8.6",
-    "gulp": "^3.8.7",
-    "gulp-angular-templatecache": "^1.3.0",
-    "gulp-buffer": "0.0.2",
-    "gulp-clean": "^0.3.1",
-    "gulp-concat": "^2.3.4",
-    "gulp-js-prettify": "^0.1.0",
-    "gulp-jshint": "^1.8.4",
-    "gulp-livereload": "^2.1.1",
-    "gulp-prettify": "^0.3.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-sass": "^0.7.3",
-    "gulp-shell": "^0.2.11",
-    "gulp-sourcemaps": "^1.3.0",
-    "istanbul": ">=0.2.6",
-    "jslint": ">=0.3.0",
-    "mocha": ">=1.17.1",
-    "process": "^0.7.0",
-    "run-sequence": "^0.3.6",
-    "tiny-lr": "^0.1.1",
-    "vinyl-source-stream": "^1.0.0",
-    "yargs": "^1.3.1",
-    "svgmin": "~0.1.0",
-    "gulp-svgstore": "~3.0.0",
-    "gulp-svgmin": "~1.0.0",
-    "q": "^1.1.2"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim",
-      "cssify"
-    ]
-  },
-  "browser": {
-    "showdown": "./vendor/showdown_for_browserify.js",
-    "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
-    "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
-    "chance": "./bower_components/chance/chance.js",
-    "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
-    "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
-    "ui-layout": "./bower_components/angular-ui-layout/ui-layout.min.js",
-    "ngDragDrop": "./bower_components/angular-native-dragdrop/draganddrop.js"
-  },
-  "browserify-shim": {
-    "showdown": "Showdown"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "config": {},
-  "scripts": {
-    "start": "node app.js",
-    "test": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
-    "test_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context test node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
-    "test_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
-    "test_cover_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context cover node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
-    "//": "functional tests require the app to be running",
-    "test_functional": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
-    "test_functional_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
-    "test_all": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
-    "test_all_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
-    "jsdoc": "node_modules/.bin/jsdoc src -r",
-    "plugin": "node node_modules/webgme/bin/run_plugin.js -c config.json"
-  }
+    "name": "webgme-cyphy",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/webgme/webgme-cyphy"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "bson-stream": "0.0.4",
+        "webgme": "https://github.com/webgme/webgme/tarball/perf_investigation",
+        "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
+        "requirejs": "=2.1.11",
+        "winreg": "=0.0.12",
+        "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
+    },
+    "devDependencies": {
+        "angular-markdown-directive": "^0.3.0",
+        "angular-sanitize": "0.0.1",
+        "bower": ">=1.3.9",
+        "browserify": "^5.10.1",
+        "browserify-shim": "^3.7.0",
+        "chai": ">=1.9.0",
+        "cheerio": "^0.18.0",
+        "code-mirror": "~3.22.0",
+        "connect-livereload": "^0.4.0",
+        "cssify": "~0.6.0",
+        "express": "^4.8.6",
+        "gulp": "^3.8.7",
+        "gulp-angular-templatecache": "^1.3.0",
+        "gulp-buffer": "0.0.2",
+        "gulp-clean": "^0.3.1",
+        "gulp-concat": "^2.3.4",
+        "gulp-js-prettify": "^0.1.0",
+        "gulp-jshint": "^1.8.4",
+        "gulp-livereload": "^2.1.1",
+        "gulp-prettify": "^0.3.0",
+        "gulp-rename": "^1.2.0",
+        "gulp-sass": "^0.7.3",
+        "gulp-shell": "^0.2.11",
+        "gulp-sourcemaps": "^1.3.0",
+        "gulp-svgmin": "^1.1.0",
+        "gulp-svgstore": "^5.0.0",
+        "gulp-template": "^3.0.0",
+        "istanbul": ">=0.2.6",
+        "jslint": ">=0.3.0",
+        "mocha": ">=1.17.1",
+        "process": "^0.7.0",
+        "q": "^1.1.2",
+        "run-sequence": "^0.3.6",
+        "svgo": "^0.5.0",
+        "tiny-lr": "^0.1.1",
+        "vinyl-source-stream": "^1.0.0",
+        "yargs": "^1.3.1",
+        "svgmin": "~0.1.0",
+        "gulp-svgstore": "~3.0.0",
+        "gulp-svgmin": "~1.0.0",
+        "q": "^1.1.2"
+    },
+    "browserify": {
+        "transform": [
+            "browserify-shim",
+            "cssify"
+        ]
+    },
+    "browser": {
+
+        "jquery": "./bower_components/jquery/dist/jquery.min.js",
+        "jquery-ui": "./bower_components/jquery-ui/jquery-ui.min.js",
+
+        "bootstrap": "./bower_components/bootstrap/dist/js/bootstrap.min.js",
+
+        "angular": "./bower_components/angular/angular.js",
+
+        "ui-bootstrap": "./bower_components/angular-bootstrap/ui-bootstrap.js",
+        "ui-bootstrap-tpls": "./bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+        "ui-router": "./bower_components/angular-ui-router/release/angular-ui-router.min.js",
+        "ui-utils": "./bower_components/angular-ui-utils/ui-utils.min.js",
+        "ng-grid": "./bower_components/ng-grid/build/ng-grid.min.js",
+        "hammerjs": "./bower_components/hammerjs/hammer.js",
+        "angular-animate": "./bower_components/angular-animate/angular-animate.min.js",
+        "angular-aria": "./bower_components/angular-aria/angular-aria.min.js",
+        "angular-material": "./bower_components/angular-material/angular-material.min.js",
+        "angular-cookies": "./bower_components/angular-cookies/angular-cookies.min.js",
+        "angucomplete-alt": "./bower_components/angucomplete-alt/dist/angucomplete-alt.min.js",
+        "angular-socialshare": "./bower_components/angular-socialshare/angular-socialshare.min.js",
+
+        "showdown": "./vendor/showdown_for_browserify.js",
+        "codemirrorCSS": "./bower_components/codemirror/lib/codemirror.css",
+        "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
+        "chance": "./bower_components/chance/chance.js",
+        "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
+        "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
+        "ngDragDrop": "./bower_components/angular-native-dragdrop/draganddrop.js",
+        "ngTouch": "./bower_components/angular-touch/angular-touch.min.js",
+
+        "hamster": "./bower_components/hamsterjs/hamster.js",
+        "angular-panhandler": "./bower_components/angular-panhandler/dist/angular-panhandler.min.js",
+        "angular-mousewheel": "./bower_components/angular-mousewheel/mousewheel.js",
+        "panzoom": "./bower_components/angular-pan-zoom/bin/panzoom.js",
+        "mousewheel": "./bower_components/jscrollpane/script/jquery.mousewheel.js",
+        "jscrollpane": "./bower_components/jscrollpane/script/jquery.jscrollpane.min.js",
+
+        "ng-gme": "./node_modules/ng-gme/dist/ng-gme.js",
+
+        "isis-ui-components": "./bower_components/isis-ui-components/dist/isis-ui-components.js",
+        "isis-ui-components-templates": "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
+
+        "webgme.classes": "./node_modules/webgme/dist/webgme.classes.build.js",
+
+        "webcyphy.plugins": "./public/gme_plugins_for_cyphy/webcyphy.plugins.build.js",
+        "cyphy-components": "./public/cyphy-library/cyphy-components.js",
+        "cyphy-components-templates": "./public/cyphy-library/cyphy-components-templates.js"
+
+    },
+    "browserify-shim": {
+        "showdown": "Showdown"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "config": {},
+    "scripts": {
+        "start": "node app.js",
+        "test": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
+        "test_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context test node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
+        "test_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit",
+        "test_cover_win": "node_modules\\.bin\\istanbul.cmd --hook-run-in-context cover node_modules\\mocha\\bin\\_mocha -- -R spec --recursive test/unit",
+        "//": "functional tests require the app to be running",
+        "test_functional": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
+        "test_functional_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
+        "test_all": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
+        "test_all_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
+        "jsdoc": "node_modules/.bin/jsdoc src -r",
+        "plugin": "node node_modules/webgme/bin/run_plugin.js -c config.json"
+    }
 }

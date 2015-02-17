@@ -1,6 +1,6 @@
 ({
     name: 'webcyphy.plugins',
-    out: '../../../dist/webcyphy.plugins.build.js',
+    out: '../../../public/gme_plugins_for_cyphy/webcyphy.plugins.build.js',
     baseUrl: '../../../',
     paths: {
         'webcyphy.plugins': './utils/build/webcyphy.plugins/webcyphy.plugins',

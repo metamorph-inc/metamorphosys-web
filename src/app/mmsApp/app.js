@@ -2,10 +2,7 @@
 
 'use strict';
 
-require('./libraryIncludes.js');
-
-require('ngDragDrop');
-
+require ('./libraryDependencies');
 
 require('./utils.js');
 

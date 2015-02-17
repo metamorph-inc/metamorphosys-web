@@ -1,5 +1,7 @@
 /*globals angular*/
 
+'use strict';
+
 angular.module( 'CyPhyApp', [
     'ui.router',
 

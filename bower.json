@@ -14,9 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "isis-ui-components": "*"
-  },
-  "resolutions": {
-    "angular-material": "~0.7.1"
+    "isis-ui-components": "*",
+    "angular-moment": "~0.9.0"
   }
 }
