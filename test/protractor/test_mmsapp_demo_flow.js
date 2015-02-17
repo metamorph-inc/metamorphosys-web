@@ -28,6 +28,9 @@ describe('Metamorphosys Tech Demo Flow', function () {
             done();
         } else {
             require('http').get('http://localhost:8855/rest/external/copyproject/noredirect', function (res) {
+                if (res.statusCode > 399) {
+                    done(res.statusCode);
+                }
                 res.setEncoding('utf8');
                 res.on('data', function (chunk) {
                     /* fair assumption that projectName fits in one chunk */
