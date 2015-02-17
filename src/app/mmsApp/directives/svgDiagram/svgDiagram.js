@@ -38,7 +38,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             WireDrawHandler = require('./classes/WireDrawHandler'),
             wireDrawHandler,
 
-            ContextMenuHandler = require('./classes/contextMenuHandler'),
+            ContextMenuHandler = require('./classes/ContextmenuHandler'),
             contextMenuHandler,
 
             componentElements,

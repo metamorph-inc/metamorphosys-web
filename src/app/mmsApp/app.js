@@ -6,7 +6,7 @@ require ('./libraryDependencies');
 
 require('./utils.js');
 
-require('./services/projectHandling/projectHandling.js');
+require('./services/ProjectHandling/ProjectHandling.js');
 require('./services/connectionHandling/connectionHandling.js');
 
 require('./services/operationsManager/operationsManager.js');
