@@ -4,6 +4,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     var q = require('q'),
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
+        hasClass = require('./lib/has_class.js'),
 
         gmeEventTimeLimit = 2000,
         uiEventTimeLimit = 200,
@@ -119,7 +120,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Component search should return search results', function() {
+    it('Component search should return search results', function () {
 
         var componentSearchInput,
             searchDropdown,
@@ -130,27 +131,34 @@ describe('Metamorphosys Tech Demo Flow', function () {
         searchResults = element.all(by.css('.component-search .angucomplete-row'));
 
         componentSearchInput.sendKeys('sens')
-            .then(function(){
+            .then(function () {
 
-                browser.wait(function(){
-                    return searchDropdown.isDisplayed();
-                },
-                1000,
-                'search results not displayed')
-                    .then(function(){
+                browser.wait(function () {
+                        return searchDropdown.isDisplayed();
+                    },
+                    1000,
+                    'search results not displayed')
+                    .then(function () {
                         expect(searchResults.count()).toBeGreaterThan(0);
 
 
-                        componentSearchInput.sendKeys('enon')
-                            .then(function(){
+                        componentSearchInput.sendKeys('enona')
+                            .then(function () {
 
-                                browser.wait(function(){
-                                        return searchDropdown.isDisplayed();
-                                    },
-                                    1000,
-                                    'search results not displayed')
-                                    .then(function() {
-                                        expect(searchResults.count()).toEqual(0);
+                                // Making sure back-space/delete works in input field
+                                componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
+                                    .then(function () {
+
+                                        expect(componentSearchInput.getAttribute('value')).toEqual('sensenon');
+
+                                        browser.wait(function () {
+                                                return searchDropdown.isDisplayed();
+                                            },
+                                            1000,
+                                            'search results not displayed')
+                                            .then(function () {
+                                                expect(searchResults.count()).toEqual(0);
+                                            });
                                     });
                             });
 
@@ -297,7 +305,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser2.driver.executeScript(function (targetComponentLabel) {
 
-            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a)/Math.PI*180;
+            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
 
         }, targetComponentLabel).then(function (angle) {
             expect(angle).toEqual(90);
@@ -314,7 +322,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser.driver.executeScript(function (targetComponentLabel) {
 
-            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a)/Math.PI*180;
+            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
 
         }, targetComponentLabel).then(function (angle) {
             expect(angle).toEqual(0);
@@ -335,7 +343,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         };
 
         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-        otherComponentBox = browser.element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
         browser.driver.executeScript(function (targetComponentLabel) {
 
@@ -375,16 +383,16 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
             browser.driver.executeScript(function (targetComponentLabel) {
 
-                    var m;
+                var m;
 
-                    m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+                m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
 
-                    return {
-                        x: m.e,
-                        y: m.f
-                    };
+                return {
+                    x: m.e,
+                    y: m.f
+                };
 
-                }, targetComponentLabel).then(function (newPosition1) {
+            }, targetComponentLabel).then(function (newPosition1) {
 
 
                 browser2.driver.executeScript(function (targetComponentLabel) {
@@ -404,6 +412,58 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
                 });
             });
+        });
+
+    });
+
+    it('Should be able to selected component clickin on it', function () {
+
+        var componentBox;
+
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+
+        componentBox.click();
+
+        browser.wait(function () {
+
+                return hasClass(componentBox, 'selected');
+            },
+            gmeEventTimeLimit,
+            'element did not get selected'
+        );
+
+        browser.sleep(5000);
+
+    });
+
+    it('Should be able to trash selected component box by hitting DELETE key', function () {
+
+        var componentBox,
+            otherComponentBox;
+
+        browser.driver.getCurrentUrl().then(function (currentUrl) {
+
+            componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+            otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
+
+            browser.driver.executeScript(function (targetComponentLabel) {
+
+                var e;
+
+                e = jQuery.Event("keydown");
+                e.keyCode = 8;
+
+                $(document).trigger(e);
+
+            });
+
+            browser.sleep(gmeEventTimeLimit);
+
+            expect(browser.isElementPresent(componentBox)).toEqual(false);
+            expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
+
+            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
+
         });
 
     });
