@@ -95,7 +95,7 @@ module.exports = function ($scope, $timeout, $log) {
 
                 };
 
-                jspPane.keydown(spaceBarKiller);
+                jspPane.keypress(spaceBarKiller);
 
             }
         )
@@ -152,6 +152,10 @@ module.exports = function ($scope, $timeout, $log) {
         }
 
     }});
+
+    window.onkeydown = function(e) {
+        return !(e.keyCode == 32);
+    };
 
     onWindowResize = function() {
         jspReinit();

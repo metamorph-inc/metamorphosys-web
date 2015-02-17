@@ -256,7 +256,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     spaceBarKiller = function(e) {
 
-                        console.log('.diagram-content-pane', e.target, e.keyCode);
+                        console.log('.diagram-content-pane K1', e.target, e.keyCode);
                         if(e.keyCode === 32) {
                             e.preventDefault();
                             return false;
@@ -266,7 +266,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     spaceBarKiller2 = function(e) {
 
-                        console.log('.diagram-container', e.target, e.keyCode);
+                        console.log('.diagram-container K2', e.target, e.keyCode);
                         if(e.keyCode === 32) {
                             e.preventDefault();
                             return false;
@@ -274,8 +274,8 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     };
 
-                    $contentPane.keydown(spaceBarKiller);
-                    $element.keydown(spaceBarKiller2);
+                    $contentPane.keypress(spaceBarKiller);
+                    $element.keypress(spaceBarKiller2);
 
 
                     scope.$contentPane = element.find('>.diagram-content-pane');

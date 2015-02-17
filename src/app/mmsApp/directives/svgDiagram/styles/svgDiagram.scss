@@ -11,11 +11,11 @@
 //    }
 
     &.pannable {
-        cursor: url(images/openhand.cur) 4 4, move !important;
+        cursor: url(../images/openhand.cur) 4 4, move !important;
     }
 
     &.panning {
-        cursor: url(images/closedhand.cur) 4 4, move !important;
+        cursor: url(../images/closedhand.cur) 4 4, move !important;
     }
 
     &.dragging * {
