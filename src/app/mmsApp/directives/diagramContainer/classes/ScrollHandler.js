@@ -87,7 +87,6 @@ module.exports = function ($scope, $timeout, $log) {
 
                 spaceBarKiller = function(e) {
 
-                    console.log('.jspPane', e.target, e.keyCode);
                     if(e.keyCode === 32) {
                         e.preventDefault();
                         return false;
@@ -154,7 +153,7 @@ module.exports = function ($scope, $timeout, $log) {
     }});
 
     window.onkeydown = function(e) {
-        return !(e.keyCode == 32);
+        return (e.keyCode !== 32);
     };
 
     onWindowResize = function() {

@@ -371,12 +371,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     };
 
-                    //scope.$watch(function(){
-                    //    return $element.attr('class');
-                    //}, function(cssClass){
-                    //   console.log(cssClass);
-                    //});
-
                     scope.$watch('diagram', function (newDiagramValue) {
 
                         if (newDiagramValue) {
@@ -426,35 +420,6 @@ angular.module('mms.designVisualization.svgDiagram', [
                     //});
 
                     $element.bind('contextmenu', killContextMenu);
-
-
-                    $element.keyup(function (e) {
-                        $timeout(function () {
-
-                            scope.pressedKey = null;
-
-
-                            $timeout(function () {
-
-                                scope.$emit('keyupOnDiagram', e);
-
-                            });
-
-                        });
-                    });
-
-                    $element.keydown(function (e) {
-
-
-                        $timeout(function () {
-
-                            scope.pressedKey = e.keyCode;
-
-                            scope.$emit('keydownOnDiagram', e);
-
-                        });
-
-                    });
 
                     killDelete = function (event) {
 

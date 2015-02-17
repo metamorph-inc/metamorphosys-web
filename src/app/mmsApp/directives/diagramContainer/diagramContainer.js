@@ -197,8 +197,8 @@ angular.module('mms.designVisualization.diagramContainer', [
         }
     ])
     .directive('diagramContainer', [
-        'diagramService', '$log', '$timeout', 'PanZoomService',
-        function (diagramService, $log, $timeout) {
+        '$rootScope', 'diagramService', '$log', '$timeout', 'PanZoomService',
+        function ($rootScope, diagramService, $log, $timeout) {
 
             return {
                 controller: 'DiagramContainerController',
@@ -213,76 +213,50 @@ angular.module('mms.designVisualization.diagramContainer', [
                 link: function (scope, element) {
 
                     var $element,
-                        $contentPane,
-                        spaceBarKiller,
-                        spaceBarKiller2;
+                        $contentPane;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
                     scope.config = scope.config || {};
 
-//                    scope.canvasWidth = $(element)
-//                        .outerWidth();
-//                    scope.canvasHeight = $(element)
-//                        .outerHeight();
-//
-//
-//                    scope.visibleArea = {
-//                        top: 0,
-//                        left: 0,
-//                        right: scope.canvasWidth,
-//                        bottom: scope.canvasHeight
-//                    };
-
                     $element = scope.$element = $(element);
 
                     $contentPane = $element.find('.diagram-content-pane');
 
-
-                    //scope.$watch(function(){
-                    //    return $element.attr('class');
-                    //}, function(cssClass){
-                    //    console.log(cssClass);
-                    //});
-
-                    window.onkeydown = function(e) {
-                        if(e.keyCode === 32 && e.target === document.body) {
-                            e.preventDefault();
-                            return false;
-                        }
-                    };
-
-                    console.log($contentPane.length);
-
-                    spaceBarKiller = function(e) {
-
-                        console.log('.diagram-content-pane K1', e.target, e.keyCode);
-                        if(e.keyCode === 32) {
-                            e.preventDefault();
-                            return false;
-                        }
-
-                    };
-
-                    spaceBarKiller2 = function(e) {
-
-                        console.log('.diagram-container K2', e.target, e.keyCode);
-                        if(e.keyCode === 32) {
-                            e.preventDefault();
-                            return false;
-                        }
-
-                    };
-
-                    $contentPane.keypress(spaceBarKiller);
-                    $element.keypress(spaceBarKiller2);
-
-
                     scope.$contentPane = element.find('>.diagram-content-pane');
+
+                    $element.keyup(function (e) {
+                        $timeout(function () {
+
+                            scope.pressedKey = null;
+
+                            $timeout(function () {
+
+                                scope.$broadcast('keyupOnDiagram', e);
+
+                            });
+
+                        });
+                    });
+
+                    $element.keydown(function (e) {
+
+
+                        $timeout(function () {
+
+                            scope.pressedKey = e.keyCode;
+
+                            scope.$broadcast('keydownOnDiagram', e);
+
+                        });
+
+                    });
 
                     $timeout(function() {
                         scope.$broadcast('DiagramContainerInitialized');
                     });
+
+
                 }
 
             };

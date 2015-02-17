@@ -94,7 +94,7 @@ module.exports = function ($scope, $log) {
 
     onDiagramMouseDown = function($event) {
 
-        if ($scope.pressedKey === 32) {
+        if ($event.altKey) {
 
             self.panning = true;
 
@@ -128,7 +128,7 @@ module.exports = function ($scope, $log) {
 
     $scope.$on('keydownOnDiagram', function($event, $originalEvent) {
 
-        if ($originalEvent.keyCode === 32) {
+        if ($originalEvent.altKey) {
             self.pannable = true;
         }
 
