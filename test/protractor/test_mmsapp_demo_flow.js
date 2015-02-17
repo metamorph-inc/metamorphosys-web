@@ -110,6 +110,43 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     }, 5000);
 
+    //it('Should be able to drag-pan', function () {
+    //
+    //    var diagramContainer;
+    //
+    //    diagramContainer = browser.element(by.css('div.diagram-container'));
+    //
+    //    browser.actions()
+    //        .mouseMove({x: 300, y: 300})
+    //        .mouseDown()
+    //        .perform();
+    //
+    //
+    //
+    //        browser.driver.executeScript(function () {
+    //
+    //            var e;
+    //
+    //            e = jQuery.Event("keydown");
+    //            e.altKey = true;
+    //
+    //            $('div.diagram-container').trigger(e);
+    //
+    //        });
+    //
+    //    browser.sleep(uiEventTimeLimit);
+    //
+    //    browser.actions().mouseMove({x: 250, y: 250}).perform();
+    //
+    //    browser.sleep(uiEventTimeLimit);
+    //
+    //    browser.actions().mouseUp().perform();
+    //
+    //    browser.sleep(5000);
+    //
+    //});
+
+
     it('Should have component browser', function () {
 
         var componentBrowser,
