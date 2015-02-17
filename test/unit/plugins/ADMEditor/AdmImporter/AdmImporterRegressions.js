@@ -134,15 +134,20 @@ describe('AdmImporterRegressions', function () {
         expect(constrained.C1a['@X']).to.equal('1.1');
         // expect(constrained.C2a['@LayerRange']).to.equal('Either'); is empty ok?
         expect(constrained.C2b['@LayerRange']).to.equal('Top');
+        expect(constrained.C2b['@Type']).to.equal('Inclusion');
         expect(constrained.C2c['@LayerRange']).to.equal('Bottom');
+        expect(constrained.C2c['@Type']).to.equal('Exclusion');
         expect(constrained.C1c['@Rotation']).to.equal('r180');
         expect(constrained.C2a['@XRangeMin']).to.equal('1.1');
         expect(constrained.C2a['@XRangeMax']).to.equal('5.5');
         expect(constrained.C2b['@XRangeMax']).to.equal('5.5');
         expect(constrained.C3a1['@XOffset']).to.equal('5.1');
+        expect(constrained.C3a1['@RelativeLayer']).to.equal('Opposite');
+        expect(constrained.C3a2['@XOffset']).to.equal('-5.1');
+        expect(constrained.C3a2['@RelativeLayer']).to.be.undefined;
+        expect(constrained.C3b1['@RelativeLayer']).to.equal('Same');
         expect(componentInstances[constrained.C3a1['@Origin']]['@Name']).to.equal('C3a2');
         expect(componentInstances[constrained.C3b1['@Origin']]['@Name']).to.equal('C3b2');
-
 
         done();
     });

@@ -1,49 +1,70 @@
 /*globals angular, console*/
 
 var TIMEOUT = 0;
-// uncomment this and the meta nodes won't be loaded:
 //TIMEOUT = 1000;
-
-var fatal = function ( err ) {
-    console.log( err );
-};
 
 var CyPhyApp = angular.module( 'CyPhyApp', [
     'ui.router',
 
-    'gme.services',
-
-    'isis.ui.components',
-
-    'cyphy.components',
-
-    // app specific templates
-    'cyphy.sample.templates'
+    'gme.services'
 ] )
     .run( function () {
 
     } );
 
-// TODO: require all of your controllers
-//require('./views/MyView/MyViewController');
+var CyPhyApp = angular.module( 'CyPhyApp',
+    [
+        'ui.router',
+        'gme.services',
+] );
 
+CyPhyApp.config(function ($stateProvider, $urlRouterProvider) {
 
-angular.module( 'CyPhyApp' )
-    .controller( 'MyViewController', function ( $q, $scope, $timeout, $http, growl, dataStoreService, projectService,
+    $urlRouterProvider.otherwise('/test?iterations=10');
+
+    $stateProvider
+        .state('test', {
+            url: '/test?iterations',
+            controller: 'PerfController',
+            template: '<div class="main-navigator-container"><ul id="log"><li ng-repeat="log in logs track by $index"> <span>{{log}}</span> </li> </ul></div>'
+    });
+});
+
+CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $stateParams, dataStoreService, projectService,
         nodeService, branchService ) {
         'use strict';
 
         var future,
             log,
+            progress,
+            fail,
+            succeed,
             databaseId,
             meta,
-            context;
+            context,
+            failed = false,
+            branchId,
+            iterations = $stateParams['iterations'] || 10;
 
         $scope.logs = [ 'init' ];
 
         log = function ( message ) {
             $scope.logs.push( new Date() + ' ' + message );
             //$scope.$apply();
+        };
+        progress = function (count) {
+            document.getElementById('result_container').innerHTML += '<div id="progress_' + count + '"></div>';
+        };
+        fail = function (message) {
+            failed = true;
+            log('FAILED: ' + message);
+            document.getElementById('result_container').innerHTML += '<div id="result">FAILED: ' + message + '</div>';
+        };
+        succeed = function (message) {
+            if (failed === false) {
+                log('SUCCESS');
+                document.getElementById('result_container').innerHTML += '<div id="result">SUCCESS</div>';
+            }
         };
 
         databaseId = 'my-db-connection-id';
@@ -58,7 +79,7 @@ angular.module( 'CyPhyApp' )
         future = ( function ( projectName ) {
             return dataStoreService.connectToDatabase( databaseId, {
                 host: window.location.basename,
-                storageKeyType: 'rand160bytes'
+                storageKeyType: 'rand160Bits'
             } )
                 .then( function () {
                     // select default project and branch (master)
@@ -67,9 +88,24 @@ angular.module( 'CyPhyApp' )
                 } )
                 .
             catch ( function ( reason ) {
+                if (reason.message.indexOf('Project does not exist') !== -1) {
+                    return $http.get('/extlib/test/models/SimpleModelica.json')
+                        .then(function (res) {
+                            var deferred = $q.defer();
+                            var client = dataStoreService.getDatabaseConnection(databaseId).client;
+                            client.createProjectFromFileAsync(projectName, res.data, function(err) {
+                                if (err) {
+                                    return deferred.reject(err);
+                                }
+                                log('project imported');
+                                deferred.resolve();
+                            });
+                            return deferred.promise;
+                        }).catch(fail);
+                }
                 log( 'Project "' + projectName + '" does not exist. Create and import it using the <a href="' +
                     window.location.origin + '"> webgme interface</a>.' );
-                fatal( reason );
+                fail( reason );
             } );
         } )( 'SimpleModelica' )
             .then( function ( project ) {
@@ -91,8 +127,9 @@ angular.module( 'CyPhyApp' )
                 return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ),
                     branches.filter(function (o) { return o.name === 'master'; })[0].commitId );
             } )
-            .then( function ( branchId ) {
+            .then( function ( branchId_ ) {
                 return $timeout( function () {
+                    branchId = branchId_;
                     return branchId;
                 }, TIMEOUT );
             } )
@@ -100,6 +137,11 @@ angular.module( 'CyPhyApp' )
                 return branchService.selectBranch( databaseId, branchId );
             } )
             .then( function ( project ) {
+                branchService.watchBranchState(databaseId, function (state) {
+                    if (state === 'forked') {
+                        fail('forked');
+                    }
+                });
                 return nodeService.getMetaNodes( context );
             } )
             .then( function ( metaNodes ) {
@@ -151,37 +193,85 @@ angular.module( 'CyPhyApp' )
                         //deferred.resolve(setattr);
                         return;
                     }
-                    log( 'PHANTOM DONE' );
+                    succeed();
                     deferred.resolve(null);
                 });
             value.setAttribute('Value', Math.random() * 10000);
             return deferred.promise;
         };
+        var step = 40;
         var j = 0;
+        var latest = 0;
         setattr = function () {
             var i,
                 deferred = $q.defer();
             value.onUpdate(function () {
-                log('set ' + i);
-                console.log('set ' + i + ' ' + j);
-                if (value.getAttribute('Value') >= j) {
-                    if (j >= 20 * 40) {
-                        log('PHANTOM DONE');
-                        deferred.resolve();
+                log('set ' + i + ' ' + j);
+                // console.log('set ' + i + ' ' + j);
+                progress(j);
+                var valuePath = value.getId();
+                if (value.getAttribute('Value') === j && latest < j) {
+                    latest = j;
+                    if (j >= step * iterations) {
+                        return (function () {
+                            var getBranchTries = 0,
+                                testBranchResult = function () {
+                                    return branchService.getBranches(databaseId).then(function (branches) {
+                                        var client = dataStoreService.getDatabaseConnection(databaseId).client,
+                                            clientCommit = client.getActualCommit(),
+                                            serverCommit = branches.filter(function (b) {
+                                            return b.name === branchId;
+                                        })[0];
+                                        if (client.getActualBranchStatus() !== client.branchStates.SYNC) {
+                                            fail('Forked at end');
+                                        } else if (serverCommit.commitId !== clientCommit) {
+                                            if (getBranchTries++ > 200) {
+                                                fail('Branch mismatch: server has ' + serverCommit.commitId + '; client has ' + clientCommit);
+                                            } else {
+                                               return $timeout(testBranchResult, 100);
+                                            }
+                                        } else {
+                                            succeed();
+                                        }
+                                    });
+                                };
+                            deferred.resolve;
+                            return testBranchResult();
+                        })();
+
+                        /*
+                            $timeout(400,
+                            branchService.selectBranch( databaseId, 'master' )
+                            .then(function () {
+                                return branchService.getBranches(databaseId);
+                            })
+                            .then(function (branches) {
+                                console.log(JSON.stringify(branches, null, 4));
+                                return branchService.selectBranch( databaseId, branchId );
+                            }).then(function () {
+                                return nodeService.loadNode(context, valuePath);
+                            }).then(function (value) {
+                                fail(value.getAttribute('Value'));
+
+                            }))
+                        */
                     } else {
-                        deferred.resolve($timeout(setattr, 10));
+                        if (!failed) {
+                            deferred.resolve($timeout(setattr, 40));
+                        }
                     }
                 }
             });
             value.onUnload(function () {
+                fail('unloaded');
                 debugger;
             });
-            j += 20;
-            for (i = 1; i <= 20; i++) {
-                value.setAttribute('Value', i + j - 20);
+            j += step;
+            for (i = 1; i <= step; i++) {
+                value.setAttribute('Value', i + j - step);
             }
             return deferred;
         };
+        future.catch(fail);
         future.then(setattr);
-        //.catch ( fatal );
     } );

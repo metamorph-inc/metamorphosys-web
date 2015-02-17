@@ -1,7 +1,6 @@
 @import 'colors';
 @import '_bootstrap_overrides.scss';
 @import '_material_overrides.scss';
-@import '../../../../bower_components/angular-ui-layout/ui-layout.css';
 @import 'print';
 
 .mms-app {
@@ -63,7 +62,7 @@
             background-color: rgba(0,0,68,.2);
 
             .label-container {
-                background-image: url(./images/mms-icon-bright.png);
+                background-image: url(../images/mms-icon-bright.png);
                 background-position: 8px 10px;
                 background-repeat: no-repeat;
 
@@ -139,6 +138,7 @@ md-toast.success {
     .md-button.md-default-theme.md-raised {
         margin-left: 20px;
         background-color: rgba(0, 111, 10, 1);
+        color: #fff;
     }
 
 }
@@ -149,6 +149,7 @@ md-toast.failure {
     .md-button.md-default-theme.md-raised {
         margin-left: 20px;
         background-color: #6F1900;
+        color: #fff;
     }
 
 }

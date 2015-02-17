@@ -36,7 +36,7 @@ angular.module('mms.testbenchActions', [
         };
 
         $scope.testbenchResults = [
-            //
+
             //{
             //
             //    id: 'testPCBResult1',
@@ -85,7 +85,7 @@ angular.module('mms.testbenchActions', [
             //    status: 'FAILURE'
             //
             //}
-            //
+
 
         ];
 

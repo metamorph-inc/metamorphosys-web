@@ -1,0 +1,46 @@
+{
+    "scripts": [
+        "./bower_components/jquery/dist/jquery.min.js",
+        "./bower_components/jquery-ui/jquery-ui.min.js",
+
+        "./bower_components/bootstrap/dist/js/bootstrap.min.js",
+
+        "./bower_components/angular/angular.js",
+        "./bower_components/angular-ui-router/release/angular-ui-router.min.js",
+
+        "./bower_components/angular-bootstrap/ui-bootstrap.js",
+        "./bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+
+        "./bower_components/angular-ui-utils/ui-utils.min.js",
+        "./bower_components/ng-grid/build/ng-grid.min.js",
+
+        "./node_modules/ng-gme/dist/ng-gme.js",
+
+        "./bower_components/isis-ui-components/dist/isis-ui-components.js",
+        "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
+
+        "./node_modules/webgme/dist/webgme.classes.build.js",
+
+        "./public/cyphy-library/cyphy-components.js",
+        "./public/cyphy-library/cyphy-components-templates.js"
+
+    ],
+
+    "styles": [
+        "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",
+
+        "./bower_components/bootstrap/dist/css/bootstrap.min.css",
+
+        "./bower_components/font-awesome/css/font-awesome.min.css",
+
+        "./bower_components/isis-ui-components/dist/isis-ui-components.css",
+
+        "./node_modules/ng-gme/dist/ng-gme.css",
+
+        "./public/cyphy-library/cyphy-components.css"
+    ],
+
+    "fonts": [
+        "./bower_components/bootstrap/dist/fonts/*"
+    ]
+}

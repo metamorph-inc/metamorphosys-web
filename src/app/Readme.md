@@ -14,24 +14,12 @@ If you wish to create a new one the `sample` application is a good starting poin
 ### Creating a new application ###
 
 1. duplicate the entire `sample` directory as `my-new-app` for instance
-2. add the `my-new-app` identifier to `gulpfile.js` file where applications = ['default', 'sample'] are defined
-3. use `gulp.js dev` to continuously build your app, your library is compiled into the `dist` directory
-    - `dist/my-new-app-app.js`
-    - `dist/my-new-app-app-templates.js`
+2. Add your library dependencies (which you do not require with Browserify) in libs.json
+3. use `gulp.js register-watchers` to continuously build your app, your app is compiled into the `public/app` directory
+    - `public/apps//my-new-app-app/...`
+   If you would not want to get your app built by this command, add your app's name to `doNotCompileApps` in gulfile.js.
 4. change your application dependency in `app.js` from `'cyphy.sample.templates'` to `'cyphy.my-new-app.templates'`
-5. change in the `my-new-app/index.html` the application specific javascript includes
 
-From:
-```html
-<script src="/extlib/dist/sample-app.js"></script>
-<script src="/extlib/dist/sample-app-templates.js"></script>
-```
-
-To:
-```html
-<script src="/extlib/dist/my-new-app-app.js"></script>
-<script src="/extlib/dist/my-new-app-app-templates.js"></script>
-```
 
 ### Developing an application ###
 1. start the webgme server (provides client library and database connection) `node app.js` in the root directory
