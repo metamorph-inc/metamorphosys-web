@@ -122,18 +122,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
     //        .perform();
     //
     //
-    //
-    //        browser.driver.executeScript(function () {
-    //
-    //            var e;
-    //
-    //            e = jQuery.Event("keydown");
-    //            e.altKey = true;
-    //
-    //            $('div.diagram-container').trigger(e);
-    //
-    //        });
-    //
     //    browser.sleep(uiEventTimeLimit);
     //
     //    browser.actions().mouseMove({x: 250, y: 250}).perform();
