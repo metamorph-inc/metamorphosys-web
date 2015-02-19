@@ -79,8 +79,23 @@ module.exports = function ($scope, $timeout, $log) {
 
             .bind('jsp-initialised',
             function () {
+
+                var spaceBarKiller;
+
                 jspPane = $scope.$contentPane.find('.jspPane');
                 updateVisibleArea();
+
+                spaceBarKiller = function(e) {
+
+                    if(e.keyCode === 32) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                };
+
+                jspPane.keypress(spaceBarKiller);
+
             }
         )
             .bind('jsp-scroll-y', function (event, aScrollPositionY) {
@@ -126,6 +141,20 @@ module.exports = function ($scope, $timeout, $log) {
         jspReinit();
     });
 
+    $scope.$on('contentPan', function($event, distance) {{
+
+        if (angular.isObject(jsp)) {
+
+//            $log.debug('jsp.scrollBy', distance);
+            jsp.scrollBy(-distance.x, -distance.y, false);
+
+        }
+
+    }});
+
+    window.onkeydown = function(e) {
+        return (e.keyCode !== 32);
+    };
 
     onWindowResize = function() {
         jspReinit();

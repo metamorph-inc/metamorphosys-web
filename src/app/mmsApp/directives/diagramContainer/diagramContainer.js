@@ -197,8 +197,8 @@ angular.module('mms.designVisualization.diagramContainer', [
         }
     ])
     .directive('diagramContainer', [
-        'diagramService', '$log', '$timeout', 'PanZoomService',
-        function (diagramService, $log, $timeout) {
+        '$rootScope', 'diagramService', '$log', '$timeout', 'PanZoomService',
+        function ($rootScope, diagramService, $log, $timeout) {
 
             return {
                 controller: 'DiagramContainerController',
@@ -212,38 +212,51 @@ angular.module('mms.designVisualization.diagramContainer', [
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
                 link: function (scope, element) {
 
-                    var $element;
+                    var $element,
+                        $contentPane;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
                     scope.config = scope.config || {};
 
-//                    scope.canvasWidth = $(element)
-//                        .outerWidth();
-//                    scope.canvasHeight = $(element)
-//                        .outerHeight();
-//
-//
-//                    scope.visibleArea = {
-//                        top: 0,
-//                        left: 0,
-//                        right: scope.canvasWidth,
-//                        bottom: scope.canvasHeight
-//                    };
-
                     $element = scope.$element = $(element);
 
-                    //scope.$watch(function(){
-                    //    return $element.attr('class');
-                    //}, function(cssClass){
-                    //    console.log(cssClass);
-                    //});
+                    $contentPane = $element.find('.diagram-content-pane');
 
                     scope.$contentPane = element.find('>.diagram-content-pane');
+
+                    $element.keyup(function (e) {
+                        $timeout(function () {
+
+                            scope.pressedKey = null;
+
+                            $timeout(function () {
+
+                                scope.$broadcast('keyupOnDiagram', e);
+
+                            });
+
+                        });
+                    });
+
+                    $element.keydown(function (e) {
+
+
+                        $timeout(function () {
+
+                            scope.pressedKey = e.keyCode;
+
+                            scope.$broadcast('keydownOnDiagram', e);
+
+                        });
+
+                    });
 
                     $timeout(function() {
                         scope.$broadcast('DiagramContainerInitialized');
                     });
+
+
                 }
 
             };

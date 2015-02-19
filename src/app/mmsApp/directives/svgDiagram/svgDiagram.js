@@ -40,6 +40,9 @@ angular.module('mms.designVisualization.svgDiagram', [
             ContextMenuHandler = require('./classes/ContextmenuHandler'),
             contextMenuHandler,
 
+            PanHandler = require('./classes/PanHandler'),
+            panHandler,
+
             DeleteHandler = require('./classes/DeleteHandler'),
             deleteHandler,
 
@@ -100,6 +103,12 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
+
+        panHandler = new PanHandler(
+            $scope,
+            $log
+        );
+
         deleteHandler = new DeleteHandler(
             $scope,
             $rootScope
@@ -113,18 +122,21 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.onDiagramMouseDown = function ($event) {
 
-
             if ($event.which === 3) {
                 contextMenuHandler.onDiagramContextmenu($event);
             } else {
+
                 contextMenuHandler.onDiagramMouseDown($event);
+                panHandler.onDiagramMouseDown($event);
+
             }
 
         };
 
         $scope.onDiagramMouseUp = function ($event) {
 
-            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging &&
+
+            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                 $event.which !== 3) {
 
                 $scope.diagram.state.selectedComponentIds = [];
@@ -134,6 +146,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseUp($event);
             wireDragHandler.onDiagramMouseUp($event);
             wireDrawHandler.onDiagramMouseUp($event);
+            panHandler.onDiagramMouseUp($event);
 
         };
 
@@ -147,6 +160,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseMove($event);
             wireDragHandler.onDiagramMouseMove($event);
             wireDrawHandler.onDiagramMouseMove($event);
+            panHandler.onDiagramMouseMove($event);
 
         };
 
@@ -155,7 +169,15 @@ angular.module('mms.designVisualization.svgDiagram', [
             var result = '';
 
             if (componentDragHandler.dragging) {
-                result += 'dragging';
+                result += ' dragging';
+            }
+
+            if (panHandler.panning) {
+                result += ' panning';
+            }
+
+            if (panHandler.pannable) {
+                result += ' pannable';
             }
 
             return result;
@@ -167,6 +189,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onDiagramMouseLeave($event);
             wireDragHandler.onDiagramMouseLeave($event);
             wireDrawHandler.onDiagramMouseLeave($event);
+            panHandler.onDiagramMouseLeave($event);
 
         };
 
@@ -175,6 +198,7 @@ angular.module('mms.designVisualization.svgDiagram', [
             componentDragHandler.onWindowBlur($event);
             wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
+            panHandler.onWindowBlur($event);
 
         });
 
@@ -182,8 +206,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         // Interactions with components
 
         this.onComponentMouseUp = function (component, $event) {
-
-            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging &&
+            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                 $event.which !== 3) {
 
                 componentSelectionHandler.onComponentMouseUp(component, $event);
@@ -193,6 +216,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             } else {
                 componentDragHandler.onComponentMouseUp(component, $event);
+                panHandler.onComponentMouseUp($event);
             }
         };
 
@@ -209,6 +233,10 @@ angular.module('mms.designVisualization.svgDiagram', [
         };
 
         this.onPortMouseUp = function (component, port, $event) {
+
+            if (panHandler.panning) {
+                panHandler.onPortMouseUp($event);
+            }
 
             $event.stopPropagation();
 
@@ -343,12 +371,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     };
 
-                    //scope.$watch(function(){
-                    //    return $element.attr('class');
-                    //}, function(cssClass){
-                    //   console.log(cssClass);
-                    //});
-
                     scope.$watch('diagram', function (newDiagramValue) {
 
                         if (newDiagramValue) {
@@ -399,14 +421,6 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     $element.bind('contextmenu', killContextMenu);
 
-                    $element.keyup(function (e) {
-
-                        $timeout(function () {
-                            scope.$emit('keyupOnDiagram', e);
-                        });
-
-                    });
-
                     killDelete = function (event) {
 
                         var d,
@@ -418,7 +432,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                             d = event.srcElement || event.target;
 
-                            if(d.tagName) {
+                            if (d.tagName) {
 
                                 if ((d.tagName.toUpperCase() === 'INPUT' &&
                                     (

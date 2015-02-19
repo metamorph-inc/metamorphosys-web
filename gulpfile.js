@@ -56,13 +56,15 @@ var argv = require('yargs').argv,
         libraryImages: [
             'src/library/**/*.png',
             'src/library**/*.jpg',
-            'src/library**/*.svg'
+            'src/library**/*.svg',
+            'src/library**/*.cur'
         ],
         appSourcesFolders: './src/app/',
         appImagePatterns: [
             '**/*.png',
             '**/*.jpg',
-            '**/*.svg'
+            '**/*.svg',
+            '**/*.cur'
         ]
     },
 

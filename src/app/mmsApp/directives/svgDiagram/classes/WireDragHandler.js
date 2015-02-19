@@ -75,6 +75,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         //
         //});
 
+        possibbleDragTargetsDescriptor = null;
+
         if (angular.isObject(moveOperation)) {
 
             moveOperation.finish();
@@ -107,8 +109,6 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
     };
 
     onDiagramMouseUp = function ($event) {
-
-        possibbleDragTargetsDescriptor = null;
 
         finishDrag();
         $event.stopPropagation();
