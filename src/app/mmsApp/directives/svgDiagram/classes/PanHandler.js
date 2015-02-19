@@ -94,15 +94,12 @@ module.exports = function ($scope, $log) {
 
     onDiagramMouseDown = function($event) {
 
-        if ($event.altKey) {
+        self.panning = true;
 
-            self.panning = true;
-
-            earlierPosition = {
-                x: $event.pageX,
-                y: $event.pageY
-            };
-        }
+        earlierPosition = {
+            x: $event.pageX,
+            y: $event.pageY
+        };
 
     };
 
@@ -126,13 +123,13 @@ module.exports = function ($scope, $log) {
     };
 
 
-    $scope.$on('keydownOnDiagram', function($event, $originalEvent) {
-
-        if ($originalEvent.altKey) {
-            self.pannable = true;
-        }
-
-    });
+    //$scope.$on('keydownOnDiagram', function($event, $originalEvent) {
+    //
+    //    if ($originalEvent.altKey) {
+    //        self.pannable = true;
+    //    }
+    //
+    //});
 
     $scope.$on('keyupOnDiagram', function() {
         self.pannable = false;
