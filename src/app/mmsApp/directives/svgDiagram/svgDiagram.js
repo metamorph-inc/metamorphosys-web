@@ -211,6 +211,7 @@ angular.module('mms.designVisualization.svgDiagram', [
         // Interactions with components
 
         this.onComponentMouseUp = function (component, $event) {
+
             if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                 $event.which !== 3) {
 
