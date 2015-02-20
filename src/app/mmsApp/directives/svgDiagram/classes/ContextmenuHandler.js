@@ -2,8 +2,7 @@
 
 'use strict';
 
-module.exports = function (
-    $scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
+module.exports = function ($scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
 
     var
         onComponentContextmenu,
@@ -71,14 +70,14 @@ module.exports = function (
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function(routerType) {
+        angular.forEach($scope.routerTypes, function (routerType) {
 
             wiringMenu.push(
                 {
                     id: routerType.id,
                     label: routerType.label,
-                    action: function(){
-                        wiringService.routeWire( wire, routerType.type, routerType.params);
+                    action: function () {
+                        wiringService.routeWire(wire, routerType.type, routerType.params);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 }
@@ -123,7 +122,6 @@ module.exports = function (
         if (wasCorner) {
 
             $scope.contextMenuData.unshift(
-
                 {
 
                     id: 'cornerManipulation',
@@ -139,9 +137,9 @@ module.exports = function (
 
                                 sIndex = wire.segments.indexOf(segment);
 
-                                nextSegment = wire.segments[ sIndex + 1 ];
+                                nextSegment = wire.segments[sIndex + 1];
 
-                                wire.segments[ sIndex + 1 ] = wiringService.getSegmentsBetweenPositions(
+                                wire.segments[sIndex + 1] = wiringService.getSegmentsBetweenPositions(
                                     {
                                         end1: {
                                             x: segment.x1,
@@ -167,7 +165,6 @@ module.exports = function (
         } else {
 
             $scope.contextMenuData.unshift(
-
                 {
 
                     id: 'cornerManipulation',
@@ -200,7 +197,7 @@ module.exports = function (
                                     }, 'SimpleRouter')[0];
 
 
-                                wire.segments[ sIndex ] = wiringService.getSegmentsBetweenPositions(
+                                wire.segments[sIndex] = wiringService.getSegmentsBetweenPositions(
                                     {
                                         end1: {
                                             x: segment.x1,
@@ -244,17 +241,17 @@ module.exports = function (
 
         ga('send', 'event', 'component', 'contextmenu');
 
-        angular.forEach($scope.routerTypes, function(routerType) {
+        angular.forEach($scope.routerTypes, function (routerType) {
 
             wiringMenu.push(
                 {
                     id: routerType.id,
                     label: routerType.label,
-                    action: function(){
+                    action: function () {
 
                         var wires = $scope.diagram.getWiresForComponents([component]);
 
-                        angular.forEach(wires, function(wire) {
+                        angular.forEach(wires, function (wire) {
 
                             ga('send', 'event', 'wire', 'redraw', wire.id);
 
@@ -288,6 +285,7 @@ module.exports = function (
                     {
                         id: 'rotateCW',
                         label: 'Rotate CW',
+                        keyboardShortcut: 'R',
                         iconClass: 'fa fa-rotate-right',
                         action: function () {
 
@@ -301,6 +299,7 @@ module.exports = function (
                     {
                         id: 'rotateCCW',
                         label: 'Rotate CCW',
+                        keyboardShortcut: '⇧R',
                         iconClass: 'fa fa-rotate-left',
                         action: function () {
 
@@ -337,6 +336,7 @@ module.exports = function (
                         id: 'destroy',
                         label: destroyLabel,
                         iconClass: 'fa fa-trash-o',
+                        keyboardShortcut: 'Del',
                         action: function () {
 
                             ga('send', 'event', 'component', 'destroy', component.id);
@@ -354,6 +354,26 @@ module.exports = function (
             }
 
         ];
+
+        if (component.isContainer) {
+
+            $scope.contextMenuData.unshift({
+                    id: 'navigate',
+                    items: [
+                        {
+                            id: 'lookInside',
+                            label: 'Look inside',
+                            keyboardShortcut: 'Enter',
+                            iconClass: 'fa fa-sign-in',
+                            action: function () {
+                                console.log('look inside', component);
+                            }
+                        }
+                    ]
+                }
+            );
+
+        }
 
         openMenu($event);
 
@@ -397,10 +417,10 @@ module.exports = function (
 
         ga('send', 'event', 'diagram', 'contextmenu');
 
-        angular.forEach($scope.routerTypes, function(routerType) {
-                var selected;
+        angular.forEach($scope.routerTypes, function (routerType) {
+            var selected;
 
-                selected = routerType.id === $scope.selectedRouter.id;
+            selected = routerType.id === $scope.selectedRouter.id;
 
             wiringMenu.push(
                 {
@@ -474,7 +494,7 @@ module.exports = function (
                         id: 'printDiagram',
                         label: 'Print diagram',
                         iconClass: 'glyphicon glyphicon-print',
-                        action: function() {
+                        action: function () {
                             window.print();
                         }
                     }

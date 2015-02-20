@@ -247,7 +247,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             symbol: symbol,
             nonSelectable: false,
             locationLocked: false,
-            draggable: true
+            draggable: true,
+            isContainer: true
         });
 
         newDiagramComponent.registerPortInstances(portStuff.portInstances);
