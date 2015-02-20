@@ -9,6 +9,7 @@ require('../drawingGrid/drawingGrid.js');
 angular.module('mms.designVisualization.diagramContainer', [
         'mms.designVisualization.drawingGrid',
         'isis.ui.contextmenu'
+
     ])
     .controller('DiagramContainerController', [
         '$scope',

@@ -4,6 +4,8 @@
     ng-click="onDiagramClick($event)"
     ng-mouseup="onDiagramMouseUp($event)"
     ng-mousedown="onDiagramMouseDown($event)"
+    msd-wheel="onDiagramMouseWheel($event, $delta, $deltaX, $deltaY)"
+
     ng-class="getCssClass()"
     isis-contextmenu
     contextmenu-data="contextMenuData"

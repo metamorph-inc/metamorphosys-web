@@ -27,5 +27,5 @@ require('ngDragDrop');
 require('hamster');
 require('angular-panhandler');
 require('angular-mousewheel');
-require('mousewheel')($);
+//require('mousewheel')($);
 require('jscrollpane')($);

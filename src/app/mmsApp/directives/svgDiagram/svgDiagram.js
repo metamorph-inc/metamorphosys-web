@@ -18,6 +18,7 @@ angular.module('mms.designVisualization.svgDiagram', [
     'mms.designVisualization.operations.moveComponents',
     'mms.designVisualization.operations.rotateComponents',
     'mms.designVisualization.operations.moveWire',
+    'monospaced.mousewheel',
 
     'isis.ui.contextmenu'
 ])
@@ -182,6 +183,10 @@ angular.module('mms.designVisualization.svgDiagram', [
 
             return result;
 
+        };
+
+        $scope.onDiagramMouseWheel = function($event, $delta, $deltaX, $deltaY) {
+            console.log($event, $delta, $deltaX, $deltaY);
         };
 
         $scope.onDiagramMouseLeave = function ($event) {
