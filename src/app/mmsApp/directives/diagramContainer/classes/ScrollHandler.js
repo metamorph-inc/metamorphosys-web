@@ -128,7 +128,8 @@ module.exports = function ($scope, $timeout, $log) {
                 verticalDragMaxHeight: 60,
                 horizontalDragMinWidth: 60,
                 horizontalDragMaxWidth: 60,
-                animateScroll: true
+                animateScroll: true,
+                mouseWheelSpeed: 0
             }
         );
 

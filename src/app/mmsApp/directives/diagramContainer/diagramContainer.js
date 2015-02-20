@@ -8,19 +8,16 @@ require('../drawingGrid/drawingGrid.js');
 
 angular.module('mms.designVisualization.diagramContainer', [
         'mms.designVisualization.drawingGrid',
-        'panzoom',
-        'panzoomwidget',
         'isis.ui.contextmenu'
     ])
     .controller('DiagramContainerController', [
         '$scope',
         '$timeout',
         '$log',
-        'PanZoomService',
         '$window',
         'componentBrowserService',
         '$rootScope',
-        function ($scope, $timeout, $log, PanZoomService, $window, componentBrowserService, $rootScope) {
+        function ($scope, $timeout, $log, $window, componentBrowserService, $rootScope) {
 
             var self = this,
 
@@ -35,50 +32,6 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             ScrollHandler = require('./classes/ScrollHandler');
             scrollHandler = new ScrollHandler($scope, $timeout, $log);
-
-
-            $scope.panzoomId = 'panzoomId'; //scope.id + '-panzoomed';
-
-            $scope.zoomLevel = 4;
-
-            $scope.panzoomModel = {}; // always pass empty object
-
-            $scope.panzoomConfig = {
-                zoomLevels: 10,
-                neutralZoomLevel: $scope.zoomLevel,
-                scalePerZoomLevel: 1.25,
-                friction: 50,
-                haltSpeed: 50,
-
-                modelChangedCallback: function (val) {
-                    PanZoomService.getAPI($scope.panzoomId)
-                        .then(function (api) {
-
-                            var topLeftCorner, bottomRightCorner;
-
-                            $scope.zoomLevel = val.zoomLevel;
-
-                            topLeftCorner = api.getModelPosition({
-                                x: 0,
-                                y: 0
-                            });
-
-                            bottomRightCorner = api.getModelPosition({
-                                x: $scope.canvasWidth,
-                                y: $scope.canvasHeight
-                            });
-
-                            $scope.visibleArea = {
-                                top: topLeftCorner.y,
-                                left: topLeftCorner.x,
-                                right: bottomRightCorner.x,
-                                bottom: bottomRightCorner.y
-                            };
-
-                        });
-
-                }
-            };
 
             $windowElement = angular.element($window);
 
@@ -197,7 +150,7 @@ angular.module('mms.designVisualization.diagramContainer', [
         }
     ])
     .directive('diagramContainer', [
-        '$rootScope', 'diagramService', '$log', '$timeout', 'PanZoomService',
+        '$rootScope', 'diagramService', '$log', '$timeout',
         function ($rootScope, diagramService, $log, $timeout) {
 
             return {

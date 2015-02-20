@@ -18,7 +18,6 @@
         "./bower_components/jscrollpane/style/jquery.jscrollpane.css",
         "./bower_components/angular-socialshare/angular-socialshare.min.css",
         "./bower_components/angucomplete/angucomplete.css",
-        "./bower_components/angular-pan-zoom/bin/panzoomwidget.css",
         "./bower_components/angular-growl/build/angular-growl.min.css",
         "./bower_components/font-awesome/css/font-awesome.min.css",
         "./bower_components/adapt-strap/dist/adapt-strap.css",

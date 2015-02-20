@@ -97,7 +97,6 @@
         "hamster": "./bower_components/hamsterjs/hamster.js",
         "angular-panhandler": "./bower_components/angular-panhandler/dist/angular-panhandler.min.js",
         "angular-mousewheel": "./bower_components/angular-mousewheel/mousewheel.js",
-        "panzoom": "./bower_components/angular-pan-zoom/bin/panzoom.js",
         "mousewheel": "./bower_components/jscrollpane/script/jquery.mousewheel.js",
         "jscrollpane": "./bower_components/jscrollpane/script/jquery.jscrollpane.min.js",
 
