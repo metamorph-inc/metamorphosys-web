@@ -24,6 +24,7 @@ module.exports = function ($scope, $log) {
     startDrag = function () {
 
         self.pannable = false;
+        self.panning = true;
 
         //moveOperation = operationsManager.initNew('MoveComponents', $scope.diagram, possibbleDragTargetsDescriptor);
 
@@ -93,8 +94,6 @@ module.exports = function ($scope, $log) {
 
 
     onDiagramMouseDown = function($event) {
-
-        self.panning = true;
 
         earlierPosition = {
             x: $event.pageX,
