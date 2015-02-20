@@ -2,6 +2,7 @@
 
 'use strict';
 
+require('../../directives/mmsEvents/mmsEvents.js');
 require( '../../services/symbolServices/symbolServices.js' );
 require( '../port/port.js' );
 
@@ -30,6 +31,7 @@ var symbolsModule = angular.module(
         'mms.designVisualization.symbols.capacitor',
         'mms.designVisualization.symbols.inductor',
         'mms.designVisualization.symbols.simpleConnector',
+        'mms.events',
 
         'mms.designVisualization.symbols.box'
 
