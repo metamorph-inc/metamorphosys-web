@@ -111,6 +111,10 @@ module.exports = function () {
 
                                             if (hasFoundFirstDesign) {
 
+                                                if ($stateParams.containerId) {
+                                                    $log.debug('has to find container', $stateParams.containerId);
+                                                }
+
                                                 deferred.resolve();
                                                 $rootScope.loading = false;
 

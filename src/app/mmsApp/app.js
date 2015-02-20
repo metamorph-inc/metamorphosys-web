@@ -103,6 +103,10 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider
             },
             controller: 'EditorViewController'
         })
+        .state('editor.branch.conatiner', {
+            url: '/:containerId',
+            controller: 'EditorViewController'
+        })
         .state('createDesign', {
             url: '/createDesign/:projectId',
             resolve: {
@@ -123,6 +127,13 @@ CyPhyApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider
                     templateUrl: '/mmsApp/templates/404.html',
                     controller: 'NotFoundController',
                     controllerAs: 'page'
+                }
+            }
+        })
+        .state('templateSelector', {
+            views: {
+                'onCover': {
+                    templateUrl: '/mmsApp/templates/templateSelector.html'
                 }
             }
         })
