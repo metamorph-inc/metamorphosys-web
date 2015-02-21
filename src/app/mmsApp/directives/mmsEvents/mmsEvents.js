@@ -2,31 +2,83 @@
 
 'use strict';
 
-// Based on: http://stackoverflow.com/questions/20444409/handling-ng-click-and-ng-dblclick-on-the-same-element-with-angularjs
+var doubleEventDelay = 200;
+
 angular.module('mms.events', [])
-    .directive('mmsSglclick', ['$parse', function ($parse) {
+
+    .directive('mmsSingleMousedown', ['$parse', function ($parse) {
         return {
             restrict: 'A',
             link: function (scope, element, attr) {
-                var fn = $parse(attr.isisSglclick);
-                var delay = 300, clicks = 0, timer = null;
-                element.on('click', function (event) {
-                    clicks++;  //count clicks
+                var fn = $parse(attr.mmsSingleMousedown);
+                var delay = doubleEventDelay, clicks = 0, timer = null;
+                element.on('mousedown', function (event) {
+                    clicks++;
                     if (clicks === 1) {
                         timer = setTimeout(function () {
                             scope.$apply(function () {
                                 fn(scope, {$event: event});
                             });
-                            clicks = 0;             //after action performed, reset counter
+                            clicks = 0;
                         }, delay);
                     } else {
-                        clearTimeout(timer);    //prevent single-click action
-                        clicks = 0;             //after action performed, reset counter
+                        clearTimeout(timer);
+                        clicks = 0;
                     }
                 });
             }
         };
     }])
+
+    .directive('mmsSingleMouseup', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attr) {
+                var fn = $parse(attr.mmsSingleMouseup);
+                var delay = doubleEventDelay, clicks = 0, timer = null;
+                element.on('mouseup', function (event) {
+
+                    clicks++;
+                    if (clicks === 1) {
+                        timer = setTimeout(function () {
+                            scope.$apply(function () {
+                                fn(scope, {$event: event});
+                            });
+                            clicks = 0;
+                        }, delay);
+                    } else {
+                        clearTimeout(timer);
+                        clicks = 0;
+                    }
+                });
+            }
+        };
+    }])
+
+    .directive('mmsSingleClick', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attr) {
+                var fn = $parse(attr.mmsSingleClick);
+                var delay = doubleEventDelay, clicks = 0, timer = null;
+                element.on('click', function (event) {
+                    clicks++;
+                    if (clicks === 1) {
+                        timer = setTimeout(function () {
+                            scope.$apply(function () {
+                                fn(scope, {$event: event});
+                            });
+                            clicks = 0;
+                        }, delay);
+                    } else {
+                        clearTimeout(timer);
+                        clicks = 0;
+                    }
+                });
+            }
+        };
+    }])
+
     .directive('mmsStopEvent', function () {
         return {
             restrict: 'A',

@@ -1,26 +1,26 @@
-<g ng-attr-id="{{::component.id}}"
+<g ng-attr-id="{{::self.component.id}}"
    class="symbol"
-   ng-class="getCssClass()"
-   ng-mouseup="onMouseUp($event)"
-   ng-mousedown="onMouseDown($event)"
-   ng-attr-id="{{::component.id}}"
-   ng-attr-transform="{{getSymbolTransform()}}"
+   ng-class="self.getCssClass()"
+   ng-mouseup="self.onMouseUp($event)"
+   ng-mousedown="self.onMouseDown($event)"
+   ng-attr-id="{{::self.component.id}}"
+   ng-attr-transform="{{self.getSymbolTransform()}}"
     >
-        <rect ng-attr-width="{{::component.symbol.width + 20}}"
-              ng-attr-height="{{::component.symbol.height + 20}}"
+        <rect ng-attr-width="{{::self.component.symbol.width + 20}}"
+              ng-attr-height="{{::self.component.symbol.height + 20}}"
               transform="translate(-10,-10)"
               class="selected-symbol-boundary"></rect>
         <g class="symbol-placeholder"></g>
-        <rect ng-attr-width="{{::component.symbol.width}}"
-              ng-attr-height="{{::component.symbol.height}}"
+        <rect ng-attr-width="{{::self.component.symbol.width}}"
+              ng-attr-height="{{::self.component.symbol.height}}"
               class="symbol-area"></rect>
         <g class="zoom-2">
             <port
-                ng-repeat="portInstance in ::component.portInstances"
+                ng-repeat="portInstance in ::self.component.portInstances"
                 class="zoom-3"></port>
-            <text class="component-label" ng-attr-x="{{::component.symbol.labelPosition.x}}"
-                  ng-attr-y="{{::component.symbol.labelPosition.y}}"
-                >{{component.label}}
+            <text class="component-label" ng-attr-x="{{::self.component.symbol.labelPosition.x}}"
+                  ng-attr-y="{{::self.component.symbol.labelPosition.y}}"
+                >{{self.component.label}}
             </text>
         </g>
 
