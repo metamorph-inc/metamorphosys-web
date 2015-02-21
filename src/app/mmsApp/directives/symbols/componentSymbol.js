@@ -40,7 +40,7 @@ var symbolsModule = angular.module(
 symbolsModule.controller(
     'SymbolController', function ( $scope ) {
 
-        $scope.getSymbolTransform = function () {
+        this.getSymbolTransform = function () {
 
             var transformString;
 
@@ -51,7 +51,9 @@ symbolsModule.controller(
             //
             //    console.log($scope.component.getTransformationMatrix().join(', '));
 
-            transformString = 'matrix(' + $scope.component.getSVGTransformationString() + ')';
+            debugger;
+
+            transformString = 'matrix(' + this.component.getSVGTransformationString() + ')';
 
             return transformString;
         };
@@ -200,9 +202,9 @@ symbolsModule.directive(
 
                 if (self.component.symbol.limitLabelWidthTo && !isNaN(self.component.symbol.limitLabelWidthTo)) {
 
-                    scope.$watch(angular.bind(self, function (component) {
-                        return component.label;
-                    }), function(labelText) {
+                    scope.$watch(function() {
+                        return self.component.label;
+                    }, function(labelText) {
 
                         if (labelText) {
                             perfectEllipsis($labelElement, labelText, self.component.symbol.limitLabelWidthTo);

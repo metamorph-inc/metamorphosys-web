@@ -1,17 +1,17 @@
-<g ng-attr-id="{{::port.id}}"
-   ng-attr-transform="{{::getPortTransform()}}"
+<g ng-attr-id="{{::self.port.id}}"
+   ng-attr-transform="{{::self.getPortTransform()}}"
    class="port"
-   ng-class="::getCssClass()">
+   ng-class="::self.getCssClass()">
     <text class="port-label"
-          ng-if="::isPortLabelVisible()"
-          ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
-          ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
-        >{{getLabel()}}
+          ng-if="::self.isPortLabelVisible()"
+          ng-attr-x="{{::self.portInstance.portSymbol.labelPosition.x}}"
+          ng-attr-y="{{::self.portInstance.portSymbol.labelPosition.y}}"
+        >{{self.getLabel()}}
     </text>
     <g
-        ng-click="onPortClick(portInstance, $event)"
-        ng-mousedown="onPortMouseDown(portInstance, $event)"
-        ng-mouseup="onPortMouseUp(portInstance, $event)"
+        ng-click="self.onPortClick(self.portInstance, $event)"
+        ng-mousedown="self.onPortMouseDown(self.portInstance, $event)"
+        ng-mouseup="self.onPortMouseUp(self.portInstance, $event)"
         >
         <circle cx="0" cy="0" r="4" fill="black" stroke-width="1"/>
     </g>

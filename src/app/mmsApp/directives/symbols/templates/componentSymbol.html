@@ -17,6 +17,8 @@
         <g class="zoom-2">
             <port
                 ng-repeat="portInstance in ::self.component.portInstances"
+                port-instance="portInstance"
+                component="self.component"
                 class="zoom-3"></port>
             <text class="component-label" ng-attr-x="{{::self.component.symbol.labelPosition.x}}"
                   ng-attr-y="{{::self.component.symbol.labelPosition.y}}"
