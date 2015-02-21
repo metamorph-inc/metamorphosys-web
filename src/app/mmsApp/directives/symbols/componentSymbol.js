@@ -51,7 +51,7 @@ symbolsModule.controller(
             //
             //    console.log($scope.component.getTransformationMatrix().join(', '));
 
-            debugger;
+            //debugger;
 
             transformString = 'matrix(' + this.component.getSVGTransformationString() + ')';
 
