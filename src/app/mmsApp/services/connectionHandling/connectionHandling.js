@@ -54,13 +54,13 @@ angular.module('mms.connectionHandling', [])
 
                                 mainConnectionEstablished = true;
 
-                                deferred.resolve();
+                                deferred.resolve(mainConnectionId);
 
                             });
 
                         } else {
 
-                            deferred.resolve();
+                            deferred.resolve(mainConnectionId);
                         }
 
                         return deferred.promise;

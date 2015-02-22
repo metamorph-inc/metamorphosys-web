@@ -70,90 +70,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'ngCookies'
 ]);
 
-CyPhyApp.config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider) {
-
-    var GMEProjectInitializers,
-        gmeProjectInitializers;
-
-    window.gapi = undefined;
-
-    GMEProjectInitializers = require('./classes/GMEProjectInitializers');
-    gmeProjectInitializers = new GMEProjectInitializers();
-
-    $urlRouterProvider.otherwise('/404');
-
-    $stateProvider
-
-        .state('editor', {
-            url: '/editor',
-            abstract: true,
-            views: {
-                'mainView': {
-                    templateUrl: '/mmsApp/templates/editor.html'
-                },
-                'onCover': {
-                    template: null
-                }
-            }
-        })
-        .state('editor.branch', {
-            url: '/:projectId/:branchId',
-            resolve: {
-                selectProjectBranchWorkspaceAndDesign: gmeProjectInitializers.selectProjectBranchWorkspaceAndDesign
-            },
-            controller: 'EditorViewController'
-        })
-        .state('editor.branch.conatiner', {
-            url: '/:containerId',
-            controller: 'EditorViewController'
-        })
-        .state('createDesign', {
-            url: '/createDesign/:projectId',
-            resolve: {
-                selectProject: gmeProjectInitializers.selectProject
-            },
-            views: {
-                'onCover': {
-                    template: null,
-                    controller: 'CreateDesignController'
-                }
-            }
-
-        })
-        .state('404', {
-            templateUrl: '/mmsApp/templates/404.html',
-            views: {
-                'onCover': {
-                    templateUrl: '/mmsApp/templates/404.html',
-                    controller: 'NotFoundController',
-                    controllerAs: 'page'
-                }
-            }
-        })
-        .state('templateSelector', {
-            views: {
-                'onCover': {
-                    templateUrl: '/mmsApp/templates/templateSelector.html'
-                }
-            }
-        })
-        .state('disconnected', {
-            views: {
-                'onCover': {
-                    templateUrl: '/mmsApp/templates/disconnected.html',
-                    controller: 'DisconnectedController',
-                    controllerAs: 'page'
-                }
-            }
-        });
-
-
-    $mdThemingProvider.theme('default')
-        .primaryPalette('blue')
-        .accentPalette('orange');
-
-});
-
+require('./appConfig');
 
 CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window, $mdDialog) {
 
@@ -388,7 +305,7 @@ CyPhyApp.controller('CreateDesignController', function ($rootScope, $scope, $sta
 
             $rootScope.stopProcessing();
             $log.debug('New project creation successful', data);
-            $state.go('editor.branch', {
+            $state.go('editor.project.branch', {
                 projectId: $scope.projectId,
                 branchId: data
             });
@@ -398,7 +315,7 @@ CyPhyApp.controller('CreateDesignController', function ($rootScope, $scope, $sta
 
             $log.debug('New project creation failed', status);
             $rootScope.stopProcessing();
-            growl.error('An error occured while project creation. Please retry later.');
+            growl.error('An error occurred while project creation. Please retry later.');
 
         });
 

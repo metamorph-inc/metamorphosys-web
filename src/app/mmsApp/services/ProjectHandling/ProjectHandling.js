@@ -3,9 +3,13 @@
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http) {
+    .service('projectHandling', function (
+        $q, $log, branchService, connectionHandling, $http, projectService, $rootScope) {
 
-        var randomString;
+        var selectedProjectId,
+            selectedBranchId,
+
+            randomString;
 
         randomString = function(length) {
             var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
@@ -28,15 +32,12 @@ angular.module('mms.projectHandling', [])
 
         this.cloneMaster = function () {
 
-            var deferred,
-                connectionId;
+            var deferred;
 
             deferred = $q.defer();
 
             connectionHandling.establishMainGMEConnection()
-                .then(function () {
-
-                    connectionId = connectionHandling.getMainGMEConnectionId();
+                .then(function (connectionId) {
 
                     branchService.getBranches(connectionId)
                         .then(function (branches) {
@@ -129,5 +130,91 @@ angular.module('mms.projectHandling', [])
 
         };
 
+        this.getSelectedProjectId = function() {
+            return selectedProjectId;
+        };
+
+        this.selectProject = function (projectId) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            $rootScope.loading = true;
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function(connectionId){
+
+                    projectService.selectProject(connectionId, projectId)
+                        .then(function (projectId) {
+
+                            selectedProjectId = projectId;
+                            $log.debug('Project selected', projectId);
+
+                            deferred.resolve(projectId);
+
+                        })
+                        .catch(function (reason) {
+                            $rootScope.loading = false;
+                            $log.debug('Opening project errored:', projectId, reason);
+                            deferred.reject();
+
+                        });
+
+                })
+                .catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('GME Connection could not be established:', reason);
+                    deferred.reject();
+                });
+
+            return deferred.promise;
+        };
+
+        this.getSelectedBranchId = function() {
+            return selectedBranchId;
+        };
+
+        this.selectBranch = function (branchId) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            $rootScope.loading = true;
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function(connectionId){
+
+                    branchService.selectBranch(connectionId, branchId)
+                        .then(function(branchId){
+
+                            selectedBranchId = branchId;
+                            $log.debug('Branch selected', branchId);
+
+                            deferred.resolve(branchId);
+
+                        }
+
+                    )
+                        .catch(function (reason) {
+                            $rootScope.loading = false;
+                            $log.debug('Opening branch errored:', branchId, reason);
+                            deferred.reject();
+
+                        });
+
+
+
+                })
+            .catch(function (reason) {
+                $rootScope.loading = false;
+                $log.debug('GME Connection could not be established:', reason);
+                deferred.reject();
+            });
+
+            return deferred.promise;
+
+        };
 
     });

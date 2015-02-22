@@ -8,7 +8,7 @@ var argv = require('yargs').argv,
     debug = !argv.production,
     debugShim = false, //this is for toggling browserify shim debug
 
-    doNotCompileApps = ['clientTest', 'perfTest'],
+    doNotCompileApps = ['clientTest', 'perfTest', 'default', 'sample'],
 
     libraryName = 'cyphy-components',
     libraryTemplatesModule = 'cyphy.components.templates',
