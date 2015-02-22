@@ -40,7 +40,7 @@ var symbolsModule = angular.module(
 symbolsModule.controller(
     'SymbolController', function ( $scope ) {
 
-        this.getSymbolTransform = function () {
+        $scope.getSymbolTransform = function () {
 
             var transformString;
 
@@ -51,9 +51,7 @@ symbolsModule.controller(
             //
             //    console.log($scope.component.getTransformationMatrix().join(', '));
 
-            //debugger;
-
-            transformString = 'matrix(' + this.component.getSVGTransformationString() + ')';
+            transformString = 'matrix(' + $scope.component.getSVGTransformationString() + ')';
 
             return transformString;
         };
@@ -75,15 +73,12 @@ symbolsModule.directive(
             restrict: 'E',
             replace: true,
             controller: 'SymbolController',
-            controllerAs: 'self',
-            bindToController: true,
             templateUrl: '/mmsApp/templates/componentSymbol.html',
             templateNamespace: 'SVG',
-            require: [ 'componentSymbol', '^svgDiagram', '^diagramContainer' ],
+            require: [ '^svgDiagram', '^diagramContainer' ],
             link: function ( scope, element, attributes, controllers ) {
 
-                var self,
-                    templateStr,
+                var templateStr,
                     template,
 
                     diagramContainerController,
@@ -94,25 +89,24 @@ symbolsModule.directive(
                     compiledSymbol,
                     symbolDirective;
 
-                self = controllers[ 0 ];
-                svgDiagramController = controllers[ 1 ];
-                diagramContainerController = controllers[ 2 ];
+                svgDiagramController = controllers[ 0 ];
+                diagramContainerController = controllers[ 1 ];
 
-                self.portsVisible = function () {
+                scope.portsVisible = function () {
                     return true;
                 };
 
-                self.detailsVisible = function () {
+                scope.detailsVisible = function () {
                     return diagramContainerController.getZoomLevel() > 1;
                 };
 
-                self.getCssClass = function () {
+                scope.getCssClass = function () {
 
                     var result;
 
-                    result = self.component.symbol.cssClass ? self.component.symbol.cssClass : self.component.symbol.type;
+                    result = scope.component.symbol.cssClass ? scope.component.symbol.cssClass : scope.component.symbol.type;
 
-                    if ( diagramContainerController.isComponentSelected( self.component ) ) {
+                    if ( diagramContainerController.isComponentSelected( scope.component ) ) {
                         result += ' selected';
                     }
 
@@ -122,18 +116,16 @@ symbolsModule.directive(
 
                 // Interactions
 
-                self.onMouseUp = function ( $event ) {
-                    console.log('in mousedup');
-                    svgDiagramController.onComponentMouseUp( self.component, $event );
+                scope.onMouseUp = function ( $event ) {
+                    svgDiagramController.onComponentMouseUp( scope.component, $event );
                 };
 
-                self.onMouseDown = function ( $event ) {
-                    console.log('in mousedown');
-                    svgDiagramController.onComponentMouseDown( self.component, $event );
+                scope.onMouseDown = function ( $event ) {
+                    svgDiagramController.onComponentMouseDown( scope.component, $event );
                     $event.stopPropagation();
                 };
 
-                symbolDirective = self.component.symbol.symbolDirective || 'generic-svg';
+                symbolDirective = scope.component.symbol.symbolDirective || 'generic-svg';
 
                 compiledSymbol = diagramContainerController.getCompiledDirective( symbolDirective );
 
@@ -152,17 +144,15 @@ symbolsModule.directive(
 
                 $el = $( element );
 
-                compiledSymbol( self, function ( clonedElement ) {
+                compiledSymbol( scope, function ( clonedElement ) {
                     $el.find( '.symbol-placeholder' )
                         .replaceWith( clonedElement );
                 } );
 
-                svgDiagramController.registerComponentElement( self.component.id, $el );
-
-                // TODO: This will need to get cleaned up when solution is proposed
+                svgDiagramController.registerComponentElement( scope.component.id, $el );
 
                 scope.$on( '$destroy', function () {
-                    svgDiagramController.unregisterComponentElement( self.component.id );
+                    svgDiagramController.unregisterComponentElement( scope.component.id );
                 } );
 
                 // Label ellipsis
@@ -200,14 +190,12 @@ symbolsModule.directive(
 
                 $labelElement = element.find('.component-label');
 
-                if (self.component.symbol.limitLabelWidthTo && !isNaN(self.component.symbol.limitLabelWidthTo)) {
+                if (scope.component.symbol.limitLabelWidthTo && !isNaN(scope.component.symbol.limitLabelWidthTo)) {
 
-                    scope.$watch(function() {
-                        return self.component.label;
-                    }, function(labelText) {
+                    scope.$watch('component.label', function(labelText) {
 
                         if (labelText) {
-                            perfectEllipsis($labelElement, labelText, self.component.symbol.limitLabelWidthTo);
+                            perfectEllipsis($labelElement, labelText, scope.component.symbol.limitLabelWidthTo);
                         }
 
                     });

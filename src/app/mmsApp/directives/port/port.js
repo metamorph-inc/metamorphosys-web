@@ -5,45 +5,45 @@
 angular.module(
     'mms.designVisualization.port', []
 )
-    .controller( 'PortController', function () {
+    .controller( 'PortController', function ( $scope ) {
 
-        this.getPortTransform = function () {
+        $scope.getPortTransform = function () {
 
             var transformString;
 
-            transformString = 'translate(' + this.portInstance.portSymbol.x + ',' + this.portInstance.portSymbol
+            transformString = 'translate(' + $scope.portInstance.portSymbol.x + ',' + $scope.portInstance.portSymbol
                 .y + ')';
 
             return transformString;
 
         };
 
-        this.getLabel = function() {
+        $scope.getLabel = function() {
 
             var label;
 
-            if (angular.isString(this.portInstance.label)) {
-                label = this.portInstance.label;
-            } else if (angular.isFunction(this.portInstance.label)){
-                label = this.portInstance.label();
+            if (angular.isString($scope.portInstance.label)) {
+                label = $scope.portInstance.label;
+            } else if (angular.isFunction($scope.portInstance.label)){
+                label = $scope.portInstance.label();
             } else {
-                label = this.portInstance.portSymbol.label;
+                label = $scope.portInstance.portSymbol.label;
             }
 
             return label;
         };
 
-        this.isPortLabelVisible = function() {
+        $scope.isPortLabelVisible = function() {
 
-            return this.component.symbol.showPortLabels;
+            return $scope.component.symbol.showPortLabels;
 
         };
 
-        this.getCssClass = function() {
+        $scope.getCssClass = function() {
 
             var cssClass;
 
-            cssClass = this.portInstance.portSymbol.cssClass;
+            cssClass = $scope.portInstance.portSymbol.cssClass;
 
             return cssClass;
 
@@ -56,36 +56,29 @@ angular.module(
         function () {
 
             return {
-                scope: {
-                    portInstance: '=',
-                    component: '='
-                },
+                scope: false,
                 controller: 'PortController',
-                controllerAs: 'self',
-                bindToController: true,
                 restrict: 'E',
                 replace: true,
                 templateUrl: '/mmsApp/templates/port.html',
                 templateNamespace: 'SVG',
-                require: [ 'port', '^svgDiagram', '^diagramContainer' ],
+                require: [ '^svgDiagram', '^diagramContainer' ],
                 link: function ( scope, element, attributes, controllers ) {
 
-                    var self,
-                        svgDiagramController;
+                    var svgDiagramController;
 
-                    self = controllers[ 0 ];
-                    svgDiagramController = controllers[ 1 ];
+                    svgDiagramController = controllers[ 0 ];
 
-                    self.onPortClick = function ( port, $event ) {
-                        svgDiagramController.onPortClick( self.component, port, $event );
+                    scope.onPortClick = function ( port, $event ) {
+                        svgDiagramController.onPortClick( scope.component, port, $event );
                     };
 
-                    self.onPortMouseDown = function ( port, $event ) {
-                        svgDiagramController.onPortMouseDown( self.component, port, $event );
+                    scope.onPortMouseDown = function ( port, $event ) {
+                        svgDiagramController.onPortMouseDown( scope.component, port, $event );
                     };
 
-                    self.onPortMouseUp = function ( port, $event ) {
-                        svgDiagramController.onPortMouseUp( self.component, port, $event );
+                    scope.onPortMouseUp = function ( port, $event ) {
+                        svgDiagramController.onPortMouseUp( scope.component, port, $event );
                     };
 
                 }
