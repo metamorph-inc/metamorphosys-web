@@ -38,7 +38,7 @@ if ( !Array.prototype.shuffle ) {
     };
 }
 
-window.componentBoxByLabel =    function (labelText, optParentElement) {
+window.componentBoxByLabel = function (labelText, optParentElement) {
 
     var using = optParentElement || document,
 

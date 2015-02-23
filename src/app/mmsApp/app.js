@@ -6,6 +6,9 @@ require ('./libraryDependencies');
 
 require('./utils.js');
 
+require('./services/mmsUtils/mmsUtils.js');
+require('./services/errorReporter/errorReporter.js');
+
 require('./services/ProjectHandling/ProjectHandling.js');
 require('./services/connectionHandling/connectionHandling.js');
 
@@ -45,6 +48,9 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'cyphy.mmsApp.templates',
 
     'ui.bootstrap',
+
+    'mms.utils',
+    'mms.errorReporter',
 
     'mms.connectionHandling',
     'mms.projectHandling',
@@ -280,43 +286,5 @@ CyPhyApp.controller('DisconnectedController', function ($rootScope) {
     };
 
     $rootScope.stopBusy();
-
-});
-
-CyPhyApp.controller('CreateDesignController', function ($rootScope, $scope, $stateParams, $http, $log, $state, growl, projectHandling, workspaceService) {
-
-    $scope.projectId = $stateParams.projectId;
-    $scope.errored = false;
-    $rootScope.setProcessing();
-
-    if ($rootScope.wsContext) {
-
-        $log.debug('Cleaning up workspace regions');
-        workspaceService.cleanUpAllRegions($rootScope.wsContext);
-
-    }
-
-    $rootScope.$emit('$destroy');
-
-    $log.debug('New branch creation');
-
-    projectHandling.cloneMaster()
-        .then(function (data) {
-
-            $rootScope.stopProcessing();
-            $log.debug('New project creation successful', data);
-            $state.go('editor.project.branch', {
-                projectId: $scope.projectId,
-                branchId: data
-            });
-
-        })
-        .catch(function (data, status) {
-
-            $log.debug('New project creation failed', status);
-            $rootScope.stopProcessing();
-            growl.error('An error occurred while project creation. Please retry later.');
-
-        });
 
 });

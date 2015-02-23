@@ -23,47 +23,95 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
         .state('editor.project', {
             url: '/:projectId',
             resolve: {
-                givenProjectId: function ($state, $stateParams, projectHandling, $log) {
+                givenProjectId: function ($state, $stateParams, projectHandling, $log, errorReporter) {
                     return projectHandling.selectProject($stateParams.projectId)
                         .then(function (projectId) {
                             $log.debug('givenProject found');
                             return projectId;
+                        })
+                        .catch(function(msg) {
+                            errorReporter.log(msg);
+                            $state.go('404');
                         });
                 }
             },
-            onEnter: function() {
-                console.log('Have to create branch here');
+            params: {
+                projectId: null,
+                branchId: null
+            },
+            onEnter: function(projectHandling, $rootScope, $stateParams, $log, $state, errorReporter) {
+
+                if (!$stateParams.branchId) {
+
+                    $log.debug('No branch specified - have to create branch here');
+
+                    projectHandling.cloneMaster()
+                        .then(function (data) {
+
+                            $log.debug('New branch creation successful', data);
+                            $state.go('editor.project.branch', {
+                                projectId: $stateParams.projectId,
+                                branchId: data
+                            });
+
+                        })
+                        .catch(function (msg) {
+                            errorReporter.log(msg);
+                            $state.go('404');
+                        });
+                }
             }
         })
         .state('editor.project.branch', {
             url: '/:branchId',
             resolve: {
-                givenBranchId: function (givenProjectId, $state, $stateParams, projectHandling, $log) {
+                givenBranchId: function (givenProjectId, $state, $stateParams, projectHandling, $log, errorReporter) {
                     return projectHandling.selectBranch($stateParams.branchId)
                         .then(function (branchId) {
                             $log.debug('givenBranch found');
                             return branchId;
+                        })
+                        .catch(function (msg) {
+                            errorReporter.log(msg);
+                            $state.go('404');
                         });
                 }
             },
-            onEnter: function() {
-                console.log('Have to find workspace here');
+            params: {
+                projectId: null,
+                branchId: null,
+                workspaceId: null
+            },
+            onEnter: function(projectHandling, $log, $stateParams, $state) {
+
+                if (!$stateParams.workspaceId) {
+
+                    $log.debug('No workspace specified - have to find one');
+
+                }
+
             }
 
         })
         .state('editor.project.branch.workspace', {
             url: '/:workspaceId',
             resolve: {
-                givenWorkspaceId: function (givenBranchId, $state, $stateParams, projectHandling, $log) {
+                givenWorkspaceId: function (givenProjectId, givenBranchId, $state, $stateParams,
+                                            projectHandling, $log, errorReporter) {
+
                     return projectHandling.selectWorkspace($stateParams.workspaceId)
                         .then(function (workspaceId) {
                             $log.debug('givenWorkspace found');
                             return workspaceId;
+                        })
+                        .catch(function (msg) {
+                            errorReporter.log(msg);
+                            $state.go('404');
                         });
                 }
             },
-            onEnter: function() {
-                console.log('Have to find design here');
+            onEnter: function($log) {
+                $log.debug('Have to find design here');
             }
         })
         .state('editor.project.branch.workspace.design', {
@@ -77,8 +125,8 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                         });
                 }
             },
-            onEnter: function() {
-                console.log('Have to find container here');
+            onEnter: function($log) {
+                $log.debug('Have to find container here');
             },
             controller: 'EditorViewController',
             views: {
@@ -101,8 +149,8 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                         });
                 }
             },
-            onEnter: function() {
-                console.log('Have to display container here');
+            onEnter: function($log) {
+                $log.debug('Have to display container here');
             },
             controller: 'EditorViewController',
             views: {
@@ -113,25 +161,6 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                     template: null
                 }
             }
-        })
-        .state('createDesign', {
-            url: '/createDesign/:projectId',
-            resolve: {
-                selectProject: ['$state', '$stateParams', 'projectHandling',
-                    function ($state, $stateParams, projectHandling) {
-                        return projectHandling.selectProject($stateParams.projectId)
-                            .then(function (projectId) {
-                                return projectId;
-                            });
-                    }]
-            },
-            views: {
-                'onCover': {
-                    template: null,
-                    controller: 'CreateDesignController'
-                }
-            }
-
         })
         .state('404', {
             templateUrl: '/mmsApp/templates/404.html',
