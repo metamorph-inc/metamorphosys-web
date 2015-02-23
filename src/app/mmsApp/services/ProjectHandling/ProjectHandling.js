@@ -16,67 +16,61 @@ angular.module('mms.projectHandling', [])
             wsContext,
 
             setupWSWatcher,
+            cleanWSWatcher;
 
-            projectDestroy,
-            branchDestroy,
-            workspaceDestroy,
-            designDestroy,
-            containerDestroy;
-
-
-        projectDestroy = function () {
+        this.leaveProject = function () {
 
             if (selectedProjectId) {
 
-                branchDestroy();
-                $rootScope.$emit('projectDestroy');
+                this.leaveBranch();
+                $rootScope.$emit('leaveProject');
 
             }
         };
 
-        branchDestroy = function () {
+
+        this.leaveBranch = function () {
 
             if (selectedBranchId) {
 
-                if (wsContext) {
-                    workspaceService.cleanUpAllRegions(wsContext);
-                    wsContext = null;
-                }
+                console.log('workspaces are cleaned up');
 
-                workspaceDestroy();
+                cleanWSWatcher();
 
-                $rootScope.$emit('branchDestroy');
+                this.leaveWorkspace();
+
+                $rootScope.$emit('leaveBranch');
 
             }
         };
 
-        workspaceDestroy = function () {
+        this.leaveWorkspace = function () {
 
             if (selectedWorkspaceId) {
 
-                designDestroy();
+                this.leaveDesign();
 
-                $rootScope.$emit('workspaceDestroy');
+                $rootScope.$emit('leaveWorkspace');
 
             }
         };
 
-        designDestroy = function () {
+        this.leaveDesign = function () {
 
             if (selectedDesignId) {
 
-                containerDestroy();
+                this.leaveContainer();
 
-                $rootScope.$emit('designDestroy');
+                $rootScope.$emit('leaveDesign');
 
             }
         };
 
-        containerDestroy = function () {
+        this.leaveContainer = function () {
 
             if (selectedContainerId) {
 
-                $rootScope.$emit('containerDestroy');
+                $rootScope.$emit('leaveContainer');
 
             }
         };
@@ -205,7 +199,7 @@ angular.module('mms.projectHandling', [])
 
                     $rootScope.loading = true;
 
-                    projectDestroy();
+                    this.leaveProject();
 
                     connectionHandling.establishMainGMEConnection()
                         .then(function (connectionId) {
@@ -247,13 +241,25 @@ angular.module('mms.projectHandling', [])
         };
 
 
-        setupWSWatcher = function () {
+        cleanWSWatcher = function() {
 
             if (wsContext) {
                 workspaceService.cleanUpAllRegions(wsContext);
+                wsContext = null;
+                availableWorkspaces = null;
             }
 
-            return connectionHandling.establishMainGMEConnection()
+        };
+
+        setupWSWatcher = function () {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            cleanWSWatcher();
+
+            connectionHandling.establishMainGMEConnection()
                 .then(function (connectionId) {
 
                     wsContext = $rootScope.wsContext = {
@@ -262,34 +268,53 @@ angular.module('mms.projectHandling', [])
                             .toISOString()
                     };
 
+                    console.log('WS context is set');
+
                     workspaceService.registerWatcher(wsContext, function (destroyed) {
 
                         $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
 
-                        if (destroyed !== true) {
-                            workspaceService.watchWorkspaces(wsContext, function (updateObject) {
 
-                                if (updateObject.type === 'load') {
-                                    console.log('load', updateObject);
-                                } else if (updateObject.type === 'update') {
-                                    console.log('update', updateObject);
-                                } else if (updateObject.type === 'unload') {
-                                    console.log('unload', updateObject);
-                                } else {
-                                    throw new Error(updateObject);
+                        // TODO: this watchers is being called even if context was cleaned up. This will cause memory leaks.
+                        if (wsContext !== null) {
+                            if (destroyed !== true) {
+                                workspaceService.watchWorkspaces(wsContext, function (updateObject) {
 
-                                }
 
-                            }).then(function (data) {
-                                availableWorkspaces = data.workspaces;
-                                console.log('CONTINUE HERE');
-                            });
+                                    // TODO: creation/removal of new workapces are NOT done
+                                    if (updateObject.type === 'load') {
+                                        console.log('load', updateObject);
+                                    } else if (updateObject.type === 'update') {
+                                        console.log('update', updateObject);
+                                    } else if (updateObject.type === 'unload') {
+                                        console.log('unload', updateObject);
+                                    } else {
+                                        throw new Error(updateObject);
+
+                                    }
+
+                                }).then(function (data) {
+                                    availableWorkspaces = data.workspaces;
+
+                                    $log.debug('WSWatchers are set up');
+
+                                    deferred.resolve(data.workspaces);
+
+                                });
+                            }
                         }
+
                     });
 
-                    $log.debug('WSWatchers are set up');
 
+                })
+                .catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('GME Connection could not be established', reason);
+                    deferred.reject('GME Connection could not be established');
                 });
+
+            return deferred.promise;
 
         };
 
@@ -299,6 +324,8 @@ angular.module('mms.projectHandling', [])
 
             deferred = $q.defer();
 
+            console.log(branchId);
+
             if (!branchId) {
                 deferred.reject('No branch specified');
             } else {
@@ -307,7 +334,7 @@ angular.module('mms.projectHandling', [])
 
                     $rootScope.loading = true;
 
-                    branchDestroy();
+                    this.leaveBranch();
 
                     connectionHandling.establishMainGMEConnection()
                         .then(function (connectionId) {
@@ -368,7 +395,7 @@ angular.module('mms.projectHandling', [])
 
              $rootScope.loading = true;
 
-             branchDestroy();
+             leaveBranch();
 
              connectionHandling.establishMainGMEConnection()
              .then(function (connectionId) {
@@ -409,12 +436,10 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.findWorkspace = function () {
+        this.getAvailableWorkspaces = function() {
 
-            connectionHandling.establishMainGMEConnection()
-                .then(function (connectionId) {
+            return availableWorkspaces;
 
-                });
         };
 
     });

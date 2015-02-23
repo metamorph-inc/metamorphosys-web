@@ -1,8 +1,9 @@
-/*global angular*/
+/*global angular, encodeURI*/
 
 'use strict';
 
-angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider) {
+angular.module('CyPhyApp').config(function (
+    $stateProvider, $urlRouterProvider, $mdThemingProvider, $urlMatcherFactoryProvider) {
 
     var GMEProjectInitializers,
         gmeProjectInitializers;
@@ -11,6 +12,19 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
     GMEProjectInitializers = require('./classes/GMEProjectInitializers');
     gmeProjectInitializers = new GMEProjectInitializers();
+
+    $urlMatcherFactoryProvider.type('gmeNodeId', {
+        encode: function(path) {
+            return path.replace(/\//g, '-');
+        },
+        decode: function(path) {
+            return path.replace(/-/g, '/');
+        },
+        is: function() {
+            return true;
+        }
+
+    });
 
     $urlRouterProvider.otherwise('/404');
 
@@ -37,7 +51,8 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             },
             params: {
                 projectId: null,
-                branchId: null
+                branchId: null,
+                workspaceId: null
             },
             onEnter: function(projectHandling, $rootScope, $stateParams, $log, $state, errorReporter) {
 
@@ -61,6 +76,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                         });
                 }
             }
+
         })
         .state('editor.project.branch', {
             url: '/:branchId',
@@ -79,14 +95,43 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             },
             params: {
                 projectId: null,
-                branchId: null,
-                workspaceId: null
+                branchId: null
             },
-            onEnter: function(projectHandling, $log, $stateParams, $state) {
+            onEnter: function(projectHandling, $log, $stateParams, $state, errorReporter) {
+
+                var workspaces,
+                    workspaceIds,
+
+                    workspaceFound;
 
                 if (!$stateParams.workspaceId) {
 
                     $log.debug('No workspace specified - have to find one');
+
+                    workspaces = projectHandling.getAvailableWorkspaces();
+
+                    if (angular.isObject(workspaces)) {
+
+                        workspaceIds = Object.keys(workspaces);
+
+                        if (workspaceIds.length) {
+
+                            workspaceFound = true;
+
+                            //$state.go('editor.project.branch.workspace', {
+                            //    projectId: $stateParams.projectId,
+                            //    branchId: $stateParams.branchId,
+                            //    workspaceId: '3ewef3f23ff3'
+                            //});
+
+                        }
+
+                    }
+
+                    if (!workspaceFound) {
+                        errorReporter.log('No workspaces in project');
+                        $state.go('404');
+                    }
 
                 }
 
@@ -95,13 +140,18 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
         })
         .state('editor.project.branch.workspace', {
             url: '/:workspaceId',
+            params: {
+                projectId: null,
+                branchId: null,
+                workspaceId: null
+            },
             resolve: {
-                givenWorkspaceId: function (givenProjectId, givenBranchId, $state, $stateParams,
+                givenWorkspaceId: function (givenBranchId, $state, $stateParams,
                                             projectHandling, $log, errorReporter) {
 
                     return projectHandling.selectWorkspace($stateParams.workspaceId)
                         .then(function (workspaceId) {
-                            $log.debug('givenWorkspace found');
+                            $log.debug('givenWorkspace found', $stateParams.workspaceId);
                             return workspaceId;
                         })
                         .catch(function (msg) {
@@ -113,6 +163,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             onEnter: function($log) {
                 $log.debug('Have to find design here');
             }
+
         })
         .state('editor.project.branch.workspace.design', {
             url: '/:designId',
@@ -128,6 +179,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             onEnter: function($log) {
                 $log.debug('Have to find container here');
             },
+
             controller: 'EditorViewController',
             views: {
                 'mainView': {
@@ -152,6 +204,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             onEnter: function($log) {
                 $log.debug('Have to display container here');
             },
+
             controller: 'EditorViewController',
             views: {
                 'mainView': {

@@ -20,5 +20,16 @@ angular.module('mms.utils', [])
             return str;
         };
 
+        this.encodeGMEIdsForUIRouting = function(gmeId) {
+
+            return gmeId.replace(/\//g, '\\');
+
+        };
+
+        this.decodeGMEIdsForUIRouting = function(gmeId) {
+
+            return gmeId.replace(/\\/g, '/');
+
+        };
     }
 ] );
