@@ -236,13 +236,13 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     $rootScope.$on('$stateChangeError', function (ev, to) {
 
-        $log.debug('stateChangeError', to);
+        $log.error('stateChangeError', to);
 
     });
 
     $rootScope.$on('$stateNotFound', function (ev, to) {
 
-        $log.debug('stateNotFound', to);
+        $log.error('stateNotFound', to);
 
     });
 

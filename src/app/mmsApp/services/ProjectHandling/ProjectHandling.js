@@ -3,7 +3,9 @@
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService, mmsUtils) {
+    .service('projectHandling', function (
+        $q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
+        mmsUtils, designService, testBenchService) {
 
         var selectedProjectId,
             selectedBranchId,
@@ -12,11 +14,17 @@ angular.module('mms.projectHandling', [])
             selectedContainerId,
 
             availableWorkspaces,
+            availableDesigns,
+            availableTestBenches,
 
             wsContext,
 
             setupWSWatcher,
-            cleanWSWatcher;
+            cleanWSWatcher,
+
+            setupWorkspaceInternalsWatcher,
+            cleanWorkspaceInternalsWatcher;
+
 
         this.leaveProject = function () {
 
@@ -24,6 +32,8 @@ angular.module('mms.projectHandling', [])
 
                 this.leaveBranch();
                 $rootScope.$emit('leaveProject');
+
+                selectedDesignId = null;
 
             }
         };
@@ -41,6 +51,8 @@ angular.module('mms.projectHandling', [])
 
                 $rootScope.$emit('leaveBranch');
 
+                selectedBranchId = null;
+
             }
         };
 
@@ -48,9 +60,13 @@ angular.module('mms.projectHandling', [])
 
             if (selectedWorkspaceId) {
 
+                cleanWorkspaceInternalsWatcher();
+
                 this.leaveDesign();
 
                 $rootScope.$emit('leaveWorkspace');
+
+                selectedWorkspaceId = null;
 
             }
         };
@@ -63,6 +79,8 @@ angular.module('mms.projectHandling', [])
 
                 $rootScope.$emit('leaveDesign');
 
+                selectedDesignId = null;
+
             }
         };
 
@@ -71,6 +89,8 @@ angular.module('mms.projectHandling', [])
             if (selectedContainerId) {
 
                 $rootScope.$emit('leaveContainer');
+
+                selectedContainerId = null;
 
             }
         };
@@ -246,6 +266,7 @@ angular.module('mms.projectHandling', [])
             if (wsContext) {
                 workspaceService.cleanUpAllRegions(wsContext);
                 wsContext = null;
+
                 availableWorkspaces = null;
             }
 
@@ -268,7 +289,7 @@ angular.module('mms.projectHandling', [])
                             .toISOString()
                     };
 
-                    console.log('WS context is set');
+                    $log.debug('WS context is set');
 
                     workspaceService.registerWatcher(wsContext, function (destroyed) {
 
@@ -318,13 +339,55 @@ angular.module('mms.projectHandling', [])
 
         };
 
+        cleanWorkspaceInternalsWatcher = function() {
+
+            availableDesigns = null;
+            availableTestBenches = null;
+
+            selectedDesignId = null;
+
+        };
+
+        setupWorkspaceInternalsWatcher = function() {
+
+            var designsPromise,
+                testbenchesPromise,
+                deferred;
+
+            deferred = $q.defer();
+
+            cleanWorkspaceInternalsWatcher();
+
+            designsPromise =  designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
+                //TODO: eventually this has to be implemented
+            }).then(function (designsData) {
+                availableDesigns = designsData.designs;
+            });
+
+            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function() {
+                //TODO: eventually this has to be implemented
+            }).then(function(testbenchesData) {
+                availableTestBenches = testbenchesData.testBenches;
+            });
+
+            $q.all([designsPromise, testbenchesPromise])
+                .then(function(){
+                   deferred.resolve();
+                })
+                .catch(function(){
+                    deferred.reject('Could not get designs and testbenches');
+                });
+
+            return deferred.promise;
+
+        };
+
+
         this.selectBranch = function (branchId) {
 
             var deferred;
 
             deferred = $q.defer();
-
-            console.log(branchId);
 
             if (!branchId) {
                 deferred.reject('No branch specified');
@@ -344,9 +407,10 @@ angular.module('mms.projectHandling', [])
 
                                     $rootScope.loading = false;
 
+                                    selectedBranchId = branchId;
+
                                     setupWSWatcher().then(function () {
 
-                                        selectedBranchId = branchId;
                                         $log.debug('Branch selected', branchId);
 
                                         deferred.resolve(branchId);
@@ -387,59 +451,43 @@ angular.module('mms.projectHandling', [])
 
             deferred = $q.defer();
 
-            /*            if (!workspaceId) {
+            if (!workspaceId || !angular.isObject(availableWorkspaces) || !availableWorkspaces[workspaceId]) {
+                deferred.reject('Non-existing worksapceId');
+            } else {
 
-             } else {
+                if (workspaceId !== selectedWorkspaceId) {
 
-             if (branchId !== selectedBranchId) {
+                    this.leaveWorkspace();
 
-             $rootScope.loading = true;
+                    selectedWorkspaceId = workspaceId;
 
-             leaveBranch();
+                    setupWorkspaceInternalsWatcher().then(function () {
+                        $log.debug('Workspace selected', workspaceId);
 
-             connectionHandling.establishMainGMEConnection()
-             .then(function (connectionId) {
+                        deferred.resolve(workspaceId);
 
-             branchService.selectBranch(connectionId, branchId)
-             .then(function (branchId) {
+                    });
 
-             selectedBranchId = branchId;
-             $log.debug('Branch selected', branchId);
+                } else {
+                    deferred.resolve(workspaceId);
+                }
 
-             deferred.resolve(branchId);
-
-             }
-             )
-             .catch(function (reason) {
-             $rootScope.loading = false;
-             $log.debug('Opening branch errored', branchId, reason);
-             deferred.reject('Opening branch errored');
-
-             });
-
-
-             })
-             .catch(function (reason) {
-             $rootScope.loading = false;
-             $log.debug('GME Connection could not be established', reason);
-             deferred.reject('GME Connection could not be established');
-             });
-
-             } else {
-             deferred.resolve(branchId);
-             }
-             }*/
-
-            deferred.resolve();
+            }
 
             return deferred.promise;
 
         };
 
         this.getAvailableWorkspaces = function() {
-
             return availableWorkspaces;
+        };
 
+        this.getAvailableDesigns = function() {
+            return availableDesigns;
+        };
+
+        this.getAvailableTestbenches = function() {
+            return availableTestBenches;
         };
 
     });
