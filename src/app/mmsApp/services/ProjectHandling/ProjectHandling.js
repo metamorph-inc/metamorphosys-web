@@ -15,6 +15,7 @@ angular.module('mms.projectHandling', [])
 
             availableWorkspaces,
             availableDesigns,
+            availableContainers,
             availableTestBenches,
 
             wsContext,
@@ -260,7 +261,6 @@ angular.module('mms.projectHandling', [])
             return selectedBranchId;
         };
 
-
         cleanWSWatcher = function() {
 
             if (wsContext) {
@@ -445,6 +445,10 @@ angular.module('mms.projectHandling', [])
 
         };
 
+        this.getSelectedWorkspaceId = function () {
+            return selectedWorkspaceId;
+        };
+
         this.selectWorkspace = function (workspaceId) {
 
             var deferred;
@@ -470,6 +474,84 @@ angular.module('mms.projectHandling', [])
 
                 } else {
                     deferred.resolve(workspaceId);
+                }
+
+            }
+
+            return deferred.promise;
+
+        };
+
+        this.getSelectedDesignId = function () {
+            return selectedDesignId;
+        };
+
+        this.selectDesign = function (designId) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            if (!designId || !angular.isObject(availableDesigns) || !availableDesigns[designId]) {
+                deferred.reject('Non-existing designId');
+            } else {
+
+                if (designId !== selectedDesignId) {
+
+                    this.leaveDesign();
+
+                    selectedDesignId = designId;
+
+                    deferred.resolve(designId);
+
+//                    setupWorkspaceInternalsWatcher().then(function () {
+//                        $log.debug('Workspace selected', workspaceId);
+//
+//                        deferred.resolve(workspaceId);
+//
+//                    });
+
+                } else {
+                    deferred.resolve(designId);
+                }
+
+            }
+
+            return deferred.promise;
+
+        };
+
+        this.getSelectedContainerId = function () {
+            return selectedContainerId;
+        };
+
+        this.selectContainer = function (containerId) {
+
+            var deferred;
+
+            deferred = $q.defer();
+
+            if (!containerId || !angular.isObject(availableContainers) || !availableContainers[containerId]) {
+                deferred.reject('Non-existing designId');
+            } else {
+
+                if (containerId !== selectedContainerId) {
+
+                    this.leaveContainer();
+
+                    selectedContainerId = containerId;
+
+                    deferred.resolve(containerId);
+
+//                    setupWorkspaceInternalsWatcher().then(function () {
+//                        $log.debug('Workspace selected', workspaceId);
+//
+//                        deferred.resolve(workspaceId);
+//
+//                    });
+
+                } else {
+                    deferred.resolve(containerId);
                 }
 
             }

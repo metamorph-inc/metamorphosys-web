@@ -9,13 +9,15 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
         retrieveGivenProject,
         retrieveGivenBranch,
-        retrieveGivenWorkspace;
+        retrieveGivenWorkspace,
+        retrieveGivenDesign,
+        retrieveGivenContainer;
 
     retrieveGivenProject = function ($state, $stateParams, projectHandling, $log, errorReporter) {
 
         return projectHandling.selectProject($stateParams.projectId)
             .then(function (projectId) {
-                $log.debug('givenProject found');
+                $log.debug('givenProject found', projectId);
                 return projectId;
             })
             .catch(function (msg) {
@@ -27,7 +29,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
     retrieveGivenBranch = function (givenProjectId, $state, $stateParams, projectHandling, $log, errorReporter) {
         return projectHandling.selectBranch($stateParams.branchId)
             .then(function (branchId) {
-                $log.debug('givenBranch found');
+                $log.debug('givenBranch found', branchId);
                 return branchId;
             })
             .catch(function (msg) {
@@ -40,13 +42,51 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                                        projectHandling, $log, errorReporter) {
         return projectHandling.selectWorkspace($stateParams.workspaceId)
             .then(function (workspaceId) {
-                $log.debug('givenWorkspace found', $stateParams.workspaceId);
+                $log.debug('givenWorkspace found', workspaceId);
                 return workspaceId;
             })
             .catch(function (msg) {
                 errorReporter.log(msg);
                 $state.go('404');
             });
+    };
+
+    retrieveGivenDesign = function (givenWorkspaceId, $state, $stateParams,
+                                    projectHandling, $log, errorReporter) {
+        return projectHandling.selectDesign($stateParams.designId)
+            .then(function (designId) {
+                $log.debug('givenDesign found', designId);
+                return designId;
+            })
+            .catch(function (msg) {
+                errorReporter.log(msg);
+                $state.go('404');
+            });
+    };
+
+    retrieveGivenContainer = function (givenDesignId, $state, $stateParams,
+                                    projectHandling, $log, errorReporter, $q) {
+        var deferred;
+
+        deferred = $q.defer();
+
+        if ($stateParams.containerId) {
+
+            projectHandling.selectContainer($stateParams.containerId)
+                .then(function (containerId) {
+                    $log.debug('givenContainer found', containerId);
+                    deferred.resolve(containerId);
+                })
+                .catch(function (msg) {
+                    errorReporter.log(msg);
+                    $state.go('404');
+                });
+        } else {
+            deferred.resolve();
+        }
+
+        return deferred.promise;
+
     };
 
     window.gapi = undefined;
@@ -187,26 +227,34 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
         })
         .state('editor.design', {
-            url: '/{projectId:string}/{branchId:string}/{workspaceId:string}/{designId:string}',
+            url: '/{projectId:string}/{branchId:string}/{workspaceId:string}/{designId:string}/{containerId:string}',
             resolve: {
                 givenProjectId: retrieveGivenProject,
                 givenBranchId: retrieveGivenBranch,
-                givenWorkspaceId: retrieveGivenWorkspace
+                givenWorkspaceId: retrieveGivenWorkspace,
+                givenDesignId: retrieveGivenDesign,
+                givenContainerId: retrieveGivenContainer
             },
-            onEnter: function ($log) {
-                $log.debug('Have to find container here');
+            params: {
+                projectId: null,
+                branchId: null,
+                workspaceId: null,
+                designId: null,
+                containerId: null
+            },
+            onEnter: function ($log, $stateParams) {
+                $log.debug('Given containerId', $stateParams.containerId);
             },
 
-            controller: 'EditorViewController'
-            //,
-            //views: {
-            //    'mainView': {
-            //        templateUrl: '/mmsApp/templates/editor.html'
-            //    },
-            //    'onCover': {
-            //        template: null
-            //    }
-            //}
+            controller: 'EditorViewController',
+            views: {
+                'mainView': {
+                    templateUrl: '/mmsApp/templates/editor.html'
+                },
+                'onCover': {
+                    template: null
+                }
+            }
         })
         //.state('editor.project.branch.workspace.design.container', {
         //    url: '/:containerId',
