@@ -23,6 +23,7 @@ dump
 *.stackdump
 v8.log
 npm-shrinkwrap.json
+npm-debug.log
 
 cyphy_functional_server_1.log
 cyphy_functional_server_2.log
