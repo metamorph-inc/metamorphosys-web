@@ -314,7 +314,16 @@ describe('Metamorphosys Tech Demo Flow', function () {
         var componentBox,
             otherComponentBox,
             rotateCWButton,
-            rotateCCWButton;
+            rotateCCWButton,
+            checkComponentRotation = function (browser, targetComponentLabel, expectedAngle) {
+                browser.driver.executeScript(function (targetComponentLabel) {
+
+                    return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
+
+                }, targetComponentLabel).then(function (angle) {
+                    expect(angle).toEqual(expectedAngle);
+                });
+            };
 
         componentBox = browser.findElement(by.diagramComponentLabel(targetComponentLabel));
         rotateCWButton = element(by.css('.contextmenu .action-rotateCW'));
@@ -331,13 +340,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser.sleep(gmeEventTimeLimit);
 
-        browser2.driver.executeScript(function (targetComponentLabel) {
-
-            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
-
-        }, targetComponentLabel).then(function (angle) {
-            expect(angle).toEqual(90);
-        });
+        checkComponentRotation(browser, targetComponentLabel, 90);
+        checkComponentRotation(browser2, targetComponentLabel, 90);
 
         browser2.actions().mouseMove(otherComponentBox).perform();
         browser2.actions().click(protractor.Button.RIGHT).perform();
@@ -348,13 +352,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser.sleep(gmeEventTimeLimit);
 
-        browser.driver.executeScript(function (targetComponentLabel) {
-
-            return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
-
-        }, targetComponentLabel).then(function (angle) {
-            expect(angle).toEqual(0);
-        });
+        checkComponentRotation(browser2, targetComponentLabel, 0);
+        checkComponentRotation(browser, targetComponentLabel, 0);
 
     });
 
