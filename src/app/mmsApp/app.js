@@ -248,8 +248,6 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
 });
 
-CyPhyApp.controller('EditorViewController', function () {
-});
 
 CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
 

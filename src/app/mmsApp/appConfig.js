@@ -2,6 +2,11 @@
 
 'use strict';
 
+angular.module('CyPhyApp').controller('EditorViewController', function () {
+    console.log('--------------------- In EditorViewController');
+});
+
+
 angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider, $urlMatcherFactoryProvider) {
 
     var GMEProjectInitializers,
@@ -243,9 +248,8 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 containerId: null
             },
             onEnter: function ($log, $stateParams) {
-                $log.debug('Given containerId', $stateParams.containerId);
+                $log.debug('Given containerId:', $stateParams.containerId);
             },
-
             controller: 'EditorViewController',
             views: {
                 'mainView': {
