@@ -303,7 +303,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                         }
 
-                    }, 800);
+                    }, 200);
 
                 });
 

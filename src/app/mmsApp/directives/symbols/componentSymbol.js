@@ -61,7 +61,7 @@ symbolsModule.controller(
 symbolsModule.directive(
     'componentSymbol',
 
-    function ( $compile ) {
+    function ( $compile, $timeout ) {
 
         return {
             scope: {
@@ -83,6 +83,10 @@ symbolsModule.directive(
 
                     diagramContainerController,
                     svgDiagramController,
+
+                    justMouseUpped,
+                    justMouseDowned,
+                    doubleClickTolerance = 300,
 
                     $el,
                     $labelElement,
@@ -117,11 +121,38 @@ symbolsModule.directive(
                 // Interactions
 
                 scope.onMouseUp = function ( $event ) {
-                    svgDiagramController.onComponentMouseUp( scope.component, $event );
+
+                    if (!justMouseUpped) {
+
+                        svgDiagramController.onComponentMouseUp(scope.component, $event);
+
+                        justMouseUpped = true;
+
+                        $timeout(function () {
+                            justMouseUpped = false;
+                        }, doubleClickTolerance);
+
+                    }
                 };
 
                 scope.onMouseDown = function ( $event ) {
-                    svgDiagramController.onComponentMouseDown( scope.component, $event );
+
+                    if (!justMouseDowned) {
+
+                        svgDiagramController.onComponentMouseDown(scope.component, $event);
+                        $event.stopPropagation();
+
+                        justMouseDowned = true;
+
+                        $timeout(function () {
+                            justMouseDowned = false;
+                        }, doubleClickTolerance);
+
+                    }
+                };
+
+                scope.onDoubleClick = function ( $event ) {
+                    svgDiagramController.onComponentDoubleClick( scope.component, $event );
                     $event.stopPropagation();
                 };
 

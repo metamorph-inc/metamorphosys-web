@@ -288,6 +288,14 @@ angular.module('mms.designVisualization.svgDiagram', [
             }
         };
 
+        this.onComponentDoubleClick = function(component) {
+
+            if (component.isContainer) {
+                $rootScope.$emit('containerMustBeOpened', component);
+            }
+
+        };
+
         this.onWireCornerMouseUp = function (wire, segment, $event) {
 
             wireDragHandler.onWireMouseUp(wire, segment, $event);

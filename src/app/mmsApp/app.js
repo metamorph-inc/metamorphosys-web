@@ -267,7 +267,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
                 .catch(function (e) {
                     $log.error(e);
                 });
-        }, 400);
+        });
 
     });
 
