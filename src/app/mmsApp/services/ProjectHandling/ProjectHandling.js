@@ -279,7 +279,7 @@ angular.module('mms.projectHandling', [])
         cleanWSWatcher = function () {
 
             if (wsContext) {
-                workspaceService.cleanUpAllRegions(wsContext);
+                workspaceService.unregisterWatcher(wsContext);
                 wsContext = null;
 
                 availableWorkspaces = null;

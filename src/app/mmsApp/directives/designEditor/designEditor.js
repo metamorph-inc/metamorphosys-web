@@ -53,10 +53,6 @@ angular.module('mms.designVisualization.designEditor', [
 
         };
 
-
-        $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
-        $scope.diagramContainerConfig = {};
-
         initForContainer = function (selectedContainerId) {
 
             if (selectedContainerId) {

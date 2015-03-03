@@ -8,142 +8,164 @@ angular.module( 'cyphy.components' )
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (
-        $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService, $timeout
+        $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService, $timeout,
+        projectHandling, connectionHandling
     ) {
-        var
+        var init,
             addInterfaceWatcher,
-
-            context;
-
+            context,
+            workspaceId;
 
         this.getConnectionId = function () {
             return $scope.connectionId;
         };
 
-        // Check for valid connectionId and register clean-up on destroy event.
-        if ( $scope.connectionId && angular.isString( $scope.connectionId ) ) {
-            context = {
-                db: $scope.connectionId,
-                regionId: 'ComponentListController_' + ( new Date() )
-                    .toISOString()
-            };
-            $scope.$on( '$destroy', function () {
-                componentService.cleanUpAllRegions( context );
-            } );
-        } else {
-            throw new Error( 'connectionId must be defined and it must be a string' );
-        }
+        init = function(workspaceId) {
 
-        // Tree setup
+            $scope.connectionId = connectionHandling.getMainGMEConnectionId();
 
-
-        $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
-
-        $timeout(function(){
-            $scope.adjustTreeNavigatorSize();
-        }, 20);
-
-
-        // Getting the data
-
-        addInterfaceWatcher = function (componentId) {
-
-            componentService.watchInterfaces(context, componentId, function (updateData) {
-
-                componentBrowserService.upsertComponentInterface(componentId, updateData);
-
-            })
-                .then(function (data) {
-
-                    componentBrowserService.upsertComponentInterface(componentId, data);
-
+            // Check for valid connectionId and register clean-up on destroy event.
+            if ($scope.connectionId && angular.isString($scope.connectionId)) {
+                context = {
+                    db: $scope.connectionId,
+                    regionId: 'ComponentListController_' + ( new Date() )
+                        .toISOString()
+                };
+                $scope.$on('$destroy', function () {
+                    componentService.cleanUpAllRegions(context);
                 });
-        };
-
-
-        componentService.registerWatcher( context, function ( destroyed ) {
-
-            if ( destroyed ) {
-                $log.warn( 'destroy event raised' );
-                return;
+            } else {
+                throw new Error('connectionId must be defined and it must be a string');
             }
 
-            $log.debug( 'initialize event raised' );
+            // Tree setup
 
-            componentService.watchComponents( context, $scope.workspaceId, $scope.avmIds, function (
-                updateObject ) {
 
-                if ( updateObject.type === 'load' ) {
+            $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
 
-                    componentBrowserService.upsertItem( updateObject.data );
+            $timeout(function () {
+                $scope.adjustTreeNavigatorSize();
+            }, 20);
 
-                    addInterfaceWatcher( updateObject.id );
 
-                } else if ( updateObject.type === 'update' ) {
+            // Getting the data
 
-                    componentBrowserService.upsertItem( updateObject.data );
+            addInterfaceWatcher = function (componentId) {
 
-                } else if ( updateObject.type === 'unload' ) {
+                componentService.watchInterfaces(context, componentId, function (updateData) {
 
-                    componentBrowserService.removeItem( updateObject.id );
+                    componentBrowserService.upsertComponentInterface(componentId, updateData);
 
-                } else {
-                    throw new Error( updateObject );
+                })
+                    .then(function (data) {
+
+                        componentBrowserService.upsertComponentInterface(componentId, data);
+
+                    });
+            };
+
+
+            componentService.registerWatcher(context, function (destroyed) {
+
+                if (destroyed) {
+                    $log.warn('destroy event raised');
+                    return;
                 }
-            } )
-                .then( function ( data ) {
-                    var componentId;
 
+                $log.debug('initialize event raised');
 
-                    componentBrowserService.initializeWithNodes(data.components);
+                componentService.watchComponents(context, workspaceId, undefined, function (updateObject) {
 
-                    for ( componentId in data.components ) {
-                        if ( data.components.hasOwnProperty( componentId ) ) {
+                    if (updateObject.type === 'load') {
 
-                            addInterfaceWatcher( componentId );
+                        componentBrowserService.upsertItem(updateObject.data);
 
-                        }
+                        addInterfaceWatcher(updateObject.id);
+
+                    } else if (updateObject.type === 'update') {
+
+                        componentBrowserService.upsertItem(updateObject.data);
+
+                    } else if (updateObject.type === 'unload') {
+
+                        componentBrowserService.removeItem(updateObject.id);
+
+                    } else {
+                        throw new Error(updateObject);
                     }
-                } );
-        } );
+                })
+                    .then(function (data) {
+                        var componentId;
 
-        $scope.$watch('componentSearchSelection', function(selectedObject) {
 
-            var node;
+                        componentBrowserService.initializeWithNodes(data.components);
 
-            if (angular.isObject(selectedObject)) {
+                        for (componentId in data.components) {
+                            if (data.components.hasOwnProperty(componentId)) {
 
-                node = selectedObject.originalObject;
+                                addInterfaceWatcher(componentId);
 
-                componentBrowserService.showNode(node.id);
+                            }
+                        }
+                    });
+            });
 
-                $timeout(function(){
+            $scope.$watch('componentSearchSelection', function (selectedObject) {
 
-                    var $nodeLi,
-                        y;
+                var node;
 
-                    if ($scope.$treeNavigatorNodesElement) {
-                        $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
+                if (angular.isObject(selectedObject)) {
 
-                        if ($nodeLi.length) {
+                    node = selectedObject.originalObject;
 
-                            y = ($nodeLi.offset().top -
+                    componentBrowserService.showNode(node.id);
+
+                    $timeout(function () {
+
+                        var $nodeLi,
+                            y;
+
+                        if ($scope.$treeNavigatorNodesElement) {
+                            $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
+
+                            if ($nodeLi.length) {
+
+                                y = ($nodeLi.offset().top -
                                 $scope.$treeNavigatorNodesElement.offset().top) +
                                 $scope.$treeNavigatorNodesElement.scrollTop();
 
-                            $scope.$treeNavigatorNodesElement.animate({
-                               scrollTop: y
-                            }, 500);
+                                $scope.$treeNavigatorNodesElement.animate({
+                                    scrollTop: y
+                                }, 500);
 
+                            }
                         }
-                    }
 
-                    ga('send', 'event', 'componentBrowser', 'search', node.label);
+                        ga('send', 'event', 'componentBrowser', 'search', node.label);
 
-                }, 100);
+                    }, 100);
+                }
+
+            });
+
+            $scope.initialized = true;
+
+        };
+
+        $scope.$watch(function(){
+            return projectHandling.getSelectedWorkspaceId();
+        }, function(newId){
+
+            if (newId && newId !== workspaceId) {
+                workspaceId = newId;
+                init(newId);
             }
 
         });
+
+        $scope.getInitializedClass = function() {
+            return $scope.initialized ? 'initialized' : 'not-initialized';
+        };
 
     } )
     .directive( 'componentBrowser', function ($window) {
@@ -151,9 +173,6 @@ angular.module( 'cyphy.components' )
         return {
             restrict: 'E',
             scope: {
-                workspaceId: '=workspaceId',
-                connectionId: '=connectionId',
-                avmIds: '=avmIds',
                 autoHeight: '=autoHeight'
             },
             replace: true,
@@ -167,6 +186,8 @@ angular.module( 'cyphy.components' )
                     $windowElement;
 
                 $parent = $(element.parent());
+
+                scope.initialized = false;
 
                 scope.adjustTreeNavigatorSize = function() {
 
