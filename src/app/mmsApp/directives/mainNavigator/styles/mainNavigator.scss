@@ -1,0 +1,56 @@
+@import '../../../styles/colors';
+
+.main-navigator-container {
+    .dropdown-navigator {
+
+        overflow: visible;
+        padding-bottom: 2px;
+        margin-bottom: 0;
+
+        @include mmsBlueGradient();
+
+        color: #f0f0f0;
+
+        > li {
+
+            padding: 0 0;
+            transition: background-color 200ms;
+
+            text-shadow: 0 1px 2px rgba(0, 15, 50, .35);
+            font-size: 105%;
+
+            .label-container {
+                padding: .5ex .5ex;
+            }
+
+            .item-label {
+                color: #fff;
+            }
+        }
+
+        > li:not(.separator):not(.cyphy-root):hover {
+            background-color: rgba(0,0,20,.13);
+        }
+
+        li.cyphy-root {
+
+            background-color: rgba(0,0,68,.2);
+
+            .label-container {
+                background-image: url(../images/mms-icon-bright.png);
+                background-position: 8px 10px;
+                background-repeat: no-repeat;
+
+                padding-left: 46px;
+
+                .item-label {
+                    display: inline-block;
+                    height: 1em;
+                    font-style: italic;
+                }
+
+            }
+
+        }
+    }
+}

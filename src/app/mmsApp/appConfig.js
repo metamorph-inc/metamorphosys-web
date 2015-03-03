@@ -217,7 +217,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
                     designIds = Object.keys(designs);
 
-                    if (designIds.length === 1) {
+                    if (designIds.length > 0) {
 
                         $state.go('editor.design', {
                             projectId: $stateParams.projectId,

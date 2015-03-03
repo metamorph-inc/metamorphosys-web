@@ -2,7 +2,7 @@
 
 'use strict';
 
-require ('./libraryDependencies');
+require('./libraryDependencies');
 
 require('./utils.js');
 
@@ -34,6 +34,8 @@ require('./directives/busyCover/busyCover.js');
 require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
+
+require('./directives/mainNavigator/mainNavigator');
 
 var CyPhyApp = angular.module('CyPhyApp', [
     'ui.router',
@@ -69,6 +71,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.busyCover',
     'mms.designVisualization.processingCover',
     'mms.designVisualization.designEditor',
+    'mms.mainNavigator',
+
     'angucomplete-alt',
     'ngTouch',
     'ngMaterial',
@@ -78,82 +82,9 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
 require('./appConfig');
 
-CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window, $mdDialog, projectHandling) {
-
-    var defaultNavigatorItems;
-
-    defaultNavigatorItems = [
-        {
-            id: 'root',
-            label: '',
-            itemClass: 'cyphy-root',
-            action: function (item, ev) {
-
-                function DialogController($scope, $mdDialog) {
-                    $scope.hide = function () {
-                        $mdDialog.hide();
-                    };
-                    $scope.close = function () {
-                        $mdDialog.cancel();
-                    };
-                }
-
-                $mdDialog.show({
-                    controller: DialogController,
-                    templateUrl: '/mmsApp/templates/aboutDialog.html',
-                    targetEvent: ev
-                })
-                    .then(function () {
-                    });
-
-            }
-        }
-    ];
-
-    $scope.navigator = {
-        separator: true,
-        items: angular.copy(defaultNavigatorItems, [])
-    };
-
-    $scope.$watch(function() {
-        return projectHandling.getSelectedDesign();
-    }, function (activeDesign) {
-
-        var parseDesignName;
-
-        parseDesignName = function (originalName) {
-
-            var result;
-
-            result = originalName.replace(/_/g, ' ');
-
-            return result;
-
-        };
-
-        if (activeDesign && activeDesign.id) {
-
-
-            $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
-
-            $scope.navigator.items.push({
-                id: 'design',
-                label: parseDesignName(activeDesign.name)
-                //action: function () {
-                //    $window.open('/?project=' + projectId);
-                //}
-            });
-
-        } else {
-            $scope.navigator.items = angular.copy(defaultNavigatorItems, []);
-        }
-
-    });
-
-});
 
 CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
-                                               $timeout) {
+                                               $timeout, projectHandling) {
 
     var stateBeforeWentWrong;
 
@@ -249,26 +180,29 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     });
 
-    $rootScope.$on('containerMustBeOpened', function(ev, container){
+    $rootScope.$on('containerMustBeOpened', function (ev, container) {
 
         console.log('Go here', container.id);
 
-        $rootScope.setProcessing();
+        if ( container && container.id !== projectHandling.getSelectedContainerId()) {
 
-        $timeout(function() {
+            $rootScope.setProcessing();
 
-            $state.go('editor.design', {
-                projectId: $state.params.projectId,
-                branchId: $state.params.branchId,
-                workspaceId: $state.params.workspaceId,
-                designId: $state.params.designId,
-                containerId: encodeURIComponent(container.id)
-            })
-                .catch(function (e) {
-                    $log.error(e);
-                });
-        });
+            $timeout(function () {
 
+                $state.go('editor.design', {
+                    projectId: $state.params.projectId,
+                    branchId: $state.params.branchId,
+                    workspaceId: $state.params.workspaceId,
+                    designId: $state.params.designId,
+                    containerId: encodeURIComponent(container.id)
+                })
+                    .catch(function (e) {
+                        $log.error(e);
+                    });
+            });
+
+        }
     });
 
 });

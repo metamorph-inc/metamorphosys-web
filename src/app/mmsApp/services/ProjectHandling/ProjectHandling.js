@@ -778,6 +778,14 @@ angular.module('mms.projectHandling', [])
             return selectedContainerId;
         };
 
+        this.getSelectedContainer = function () {
+
+            if (availableContainers && selectedContainerId) {
+                return availableContainers[selectedContainerId];
+            }
+
+        };
+
         this.selectContainer = function (containerId) {
 
             var deferred;
@@ -797,6 +805,7 @@ angular.module('mms.projectHandling', [])
                     setupContainerInternalsWatcher(containerId).then(function () {
 
                         $log.debug('Container selected', availableContainers[containerId]);
+
                         deferred.resolve(containerId);
 
                     });
@@ -840,6 +849,64 @@ angular.module('mms.projectHandling', [])
 
         this.getWorkspaceContext = function() {
             return wsContext;
+        };
+
+        this.getContainmentPathIds = function() {
+
+            var result,
+
+                diffStr,
+                diffArray,
+
+                parentId;
+
+            if (selectedContainerId && selectedDesignId) {
+
+                result = [];
+                result.push(selectedDesignId);
+
+                diffStr = selectedContainerId.replace(selectedDesignId, '');
+
+                if (diffStr) {
+
+                    diffArray = diffStr.split('/');
+
+                    if (diffArray.length > 1) {
+
+                        parentId = selectedDesignId;
+
+                        diffArray.shift();
+
+                        angular.forEach(diffArray, function (bit) {
+
+                            parentId = parentId + '/' + bit;
+                            result.push(parentId);
+
+                        });
+                    }
+
+                }
+
+            }
+
+            return result;
+
+        };
+
+        this.getContainmentPath = function() {
+
+            var ids,
+                result;
+
+            result = [];
+
+            ids = this.getContainmentPathIds();
+
+            angular.forEach(ids, function(id) {
+                result.push(availableContainers[id]);
+            });
+
+            return result;
         };
 
     });

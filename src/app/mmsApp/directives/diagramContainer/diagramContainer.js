@@ -215,8 +215,16 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     $rootScope.$on('containerMustBeOpened', function(ev, container){
 
+                        var jsp;
+
                         if (container && scope.diagram && container.id !== scope.diagram.id) {
                             scope.initialized = false;
+                        }
+
+                        jsp = scope.$contentPane.data('jsp');
+
+                        if (angular.isObject(jsp)) {
+                            jsp.scrollTo(0,0);
                         }
 
                     });
