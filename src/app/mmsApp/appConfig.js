@@ -1,18 +1,10 @@
-/*global angular, encodeURI*/
+/*global angular*/
 
 'use strict';
 
-angular.module('CyPhyApp').controller('EditorViewController', function () {
-    console.log('--------------------- In EditorViewController');
-});
+angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider) {
 
-
-angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, $mdThemingProvider, $urlMatcherFactoryProvider) {
-
-    var GMEProjectInitializers,
-        gmeProjectInitializers,
-
-        retrieveGivenProject,
+    var retrieveGivenProject,
         retrieveGivenBranch,
         retrieveGivenWorkspace,
         retrieveGivenDesign,
@@ -87,7 +79,16 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                     $state.go('404');
                 });
         } else {
-            deferred.resolve();
+            // Setting design as selected container
+            projectHandling.selectContainer(givenDesignId)
+                .then(function (containerId) {
+                    $log.debug('givenContainer found', containerId);
+                    deferred.resolve(containerId);
+                })
+                .catch(function (msg) {
+                    errorReporter.log(msg);
+                  //  $state.go('404');
+                });
         }
 
         return deferred.promise;
@@ -95,9 +96,6 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
     };
 
     window.gapi = undefined;
-
-    GMEProjectInitializers = require('./classes/GMEProjectInitializers');
-    gmeProjectInitializers = new GMEProjectInitializers();
 
     //$urlMatcherFactoryProvider.type('gmeNodeId', {
     //    encode: function(path) {
@@ -119,6 +117,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
         .state('editor', {
             url: '/editor',
             abstract: true
+
         })
         .state('editor.project', {
             url: '/{projectId:string}',
@@ -247,17 +246,11 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 designId: null,
                 containerId: null
             },
-            onEnter: function ($log, $stateParams) {
-                $log.debug('Given containerId:', $stateParams.containerId);
-            },
-            controller: 'EditorViewController',
-            views: {
-                'mainView': {
+git             views: {
+                'mainView@': {
                     templateUrl: '/mmsApp/templates/editor.html'
                 },
-                'onCover': {
-                    template: null
-                }
+                'onCover@': {}
             }
         })
         //.state('editor.project.branch.workspace.design.container', {
@@ -286,7 +279,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
         //    }
         //})
         .state('404', {
-            templateUrl: '/mmsApp/templates/404.html',
+            url: '/404',
             views: {
                 'onCover': {
                     templateUrl: '/mmsApp/templates/404.html',

@@ -3,9 +3,8 @@
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function (
-        $q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
-        mmsUtils, designService, testBenchService) {
+    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
+                                          mmsUtils, designService, testBenchService, designLayoutService, $timeout) {
 
         var selectedProjectId,
             selectedBranchId,
@@ -19,12 +18,24 @@ angular.module('mms.projectHandling', [])
             availableTestBenches,
 
             wsContext,
+            designContext,
+            containerContext,
 
             setupWSWatcher,
             cleanWSWatcher,
 
             setupWorkspaceInternalsWatcher,
-            cleanWorkspaceInternalsWatcher;
+            cleanWorkspaceInternalsWatcher,
+
+            watchedContainers,
+            childContainerWatcher,
+            childContainerParser,
+
+            setupDesignInternalsWatcher,
+            cleanDesignInternalsWatcher,
+
+            setupContainerInternalsWatcher,
+            cleanContainerInternalsWatcher;
 
 
         this.leaveProject = function () {
@@ -46,9 +57,9 @@ angular.module('mms.projectHandling', [])
 
                 console.log('workspaces are cleaned up');
 
-                cleanWSWatcher();
-
                 this.leaveWorkspace();
+
+                cleanWSWatcher();
 
                 $rootScope.$emit('leaveBranch');
 
@@ -61,9 +72,9 @@ angular.module('mms.projectHandling', [])
 
             if (selectedWorkspaceId) {
 
-                cleanWorkspaceInternalsWatcher();
-
                 this.leaveDesign();
+
+                cleanWorkspaceInternalsWatcher();
 
                 $rootScope.$emit('leaveWorkspace');
 
@@ -78,6 +89,8 @@ angular.module('mms.projectHandling', [])
 
                 this.leaveContainer();
 
+                cleanDesignInternalsWatcher();
+
                 $rootScope.$emit('leaveDesign');
 
                 selectedDesignId = null;
@@ -88,6 +101,8 @@ angular.module('mms.projectHandling', [])
         this.leaveContainer = function () {
 
             if (selectedContainerId) {
+
+                cleanContainerInternalsWatcher();
 
                 $rootScope.$emit('leaveContainer');
 
@@ -261,7 +276,7 @@ angular.module('mms.projectHandling', [])
             return selectedBranchId;
         };
 
-        cleanWSWatcher = function() {
+        cleanWSWatcher = function () {
 
             if (wsContext) {
                 workspaceService.cleanUpAllRegions(wsContext);
@@ -339,7 +354,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        cleanWorkspaceInternalsWatcher = function() {
+        cleanWorkspaceInternalsWatcher = function () {
 
             availableDesigns = null;
             availableTestBenches = null;
@@ -348,7 +363,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        setupWorkspaceInternalsWatcher = function() {
+        setupWorkspaceInternalsWatcher = function () {
 
             var designsPromise,
                 testbenchesPromise,
@@ -358,23 +373,23 @@ angular.module('mms.projectHandling', [])
 
             cleanWorkspaceInternalsWatcher();
 
-            designsPromise =  designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
+            designsPromise = designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
                 //TODO: eventually this has to be implemented
             }).then(function (designsData) {
                 availableDesigns = designsData.designs;
             });
 
-            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function() {
+            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function () {
                 //TODO: eventually this has to be implemented
-            }).then(function(testbenchesData) {
+            }).then(function (testbenchesData) {
                 availableTestBenches = testbenchesData.testBenches;
             });
 
             $q.all([designsPromise, testbenchesPromise])
-                .then(function(){
-                   deferred.resolve();
+                .then(function () {
+                    deferred.resolve();
                 })
-                .catch(function(){
+                .catch(function () {
                     deferred.reject('Could not get designs and testbenches');
                 });
 
@@ -382,6 +397,225 @@ angular.module('mms.projectHandling', [])
 
         };
 
+        setupWorkspaceInternalsWatcher = function () {
+
+            var designsPromise,
+                testbenchesPromise,
+                deferred;
+
+            deferred = $q.defer();
+
+            cleanWorkspaceInternalsWatcher();
+
+            designsPromise = designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
+                //TODO: eventually this has to be implemented
+            }).then(function (designsData) {
+                availableDesigns = designsData.designs;
+            });
+
+            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function () {
+                //TODO: eventually this has to be implemented
+            }).then(function (testbenchesData) {
+                availableTestBenches = testbenchesData.testBenches;
+            });
+
+            $q.all([designsPromise, testbenchesPromise])
+                .then(function () {
+                    deferred.resolve();
+                })
+                .catch(function () {
+                    deferred.reject('Could not get designs and testbenches');
+                });
+
+            return deferred.promise;
+
+        };
+
+        cleanDesignInternalsWatcher = function () {
+
+            if (designContext) {
+                //workspaceService.cleanUpAllRegions(wsContext);
+
+                designContext = null;
+                availableContainers = null;
+                watchedContainers = null;
+
+            }
+
+        };
+
+        childContainerWatcher = function (collector) {
+            return function (designStructureUpdateObject) {
+
+                if (designStructureUpdateObject.data.baseName === 'Container') {
+
+                    switch (designStructureUpdateObject.type) {
+
+                        case 'load':
+
+                            $timeout(function () {
+
+                                availableContainers = availableContainers || {};
+                                availableContainers[designStructureUpdateObject.data.id] = designStructureUpdateObject.data;
+
+                                if (angular.isObject(collector)) {
+                                    collector[designStructureUpdateObject.data.id] =
+                                        designStructureUpdateObject.data;
+                                }
+
+                            });
+
+                            break;
+
+                        case 'unload':
+
+                            delete availableContainers[designStructureUpdateObject.data.id];
+                            delete watchedContainers[designStructureUpdateObject.data.id];
+
+                            if (angular.isObject(collector)) {
+                                delete collector[designStructureUpdateObject.data.id];
+                            }
+
+                            break;
+
+                        default :
+                        case 'update':
+
+                            if (designStructureUpdateObject.updateType === 'nameChange') {
+
+                                if (availableContainers[designStructureUpdateObject.data.id]) {
+                                    availableContainers[designStructureUpdateObject.data.id].name = designStructureUpdateObject.data.name;
+                                }
+
+                            }
+
+                            break;
+
+                    }
+                }
+
+            };
+        };
+
+        childContainerParser = function(collector) {
+            return function (cyPhyLayout) {
+
+                var newChildren;
+
+                newChildren = {};
+
+                availableContainers = availableContainers || {};
+
+                if (angular.isObject(cyPhyLayout.elements)) {
+
+                    angular.forEach(cyPhyLayout.elements.Container, function (container, cId) {
+
+                        availableContainers[cId] = container;
+                        newChildren[cId] = container;
+
+                        if (angular.isObject(collector)) {
+                            collector[cId] = container;
+                        }
+
+                    });
+                }
+
+                return newChildren;
+
+            };
+        };
+
+        setupDesignInternalsWatcher = function (designId) {
+
+            var deferred = $q.defer(),
+                design;
+
+            watchedContainers = watchedContainers || {};
+
+            if (!watchedContainers[designId]) {
+
+                watchedContainers[designId] = true;
+
+                connectionHandling.establishMainGMEConnection()
+                    .then(function (connectionId) {
+
+                        designContext = designContext || {
+                            db: connectionId,
+                            regionId: 'Design_' + ( new Date() ).toISOString()
+                        };
+
+                        design = availableDesigns[designId];
+                        design.childContainers = {};
+
+                        designLayoutService.watchDiagramElements(
+                            designContext,
+                            designId,
+                            childContainerWatcher(design.childContainers))
+
+                            .then(function (cyPhyLayout) {
+                                deferred.resolve(childContainerParser(design.childContainers)(cyPhyLayout));
+                            });
+
+
+                    })
+                    .catch(function (reason) {
+                        $rootScope.loading = false;
+                        $log.debug('GME Connection could not be established', reason);
+                        deferred.reject('GME Connection could not be established');
+                    });
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+
+        };
+
+        setupContainerInternalsWatcher = function (containerId) {
+
+            var deferred = $q.defer(),
+                container;
+
+            watchedContainers = watchedContainers || {};
+
+            if (!watchedContainers[containerId]) {
+
+                watchedContainers[containerId] = true;
+
+                connectionHandling.establishMainGMEConnection()
+                    .then(function (connectionId) {
+
+                        designContext = designContext || {
+                            db: connectionId,
+                            regionId: 'Design_' + ( new Date() ).toISOString()
+                        };
+
+                        container = availableContainers[connectionId];
+                        container.childContainers = {};
+
+                        designLayoutService.watchDiagramElements(
+                            designContext,
+                            containerId,
+                            childContainerWatcher(container.childContainers)
+                        )
+                            .then(function (cyPhyLayout) {
+                                deferred.resolve(childContainerParser(container.childContainers)(cyPhyLayout));
+                            });
+
+                    })
+                    .catch(function (reason) {
+                        $rootScope.loading = false;
+                        $log.debug('GME Connection could not be established', reason);
+                        deferred.reject('GME Connection could not be established');
+                    });
+
+            } else {
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+
+        };
 
         this.selectBranch = function (branchId) {
 
@@ -502,14 +736,15 @@ angular.module('mms.projectHandling', [])
 
                     selectedDesignId = designId;
 
-                    deferred.resolve(designId);
+                    availableContainers = availableContainers || {};
+                    availableContainers[designId] = availableDesigns[designId];
 
-//                    setupWorkspaceInternalsWatcher().then(function () {
-//                        $log.debug('Workspace selected', workspaceId);
-//
-//                        deferred.resolve(workspaceId);
-//
-//                    });
+                    setupDesignInternalsWatcher(designId).then(function () {
+
+                        $log.debug('Design selected', availableDesigns[designId]);
+                        deferred.resolve(designId);
+
+                    });
 
                 } else {
                     deferred.resolve(designId);
@@ -532,7 +767,7 @@ angular.module('mms.projectHandling', [])
             deferred = $q.defer();
 
             if (!containerId || !angular.isObject(availableContainers) || !availableContainers[containerId]) {
-                deferred.reject('Non-existing designId');
+                deferred.reject('Non-existing containerId');
             } else {
 
                 if (containerId !== selectedContainerId) {
@@ -541,14 +776,14 @@ angular.module('mms.projectHandling', [])
 
                     selectedContainerId = containerId;
 
-                    deferred.resolve(containerId);
+                    setupContainerInternalsWatcher(containerId).then(function () {
 
-//                    setupWorkspaceInternalsWatcher().then(function () {
-//                        $log.debug('Workspace selected', workspaceId);
-//
-//                        deferred.resolve(workspaceId);
-//
-//                    });
+                        $log.debug('Container selected', availableContainers[containerId]);
+                        deferred.resolve(containerId);
+
+                    });
+
+                    deferred.resolve(containerId);
 
                 } else {
                     deferred.resolve(containerId);
@@ -560,15 +795,15 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getAvailableWorkspaces = function() {
+        this.getAvailableWorkspaces = function () {
             return availableWorkspaces;
         };
 
-        this.getAvailableDesigns = function() {
+        this.getAvailableDesigns = function () {
             return availableDesigns;
         };
 
-        this.getAvailableTestbenches = function() {
+        this.getAvailableTestbenches = function () {
             return availableTestBenches;
         };
 

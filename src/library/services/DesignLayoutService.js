@@ -179,7 +179,7 @@ angular.module('cyphy.services')
                     if (newName !== child.name) {
                         child.name = newName;
                         hadChanges = true;
-
+                        updateType = 'nameChange';
                     }
 
                     if (newPos.x !== child.position.x || newPos.y !== child.position.y) {

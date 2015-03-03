@@ -37,8 +37,6 @@ angular.module('mms.designVisualization.designEditor', [
 
         $scope.diagramContainerConfig = {};
 
-        debugger;
-
         $rootScope.$on('componentInstantiationMustBeDone', function ($event, componentData, position) {
 
             var nodesToCopy;
