@@ -23,7 +23,7 @@ angular.module( 'cyphy.components' )
                 };
                 $scope.$on( '$destroy', function () {
                     console.log( 'Destroying :', context.regionId );
-                    designService.cleanUpAllRegions( context );
+                    designService.unregisterWatcher( context );
                 } );
             } else {
                 throw new Error( 'connectionId must be defined and it must be a string' );

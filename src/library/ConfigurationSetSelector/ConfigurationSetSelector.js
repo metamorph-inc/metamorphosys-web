@@ -21,7 +21,7 @@ angular.module( 'cyphy.components' )
                     .toISOString()
             };
             $scope.$on( '$destroy', function () {
-                designService.cleanUpAllRegions( context );
+                designService.unregisterWatcher( context );
                 //console.log('$destroyed ' + context.regionId);
             } );
         } else {

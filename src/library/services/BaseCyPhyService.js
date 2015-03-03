@@ -22,29 +22,27 @@ angular.module( 'cyphy.services' )
          * @param {function} fn - Called with true when there are no nodes unavailable and false when there are.
          */
         this.registerWatcher = function ( watchers, parentContext, fn ) {
-            nodeService.on( parentContext.db, 'initialize', function () {
+            nodeService.on( parentContext, 'initialize', function () {
                 // This should be enough, the regions will be cleaned up in nodeService.
                 watchers[ parentContext.regionId ] = {};
                 fn( false );
             } );
-            nodeService.on( parentContext.db, 'destroy', function () {
-                // This should be enough, the regions should be cleaned up in nodeService.
-                if ( watchers[ parentContext.regionId ] ) {
-                    delete watchers[ parentContext.regionId ];
-                }
+            nodeService.on( parentContext, 'destroy', function () {
+                watchers[ parentContext.regionId ] = {};
                 fn( true );
             } );
         };
 
         /**
-         * Removes all watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
-         * @param {string} watchers - Watchers from the service utilizing this function.
+         * Unregisters the watchers spawned from parentContext, this should typically be invoked when the controller is destroyed.
+         * @param {object} watchers - Watchers from the service utilizing this function.
          * @param {object} parentContext - context of controller.
          * @param {string} parentContext.regionId - Region of the controller (all spawned regions are grouped by this).
          */
-        this.cleanUpAllRegions = function ( watchers, parentContext ) {
+        this.unregisterWatcher = function ( watchers, parentContext ) {
             var childWatchers,
-                key;
+                key,
+                success;
             if ( watchers[ parentContext.regionId ] ) {
                 childWatchers = watchers[ parentContext.regionId ];
                 for ( key in childWatchers ) {
@@ -55,6 +53,14 @@ angular.module( 'cyphy.services' )
                 delete watchers[ parentContext.regionId ];
             } else {
                 console.log( 'Nothing to clean-up..' );
+            }
+            success = nodeService.off(parentContext, 'initialize');
+            if (success !== true) {
+                console.error(success.msg);
+            }
+            success = nodeService.off(parentContext, 'destroy');
+            if (success !== true) {
+                console.error(success.msg);
             }
         };
 

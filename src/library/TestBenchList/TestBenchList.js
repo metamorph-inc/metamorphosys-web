@@ -29,7 +29,7 @@ angular.module( 'cyphy.components' )
                     .toISOString()
             };
             $scope.$on( '$destroy', function () {
-                testBenchService.cleanUpAllRegions( context );
+                testBenchService.unregisterWatcher( context );
             } );
         } else {
             throw new Error( 'connectionId must be defined and it must be a string' );
