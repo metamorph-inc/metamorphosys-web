@@ -786,13 +786,6 @@ angular.module( 'cyphy.services' )
         };
 
         /**
-         * See baseCyPhyService.cleanUpAllRegions.
-         */
-        this.cleanUpAllRegions = function ( parentContext ) {
-            baseCyPhyService.cleanUpAllRegions( watchers, parentContext );
-        };
-
-        /**
          * See baseCyPhyService.cleanUpRegion.
          */
         this.cleanUpRegion = function ( parentContext, regionId ) {
@@ -804,6 +797,13 @@ angular.module( 'cyphy.services' )
          */
         this.registerWatcher = function ( parentContext, fn ) {
             baseCyPhyService.registerWatcher( watchers, parentContext, fn );
+        };
+
+        /**
+         * See baseCyPhyService.registerWatcher.
+         */
+        this.unregisterWatcher = function ( parentContext ) {
+            baseCyPhyService.unregisterWatcher( watchers, parentContext );
         };
 
         this.logContext = function ( context ) {

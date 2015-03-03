@@ -10,7 +10,7 @@
     "webgme": "0.7.0",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
-    "ng-gme": "=0.0.1"
+    "ng-gme": "=0.0.2"
   },
   "devDependencies": {
     "angular-markdown-directive": "^0.3.0",
