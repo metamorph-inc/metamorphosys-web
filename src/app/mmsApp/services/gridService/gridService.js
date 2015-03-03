@@ -134,15 +134,6 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                 grid.insideVisibleDiagramComponentsRecalculate = false;
 
-                if (!grid.initialized) {
-
-                    grid.initialized = true;
-
-                    $timeout(function() {
-                        $rootScope.$broadcast('GridInitialized', grid.id);
-                    });
-
-                }
 
             } else {
 

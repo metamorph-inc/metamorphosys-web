@@ -7,8 +7,13 @@
     <!--<panzoomwidget panzoom-id="panzoomId" class="panzoom-widget"></panzoomwidget>-->
     <!--<panzoom id="panzoomId" config="panzoomConfig" model="panzoomModel" class="canvas-zoomer">-->
     <div class="diagram-content-pane"
-         ng-class="initialized ? 'initialized' : 'not-initialized'">
+         ng-class="getInitializedClass()">
         <ng-transclude></ng-transclude>
     </div>
+
+    <md-progress-circular
+        ng-class="getInitializedClass()"
+        class="md-hue-2 diagram-container-spinner" md-mode="indeterminate"></md-progress-circular>
+
     <!--</panzoom>-->
 </div>

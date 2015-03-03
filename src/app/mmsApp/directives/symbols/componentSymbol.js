@@ -84,8 +84,7 @@ symbolsModule.directive(
                     diagramContainerController,
                     svgDiagramController,
 
-                    justMouseUpped,
-                    justMouseDowned,
+                    justClicked,
                     doubleClickTolerance = 300,
 
                     $el,
@@ -122,33 +121,31 @@ symbolsModule.directive(
 
                 scope.onMouseUp = function ( $event ) {
 
-                    if (!justMouseUpped) {
+                    if (!justClicked) {
 
                         svgDiagramController.onComponentMouseUp(scope.component, $event);
 
-                        justMouseUpped = true;
+                        justClicked = true;
 
                         $timeout(function () {
-                            justMouseUpped = false;
+                            justClicked = false;
                         }, doubleClickTolerance);
 
+                    } else {
+                        $event.stopPropagation();
                     }
                 };
 
                 scope.onMouseDown = function ( $event ) {
 
-                    if (!justMouseDowned) {
+                    if (!justClicked) {
 
                         svgDiagramController.onComponentMouseDown(scope.component, $event);
-                        $event.stopPropagation();
-
-                        justMouseDowned = true;
-
-                        $timeout(function () {
-                            justMouseDowned = false;
-                        }, doubleClickTolerance);
 
                     }
+
+                    $event.stopPropagation();
+
                 };
 
                 scope.onDoubleClick = function ( $event ) {

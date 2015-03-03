@@ -62,7 +62,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
     };
 
     retrieveGivenContainer = function (givenDesignId, $state, $stateParams,
-                                    projectHandling, $log, errorReporter, $q) {
+                                       projectHandling, $log, errorReporter, $q) {
         var deferred;
 
         deferred = $q.defer();
@@ -87,7 +87,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 })
                 .catch(function (msg) {
                     errorReporter.log(msg);
-                  //  $state.go('404');
+                    //  $state.go('404');
                 });
         }
 
@@ -116,7 +116,14 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
         .state('editor', {
             url: '/editor',
-            abstract: true
+            abstract: true,
+
+            views: {
+                'mainView@': {
+                    templateUrl: '/mmsApp/templates/editor.html'
+                },
+                'onCover@': {}
+            }
 
         })
         .state('editor.project', {
@@ -245,12 +252,6 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 workspaceId: null,
                 designId: null,
                 containerId: null
-            },
-            views: {
-                'mainView@': {
-                    templateUrl: '/mmsApp/templates/editor.html'
-                },
-                'onCover@': {}
             }
         })
         //.state('editor.project.branch.workspace.design.container', {

@@ -295,6 +295,7 @@ angular.module('mms.designVisualization.designEditor', [
                     $timeout(function () {
                         $rootScope.stopBusy();
                         $rootScope.unCover();
+                        $rootScope.stopProcessing();
 
                         if ($cookies.seenMMSWelcome !== 'true') {
 
@@ -324,6 +325,21 @@ angular.module('mms.designVisualization.designEditor', [
         });
 
         initForContainer(projectHandling.getSelectedContainerId());
+
+        $scope.$watch(function(){
+
+            return projectHandling.getSelectedContainerId();
+
+        }, function(newVal, oldVal){
+
+            if (newVal !== oldVal) {
+
+                destroy();
+                initForContainer(newVal);
+
+            }
+
+        });
 
     })
     .directive('designEditor', [

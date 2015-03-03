@@ -80,7 +80,8 @@ angular.module('mms.designVisualization.svgDiagram', [
             $scope,
             diagramService,
             gridService,
-            $log
+            $log,
+            $timeout
         );
 
         wireDrawHandler = new WireDrawHandler(
@@ -385,49 +386,45 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     };
 
-                    scope.$watch('diagram', function (newDiagramValue) {
+                    scope.$watch(function(){
 
-                        if (newDiagramValue) {
+                        return scope.diagram && scope.diagram.id;
 
-                            scope.diagram = scope.diagram || {};
+                    }, function (newDiagramId, oldDiagramId) {
+
+                        if (newDiagramId && newDiagramId !== oldDiagramId) {
+
                             scope.$element = $element;
 
                             $element.outerWidth(scope.diagram.config.width);
                             $element.outerHeight(scope.diagram.config.width);
 
-                            scope.id = id = newDiagramValue.id;
-
-                            diagramContainerController.setInitialized(false);
-                            $rootScope.initializing = true;
-
-                            $rootScope.$on('GridInitialized', function (event, data) {
-
-                                if (data === id) {
-                                    diagramContainerController.setInitialized(true);
-                                }
-
-                                $rootScope.initializing = false;
-
-                            });
+                            scope.id = id = newDiagramId;
 
                             scope.visibleObjects = gridService.createGrid(id,
                                 scope.diagram
                             );
 
+                            $timeout(function() {
+                                diagramContainerController.setInitialized(true);
+                                scope.$emit('DiagramInitialized');
+                            }, 300);
 
-                            scope.$watch(
-                                function () {
-                                    return diagramContainerController.getVisibleArea();
-                                }, function (visibleArea) {
-                                    scope.elementOffset = scope.$element.offset();
-                                    gridService.setVisibleArea(id, visibleArea);
-                                });
-
-
-                            scope.$emit('DiagramInitialized');
                         }
 
                     });
+
+                    scope.$watch(
+                        function () {
+                            return diagramContainerController.getVisibleArea();
+                        }, function (visibleArea) {
+
+                            if (scope.$element) {
+                                scope.elementOffset = scope.$element.offset();
+                                gridService.setVisibleArea(id, visibleArea);
+                            }
+                        });
+
 
                     //scope.$watch('visibleObjects.components', function(val) {
                     //    console.log('visible objects', val);

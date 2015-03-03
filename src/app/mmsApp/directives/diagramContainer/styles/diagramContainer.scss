@@ -12,11 +12,26 @@
         overflow: hidden;
         opacity: 1;
         opacity: 0;
-        transition: opacity 1000ms;
+        transition: opacity 200ms ease-out 600ms;
 
         &.initialized {
             opacity: 1;
         }
+    }
+
+    .diagram-container-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -25px;
+        margin-left: -25px;
+        opacity: 1;
+        transition: opacity 200ms ease-out 600ms;
+
+        &.initialized {
+            opacity: 0;
+        }
+
     }
 
 

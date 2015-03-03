@@ -86,6 +86,9 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             };
 
+            $scope.getInitializedClass = function() {
+                return $scope.initialized ? 'initialized' : 'not-initialized';
+            };
 
             this.getVisibleArea = function () {
                 return $scope.visibleArea;
@@ -210,6 +213,13 @@ angular.module('mms.designVisualization.diagramContainer', [
                         scope.$broadcast('DiagramContainerInitialized');
                     });
 
+                    $rootScope.$on('containerMustBeOpened', function(ev, container){
+
+                        if (container && scope.diagram && container.id !== scope.diagram.id) {
+                            scope.initialized = false;
+                        }
+
+                    });
 
                 }
 
