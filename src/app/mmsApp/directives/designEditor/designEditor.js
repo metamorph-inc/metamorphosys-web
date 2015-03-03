@@ -13,7 +13,7 @@ angular.module('mms.designVisualization.designEditor', [
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $stateParams, designLayoutService, symbolManager, $timeout,
-                                                    nodeService, gridService, $cookies) {
+                                                    nodeService, gridService, $cookies, projectHandling) {
 
         var RandomSymbolGenerator,
             randomSymbolGenerator,
@@ -30,10 +30,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         $scope.mainGMEConnectionId = connectionHandling.getMainGMEConnectionId();
 
-        $rootScope.designCtx = designCtx = {
-            db: $scope.mainGMEConnectionId,
-            regionId: 'Design_' + ( new Date() ).toISOString()
-        };
+        designCtx = projectHandling.getDesignContext();
 
         $scope.diagramContainerConfig = {};
 
@@ -190,7 +187,7 @@ angular.module('mms.designVisualization.designEditor', [
 
             $scope.designCtx = designCtx;
 
-            designLayoutService.watchDiagramElements(designCtx, $rootScope.activeDesign.id, function (designStructureUpdateObject) {
+            designLayoutService.watchDiagramElements(designCtx, projectHandling.getSelectedContainerId(), function (designStructureUpdateObject) {
 
                 $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
@@ -263,7 +260,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 $log.debug('Diagram elements', cyPhyLayout);
 
-                $rootScope.activeContainerId = $stateParams.containerId || $rootScope.activeDesign.id;
+                $rootScope.activeContainerId = $stateParams.containerId || projectHandling.getSelectedContainerId();
 
                 $timeout(function () {
 

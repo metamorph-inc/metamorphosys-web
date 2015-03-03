@@ -246,7 +246,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 designId: null,
                 containerId: null
             },
-git             views: {
+            views: {
                 'mainView@': {
                     templateUrl: '/mmsApp/templates/editor.html'
                 },

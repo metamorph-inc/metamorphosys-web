@@ -3,7 +3,7 @@
 'use strict';
 
 angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
-    .run(function (operationsManager, $rootScope, designLayoutService, $timeout, $q) {
+    .run(function (operationsManager, projectHandling, designLayoutService, $timeout, $q) {
 
         operationsManager.registerCommitHandler('RotateComponents', function (data) {
 
@@ -21,7 +21,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setRotation(
-                        $rootScope.designCtx,
+                        projectHandling.getDesignContext(),
                         component.id,
                         component.rotation,
                         data.message
@@ -58,7 +58,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setPosition(
-                        $rootScope.designCtx,
+                        projectHandling.getDesignContext(),
                         component.id,
                         component.getPosition(),
                         data.message
@@ -92,7 +92,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setWireSegments(
-                        $rootScope.designCtx,
+                        projectHandling.getDesignContext(),
                         wire.id,
                         angular.copy(wire.segments),
                         data.message || 'Updating wire'

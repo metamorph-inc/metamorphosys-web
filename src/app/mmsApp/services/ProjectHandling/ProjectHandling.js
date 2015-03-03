@@ -807,4 +807,8 @@ angular.module('mms.projectHandling', [])
             return availableTestBenches;
         };
 
+        this.getDesignContext = function() {
+            return designContext;
+        };
+
     });
