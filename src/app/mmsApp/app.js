@@ -1,4 +1,4 @@
-/*globals angular, ga*/
+/*globals angular, ga, encodeURIComponent*/
 
 'use strict';
 
@@ -78,7 +78,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
 require('./appConfig');
 
-CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window, $mdDialog) {
+CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $window, $mdDialog, projectHandling) {
 
     var defaultNavigatorItems;
 
@@ -115,7 +115,9 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
         items: angular.copy(defaultNavigatorItems, [])
     };
 
-    $rootScope.$watch('activeDesign', function (activeDesign) {
+    $scope.$watch(function() {
+        return projectHandling.getSelectedDesign();
+    }, function (activeDesign) {
 
         var parseDesignName;
 
@@ -150,7 +152,8 @@ CyPhyApp.controller('MainNavigatorController', function ($rootScope, $scope, $wi
 
 });
 
-CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log) {
+CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
+                                               $timeout) {
 
     var stateBeforeWentWrong;
 
@@ -243,6 +246,28 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
     $rootScope.$on('$stateNotFound', function (ev, to) {
 
         $log.error('stateNotFound', to);
+
+    });
+
+    $rootScope.$on('containerMustBeOpened', function(ev, container){
+
+        console.log('Go here', container.id);
+
+        $rootScope.setProcessing();
+
+        $timeout(function() {
+
+            $state.go('editor.design', {
+                projectId: $state.params.projectId,
+                branchId: $state.params.branchId,
+                workspaceId: $state.params.workspaceId,
+                designId: $state.params.designId,
+                containerId: encodeURIComponent(container.id)
+            })
+                .catch(function (e) {
+                    $log.error(e);
+                });
+        }, 400);
 
     });
 

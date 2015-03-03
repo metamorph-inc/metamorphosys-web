@@ -21,7 +21,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setRotation(
-                        projectHandling.getDesignContext(),
+                        projectHandling.getContainerLayoutContext(),
                         component.id,
                         component.rotation,
                         data.message
@@ -58,7 +58,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setPosition(
-                        projectHandling.getDesignContext(),
+                        projectHandling.getContainerLayoutContext(),
                         component.id,
                         component.getPosition(),
                         data.message
@@ -92,7 +92,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 $timeout(function () {
 
                     designLayoutService.setWireSegments(
-                        projectHandling.getDesignContext(),
+                        projectHandling.getContainerLayoutContext(),
                         wire.id,
                         angular.copy(wire.segments),
                         data.message || 'Updating wire'

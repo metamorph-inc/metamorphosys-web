@@ -366,7 +366,7 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
                             keyboardShortcut: 'Enter',
                             iconClass: 'fa fa-sign-in',
                             action: function () {
-                                console.log('look inside', component);
+                                $rootScope.$emit('containerMustBeOpened', component);
                             }
                         }
                     ]

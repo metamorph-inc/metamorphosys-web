@@ -19,7 +19,7 @@ angular.module('mms.projectHandling', [])
 
             wsContext,
             designContext,
-            containerContext,
+            containerLayoutContext,
 
             setupWSWatcher,
             cleanWSWatcher,
@@ -354,6 +354,10 @@ angular.module('mms.projectHandling', [])
 
         };
 
+        cleanContainerInternalsWatcher = function() {
+
+        };
+
         cleanWorkspaceInternalsWatcher = function () {
 
             availableDesigns = null;
@@ -497,7 +501,7 @@ angular.module('mms.projectHandling', [])
             };
         };
 
-        childContainerParser = function(collector) {
+        childContainerParser = function (collector) {
             return function (cyPhyLayout) {
 
                 var newChildren;
@@ -578,19 +582,19 @@ angular.module('mms.projectHandling', [])
 
             watchedContainers = watchedContainers || {};
 
-            if (!watchedContainers[containerId]) {
+            connectionHandling.establishMainGMEConnection()
+                .then(function (connectionId) {
 
-                watchedContainers[containerId] = true;
+                    containerLayoutContext = containerLayoutContext || {
+                        db: connectionId,
+                        regionId: 'Container_' + ( new Date() ).toISOString()
+                    };
 
-                connectionHandling.establishMainGMEConnection()
-                    .then(function (connectionId) {
+                    if (!watchedContainers[containerId]) {
 
-                        designContext = designContext || {
-                            db: connectionId,
-                            regionId: 'Design_' + ( new Date() ).toISOString()
-                        };
+                        watchedContainers[containerId] = true;
 
-                        container = availableContainers[connectionId];
+                        container = availableContainers[containerId];
                         container.childContainers = {};
 
                         designLayoutService.watchDiagramElements(
@@ -602,16 +606,18 @@ angular.module('mms.projectHandling', [])
                                 deferred.resolve(childContainerParser(container.childContainers)(cyPhyLayout));
                             });
 
-                    })
-                    .catch(function (reason) {
-                        $rootScope.loading = false;
-                        $log.debug('GME Connection could not be established', reason);
-                        deferred.reject('GME Connection could not be established');
-                    });
+                    } else {
+                        deferred.resolve();
+                    }
 
-            } else {
-                deferred.resolve();
-            }
+
+                })
+                .catch(function (reason) {
+                    $rootScope.loading = false;
+                    $log.debug('GME Connection could not be established', reason);
+                    deferred.reject('GME Connection could not be established');
+                });
+
 
             return deferred.promise;
 
@@ -720,6 +726,18 @@ angular.module('mms.projectHandling', [])
             return selectedDesignId;
         };
 
+        this.getSelectedDesign = function () {
+
+            var result;
+
+            if (selectedDesignId && angular.isObject(availableDesigns)) {
+
+                result = availableDesigns[selectedDesignId];
+            }
+
+            return result;
+        };
+
         this.selectDesign = function (designId) {
 
             var deferred;
@@ -807,8 +825,21 @@ angular.module('mms.projectHandling', [])
             return availableTestBenches;
         };
 
-        this.getDesignContext = function() {
+        this.getDesignContext = function () {
             return designContext;
+        };
+
+        this.getSelectedWorkspace = function () {
+            return availableWorkspaces[selectedWorkspaceId];
+        };
+
+        this.getContainerLayoutContext = function () {
+
+            return containerLayoutContext;
+        };
+
+        this.getWorkspaceContext = function() {
+            return wsContext;
         };
 
     });

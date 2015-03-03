@@ -185,8 +185,8 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         };
 
-        $scope.onDiagramMouseWheel = function($event, $delta, $deltaX, $deltaY) {
-            console.log($event, $delta, $deltaX, $deltaY);
+        $scope.onDiagramMouseWheel = function(/*$event, $delta, $deltaX, $deltaY*/) {
+//            console.log($event, $delta, $deltaX, $deltaY);
         };
 
         $scope.onDiagramMouseLeave = function ($event) {

@@ -7,7 +7,8 @@
 angular.module('mms.testbenchActions', [
     'ngMaterial'
 ])
-    .controller('TestbenchActionsController', function ($scope, $rootScope, $mdDialog, $mdToast, $timeout, testBenchService, $log) {
+    .controller('TestbenchActionsController', function (
+        $scope, $rootScope, $mdDialog, $mdToast, $timeout, testBenchService, $log, projectHandling) {
 
         var progressMessage,
             tooltipMessage,
@@ -34,6 +35,13 @@ angular.module('mms.testbenchActions', [
             return result;
 
         };
+
+        $scope.wsContext = projectHandling.getWorkspaceContext();
+        $scope.testbench = projectHandling.getAvailableTestbenches();
+
+        angular.forEach(projectHandling.getAvailableTestbenches(), function(tb) {
+            $scope.testbench = tb;
+        });
 
         $scope.testbenchResults = [
 
@@ -185,7 +193,7 @@ angular.module('mms.testbenchActions', [
 
             ga('send', 'event', 'testbench', 'start');
 
-            testBenchService.runTestBench($rootScope.wsContext, $rootScope.activeTestbench.id)
+            testBenchService.runTestBench($scope.wsContext, $scope.testbench.id)
                 .then(function (resultData) {
 
                     var newResult,
