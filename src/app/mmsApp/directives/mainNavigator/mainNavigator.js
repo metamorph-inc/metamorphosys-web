@@ -28,6 +28,28 @@ angular.module(
                         action: function (item, ev) {
 
                             function DialogController($scope, $mdDialog) {
+
+                                $scope.designs = [
+
+                                    {
+                                        id: 'a',
+                                        name: 'ARA Template-A',
+                                        description: 'Lets look at the various views you could target from within the contacts.detail state. Remember that if an @ is used then the view path is considered absolute',
+                                        visual: 'images/heart-rate-monitor.jpg'
+                                    },
+                                    {
+                                        id: 'b',
+                                        name: 'ARA Template-B',
+                                        description: 'Lets look at the various views you could target from within the contacts.detail state. Remember that if an @ is used then the view path is considered absolute',
+                                        visual: 'images/space-invader.jpg'
+                                    }
+
+                                ];
+
+                                $scope.openDesign = function(designId) {
+                                    console.log('Open design ' + designId);
+                                };
+
                                 $scope.hide = function () {
                                     $mdDialog.hide();
                                 };
@@ -38,7 +60,7 @@ angular.module(
 
                             $mdDialog.show({
                                 controller: DialogController,
-                                templateUrl: '/mmsApp/templates/aboutDialog.html',
+                                templateUrl: '/mmsApp/templates/designSelector.html',
                                 targetEvent: ev
                             })
                                 .then(function () {

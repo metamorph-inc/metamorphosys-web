@@ -54,3 +54,32 @@
         }
     }
 }
+
+.design-selector-dialog {
+    width: 800px;
+
+    md-grid-list {
+        margin: 8px;
+    }
+
+    md-grid-tile {
+        background: #D3E2F0;
+        cursor: pointer;
+        transition: all 400ms ease-out 50ms;
+
+        &:hover {
+            background: #EEF4FA;
+        }
+    }
+
+    .design-description {
+        padding: 10px;
+    }
+
+    .design-visual {
+        display: block;
+        max-height: 150px;
+        max-width: 100%;
+        margin-bottom: 1em;
+    }
+}
