@@ -4,12 +4,11 @@
         <md-item ng-repeat="category in keyboardMap.categories">
             <md-item-content>
                 <div class="md-tile-content">
-                    <h3>{{category.title}}</h3>
-                    <h4>{{category.subTitle}}</h4>
+                    <h3>{{category.title}} <span class="sub-title" ng-if="category.subTitle"> - {{category.subTitle}}</span></h3>
 
                     <div class="keyboard-actions">
                         <div ng-repeat="action in category.actions" class="keyboard-action">
-                            <div class="keyboard-action-name">{{action.name}}:</div>
+                            <div class="keyboard-action-name">{{action.name}}</div>
                             <div class="keyboard-action-key">{{action.key}}</div>
                         </div>
                     </div>

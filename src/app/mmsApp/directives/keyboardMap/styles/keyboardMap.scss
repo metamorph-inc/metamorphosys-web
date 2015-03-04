@@ -26,11 +26,11 @@
   }
 
   .keyboard-action {
-    margin-right: 2ex;
+    margin-right: 2.5ex;
   }
 
   .keyboard-actions {
-    margin-top: 2ex;
+    margin: 3ex 2ex;
   }
 
   .keyboard-action-key {
@@ -40,4 +40,9 @@
     border-radius: 3px;
     border: 1px solid #ddd;
   }
+
+  .sub-title {
+    font-size: 80%;
+  }
+
 }

@@ -31,39 +31,7 @@ angular.module(
                             $mdDialog.cancel();
                         };
 
-                        $scope.keyboardMap = {
-
-                            categories: [
-
-                                {
-                                    title: 'Component Operations',
-                                    subTitle: 'On selected component(s)',
-                                    actions: [
-                                        {
-                                            name: 'Rotate CW',
-                                            key: 'R'
-                                        },
-
-                                        {
-                                            name: 'Rotate CCW',
-                                            key: 'Shift-R'
-                                        }
-
-                                    ]
-                                },
-
-                                {
-                                    title: 'Component Browser',
-                                    actions: [
-                                        {
-                                            name: 'Start search',
-                                            key: '/'
-                                        }
-                                    ]
-                                }
-
-                            ]
-                        };
+                        $scope.keyboardMap = require('./keyboardMapRegistry.js');
                     }
 
                     $timeout(function(){

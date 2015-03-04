@@ -228,6 +228,50 @@ angular.module( 'cyphy.components' )
                     );
 
                 });
+
+                $(document).bind('keyup', function (event) {
+
+                    var d,
+                        doIt,
+                        input;
+
+                    if (event.keyCode === 191) {
+
+                        input = element.find('#component-search-autocomplete_value');
+
+                        d = event.srcElement || event.target;
+
+                        if (input.length && input[0] !== d) {
+
+                            doIt = true;
+
+                            if (d.tagName) {
+
+                                if ((d.tagName.toUpperCase() === 'INPUT' &&
+                                    (
+                                    d.type.toUpperCase() === 'TEXT' ||
+                                    d.type.toUpperCase() === 'PASSWORD' ||
+                                    d.type.toUpperCase() === 'FILE' ||
+                                    d.type.toUpperCase() === 'EMAIL' ||
+                                    d.type.toUpperCase() === 'SEARCH' ||
+                                    d.type.toUpperCase() === 'DATE' )
+                                    ) ||
+                                    d.tagName.toUpperCase() === 'TEXTAREA') {
+                                    doIt = d.readOnly || d.disabled;
+                                }
+                            }
+
+                            if (doIt) {
+
+                                event.stopPropagation();
+                                input.focus();
+
+                            }
+                        }
+
+                    }
+
+                });
             }
         };
     } );
