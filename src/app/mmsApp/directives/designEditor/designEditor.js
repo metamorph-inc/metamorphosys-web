@@ -36,7 +36,7 @@ angular.module('mms.designVisualization.designEditor', [
 
         removeAllRootScopeEventListeners = function () {
             angular.forEach(rootScopeEventListeners, function (fn, event) {
-                $rootScope.$on(event, fn);
+                fn();
             });
 
             rootScopeEventListeners = {};
@@ -65,6 +65,8 @@ angular.module('mms.designVisualization.designEditor', [
                 $scope.diagram = null;
                 $scope.diagramContainerConfig = {};
 
+
+                console.log('=======================================ADDING LISTENERS');
 
                 addRootScopeEventListener('componentInstantiationMustBeDone', function ($event, componentData, position) {
 

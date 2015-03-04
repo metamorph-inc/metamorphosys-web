@@ -182,7 +182,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     $rootScope.$on('containerMustBeOpened', function (ev, container) {
 
-        console.log('Go here', container.id);
+        console.log('Go to container', container.id);
 
         if ( container && container.id !== projectHandling.getSelectedContainerId()) {
 
@@ -196,6 +196,31 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
                     workspaceId: $state.params.workspaceId,
                     designId: $state.params.designId,
                     containerId: encodeURIComponent(container.id)
+                })
+                    .catch(function (e) {
+                        $log.error(e);
+                    });
+            });
+
+        }
+    });
+
+    $rootScope.$on('designMustBeOpened', function (ev, design) {
+
+        console.log('Go to design', design.id);
+
+        if ( design && design.id !== projectHandling.getSelectedContainerId()) {
+
+            $rootScope.setProcessing();
+
+            $timeout(function () {
+
+                $state.go('editor.design', {
+                    projectId: $state.params.projectId,
+                    branchId: $state.params.branchId,
+                    workspaceId: $state.params.workspaceId,
+                    designId: encodeURIComponent(design.id),
+                    containerId: null
                 })
                     .catch(function (e) {
                         $log.error(e);

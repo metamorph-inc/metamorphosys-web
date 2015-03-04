@@ -40,7 +40,6 @@ angular.module('mms.designVisualization.diagramContainer', [
                 'resize', scrollHandler.onWindowResize
             );
 
-
             $scope.getCssClass = function () {
 
                 var classString;
@@ -220,6 +219,20 @@ angular.module('mms.designVisualization.diagramContainer', [
                         if (container && scope.diagram && container.id !== scope.diagram.id) {
                             scope.initialized = false;
                         }
+
+                        jsp = scope.$contentPane.data('jsp');
+
+                        if (angular.isObject(jsp)) {
+                            jsp.scrollTo(0,0);
+                        }
+
+                    });
+
+                    $rootScope.$on('designMustBeOpened', function(ev, container){
+
+                        var jsp;
+
+                        scope.initialized = false;
 
                         jsp = scope.$contentPane.data('jsp');
 
