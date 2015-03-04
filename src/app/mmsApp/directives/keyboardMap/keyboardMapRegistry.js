@@ -8,6 +8,7 @@ module.exports = {
             title: 'Component Operations',
             subTitle: 'When component(s) selected',
             actions: [
+
                 {
                     name: 'Rotate CW',
                     key: 'R'
@@ -16,6 +17,21 @@ module.exports = {
                 {
                     name: 'Rotate CCW',
                     key: 'Shift-R'
+                },
+
+                {
+                    name: 'Destroy',
+                    key: 'Del/Backspace'
+                },
+
+                {
+                    name: 'Move',
+                    key: 'Arrow keys'
+                },
+
+                {
+                    name: 'Look inside',
+                    key: 'Enter'
                 }
 
             ]

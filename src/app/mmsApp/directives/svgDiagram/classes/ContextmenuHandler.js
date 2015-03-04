@@ -305,8 +305,6 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
                             var operation;
 
-                            console.log('Rotating anti-clockwise');
-
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(-90);
                             operation.finish();

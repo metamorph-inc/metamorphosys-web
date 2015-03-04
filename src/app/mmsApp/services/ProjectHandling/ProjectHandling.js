@@ -451,7 +451,7 @@ angular.module('mms.projectHandling', [])
         childContainerWatcher = function (collector) {
             return function (designStructureUpdateObject) {
 
-                if (designStructureUpdateObject.data.baseName === 'Container') {
+                if (designStructureUpdateObject.data && designStructureUpdateObject.data.baseName === 'Container') {
 
                     switch (designStructureUpdateObject.type) {
 

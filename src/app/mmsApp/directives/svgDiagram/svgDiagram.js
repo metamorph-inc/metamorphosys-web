@@ -44,8 +44,8 @@ angular.module('mms.designVisualization.svgDiagram', [
             PanHandler = require('./classes/PanHandler'),
             panHandler,
 
-            DeleteHandler = require('./classes/DeleteHandler'),
-            deleteHandler,
+            ComponentKeyboardOperationsHandler = require('./classes/ComponentKeyboardOperationsHandler'),
+            componentKeyboardOperationsHandler,
 
             componentElements,
 
@@ -111,9 +111,10 @@ angular.module('mms.designVisualization.svgDiagram', [
             $log
         );
 
-        deleteHandler = new DeleteHandler(
+        componentKeyboardOperationsHandler = new ComponentKeyboardOperationsHandler(
             $scope,
-            $rootScope
+            $rootScope,
+            operationsManager
         );
 
         //
