@@ -37,7 +37,6 @@ angular.module('mms.testbenchActions', [
         };
 
         $scope.wsContext = projectHandling.getWorkspaceContext();
-        $scope.testbench = projectHandling.getAvailableTestbenches();
 
         angular.forEach(projectHandling.getAvailableTestbenches(), function(tb) {
             $scope.testbench = tb;

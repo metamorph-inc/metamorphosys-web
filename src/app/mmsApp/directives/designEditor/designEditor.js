@@ -5,11 +5,13 @@
 // Move this to GME eventually
 
 require('../testbenchActions/testbenchActions.js');
+require('../keyboardMap/keyboardMap.js');
 require('./operationCommitHandlersForGME.js');
 
 angular.module('mms.designVisualization.designEditor', [
     'mms.testbenchActions',
-    'mms.designVisualization.operations.gmeCommitHandlers'
+    'mms.designVisualization.operations.gmeCommitHandlers',
+    'mms.keyboardMap'
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $state, $stateParams, designLayoutService,
@@ -66,7 +68,7 @@ angular.module('mms.designVisualization.designEditor', [
                 $scope.diagramContainerConfig = {};
 
 
-                console.log('=======================================ADDING LISTENERS');
+                //console.log('=======================================ADDING LISTENERS');
 
                 addRootScopeEventListener('componentInstantiationMustBeDone', function ($event, componentData, position) {
 

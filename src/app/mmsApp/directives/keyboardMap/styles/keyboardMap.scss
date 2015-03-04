@@ -1,0 +1,43 @@
+@import '../../../styles/colors';
+
+.keyboard-map-button {
+  font-size: 200%;
+  cursor: pointer;
+  opacity: .5;
+}
+
+.keyboard-map-button-tooltip {
+  color: $light-blue !important;
+
+  .md-background {
+    background-color: transparent !important;
+  }
+
+}
+
+.keyboard-map-dialog {
+    max-width: 800px;
+    min-width: 600px;
+
+  .keyboard-action,
+  .keyboard-action-name,
+  .keyboard-action-key {
+    display: inline-block;
+  }
+
+  .keyboard-action {
+    margin-right: 2ex;
+  }
+
+  .keyboard-actions {
+    margin-top: 2ex;
+  }
+
+  .keyboard-action-key {
+    margin: 0 .5ex;
+    padding: 0 .5ex;
+    background-color: #eee;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+  }
+}

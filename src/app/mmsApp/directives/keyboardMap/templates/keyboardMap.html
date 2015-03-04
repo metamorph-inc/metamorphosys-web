@@ -1,0 +1,22 @@
+<md-dialog class="keyboard-map-dialog">
+    <h1 class="md-sticky-no-effect"> Design Editor Keyboard Map</h1>
+    <md-list>
+        <md-item ng-repeat="category in keyboardMap.categories">
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3>{{category.title}}</h3>
+                    <h4>{{category.subTitle}}</h4>
+
+                    <div class="keyboard-actions">
+                        <div ng-repeat="action in category.actions" class="keyboard-action">
+                            <div class="keyboard-action-name">{{action.name}}:</div>
+                            <div class="keyboard-action-key">{{action.key}}</div>
+                        </div>
+                    </div>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+
+</md-dialog>
