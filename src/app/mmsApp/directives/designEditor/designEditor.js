@@ -35,7 +35,7 @@ angular.module('mms.designVisualization.designEditor', [
         };
 
         removeAllRootScopeEventListeners = function () {
-            angular.forEach(rootScopeEventListeners, function (fn, event) {
+            angular.forEach(rootScopeEventListeners, function (fn) {
                 fn();
             });
 

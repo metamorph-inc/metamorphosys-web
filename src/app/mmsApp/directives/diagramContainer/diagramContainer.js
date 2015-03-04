@@ -228,7 +228,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     });
 
-                    $rootScope.$on('designMustBeOpened', function(ev, container){
+                    $rootScope.$on('designMustBeOpened', function(/*ev, container*/){
 
                         var jsp;
 
