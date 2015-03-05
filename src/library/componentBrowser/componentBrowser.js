@@ -20,6 +20,8 @@ angular.module( 'cyphy.components' )
             return $scope.connectionId;
         };
 
+        $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
+
         init = function(workspaceId) {
 
             $scope.connectionId = connectionHandling.getMainGMEConnectionId();
@@ -39,9 +41,6 @@ angular.module( 'cyphy.components' )
             }
 
             // Tree setup
-
-
-            $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
 
             $timeout(function () {
                 $scope.adjustTreeNavigatorSize();

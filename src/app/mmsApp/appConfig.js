@@ -114,6 +114,12 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
     $stateProvider
 
+        .state('createDesign', {
+            url: '/createDesign/{projectId:string}',
+            onEnter: function($state, $stateParams) {
+                $state.go('editor.project', { projectId: $stateParams.projectId });
+            }
+        })
         .state('editor', {
             url: '/editor',
             abstract: true,
@@ -128,6 +134,12 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
         })
         .state('editor.project', {
             url: '/{projectId:string}',
+            views: {
+                'mainView@': {
+                    templateUrl: '/mmsApp/templates/editor.html'
+                },
+                'onCover@': {}
+            },
             resolve: {
                 givenProjectId: retrieveGivenProject
             },

@@ -85,7 +85,7 @@ symbolsModule.directive(
                     svgDiagramController,
 
                     justClicked,
-                    doubleClickTolerance = 300,
+                    doubleClickTolerance = 600,
 
                     $el,
                     $labelElement,
