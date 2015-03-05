@@ -12,7 +12,7 @@
         "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
         "requirejs": "=2.1.11",
         "winreg": "=0.0.12",
-        "ng-gme": "=0.1.0"
+        "ng-gme": "=0.0.1"
     },
     "devDependencies": {
         "angular-markdown-directive": "^0.3.0",
