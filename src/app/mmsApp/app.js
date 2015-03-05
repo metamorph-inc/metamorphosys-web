@@ -250,6 +250,7 @@ CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
     };
 
     $rootScope.stopBusy();
+    $rootScope.cover();
 
 });
 
@@ -268,5 +269,6 @@ CyPhyApp.controller('DisconnectedController', function ($rootScope) {
     };
 
     $rootScope.stopBusy();
+    $rootScope.cover();
 
 });

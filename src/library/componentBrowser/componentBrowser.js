@@ -32,7 +32,7 @@ angular.module( 'cyphy.components' )
                         .toISOString()
                 };
                 $scope.$on('$destroy', function () {
-                    componentService.cleanUpAllRegions(context);
+                    componentService.unregisterWatcher(context);
                 });
             } else {
                 throw new Error('connectionId must be defined and it must be a string');

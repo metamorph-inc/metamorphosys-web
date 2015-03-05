@@ -19,7 +19,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             })
             .catch(function (msg) {
                 errorReporter.log(msg);
-                $state.go('404');
+                $state.go('404', {}, { replace: 'replace' });
             });
     };
 
@@ -31,7 +31,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             })
             .catch(function (msg) {
                 errorReporter.log(msg);
-                $state.go('404');
+                $state.go('404', {}, { replace: 'replace' });
             });
     };
 
@@ -44,7 +44,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             })
             .catch(function (msg) {
                 errorReporter.log(msg);
-                $state.go('404');
+                $state.go('404', {}, { replace: 'replace' });
             });
     };
 
@@ -57,7 +57,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
             })
             .catch(function (msg) {
                 errorReporter.log(msg);
-                $state.go('404');
+                $state.go('404', {}, { replace: 'replace' });
             });
     };
 
@@ -76,7 +76,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 })
                 .catch(function (msg) {
                     errorReporter.log(msg);
-                    $state.go('404');
+                    $state.go('404', {}, { replace: 'replace' });
                 });
         } else {
             // Setting design as selected container
@@ -147,7 +147,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                     })
                     .catch(function (msg) {
                         errorReporter.log(msg);
-                        $state.go('404');
+                        $state.go('404', {}, { replace: 'replace' });
                     });
             }
 
@@ -191,7 +191,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
                 if (!workspaceFound) {
                     errorReporter.log('No workspaces in project');
-                    $state.go('404');
+                    $state.go('404', {}, { replace: 'replace' });
                 }
 
             }
@@ -230,7 +230,7 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
                 } else {
                     errorReporter.log('No designs in project');
-                    $state.go('404');
+                    $state.go('404', {}, { replace: 'replace' });
                 }
 
             }
@@ -254,31 +254,6 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 containerId: null
             }
         })
-        //.state('editor.project.branch.workspace.design.container', {
-        //    url: '/:containerId',
-        //    resolve: {
-        //        givenDesignId: function (givenDesignId, $state, $stateParams, projectHandling, $log) {
-        //            return projectHandling.selectContainer($stateParams.containerId)
-        //                .then(function (containerId) {
-        //                    $log.debug('givenContainer found');
-        //                    return containerId;
-        //                });
-        //        }
-        //    },
-        //    onEnter: function($log) {
-        //        $log.debug('Have to display container here');
-        //    },
-        //
-        //    controller: 'EditorViewController',
-        //    views: {
-        //        'mainView': {
-        //            templateUrl: '/mmsApp/templates/editor.html'
-        //        },
-        //        'onCover': {
-        //            template: null
-        //        }
-        //    }
-        //})
         .state('404', {
             url: '/404',
             views: {
@@ -289,16 +264,10 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
                 }
             }
         })
-        .state('templateSelector', {
-            views: {
-                'onCover': {
-                    templateUrl: '/mmsApp/templates/templateSelector.html'
-                }
-            }
-        })
         .state('disconnected', {
             views: {
-                'onCover': {
+                'mainView@': {},
+                'onCover@': {
                     templateUrl: '/mmsApp/templates/disconnected.html',
                     controller: 'DisconnectedController',
                     controllerAs: 'page'

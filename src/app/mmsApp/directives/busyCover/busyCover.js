@@ -96,6 +96,12 @@ angular.module( 'mms.designVisualization.busyCover', [] )
                         $rootScope.unCovered = true;
 
                     };
+
+                    $rootScope.cover = function() {
+
+                        $rootScope.unCovered = false;
+
+                    };
                 }
 
 
