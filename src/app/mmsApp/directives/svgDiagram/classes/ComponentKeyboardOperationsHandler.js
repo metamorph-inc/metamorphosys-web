@@ -34,7 +34,7 @@ module.exports = function ($scope, $rootScope, operationsManager) {
 
         };
 
-        if ($scope.diagram.state.selectedComponentIds.length) {
+        if ($scope.diagram && $scope.diagram.state && $scope.diagram.state.selectedComponentIds.length) {
 
 
             selectedComponents = $scope.diagram.getSelectedComponents();
