@@ -39,7 +39,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 
 define([
-    'core/coreforplugins',
+    'core/core',
     'storage/serveruserstorage',
     'coreclient/serialization',
     'blob/BlobClient',
