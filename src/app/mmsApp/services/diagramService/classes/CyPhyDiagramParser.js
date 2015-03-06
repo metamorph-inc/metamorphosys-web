@@ -226,14 +226,18 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         portStuff = minePortsFromInterfaces(element);
 
-        symbol = symbolManager.makeBoxSymbol(element.name, {
+        symbol = symbolManager.makeBoxSymbol(
+            'container-box',
+            element.name,
+            {
                 showPortLabels: true,
                 limitLabelWidthTo: 150
             }, portStuff.portDescriptors,
             {
                 minWidth: 200,
                 portWireLeadInIncrement: 8
-            });
+            }
+        );
 
         newDiagramComponent = new DiagramComponent({
             id: element.id,
@@ -427,7 +431,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         } else {
 
             if (element.name !== 'pcb') {
-                symbol = symbolManager.makeBoxSymbol(element.name, {
+                symbol = symbolManager.makeBoxSymbol(
+                    'box',
+                    element.name, {
                         showPortLabels: true,
                         limitLabelWidthTo: 150
                     }, portStuff.portDescriptors,

@@ -1,4 +1,12 @@
-.box {
+$blue: rgb(33,150,243);
+
+.container-box {
+
+    .component-label {
+        fill: $blue;
+        font-weight: bold;
+        font-size: 85%;
+    }
 
     .symbol-area {
         display: none;
@@ -9,6 +17,10 @@
     }
 
     .port {
+
+        .port-label {
+            fill: $blue;
+        }
 
         &.right {
 
@@ -21,9 +33,10 @@
 
     .box-box {
         //  fill:rgba(255,254,230, .3);
-        fill:rgb(255,255,255);
-        stroke-width:1;
-        stroke:rgb(0,0,0);
+        fill: rgb(255,255,255);
+        stroke-width: 2.5;
+        stroke: $bluegit a;
+        stroke-dasharray: 3.5,2.5;
     }
 
     .port-wire {

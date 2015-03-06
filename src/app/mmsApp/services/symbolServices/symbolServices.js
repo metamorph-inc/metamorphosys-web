@@ -194,7 +194,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         }
     };
 
-    this.makeBoxSymbol = function( type, descriptor, portDescriptors, givenParameters ) {
+    this.makeBoxSymbol = function( symbolDirective, type, descriptor, portDescriptors, givenParameters ) {
 
         var symbol,
             parameters,
@@ -222,7 +222,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
             portsAndSizes = portCreator(portDescriptors, parameters);
 
-            cssClass = 'box';
+            cssClass = symbolDirective;
 
             if (parameters.cssClass) {
                 cssClass += ' parameters.cssClass';
@@ -232,7 +232,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                 {
                     type: type,
                     cssClass: cssClass,
-                    symbolDirective: 'box',
+                    symbolDirective: symbolDirective,
                     svgDecoration: null,
                     labelPosition: {
                         x: portsAndSizes.width/2,
