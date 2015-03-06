@@ -6,7 +6,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
         hasClass = require('./lib/has_class.js'),
 
-        gmeEventTimeLimit = 2000,
+        gmeEventTimeLimit = 5000,
         uiEventTimeLimit = 200,
 
         projectName,
@@ -72,7 +72,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
                 return diagramContainer.isPresent();
             },
-            5000,
+            gmeEventTimeLimit,
             'diagramContainer not found'
         ).then(function () {
 
@@ -84,7 +84,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         expect(element.all(by.css('text.component-label')).count()).toEqual(4);
 
 
-    }, 1000 * 60 * 2);
+    }, gmeEventTimeLimit);
 
     it('Should have about dialog open', function () {
 
@@ -108,7 +108,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
             });
 
-    }, 5000);
+    }, gmeEventTimeLimit);
 
     //it('Should be able to drag-pan', function () {
     //
