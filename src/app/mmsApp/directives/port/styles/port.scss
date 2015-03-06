@@ -5,11 +5,11 @@
     font-size: 70%;
   }
 
-  circle {
+  .port-shape {
     cursor: crosshair;
   }
 
-  circle:hover {
+  .port-shape:hover {
     fill: #ff7100;
   }
 }

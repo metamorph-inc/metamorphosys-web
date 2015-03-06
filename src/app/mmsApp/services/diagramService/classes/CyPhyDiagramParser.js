@@ -102,6 +102,10 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                     label: labelParser(innerConnector.name)
                 };
 
+                if (element.baseName === 'Container') {
+                    portSymbol.portDirective = 'rectangle-port';
+                }
+
                 if (innerConnector.position.x < median) {
 
                     portDescriptors.left.push(portSymbol);
@@ -235,7 +239,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             }, portStuff.portDescriptors,
             {
                 minWidth: 200,
-                portWireLeadInIncrement: 8
+                portWireLeadInIncrement: 8,
+                portWireLength: 14,
+                topPortPadding: 26
             }
         );
 

@@ -67,6 +67,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                 wireLeadIn -= parameters.portWireLeadInIncrement;
             }
 
+            aPort.side = side;
+
             switch (side) {
 
                 case 'top':
