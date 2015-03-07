@@ -25,11 +25,11 @@
         left: 50%;
         margin-top: -25px;
         margin-left: -25px;
-        opacity: 1;
+        display: block;
         transition: opacity 200ms ease-out 600ms;
 
         &.initialized {
-            opacity: 0;
+            display: none;
         }
 
     }

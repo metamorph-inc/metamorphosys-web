@@ -397,44 +397,48 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             newModelComponent.registerPortInstances(portStuff.portInstances);
 
-        } else if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
-        ) {
+        }
 
-            // Cheap shot to figure if it is a diode
+        //else if (angular.isString(element.name) &&
+        //    element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
+        //) {
+        //
+        //    // Cheap shot to figure if it is a diode
+        //
+        //    symbol = symbolManager.getSymbol('tvsDiode');
+        //
+        //    newModelComponent = new DiagramComponent({
+        //        id: element.id,
+        //        label: labelParser(element.name),
+        //        x: element.position.x,
+        //        y: element.position.y,
+        //        z: zIndex,
+        //        rotation: 0,
+        //        scaleX: 1,
+        //        scaleY: 1,
+        //        symbol: symbol,
+        //        nonSelectable: false,
+        //        locationLocked: false,
+        //        draggable: true
+        //    });
+        //
+        //    for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+        //
+        //        if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
+        //            portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+        //        }
+        //
+        //        if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
+        //            portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+        //        }
+        //
+        //    }
+        //
+        //    newModelComponent.registerPortInstances(portStuff.portInstances);
+        //
+        //}
 
-            symbol = symbolManager.getSymbol('tvsDiode');
-
-            newModelComponent = new DiagramComponent({
-                id: element.id,
-                label: labelParser(element.name),
-                x: element.position.x,
-                y: element.position.y,
-                z: zIndex,
-                rotation: 0,
-                scaleX: 1,
-                scaleY: 1,
-                symbol: symbol,
-                nonSelectable: false,
-                locationLocked: false,
-                draggable: true
-            });
-
-            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
-
-                if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
-                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-                }
-
-                if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
-                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-                }
-
-            }
-
-            newModelComponent.registerPortInstances(portStuff.portInstances);
-
-        } else {
+        else {
 
             if (element.name !== 'pcb') {
                 symbol = symbolManager.makeBoxSymbol(
