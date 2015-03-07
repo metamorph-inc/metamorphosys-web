@@ -34,9 +34,9 @@ $blue: #0D47A1;
     .box-box {
         //  fill:rgba(255,254,230, .3);
         fill: rgb(255,255,255);
-        stroke-width: 2.5;
+        stroke-width: 2;
         stroke: $blue;
-        stroke-dasharray: 3.5,2.5;
+        stroke-dasharray: 2.5.5;
     }
 
     .port-wire {
