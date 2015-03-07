@@ -4,7 +4,7 @@ config.json: "rextrast": { "copyproject": "./src/rest/copyproject/CopyProject", 
 http://localhost:8855/rest/external/copyproject
  */
 define( [ 'logManager',
-    'core/coreforplugins',
+    'core/core',
     'storage/serveruserstorage',
     'coreclient/serialization'
 ], function ( logManager, Core, Storage, Serialization ) {

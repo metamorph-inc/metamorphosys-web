@@ -208,8 +208,8 @@ angular.module('mms.testbenchActions', [
 
                         hash = resultData.artifacts['all.zip'].hash;
 
-                        visualUrl = '/rest/blob/view/' + hash + '/results/1x2_ara_module.png';
-                        downloadUrl = '/rest/blob/download/' + hash + '/results/1x2_ara_module.brd';
+                        visualUrl = '/rest/blob/view/' + hash + '/results/eagle-board.png';
+                        downloadUrl = '/rest/blob/download/' + hash + '/results/eagle-board.brd';
 
                         timestamp = Date.now();
                         id = hash + '_' + timestamp;

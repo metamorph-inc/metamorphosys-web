@@ -1,6 +1,7 @@
 {
     "port": 8855,
 
+    "enableExecutor": true,
 
     "mongoip": "127.0.0.1",
 
@@ -20,7 +21,6 @@
     ],
 
     "rextrast": {
-        "executor": "./node_modules/webgme/src/middleware/executor/Executor",
         "desert": "./src/rest/desert/Desert",
         "serverinfo": "./src/rest/serverInfo/ServerInfo",
         "copyproject": "./src/rest/copyproject/CopyProject"
