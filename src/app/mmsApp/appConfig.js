@@ -227,17 +227,32 @@ angular.module('CyPhyApp').config(function ($stateProvider, $urlRouterProvider, 
 
                 if (angular.isObject(designs)) {
 
-                    designIds = Object.keys(designs);
+                    if (angular.isObject(designs['/1922727130/1620862711/1365227561'])) {
 
-                    if (designIds.length > 0) {
+                        // For demo releses, this should be 'Template Module 1x2'
 
                         $state.go('editor.design', {
                             projectId: $stateParams.projectId,
                             branchId: $stateParams.branchId,
                             workspaceId: $stateParams.workspaceId,
-                            designId: designIds[0]
+                            designId: '/1922727130/1620862711/1365227561'
                         });
 
+
+                    } else {
+
+                        designIds = Object.keys(designs);
+
+                        if (designIds.length > 0) {
+
+                            $state.go('editor.design', {
+                                projectId: $stateParams.projectId,
+                                branchId: $stateParams.branchId,
+                                workspaceId: $stateParams.workspaceId,
+                                designId: designIds[0]
+                            });
+
+                        }
                     }
 
                 } else {
