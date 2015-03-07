@@ -299,7 +299,7 @@ define( [ 'plugin/PluginConfig',
                 self.logger.warning( msg );
                 self.createMessage( existingAcmParentFolder, msg, 'debug' );
             } else {
-                msg = "Found existing AVMComponent with ID '" + id + "'";
+                msg = "Found existing AVMComponent with ID '" + id + "' (" + self.core.getAttribute(existingAcmNodeWithSameId, 'name') + ")";
                 self.logger.warning( msg );
                 self.createMessage( existingAcmNodeWithSameId, msg, 'warning' );
             }
