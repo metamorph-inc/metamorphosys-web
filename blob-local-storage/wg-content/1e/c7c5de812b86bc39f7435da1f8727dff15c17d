@@ -1,0 +1,1520 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ProtoEKG_AtMega" DesignID="{15cd34b6-6a00-4a07-aec2-2002d3ceddc7}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ProtoEKG_AtMega" xmlns="">
+    <Container xsi:type="q1:Compound" YPosition="742" ID="81" Name="BP_PressureSensor" XPosition="679">
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.d9ba2b7f-6a27-410e-aa74-f1798b81fd69" XPosition="1330" YPosition="903">
+        <Value ID="d9ba2b7f-6a27-410e-aa74-f1798b81fd69" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>16000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C2Val" ID="param.da93c3e3-204e-4b0b-b757-0e424ef71450" XPosition="406" YPosition="798">
+        <Value ID="da93c3e3-204e-4b0b-b757-0e424ef71450" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.48a9dcc3-3455-487a-bb53-85676b51b022" XPosition="469" YPosition="245">
+        <Value ID="48a9dcc3-3455-487a-bb53-85676b51b022" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>160000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.e11a36bb-ddae-4e7a-af5a-958800a6d407" XPosition="567" YPosition="1148">
+        <Value ID="e11a36bb-ddae-4e7a-af5a-958800a6d407" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>110000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C2Val" ID="param.52d8729b-57d9-4ada-b5d9-b665574fc957" XPosition="1407" YPosition="420">
+        <Value ID="52d8729b-57d9-4ada-b5d9-b665574fc957" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.a5ea2375-df30-4797-b03e-f44a342d0b6f" XPosition="1106" YPosition="357">
+        <Value ID="a5ea2375-df30-4797-b03e-f44a342d0b6f" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>16000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C2Val" ID="param.b88f7a16-9a53-4c88-b403-1a27e3fb0a38" XPosition="1589" YPosition="980">
+        <Value ID="b88f7a16-9a53-4c88-b403-1a27e3fb0a38" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C2Val" ID="param.799b8725-967a-45ea-8cec-df9490799c77" XPosition="252" YPosition="224">
+        <Value ID="799b8725-967a-45ea-8cec-df9490799c77" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cpb_Val" ID="param.id-bcd53475-13c0-416b-898b-dfb86dccee36" XPosition="924" YPosition="1169">
+        <Value ID="id-bcd53475-13c0-416b-898b-dfb86dccee36" DimensionType="Scalar" Dimensions="" Unit="F" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1e-6</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.50ed5b44-d6da-42a8-a953-2760fa0a21dc" XPosition="1043" YPosition="679">
+        <Value ID="50ed5b44-d6da-42a8-a953-2760fa0a21dc" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>750000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.741beb72-82f1-43ce-8dda-70ae293c4c8b" XPosition="672" YPosition="791">
+        <Value ID="741beb72-82f1-43ce-8dda-70ae293c4c8b" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>160000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.be1507a2-a6f3-40b5-a309-7403b3f93001" XPosition="812" YPosition="133">
+        <Value ID="be1507a2-a6f3-40b5-a309-7403b3f93001" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>750000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cpb_Val" ID="param.id-9e1e46af-6aa0-42b4-bd6f-3a8b6cc14e1f" XPosition="931" YPosition="1344">
+        <Value ID="id-9e1e46af-6aa0-42b4-bd6f-3a8b6cc14e1f" DimensionType="Scalar" Dimensions="" Unit="F" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1e-6</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.e7539ca6-6366-4479-b23c-cf0f57e633f5" XPosition="567" YPosition="1295">
+        <Value ID="e7539ca6-6366-4479-b23c-cf0f57e633f5" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>110000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="917" YPosition="1050" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{a6f1eb14-affc-4782-b881-9cac88be8776}" Name="C_BP1">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="c4d88aff-df27-48d0-bda2-5aa37d35def5" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="d0c9fc20-771d-41e7-b618-de2b774af774" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-bcd53475-13c0-416b-898b-dfb86dccee36" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{a6f1eb14-affc-4782-b881-9cac88be8776}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{a6f1eb14-affc-4782-b881-9cac88be8776}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="924" YPosition="1225" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{52dc826c-d1c3-4c45-8720-0dbbfe166d11}" Name="C_BP1">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="a9a9f861-cfcb-47ba-a50a-6f8b7cf0a6d3" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="bd91cfcb-2026-4321-8e90-83d29179f4d8" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-9e1e46af-6aa0-42b4-bd6f-3a8b6cc14e1f" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{52dc826c-d1c3-4c45-8720-0dbbfe166d11}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{52dc826c-d1c3-4c45-8720-0dbbfe166d11}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="560" YPosition="1043" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{560a1d1a-1aa2-4fca-9821-10b6f87bec1a}" Name="Rxxx7">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="f78297b8-9314-44e7-8420-50ec67b9716c" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="08da46b0-3190-4a38-9a49-b3193b4d3885" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="e11a36bb-ddae-4e7a-af5a-958800a6d407" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{560a1d1a-1aa2-4fca-9821-10b6f87bec1a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6 {bc99b159-13e1-42ec-9fef-ff20639b107e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{560a1d1a-1aa2-4fca-9821-10b6f87bec1a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1421" YPosition="308" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{3054925f-3af4-475d-b6bf-afbee790b34d}" Name="Cxxx2">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="1c210a5d-304b-4b32-adb7-4b231abd8a8f" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="7311299c-4222-4288-be1c-a1c8955933b9" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="52d8729b-57d9-4ada-b5d9-b665574fc957" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{3054925f-3af4-475d-b6bf-afbee790b34d}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{552f88eb-4a67-46e3-a8ec-cc593125c09a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{3054925f-3af4-475d-b6bf-afbee790b34d}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="560" YPosition="1190" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{bc99b159-13e1-42ec-9fef-ff20639b107e}" Name="Rxxx8">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="5a9627c8-6329-47db-beda-cd58a5e9d5e6" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="689c833c-3eba-499b-9be5-61c1d0df83a4" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="e7539ca6-6366-4479-b23c-cf0f57e633f5" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{560a1d1a-1aa2-4fca-9821-10b6f87bec1a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{bc99b159-13e1-42ec-9fef-ff20639b107e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{bc99b159-13e1-42ec-9fef-ff20639b107e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="525" YPosition="140" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{e50834bb-68d9-49ee-ad9e-11d175f63669}" Name="Rxxx1">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="7ab0cc71-46dd-4ffe-b34a-3307a923c619" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="f671ed84-2703-430a-8aa3-86b88d74e3bf" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="48a9dcc3-3455-487a-bb53-85676b51b022" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ID="{e50834bb-68d9-49ee-ad9e-11d175f63669}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-42394e74-c2da-42f2-b38d-58a7e0c2f555" ID="{e50834bb-68d9-49ee-ad9e-11d175f63669}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="868" YPosition="28" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{904a4c5c-9440-44cf-b32a-60aa42997e94}" Name="Rxxx2">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="dd375490-a4ba-4359-81d5-be97b4d39d4b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="c78261a7-3d9d-4389-9d4b-a0d84c53b897" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="be1507a2-a6f3-40b5-a309-7403b3f93001" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-42394e74-c2da-42f2-b38d-58a7e0c2f555" ID="{904a4c5c-9440-44cf-b32a-60aa42997e94}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-ef3360cc-6087-4535-80fc-3710300fd280" ID="{904a4c5c-9440-44cf-b32a-60aa42997e94}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1162" YPosition="252" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{552f88eb-4a67-46e3-a8ec-cc593125c09a}" Name="Rxxx3">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="d6257374-72da-4929-90a4-ad7a8144cf27" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="73ff6b1d-091f-4fcf-874d-4293984bb742" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="a5ea2375-df30-4797-b03e-f44a342d0b6f" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-ef3360cc-6087-4535-80fc-3710300fd280" ID="{552f88eb-4a67-46e3-a8ec-cc593125c09a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{50ac9936-b2e0-4ef8-b046-eeff40b9c61e}-id-15204d98-d7cc-4100-a177-7995b8560e0f {3054925f-3af4-475d-b6bf-afbee790b34d}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ID="{552f88eb-4a67-46e3-a8ec-cc593125c09a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1330" YPosition="798" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{9ae630ae-c4ce-4885-bff4-e3432314aef5}" Name="Rxxx6">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="6a607e7b-6007-40a1-9b67-3edc4055a02e" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="7a3b45fe-0f4d-4339-9908-49942a046662" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="d9ba2b7f-6a27-410e-aa74-f1798b81fd69" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-b18d503c-c86f-4b86-9902-1d7b6235e9f3 {4a34ac9c-7e18-444c-85d2-608742cb7db7}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{fc6a23ba-b682-4702-b858-564f74e08e81}-id-15204d98-d7cc-4100-a177-7995b8560e0f id-31c5bf8a-8055-499d-8e22-7d4df93672c3" ID="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="364" YPosition="385" ComponentID="7c7efcd6-e3ad-48d8-81e8-059034c52e75a" ID="{a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}" Name="Dual_to_Single_Power">
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-c1259222-6a4b-4322-8a2d-8f7c8403c89c {fc86660b-5e98-4c1e-8172-135e0dea3167}-id-c1259222-6a4b-4322-8a2d-8f7c8403c89c" ID="{a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}-id-e1453817-0a92-4961-8b33-6451a9d02c32" ApplyJoinData="" IDinComponentModel="id-e1453817-0a92-4961-8b33-6451a9d02c32" />
+        <ConnectorInstance ConnectorComposition="id-d38124f5-5aa4-4648-a76d-cc26b6da1c4f" ID="{a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}-id-a1ed0014-557e-4214-9973-aba8e913c7f8" ApplyJoinData="" IDinComponentModel="id-a1ed0014-557e-4214-9973-aba8e913c7f8" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1589" YPosition="854" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{fc6a23ba-b682-4702-b858-564f74e08e81}" Name="Cxxx4">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="fec7f725-f973-446c-993e-6b8e7d0c844f" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="0bcac1af-c3e9-4c39-ae1f-452b764b8817" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="b88f7a16-9a53-4c88-b403-1a27e3fb0a38" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{fc6a23ba-b682-4702-b858-564f74e08e81}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{fc6a23ba-b682-4702-b858-564f74e08e81}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1036" YPosition="574" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{4a34ac9c-7e18-444c-85d2-608742cb7db7}" Name="Rxxx5">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="56fed2a2-fd07-4d78-b06e-70c968ae3715" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="085060eb-e9aa-4b62-b3ae-60ef61d1e2a8" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="50ed5b44-d6da-42a8-a953-2760fa0a21dc" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-e93b93b9-d379-4a05-ad62-c1da8d8cafde {121d5cbe-590b-4123-9a8b-42f37c04aef3}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{4a34ac9c-7e18-444c-85d2-608742cb7db7}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{4a34ac9c-7e18-444c-85d2-608742cb7db7}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="266" YPosition="112" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}" Name="Cxxx1">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="362d06ff-afd1-41a4-8f54-ac474926876b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="0a299c40-4a6b-4828-b318-d2cd6942abf4" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="799b8725-967a-45ea-8cec-df9490799c77" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{e50834bb-68d9-49ee-ad9e-11d175f63669}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="id-f21b45f5-cfc4-47b2-8f53-4844ea903d55 {05b3ba55-1476-42ef-b139-d608d1e1b881}-id-ceaa8701-4846-4989-990d-c104903da759" ID="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="203" YPosition="315" ComponentID="f0169bd6-1244-4698-8ab9-d5872a54a484" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}" Name="6_Pin_Single_Header_TSW-106-07-G-D">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="304d7091-ff15-4c63-824e-2d0906e9d7b8" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-cb29e186-2156-46d2-80ca-72f811adae45" ApplyJoinData="" IDinComponentModel="id-cb29e186-2156-46d2-80ca-72f811adae45" />
+        <ConnectorInstance ConnectorComposition="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-ceaa8701-4846-4989-990d-c104903da759" ApplyJoinData="" IDinComponentModel="id-ceaa8701-4846-4989-990d-c104903da759" />
+        <ConnectorInstance ConnectorComposition="" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-9c258bf5-2d2e-4f93-b5e8-f84085966834" ApplyJoinData="" IDinComponentModel="id-9c258bf5-2d2e-4f93-b5e8-f84085966834" />
+        <ConnectorInstance ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-15f54d67-775c-454a-8150-5b7d88cc06e8" ApplyJoinData="" IDinComponentModel="id-15f54d67-775c-454a-8150-5b7d88cc06e8" />
+        <ConnectorInstance ConnectorComposition="" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-dd6506c4-6cd0-46ef-9b7d-901eef109b19" ApplyJoinData="" IDinComponentModel="id-dd6506c4-6cd0-46ef-9b7d-901eef109b19" />
+        <ConnectorInstance ConnectorComposition="" ID="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-3bd60db9-db14-4463-8b6e-a45f3c19a1a9" ApplyJoinData="" IDinComponentModel="id-3bd60db9-db14-4463-8b6e-a45f3c19a1a9" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="245" YPosition="917" ComponentID="4a4d88c7-16db-40c1-a020-88301ce0516f" ID="{2a636136-7aad-4618-af6e-27029eb180af}" Name="LM358ST_Ref">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="1d37df85-14c1-463e-9dd7-ffda2d04e537" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}-id-e1453817-0a92-4961-8b33-6451a9d02c32" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-c1259222-6a4b-4322-8a2d-8f7c8403c89c" ApplyJoinData="" IDinComponentModel="id-c1259222-6a4b-4322-8a2d-8f7c8403c89c" />
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-ef3360cc-6087-4535-80fc-3710300fd280" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-42394e74-c2da-42f2-b38d-58a7e0c2f555" ApplyJoinData="" IDinComponentModel="id-42394e74-c2da-42f2-b38d-58a7e0c2f555" />
+        <ConnectorInstance ConnectorComposition="" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-b18d503c-c86f-4b86-9902-1d7b6235e9f3" ApplyJoinData="" IDinComponentModel="id-b18d503c-c86f-4b86-9902-1d7b6235e9f3" />
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-42394e74-c2da-42f2-b38d-58a7e0c2f555 {fc86660b-5e98-4c1e-8172-135e0dea3167}-id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6 {fc86660b-5e98-4c1e-8172-135e0dea3167}-id-ff13ab9c-5e0d-454b-a964-b3aa9daaec11" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-ef3360cc-6087-4535-80fc-3710300fd280" ApplyJoinData="" IDinComponentModel="id-ef3360cc-6087-4535-80fc-3710300fd280" />
+        <ConnectorInstance ConnectorComposition="" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-e93b93b9-d379-4a05-ad62-c1da8d8cafde" ApplyJoinData="" IDinComponentModel="id-e93b93b9-d379-4a05-ad62-c1da8d8cafde" />
+        <ConnectorInstance ConnectorComposition="" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-ff13ab9c-5e0d-454b-a964-b3aa9daaec11" ApplyJoinData="" IDinComponentModel="id-ff13ab9c-5e0d-454b-a964-b3aa9daaec11" />
+        <ConnectorInstance ConnectorComposition="{560a1d1a-1aa2-4fca-9821-10b6f87bec1a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{2a636136-7aad-4618-af6e-27029eb180af}-id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6" ApplyJoinData="" IDinComponentModel="id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="826" YPosition="259" ComponentID="4a4d88c7-16db-40c1-a020-88301ce0516f" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}" Name="LM358ST_BP_Filt">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="261a97d6-ae51-4283-b65a-c0b911073b34" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{904a4c5c-9440-44cf-b32a-60aa42997e94}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {e50834bb-68d9-49ee-ad9e-11d175f63669}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-42394e74-c2da-42f2-b38d-58a7e0c2f555" ApplyJoinData="" IDinComponentModel="id-42394e74-c2da-42f2-b38d-58a7e0c2f555" />
+        <ConnectorInstance ConnectorComposition="{904a4c5c-9440-44cf-b32a-60aa42997e94}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {552f88eb-4a67-46e3-a8ec-cc593125c09a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-ef3360cc-6087-4535-80fc-3710300fd280" ApplyJoinData="" IDinComponentModel="id-ef3360cc-6087-4535-80fc-3710300fd280" />
+        <ConnectorInstance ConnectorComposition="{4a34ac9c-7e18-444c-85d2-608742cb7db7}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-e93b93b9-d379-4a05-ad62-c1da8d8cafde" ApplyJoinData="" IDinComponentModel="id-e93b93b9-d379-4a05-ad62-c1da8d8cafde" />
+        <ConnectorInstance ConnectorComposition="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-b18d503c-c86f-4b86-9902-1d7b6235e9f3" ApplyJoinData="" IDinComponentModel="id-b18d503c-c86f-4b86-9902-1d7b6235e9f3" />
+        <ConnectorInstance ConnectorComposition="{a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}-id-e1453817-0a92-4961-8b33-6451a9d02c32" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-c1259222-6a4b-4322-8a2d-8f7c8403c89c" ApplyJoinData="" IDinComponentModel="id-c1259222-6a4b-4322-8a2d-8f7c8403c89c" />
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-ef3360cc-6087-4535-80fc-3710300fd280" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6" ApplyJoinData="" IDinComponentModel="id-c9ce3b53-03a4-4b09-a3c9-f8e3232c60b6" />
+        <ConnectorInstance ConnectorComposition="{2a636136-7aad-4618-af6e-27029eb180af}-id-ef3360cc-6087-4535-80fc-3710300fd280" ID="{fc86660b-5e98-4c1e-8172-135e0dea3167}-id-ff13ab9c-5e0d-454b-a964-b3aa9daaec11" ApplyJoinData="" IDinComponentModel="id-ff13ab9c-5e0d-454b-a964-b3aa9daaec11" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="693" YPosition="686" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{121d5cbe-590b-4123-9a8b-42f37c04aef3}" Name="Rxxx4">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="579bfe0a-8320-462d-9393-d6c170e251e1" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="ff92b6a1-8dd4-4bf8-acf2-1141addbbd84" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="741beb72-82f1-43ce-8dda-70ae293c4c8b" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{50ac9936-b2e0-4ef8-b046-eeff40b9c61e}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ID="{121d5cbe-590b-4123-9a8b-42f37c04aef3}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{4a34ac9c-7e18-444c-85d2-608742cb7db7}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{121d5cbe-590b-4123-9a8b-42f37c04aef3}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="133" YPosition="700" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{39a49565-4cd9-4673-9c86-56be537b6ded}" Name="SplitPwrGnd_3V3">
+        <ConnectorInstance ConnectorComposition="{05b3ba55-1476-42ef-b139-d608d1e1b881}-id-cb29e186-2156-46d2-80ca-72f811adae45 {bc99b159-13e1-42ec-9fef-ff20639b107e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {3054925f-3af4-475d-b6bf-afbee790b34d}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {fc6a23ba-b682-4702-b858-564f74e08e81}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {52dc826c-d1c3-4c45-8720-0dbbfe166d11}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {a6f1eb14-affc-4782-b881-9cac88be8776}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ID="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+        <ConnectorInstance ConnectorComposition="id-d38124f5-5aa4-4648-a76d-cc26b6da1c4f" ID="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="{52dc826c-d1c3-4c45-8720-0dbbfe166d11}-id-15204d98-d7cc-4100-a177-7995b8560e0f {560a1d1a-1aa2-4fca-9821-10b6f87bec1a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {a6f1eb14-affc-4782-b881-9cac88be8776}-id-15204d98-d7cc-4100-a177-7995b8560e0f {05b3ba55-1476-42ef-b139-d608d1e1b881}-id-15f54d67-775c-454a-8150-5b7d88cc06e8" ID="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="434" YPosition="658" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{50ac9936-b2e0-4ef8-b046-eeff40b9c61e}" Name="Cxxx3">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="150edb67-e4fd-4e96-a79f-c1c86cdaf74b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="7953080f-bf51-4018-baa6-25ab5b26d276" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="da93c3e3-204e-4b0b-b757-0e424ef71450" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{121d5cbe-590b-4123-9a8b-42f37c04aef3}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{50ac9936-b2e0-4ef8-b046-eeff40b9c61e}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{552f88eb-4a67-46e3-a8ec-cc593125c09a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{50ac9936-b2e0-4ef8-b046-eeff40b9c61e}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{c0491caf-3d6c-43fe-9cef-4e934bf4d14a}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ID="id-f21b45f5-cfc4-47b2-8f53-4844ea903d55" ApplyJoinData="" XPosition="42" YPosition="119" Definition="" Name="V_Sensor">
+        <Role xmlns:q2="schematic" xsi:type="q2:Pin" ID="id-801836cd-d07e-4c1c-b587-902b9abf9d0f" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{9ae630ae-c4ce-4885-bff4-e3432314aef5}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-520f977c-a816-40db-b5ac-33024faff526" ID="id-31c5bf8a-8055-499d-8e22-7d4df93672c3" ApplyJoinData="" XPosition="1806" YPosition="812" Definition="" Name="VBandPass">
+        <Role xmlns:q3="schematic" xsi:type="q3:Pin" ID="id-9dc80383-66db-4efc-8699-6116348610f1" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{39a49565-4cd9-4673-9c86-56be537b6ded}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0 {a8ac4fc3-6c43-4f6d-95f4-3106f3ba9e11}-id-a1ed0014-557e-4214-9973-aba8e913c7f8 id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="id-d38124f5-5aa4-4648-a76d-cc26b6da1c4f" ApplyJoinData="" XPosition="35" YPosition="14" Definition="" Name="Power_3V3">
+        <Role xmlns:q4="schematic" xsi:type="q4:Pin" ID="id-0602cac3-1ffa-4843-b12a-9366fa1c2ed3" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q5="schematic" xsi:type="q5:Pin" ID="id-7643d24b-eb38-47bc-a458-d56eeff27d54" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+    </Container>
+    <Container xsi:type="q1:Compound" YPosition="28" ID="36" Name="3.3V_Regulator" XPosition="147">
+      <Property xsi:type="q1:PrimitiveProperty" Name="val4" ID="param.2ec24aa8-b0e2-4b0e-b5e9-b7fe8d2aef60" XPosition="973" YPosition="609">
+        <Value ID="2ec24aa8-b0e2-4b0e-b5e9-b7fe8d2aef60" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="val2" ID="param.0d06c839-9aaa-49cc-ae77-56b9705a9726" XPosition="966" YPosition="294">
+        <Value ID="0d06c839-9aaa-49cc-ae77-56b9705a9726" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="Val1" ID="param.36e308b6-4f48-4ec6-9401-27184d3d9398" XPosition="413" YPosition="364">
+        <Value ID="36e308b6-4f48-4ec6-9401-27184d3d9398" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="val3" ID="param.f2ef7b5a-9665-4098-8134-1d043a163eb8" XPosition="973" YPosition="455">
+        <Value ID="f2ef7b5a-9665-4098-8134-1d043a163eb8" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="980" YPosition="658" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{b54ffd19-f80d-4164-b67c-681e8f27b7fa}" Name="0.1uF">
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="b6850325-1c3b-4240-b26a-e9298e9e95a3" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="e0f61d70-dece-4a00-bc6a-10b5eae329a5" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="e85a08f5-742c-45c0-8af8-0c61d6eff3b4" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="106d9a6c-0774-4a5e-b126-a14e09c8d520" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="2ec24aa8-b0e2-4b0e-b5e9-b7fe8d2aef60" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="f4631ef1-5300-4fe0-bdc7-1da4898d1adc" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{b54ffd19-f80d-4164-b67c-681e8f27b7fa}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{b54ffd19-f80d-4164-b67c-681e8f27b7fa}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="434" YPosition="406" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{071cbd65-810c-4574-9361-f8e553a75c92}" Name="10uF Tant">
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="07974615-689d-403c-a8dd-434c3e225d02" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="cd57f3cd-49ee-4095-8353-f090cc22960e" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="36e308b6-4f48-4ec6-9401-27184d3d9398" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="6ba1e600-bf69-4497-a4b0-ce20d558bf37" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="f30f8701-4c64-41f9-8346-b408ef8f8e62" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="88648e07-cb63-49fc-ba05-c6b020fe9ffa" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{071cbd65-810c-4574-9361-f8e553a75c92}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="" ID="{071cbd65-810c-4574-9361-f8e553a75c92}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1001" YPosition="21" ComponentID="8af217ac-c4e2-47dc-b169-24f4a920fa34" ID="{d86b7409-8071-4ab8-8cbd-daca754c9120}" Name="Led_0603_BLUE">
+        <PrimitivePropertyInstance IDinComponentModel="id-191b440a-ac43-4e5d-b36b-e1f6e35b72b0">
+          <Value ID="03f29618-5aa7-4c4d-8c70-fa0ecc1ad145" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-7268be6d-09d5-4938-b571-7ae7899119dd">
+          <Value ID="0f5864c7-b5b2-4901-8d67-3b3c28085c63" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-029e719f-cfd3-452c-9b6a-3c69d88251fc">
+          <Value ID="b41f8ff9-dec3-4403-b75c-670a94782115" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{d86b7409-8071-4ab8-8cbd-daca754c9120}-id-660da9cb-29e2-4be1-8e35-98f44dd3434f" ApplyJoinData="" IDinComponentModel="id-660da9cb-29e2-4be1-8e35-98f44dd3434f" />
+        <ConnectorInstance ConnectorComposition="" ID="{d86b7409-8071-4ab8-8cbd-daca754c9120}-f07a6589-69df-435c-928f-b2c95f9b944a" ApplyJoinData="" IDinComponentModel="f07a6589-69df-435c-928f-b2c95f9b944a" />
+        <ConnectorInstance ConnectorComposition="{0f769237-cfd8-455b-8745-f8531796a250}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{d86b7409-8071-4ab8-8cbd-daca754c9120}-id-6e8866a0-7ece-4a59-97b7-5b462f8ae70a" ApplyJoinData="" IDinComponentModel="id-6e8866a0-7ece-4a59-97b7-5b462f8ae70a" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="434" YPosition="574" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{f7651da3-bded-4de1-a27c-ce3d40cf8847}" Name="10uF tant2">
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="ab91d777-62a4-4cd5-aabb-1645c6ffcf36" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="74feffcd-7d28-46cb-9ace-df55bcc9fd13" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="0d06c839-9aaa-49cc-ae77-56b9705a9726" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="b24b3ebc-1c5f-4703-99de-9619f79dc656" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="393f1f10-be42-4dfe-839c-f1d0b739ca7e" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="3e178586-7506-4864-86cd-72082e45d56f" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{f7651da3-bded-4de1-a27c-ce3d40cf8847}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{f7651da3-bded-4de1-a27c-ce3d40cf8847}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="980" YPosition="490" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{fe8291ef-a780-43fd-b4a7-5f8de0c7f164}" Name="1uF">
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="7d7ccc49-c53d-42af-baa1-7088fef7f5bc" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="f2ef7b5a-9665-4098-8134-1d043a163eb8" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="b37b2355-59f8-4157-858c-5944e32b53d4" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="e706f9f0-d6e5-4b85-be27-df9477304a6a" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="11c73ad5-a203-47c2-925d-9f706816c69c" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="d4f083e4-d701-4a36-a32c-3282760101c5" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{fe8291ef-a780-43fd-b4a7-5f8de0c7f164}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{fe8291ef-a780-43fd-b4a7-5f8de0c7f164}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="735" YPosition="28" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{0f769237-cfd8-455b-8745-f8531796a250}" Name="RPullUp">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="3eb340f5-ffeb-4066-8736-20cd5e911d42" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="6fd38169-4c74-49e5-8fa9-15ebe2a1d5c4" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{0f769237-cfd8-455b-8745-f8531796a250}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{d86b7409-8071-4ab8-8cbd-daca754c9120}-id-6e8866a0-7ece-4a59-97b7-5b462f8ae70a" ID="{0f769237-cfd8-455b-8745-f8531796a250}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="84" YPosition="399" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}" Name="SplitPwrGnd1">
+        <ConnectorInstance ConnectorComposition="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-c999b634-88d9-4e33-ae93-1c8acdc0c867 {071cbd65-810c-4574-9361-f8e553a75c92}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="id-ab47ae41-e8db-4363-9630-7ab0823433d8" ID="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="" ID="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="665" YPosition="350" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{d914bf61-5839-48ef-81ca-88c61858e395}" Name="SplitPwrGnd2">
+        <ConnectorInstance ConnectorComposition="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-381119de-b4bc-427c-a01e-54d1a03de7d1" ID="{d914bf61-5839-48ef-81ca-88c61858e395}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="{f7651da3-bded-4de1-a27c-ce3d40cf8847}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b {0f769237-cfd8-455b-8745-f8531796a250}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {b54ffd19-f80d-4164-b67c-681e8f27b7fa}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b {fe8291ef-a780-43fd-b4a7-5f8de0c7f164}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{d914bf61-5839-48ef-81ca-88c61858e395}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="{b54ffd19-f80d-4164-b67c-681e8f27b7fa}-id-1e931194-fb98-40e7-9724-4794a8779e73 {f7651da3-bded-4de1-a27c-ce3d40cf8847}-id-1e931194-fb98-40e7-9724-4794a8779e73 {d86b7409-8071-4ab8-8cbd-daca754c9120}-id-660da9cb-29e2-4be1-8e35-98f44dd3434f {fe8291ef-a780-43fd-b4a7-5f8de0c7f164}-id-1e931194-fb98-40e7-9724-4794a8779e73" ID="{d914bf61-5839-48ef-81ca-88c61858e395}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="350" YPosition="147" ComponentID="080f4480-e749-4bf9-bec7-91c24697a9ce" ID="{c4c6892f-db51-458c-904a-ef551b8ab797}" Name="MIC5219-3.3YM5TR">
+        <ConnectorInstance ConnectorComposition="" ID="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-8ae761a1-4fcb-4ad7-b357-03a9c0d8002f" ApplyJoinData="" IDinComponentModel="id-8ae761a1-4fcb-4ad7-b357-03a9c0d8002f" />
+        <ConnectorInstance ConnectorComposition="{d914bf61-5839-48ef-81ca-88c61858e395}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0 id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-381119de-b4bc-427c-a01e-54d1a03de7d1" ApplyJoinData="" IDinComponentModel="id-381119de-b4bc-427c-a01e-54d1a03de7d1" />
+        <ConnectorInstance ConnectorComposition="id-ab47ae41-e8db-4363-9630-7ab0823433d8" ID="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-e06a7a7f-a4f4-4f91-a6cd-16907064bda4" ApplyJoinData="" IDinComponentModel="id-e06a7a7f-a4f4-4f91-a6cd-16907064bda4" />
+        <ConnectorInstance ConnectorComposition="{cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-c999b634-88d9-4e33-ae93-1c8acdc0c867" ApplyJoinData="" IDinComponentModel="id-c999b634-88d9-4e33-ae93-1c8acdc0c867" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-e06a7a7f-a4f4-4f91-a6cd-16907064bda4 {cfbe0eb7-220e-461f-afb9-71c82ab9ba94}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0 id-da20bab7-b3d4-44f9-b462-23460ac433df" ID="id-ab47ae41-e8db-4363-9630-7ab0823433d8" ApplyJoinData="" XPosition="42" YPosition="119" Definition="" Name="Power_2_to_12V">
+        <Role xmlns:q6="schematic" xsi:type="q6:Pin" ID="id-ed3f611b-e9ce-4fd4-aa35-53b5f8646518" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q7="schematic" xsi:type="q7:Pin" ID="id-ac1747a2-bce6-4968-a96a-c63f2c4d9e1c" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{c4c6892f-db51-458c-904a-ef551b8ab797}-id-381119de-b4bc-427c-a01e-54d1a03de7d1 id-d38124f5-5aa4-4648-a76d-cc26b6da1c4f id-84cbf68d-0293-4e2e-970e-6ff42504bd03 id-3e8ab284-9696-4727-b4bf-bdf0e324055f {45f36f51-d38a-4ad5-bceb-c2fb04ade91e}-id-b9f18581-6e12-4b54-9138-447d9b84a879 id-793d59f4-9ddc-46ff-a126-f413ae9b1772" ID="id-fe251821-fc21-4693-92a8-4e254b23edc4" ApplyJoinData="" XPosition="1316" YPosition="112" Definition="" Name="Power_3V3">
+        <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-9a43e41e-3db6-489c-ab64-0915a84bf583" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q9="schematic" xsi:type="q9:Pin" ID="id-1ff7fa41-3adc-4199-ba1f-8a52c19b2f02" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+    </Container>
+    <Container xsi:type="q1:Compound" YPosition="147" ID="46" Name="USB_UART" XPosition="154">
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cbp2_val" OnDataSheet="false" ID="property.eaf39fab-7426-4930-b86e-b2c67b6b25c3" XPosition="448" YPosition="420">
+        <Value ID="eaf39fab-7426-4930-b86e-b2c67b6b25c3" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:FixedValue">
+            <Value>0.1</Value>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cbp2_val" OnDataSheet="false" ID="property.id-407ea258-351d-47c7-b160-7fa4f0dd4f16" XPosition="1008" YPosition="448">
+        <Value ID="id-407ea258-351d-47c7-b160-7fa4f0dd4f16" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:FixedValue">
+            <Value>0.1</Value>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="980" YPosition="343" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9}" Name="C3V3_Bp">
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="b19a2a5e-2ef1-47d1-86d7-bbc67c86c13a" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-407ea258-351d-47c7-b160-7fa4f0dd4f16" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="b1e0dbb1-843a-4d34-9fd7-20023bd56016" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="0cae348b-4db2-4523-a81b-7e07df44e048" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="1d8114dd-b066-4239-b52b-b1e44aa1fc80" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="302cf83e-266e-44d8-82b9-c903e7f1015a" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="686" YPosition="336" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{d3c8ea54-811c-43df-8bed-d571ccdc437f}" Name="SplitPwrGnd2">
+        <ConnectorInstance ConnectorComposition="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-538acdd7-2a30-4aa9-83e9-075231b288a1" ID="{d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9}-id-1e931194-fb98-40e7-9724-4794a8779e73" ID="{d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="119" YPosition="308" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}" Name="SplitPwrGnd1">
+        <ConnectorInstance ConnectorComposition="{d404508d-a183-4c2f-9358-af0cab785b7e}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="{d404508d-a183-4c2f-9358-af0cab785b7e}-id-1e931194-fb98-40e7-9724-4794a8779e73" ID="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+        <ConnectorInstance ConnectorComposition="{31696a11-6fe3-4126-baff-36c7cf31c72a}-id-724e0775-f28e-46df-b722-720388ac3bea" ID="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="420" YPosition="315" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{d404508d-a183-4c2f-9358-af0cab785b7e}" Name="Cbp2">
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="ddd31ae8-9186-4b5d-aba3-3198a23cc563" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="eaf39fab-7426-4930-b86e-b2c67b6b25c3" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="ef40daf0-044d-4087-8333-1f27987c74dd" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="149b49f8-64f4-4d14-9794-655d44033589" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="826cba22-8414-4881-a1b0-57e2de36b3cb" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="7d49a026-9e7c-4d63-b016-f9e22a73109a" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{d404508d-a183-4c2f-9358-af0cab785b7e}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{d404508d-a183-4c2f-9358-af0cab785b7e}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="63" YPosition="126" ComponentID="34c762e8-fd7e-4656-b6e7-af367ecb77b7" ID="{31696a11-6fe3-4126-baff-36c7cf31c72a}" Name="Molex_MicroUSB_AB_0475890001">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="b494441e-26bc-43bc-8f95-699107e13bd8" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-49a8ef26-57a2-4692-b152-662b61ec8051" ID="{31696a11-6fe3-4126-baff-36c7cf31c72a}-id-b0ab344d-941d-4247-a0a7-e5ab90b5bce2" ApplyJoinData="" IDinComponentModel="id-b0ab344d-941d-4247-a0a7-e5ab90b5bce2" />
+        <ConnectorInstance ConnectorComposition="id-da20bab7-b3d4-44f9-b462-23460ac433df {a46f3bc4-9b2a-44b5-befd-dbab78416b96}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ID="{31696a11-6fe3-4126-baff-36c7cf31c72a}-id-724e0775-f28e-46df-b722-720388ac3bea" ApplyJoinData="" IDinComponentModel="id-724e0775-f28e-46df-b722-720388ac3bea" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="329" YPosition="84" ComponentID="4bc4a0cf-3264-486b-85d3-46aca32c8cd5" ID="{690c24e7-6383-40dc-a8ef-57d68787b765}" Name="USBSerial_FTDI_232R">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="d0baa038-56fa-4dd2-b6b4-93651a1d8fbd" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="id-7f560553-8037-442e-8099-17ffcefc1ea7" ID="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-1cdb6894-7faa-475d-be44-62085cff41ff" ApplyJoinData="" IDinComponentModel="id-1cdb6894-7faa-475d-be44-62085cff41ff" />
+        <ConnectorInstance ConnectorComposition="{31696a11-6fe3-4126-baff-36c7cf31c72a}-id-b0ab344d-941d-4247-a0a7-e5ab90b5bce2" ID="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-49a8ef26-57a2-4692-b152-662b61ec8051" ApplyJoinData="" IDinComponentModel="id-49a8ef26-57a2-4692-b152-662b61ec8051" />
+        <ConnectorInstance ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-538acdd7-2a30-4aa9-83e9-075231b288a1" ID="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-c04e2188-2cee-44f8-bd8a-10a955b28087" ApplyJoinData="" IDinComponentModel="id-c04e2188-2cee-44f8-bd8a-10a955b28087" />
+        <ConnectorInstance ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-c04e2188-2cee-44f8-bd8a-10a955b28087 id-84cbf68d-0293-4e2e-970e-6ff42504bd03 {d3c8ea54-811c-43df-8bed-d571ccdc437f}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ID="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-538acdd7-2a30-4aa9-83e9-075231b288a1" ApplyJoinData="" IDinComponentModel="id-538acdd7-2a30-4aa9-83e9-075231b288a1" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-1cdb6894-7faa-475d-be44-62085cff41ff id-93a9d3ee-ec1e-4cc0-9669-ea17916095e6" ID="id-7f560553-8037-442e-8099-17ffcefc1ea7" ApplyJoinData="" XPosition="1008" YPosition="147" Definition="" Name="UART">
+        <Role xmlns:q10="schematic" xsi:type="q10:Pin" ID="id-712a03e4-24fe-4866-8eeb-5cc6e1e2bc98" PortMap="" Notes="" XPosition="63" Definition="" YPosition="224" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q11="schematic" xsi:type="q11:Pin" ID="id-7967b392-814a-4f94-9461-b5fedee4e49b" PortMap="" Notes="" XPosition="63" Definition="" YPosition="70" Name="TXD" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q12="schematic" xsi:type="q12:Pin" ID="id-f9d66f8c-28ad-4b92-b88a-9f1137ecd114" PortMap="" Notes="" XPosition="63" Definition="" YPosition="147" Name="RXD" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q13="systemc" xsi:type="q13:SystemCPort" ID="id-7669a251-ac42-49fb-8160-18dfc8012a6b" PortMap="" Notes="" XPosition="168" Definition="" YPosition="63" Name="TXD" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q14="systemc" xsi:type="q14:SystemCPort" ID="id-e2e9de9c-cf12-48bf-b19f-6a0fb1efe79a" PortMap="" Notes="" XPosition="175" Definition="" YPosition="161" Name="RXD" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{690c24e7-6383-40dc-a8ef-57d68787b765}-id-538acdd7-2a30-4aa9-83e9-075231b288a1 id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="id-84cbf68d-0293-4e2e-970e-6ff42504bd03" ApplyJoinData="" XPosition="1029" YPosition="42" Definition="" Name="Power_3V3">
+        <Role xmlns:q15="schematic" xsi:type="q15:Pin" ID="id-1a71706b-ff4c-4c45-b0d3-5d8eb2c5c12f" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q16="schematic" xsi:type="q16:Pin" ID="id-f335dc84-dfe6-4fa4-91e1-80c36feca86a" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{31696a11-6fe3-4126-baff-36c7cf31c72a}-id-724e0775-f28e-46df-b722-720388ac3bea id-ab47ae41-e8db-4363-9630-7ab0823433d8" ID="id-da20bab7-b3d4-44f9-b462-23460ac433df" ApplyJoinData="" XPosition="49" YPosition="7" Definition="" Name="Power_5V">
+        <Role xmlns:q17="schematic" xsi:type="q17:Pin" ID="id-f9126a18-c024-4276-a898-9342c672154f" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q18="schematic" xsi:type="q18:Pin" ID="id-8edbbbff-53cb-47e4-8a2b-fbb340992292" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <ContainerFeature xmlns:q19="eda" xsi:type="q19:RelativeRangeLayoutConstraint" XPosition="952" YPosition="210" XRelativeRangeMin="-1" XRelativeRangeMax="10" YRelativeRangeMin="-1" YRelativeRangeMax="10" RelativeLayer="Opposite" ContainerConstraintTarget="" Origin="{690c24e7-6383-40dc-a8ef-57d68787b765}" ConstraintTarget="{c9d2ab9e-ec09-46bd-b99a-54e73c0844c9} {d404508d-a183-4c2f-9358-af0cab785b7e}" />
+      <ContainerFeature xmlns:q20="eda" xsi:type="q20:RelativeRangeLayoutConstraint" XPosition="371" YPosition="14" XRelativeRangeMin="-20" XRelativeRangeMax="20" YRelativeRangeMin="-20" YRelativeRangeMax="20" RelativeLayer="Same" ContainerConstraintTarget="" Origin="{31696a11-6fe3-4126-baff-36c7cf31c72a}" ConstraintTarget="{690c24e7-6383-40dc-a8ef-57d68787b765}" />
+      <ContainerFeature xmlns:q21="eda" xsi:type="q21:ExactLayoutConstraint" XPosition="161" YPosition="7" X="0.7" Y="2" Layer="Top" Rotation="r0" ConstraintTarget="{31696a11-6fe3-4126-baff-36c7cf31c72a}" ContainerConstraintTarget="" />
+    </Container>
+    <Container xsi:type="q1:Compound" YPosition="455" ID="56" Name="EKG_Chan" XPosition="1246">
+      <Property xsi:type="q1:PrimitiveProperty" Name="R5Val" ID="param.da827047-732e-478a-902c-da4b587b6181" XPosition="343" YPosition="623">
+        <Value ID="da827047-732e-478a-902c-da4b587b6181" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>3600000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C7Val" ID="param.f00e359f-7b25-4431-b6b3-06a75de66f88" XPosition="1232" YPosition="868">
+        <Value ID="f00e359f-7b25-4431-b6b3-06a75de66f88" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R6Val" ID="param.c9db22de-ae56-41b7-bb96-8f213498fefd" XPosition="560" YPosition="924">
+        <Value ID="c9db22de-ae56-41b7-bb96-8f213498fefd" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C5Val" ID="param.78e89f60-f023-48f7-915e-85dbab4ddd5d" XPosition="1589" YPosition="644">
+        <Value ID="78e89f60-f023-48f7-915e-85dbab4ddd5d" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R1Val" ID="param.c0dedbff-98c3-44ee-9f08-16843449ea62" XPosition="364" YPosition="280">
+        <Value ID="c0dedbff-98c3-44ee-9f08-16843449ea62" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R4Val" ID="param.36fcd309-a819-4943-a6e6-2ded8da905a9" XPosition="686" YPosition="413">
+        <Value ID="36fcd309-a819-4943-a6e6-2ded8da905a9" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>180000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R9Val" ID="param.d85be164-275c-474c-ac14-3576ffbadd93" XPosition="1204" YPosition="1393">
+        <Value ID="d85be164-275c-474c-ac14-3576ffbadd93" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R14Val" ID="param.33040eb7-2c62-46a7-b91b-ce2ca7cd7dfa" XPosition="1666" YPosition="1414">
+        <Value ID="33040eb7-2c62-46a7-b91b-ce2ca7cd7dfa" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C4Val" ID="param.8309f35d-1702-4082-923e-4c8212daef9d" XPosition="1113" YPosition="308">
+        <Value ID="8309f35d-1702-4082-923e-4c8212daef9d" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.33</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C3Val" ID="param.8bef64c5-2df2-40a2-a65e-dc0220f10724" XPosition="847" YPosition="1078">
+        <Value ID="8bef64c5-2df2-40a2-a65e-dc0220f10724" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.01</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C2Val" ID="param.13b31f79-2dba-488f-b3cd-2513a56d0b3c" XPosition="728" YPosition="602">
+        <Value ID="13b31f79-2dba-488f-b3cd-2513a56d0b3c" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.001</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R3Val" ID="param.19985ced-4441-4e25-9aed-11a16bec6978" XPosition="658" YPosition="280">
+        <Value ID="19985ced-4441-4e25-9aed-11a16bec6978" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>180000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R10Val" ID="param.75e66554-a5e3-4ca0-a01b-cef6e4528e4a" XPosition="1680" YPosition="812">
+        <Value ID="75e66554-a5e3-4ca0-a01b-cef6e4528e4a" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R11Val" ID="param.080c0a5d-6bd7-4c4a-8ff5-ef4bdea0125f" XPosition="1694" YPosition="973">
+        <Value ID="080c0a5d-6bd7-4c4a-8ff5-ef4bdea0125f" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C6Val" ID="param.567c025a-9f88-4b45-9e8a-bbd53a70cd01" XPosition="1638" YPosition="189">
+        <Value ID="567c025a-9f88-4b45-9e8a-bbd53a70cd01" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.33</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R2Val" ID="param.d542247c-4637-4fea-92f0-1b26084d7204" XPosition="371" YPosition="427">
+        <Value ID="d542247c-4637-4fea-92f0-1b26084d7204" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R7Val" ID="param.7a623acd-3110-4211-8b96-1ca70600bd3f" XPosition="819" YPosition="924">
+        <Value ID="7a623acd-3110-4211-8b96-1ca70600bd3f" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R8Val" ID="param.73fe1b39-7f59-4183-bb5c-2449bdf6c860" XPosition="749" YPosition="1281">
+        <Value ID="73fe1b39-7f59-4183-bb5c-2449bdf6c860" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R13Val" ID="param.3b19f1de-e4c8-4def-bff5-ffe1c986358f" XPosition="1680" YPosition="1253">
+        <Value ID="3b19f1de-e4c8-4def-bff5-ffe1c986358f" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>10000000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="R12Val" ID="param.5c3325d9-aba9-40cb-81e7-7c16fb88a3a6" XPosition="1687" YPosition="1113">
+        <Value ID="5c3325d9-aba9-40cb-81e7-7c16fb88a3a6" DimensionType="Scalar" Dimensions="" Unit="ohm" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1400000</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C8Val" ID="param.82486ca5-9f94-4b49-86cb-11dd7a1ef39e" XPosition="1239" YPosition="1029">
+        <Value ID="82486ca5-9f94-4b49-86cb-11dd7a1ef39e" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.1</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="C1Val" ID="param.7d525e46-c8c5-4567-beb1-255e1bd47d5b" XPosition="518" YPosition="1050">
+        <Value ID="7d525e46-c8c5-4567-beb1-255e1bd47d5b" DimensionType="Scalar" Dimensions="" Unit="microF" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>0.0015</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="1659" YPosition="238" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{4f806525-95bd-4d04-a2c1-21e78a151d5b}" Name="C6">
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="017fc676-e1e3-4d24-a9c4-c8ae215360ba" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="5c3897f9-a2ff-4bd5-b4ef-b24e20b9b008" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="eaa330c6-a9d5-4cff-9cae-55b3252828f5" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="1a435a7c-5ebf-4922-90c9-9a83a84493b3" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="567c025a-9f88-4b45-9e8a-bbd53a70cd01" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="0dc2db1a-489d-4f73-9b52-dee0f3d4b5e2" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-6ee02b17-2c03-44c4-aee6-eabbfadd4d21" ID="{4f806525-95bd-4d04-a2c1-21e78a151d5b}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-12c3be54-c33f-4ba6-a4b1-f95a000a0740" ID="{4f806525-95bd-4d04-a2c1-21e78a151d5b}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1729" YPosition="1015" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{e86efb67-635a-4e69-b1ad-21e111a0bc6e}" Name="R11">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="b08efe18-4896-43c6-b43d-9b33308c3346" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="58b9602f-63dd-425b-9a27-a4fdd6000e5f" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="080c0a5d-6bd7-4c4a-8ff5-ef4bdea0125f" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{0506b275-64a0-4d49-8c01-0936b05528ed}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{e86efb67-635a-4e69-b1ad-21e111a0bc6e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-f2b46090-4f67-408a-a72a-8f70077d0495" ID="{e86efb67-635a-4e69-b1ad-21e111a0bc6e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1715" YPosition="1295" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{b6547d34-f32c-4a51-bc75-97e9f3a8f234}" Name="R13">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="d2b04d83-8308-4078-9127-fb86f3439003" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="fa5134e1-58e8-4de7-bc25-fe6c52fad1b0" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="3b19f1de-e4c8-4def-bff5-ffe1c986358f" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{0506b275-64a0-4d49-8c01-0936b05528ed}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{b6547d34-f32c-4a51-bc75-97e9f3a8f234}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-c924c2a3-d03f-4062-8e88-cf1bd0c23897" ID="{b6547d34-f32c-4a51-bc75-97e9f3a8f234}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="539" YPosition="1092" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{3f553b39-d9f8-43df-9098-c7f38f08a553}" Name="C1">
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="321f3b56-a9f2-4128-85f0-6027980c3595" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="7d525e46-c8c5-4567-beb1-255e1bd47d5b" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="4415cf21-69e2-4b96-ae0d-a01c45245ef3" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="e74f1ace-ddd0-48a5-aa94-3bc613248867" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="2f9328c2-f8fb-45a7-81af-2c50d4bbf092" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="c3491935-e48b-4352-9255-1265d9a227ef" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-19d84861-8b49-40f4-9224-1928e39b11ca" ID="{3f553b39-d9f8-43df-9098-c7f38f08a553}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+        <ConnectorInstance ConnectorComposition="{09652b61-56d9-4cb2-88da-8ac229f3c51a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{3f553b39-d9f8-43df-9098-c7f38f08a553}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1148" YPosition="350" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d}" Name="C4">
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="88f1b12a-2cac-4c1b-9c18-5ce2908caa14" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="132e5f7c-8a22-4c59-918a-84f7cc83fff2" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="4958118c-0938-4c1e-806e-19090a3337a1" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="08929537-468e-497a-bd21-335d57098b60" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="60aa40ae-387a-43e0-80d0-d990da781e20" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="8309f35d-1702-4082-923e-4c8212daef9d" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-b15e8da9-d2e2-4f13-89ce-b2248d3fae12" ID="{6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-f2b46090-4f67-408a-a72a-8f70077d0495" ID="{6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1113" YPosition="434" ComponentID="ba09c6d8-dd42-4ed6-b29d-e9a1667f2d63" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}" Name="AD8232_HRMon">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="f555428f-3b8c-460b-92d4-aff988401e2e" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{21ecb2b1-c2dc-495b-84c7-0c2a107677f9}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-64a49f85-93cc-4930-91c5-eb2aeca8b845" ApplyJoinData="" IDinComponentModel="id-64a49f85-93cc-4930-91c5-eb2aeca8b845" />
+        <ConnectorInstance ConnectorComposition="{734e28c7-100e-4a99-8005-1d7057b8f416}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-786d65ae-780e-45d1-af2d-72ca6b1b0487" ApplyJoinData="" IDinComponentModel="id-786d65ae-780e-45d1-af2d-72ca6b1b0487" />
+        <ConnectorInstance ConnectorComposition="{6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-b15e8da9-d2e2-4f13-89ce-b2248d3fae12" ApplyJoinData="" IDinComponentModel="id-b15e8da9-d2e2-4f13-89ce-b2248d3fae12" />
+        <ConnectorInstance ConnectorComposition="{b6547d34-f32c-4a51-bc75-97e9f3a8f234}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {09652b61-56d9-4cb2-88da-8ac229f3c51a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-c924c2a3-d03f-4062-8e88-cf1bd0c23897" ApplyJoinData="" IDinComponentModel="id-c924c2a3-d03f-4062-8e88-cf1bd0c23897" />
+        <ConnectorInstance ConnectorComposition="{0506b275-64a0-4d49-8c01-0936b05528ed}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {4f806525-95bd-4d04-a2c1-21e78a151d5b}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-12c3be54-c33f-4ba6-a4b1-f95a000a0740" ApplyJoinData="" IDinComponentModel="id-12c3be54-c33f-4ba6-a4b1-f95a000a0740" />
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-bf89146d-9138-4f24-b1ab-ab2e2f9ede57" ApplyJoinData="" IDinComponentModel="id-bf89146d-9138-4f24-b1ab-ab2e2f9ede57" />
+        <ConnectorInstance ConnectorComposition="id-2e76fb11-824b-4b3d-974b-58a3db9a952a" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-ccd877a6-8280-46c3-b288-5df0124f5bb2" ApplyJoinData="" IDinComponentModel="id-ccd877a6-8280-46c3-b288-5df0124f5bb2" />
+        <ConnectorInstance ConnectorComposition="{3f553b39-d9f8-43df-9098-c7f38f08a553}-id-1e931194-fb98-40e7-9724-4794a8779e73 {31da3132-adeb-4611-a540-6f2a6b4f063e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 id-fae124da-35dd-4f0b-9d35-7b186a2b82ec" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-19d84861-8b49-40f4-9224-1928e39b11ca" ApplyJoinData="" IDinComponentModel="id-19d84861-8b49-40f4-9224-1928e39b11ca" />
+        <ConnectorInstance ConnectorComposition="id-6019db9f-b91e-47ec-a0c9-ea0d9c8504a3" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-fa1d19c2-decc-4155-8623-34fb67695a6f" ApplyJoinData="" IDinComponentModel="id-fa1d19c2-decc-4155-8623-34fb67695a6f" />
+        <ConnectorInstance ConnectorComposition="{e86efb67-635a-4e69-b1ad-21e111a0bc6e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d}-id-1e931194-fb98-40e7-9724-4794a8779e73" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-f2b46090-4f67-408a-a72a-8f70077d0495" ApplyJoinData="" IDinComponentModel="id-f2b46090-4f67-408a-a72a-8f70077d0495" />
+        <ConnectorInstance ConnectorComposition="{21ecb2b1-c2dc-495b-84c7-0c2a107677f9}-id-15204d98-d7cc-4100-a177-7995b8560e0f {3999d282-f3c3-4252-a33c-0b56c1b66698}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-9932dcec-6f3d-4798-9026-cdd8cc7e310f" ApplyJoinData="" IDinComponentModel="id-9932dcec-6f3d-4798-9026-cdd8cc7e310f" />
+        <ConnectorInstance ConnectorComposition="{e40f8c0f-0c49-403e-b53f-874701286fbd}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {b9c0a5ea-c408-442e-9e53-6e0494fd08bd}-id-1e931194-fb98-40e7-9724-4794a8779e73 {e39e6d39-7f42-4eb3-acdb-ad166216d13c}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-e1ac6f6b-e30a-4a06-a404-91d3a0506f61" ApplyJoinData="" IDinComponentModel="id-e1ac6f6b-e30a-4a06-a404-91d3a0506f61" />
+        <ConnectorInstance ConnectorComposition="{c6182d60-b7d7-4084-9835-a2dd4a8bc5a2}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {31da3132-adeb-4611-a540-6f2a6b4f063e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-8a41a193-9522-4e73-be4f-f8bae2add32d" ApplyJoinData="" IDinComponentModel="id-8a41a193-9522-4e73-be4f-f8bae2add32d" />
+        <ConnectorInstance ConnectorComposition="id-db496923-977f-496f-99d7-c3feb0a24a65" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-aff277b6-8889-48aa-92e2-311b270eb7c6" ApplyJoinData="" IDinComponentModel="id-aff277b6-8889-48aa-92e2-311b270eb7c6" />
+        <ConnectorInstance ConnectorComposition="{dde28e85-2d54-40d4-b4a9-e94febea4890}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-2d1cc8c8-bf2b-4cf9-9e6c-965a673470a0" ApplyJoinData="" IDinComponentModel="id-2d1cc8c8-bf2b-4cf9-9e6c-965a673470a0" />
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-1776b47a-8ab7-4935-9f1d-4bc1239ec852" ApplyJoinData="" IDinComponentModel="id-1776b47a-8ab7-4935-9f1d-4bc1239ec852" />
+        <ConnectorInstance ConnectorComposition="id-793d59f4-9ddc-46ff-a126-f413ae9b1772" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-4f7b2865-cf32-4c1b-8807-abcda6e387e5" ApplyJoinData="" IDinComponentModel="id-4f7b2865-cf32-4c1b-8807-abcda6e387e5" />
+        <ConnectorInstance ConnectorComposition="{c6182d60-b7d7-4084-9835-a2dd4a8bc5a2}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {8fd1f99e-036c-416f-85bb-cc5435869b02}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {4f806525-95bd-4d04-a2c1-21e78a151d5b}-id-1e931194-fb98-40e7-9724-4794a8779e73" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-6ee02b17-2c03-44c4-aee6-eabbfadd4d21" ApplyJoinData="" IDinComponentModel="id-6ee02b17-2c03-44c4-aee6-eabbfadd4d21" />
+        <ConnectorInstance ConnectorComposition="{445929ae-6872-4a7a-9fdf-78f7b2430ea6}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-89978987-a3e0-4d8a-8660-c3d5a5453af9" ApplyJoinData="" IDinComponentModel="id-89978987-a3e0-4d8a-8660-c3d5a5453af9" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="861" YPosition="966" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{734e28c7-100e-4a99-8005-1d7057b8f416}" Name="R7">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="29bb3e1b-d807-4d3d-a9aa-eb88a131f33b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="d64cc267-615a-41a3-81e1-f3c98abb6c12" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="7a623acd-3110-4211-8b96-1ca70600bd3f" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{09652b61-56d9-4cb2-88da-8ac229f3c51a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{734e28c7-100e-4a99-8005-1d7057b8f416}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{8fd1f99e-036c-416f-85bb-cc5435869b02}-id-15204d98-d7cc-4100-a177-7995b8560e0f {208cb754-54f9-4f0b-a605-add2d22a249f}-id-786d65ae-780e-45d1-af2d-72ca6b1b0487" ID="{734e28c7-100e-4a99-8005-1d7057b8f416}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="371" YPosition="525" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{3999d282-f3c3-4252-a33c-0b56c1b66698}" Name="R5">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="3db3db83-c3d6-4850-8e4b-7b0f7dfd0e78" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="2b1334c1-50ff-4820-8dcf-4049b47e0a59" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="da827047-732e-478a-902c-da4b587b6181" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="id-c63da893-220f-429f-b843-b0640463547a" ID="{3999d282-f3c3-4252-a33c-0b56c1b66698}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-9932dcec-6f3d-4798-9026-cdd8cc7e310f" ID="{3999d282-f3c3-4252-a33c-0b56c1b66698}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="777" YPosition="1323" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{c6182d60-b7d7-4084-9835-a2dd4a8bc5a2}" Name="R8">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="f96c2190-887a-44e4-ab63-44a362ca097e" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="a11b8705-1107-4609-bf72-d32b1290cae3" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="73fe1b39-7f59-4183-bb5c-2449bdf6c860" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-8a41a193-9522-4e73-be4f-f8bae2add32d" ID="{c6182d60-b7d7-4084-9835-a2dd4a8bc5a2}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-6ee02b17-2c03-44c4-aee6-eabbfadd4d21" ID="{c6182d60-b7d7-4084-9835-a2dd4a8bc5a2}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="686" YPosition="189" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{445929ae-6872-4a7a-9fdf-78f7b2430ea6}" Name="R3">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="44db1d4e-e2a1-4fdf-87c1-8f7d6710f761" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="eb1b26e7-2a22-4bc2-8395-7f45d39e97f9" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="19985ced-4441-4e25-9aed-11a16bec6978" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{1505594e-c101-4ee4-a183-17206871be87}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{445929ae-6872-4a7a-9fdf-78f7b2430ea6}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-89978987-a3e0-4d8a-8660-c3d5a5453af9" ID="{445929ae-6872-4a7a-9fdf-78f7b2430ea6}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="378" YPosition="189" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{1505594e-c101-4ee4-a183-17206871be87}" Name="R1">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="84567443-90fe-4a20-b9dc-20271188c954" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="5f849eda-ad04-42e9-820b-6b41d1e5c979" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="c0dedbff-98c3-44ee-9f08-16843449ea62" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{1505594e-c101-4ee4-a183-17206871be87}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{445929ae-6872-4a7a-9fdf-78f7b2430ea6}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 id-4a0e8ec3-3121-4ae8-90a2-ba43aa15da16" ID="{1505594e-c101-4ee4-a183-17206871be87}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1610" YPosition="686" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{56b194da-a68c-4356-95fd-1330878754bb}" Name="c5">
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="1cf3fc61-cc12-499b-8412-65df042ac1cc" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="f7ac89ce-1ada-40c0-8560-87812a02b119" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="78e89f60-f023-48f7-915e-85dbab4ddd5d" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="54271853-316f-4e2b-8007-0c7d5bb80a9d" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="a0dbb3ff-ca10-41ca-8015-676a1caca06c" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="070802a2-349e-4e8e-b668-d17fd9dd73cf" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{56b194da-a68c-4356-95fd-1330878754bb}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{56b194da-a68c-4356-95fd-1330878754bb}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1715" YPosition="854" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{e40f8c0f-0c49-403e-b53f-874701286fbd}" Name="R10">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="82d1b44e-1e19-44fa-9556-95cbcaa0259c" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="0d2d8619-ea39-4a13-98c7-8426ed99d081" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="75e66554-a5e3-4ca0-a01b-cef6e4528e4a" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{e40f8c0f-0c49-403e-b53f-874701286fbd}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-e1ac6f6b-e30a-4a06-a404-91d3a0506f61" ID="{e40f8c0f-0c49-403e-b53f-874701286fbd}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1722" YPosition="1155" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{0506b275-64a0-4d49-8c01-0936b05528ed}" Name="R12">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="1c8ef7b4-751c-451c-821c-5ac9815824c2" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="2c40ec59-9edc-4718-9745-4b3c1722d7c1" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="5c3325d9-aba9-40cb-81e7-7c16fb88a3a6" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-12c3be54-c33f-4ba6-a4b1-f95a000a0740" ID="{0506b275-64a0-4d49-8c01-0936b05528ed}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+        <ConnectorInstance ConnectorComposition="{b6547d34-f32c-4a51-bc75-97e9f3a8f234}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {e86efb67-635a-4e69-b1ad-21e111a0bc6e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{0506b275-64a0-4d49-8c01-0936b05528ed}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1260" YPosition="1449" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{31da3132-adeb-4611-a540-6f2a6b4f063e}" Name="R9">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="30afaefa-27a4-4785-9551-b382267df2a6" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="92921b47-1388-4d4f-8dd2-1267ae8b3630" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="d85be164-275c-474c-ac14-3576ffbadd93" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-19d84861-8b49-40f4-9224-1928e39b11ca" ID="{31da3132-adeb-4611-a540-6f2a6b4f063e}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-8a41a193-9522-4e73-be4f-f8bae2add32d" ID="{31da3132-adeb-4611-a540-6f2a6b4f063e}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1253" YPosition="910" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{b9c0a5ea-c408-442e-9e53-6e0494fd08bd}" Name="C7">
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="953c5621-20d7-4502-9f0a-2e9539a4b7e0" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="f4f939e0-87dd-4aa5-8dfc-b48654ab28f5" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="c342c082-2a84-4dcf-9fe7-5904edb0985b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="68b77c6f-26e9-47b0-a79a-88a7559068ec" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="cfc69ae1-234d-4397-9c45-d9d0b1b27d57" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="f00e359f-7b25-4431-b6b3-06a75de66f88" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{b9c0a5ea-c408-442e-9e53-6e0494fd08bd}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-e1ac6f6b-e30a-4a06-a404-91d3a0506f61" ID="{b9c0a5ea-c408-442e-9e53-6e0494fd08bd}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1260" YPosition="1071" ComponentID="f50a4854-bc10-4b34-87b2-8137fa70243ab" ID="{56312f1e-5066-4b82-9827-a9baff4d0f1a}" Name="C8">
+        <PrimitivePropertyInstance IDinComponentModel="id-4f38f0c5-496b-4952-9a61-3d0f422707d9">
+          <Value ID="1d240caa-6fc6-4a8b-8d90-9fa7d9d08d90" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b7bddcb3-605d-4f5f-9c3c-f76497b80176">
+          <Value ID="724b3b78-29d4-4565-a2e6-934a5aaaf26b" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-6f98038c-8bdb-4f6a-b6ae-ce6869a77aa8">
+          <Value ID="fd3fc27f-54bd-464d-8944-a84814445b6f" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-9d297215-e9be-4593-892b-a74ad6fae76c">
+          <Value ID="a81e69ed-2281-4827-b6b9-80df17861fa1" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-b47fea8c-afc3-4adf-98a9-cd5fc4c268a3">
+          <Value ID="72be34be-8c1e-4334-9d6c-3551debd7042" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="82486ca5-9f94-4b49-86cb-11dd7a1ef39e" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{56312f1e-5066-4b82-9827-a9baff4d0f1a}-id-1e931194-fb98-40e7-9724-4794a8779e73" ApplyJoinData="" IDinComponentModel="id-1e931194-fb98-40e7-9724-4794a8779e73" />
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{56312f1e-5066-4b82-9827-a9baff4d0f1a}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ApplyJoinData="" IDinComponentModel="id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="742" YPosition="490" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{21ecb2b1-c2dc-495b-84c7-0c2a107677f9}" Name="C2">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="2283807a-6c0f-44c1-bc43-50ba08523eab" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="0fcc75f5-54fe-4c6f-baf7-53163143f174" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="13b31f79-2dba-488f-b3cd-2513a56d0b3c" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-64a49f85-93cc-4930-91c5-eb2aeca8b845" ID="{21ecb2b1-c2dc-495b-84c7-0c2a107677f9}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-9932dcec-6f3d-4798-9026-cdd8cc7e310f" ID="{21ecb2b1-c2dc-495b-84c7-0c2a107677f9}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="686" YPosition="315" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{dde28e85-2d54-40d4-b4a9-e94febea4890}" Name="R4">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="0dbce387-3ba7-447e-8f00-1a87658915a1" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="64ec2d22-7dd7-4334-afc7-5dca848c5225" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="36fcd309-a819-4943-a6e6-2ded8da905a9" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{dde28e85-2d54-40d4-b4a9-e94febea4890}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-2d1cc8c8-bf2b-4cf9-9e6c-965a673470a0" ID="{dde28e85-2d54-40d4-b4a9-e94febea4890}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="315" YPosition="14" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}" Name="SplitPwrGnd">
+        <ConnectorInstance ConnectorComposition="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {1505594e-c101-4ee4-a183-17206871be87}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {208cb754-54f9-4f0b-a605-add2d22a249f}-id-1776b47a-8ab7-4935-9f1d-4bc1239ec852 {e40f8c0f-0c49-403e-b53f-874701286fbd}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {56b194da-a68c-4356-95fd-1330878754bb}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b {56312f1e-5066-4b82-9827-a9baff4d0f1a}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="id-793d59f4-9ddc-46ff-a126-f413ae9b1772" ID="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-bf89146d-9138-4f24-b1ab-ab2e2f9ede57 {56b194da-a68c-4356-95fd-1330878754bb}-id-1e931194-fb98-40e7-9724-4794a8779e73 {56312f1e-5066-4b82-9827-a9baff4d0f1a}-id-1e931194-fb98-40e7-9724-4794a8779e73 {b9c0a5ea-c408-442e-9e53-6e0494fd08bd}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b {e39e6d39-7f42-4eb3-acdb-ad166216d13c}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="1701" YPosition="1456" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{e39e6d39-7f42-4eb3-acdb-ad166216d13c}" Name="R14">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="b32f51eb-415f-4800-853a-bd22f16a0cde" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="c3af8da1-7ae2-4a87-bcd2-efa9eda369b1" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="33040eb7-2c62-46a7-b91b-ce2ca7cd7dfa" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-e1ac6f6b-e30a-4a06-a404-91d3a0506f61" ID="{e39e6d39-7f42-4eb3-acdb-ad166216d13c}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{e39e6d39-7f42-4eb3-acdb-ad166216d13c}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="385" YPosition="329" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}" Name="R2">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="dea574fb-380e-4704-914c-1c498bebf962" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="954bfa6c-a932-4425-b12a-e0a6883c4e45" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="d542247c-4637-4fea-92f0-1b26084d7204" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{dde28e85-2d54-40d4-b4a9-e94febea4890}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 id-ace6e888-1fd9-41b0-b1e2-9545727d3862" ID="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="616" YPosition="819" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{09652b61-56d9-4cb2-88da-8ac229f3c51a}" Name="R6">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="756358e2-a50c-4c70-9a06-099af45de707" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="f23a1136-3906-4254-b5e3-2d187addd107" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="c9db22de-ae56-41b7-bb96-8f213498fefd" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-c924c2a3-d03f-4062-8e88-cf1bd0c23897" ID="{09652b61-56d9-4cb2-88da-8ac229f3c51a}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{734e28c7-100e-4a99-8005-1d7057b8f416}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {3f553b39-d9f8-43df-9098-c7f38f08a553}-id-f86e7224-3d6c-4c45-9b54-1047a64ff05b" ID="{09652b61-56d9-4cb2-88da-8ac229f3c51a}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="868" YPosition="1120" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{8fd1f99e-036c-416f-85bb-cc5435869b02}" Name="C3">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="f2d5a35b-4cd5-4d69-9537-d7cf50b2c5e0" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="50a5a37b-0f59-49e3-a481-ee38c7ede671" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="8bef64c5-2df2-40a2-a65e-dc0220f10724" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-6ee02b17-2c03-44c4-aee6-eabbfadd4d21" ID="{8fd1f99e-036c-416f-85bb-cc5435869b02}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+        <ConnectorInstance ConnectorComposition="{734e28c7-100e-4a99-8005-1d7057b8f416}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ID="{8fd1f99e-036c-416f-85bb-cc5435869b02}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{5242aa20-c2b4-46e8-82e7-10d5196df6dd}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 id-2eb19fd0-1c2c-4157-bb46-9306c228cdb5 {85362dd2-6804-425f-9110-94330af99cf6}-id-68190bcd-23c3-44db-9a45-9a20c1f354cd" ID="id-ace6e888-1fd9-41b0-b1e2-9545727d3862" ApplyJoinData="" XPosition="49" YPosition="259" Definition="" Name="RightArm">
+        <Role xmlns:q22="schematic" xsi:type="q22:Pin" ID="id-e5bf1ea8-2a55-4acd-b065-7d10bd4fd336" PortMap="" Notes="" XPosition="413" Definition="" YPosition="119" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-4f7b2865-cf32-4c1b-8807-abcda6e387e5 {03cff581-4d85-4b9b-b272-da5d7e9b6ab9}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0 id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="id-793d59f4-9ddc-46ff-a126-f413ae9b1772" ApplyJoinData="" XPosition="49" YPosition="21" Definition="" Name="Power_3V3">
+        <Role xmlns:q23="schematic" xsi:type="q23:Pin" ID="id-e6ad5ad7-8245-4c7c-9689-5ed10356ae0c" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q24="schematic" xsi:type="q24:Pin" ID="id-7613ae68-8b0d-4993-8df7-40c95512c0a0" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{1505594e-c101-4ee4-a183-17206871be87}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {85362dd2-6804-425f-9110-94330af99cf6}-id-d11b07b2-255a-46aa-874d-d0636f8e08c9 id-aac5269c-e87b-48f7-ae8f-8cd86abad801" ID="id-4a0e8ec3-3121-4ae8-90a2-ba43aa15da16" ApplyJoinData="" XPosition="49" YPosition="154" Definition="" Name="LeftArm">
+        <Role xmlns:q25="schematic" xsi:type="q25:Pin" ID="id-07a46948-9004-47be-8654-99c26b7fab11" PortMap="" Notes="" XPosition="273" Definition="" YPosition="56" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-ccd877a6-8280-46c3-b288-5df0124f5bb2" ID="id-2e76fb11-824b-4b3d-974b-58a3db9a952a" ApplyJoinData="" XPosition="2030" YPosition="672" Definition="" Name="ShutDownNot">
+        <Role xmlns:q26="schematic" xsi:type="q26:Pin" ID="id-d2469bd3-92dd-4921-91e6-8c3d6353b3ac" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-fa1d19c2-decc-4155-8623-34fb67695a6f" ID="id-6019db9f-b91e-47ec-a0c9-ea0d9c8504a3" ApplyJoinData="" XPosition="2030" YPosition="574" Definition="" Name="LftArmDiscon">
+        <Role xmlns:q27="schematic" xsi:type="q27:Pin" ID="id-26f5d46b-ac9a-4901-a35c-ef1e0ec648fd" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{3999d282-f3c3-4252-a33c-0b56c1b66698}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45 {85362dd2-6804-425f-9110-94330af99cf6}-id-5290d486-3465-4c90-b793-4967ac42d860 id-9bb4166a-ec18-4bd3-87e1-4a40428d1553" ID="id-c63da893-220f-429f-b843-b0640463547a" ApplyJoinData="" XPosition="49" YPosition="455" Definition="" Name="RightLeg">
+        <Role xmlns:q28="schematic" xsi:type="q28:Pin" ID="id-2a3e93a7-58bf-4bb6-8791-2059a37d4bc2" PortMap="" Notes="" XPosition="287" Definition="" YPosition="84" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-19d84861-8b49-40f4-9224-1928e39b11ca {f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-6645b094-ddd7-43b1-ad4a-e856a304104b" ID="id-fae124da-35dd-4f0b-9d35-7b186a2b82ec" ApplyJoinData="" XPosition="2023" YPosition="329" Definition="" Name="SignalOut">
+        <Role xmlns:q29="schematic" xsi:type="q29:Pin" ID="id-d34caeee-11bd-4528-8b3b-44fb7515d243" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{208cb754-54f9-4f0b-a605-add2d22a249f}-id-aff277b6-8889-48aa-92e2-311b270eb7c6" ID="id-db496923-977f-496f-99d7-c3feb0a24a65" ApplyJoinData="" XPosition="2023" YPosition="427" Definition="" Name="RtArmDiscon">
+        <Role xmlns:q30="schematic" xsi:type="q30:Pin" ID="id-5bb13023-9406-4ecf-9945-c5805f8ff53e" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <ContainerFeature xmlns:q31="eda" xsi:type="q31:RelativeRangeLayoutConstraint" XPosition="1211" YPosition="644" XRelativeRangeMin="-5" XRelativeRangeMax="15" YRelativeRangeMin="-5" YRelativeRangeMax="15" ContainerConstraintTarget="" Origin="{208cb754-54f9-4f0b-a605-add2d22a249f}" ConstraintTarget="{1505594e-c101-4ee4-a183-17206871be87} {e86efb67-635a-4e69-b1ad-21e111a0bc6e} {b6547d34-f32c-4a51-bc75-97e9f3a8f234} {3f553b39-d9f8-43df-9098-c7f38f08a553} {6ad516a9-d8a4-4f61-8d73-6b9f8dbe659d} {734e28c7-100e-4a99-8005-1d7057b8f416} {3999d282-f3c3-4252-a33c-0b56c1b66698} {c6182d60-b7d7-4084-9835-a2dd4a8bc5a2} {445929ae-6872-4a7a-9fdf-78f7b2430ea6} {4f806525-95bd-4d04-a2c1-21e78a151d5b} {0506b275-64a0-4d49-8c01-0936b05528ed} {31da3132-adeb-4611-a540-6f2a6b4f063e} {21ecb2b1-c2dc-495b-84c7-0c2a107677f9} {dde28e85-2d54-40d4-b4a9-e94febea4890} {5242aa20-c2b4-46e8-82e7-10d5196df6dd} {09652b61-56d9-4cb2-88da-8ac229f3c51a}" />
+      <ContainerFeature xmlns:q32="eda" xsi:type="q32:RelativeRangeLayoutConstraint" XPosition="1512" YPosition="588" XRelativeRangeMin="-2" XRelativeRangeMax="8" YRelativeRangeMin="-2" YRelativeRangeMax="8" RelativeLayer="Opposite" ContainerConstraintTarget="" Origin="{208cb754-54f9-4f0b-a605-add2d22a249f}" ConstraintTarget="{b9c0a5ea-c408-442e-9e53-6e0494fd08bd} {56312f1e-5066-4b82-9827-a9baff4d0f1a}" />
+    </Container>
+    <Container xsi:type="q1:Compound" YPosition="21" ID="29" Name="Micro" XPosition="469">
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cpb_Val" ID="param.id-aca59e7b-432e-4460-81ef-fcfd50ce9637" XPosition="728" YPosition="637">
+        <Value ID="id-aca59e7b-432e-4460-81ef-fcfd50ce9637" DimensionType="Scalar" Dimensions="" Unit="F" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1e-6</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <Property xsi:type="q1:PrimitiveProperty" Name="Cpb_Val" ID="param.id-38e7e8e9-8131-4ea5-bbc2-160d916c9139" XPosition="371" YPosition="441">
+        <Value ID="id-38e7e8e9-8131-4ea5-bbc2-160d916c9139" DimensionType="Scalar" Dimensions="" Unit="F" DataType="String">
+          <ValueExpression xsi:type="q1:ParametricValue">
+            <AssignedValue xsi:type="q1:FixedValue">
+              <Value>1e-6</Value>
+            </AssignedValue>
+          </ValueExpression>
+        </Value>
+      </Property>
+      <ComponentInstance XPosition="357" YPosition="203" ComponentID="eb5f8ae8-65b0-47ba-93cb-1de4f1bdf236a" ID="{f1fd516c-bcc6-4235-854a-d085eafbc3af}" Name="SplitPwrGnd">
+        <ConnectorInstance ConnectorComposition="id-3e8ab284-9696-4727-b4bf-bdf0e324055f" ID="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" ApplyJoinData="" IDinComponentModel="id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0" />
+        <ConnectorInstance ConnectorComposition="{af0d9322-d876-4840-8c06-2c85de46c602}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913 {8cde840a-f895-4932-8cd2-f619aa75a496}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ID="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ApplyJoinData="" IDinComponentModel="id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" />
+        <ConnectorInstance ConnectorComposition="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {8cde840a-f895-4932-8cd2-f619aa75a496}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {8cde840a-f895-4932-8cd2-f619aa75a496}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786 {ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-260c48ef-da3a-4732-b9ca-9a09c0a0bb48" ID="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ApplyJoinData="" IDinComponentModel="id-28911dd9-5d5c-4168-aca8-e76837b15c1f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="385" YPosition="322" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37}" Name="C_Aref">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="ffe2478d-03e0-4bfb-b366-4fbb3eb05f6c" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="0d7e1358-622b-4719-921f-920d8559bbf9" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-38e7e8e9-8131-4ea5-bbc2-160d916c9139" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-5db7cdf3-6918-41fc-9a86-2eb39c6c605a" ID="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+        <ConnectorInstance ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="693" YPosition="392" ComponentID="34271f87-0b3b-4425-889e-43e3ae7be0b8" ID="{af0d9322-d876-4840-8c06-2c85de46c602}" Name="RPullUp">
+        <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+          <Value ID="71f40f76-f930-49ee-aae6-fa7e3911a484" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+          <Value ID="23cc9f74-385c-4499-a15f-bf06281ad6ea" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c08463ba-3709-48e2-ae29-7eb7cdab1806" ID="{af0d9322-d876-4840-8c06-2c85de46c602}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ApplyJoinData="" IDinComponentModel="id-3a69552a-b0b6-4c1b-8a2f-227967190e45" />
+        <ConnectorInstance ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{af0d9322-d876-4840-8c06-2c85de46c602}-id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" ApplyJoinData="" IDinComponentModel="id-e036e66d-cb00-4adb-a5e7-d9e0f1c4f913" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="721" YPosition="518" ComponentID="1a6a1de1-93a2-4ea5-bc93-4a8ef5272a07b" ID="{8cde840a-f895-4932-8cd2-f619aa75a496}" Name="C_BP">
+        <PrimitivePropertyInstance IDinComponentModel="id-35253478-fd53-4b6c-acd2-719e2280794e">
+          <Value ID="a05f895f-cb0b-4451-bdee-308e6d4a5646" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-4148a4a7-afa9-4bb2-8273-e08a545b0618">
+          <Value ID="cf9ef439-2057-4f2b-89d3-5d2cf93f55cf" DimensionType="Scalar" Dimensions="" DataType="String">
+            <ValueExpression xsi:type="q1:DerivedValue" ValueSource="id-aca59e7b-432e-4460-81ef-fcfd50ce9637" />
+          </Value>
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-fa676f43-6d83-48fa-8e71-ec1ba7388fdc" ID="{8cde840a-f895-4932-8cd2-f619aa75a496}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ApplyJoinData="" IDinComponentModel="id-15204d98-d7cc-4100-a177-7995b8560e0f" />
+        <ConnectorInstance ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f {f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{8cde840a-f895-4932-8cd2-f619aa75a496}-id-c7efb357-0a24-4faf-94a5-df50c5ea6786" ApplyJoinData="" IDinComponentModel="id-c7efb357-0a24-4faf-94a5-df50c5ea6786" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="406" YPosition="28" ComponentID="7831e89d-813a-4c1d-981b-53566a47c31c" ID="{60800b02-f6cf-4b1b-999e-fac436218582}" Name="AtMg">
+        <PrimitivePropertyInstance IDinComponentModel="id-ea2f9441-781e-4378-9878-b4f449c3e3bf">
+          <Value ID="d5be5c1d-ae1f-4430-9a39-6931299c2b21" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-8154d030-e242-4eb6-b69f-e977fda6aa33">
+          <Value ID="8a18a534-2dab-4ee5-ab1a-e835b941607d" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-7b146738-ad2d-4b85-9d4d-dcb85ef5994c">
+          <Value ID="48fc667f-2354-4cca-8bfd-8d41ea377b7d" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-f1326f67-0e1b-478b-a5f4-df3c3118ce58">
+          <Value ID="895465e2-2413-44e6-a2b4-a0c7f0ee5891" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-62e10b18-4944-418a-9117-54a2008b2afd">
+          <Value ID="667af6bf-44b0-4da4-97fa-283c83659cbc" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <PrimitivePropertyInstance IDinComponentModel="id-029e719f-cfd3-452c-9b6a-3c69d88251fc">
+          <Value ID="a1a2533f-431e-4f1c-857b-ccf0f576abf6" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="id-c7909a24-cd75-4aa0-b63d-f290b478be98" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-5af78084-8366-44e2-aeb2-6bf3a985f9ac" ApplyJoinData="" IDinComponentModel="id-5af78084-8366-44e2-aeb2-6bf3a985f9ac" />
+        <ConnectorInstance ConnectorComposition="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-b91e80eb-3d42-4d8a-929a-77fb5f2851aa id-f89cafca-cdf5-4fb6-9382-56c6c262be00 {af0d9322-d876-4840-8c06-2c85de46c602}-id-3a69552a-b0b6-4c1b-8a2f-227967190e45" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c08463ba-3709-48e2-ae29-7eb7cdab1806" ApplyJoinData="" IDinComponentModel="id-c08463ba-3709-48e2-ae29-7eb7cdab1806" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-a3423754-b2d7-48ee-9e81-d88a9ca33cc6" ApplyJoinData="" IDinComponentModel="id-a3423754-b2d7-48ee-9e81-d88a9ca33cc6" />
+        <ConnectorInstance ConnectorComposition="id-3e8ab284-9696-4727-b4bf-bdf0e324055f" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-18940a58-f5ae-4b65-95dc-baa564010d57" ApplyJoinData="" IDinComponentModel="id-18940a58-f5ae-4b65-95dc-baa564010d57" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-96822d68-bfdb-42a5-a782-54e0ac9c059a" ApplyJoinData="" IDinComponentModel="id-96822d68-bfdb-42a5-a782-54e0ac9c059a" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-4319a9da-8f7e-46e8-8906-e3266609aad9" ApplyJoinData="" IDinComponentModel="id-4319a9da-8f7e-46e8-8906-e3266609aad9" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-ca02c709-cb2d-4fa0-a278-925aebed01b5" ApplyJoinData="" IDinComponentModel="ca02c709-cb2d-4fa0-a278-925aebed01b5" />
+        <ConnectorInstance ConnectorComposition="id-9e71c17e-2a61-4c42-8d11-cb3ea1e87bd8" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-f07a6589-69df-435c-928f-b2c95f9b944a" ApplyJoinData="" IDinComponentModel="f07a6589-69df-435c-928f-b2c95f9b944a" />
+        <ConnectorInstance ConnectorComposition="id-3e8ab284-9696-4727-b4bf-bdf0e324055f" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-94af9fb3-bf42-4355-b36d-63d4bb507342" ApplyJoinData="" IDinComponentModel="id-94af9fb3-bf42-4355-b36d-63d4bb507342" />
+        <ConnectorInstance ConnectorComposition="id-1ce0049b-76d0-421e-8203-0bf68e55003f" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-1374ef30-f342-4b27-9942-7cb8d958921e" ApplyJoinData="" IDinComponentModel="id-1374ef30-f342-4b27-9942-7cb8d958921e" />
+        <ConnectorInstance ConnectorComposition="id-f1bb307d-07dd-473a-953d-bfbe6e0ed93b" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-89d96bbe-3976-49b9-83d8-e911ee969512" ApplyJoinData="" IDinComponentModel="id-89d96bbe-3976-49b9-83d8-e911ee969512" />
+        <ConnectorInstance ConnectorComposition="id-613656ec-fe14-4464-a442-4adb4c97b1d6" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-49700944-e42e-425f-bca2-03023e071207" ApplyJoinData="" IDinComponentModel="id-49700944-e42e-425f-bca2-03023e071207" />
+        <ConnectorInstance ConnectorComposition="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37}-id-15204d98-d7cc-4100-a177-7995b8560e0f" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-5db7cdf3-6918-41fc-9a86-2eb39c6c605a" ApplyJoinData="" IDinComponentModel="id-5db7cdf3-6918-41fc-9a86-2eb39c6c605a" />
+        <ConnectorInstance ConnectorComposition="id-93a9d3ee-ec1e-4cc0-9669-ea17916095e6" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c1ae8fb1-56fe-432f-9d3b-f498701bcf78" ApplyJoinData="" IDinComponentModel="id-c1ae8fb1-56fe-432f-9d3b-f498701bcf78" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-352cda96-7aa1-4f3f-87f9-43f53fe1a529" ApplyJoinData="" IDinComponentModel="id-352cda96-7aa1-4f3f-87f9-43f53fe1a529" />
+        <ConnectorInstance ConnectorComposition="" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-f8640703-7c12-4219-8113-c953d96d4b2a" ApplyJoinData="" IDinComponentModel="f8640703-7c12-4219-8113-c953d96d4b2a" />
+        <ConnectorInstance ConnectorComposition="id-d5a9a966-d446-4540-a458-3ffacb9c3f3a" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-b013a52b-79ee-46f6-955a-da154e49b0da" ApplyJoinData="" IDinComponentModel="id-b013a52b-79ee-46f6-955a-da154e49b0da" />
+        <ConnectorInstance ConnectorComposition="id-860d928a-9559-4654-a006-50cc9eab6d86" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-c4b2af08-5213-4218-adaf-b4390decc559" ApplyJoinData="" IDinComponentModel="c4b2af08-5213-4218-adaf-b4390decc559" />
+        <ConnectorInstance ConnectorComposition="id-72502ce3-ee17-45cc-b092-379251eec347" ID="{60800b02-f6cf-4b1b-999e-fac436218582}-id-7599ff94-609f-4d86-966d-9ff637d7d04b" ApplyJoinData="" IDinComponentModel="id-7599ff94-609f-4d86-966d-9ff637d7d04b" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="707" YPosition="266" ComponentID="f1b564e9-135d-4ebd-ac53-9d289ac81e98" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}" Name="KMR221GLFS">
+        <PrimitivePropertyInstance IDinComponentModel="id-03c001b6-9a14-4e27-ac16-f84b3bc3dfb0">
+          <Value ID="0259c45d-2138-4bd7-9501-091e63e9a28a" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-e2ae6226-8b05-4db0-8e05-2af47a0f4393" ApplyJoinData="" IDinComponentModel="id-e2ae6226-8b05-4db0-8e05-2af47a0f4393" />
+        <ConnectorInstance ConnectorComposition="" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-a5c3fc82-6109-4363-bd63-f26963b421ec" ApplyJoinData="" IDinComponentModel="id-a5c3fc82-6109-4363-bd63-f26963b421ec" />
+        <ConnectorInstance ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c08463ba-3709-48e2-ae29-7eb7cdab1806" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-b91e80eb-3d42-4d8a-929a-77fb5f2851aa" ApplyJoinData="" IDinComponentModel="id-b91e80eb-3d42-4d8a-929a-77fb5f2851aa" />
+        <ConnectorInstance ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-28911dd9-5d5c-4168-aca8-e76837b15c1f" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-260c48ef-da3a-4732-b9ca-9a09c0a0bb48" ApplyJoinData="" IDinComponentModel="id-260c48ef-da3a-4732-b9ca-9a09c0a0bb48" />
+        <ConnectorInstance ConnectorComposition="" ID="{ce747cf7-0982-4dfa-b11a-3d429e80d16f}-id-fab6fa47-b0a7-44d7-a030-9127850d5b96" ApplyJoinData="" IDinComponentModel="id-fab6fa47-b0a7-44d7-a030-9127850d5b96" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{f1fd516c-bcc6-4235-854a-d085eafbc3af}-id-70c24c8c-51d9-4a0b-825e-592f18e6a7e0 {60800b02-f6cf-4b1b-999e-fac436218582}-id-94af9fb3-bf42-4355-b36d-63d4bb507342 {60800b02-f6cf-4b1b-999e-fac436218582}-id-18940a58-f5ae-4b65-95dc-baa564010d57 id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="id-3e8ab284-9696-4727-b4bf-bdf0e324055f" ApplyJoinData="" XPosition="7" YPosition="7" Definition="" Name="VccGnd3p3">
+        <Role xmlns:q33="schematic" xsi:type="q33:Pin" ID="id-5abfac19-91d2-4688-972e-7286720e56bc" PortMap="" Notes="" XPosition="224" Definition="" YPosition="49" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q34="schematic" xsi:type="q34:Pin" ID="id-39b709d4-78fc-4315-8bc4-a72ae6fe9330" PortMap="" Notes="" XPosition="224" Definition="" YPosition="126" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c1ae8fb1-56fe-432f-9d3b-f498701bcf78 id-7f560553-8037-442e-8099-17ffcefc1ea7" ID="id-93a9d3ee-ec1e-4cc0-9669-ea17916095e6" ApplyJoinData="" XPosition="56" YPosition="539" Definition="" Name="UART">
+        <Role xmlns:q35="schematic" xsi:type="q35:Pin" ID="id-323b8955-bdb8-4f62-af18-77eeed53c2c2" PortMap="" Notes="" XPosition="63" Definition="" YPosition="147" Name="RXD" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q36="schematic" xsi:type="q36:Pin" ID="id-ec789e32-12c5-4431-86e4-754d127e4660" PortMap="" Notes="" XPosition="63" Definition="" YPosition="70" Name="TXD" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q37="systemc" xsi:type="q37:SystemCPort" ID="id-5bed78a8-46c1-430a-b978-b2040a70d59e" PortMap="" Notes="" XPosition="175" Definition="" YPosition="161" Name="RXD" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q38="systemc" xsi:type="q38:SystemCPort" ID="id-451394c4-9d4a-414c-a0f4-e417c17efcae" PortMap="" Notes="" XPosition="168" Definition="" YPosition="63" Name="TXD" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-89d96bbe-3976-49b9-83d8-e911ee969512" ID="id-f1bb307d-07dd-473a-953d-bfbe6e0ed93b" ApplyJoinData="" XPosition="1120" YPosition="14" Definition="" Name="PortB">
+        <Role xmlns:q39="schematic" xsi:type="q39:Pin" ID="id-32830c54-6e9e-4369-818d-e9fb74f6b391" PortMap="" Notes="" XPosition="14" Definition="" YPosition="490" Name="P6" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q40="schematic" xsi:type="q40:Pin" ID="id-f6c13c34-0060-490a-b5e0-ed337801444d" PortMap="" Notes="" XPosition="14" Definition="" YPosition="553" Name="P7" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q41="schematic" xsi:type="q41:Pin" ID="id-043637ac-1c17-47cf-afa6-c371a263f5b8" PortMap="" Notes="" XPosition="14" Definition="" YPosition="273" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q42="schematic" xsi:type="q42:Pin" ID="id-346a2d23-3777-4362-b46e-17e1e0478633" PortMap="" Notes="" XPosition="14" Definition="" YPosition="119" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q43="schematic" xsi:type="q43:Pin" ID="id-7d858252-2f4a-4e90-acae-06d78dd2cb07" PortMap="" Notes="" XPosition="14" Definition="" YPosition="420" Name="P5" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q44="schematic" xsi:type="q44:Pin" ID="id-1f94a865-96d9-4868-923a-51c66ab0efa2" PortMap="" Notes="" XPosition="14" Definition="" YPosition="350" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q45="schematic" xsi:type="q45:Pin" ID="id-fb18b812-20fd-4735-a794-c728123212fd" PortMap="" Notes="" XPosition="14" Definition="" YPosition="42" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q46="schematic" xsi:type="q46:Pin" ID="id-385090db-a975-479c-b98a-deea450ab156" PortMap="" Notes="" XPosition="14" Definition="" YPosition="196" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q47="systemc" xsi:type="q47:SystemCPort" ID="id-5df8684c-ebd3-40dc-9f0c-23fb68af0a20" PortMap="" Notes="" XPosition="126" Definition="" YPosition="350" Name="P4" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q48="systemc" xsi:type="q48:SystemCPort" ID="id-9c673599-be3c-4073-b695-039f73f5f98d" PortMap="" Notes="" XPosition="126" Definition="" YPosition="189" Name="P2" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q49="systemc" xsi:type="q49:SystemCPort" ID="id-10d46f50-35ad-475b-8560-93daffadc2d4" PortMap="" Notes="" XPosition="133" Definition="" YPosition="21" Name="P0" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q50="systemc" xsi:type="q50:SystemCPort" ID="id-a23f8273-eb35-4ed7-8eb1-f6f95512f2de" PortMap="" Notes="" XPosition="126" Definition="" YPosition="490" Name="P6" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q51="systemc" xsi:type="q51:SystemCPort" ID="id-d0e438cc-5daa-44b3-9350-dca7cf6bb3f6" PortMap="" Notes="" XPosition="126" Definition="" YPosition="560" Name="P7" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q52="systemc" xsi:type="q52:SystemCPort" ID="id-bd1cb368-ed64-43f9-b3d9-4e6903cb3d1b" PortMap="" Notes="" XPosition="133" Definition="" YPosition="105" Name="P1" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q53="systemc" xsi:type="q53:SystemCPort" ID="id-efdd7a8a-6489-47c9-97ea-f679a967ef5b" PortMap="" Notes="" XPosition="133" Definition="" YPosition="420" Name="P5" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q54="systemc" xsi:type="q54:SystemCPort" ID="id-85c968f2-a6f3-4aa8-8425-bdba2870a42a" PortMap="" Notes="" XPosition="126" Definition="" YPosition="273" Name="P3" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-49700944-e42e-425f-bca2-03023e071207 {f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-89d96bbe-3976-49b9-83d8-e911ee969512 {08eff319-5977-4cf0-8550-d2d4e887f3ca}-id-49700944-e42e-425f-bca2-03023e071207" ID="id-613656ec-fe14-4464-a442-4adb4c97b1d6" ApplyJoinData="" XPosition="1127" YPosition="805" Definition="" Name="AnalogIN">
+        <Role xmlns:q55="schematic" xsi:type="q55:Pin" ID="id-44d95326-c15b-42c6-bc8b-87e4f18879ff" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-7599ff94-609f-4d86-966d-9ff637d7d04b" ID="id-72502ce3-ee17-45cc-b092-379251eec347" ApplyJoinData="" XPosition="1120" YPosition="630" Definition="" Name="Digital I/O">
+        <Role xmlns:q56="schematic" xsi:type="q56:Pin" ID="id-ee2c2c76-14f4-425a-86df-a7c770da4692" PortMap="" Notes="" XPosition="14" Definition="" YPosition="119" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q57="schematic" xsi:type="q57:Pin" ID="id-b88d0b6a-3fec-4ada-bbc0-eebac8fbeb78" PortMap="" Notes="" XPosition="14" Definition="" YPosition="490" Name="P6" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q58="schematic" xsi:type="q58:Pin" ID="id-3ed289a4-456b-4a83-b008-efdea5820d2b" PortMap="" Notes="" XPosition="14" Definition="" YPosition="623" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q59="schematic" xsi:type="q59:Pin" ID="id-81bd0675-d97a-4983-a188-0cfd15c3b1a5" PortMap="" Notes="" XPosition="14" Definition="" YPosition="350" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q60="schematic" xsi:type="q60:Pin" ID="id-3a3ea6cc-e807-4e67-a905-78b3345aa0e0" PortMap="" Notes="" XPosition="14" Definition="" YPosition="42" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q61="schematic" xsi:type="q61:Pin" ID="id-09b1a66a-f41d-44bf-a53d-2db6652b742e" PortMap="" Notes="" XPosition="14" Definition="" YPosition="196" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q62="schematic" xsi:type="q62:Pin" ID="id-e3e65561-86fd-43bf-9821-a5b5e36cd3e6" PortMap="" Notes="" XPosition="14" Definition="" YPosition="420" Name="P5" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q63="schematic" xsi:type="q63:Pin" ID="id-c21ae7b0-fcaa-4a10-8f09-d04e42d3e08c" PortMap="" Notes="" XPosition="14" Definition="" YPosition="273" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q64="schematic" xsi:type="q64:Pin" ID="id-ccac3d73-e6f4-4dc7-a993-4aded524eb0b" PortMap="" Notes="" XPosition="14" Definition="" YPosition="553" Name="P7" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q65="systemc" xsi:type="q65:SystemCPort" ID="id-beb74c4a-33fa-4abc-b0ba-5c2759cf7f9c" PortMap="" Notes="" XPosition="126" Definition="" YPosition="560" Name="P7" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q66="systemc" xsi:type="q66:SystemCPort" ID="id-649fe2dc-90f2-4db3-b16e-228a4dbe68e8" PortMap="" Notes="" XPosition="133" Definition="" YPosition="420" Name="P5" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q67="systemc" xsi:type="q67:SystemCPort" ID="id-04001778-4621-4d5c-bcf7-e106a1f22b26" PortMap="" Notes="" XPosition="126" Definition="" YPosition="273" Name="P3" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q68="systemc" xsi:type="q68:SystemCPort" ID="id-a99c17b7-acf8-4e19-81c5-4ce0db271cf2" PortMap="" Notes="" XPosition="133" Definition="" YPosition="105" Name="P1" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q69="systemc" xsi:type="q69:SystemCPort" ID="id-f5e5acfd-7b2e-4ab7-a57e-1ad4c26886c8" PortMap="" Notes="" XPosition="126" Definition="" YPosition="350" Name="P4" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q70="systemc" xsi:type="q70:SystemCPort" ID="id-67622985-fe23-4531-90c6-520927b8aabf" PortMap="" Notes="" XPosition="133" Definition="" YPosition="21" Name="P0" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q71="systemc" xsi:type="q71:SystemCPort" ID="id-44143aa8-5fdd-479d-8751-d159da51525d" PortMap="" Notes="" XPosition="126" Definition="" YPosition="490" Name="P6" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q72="systemc" xsi:type="q72:SystemCPort" ID="id-abc652a5-8c83-430f-b0f4-ab3f41af4242" PortMap="" Notes="" XPosition="126" Definition="" YPosition="189" Name="P2" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-5af78084-8366-44e2-aeb2-6bf3a985f9ac {7d726356-0981-46e4-adda-9dc88edb7e8d}-id-89d96bbe-3976-49b9-83d8-e911ee969512" ID="id-c7909a24-cd75-4aa0-b63d-f290b478be98" ApplyJoinData="" XPosition="1120" YPosition="168" Definition="" Name="Port C">
+        <Role xmlns:q73="schematic" xsi:type="q73:Pin" ID="id-fde19513-7f6b-4059-bf79-172538e54878" PortMap="" Notes="" XPosition="14" Definition="" YPosition="490" Name="P6" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q74="schematic" xsi:type="q74:Pin" ID="id-5ba49069-e7d5-46f6-8ec3-e0277084fff7" PortMap="" Notes="" XPosition="14" Definition="" YPosition="196" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q75="schematic" xsi:type="q75:Pin" ID="id-2521cab1-27f2-41d3-95f0-b31ce2c99f1b" PortMap="" Notes="" XPosition="14" Definition="" YPosition="350" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q76="schematic" xsi:type="q76:Pin" ID="id-ff892cef-7d99-4eda-bf26-c81c519adc13" PortMap="" Notes="" XPosition="14" Definition="" YPosition="553" Name="P7" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q77="schematic" xsi:type="q77:Pin" ID="id-84193ff1-79c7-4fbe-9071-22fa8fb0c68a" PortMap="" Notes="" XPosition="14" Definition="" YPosition="420" Name="P5" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q78="schematic" xsi:type="q78:Pin" ID="id-7900d987-d057-4f4f-94d3-ddcb5894c131" PortMap="" Notes="" XPosition="14" Definition="" YPosition="119" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q79="schematic" xsi:type="q79:Pin" ID="id-1b157216-4782-48c9-b7e5-d943f52fcafe" PortMap="" Notes="" XPosition="14" Definition="" YPosition="42" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q80="schematic" xsi:type="q80:Pin" ID="id-912f373c-2d90-4581-822b-6d65455bfb92" PortMap="" Notes="" XPosition="14" Definition="" YPosition="273" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q81="systemc" xsi:type="q81:SystemCPort" ID="id-a7ad2182-37b5-4bc7-9869-af24c8a4c146" PortMap="" Notes="" XPosition="133" Definition="" YPosition="105" Name="P1" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q82="systemc" xsi:type="q82:SystemCPort" ID="id-bfc4b5d5-587e-49b9-b985-7b8826cb89b8" PortMap="" Notes="" XPosition="133" Definition="" YPosition="420" Name="P5" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q83="systemc" xsi:type="q83:SystemCPort" ID="id-de2c2b51-e529-40c3-b985-f21dce995760" PortMap="" Notes="" XPosition="133" Definition="" YPosition="21" Name="P0" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q84="systemc" xsi:type="q84:SystemCPort" ID="id-7b62a3a1-e6cb-4c7d-8d60-768e406dbdab" PortMap="" Notes="" XPosition="126" Definition="" YPosition="490" Name="P6" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q85="systemc" xsi:type="q85:SystemCPort" ID="id-d345b946-5787-44d0-9b03-04ec7a3a3090" PortMap="" Notes="" XPosition="126" Definition="" YPosition="273" Name="P3" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q86="systemc" xsi:type="q86:SystemCPort" ID="id-4686f96f-dfcd-45c5-a8e4-85c8be8c6e60" PortMap="" Notes="" XPosition="126" Definition="" YPosition="350" Name="P4" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q87="systemc" xsi:type="q87:SystemCPort" ID="id-1e436e0c-5706-47d4-8270-eb3f4a79483d" PortMap="" Notes="" XPosition="126" Definition="" YPosition="560" Name="P7" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q88="systemc" xsi:type="q88:SystemCPort" ID="id-ab7bfc08-31d7-47f2-a504-d2e0528ca0a6" PortMap="" Notes="" XPosition="126" Definition="" YPosition="189" Name="P2" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-1374ef30-f342-4b27-9942-7cb8d958921e" ID="id-1ce0049b-76d0-421e-8203-0bf68e55003f" ApplyJoinData="" XPosition="21" YPosition="140" Definition="" Name="I2C">
+        <Role xmlns:q89="schematic" xsi:type="q89:Pin" ID="id-907d3485-8ed1-4e20-9d55-42702598df3d" PortMap="" Notes="" XPosition="119" Definition="" YPosition="56" Name="SCL" EDAGate="G$1" EDASymbolLocationX="-55.88" EDASymbolLocationY="-48.26" EDASymbolRotation="0" SPICEPortNumber="0" />
+        <Role xmlns:q90="schematic" xsi:type="q90:Pin" ID="id-83cc7d59-3665-457b-b44a-ccb3844429f4" PortMap="" Notes="" XPosition="119" Definition="" YPosition="147" Name="SDA" EDAGate="G$1" EDASymbolLocationX="-55.88" EDASymbolLocationY="-48.26" EDASymbolRotation="0" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-c08463ba-3709-48e2-ae29-7eb7cdab1806" ID="id-f89cafca-cdf5-4fb6-9382-56c6c262be00" ApplyJoinData="" XPosition="70" YPosition="392" Definition="" Name="nRESET">
+        <Role xmlns:q91="schematic" xsi:type="q91:Pin" ID="id-a5337fac-4335-44f1-ba67-988393a1f4be" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-f07a6589-69df-435c-928f-b2c95f9b944a" ID="id-9e71c17e-2a61-4c42-8d11-cb3ea1e87bd8" ApplyJoinData="" XPosition="42" YPosition="658" Definition="" Name="BondPoint">
+        <Role xmlns:q92="modelica" xsi:type="q92:Connector" ID="id-1136becc-9881-4192-a698-a0f61162ec85" PortMap="" XPosition="63" YPosition="56" Name="heat" Locator="" Class="Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-c4b2af08-5213-4218-adaf-b4390decc559" ID="id-860d928a-9559-4654-a006-50cc9eab6d86" ApplyJoinData="" XPosition="1120" YPosition="336" Definition="" Name="Port D">
+        <Role xmlns:q93="schematic" xsi:type="q93:Pin" ID="id-8b248f5b-31f9-4ff4-a138-ba5b72042a04" PortMap="" Notes="" XPosition="14" Definition="" YPosition="273" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q94="schematic" xsi:type="q94:Pin" ID="id-bd0fd769-1daa-4145-ae78-a572682fc268" PortMap="" Notes="" XPosition="14" Definition="" YPosition="553" Name="P7" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q95="schematic" xsi:type="q95:Pin" ID="id-6cecba81-1ee9-4b25-8d59-79b24ac98b17" PortMap="" Notes="" XPosition="14" Definition="" YPosition="196" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q96="schematic" xsi:type="q96:Pin" ID="id-172d1825-a92b-4efc-be49-895d058746e2" PortMap="" Notes="" XPosition="14" Definition="" YPosition="490" Name="P6" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q97="schematic" xsi:type="q97:Pin" ID="id-0bf52760-9bc7-4206-a10a-9ce5a187e135" PortMap="" Notes="" XPosition="14" Definition="" YPosition="42" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q98="schematic" xsi:type="q98:Pin" ID="id-3c452b7f-3d1f-4fbb-b220-1496c16f08b5" PortMap="" Notes="" XPosition="14" Definition="" YPosition="420" Name="P5" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q99="schematic" xsi:type="q99:Pin" ID="id-e501351d-1c85-4474-af75-374eb516520b" PortMap="" Notes="" XPosition="14" Definition="" YPosition="119" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q100="schematic" xsi:type="q100:Pin" ID="id-62320952-b224-47b6-aa1e-dff480190d3d" PortMap="" Notes="" XPosition="14" Definition="" YPosition="350" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q101="systemc" xsi:type="q101:SystemCPort" ID="id-c04c4e97-0bc3-4646-b10a-0ec42add57ec" PortMap="" Notes="" XPosition="133" Definition="" YPosition="105" Name="P1" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q102="systemc" xsi:type="q102:SystemCPort" ID="id-55d6bc6f-154b-4ac6-b2e0-bb1d00fa1f23" PortMap="" Notes="" XPosition="133" Definition="" YPosition="21" Name="P0" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q103="systemc" xsi:type="q103:SystemCPort" ID="id-52883865-de76-4768-86c5-090b771075d4" PortMap="" Notes="" XPosition="133" Definition="" YPosition="420" Name="P5" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q104="systemc" xsi:type="q104:SystemCPort" ID="id-5e76be8b-b3fe-4802-a8fd-aaae425a5ed0" PortMap="" Notes="" XPosition="126" Definition="" YPosition="490" Name="P6" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q105="systemc" xsi:type="q105:SystemCPort" ID="id-9a1d11ce-ed7f-4f3d-92e7-8fe1bb2b00c4" PortMap="" Notes="" XPosition="126" Definition="" YPosition="350" Name="P4" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q106="systemc" xsi:type="q106:SystemCPort" ID="id-2b7113fe-e86f-44e5-91ce-05e5eb546029" PortMap="" Notes="" XPosition="126" Definition="" YPosition="189" Name="P2" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q107="systemc" xsi:type="q107:SystemCPort" ID="id-ef406dec-de6b-46b8-94b5-2aaf730ebd95" PortMap="" Notes="" XPosition="126" Definition="" YPosition="273" Name="P3" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+        <Role xmlns:q108="systemc" xsi:type="q108:SystemCPort" ID="id-5531ddfe-a89b-41bf-9b21-93f1cf992ad6" PortMap="" Notes="" XPosition="126" Definition="" YPosition="560" Name="P7" DataType="bool" DataTypeDimension="1" Directionality="not_applicable" Function="normal" />
+      </Connector>
+      <Connector ConnectorComposition="{60800b02-f6cf-4b1b-999e-fac436218582}-id-b013a52b-79ee-46f6-955a-da154e49b0da id-615c29be-aefd-418f-9ec3-903864e8a103" ID="id-d5a9a966-d446-4540-a458-3ffacb9c3f3a" ApplyJoinData="" XPosition="1120" YPosition="504" Definition="" Name="AVR Programming Header">
+        <Role xmlns:q109="schematic" xsi:type="q109:Pin" ID="id-9f6255fa-d2fd-4296-a19c-f79e56e1e4cf" PortMap="" Notes="" XPosition="28" Definition="" YPosition="266" Name="MOSI" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q110="schematic" xsi:type="q110:Pin" ID="id-7568180a-e569-441d-bfcc-7752189a071f" PortMap="" Notes="" XPosition="28" Definition="" YPosition="336" Name="RESET" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q111="schematic" xsi:type="q111:Pin" ID="id-266bcb73-0f22-47f9-8ee8-711372a2d2da" PortMap="" Notes="" XPosition="28" Definition="" YPosition="35" Name="MISO" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q112="schematic" xsi:type="q112:Pin" ID="id-b34e497e-415b-4d24-9c10-e46f9abc1574" PortMap="" Notes="" XPosition="28" Definition="" YPosition="112" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q113="schematic" xsi:type="q113:Pin" ID="id-5d883634-9b98-4cae-8ca4-96754cd2173a" PortMap="" Notes="" XPosition="28" Definition="" YPosition="189" Name="SCK" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q114="schematic" xsi:type="q114:Pin" ID="id-f1295945-ede1-4f78-88f8-947df4d82b92" PortMap="" Notes="" XPosition="28" Definition="" YPosition="413" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+      <ContainerFeature xmlns:q115="eda" xsi:type="q115:RelativeRangeLayoutConstraint" XPosition="1036" YPosition="203" XRelativeRangeMin="-2" XRelativeRangeMax="10" YRelativeRangeMin="-2" YRelativeRangeMax="10" RelativeLayer="Opposite" ContainerConstraintTarget="" Origin="{60800b02-f6cf-4b1b-999e-fac436218582}" ConstraintTarget="{f35cc979-a8e8-4d6e-9cab-5f50f14d9b37} {8cde840a-f895-4932-8cd2-f619aa75a496}" />
+    </Container>
+    <Container xsi:type="q1:Compound" YPosition="161" ID="53" Name="AVR_ProgPort" XPosition="1008">
+      <ComponentInstance XPosition="742" YPosition="77" ComponentID="4c09eee6-7ff3-48b0-9635-63856b7568b7" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}" Name="6_Pin_Header_TSW-103-07-G-D">
+        <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+          <Value ID="1b37d784-3e86-4b03-b714-822e207b3426" DimensionType="Scalar" Dimensions="" DataType="String" />
+        </PrimitivePropertyInstance>
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-61bf1f0e-3ada-4c10-ba4e-b56eeb392aaf" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-d11b07b2-255a-46aa-874d-d0636f8e08c9" ApplyJoinData="" IDinComponentModel="id-d11b07b2-255a-46aa-874d-d0636f8e08c9" />
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-60af9aee-055f-4cfb-a36f-3ff381c8976e" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-fa588cb5-4049-4966-84f0-c9462557ae7b" ApplyJoinData="" IDinComponentModel="id-fa588cb5-4049-4966-84f0-c9462557ae7b" />
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-72e05d8e-b56a-48c0-bd95-476111c39f67" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-5290d486-3465-4c90-b793-4967ac42d860" ApplyJoinData="" IDinComponentModel="id-5290d486-3465-4c90-b793-4967ac42d860" />
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-c6e07b2f-263b-4eb8-b766-d2d9617b30c1" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc" ApplyJoinData="" IDinComponentModel="id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc" />
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-8b52a13e-37b1-4b55-ac88-ce821461a608" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-68190bcd-23c3-44db-9a45-9a20c1f354cd" ApplyJoinData="" IDinComponentModel="id-68190bcd-23c3-44db-9a45-9a20c1f354cd" />
+        <ConnectorInstance ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-0dc6f8f7-a0e9-405b-8ee1-0c341f3d727c" ID="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-bc60c3f2-75f7-4232-86d4-da5b0648669f" ApplyJoinData="" IDinComponentModel="id-bc60c3f2-75f7-4232-86d4-da5b0648669f" />
+      </ComponentInstance>
+      <ComponentInstance XPosition="329" YPosition="70" ComponentID="df167a53-9fd0-4d0b-8bef-4e1f5a585f38a" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}" Name="Header_to_SPI_and_Power">
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-c6e07b2f-263b-4eb8-b766-d2d9617b30c1" ApplyJoinData="" IDinComponentModel="id-c6e07b2f-263b-4eb8-b766-d2d9617b30c1" />
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-d11b07b2-255a-46aa-874d-d0636f8e08c9" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-61bf1f0e-3ada-4c10-ba4e-b56eeb392aaf" ApplyJoinData="" IDinComponentModel="id-61bf1f0e-3ada-4c10-ba4e-b56eeb392aaf" />
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-bc60c3f2-75f7-4232-86d4-da5b0648669f" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-0dc6f8f7-a0e9-405b-8ee1-0c341f3d727c" ApplyJoinData="" IDinComponentModel="id-0dc6f8f7-a0e9-405b-8ee1-0c341f3d727c" />
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-fa588cb5-4049-4966-84f0-c9462557ae7b" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-60af9aee-055f-4cfb-a36f-3ff381c8976e" ApplyJoinData="" IDinComponentModel="id-60af9aee-055f-4cfb-a36f-3ff381c8976e" />
+        <ConnectorInstance ConnectorComposition="id-615c29be-aefd-418f-9ec3-903864e8a103" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-c36f8360-da1d-40cd-b2bd-9c50110915f8" ApplyJoinData="" IDinComponentModel="id-c36f8360-da1d-40cd-b2bd-9c50110915f8" />
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-5290d486-3465-4c90-b793-4967ac42d860" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-72e05d8e-b56a-48c0-bd95-476111c39f67" ApplyJoinData="" IDinComponentModel="id-72e05d8e-b56a-48c0-bd95-476111c39f67" />
+        <ConnectorInstance ConnectorComposition="{e4e8a36e-61e8-438a-bd53-70e90320226d}-id-68190bcd-23c3-44db-9a45-9a20c1f354cd" ID="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-8b52a13e-37b1-4b55-ac88-ce821461a608" ApplyJoinData="" IDinComponentModel="id-8b52a13e-37b1-4b55-ac88-ce821461a608" />
+      </ComponentInstance>
+      <Connector ConnectorComposition="{0e38b15b-e28e-43d6-b816-478260f5e671}-id-c36f8360-da1d-40cd-b2bd-9c50110915f8 id-d5a9a966-d446-4540-a458-3ffacb9c3f3a" ID="id-615c29be-aefd-418f-9ec3-903864e8a103" ApplyJoinData="" XPosition="49" YPosition="56" Definition="" Name="AVR Programming Header">
+        <Role xmlns:q116="schematic" xsi:type="q116:Pin" ID="id-301bbbbf-f223-40c8-870e-090fa4f3d428" PortMap="" Notes="" XPosition="28" Definition="" YPosition="35" Name="MISO" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q117="schematic" xsi:type="q117:Pin" ID="id-5aaf97b0-61a2-4d1d-875c-7f93f1ec4b71" PortMap="" Notes="" XPosition="28" Definition="" YPosition="336" Name="RESET" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q118="schematic" xsi:type="q118:Pin" ID="id-0077fe36-807e-43dd-be41-7c0b20aec535" PortMap="" Notes="" XPosition="28" Definition="" YPosition="413" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q119="schematic" xsi:type="q119:Pin" ID="id-0a66b3c1-f078-4bb4-b2e9-bb7aa4817ea8" PortMap="" Notes="" XPosition="28" Definition="" YPosition="189" Name="SCK" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q120="schematic" xsi:type="q120:Pin" ID="id-56204388-a0fc-4acf-8d52-f4fa1ef4f65b" PortMap="" Notes="" XPosition="28" Definition="" YPosition="112" Name="VCC" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+        <Role xmlns:q121="schematic" xsi:type="q121:Pin" ID="id-4e4efdf8-8ded-46d7-9dcd-709d6728ffe4" PortMap="" Notes="" XPosition="28" Definition="" YPosition="266" Name="MOSI" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      </Connector>
+    </Container>
+    <ComponentInstance XPosition="623" YPosition="532" ComponentID="bcd23f4e-8247-432a-a11b-5ba68c99e4f4a" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}" Name="SplitAnalog">
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-d078410c-7272-4cad-bb44-8847874b2c33" ApplyJoinData="" IDinComponentModel="id-d078410c-7272-4cad-bb44-8847874b2c33" />
+      <ConnectorInstance ConnectorComposition="id-fae124da-35dd-4f0b-9d35-7b186a2b82ec" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-6645b094-ddd7-43b1-ad4a-e856a304104b" ApplyJoinData="" IDinComponentModel="id-6645b094-ddd7-43b1-ad4a-e856a304104b" />
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-020accec-3790-405c-907b-252433a8b006" ApplyJoinData="" IDinComponentModel="id-020accec-3790-405c-907b-252433a8b006" />
+      <ConnectorInstance ConnectorComposition="id-613656ec-fe14-4464-a442-4adb4c97b1d6" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-89d96bbe-3976-49b9-83d8-e911ee969512" ApplyJoinData="" IDinComponentModel="id-89d96bbe-3976-49b9-83d8-e911ee969512" />
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-07e292a1-de32-4498-bdd2-d81387f75da5" ApplyJoinData="" IDinComponentModel="id-07e292a1-de32-4498-bdd2-d81387f75da5" />
+      <ConnectorInstance ConnectorComposition="id-31c5bf8a-8055-499d-8e22-7d4df93672c3" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-520f977c-a816-40db-b5ac-33024faff526" ApplyJoinData="" IDinComponentModel="id-520f977c-a816-40db-b5ac-33024faff526" />
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-b51c36cc-3f0b-482b-a31c-7e7eba336703" ApplyJoinData="" IDinComponentModel="id-b51c36cc-3f0b-482b-a31c-7e7eba336703" />
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-bdfcc0bb-f6df-4494-8661-135e385b1afa" ApplyJoinData="" IDinComponentModel="id-bdfcc0bb-f6df-4494-8661-135e385b1afa" />
+      <ConnectorInstance ConnectorComposition="" ID="{f696bfc0-cfaf-4bb4-a409-bd656a5fe389}-id-93490e44-daf8-47c4-b3ec-04ca7fbdc96e" ApplyJoinData="" IDinComponentModel="id-93490e44-daf8-47c4-b3ec-04ca7fbdc96e" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="42" YPosition="294" ComponentID="bf9455b3-b26a-437b-917d-858e75fbd26c" ID="{45f36f51-d38a-4ad5-bceb-c2fb04ade91e}" Name="PCB_4layer">
+      <PrimitivePropertyInstance IDinComponentModel="id-f55a3fd9-bfb7-48b2-819d-712002253e6e">
+        <Value ID="8e02e5e4-9e7c-47ea-9435-ae066cd96b84" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-fe2f9d95-fdf6-4323-af1e-fd92470e729e">
+        <Value ID="b58112c9-e5e1-480f-bfa9-0a92022a2fe4" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-fe251821-fc21-4693-92a8-4e254b23edc4" ID="{45f36f51-d38a-4ad5-bceb-c2fb04ade91e}-id-b9f18581-6e12-4b54-9138-447d9b84a879" ApplyJoinData="" IDinComponentModel="id-b9f18581-6e12-4b54-9138-447d9b84a879" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="35" YPosition="623" ComponentID="5165da07-ccda-491d-a257-e68c6da1352a" ID="{9d7bbe2b-6e46-490d-aac1-c483003a540c}" Name="Case1">
+      <PrimitivePropertyInstance IDinComponentModel="id-b49a0c6d-11cd-4dea-aa74-a564ded493f4">
+        <Value ID="13bd79aa-fd71-4b93-b307-b4c2383f3f79" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-f20c3451-b453-4528-b944-f9b4dd6a16b5">
+        <Value ID="57424886-ad96-490b-a68e-8d9bd6a4850c" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-ac0a21a7-5ea2-47c2-a11b-b51399ac0cd6">
+        <Value ID="888350b6-4d1d-4fd0-98e6-67fe6e5dc104" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-fe1f2c44-76d6-40ae-89d4-97257f060a36">
+        <Value ID="be028cb8-f6ca-4e8d-bb8b-38d7c38e804c" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-c6b2f9eb-0465-456a-b0b7-70bd065686b5">
+        <Value ID="bd59ede7-7677-48a8-bcb3-c8623cf9bc21" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="" ID="{9d7bbe2b-6e46-490d-aac1-c483003a540c}-e3bbed7d-98dc-4ead-a1db-b670fbd11036" ApplyJoinData="" IDinComponentModel="e3bbed7d-98dc-4ead-a1db-b670fbd11036" />
+      <ConnectorInstance ConnectorComposition="id-8d6ea102-3907-4d17-b520-3b04f5331c22" ID="{9d7bbe2b-6e46-490d-aac1-c483003a540c}-id-415307a1-e1fe-484b-b263-226a0de0b6a4" ApplyJoinData="" IDinComponentModel="id-415307a1-e1fe-484b-b263-226a0de0b6a4" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="1337" YPosition="63" ComponentID="fe274e7b-41c5-4996-88cd-98050e5e0a8ca" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}" Name="Split8BitPort">
+      <ConnectorInstance ConnectorComposition="id-c7909a24-cd75-4aa0-b63d-f290b478be98" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-89d96bbe-3976-49b9-83d8-e911ee969512" ApplyJoinData="" IDinComponentModel="id-89d96bbe-3976-49b9-83d8-e911ee969512" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-bdfcc0bb-f6df-4494-8661-135e385b1afa" ApplyJoinData="" IDinComponentModel="id-bdfcc0bb-f6df-4494-8661-135e385b1afa" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-6645b094-ddd7-43b1-ad4a-e856a304104b" ApplyJoinData="" IDinComponentModel="id-6645b094-ddd7-43b1-ad4a-e856a304104b" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-b51c36cc-3f0b-482b-a31c-7e7eba336703" ApplyJoinData="" IDinComponentModel="id-b51c36cc-3f0b-482b-a31c-7e7eba336703" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-d078410c-7272-4cad-bb44-8847874b2c33" ApplyJoinData="" IDinComponentModel="id-d078410c-7272-4cad-bb44-8847874b2c33" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-93490e44-daf8-47c4-b3ec-04ca7fbdc96e" ApplyJoinData="" IDinComponentModel="id-93490e44-daf8-47c4-b3ec-04ca7fbdc96e" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-07e292a1-de32-4498-bdd2-d81387f75da5" ApplyJoinData="" IDinComponentModel="id-07e292a1-de32-4498-bdd2-d81387f75da5" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-520f977c-a816-40db-b5ac-33024faff526" ApplyJoinData="" IDinComponentModel="id-520f977c-a816-40db-b5ac-33024faff526" />
+      <ConnectorInstance ConnectorComposition="" ID="{7d726356-0981-46e4-adda-9dc88edb7e8d}-id-020accec-3790-405c-907b-252433a8b006" ApplyJoinData="" IDinComponentModel="id-020accec-3790-405c-907b-252433a8b006" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="350" YPosition="448" ComponentID="b4993ac6-e01d-496c-bf46-4d6a03e14753" ID="{08eff319-5977-4cf0-8550-d2d4e887f3ca}" Name="A_SRC">
+      <ConnectorInstance ConnectorComposition="id-613656ec-fe14-4464-a442-4adb4c97b1d6" ID="{08eff319-5977-4cf0-8550-d2d4e887f3ca}-id-49700944-e42e-425f-bca2-03023e071207" ApplyJoinData="" IDinComponentModel="id-49700944-e42e-425f-bca2-03023e071207" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="1946" YPosition="252" ComponentID="4c09eee6-7ff3-48b0-9635-63856b7568b7" ID="{85362dd2-6804-425f-9110-94330af99cf6}" Name="6_Pin_Header_TSW-103-07-G-D">
+      <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+        <Value ID="8275591b-ab16-491f-bff8-89ef55daa6b6" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-5290d486-3465-4c90-b793-4967ac42d860" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-fa588cb5-4049-4966-84f0-c9462557ae7b" ApplyJoinData="" IDinComponentModel="id-fa588cb5-4049-4966-84f0-c9462557ae7b" />
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-fa588cb5-4049-4966-84f0-c9462557ae7b id-c63da893-220f-429f-b843-b0640463547a" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-5290d486-3465-4c90-b793-4967ac42d860" ApplyJoinData="" IDinComponentModel="id-5290d486-3465-4c90-b793-4967ac42d860" />
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc id-4a0e8ec3-3121-4ae8-90a2-ba43aa15da16" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-d11b07b2-255a-46aa-874d-d0636f8e08c9" ApplyJoinData="" IDinComponentModel="id-d11b07b2-255a-46aa-874d-d0636f8e08c9" />
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-d11b07b2-255a-46aa-874d-d0636f8e08c9" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc" ApplyJoinData="" IDinComponentModel="id-a2502ec0-77b6-42bb-81c0-98cfd46f33cc" />
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-68190bcd-23c3-44db-9a45-9a20c1f354cd" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-bc60c3f2-75f7-4232-86d4-da5b0648669f" ApplyJoinData="" IDinComponentModel="id-bc60c3f2-75f7-4232-86d4-da5b0648669f" />
+      <ConnectorInstance ConnectorComposition="{85362dd2-6804-425f-9110-94330af99cf6}-id-bc60c3f2-75f7-4232-86d4-da5b0648669f id-ace6e888-1fd9-41b0-b1e2-9545727d3862" ID="{85362dd2-6804-425f-9110-94330af99cf6}-id-68190bcd-23c3-44db-9a45-9a20c1f354cd" ApplyJoinData="" IDinComponentModel="id-68190bcd-23c3-44db-9a45-9a20c1f354cd" />
+    </ComponentInstance>
+    <Connector ConnectorComposition="id-4a0e8ec3-3121-4ae8-90a2-ba43aa15da16" ID="id-aac5269c-e87b-48f7-ae8f-8cd86abad801" ApplyJoinData="" XPosition="1827" YPosition="161" Definition="" Name="LftArm">
+      <Role xmlns:q122="schematic" xsi:type="q122:Pin" ID="id-df6a496f-7b9c-4d39-a35e-46202ad7838b" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="id-c63da893-220f-429f-b843-b0640463547a" ID="id-9bb4166a-ec18-4bd3-87e1-4a40428d1553" ApplyJoinData="" XPosition="1785" YPosition="392" Definition="" Name="RtLeg">
+      <Role xmlns:q123="schematic" xsi:type="q123:Pin" ID="id-6762ac4f-b793-4645-8893-bd9970883e55" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="id-ace6e888-1fd9-41b0-b1e2-9545727d3862" ID="id-2eb19fd0-1c2c-4157-bb46-9306c228cdb5" ApplyJoinData="" XPosition="1785" YPosition="273" Definition="" Name="RtArm">
+      <Role xmlns:q124="schematic" xsi:type="q124:Pin" ID="id-4af04f05-5d5e-4e36-af9a-5eecad8b4f1e" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="S" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{9d7bbe2b-6e46-490d-aac1-c483003a540c}-id-415307a1-e1fe-484b-b263-226a0de0b6a4" ID="id-8d6ea102-3907-4d17-b520-3b04f5331c22" ApplyJoinData="" XPosition="406" YPosition="630" Definition="" Name="BondPoint">
+      <Role xmlns:q125="modelica" xsi:type="q125:Connector" ID="id-586f6194-a370-4f41-800f-b2111857496c" PortMap="" XPosition="63" YPosition="56" Name="heat" Locator="" Class="Modelica.Thermal.HeatTransfer.Interfaces.HeatPort_a" />
+    </Connector>
+  </RootContainer>
+</Design>

@@ -1,0 +1,100 @@
+2015-03-06 17:56:18,592 - root - DEBUG - Components found in directory : ['6_Pin_Header_TSW-103-07-G-D__4c09eee6_7ff3_48b0_9635_63856b7568b7.zip', '6_Pin_Single_Header_TSW-106-07-G-D__f0169bd6_1244_4698_8ab9_d5872a54a484.zip', 'AD8232_HRMon__ba09c6d8_dd42_4ed6_b29d_e9a1667f2d63.zip', 'AtMg__7831e89d_813a_4c1d_981b_53566a47c31c.zip', 'A_SRC__b4993ac6_e01d_496c_bf46_4d6a03e14753.zip', 'Case1__5165da07_ccda_491d_a257_e68c6da1352a.zip', 'Cbp2__f50a4854_bc10_4b34_87b2_8137fa70243ab.zip', 'Cxxx3__1a6a1de1_93a2_4ea5_bc93_4a8ef5272a07b.zip', 'Dual_to_Single_Power__7c7efcd6_e3ad_48d8_81e8_059034c52e75a.zip', 'Header_to_SPI_and_Power__df167a53_9fd0_4d0b_8bef_4e1f5a585f38a.zip', 'KMR221GLFS__f1b564e9_135d_4ebd_ac53_9d289ac81e98.zip', 'Led_0603_BLUE__8af217ac_c4e2_47dc_b169_24f4a920fa34.zip', 'LM358ST_Ref__4a4d88c7_16db_40c1_a020_88301ce0516f.zip', 'MIC5219-3.3YM5TR__080f4480_e749_4bf9_bec7_91c24697a9ce.zip', 'Molex_MicroUSB_AB_0475890001__34c762e8_fd7e_4656_b6e7_af367ecb77b7.zip', 'PCB_4layer__bf9455b3_b26a_437b_917d_858e75fbd26c.zip', 'Rxxx7__34271f87_0b3b_4425_889e_43e3ae7be0b8.zip', 'Split8BitPort__fe274e7b_41c5_4996_88cd_98050e5e0a8ca.zip', 'SplitAnalog__bcd23f4e_8247_432a_a11b_5ba68c99e4f4a.zip', 'SplitPwrGnd_3V3__eb5f8ae8_65b0_47ba_93cb_1de4f1bdf236a.zip', 'USBSerial_FTDI_232R__4bc4a0cf_3264_486b_85d3_46aca32c8cd5.zip']
+2015-03-06 17:56:18,655 - root - INFO - (1) Components extracted...
+2015-03-06 17:56:18,655 - root - DEBUG - About to parse .xme, mga will be saved to W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\testbenches.mga
+2015-03-06 17:56:18,671 - root - DEBUG - Xme info :
+2015-03-06 17:56:18,671 - root - DEBUG -   paradigm     : CyPhyML
+2015-03-06 17:56:18,671 - root - DEBUG -   paradigm_v   : 14.10-t8
+2015-03-06 17:56:18,687 - root - DEBUG -   paradigm_guid: 14f1b367-a1be-4e99-9e83-d63fdf2c476d
+2015-03-06 17:56:18,687 - root - DEBUG -   basename     : RootFolder
+2015-03-06 17:56:18,687 - root - DEBUG -   version      : 
+2015-03-06 17:56:19,003 - root - DEBUG - Mga saved to testbenches.mga
+2015-03-06 17:56:19,040 - root - INFO - (2) Mga created...
+2015-03-06 17:56:19,040 - root - DEBUG - Did not find CyPhyComponentImporterCL.exe in bin directory.
+2015-03-06 17:56:19,040 - root - DEBUG - Assuming developer machine, looking in src directory...
+2015-03-06 17:56:19,040 - root - INFO - About to call : "C:\Users\kevin\Documents\meta-tonka\META\src\CyPhyComponentImporterCL\bin\Release\CyPhyComponentImporterCL.exe" -r "components_extracted" "W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\testbenches.mga"
+2015-03-06 17:56:59,453 - root - INFO - console output : 
+Opening W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\testbenches.mga ... Done.
+Attaching library C:\Users\kevin\Documents\meta-tonka\META\\meta\CyPhyMLQudt.mga
+Refreshed Qudt library.
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\6_Pin_Header_TSW-103-07-G-D__4c09eee6_7ff3_48b0_9635_63856b7568b7\6_Pin_Dual_Header_TSW-103-07-G-D.acm
+Info     - Imported <a href="mga:id-0065-00000468">6_Pin_Dual_Header_TSW-103-07-G-D</a> to folder <i>RootFolder/Components/connectors_and_adapters/connectors/board_to_board</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\6_Pin_Single_Header_TSW-106-07-G-D__f0169bd6_1244_4698_8ab9_d5872a54a484\6_Pin_Single_Header_TSW-106-07-G-S.acm
+Info     - Imported <a href="mga:id-0065-00000470">6_Pin_Single_Header_TSW-106-07-G-S</a> to folder <i>RootFolder/Components/connectors_and_adapters/connectors/board_to_board</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\AD8232_HRMon__ba09c6d8_dd42_4ed6_b29d_e9a1667f2d63\AD8232_HRMon.acm
+Info     - Imported <a href="mga:id-0065-00000478">AD8232_HRMon</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\AtMg__7831e89d_813a_4c1d_981b_53566a47c31c\ATMEGA48_TQFP32_Good.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: ArduinoSCBus/ArduinoSCBus.h
+Info     - Imported <a href="mga:id-0065-0000048d">ATMEGA48_TQFP32_Good</a> to folder <i>RootFolder/Components/active/microprocessors/avr_4</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\A_SRC__b4993ac6_e01d_496c_bf46_4d6a03e14753\A_SRC.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: ANALOG_SRC/analogSrc.h
+Info     - Imported <a href="mga:id-0065-000004a8">A_SRC</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Case1__5165da07_ccda_491d_a257_e68c6da1352a\Case1.acm
+Info     - Imported <a href="mga:id-0065-000004ac">Case1</a> to folder <i>RootFolder/Components/hardware</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Cbp2__f50a4854_bc10_4b34_87b2_8137fa70243ab\C_0603_100n_6.3V_20%_X7R.acm
+Info     - Imported <a href="mga:id-0065-000004b3">C_0603_100n_6.3V_20%_X7R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Cxxx3__1a6a1de1_93a2_4ea5_bc93_4a8ef5272a07b\Capacitor_C0805.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+Info     - Imported <a href="mga:id-0065-000004b8">Capacitor_C0805</a> to folder <i>RootFolder/Components/passive/capacitors</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Dual_to_Single_Power__7c7efcd6_e3ad_48d8_81e8_059034c52e75a\Dual_to_Single_Power.acm
+Info     - Imported <a href="mga:id-0065-000004bd">Dual_to_Single_Power</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Header_to_SPI_and_Power__df167a53_9fd0_4d0b_8bef_4e1f5a585f38a\Header_to_SPI_and_Power.acm
+Info     - Imported <a href="mga:id-0065-000004c0">Header_to_SPI_and_Power</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\KMR221GLFS__f1b564e9_135d_4ebd_ac53_9d289ac81e98\KMR221GLFS.acm
+Info     - Imported <a href="mga:id-0065-000004c8">KMR221GLFS</a> to folder <i>RootFolder/Components/industrial_control/switches/tactile</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Led_0603_BLUE__8af217ac_c4e2_47dc_b169_24f4a920fa34\Led_0603_BLUE.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+Warning  - This Component depends on a file which cannot be found in the Component package: Images/Icon.png
+Info     - Imported <a href="mga:id-0065-000004cf">Led_0603_BLUE</a> to folder <i>RootFolder/Components/active/actuators</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\LM358ST_Ref__4a4d88c7_16db_40c1_a020_88301ce0516f\LM358ST.acm
+Info     - Imported <a href="mga:id-0065-000004d8">LM358ST</a> to folder <i>RootFolder/Components/semiconductors_and_actives/amplifiers_buffers/operational_amplifiers</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\MIC5219-3.3YM5TR__080f4480_e749_4bf9_bec7_91c24697a9ce\MIC5219-3.3YM5TR.acm
+Info     - Imported <a href="mga:id-0065-000004e2">MIC5219-3.3YM5TR</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/voltage_regulators</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Molex_MicroUSB_AB_0475890001__34c762e8_fd7e_4656_b6e7_af367ecb77b7\Molex_MicroUSB_AB_0475890001.acm
+Info     - Imported <a href="mga:id-0065-000004e8">Molex_MicroUSB_AB_0475890001</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\PCB_4layer__bf9455b3_b26a_437b_917d_858e75fbd26c\PCB_4layer.acm
+Info     - Imported <a href="mga:id-0065-000004ed">PCB_4layer</a> to folder <i>RootFolder/Components/pcb_board</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Rxxx7__34271f87_0b3b_4425_889e_43e3ae7be0b8\Resistor_R0603.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+Info     - Imported <a href="mga:id-0065-000004f0">Resistor_R0603</a> to folder <i>RootFolder/Components/passive/resistors</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Split8BitPort__fe274e7b_41c5_4996_88cd_98050e5e0a8ca\Split8BitPort.acm
+Info     - Imported <a href="mga:id-0065-000004f6">Split8BitPort</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\SplitAnalog__bcd23f4e_8247_432a_a11b_5ba68c99e4f4a\SplitAnalog.acm
+Info     - Imported <a href="mga:id-0065-00000500">SplitAnalog</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\SplitPwrGnd_3V3__eb5f8ae8_65b0_47ba_93cb_1de4f1bdf236a\SplitPwrGnd.acm
+Info     - Imported <a href="mga:id-0065-0000050a">SplitPwrGnd</a> to folder <i>RootFolder/Components</i>
+Debug    - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\USBSerial_FTDI_232R__4bc4a0cf_3264_486b_85d3_46aca32c8cd5\USBSerial_FTDI_232R.acm
+Warning  - This Component depends on a file which cannot be found in the Component package: Images/Icon.png
+Info     - Imported <a href="mga:id-0065-0000050e">USBSerial_FTDI_232R</a> to folder <i>RootFolder/Components/active/interface-chips</i>
+
+2015-03-06 17:56:59,453 - root - INFO - (3) Components imported...
+2015-03-06 17:56:59,571 - root - DEBUG - About to begin transaction..
+2015-03-06 17:56:59,572 - root - DEBUG - Transaction began.
+2015-03-06 17:56:59,572 - root - DEBUG - Path returned MgaObject of type: TestBench
+2015-03-06 17:56:59,572 - root - DEBUG - Found test-bench "PlaceAndRoute".
+2015-03-06 17:56:59,572 - root - DEBUG - Test-bench ID : id-0065-00000002.
+2015-03-06 17:56:59,573 - root - DEBUG - TopLevelSystem under test SUT name :
+2015-03-06 17:56:59,573 - root - DEBUG -  "CA" (ComponentAssembly)
+2015-03-06 17:56:59,573 - root - DEBUG - Calling CyPhyDesignImporter.ImportDesign.
+2015-03-06 17:57:01,798 - root - DEBUG - Design imported:
+2015-03-06 17:57:01,798 - root - DEBUG -  Name : EKG_USB_Device
+2015-03-06 17:57:01,798 - root - DEBUG -  Type : ComponentAssembly
+2015-03-06 17:57:01,798 - root - DEBUG -  ID : id-0065-00000514
+2015-03-06 17:57:01,798 - root - DEBUG -  Path : /@ComponentAssemblies|kind=ComponentAssemblies|relpos=0/@EKG_USB_Device|kind=ComponentAssembly|relpos=0
+2015-03-06 17:57:01,799 - root - DEBUG - Creating ReferenceSwitcher
+2015-03-06 17:57:01,799 - root - DEBUG - Switching referred in test-bench to design.
+2015-03-06 17:57:01,805 - root - DEBUG - Design was placed in test-bench.
+2015-03-06 17:57:01,805 - root - DEBUG - About to commit transaction..
+2015-03-06 17:57:01,819 - root - DEBUG - Transaction committed.
+2015-03-06 17:57:01,819 - root - DEBUG - About to save project..
+2015-03-06 17:57:01,891 - root - DEBUG - Project saved.
+2015-03-06 17:57:01,891 - root - INFO - (4) Design imported and placed in test-bench.
+2015-03-06 17:57:01,960 - root - DEBUG - Creating CyPhyMasterInterpreterAPI
+2015-03-06 17:57:01,970 - root - DEBUG - Creating ConfigurationSelectionLight
+2015-03-06 17:57:04,529 - root - INFO - MasterInterpreter result : None
+2015-03-06 17:57:04,552 - root - INFO - (5) MasterInterpreter finished.
+2015-03-06 17:57:04,553 - root - INFO - Found cmd placement.bat -i 1.0 -e 0.55
+2015-03-06 17:57:04,553 - root - INFO - Added job {'designId': u'{47c2f1b0-0b76-4812-ad77-638f0b2a7698}', 'cmd': u'placement.bat -i 1.0 -e 0.55', 'dir': 'results\\qq0u5mao'}
+2015-03-06 17:57:04,553 - root - INFO - About to call : "C:\Users\kevin\Documents\meta-tonka\META\bin\Python27\Scripts\python.exe" -m TestBenchExecutor testbench_manifest.json"
+2015-03-06 17:59:11,346 - root - INFO - console output : 
+
+2015-03-06 17:59:11,348 - root - INFO - (6) Job execution completed.

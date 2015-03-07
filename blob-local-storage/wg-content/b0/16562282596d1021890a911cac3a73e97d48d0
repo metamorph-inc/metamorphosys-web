@@ -1,0 +1,88 @@
+
+HKEY_LOCAL_MACHINE\software\META
+    META_PATH    REG_SZ    C:\Users\kevin\Documents\meta-tonka\META\
+
+Input: layout-input.json
+Output: layout.json
+Inter chip gap: 1
+Board edge gap: 0.55
+Applying User-defined Package Constraints ...
+Applying Constraint: Molex_MicroUSB_AB_0475890001.x = 0.7
+Applying Constraint: Molex_MicroUSB_AB_0475890001.y = 2
+Applying Constraint: Molex_MicroUSB_AB_0475890001.rotation = 0
+Applying Constraint: Molex_MicroUSB_AB_0475890001.layer = 0
+Applying User-defined Global/Group Constraints ...
+Board Width: 40 Board Height: 40 Layers: 2
+Number of Chips: 58 Total Chip Area: 10126.4
+Layout Density = 4.13321
+Package[nnn]{WWW,HHH}: X,Y,Z,R
+package[  0]{ 22,  9}:133,124,0,1
+package[  1]{ 22,  9}:325,334,0,0
+package[  2]{ 22,  9}:383,170,0,1
+package[  3]{ 22,  9}:175,192,0,0
+package[  4]{ 30, 20}:185,190,1,0
+package[  5]{ 39, 30}:307,260,0,0
+package[  6]{ 30, 20}:204,14,0,0
+package[  7]{ 77, 51}:5,318,0,0
+package[  8]{153, 26}:97,31,0,1
+package[  9]{ 40, 20}:259,193,0,0
+package[ 10]{ 40, 20}:263,163,0,0
+package[ 11]{ 40, 20}:263,100,0,0
+package[ 12]{ 40, 20}:357,223,0,1
+package[ 13]{ 40, 20}:375,339,0,1
+package[ 14]{ 40, 20}:375,289,0,1
+package[ 15]{ 56, 27}:317,186,0,0
+package[ 16]{ 56, 27}:155,345,0,0
+package[ 17]{ 30, 20}:249,59,0,0
+package[ 18]{ 30, 20}:305,5,0,0
+package[ 19]{ 30, 20}:265,29,0,0
+package[ 20]{ 30, 20}:133,64,0,0
+package[ 21]{ 30, 20}:144,34,0,0
+package[ 22]{ 30, 20}:195,113,0,0
+package[ 23]{ 30, 20}:195,83,0,0
+package[ 24]{ 30, 20}:209,53,0,0
+package[ 25]{ 42, 42}:243,338,0,0
+package[ 26]{ 22,  9}:218,191,0,0
+package[ 27]{ 40, 20}:295,334,0,1
+package[ 28]{ 40, 20}:325,354,0,0
+package[ 29]{ 22,  9}:175,83,0,1
+package[ 30]{ 22,  9}:263,5,0,0
+package[ 31]{ 22,  9}:244,5,0,1
+package[ 32]{ 22,  9}:359,5,0,0
+package[ 33]{ 22,  9}:289,59,0,0
+package[ 34]{ 30, 20}:135,171,0,0
+package[ 35]{ 30, 20}:155,128,0,0
+package[ 36]{ 30, 20}:135,94,0,0
+package[ 37]{ 30, 20}:313,83,0,0
+package[ 38]{ 30, 20}:363,25,0,0
+package[ 39]{ 30, 20}:322,53,0,0
+package[ 40]{ 30, 20}:371,130,0,1
+package[ 41]{ 30, 20}:371,75,0,1
+package[ 42]{ 30, 20}:218,161,0,0
+package[ 43]{ 30, 20}:178,162,0,0
+package[ 44]{ 30, 20}:327,131,0,0
+package[ 45]{ 30, 20}:249,131,0,0
+package[ 46]{ 30, 20}:259,223,0,0
+package[ 47]{ 30, 20}:259,300,0,0
+package[ 48]{ 99, 99}:150,214,0,0
+package[ 49]{ 40, 20}:307,304,0,0
+package[ 50]{ 40, 20}:307,226,0,0
+package[ 51]{ 59, 31}:92,318,0,1
+package[ 52]{ 30, 20}:262,260,0,1
+package[ 53]{ 22,  9}:362,55,0,0
+package[ 54]{ 22,  9}:173,64,0,0
+package[ 55]{ 63,103}:7,20,0,0
+package[ 56]{104, 88}:20,220,0,0
+package[ 57]{ 77, 51}:5,133,0,0
+Time : 29
+Parsed Schematic File : schema.sch
+Parsed Eagle Board Template File 4layer_InnerPowerPlanes.brd: 6.6.0
+description[de]
+de
+description[en]
+en
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\eagle.exe
+    Path    REG_SZ    C:\EAGLE-7.2.0
+
+"autoroute.ctl found"

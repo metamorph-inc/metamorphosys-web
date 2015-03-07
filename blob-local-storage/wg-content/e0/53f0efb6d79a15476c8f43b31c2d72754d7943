@@ -1,0 +1,49 @@
+2015-03-06T17:56:19 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\6_Pin_Header_TSW-103-07-G-D__4c09eee6_7ff3_48b0_9635_63856b7568b7\6_Pin_Dual_Header_TSW-103-07-G-D.acm
+2015-03-06T17:56:20 - [Info] - Imported <a href="mga:id-0065-00000468">6_Pin_Dual_Header_TSW-103-07-G-D</a> to folder <i>RootFolder/Components/connectors_and_adapters/connectors/board_to_board</i>
+2015-03-06T17:56:20 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\6_Pin_Single_Header_TSW-106-07-G-D__f0169bd6_1244_4698_8ab9_d5872a54a484\6_Pin_Single_Header_TSW-106-07-G-S.acm
+2015-03-06T17:56:21 - [Info] - Imported <a href="mga:id-0065-00000470">6_Pin_Single_Header_TSW-106-07-G-S</a> to folder <i>RootFolder/Components/connectors_and_adapters/connectors/board_to_board</i>
+2015-03-06T17:56:21 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\AD8232_HRMon__ba09c6d8_dd42_4ed6_b29d_e9a1667f2d63\AD8232_HRMon.acm
+2015-03-06T17:56:24 - [Info] - Imported <a href="mga:id-0065-00000478">AD8232_HRMon</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:24 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\AtMg__7831e89d_813a_4c1d_981b_53566a47c31c\ATMEGA48_TQFP32_Good.acm
+2015-03-06T17:56:24 - [Warning] - This Component depends on a file which cannot be found in the Component package: ArduinoSCBus/ArduinoSCBus.h
+2015-03-06T17:56:33 - [Info] - Imported <a href="mga:id-0065-0000048d">ATMEGA48_TQFP32_Good</a> to folder <i>RootFolder/Components/active/microprocessors/avr_4</i>
+2015-03-06T17:56:33 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\A_SRC__b4993ac6_e01d_496c_bf46_4d6a03e14753\A_SRC.acm
+2015-03-06T17:56:34 - [Warning] - This Component depends on a file which cannot be found in the Component package: ANALOG_SRC/analogSrc.h
+2015-03-06T17:56:35 - [Info] - Imported <a href="mga:id-0065-000004a8">A_SRC</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:35 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Case1__5165da07_ccda_491d_a257_e68c6da1352a\Case1.acm
+2015-03-06T17:56:36 - [Info] - Imported <a href="mga:id-0065-000004ac">Case1</a> to folder <i>RootFolder/Components/hardware</i>
+2015-03-06T17:56:36 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Cbp2__f50a4854_bc10_4b34_87b2_8137fa70243ab\C_0603_100n_6.3V_20%_X7R.acm
+2015-03-06T17:56:38 - [Info] - Imported <a href="mga:id-0065-000004b3">C_0603_100n_6.3V_20%_X7R</a> to folder <i>RootFolder/Components/passive_components/capacitors/single_components</i>
+2015-03-06T17:56:38 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Cxxx3__1a6a1de1_93a2_4ea5_bc93_4a8ef5272a07b\Capacitor_C0805.acm
+2015-03-06T17:56:38 - [Warning] - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+2015-03-06T17:56:39 - [Info] - Imported <a href="mga:id-0065-000004b8">Capacitor_C0805</a> to folder <i>RootFolder/Components/passive/capacitors</i>
+2015-03-06T17:56:39 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Dual_to_Single_Power__7c7efcd6_e3ad_48d8_81e8_059034c52e75a\Dual_to_Single_Power.acm
+2015-03-06T17:56:39 - [Info] - Imported <a href="mga:id-0065-000004bd">Dual_to_Single_Power</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:39 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Header_to_SPI_and_Power__df167a53_9fd0_4d0b_8bef_4e1f5a585f38a\Header_to_SPI_and_Power.acm
+2015-03-06T17:56:40 - [Info] - Imported <a href="mga:id-0065-000004c0">Header_to_SPI_and_Power</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:40 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\KMR221GLFS__f1b564e9_135d_4ebd_ac53_9d289ac81e98\KMR221GLFS.acm
+2015-03-06T17:56:42 - [Info] - Imported <a href="mga:id-0065-000004c8">KMR221GLFS</a> to folder <i>RootFolder/Components/industrial_control/switches/tactile</i>
+2015-03-06T17:56:42 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Led_0603_BLUE__8af217ac_c4e2_47dc_b169_24f4a920fa34\Led_0603_BLUE.acm
+2015-03-06T17:56:42 - [Warning] - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+2015-03-06T17:56:42 - [Warning] - This Component depends on a file which cannot be found in the Component package: Images/Icon.png
+2015-03-06T17:56:43 - [Info] - Imported <a href="mga:id-0065-000004cf">Led_0603_BLUE</a> to folder <i>RootFolder/Components/active/actuators</i>
+2015-03-06T17:56:43 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\LM358ST_Ref__4a4d88c7_16db_40c1_a020_88301ce0516f\LM358ST.acm
+2015-03-06T17:56:45 - [Info] - Imported <a href="mga:id-0065-000004d8">LM358ST</a> to folder <i>RootFolder/Components/semiconductors_and_actives/amplifiers_buffers/operational_amplifiers</i>
+2015-03-06T17:56:45 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\MIC5219-3.3YM5TR__080f4480_e749_4bf9_bec7_91c24697a9ce\MIC5219-3.3YM5TR.acm
+2015-03-06T17:56:46 - [Info] - Imported <a href="mga:id-0065-000004e2">MIC5219-3.3YM5TR</a> to folder <i>RootFolder/Components/semiconductors_and_actives/power_management/voltage_regulators</i>
+2015-03-06T17:56:46 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Molex_MicroUSB_AB_0475890001__34c762e8_fd7e_4656_b6e7_af367ecb77b7\Molex_MicroUSB_AB_0475890001.acm
+2015-03-06T17:56:48 - [Info] - Imported <a href="mga:id-0065-000004e8">Molex_MicroUSB_AB_0475890001</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:48 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\PCB_4layer__bf9455b3_b26a_437b_917d_858e75fbd26c\PCB_4layer.acm
+2015-03-06T17:56:49 - [Info] - Imported <a href="mga:id-0065-000004ed">PCB_4layer</a> to folder <i>RootFolder/Components/pcb_board</i>
+2015-03-06T17:56:49 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Rxxx7__34271f87_0b3b_4425_889e_43e3ae7be0b8\Resistor_R0603.acm
+2015-03-06T17:56:49 - [Warning] - This Component depends on a file which cannot be found in the Component package: Doc/datasheet.pdf
+2015-03-06T17:56:50 - [Info] - Imported <a href="mga:id-0065-000004f0">Resistor_R0603</a> to folder <i>RootFolder/Components/passive/resistors</i>
+2015-03-06T17:56:50 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\Split8BitPort__fe274e7b_41c5_4996_88cd_98050e5e0a8ca\Split8BitPort.acm
+2015-03-06T17:56:52 - [Info] - Imported <a href="mga:id-0065-000004f6">Split8BitPort</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:52 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\SplitAnalog__bcd23f4e_8247_432a_a11b_5ba68c99e4f4a\SplitAnalog.acm
+2015-03-06T17:56:55 - [Info] - Imported <a href="mga:id-0065-00000500">SplitAnalog</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:55 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\SplitPwrGnd_3V3__eb5f8ae8_65b0_47ba_93cb_1de4f1bdf236a\SplitPwrGnd.acm
+2015-03-06T17:56:56 - [Info] - Imported <a href="mga:id-0065-0000050a">SplitPwrGnd</a> to folder <i>RootFolder/Components</i>
+2015-03-06T17:56:56 - [Debug] - Importing W:\worker\executor-temp\0\26ab974ed1e1c287cdec909a4ed8372e222dcddd\components_extracted\USBSerial_FTDI_232R__4bc4a0cf_3264_486b_85d3_46aca32c8cd5\USBSerial_FTDI_232R.acm
+2015-03-06T17:56:56 - [Warning] - This Component depends on a file which cannot be found in the Component package: Images/Icon.png
+2015-03-06T17:56:59 - [Info] - Imported <a href="mga:id-0065-0000050e">USBSerial_FTDI_232R</a> to folder <i>RootFolder/Components/active/interface-chips</i>

@@ -1,0 +1,49 @@
+{
+  "Status": "OK", 
+  "CopyTestResults": false, 
+  "Parameters": [
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000172", 
+      "Value": "1.0", 
+      "Range": "-inf..inf", 
+      "ID": "da4058e4-1429-46b6-ab36-c0e49d00448b", 
+      "Unit": "Millimeter", 
+      "Name": "interChipSpace"
+    }, 
+    {
+      "Description": "", 
+      "DisplayedName": null, 
+      "GMEID": "id-0067-00000173", 
+      "Value": "0.55", 
+      "Range": "-inf..inf", 
+      "ID": "8e967fdc-d2b4-4328-94ec-711f59547ca7", 
+      "Unit": "Millimeter", 
+      "Name": "boardEdgeSpace"
+    }
+  ], 
+  "TierLevel": 0, 
+  "Artifacts": [], 
+  "VisualizationArtifacts": [], 
+  "DesignName": "EKG_USB_Device", 
+  "Metrics": [], 
+  "DesignID": "{47c2f1b0-0b76-4812-ad77-638f0b2a7698}", 
+  "Dependencies": [], 
+  "Steps": [
+    {
+      "ExecutionCompletionTimestamp": "2015-03-06T17:59:11.340000", 
+      "Status": "OK", 
+      "Description": null, 
+      "Parameters": [], 
+      "ExecutionStartTimestamp": "2015-03-06T17:57:04.720000", 
+      "PreProcess": null, 
+      "PostProcess": null, 
+      "Invocation": "placement.bat -i 1.0 -e 0.55", 
+      "LogFile": "log/log2015-03-06T175704.720000.log", 
+      "Type": null
+    }
+  ], 
+  "TestBench": "PlaceAndRoute", 
+  "Created": "2015-03-06T23:57:02.3962827Z"
+}
