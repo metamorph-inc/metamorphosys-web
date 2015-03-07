@@ -13,8 +13,9 @@ angular.module('mms.testbenchActions', [
         var progressMessage,
             tooltipMessage,
             progressTooltipMessage,
-
-            findResultById;
+            availableTestbenches,
+            findResultById,
+            findTestbench;
 
         tooltipMessage = 'Generate PCB';
         progressTooltipMessage = 'PCB generation in progress...';
@@ -38,9 +39,33 @@ angular.module('mms.testbenchActions', [
 
         $scope.wsContext = projectHandling.getWorkspaceContext();
 
-        angular.forEach(projectHandling.getAvailableTestbenches(), function(tb) {
-            $scope.testbench = tb;
-        });
+        availableTestbenches = projectHandling.getAvailableTestbenches();
+
+        findTestbench = function(newVal, oldVal)  {
+
+            var selectedDesign;
+
+            if (newVal && newVal !== oldVal) {
+
+                $scope.testbench = null;
+
+                selectedDesign = projectHandling.getSelectedDesign();
+
+                angular.forEach(availableTestbenches, function(tb) {
+                    if (tb.name === selectedDesign.name) {
+                        $scope.testbench = tb;
+                    }
+                });
+
+            }
+
+        };
+
+        $scope.$watch(function() {
+            return projectHandling.getSelectedDesignId();
+        }, findTestbench);
+
+        findTestbench(projectHandling.getSelectedDesignId());
 
         $scope.testbenchResults = [
 
