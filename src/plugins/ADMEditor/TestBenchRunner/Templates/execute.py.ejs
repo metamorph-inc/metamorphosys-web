@@ -326,9 +326,12 @@ def run_execution_jobs():
     if failed_jobs > 0:
         with open('_FAILED.txt', 'ab+') as f_out:
             f_out.write(str(failed_jobs) + ' of ' + str(nbr_of_jobs) +' jobs failed! See log/execute.log.')
-    for (pattern, dest) in (('results/*/schema.png', 'eagle-board.png'), ('results/*/schema.brd', 'eagle-board.brd')):
+    for (pattern, dest) in (('results/*/schema.brd', 'eagle-board.brd'),):
         for artifact in glob.glob(pattern):
             shutil.copy(artifact, './results/' + dest)
+    for (pattern, dest) in (('results/*/schema.png', 'eagle-board.png'),):
+        for artifact in glob.glob(pattern):
+            subprocess.check_call([r"c:\ImageMagick-6.9.0-7\convert.exe", "-rotate", "90", artifact, './results/' + dest])
 
 
 def move_dashboard_files(new_dir):
