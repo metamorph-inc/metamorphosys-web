@@ -2,8 +2,12 @@
 
 'use strict';
 
+require('../designSelector/designSelector');
+
 angular.module(
-    'mms.mainNavigator', [])
+    'mms.mainNavigator', [
+        'mms.designSelector'
+    ])
 
     .directive(
     'mainNavigator',
@@ -27,40 +31,15 @@ angular.module(
                         itemClass: 'cyphy-root',
                         action: function (item, ev) {
 
-                            function DialogController($scope, $mdDialog) {
+                            function DialogController($scope) {
 
-                                $scope.designs = [
+                                $scope.designsToSelect = require('./designsToSelect.js');
 
-                                    {
-                                        id: 'a',
-                                        name: 'ARA Template-A',
-                                        description: 'Lets look at the various views you could target from within the contacts.detail state. Remember that if an @ is used then the view path is considered absolute',
-                                        visual: 'images/heart-rate-monitor.jpg'
-                                    },
-                                    {
-                                        id: 'b',
-                                        name: 'ARA Template-B',
-                                        description: 'Lets look at the various views you could target from within the contacts.detail state. Remember that if an @ is used then the view path is considered absolute',
-                                        visual: 'images/space-invader.jpg'
-                                    }
-
-                                ];
-
-                                $scope.openDesign = function(designId) {
-                                    console.log('Open design ' + designId);
-                                };
-
-                                $scope.hide = function () {
-                                    $mdDialog.hide();
-                                };
-                                $scope.close = function () {
-                                    $mdDialog.cancel();
-                                };
                             }
 
                             $mdDialog.show({
                                 controller: DialogController,
-                                templateUrl: '/mmsApp/templates/designSelector.html',
+                                template: '<md-dialog class="design-selector-dialog"><design-selector designs="::designsToSelect"></design-selector></md-dialog>',
                                 targetEvent: ev
                             })
                                 .then(function () {
