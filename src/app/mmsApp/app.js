@@ -232,6 +232,8 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     $animate.enabled(false);
 
+    ga('send', 'event', 'appInitialized', 'dev.0.2.0');
+
 });
 
 
