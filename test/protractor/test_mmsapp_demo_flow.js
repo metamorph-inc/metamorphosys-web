@@ -6,7 +6,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
         hasClass = require('./lib/has_class.js'),
 
-        gmeEventTimeLimit = 5000,
+        gmeEventTimeLimit = 8000,
         uiEventTimeLimit = 200,
 
         projectName,
