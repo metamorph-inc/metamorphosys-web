@@ -84,7 +84,7 @@ require('./appConfig');
 
 
 CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
-                                               $timeout, projectHandling) {
+                                               $timeout, projectHandling, $animate) {
 
     var stateBeforeWentWrong;
 
@@ -229,6 +229,8 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
         }
     });
+
+    $animate.enabled(false);
 
 });
 
