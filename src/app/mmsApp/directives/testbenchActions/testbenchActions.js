@@ -72,7 +72,7 @@ angular.module('mms.testbenchActions', [
             //{
             //
             //    id: 'testPCBResult1',
-            //    name: 'Generated PCB 1',
+            //    name: 'PCB for Template Module 1x2 (1)',
             //    timestamp: Date.now(),
             //    visualUrl: 'images/testPCBResult.png',
             //    attachments: [
@@ -89,7 +89,7 @@ angular.module('mms.testbenchActions', [
             //{
             //
             //    id: 'testPCBResult2',
-            //    name: 'Generated PCB 2',
+            //    name: 'PCB for EKG USB Device (2)',
             //    timestamp: Date.now(),
             //    visualUrl: 'images/testPCBResult.png',
             //    attachments: [
@@ -195,7 +195,11 @@ angular.module('mms.testbenchActions', [
 
         $rootScope.startTestbench = $scope.startTestbench = function () {
 
-            var onTestbenchFailed;
+            var onTestbenchFailed,
+                design;
+
+
+            design = projectHandling.getSelectedDesign();
 
             onTestbenchFailed = function(e) {
                 $log.error('Testbench execution failed!', e);
@@ -241,7 +245,7 @@ angular.module('mms.testbenchActions', [
 
                         newResult = {
                             id: id,
-                            name: 'Generated PCB ' + ( $scope.testbenchResults.length + 1 ),
+                            name: 'PCB for ' + design.name,
                             timestamp: timestamp,
                             visualUrl: visualUrl,
                             attachments: [
