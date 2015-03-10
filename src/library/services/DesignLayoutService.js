@@ -281,9 +281,7 @@ angular.module('cyphy.services')
 
                 if (typesWithConnectordsInside.indexOf(child.baseName) > -1) {
 
-                    getInterfacesPromise = self.watchInterfaces(context, child.id, function (/*interfaceUpdateData*/) {
-                        //TODO: see if anything has to be done with this
-                    });
+                    getInterfacesPromise = self.watchInterfaces(context, child.id, null);
 
                     getInterfacesPromise.then(function (interfaces) {
                         child.interfaces = interfaces;
