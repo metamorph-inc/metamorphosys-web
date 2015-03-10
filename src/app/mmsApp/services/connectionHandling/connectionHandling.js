@@ -38,7 +38,8 @@ angular.module('mms.connectionHandling', [])
                         if (!dataStorePromise && !mainConnectionEstablished) {
 
                             dataStorePromise = dataStoreService.connectToDatabase(mainConnectionId, {
-                                host: window.location.basename
+                                host: window.location.protocol + "//" + window.location.host,
+                                storageKeyType: "rand160Bits"
                             }).then(function () {
 
                                 dataStoreService.watchConnectionState( mainConnectionId, function ( connectionEvent ) {
