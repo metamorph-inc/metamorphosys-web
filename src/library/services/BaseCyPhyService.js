@@ -143,13 +143,17 @@ angular.module( 'cyphy.services' )
                     ports: {} //port:      {id: <string>, name: <string>, type: <string>, class: <string> }
                 },
                 triggerUpdateListener = function ( id, data, eventType ) {
-                    $timeout( function () {
-                        updateListener( {
-                            id: id,
-                            type: eventType,
-                            data: data
+
+                    if (angular.isFunction(updateListener)) {
+                        $timeout( function () {
+                            updateListener( {
+                                id: id,
+                                type: eventType,
+                                data: data
+                            } );
                         } );
-                    } );
+                    }
+
                 },
                 addNewProperty = function ( id, node ) {
                     data.properties[ id ] = {
@@ -163,8 +167,12 @@ angular.module( 'cyphy.services' )
 
                         derived: isPropertyDerived( node )
                     };
-                    node.onUpdate( onPropertyUpdate );
-                    node.onUnload( onPropertyUnload );
+
+                    if (angular.isFunction(updateListener)) {
+                        node.onUpdate(onPropertyUpdate);
+                        node.onUnload(onPropertyUnload);
+                    }
+
                 },
                 onPropertyUpdate = function ( id ) {
                     var keyToAttr = {
@@ -198,8 +206,12 @@ angular.module( 'cyphy.services' )
                         position: node.getRegistry( 'position' ),
                         domainPorts: {}
                     };
-                    node.onUpdate( onConnectorUpdate );
-                    node.onUnload( onConnectorUnload );
+
+                    if (angular.isFunction(updateListener)) {
+                        node.onUpdate( onConnectorUpdate );
+                        node.onUnload( onConnectorUnload );
+                    }
+
                     ///queueList.push(childNode.loadChildren(childNode));
                 },
                 onConnectorUpdate = function ( id ) {
@@ -244,8 +256,12 @@ angular.module( 'cyphy.services' )
                         type: node.getAttribute( 'Type' ),
                         class: node.getAttribute( 'Class' )
                     };
-                    node.onUpdate( onPortUpdate );
-                    node.onUnload( onPortUnload );
+
+                    if (angular.isFunction(updateListener)) {
+                        node.onUpdate( onPortUpdate );
+                        node.onUnload( onPortUnload );
+                    }
+
                 },
                 onPortUpdate = function ( id ) {
                     var keyToAttr = {
@@ -293,20 +309,25 @@ angular.module( 'cyphy.services' )
                                             addNewPort( childId, childNode );
                                         }
                                     }
-                                    modelNode.onNewChildLoaded( function ( newChild ) {
-                                        childId = newChild.getId();
-                                        metaName = newChild.getMetaTypeName( meta );
-                                        if ( metaName === 'Property' ) {
-                                            addNewProperty( childId, newChild );
-                                            triggerUpdateListener( childId, data, 'load' );
-                                        } else if ( metaName === 'Connector' ) {
-                                            addNewConnector( childId, newChild );
-                                            triggerUpdateListener( childId, data, 'load' );
-                                        } else if ( metaName === 'DomainPort' ) {
-                                            addNewPort( childId, newChild );
-                                            triggerUpdateListener( childId, data, 'load' );
-                                        }
-                                    } );
+
+                                    if (angular.isFunction(updateListener)) {
+
+                                        modelNode.onNewChildLoaded(function (newChild) {
+                                            childId = newChild.getId();
+                                            metaName = newChild.getMetaTypeName(meta);
+                                            if (metaName === 'Property') {
+                                                addNewProperty(childId, newChild);
+                                                triggerUpdateListener(childId, data, 'load');
+                                            } else if (metaName === 'Connector') {
+                                                addNewConnector(childId, newChild);
+                                                triggerUpdateListener(childId, data, 'load');
+                                            } else if (metaName === 'DomainPort') {
+                                                addNewPort(childId, newChild);
+                                                triggerUpdateListener(childId, data, 'load');
+                                            }
+                                        });
+
+                                    }
 
                                     if ( queueList.length === 0 ) {
                                         deferred.resolve( data );
