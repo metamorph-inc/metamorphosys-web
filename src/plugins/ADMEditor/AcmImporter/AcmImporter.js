@@ -7,8 +7,9 @@ define( [ 'plugin/PluginConfig',
     'plugin/PluginBase',
     'plugin/AcmImporter/AcmImporter/meta',
     'jszip',
-    'xmljsonconverter'
-], function ( PluginConfig, PluginBase, MetaTypes, JSZip, Xml2Json ) {
+    'xmljsonconverter',
+    'superagent'
+], function ( PluginConfig, PluginBase, MetaTypes, JSZip, Xml2Json, superagent ) {
     'use strict';
 
     /**
@@ -82,11 +83,11 @@ define( [ 'plugin/PluginConfig',
             "valueType": "asset",
             "readOnly": false
         }, {
-            "name": "VulcanLink", // May be a single .acm or a zip containing several
-            "displayName": "ACM Link",
-            "description": "Drag component link here",
+            "name": "AcmUrl",
+            "displayName": "ACM URL",
+            "description": "If ACMs is omitted, use this URL to download an .acm file",
             "value": "",
-            "valueType": "vulcanLink",
+            "valueType": "string",
             "readOnly": false
         }, {
             "name": "DeleteExisting",
@@ -111,7 +112,7 @@ define( [ 'plugin/PluginConfig',
         var self = this,
             acmFolderNode,
             currentConfig = self.getCurrentConfig(),
-            uploadedFileHash = currentConfig.UploadedFile || currentConfig.VulcanLink,
+            uploadedFileHash = currentConfig.UploadedFile,
             //uploadedFileHash = 'e0ebaea243ad1f5dc8278638c36d8a6fc03f0ab7',
             newAcm,
             numUploaded,
@@ -214,8 +215,94 @@ define( [ 'plugin/PluginConfig',
 
             self.core.loadChildren( acmFolderNode, loadChildrenCallback );
         };
-        self.findComponentsRecursive( self.projectNode, findComponentsCallback );
+
+        if (uploadedFileHash) {
+            self.findComponentsRecursive(self.projectNode, findComponentsCallback);
+        } else if (currentConfig.AcmUrl) {
+            getZipFromUrl(currentConfig.AcmUrl, function (err, res) {
+                if (err) {
+                    self.result.setSuccess(false);
+                    mainCallback('Could not GET \'' + currentConfig.AcmUrl + '\': ' + err, self.result);
+                    return;
+                }
+                self.blobClient.putFile('name.zip', res, function (err, hash) {
+                    if (err) {
+                        self.result.setSuccess(false);
+                        mainCallback('Could not add to blob: ' + err, self.result);
+                        return;
+                    }
+                    uploadedFileHash = hash;
+                    self.findComponentsRecursive(self.projectNode, findComponentsCallback);
+                });
+            });
+        } else {
+            self.result.setSuccess(false);
+            mainCallback("Invalid configuration: either UploadedFile or AcmUrl need to be set", self.result);
+            return;
+        }
     };
+
+    function getZipFromUrl(url, callback) {
+        superagent.parse['application/zip'] = function (obj, parseCallback) {
+            if (parseCallback) {
+                // Running on node; this should be unreachable due to req.pipe() below
+            } else {
+                return obj;
+            }
+        };
+
+        var req = superagent.get(url);
+        if (req.pipe) {
+            // running on node
+            var Writable = require('stream').Writable;
+            var BuffersWritable = function (options) {
+                Writable.call(this, options);
+
+                var self = this;
+                self.buffers = [];
+            };
+            require('util').inherits(BuffersWritable, Writable);
+
+            BuffersWritable.prototype._write = function(chunk, encoding, callback) {
+                this.buffers.push(chunk);
+                callback();
+            };
+
+            var buffers = new BuffersWritable();
+            buffers.on('finish', function () {
+                callback(null, Buffer.concat(buffers.buffers));
+            });
+            buffers.on('error', function (err) {
+                callback(err);
+            });
+            req.pipe(buffers);
+        } else {
+            req.removeAllListeners('end');
+            req.on('request', function () {
+                if (typeof this.xhr !== 'undefined') {
+                    this.xhr.responseType = 'arraybuffer';
+                }
+            });
+            // req.on('error', callback);
+            req.on('end', function() {
+                if (req.xhr.status > 399) {
+                    callback(req.xhr.status);
+                } else {
+                    var contentType = req.xhr.getResponseHeader('content-type');
+                    var response = req.xhr.response; // response is an arraybuffer
+                    if (contentType === 'application/json') {
+                        var utf8ArrayToString = function (uintArray) {
+                            return decodeURIComponent(escape(String.fromCharCode.apply(null, uintArray)));
+                        };
+                        response = JSON.parse(utf8ArrayToString(new Uint8Array(response)));
+                    }
+                    callback(null, response);
+                }
+            });
+            req.end(callback);
+        }
+
+    }
 
     AcmImporter.prototype.getWorkspaceNode = function ( node ) {
         var self = this;
@@ -810,7 +897,6 @@ define( [ 'plugin/PluginConfig',
     AcmImporter.prototype.getAcmJsonFromZip = function ( acmZip, acmZipName ) {
         var self = this,
             converterResult,
-            acmName = acmZipName.split( '.' )[ 0 ],
             acmXml = acmZip.file( /\.acm$/ ),
             msg;
 
@@ -851,8 +937,7 @@ define( [ 'plugin/PluginConfig',
     };
 
     AcmImporter.prototype.convertXmlString2Json = function ( acmXmlString ) {
-        var self = this,
-            converter = new Xml2Json.Xml2json( {
+        var converter = new Xml2Json.Xml2json( {
                 skipWSText: true,
                 arrayElements: {
                     Property: true,
