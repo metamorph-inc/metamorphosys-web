@@ -29,7 +29,6 @@ define( [ 'plugin/PluginConfig',
         this.id2ComponentMap = {};
         this.deleteExisting = false;
         this.cleanImport = true;
-        this.projectNode = null;
 
         //this.propertyJson = {};
     };
@@ -135,89 +134,87 @@ define( [ 'plugin/PluginConfig',
 
         self.updateMETA( self.metaTypes );
 
-        if ( !self.isMetaTypeOf( self.activeNode, MetaTypes.ACMFolder ) ) {
-            var msg = "AcmImporter must be called from an ACMFolder!";
-            self.logger.error( msg );
-            self.createMessage( self.activeNode, msg, 'error' );
-            self.result.setSuccess( false );
-            mainCallback( null, self.result );
-            return;
-        }
-
         acmFolderNode = self.activeNode;
 
-        self.projectNode = self.getWorkspaceNode( acmFolderNode );
         self.deleteExisting = currentConfig.DeleteExisting;
 
         var findComponentsCallback = function () {
-            var loadChildrenCallback = function ( err, children ) {
+            self.core.loadChildren( acmFolderNode, loadChildrenCallback );
+        };
+        var loadChildrenCallback = function ( err, children ) {
+            if ( err ) {
+                self.createMessage( acmFolderNode, 'Could not load children of ' + self.core.getName(
+                    acmFolderNode ), 'error' );
+                self.logger.error( 'Could not load children of ' + self.core.getName( acmFolderNode ) +
+                ', err: ' + err );
+                self.result.setSuccess( false );
+                mainCallback( err, self.result );
+                return;
+            }
+
+            numExisting = children.length;
+
+            var getAcmDescriptionCallback = function ( err, hash2acmJsonMap ) {
                 if ( err ) {
-                    self.createMessage( acmFolderNode, 'Could not load children of ' + self.core.getName(
-                        acmFolderNode ), 'error' );
-                    self.logger.error( 'Could not load children of ' + self.core.getName( acmFolderNode ) +
-                        ', err: ' + err );
-                    self.result.setSuccess( false );
                     mainCallback( err, self.result );
                     return;
                 }
 
-                numExisting = children.length;
+                numUploaded = Object.keys( hash2acmJsonMap )
+                    .length;
 
-                var getAcmDescriptionCallback = function ( err, hash2acmJsonMap ) {
+                var acmJson;
+
+                for ( var hash in hash2acmJsonMap ) {
+                    acmJson = hash2acmJsonMap[ hash ];
+                    newAcm = self.createNewAcm( acmFolderNode, hash, acmJson );
+
+                    xPosition = xOffset + xSpacing * ( numExisting % componentsPerRow );
+                    yPosition = yOffset + ySpacing * ( Math.floor( numExisting / componentsPerRow ) );
+                    self.core.setRegistry( newAcm, 'position', {
+                        x: xPosition,
+                        y: yPosition
+                    } );
+
+                    numExisting += 1;
+                    numCreated += 1;
+                }
+
+                //var propertyString = JSON.stringify(self.propertyJson, null, 4);
+
+                self.save( 'added obj', function ( err ) {
                     if ( err ) {
                         mainCallback( err, self.result );
                         return;
                     }
-
-                    numUploaded = Object.keys( hash2acmJsonMap )
-                        .length;
-
-                    var acmJson;
-
-                    for ( var hash in hash2acmJsonMap ) {
-                        acmJson = hash2acmJsonMap[ hash ];
-                        newAcm = self.createNewAcm( acmFolderNode, hash, acmJson );
-
-                        xPosition = xOffset + xSpacing * ( numExisting % componentsPerRow );
-                        yPosition = yOffset + ySpacing * ( Math.floor( numExisting / componentsPerRow ) );
-                        self.core.setRegistry( newAcm, 'position', {
-                            x: xPosition,
-                            y: yPosition
-                        } );
-
-                        numExisting += 1;
-                        numCreated += 1;
+                    if ( numUploaded > 1 ) {
+                        self.createMessage( acmFolderNode, numCreated + ' ACMs created out of ' +
+                        numUploaded + ' uploaded.', 'info' );
+                    }
+                    if ( self.cleanImport === true ) {
+                        self.result.setSuccess( true );
+                    } else {
+                        self.result.setSuccess( false );
                     }
 
-                    //var propertyString = JSON.stringify(self.propertyJson, null, 4);
-
-                    self.save( 'added obj', function ( err ) {
-                        if ( err ) {
-                            mainCallback( err, self.result );
-                            return;
-                        }
-                        if ( numUploaded > 1 ) {
-                            self.createMessage( acmFolderNode, numCreated + ' ACMs created out of ' +
-                                numUploaded + ' uploaded.', 'info' );
-                        }
-                        if ( self.cleanImport === true ) {
-                            self.result.setSuccess( true );
-                        } else {
-                            self.result.setSuccess( false );
-                        }
-
-                        mainCallback( null, self.result );
-                    } );
-                };
-
-                self.getAcmDetails( uploadedFileHash, getAcmDescriptionCallback );
+                    mainCallback( null, self.result );
+                } );
             };
 
-            self.core.loadChildren( acmFolderNode, loadChildrenCallback );
+            self.getAcmDetails( uploadedFileHash, getAcmDescriptionCallback );
         };
 
         if (uploadedFileHash) {
-            self.findComponentsRecursive(self.projectNode, findComponentsCallback);
+            if (!self.isMetaTypeOf( self.activeNode, MetaTypes.ACMFolder ) ) {
+                var msg = "AcmImporter must be called from an ACMFolder!";
+                self.logger.error( msg );
+                self.createMessage( self.activeNode, msg, 'error' );
+                self.result.setSuccess( false );
+                mainCallback( null, self.result );
+                return;
+            }
+
+            self.findComponentsRecursive(self.getWorkspaceNode( acmFolderNode ), findComponentsCallback);
         } else if (currentConfig.AcmUrl) {
             getZipFromUrl(currentConfig.AcmUrl, function (err, res) {
                 if (err) {
@@ -232,7 +229,11 @@ define( [ 'plugin/PluginConfig',
                         return;
                     }
                     uploadedFileHash = hash;
-                    self.findComponentsRecursive(self.projectNode, findComponentsCallback);
+                    if (currentConfig.position) {
+                        xOffset = currentConfig.position.x;
+                        yOffset = currentConfig.position.y;
+                    }
+                    loadChildrenCallback(undefined, []);
                 });
             });
         } else {
