@@ -77,10 +77,9 @@ CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $
         //        return "NkLabsPrototype";
         //    }).then(
         future = ( function ( projectName ) {
-            return dataStoreService.connectToDatabase( databaseId, {
-                host: window.location.basename,
-                storageKeyType: 'rand160Bits'
-            } )
+            return dataStoreService.connectToDatabase( databaseId,
+                { host: window.location.protocol + "//" + window.location.host }
+            )
                 .then( function () {
                     // select default project and branch (master)
                     log( 'db open' );

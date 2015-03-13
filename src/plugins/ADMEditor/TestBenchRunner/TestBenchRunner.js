@@ -564,7 +564,11 @@ define( [ 'plugin/PluginConfig',
 
         if ( !self.executorClient ) {
             self.logger.info( 'First execution, creating executor client..' );
-            self.executorClient = new ExecutorClient();
+            self.executorClient = new ExecutorClient({
+                httpsecure: self.gmeConfig.server.https.enable,
+                serverPort: self.gmeConfig.server.port,
+                executorNonce: self.gmeConfig.executor.nonce
+            });
         }
         self.executorClient.createJob( artifactHash, function ( err, jobInfo ) {
             var intervalID,
