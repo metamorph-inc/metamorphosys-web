@@ -15,7 +15,9 @@ If you want to get the web server running your own machine, follow the instructi
 7. Preload the *MongoDB* by running `mongorestore`
 8. Start the server with `node app.js` or `npm start`
 9. _(optional):_ To set up a worker (needed for running analysis), install or compile the *metamorphosys-desktop* tools, and then follow the README.md at `/node_modules/webgme-domain-tools/executor_worker`.
-10. Open the example project at http://localhost:8855/extlib/public/apps/mmsApp/#/createDesign/Template_Module_1x2
+10. Open the example project at http://localhost:8855/#/editor/Template_Module_1x2
+
+(To access the original webgme interface, go to http://localhost:8855/extlib/node_modules/webgme/src/client/index.html )
 
 ### Launching the Editor Interface ###
 Create a new project by visiting [localhost:8855/rest/external/copyproject/](http://localhost:8855/rest/external/copyproject)

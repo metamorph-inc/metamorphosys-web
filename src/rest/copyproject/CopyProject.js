@@ -8,7 +8,7 @@ define( [ 'logManager',
     'storage/serveruserstorage',
     'coreclient/serialization'
 ], function ( logManager, Core, Storage, Serialization ) {
-    "use strict";
+    'use strict';
 
     var path = require( 'path' ),
         BSON_FILE = path.join( 'dump', 'CyPhy', 'Template_Module_1x2.bson' ),
@@ -21,7 +21,7 @@ define( [ 'logManager',
         use_exec;
 
     function Copy( req, res, callback ) {
-        var projectName = "Test_" + Math.floor( Math.random() * 100000 );
+        var projectName = 'Test_' + Math.floor( Math.random() * 100000 );
         var fatal = function ( err ) {
             console.log( err );
             callback( err );
@@ -36,7 +36,7 @@ define( [ 'logManager',
                     if ( err ) {
                         return fatal( err );
                     }
-                    // return fatal(stdout + "\n\n" + stderr);
+                    // return fatal(stdout + '\n\n' + stderr);
                     callback( null, projectName );
                 } );
             } else {
@@ -116,9 +116,9 @@ define( [ 'logManager',
                     return res.status( 500 )
                         .send( err );
                 }
-                res.header( "Cache-Control", "no-cache, no-store, must-revalidate" );
-                res.header( "Pragma", "no-cache" );
-                res.redirect( '/?project=' + projectName );
+                res.header( 'Cache-Control', 'no-cache, no-store, must-revalidate' );
+                res.header( 'Pragma', 'no-cache' );
+                res.redirect( '/#/editor/' + projectName );
             } );
         } else if ( url.length === 2 && url[ 1 ] === 'noredirect' ) {
             Copy( req, res, function ( err, projectName ) {

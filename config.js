@@ -11,7 +11,7 @@ config.server.port = 8855;
 config.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhy';
 config.storage.cache = 0;
 
-//config.client.appDir =
+config.client.appDir = path.join(__dirname, 'public/apps/mmsApp');
 
 config.executor.enable = true;
 // config.executor.nonce = null;
