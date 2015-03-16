@@ -109,7 +109,8 @@
 
         "webcyphy.plugins": "./public/gme_plugins_for_cyphy/webcyphy.plugins.build.js",
         "cyphy-components": "./public/cyphy-library/cyphy-components.js",
-        "cyphy-components-templates": "./public/cyphy-library/cyphy-components-templates.js"
+        "cyphy-components-templates": "./public/cyphy-library/cyphy-components-templates.js",
+        "component-library": "./bower_components/mms-component-library/componentLibrary.js"
 
     },
     "browserify-shim": {

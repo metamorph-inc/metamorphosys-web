@@ -29,3 +29,5 @@ require('angular-panhandler');
 require('angular-mousewheel');
 require('mousewheel')($);
 require('jscrollpane')($);
+
+require('component-library');
