@@ -99,7 +99,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
 //
 //        ],
 //
-        extraInfoTemplateUrl: '/cyphy-components/templates/componentExtraInfo.html',
+        extraInfoTemplateUrl: '/mmsApp/templates/componentExtraInfo.html',
 
         nodeClassGetter: function (node) {
 

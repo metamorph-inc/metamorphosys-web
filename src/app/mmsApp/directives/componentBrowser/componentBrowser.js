@@ -4,7 +4,9 @@
 var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
 
 
-angular.module( 'cyphy.components' )
+angular.module( 'mms.mmsApp.componentBrowser', [
+    'mms.componentBrowser.componentLibrary'
+] )
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (
@@ -151,7 +153,7 @@ angular.module( 'cyphy.components' )
                 autoHeight: '=autoHeight'
             },
             replace: true,
-            templateUrl: '/cyphy-components/templates/componentBrowser.html',
+            templateUrl: '/mmsApp/templates/componentBrowser.html',
             controller: 'ComponentBrowserController',
             link: function(scope, element) {
 
