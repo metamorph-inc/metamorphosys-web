@@ -41,12 +41,16 @@ define( [ 'logManager',
                 } );
             } else {
                 mongodb.MongoClient.connect( CONFIG.mongo.uri, {
-                    'w': 1,
-                    'native-parser': true,
-                    'auto_reconnect': true,
-                    'poolSize': 20,
-                    socketOptions: {
-                        keepAlive: 1
+                    db: {
+                        'w': 1,
+                        'native_parser': true
+                    },
+                    server: {
+                        'auto_reconnect': true,
+                        'poolSize': 20,
+                        socketOptions: {
+                            keepAlive: 1
+                        }
                     }
                 }, function ( err, db ) {
                     if ( err ) {
