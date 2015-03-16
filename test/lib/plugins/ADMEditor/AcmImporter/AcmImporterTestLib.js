@@ -1,13 +1,13 @@
 /* global define,require */
-define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AcmImporter/AcmImporter/AcmImporter'],
-function(NodeMock, LoggerMock, AcmImporter) {
+define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AcmImporter/AcmImporter/AcmImporter', 'gmeConfig'],
+function(NodeMock, LoggerMock, AcmImporter, gmeConfig) {
     'use strict';
     function runAcmImporter(Templates, acmFilename, expect, core, root, activeNode, META) {
         var acm = Templates[acmFilename];
         expect(acm).to.not.equal(undefined, acmFilename + " not found among Templates. (Did you run combine_templates.js?)");
         var importer = new AcmImporter();
         var acmJson = importer.convertXmlString2Json(acm);
-        importer.initialize(new LoggerMock(), null);
+        importer.initialize(new LoggerMock(), null, gmeConfig);
         importer.configure({
             'core': core,
             'project': null, //project,

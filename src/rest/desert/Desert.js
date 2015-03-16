@@ -18,8 +18,7 @@ define( [ 'logManager',
         desertRestCreate,
         desertRestInfo,
         desertRestCancel,
-        running = {},
-        setup;
+        running = {};
 
     DesertBackEnd = function ( logger ) {
         var blobBackend = new BlobFSBackend();
@@ -154,8 +153,7 @@ define( [ 'logManager',
     };
 
     DesertRest = function ( req, res, next ) {
-        var config = WebGMEGlobal.getConfig(),
-            url = req.url.split( '/' ),
+        var url = req.url.split( '/' ),
             handlers = {
                 create: desertRestCreate,
                 cancel: desertRestCancel,
@@ -255,9 +253,7 @@ define( [ 'logManager',
         }
     };
 
-    setup = function () { //it has to be done this way, but this is probably a placeholder for later option parameters...
+    return function (gmeConfig) {
         return DesertRest;
     };
-
-    return setup();
 } );
