@@ -51,11 +51,7 @@ angular.module( 'cyphy.components' )
 
             addInterfaceWatcher = function (componentId) {
 
-                componentService.watchInterfaces(context, componentId, function (updateData) {
-
-                    componentBrowserService.upsertComponentInterface(componentId, updateData);
-
-                })
+                componentService.watchInterfaces(context, componentId, null)
                     .then(function (data) {
 
                         componentBrowserService.upsertComponentInterface(componentId, data);
@@ -73,29 +69,9 @@ angular.module( 'cyphy.components' )
 
                 $log.debug('initialize event raised');
 
-                componentService.watchComponents(context, workspaceId, undefined, function (updateObject) {
-
-                    if (updateObject.type === 'load') {
-
-                        componentBrowserService.upsertItem(updateObject.data);
-
-                        addInterfaceWatcher(updateObject.id);
-
-                    } else if (updateObject.type === 'update') {
-
-                        componentBrowserService.upsertItem(updateObject.data);
-
-                    } else if (updateObject.type === 'unload') {
-
-                        componentBrowserService.removeItem(updateObject.id);
-
-                    } else {
-                        throw new Error(updateObject);
-                    }
-                })
+                componentService.loadComponentsFromWorkspace(context, workspaceId)
                     .then(function (data) {
                         var componentId;
-
 
                         componentBrowserService.initializeWithNodes(data.components);
 

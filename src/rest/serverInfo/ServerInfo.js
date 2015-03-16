@@ -14,12 +14,10 @@ define( [ 'logManager',
         serverInfoRestNode,
         serverInfoRestNpm,
         serverInfoRestAll,
-        setup,
         logger = logManager.create( 'REST-SERVER-INFO' );
 
     serverInfoRestInit = function ( req, res, next ) {
-        var config = WebGMEGlobal.getConfig(),
-            url = req.url.split( '/' ),
+        var url = req.url.split( '/' ),
             handlers = {
                 os: serverInfoRestOS,
                 node: serverInfoRestNode,
@@ -122,9 +120,7 @@ define( [ 'logManager',
         } );
     };
 
-    setup = function () {
+    return function () {
         return serverInfoRestInit;
     };
-
-    return setup();
 } );

@@ -1,10 +1,10 @@
 /* global define,require */
-define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/AdmImporter', 'plugin/AdmExporter/AdmExporter/AdmExporter'],
-    function(NodeMock, LoggerMock, AdmImporter, AdmExporter) {
+define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/AdmImporter', 'plugin/AdmExporter/AdmExporter/AdmExporter', 'gmeConfig'],
+    function(NodeMock, LoggerMock, AdmImporter, AdmExporter, gmeConfig) {
         'use strict';
         function runAdmExporter(core, META, design, root, expect, callback) {
             var exporter = new AdmExporter();
-            exporter.initialize(new LoggerMock(), null);
+            exporter.initialize(new LoggerMock(), null, gmeConfig);
             exporter.configure({
                 'core': core,
                 'project': null, //project,
@@ -31,7 +31,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
             var adm = Templates[admFilename];
             expect(adm).to.not.equal(undefined, admFilename + " not found among Templates. (Did you run combine_templates.js?)");
             var importer = new AdmImporter();
-            importer.initialize(new LoggerMock(), null);
+            importer.initialize(new LoggerMock(), null, gmeConfig);
             importer.configure({
                 'core': core,
                 'project': null, //project,

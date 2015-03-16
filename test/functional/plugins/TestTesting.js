@@ -1,12 +1,12 @@
-/*globals window, WebGMEGlobal, require, describe, it,before */
+/*globals window, require, describe, it,before */
 
 
 if (typeof window === 'undefined') {
 
     // server-side setup
     var webgme = require('webgme');
-    var requirejs = require("../../../test-conf.js").requirejs;
-    var webgme = require('webgme');
+    var requirejs = require('../../../test-conf.js').requirejs;
+    var config = require('../../../test-conf.js').config;
 
     var chai = require('chai');
 }
@@ -22,7 +22,7 @@ describe('TestTesting', function () {
     var acmTemplates;
     var admTemplates;
     before(function (done) {
-        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
+        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/functional/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
             BlobClient = BlobClient_;
             Artifact = Artifact_;
             acmTemplates = acmTemplates_;
@@ -37,8 +37,11 @@ describe('TestTesting', function () {
             function (updateMeta_) {
                 updateMeta = updateMeta_;
 
-                updateMeta.withProject(WebGMEGlobal.getConfig(), projectName, function (project) {
-                    return updateMeta.importLibrary(WebGMEGlobal.getConfig(), projectName, 'master', 'test/models/SimpleModelica.json', project)
+                updateMeta.withProject(config, projectName, function (err, project) {
+                    if (err) {
+                        return done(err);
+                    }
+                    return updateMeta.importLibrary(config, projectName, 'master', 'test/models/SimpleModelica.json', project)
                         .then(function (commitHash_) {
                             commitHash = commitHash_;
                             done();
@@ -52,7 +55,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -68,7 +71,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -84,7 +87,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
@@ -101,7 +104,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -117,7 +120,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -133,7 +136,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528/1332252948',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
@@ -149,7 +152,7 @@ describe('TestTesting', function () {
         var pluginName = 'AdmExporter',
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = true;
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -165,7 +168,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
@@ -181,7 +184,7 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+        webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
@@ -196,7 +199,7 @@ describe('TestTesting', function () {
     function newBlobClient() {
         return new BlobClient({
             server: 'localhost',
-            serverPort: WebGMEGlobal.getConfig().port,
+            serverPort: config.server.port,
             httpsecure: false
         });
     }
@@ -215,7 +218,7 @@ describe('TestTesting', function () {
                 if (err) {
                     return done(err);
                 }
-                webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+                webgme.runPlugin.main(config, {
                     projectName: projectName,
                     pluginName: pluginName,
                     activeNode: testPoint,
@@ -235,11 +238,11 @@ describe('TestTesting', function () {
             expectedSuccess = true,
             bc = newBlobClient();
 
-        bc.putFile("ValueFlow.adm", admTemplates['ValueFlow.adm'], function(err, hash) {
+        bc.putFile("Container.adm", admTemplates['Container.adm'], function(err, hash) {
             if (err) {
                 return done(err);
             }
-            webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+            webgme.runPlugin.main(config, {
                 projectName: projectName,
                 pluginName: pluginName,
                 activeNode: testPoint,

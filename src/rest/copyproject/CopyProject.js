@@ -17,7 +17,7 @@ define( [ 'logManager',
         BSONStream = require( 'bson-stream' ),
         fs = require( 'fs' ),
         child_process = require( 'child_process' ),
-        CONFIG = WebGMEGlobal.getConfig(),
+        CONFIG,
         use_exec;
 
     function Copy( req, res, callback ) {
@@ -26,16 +26,11 @@ define( [ 'logManager',
             console.log( err );
             callback( err );
         };
-        var options = {
-            'host': CONFIG.mongoip,
-            'port': CONFIG.mongoport,
-            'database': CONFIG.mongodatabase
-        };
-
         var copy = function () {
             if ( use_exec ) {
-                var child = child_process.execFile( 'mongorestore', [ '--host', options.host, '--port', options.port,
-                    '--db', options.database,
+                var url = require('url' ).parse(CONFIG.mongo.uri);
+                var child = child_process.execFile( 'mongorestore', [ '--host', url.hostname, '--port', url.port,
+                    '--db', url.path.substr(1),
                     '--collection', projectName, BSON_FILE
                 ], function ( err, stdout, stderr ) {
                     if ( err ) {
@@ -45,7 +40,7 @@ define( [ 'logManager',
                     callback( null, projectName );
                 } );
             } else {
-                mongodb.MongoClient.connect( "mongodb://" + options.host + ":" + options.port + "/" + options.database, {
+                mongodb.MongoClient.connect( CONFIG.mongo.uri, {
                     'w': 1,
                     'native-parser': true,
                     'auto_reconnect': true,
@@ -135,5 +130,8 @@ define( [ 'logManager',
         }
     };
 
-    return CopyProject;
+    return function (gmeConfig) {
+        CONFIG = gmeConfig;
+        return CopyProject;
+    };
 } );
