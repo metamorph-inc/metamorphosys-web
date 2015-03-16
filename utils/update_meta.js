@@ -48,7 +48,7 @@ define([
     'use strict';
 
     function withProject(CONFIG, projectName, fn) {
-        var storage = new Storage({'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase, log: LogManager.create('storage')}),
+        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
             args = Array.prototype.slice.call(arguments, 3),
             self = this,
             project;
@@ -58,21 +58,23 @@ define([
             }).then(function (project_) {
                 project = project_;
                 args.push(project);
+                args.unshift(null /* err */);
                 return fn.apply(self, args);
             }).finally(function () {
-                return Q.ninvoke(project, 'closeProject');
+                if (project) {
+                    return Q.ninvoke(project, 'closeProject');
+                }
             }).finally(function () {
                 return Q.ninvoke(storage, 'closeDatabase');
-            });
-
+            }).catch(fn);
     }
 
     function importLibrary(CONFIG, projectName, branch, metaJson, project) {
-        var storage = new Storage({'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase, log: LogManager.create('storage')}),
+        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
             core,
             deferred = Q.defer(),
             root;
-        core = new Core(project);
+        core = new Core(project, {globConf: CONFIG});
         root = core.createNode({parent: null, base: null});
         Q.ninvoke(fs, 'readFile', metaJson, {encoding: 'utf-8'})
             .then(function (metaJson) {

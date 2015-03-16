@@ -1,4 +1,4 @@
-/*globals window, WebGMEGlobal, require, describe, it,before */
+/*globals window, require, describe, it,before */
 
 
 if (typeof window === 'undefined') {
@@ -6,7 +6,7 @@ if (typeof window === 'undefined') {
     // server-side setup
     var requirejs = require('../../../test-conf.js').requirejs;
     var webgme = require('webgme');
-    var CONFIG = WebGMEGlobal.getConfig();
+    var CONFIG = require('../../../test-conf.js').config;
 
     var chai = require('chai');
 }
@@ -37,13 +37,16 @@ describe('TestBenchRunner', function () {
             function (updateMeta_) {
                 updateMeta = updateMeta_;
 
-                updateMeta.withProject(CONFIG, projectName, function (project) {
+                updateMeta.withProject(CONFIG, projectName, function (err, project) {
+                    if (err) {
+                        return done(err);
+                    }
                     return updateMeta.importLibrary(CONFIG, projectName, 'master', 'test/models/SimpleModelica.json', project)
                         .then(function (/*commitHash*/) {
                             done();
                         });
                 });
-            });
+            }, done);
     });
 
     it('TestBenchRunner', function (done) {
@@ -59,7 +62,7 @@ describe('TestBenchRunner', function () {
             }
             // console.log(hash); // 95f5f253ec1bd748cf668024c0d51b9cc9f565f3
 
-            webgme.runPlugin.main(WebGMEGlobal.getConfig(), {
+            webgme.runPlugin.main(CONFIG, {
                 projectName: projectName,
                 pluginName: pluginName,
                 activeNode: testPoint,
@@ -83,7 +86,7 @@ describe('TestBenchRunner', function () {
     function newBlobClient() {
         return new BlobClient({
             server: 'localhost',
-            serverPort: WebGMEGlobal.getConfig().port,
+            serverPort: CONFIG.server.port,
             httpsecure: false
         });
     }
