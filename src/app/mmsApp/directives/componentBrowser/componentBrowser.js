@@ -7,6 +7,9 @@ var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
 angular.module( 'mms.mmsApp.componentBrowser', [
     'mms.componentBrowser.componentLibrary'
 ] )
+    .config( function(componentLibraryProvider, componentServerUrl){
+        componentLibraryProvider.setServerUrl(componentServerUrl);
+    })
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (

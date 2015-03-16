@@ -3,7 +3,7 @@
 'use strict';
 
 angular.module('CyPhyApp').config(function (
-    $stateProvider, $urlRouterProvider, $mdThemingProvider, componentLibraryProvider, componentServerUrl
+    $stateProvider, $urlRouterProvider, $mdThemingProvider
 ) {
 
     var retrieveGivenProject,
@@ -11,8 +11,6 @@ angular.module('CyPhyApp').config(function (
         retrieveGivenWorkspace,
         retrieveGivenDesign,
         retrieveGivenContainer;
-
-    componentLibraryProvider.setServerUrl(componentServerUrl);
 
     retrieveGivenProject = function ($state, $stateParams, projectHandling, $log, errorReporter) {
 
