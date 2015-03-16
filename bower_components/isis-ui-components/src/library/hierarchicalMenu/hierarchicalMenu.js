@@ -3,7 +3,6 @@
 
 angular.module(
   'isis.ui.hierarchicalMenu', [
-    'ui.bootstrap',
     'isis.ui.components'
   ]
 )

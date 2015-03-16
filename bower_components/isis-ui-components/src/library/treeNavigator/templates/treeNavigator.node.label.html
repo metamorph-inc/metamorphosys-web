@@ -1,12 +1,14 @@
 <div class="node-label"
       data-ng-class="{ 'loading': isNodeLoading(node) }"
-      data-ng-click="nodeClick($event, node)"
+      data-isis-sglclick="nodeClick($event, node)"
+      data-ng-dblclick="nodeDblclick($event, node)"
       isis-contextmenu
       contextmenu="nodeContextmenu($event, node)"
       contextmenu-data="nodeContextMenuData">
     <a class="node-expander"
+        isis-stop-event
         data-ng-if="canNodeExpand(node) && canNodeCollapse(node)"
-        data-ng-click="nodeExpanderClick($event, node)">
+        data-isis-sglclick="nodeExpanderClick($event, node)">
         <i data-ng-if="!isNodeExpanded(node)" data-ng-class="node.collapsedIconClass || config.collapsedIconClass"></i>
         <i data-ng-if="isNodeExpanded(node) && canNodeCollapse(node)" data-ng-class="node.expandedIconClass || config.expandedIconClass"></i>
     </a>
@@ -20,10 +22,8 @@
            data-ng-class="node.childrenCount && config.folderIconClass || node.iconClass || config.nodeIconClass"></i>
         <span class="drag-handle">
             <span class="label-text"
-                  data-ng-dblclick="nodeDblclick($event, node)"
                   data-ng-if="node.label">{{ node.label }}</span>
             <span class="noname"
-                  data-ng-dblclick="nodeDblClick($event, node)"
                   data-ng-if="!node.label">No name</span>
             <span data-ng-if="node.extraInfo">
                 <div class="node-extra-info" ng-include="config.extraInfoTemplateUrl"></div>

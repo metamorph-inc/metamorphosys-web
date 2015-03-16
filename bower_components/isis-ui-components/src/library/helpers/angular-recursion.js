@@ -6,8 +6,8 @@
  * @author Mark Lagendijk
  * @license MIT
  */
-angular.module( 'RecursionHelper', [] )
-  .factory( 'RecursionHelper', [ '$compile',
+angular.module( 'isis.ui.RecursionHelper', [] )
+  .factory( 'ISISRecursionHelper', [ '$compile',
     function ( $compile ) {
       return {
         /**

@@ -3,8 +3,6 @@ var $ = window.$;
 require('jquery-ui');
 require('bootstrap');
 
-require('ui-bootstrap');
-require('ui-bootstrap-tpls');
 require('ui-router');
 require('ui-utils');
 require('ng-grid');

@@ -8,7 +8,7 @@ require( '../helpers/angular-recursion.js' );
 angular.module(
 'isis.ui.treeNavigator.nodeList', [
   'isis.ui.treeNavigator.node',
-  'RecursionHelper'
+  'isis.ui.RecursionHelper'
 ]
 )
 
@@ -253,7 +253,7 @@ angular.module(
 } )
 
 .directive(
-'treeNavigatorNodeList', function ( RecursionHelper ) {
+'treeNavigatorNodeList', function ( ISISRecursionHelper ) {
   return {
     scope: {
       nodes: '=',
@@ -264,7 +264,7 @@ angular.module(
     templateUrl: '/isis-ui-components/templates/treeNavigator.nodeList.html',
     controller: 'TreeNavigatorNodeListController',
     compile: function ( element ) {
-      return RecursionHelper.compile( element );
+      return ISISRecursionHelper.compile( element );
     }
 
   };

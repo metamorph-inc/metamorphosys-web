@@ -28,6 +28,12 @@ angular.module(
 
                 scope.formConfig = scope.config.newItemForm;
 
+                scope.toggleNewItemFormCollapsed = function() {
+
+                  scope.formConfig.expanded = !scope.formConfig.expanded;
+
+                };
+
               }
             }
 

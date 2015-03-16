@@ -1,13 +1,8 @@
-/*globals angular, window*/
+/*globals angular*/
 'use strict';
 
-window.moment = window.moment || require( 'moment' );
-require( 'angular-moment' );
-
 angular.module(
-  'isis.ui.itemList.item.stats', [ angular.isFunction( window.define ) ? 'angular-moment' :
-    'angularMoment'
-  ]
+  'isis.ui.itemList.item.stats', []
 )
   .directive(
     'ilItemStats',

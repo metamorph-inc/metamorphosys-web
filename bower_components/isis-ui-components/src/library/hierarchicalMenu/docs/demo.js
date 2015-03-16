@@ -1,7 +1,7 @@
 /*globals console, angular*/
 'use strict';
 
-var demoApp = angular.module( 'isis.ui.hierarchicalMenu.demo', [ 'ui.bootstrap',
+var demoApp = angular.module( 'isis.ui.hierarchicalMenu.demo', [
   'isis.ui.hierarchicalMenu'
 ] );
 

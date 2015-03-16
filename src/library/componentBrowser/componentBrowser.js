@@ -8,7 +8,7 @@ angular.module( 'cyphy.components' )
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (
-        $scope, $window, $modal, growl, componentService, fileService, $log, componentBrowserService, $timeout,
+        $scope, $window, growl, componentService, fileService, $log, componentBrowserService, $timeout,
         projectHandling, connectionHandling
     ) {
         var init,

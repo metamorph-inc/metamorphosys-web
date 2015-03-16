@@ -3,24 +3,8 @@
 
 var components = [
   {
-    name: 'decisionTable',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'valueWidgets',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'searchBox',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
     name: 'itemList',
     sources: [ 'demo.html', 'newItemTemplate.html', 'demo.js']
-  },
-  {
-    name: 'simpleDialog',
-    sources: [ 'demo.html', 'demo.js']
   },
   {
     name: 'hierarchicalMenu',
@@ -40,15 +24,11 @@ var components = [
   }
 ];
 
-require( '../library/simpleDialog/docs/demo.js' );
 require( '../library/hierarchicalMenu/docs/demo.js' );
 require( '../library/contextmenu/docs/demo.js' );
 require( '../library/dropdownNavigator/docs/demo.js' );
 require( '../library/treeNavigator/docs/demo.js' );
 require( '../library/itemList/docs/demo.js' );
-require( '../library/searchBox/docs/demo.js' );
-require( '../library/valueWidgets/docs/demo.js' );
-require( '../library/decisionTable/docs/demo.js' );
 
 require( 'angular-sanitize' );
 window.Showdown = require( 'showdown' );
@@ -62,17 +42,13 @@ require( 'codemirror/mode/xml/xml' );
 require( 'codemirror/mode/javascript/javascript' );
 
 require( 'angular-ui-codemirror' );
-require( 'ng-grid' );
-require( 'ng-grid-css');
-require( 'ui-utils');
 
 
 var demoApp = angular.module(
 'isis.ui.demoApp', [
   'isis.ui.demoApp.templates',
   'btford.markdown',
-  'ui.codemirror',
-  'ui.bootstrap'
+  'ui.codemirror'
 ].concat( components.map( function ( e ) {
   return 'isis.ui.' + e.name + '.demo';
 } ) )
@@ -125,7 +101,8 @@ function ( $scope, $templateCache ) {
       name: component.name,
       template: '/library/' + component.name + '/docs/demo.html',
       docs: '/library/' + component.name + '/docs/readme.md',
-      sources: sources
+      sources: sources,
+      selectedSourceFile: sources[0]
     };
   } );
 

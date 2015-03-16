@@ -1,16 +1,22 @@
 <div class="create-new-item" class="row">
 
-    <accordion close-others="oneAtATime">
-        <accordion-group is-open="formConfig.expanded">
-            <accordion-heading class="new-item-heading">
-                <i class="glyphicon"
-                   ng-class="{'glyphicon-chevron-up': formConfig.expanded, 'glyphicon-plus': !formConfig.expanded}"></i>
-                {{formConfig.title}}
-            </accordion-heading>
-            <div class="form-content"
-                 ng-include="formConfig.itemTemplateUrl"
-                 ng-controller="formConfig.controller">
+    <div class="panel-group" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title"
+                    ng-click="toggleNewItemFormCollapsed()">
+                    <i class="glyphicon"
+                       ng-class="{'glyphicon-chevron-up': formConfig.expanded, 'glyphicon-plus': !formConfig.expanded}"></i>
+                    {{formConfig.title}}
+                </h4>
             </div>
-        </accordion-group>
-    </accordion>
+            <div class="panel-collapse collapse"
+                 ng-class="{ 'in': formConfig.expanded === true }">
+                <div class="form-content panel-body"
+                     ng-include="formConfig.itemTemplateUrl"
+                     ng-controller="formConfig.controller">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

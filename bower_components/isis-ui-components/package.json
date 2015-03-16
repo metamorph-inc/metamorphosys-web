@@ -1,7 +1,6 @@
 {
   "devDependencies": {
     "angular-markdown-directive": "^0.3.0",
-    "angular-momentjs": "^0.1.8",
     "angular-sanitize": "0.0.1",
     "browserify": "^5.10.1",
     "browserify-shim": "^3.7.0",
@@ -43,19 +42,12 @@
   },
   "browser": {
     "showdown": "./vendor/showdown_for_browserify.js",
-    "angular-bindonce": "./vendor/bindonce_fixed.js",
-    "angular-dragdrop_JQuery-based": "./bower_components/angular-dragdrop/src/angular-dragdrop.min.js",
     "ngDragDrop": "./bower_components/angular-native-dragdrop/draganddrop.js",
     "angular-ui-sortable": "./bower_components/angular-ui-sortable/sortable.min.js",
-    "angular-moment": "./bower_components/angular-moment/angular-moment.min.js",
     "codemirror-css": "./bower_components/codemirror/lib/codemirror.css",
-    "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js",
-    "ng-grid": "./bower_components/ng-grid/ng-grid-2.0.13.min.js",
-    "ng-grid-css": "./bower_components/ng-grid/ng-grid.min.css",
-    "ui-utils": "./bower_components/angular-ui-utils/ui-utils.js"
+    "angular-ui-codemirror": "./bower_components/angular-ui-codemirror/ui-codemirror.js"
   },
   "browserify-shim": {
-    "showdown": "Showdown",
-    "moment": "moment"
+    "showdown": "Showdown"
   }
 }

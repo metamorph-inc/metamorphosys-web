@@ -30,3 +30,7 @@ cyphy_functional_server_2.log
 cyphy_functional_server_forever.log
 
 public
+
+
+config.client.json
+config.server.json

@@ -6,13 +6,15 @@ angular.module(
 )
   .controller( 'ItemListItemDetailsController', function ( $scope ) {
 
+    var expanded = false;      
+      
     $scope.config.showDetailsLabel = $scope.config.showDetailsLabel || 'Details';
     $scope.config.hideDetailsLabel = $scope.config.hideDetailsLabel || 'Details';
 
-    $scope.expanded = false;
+    expanded = false;
 
     $scope.getExpanderClass = function () {
-      if ( $scope.expanded ) {
+      if ( expanded ) {
         return 'glyphicon glyphicon-chevron-up';
       } else {
         return 'glyphicon glyphicon-chevron-right';
@@ -20,7 +22,7 @@ angular.module(
     };
 
     $scope.getExpanderLabel = function () {
-      if ( $scope.expanded ) {
+      if ( expanded ) {
         return $scope.config.hideDetailsLabel;
       } else {
         return $scope.config.showDetailsLabel;
@@ -28,7 +30,11 @@ angular.module(
     };
 
     $scope.detailsCollapserClick = function () {
-      $scope.expanded = !$scope.expanded;
+      expanded = !expanded;
+    };
+
+    $scope.shouldBeExpanded = function () {
+      return expanded || !$scope.config.detailsCollapsible;
     };
 
   } )

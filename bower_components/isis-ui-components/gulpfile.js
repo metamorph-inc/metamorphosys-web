@@ -39,14 +39,11 @@ sourcePaths = {
 
     'src/library/contextmenu/*.js',
     'src/library/dropdownNavigator/*.js',
-    'src/library/simpleDialog/*.js',
     'src/library/treeNavigator/*.js',
     'src/library/hierarchicalMenu/*.js',
     'src/library/itemList/*.js',
-    'src/library/decisionTable/*.js',
     'src/library/validationErrorMarker/*.js',
     'src/library/taxonomyTerms/*.js',
-    'src/library/valueWidgets/*.js',
     'src/library/decisionTable/*.js'
   ],
   libraryTemplates: [

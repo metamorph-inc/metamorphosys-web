@@ -3,7 +3,7 @@
 <head>
     <title>ISIS UI Components Documentation</title>
 
-    <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/black-tie/jquery-ui.css">
     <link type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -30,20 +30,26 @@
             <div btf-markdown class="col-md-6" ng-include="component.docs">
             </div>
         </div>
-            <div class="row">
-                <tabset class="col-md-12" ng-if="component.sources">
-                    <tab ng-repeat="sourceFile in component.sources"
-                         heading="{{sourceFile.fileName}}"
-                         select="selectedSourceFile=sourceFile">
-                        <div ui-codemirror
-                             ui-codemirror-opts="sourceFile.viewerOptions"
-                             ng-model="sourceFile.code"
-                             ui-refresh="selectedSourceFile"
-                             >
+            <div class="row"
+                 ng-if="component.sources">
 
+                <ul class="nav nav-tabs">
+                    <li ng-repeat="sourceFile in component.sources"
+                        ng-click="component.selectedSourceFile = component.sources[$index]">
+                        <a href="#">{{sourceFile.fileName}}</a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel"
+                         class="tab-pane active">
+                        <div ui-codemirror
+                             ui-codemirror-opts="component.selectedSourceFile.viewerOptions"
+                             ng-model="component.selectedSourceFile.code"
+                             ui-refresh="component.selectedSourceFile">
                         </div>
-                    </tab>
-                </tabset>
+                    </div>
+                </div>
             </div>
 
     </section>
@@ -52,8 +58,7 @@
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <script src="../../bower_components/angular/angular.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
 <script src="../isis-ui-components.js"></script>
 <script src="../isis-ui-components-templates.js"></script>
