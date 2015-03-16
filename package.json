@@ -9,7 +9,6 @@
     "dependencies": {
         "bson-stream": "0.0.4",
         "webgme": "https://github.com/webgme/webgme/tarball/perf_investigation",
-        "webgme-domain-tools": "https://github.com/webgme/webgme-domain-tools/tarball/master",
         "requirejs": "=2.1.11",
         "winreg": "=0.0.12",
         "ng-gme": "=0.1.1"
