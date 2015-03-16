@@ -4,7 +4,7 @@
 
 angular.module('mms.designVisualization.operations.moveComponents', [])
 
-    .run(function (operationsManager, $rootScope, wiringService, gridService, $timeout) {
+    .run(function (operationsManager, $rootScope, wiringService, gridService) {
 
         var type;
 
@@ -16,23 +16,23 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                 var dragTargetsDescriptor,
                     dragTargetsWiresUpdate,
-                    wireUpdateWait,
-                    dragTargetsWiresUpdatePromises,
+//                    wireUpdateWait,
+//                    dragTargetsWiresUpdatePromises,
 
                     diagram;
 
-                wireUpdateWait = 20;
-                dragTargetsWiresUpdatePromises = {};
+//                wireUpdateWait = 20;
+//                dragTargetsWiresUpdatePromises = {};
 
                 dragTargetsWiresUpdate = function (affectedWires) {
 
                     angular.forEach(affectedWires, function (wire) {
 
-                        $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
+//                        $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
 
-                        dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
+//                        dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
                             wiringService.adjustWireEndSegments(wire);
-                        }, wireUpdateWait);
+//                        }, wireUpdateWait);
 
                     });
 
