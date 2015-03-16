@@ -59,7 +59,7 @@ var main = function () {
         i,
         templateContent;
 
-    ['acm/unit', 'adm/unit'].forEach(function (dir) {
+    ['acm/unit', 'adm/unit', 'adm/functional'].forEach(function (dir) {
         walk(dir, function (err, results) {
             var content = {};
             if (err) {
