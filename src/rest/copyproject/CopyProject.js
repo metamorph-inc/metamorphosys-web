@@ -1,4 +1,4 @@
-/* global define,require,WebGMEGlobal */
+/* global define,require */
 /*
 config.json: "rextrast": { "copyproject": "./src/rest/copyproject/CopyProject", ...
 http://localhost:8855/rest/external/copyproject
