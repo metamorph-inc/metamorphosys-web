@@ -40,6 +40,7 @@ angular.module( 'mms.mmsApp.componentBrowser', [
                 .then(function(data){
 
                     componentBrowserService.initializeWithNodes(data);
+                    $scope.grandTotal = componentLibrary.getGrandTotal();
 
                 })
                 .catch(function(e){

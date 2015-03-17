@@ -29,7 +29,8 @@ angular.module(
 
                 ComponentLibrary = function () {
 
-                    var classificationTree;
+                    var classificationTree,
+                        grandTotal;
 
                     this.getListOfComponents = function(categoryPath, itemCount, cursor ) {
 
@@ -69,6 +70,7 @@ angular.module(
 
                                 classificationTree = data.classes;
                                 deferred.resolve(classificationTree);
+                                grandTotal = data.grandTotal;
 
                             })
                             .error(function (e) {
@@ -104,6 +106,9 @@ angular.module(
                             });
                     };
 
+                    this.getGrandTotal = function() {
+                        return grandTotal;
+                    };
 
                     this.searchComponents = function(categoryPath, searchPhrase, itemCount, cursor) {
 
