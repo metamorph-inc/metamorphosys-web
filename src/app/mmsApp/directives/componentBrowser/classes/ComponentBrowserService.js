@@ -247,24 +247,21 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
         var extraInfo;
 
-        if (angular.isObject(node) && angular.isObject(node.interfaces)) {
+        if (angular.isObject(node) && angular.isObject(node.prominentProperties) && node.prominentProperties.length) {
 
-            if (angular.isObject(node.interfaces.properties)) {
+            extraInfo = {
+                properties: []
+            };
 
-                extraInfo = extraInfo || {};
+            angular.forEach(node.prominentProperties, function(property) {
 
-                extraInfo.properties = {};
+                extraInfo.properties.push(property);
 
-                angular.forEach(node.interfaces.properties, function(property, key) {
+            });
 
-                    extraInfo.properties[key] = property;
-
-                });
-            }
+            node.extraInfo = extraInfo;
 
         }
-
-        node.extraInfo = extraInfo;
 
     };
 
