@@ -15,7 +15,8 @@ angular.module('mms.designVisualization.designEditor', [
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $state, $stateParams, designLayoutService,
-                                                    symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling, acmImportService) {
+                                                    symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
+                                                    acmImportService, componentServerUrl) {
 
         var lastComponentInstantiationPosition,
             justCreatedWires,
@@ -89,7 +90,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                     if (componentData && componentData.id) {
                         acmImportService.importAcm($scope.layoutContext, selectedContainerId,
-                            'http://localhost:8855/rest/blob/download/c3abb612d483c98552a36d91ac94a2cad67d3cb2/', position);
+                            componentServerUrl + '/getcomponent/download/' + componentData.id, position);
                     }
 
                 });

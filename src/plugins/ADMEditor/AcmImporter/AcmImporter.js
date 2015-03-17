@@ -222,6 +222,7 @@ define( [ 'plugin/PluginConfig',
                     mainCallback('Could not GET \'' + currentConfig.AcmUrl + '\': ' + err, self.result);
                     return;
                 }
+                // FIXME: get name from Content-Disposition:attachment; filename="MIPI_FPGA_Gateway.zip" or url path or XML
                 self.blobClient.putFile('name.zip', res, function (err, hash) {
                     if (err) {
                         self.result.setSuccess(false);
@@ -271,6 +272,7 @@ define( [ 'plugin/PluginConfig',
 
             var buffers = new BuffersWritable();
             buffers.on('finish', function () {
+                // FIXME 404 is passed thru silently
                 callback(null, Buffer.concat(buffers.buffers));
             });
             buffers.on('error', function (err) {
@@ -842,7 +844,7 @@ define( [ 'plugin/PluginConfig',
                         return;
                     }
 
-                    var zipFile = new JSZip( uploadedObjContent ),
+                    var zipFile,
                         acmObjects,
                         acmObject,
                         acmContent,
@@ -851,6 +853,12 @@ define( [ 'plugin/PluginConfig',
                         acmZipFile,
                         numberAcmFiles,
                         acmJson;
+
+                    try {
+                        zipFile = new JSZip( uploadedObjContent );
+                    } catch (error) {
+                        return getAcmCallback( error );
+                    }
 
                     if (zipFile.file( /\.zip$/).length === 0 && zipFile.file( /\.acm$/).length) {
                         single = true; // support complex blobs with acm files
