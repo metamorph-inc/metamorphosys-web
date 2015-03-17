@@ -13,13 +13,15 @@ angular.module( 'mms.mmsApp.componentBrowser', [
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (
-        $scope, $window, $log, componentBrowserService, $timeout, componentLibrary
+        $scope, $window, $log, componentBrowserService, $timeout, componentLibrary, componentServerUrl
     ) {
         var init;
 
         this.getConnectionId = function () {
             return $scope.connectionId;
         };
+
+        $scope.componentSearchUrl = componentServerUrl + '/components/search/!/';
 
         $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
 

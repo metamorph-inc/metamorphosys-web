@@ -11,13 +11,12 @@
             <!--<input class="component-search-input"></input>-->
             <angucomplete-alt id="component-search-autocomplete"
                           placeholder="Type '/' to search"
-                          pause="100"
+                          pause="400"
                           selected-object="componentSearchSelection"
-                          local-data="treeNavigatorData.childNodes"
-                          search-fields="label"
-                          title-field="label"
-                          descriptionfield="description"
-                          minlength="1"
+                          remote-url="{{::componentSearchUrl}}"
+                          remote-url-data-field="component"
+                          title-field="name"
+                          minlength="2"
                           clear-selected="true"
                           input-class="component-search-input"/>
         </div>

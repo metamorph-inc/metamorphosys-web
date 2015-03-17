@@ -110,6 +110,11 @@
         margin-bottom: none !important;
     }
 
+    .angucomplete-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .angucomplete-selected-row,
     .angucomplete-row:hover {
         background-color: rgba(218, 226, 244, 0.6);
