@@ -13,13 +13,9 @@ angular.module( 'mms.mmsApp.componentBrowser', [
     .service( 'componentBrowserService', ComponentBrowserService )
     .controller( 'ComponentBrowserController',
     function (
-        $scope, $window, growl, componentService, fileService, $log, componentBrowserService, $timeout,
-        projectHandling, connectionHandling
+        $scope, $window, $log, componentBrowserService, $timeout, componentLibrary
     ) {
-        var init,
-            addInterfaceWatcher,
-            context,
-            workspaceId;
+        var init;
 
         this.getConnectionId = function () {
             return $scope.connectionId;
@@ -27,23 +23,7 @@ angular.module( 'mms.mmsApp.componentBrowser', [
 
         $scope.treeNavigatorData = componentBrowserService.treeNavigatorData;
 
-        init = function(workspaceId) {
-
-            $scope.connectionId = connectionHandling.getMainGMEConnectionId();
-
-            // Check for valid connectionId and register clean-up on destroy event.
-            if ($scope.connectionId && angular.isString($scope.connectionId)) {
-                context = {
-                    db: $scope.connectionId,
-                    regionId: 'ComponentListController_' + ( new Date() )
-                        .toISOString()
-                };
-                $scope.$on('$destroy', function () {
-                    componentService.unregisterWatcher(context);
-                });
-            } else {
-                throw new Error('connectionId must be defined and it must be a string');
-            }
+        init = function() {
 
             // Tree setup
 
@@ -54,98 +34,66 @@ angular.module( 'mms.mmsApp.componentBrowser', [
 
             // Getting the data
 
-            addInterfaceWatcher = function (componentId) {
+            componentLibrary.getClassificationTree()
+                .then(function(data){
 
-                componentService.watchInterfaces(context, componentId, null)
-                    .then(function (data) {
+                    componentBrowserService.initializeWithNodes(data);
 
-                        componentBrowserService.upsertComponentInterface(componentId, data);
+                })
+                .catch(function(e){
 
-                    });
-            };
+                    $log.error('Could not load components', e);
 
-
-            componentService.registerWatcher(context, function (destroyed) {
-
-                if (destroyed) {
-                    $log.warn('destroy event raised');
-                    return;
-                }
-
-                $log.debug('initialize event raised');
-
-                componentService.loadComponentsFromWorkspace(context, workspaceId)
-                    .then(function (data) {
-                        var componentId;
-
-                        componentBrowserService.initializeWithNodes(data.components);
-
-                        for (componentId in data.components) {
-                            if (data.components.hasOwnProperty(componentId)) {
-
-                                addInterfaceWatcher(componentId);
-
-                            }
-                        }
-                    });
-            });
-
-            $scope.$watch('componentSearchSelection', function (selectedObject) {
-
-                var node;
-
-                if (angular.isObject(selectedObject)) {
-
-                    node = selectedObject.originalObject;
-
-                    componentBrowserService.showNode(node.id);
-
-                    $timeout(function () {
-
-                        var $nodeLi,
-                            y;
-
-                        if ($scope.$treeNavigatorNodesElement) {
-                            $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
-
-                            if ($nodeLi.length) {
-
-                                y = ($nodeLi.offset().top -
-                                $scope.$treeNavigatorNodesElement.offset().top) +
-                                $scope.$treeNavigatorNodesElement.scrollTop();
-
-                                $scope.$treeNavigatorNodesElement.animate({
-                                    scrollTop: y
-                                }, 500);
-
-                            }
-                        }
-
-                        ga('send', 'event', 'componentBrowser', 'search', node.label);
-
-                    }, 100);
-                }
-
-            });
+                });
 
             $scope.initialized = true;
 
         };
 
-        $scope.$watch(function(){
-            return projectHandling.getSelectedWorkspaceId();
-        }, function(newId){
+        $scope.getInitializedClass = function() {
+            return $scope.initialized ? 'initialized' : 'not-initialized';
+        };
 
-            if (newId && newId !== workspaceId) {
-                workspaceId = newId;
-                init(newId);
+        $scope.$watch('componentSearchSelection', function (selectedObject) {
+
+            var node;
+
+            if (angular.isObject(selectedObject)) {
+
+                node = selectedObject.originalObject;
+
+                componentBrowserService.showNode(node.id);
+
+                $timeout(function () {
+
+                    var $nodeLi,
+                        y;
+
+                    if ($scope.$treeNavigatorNodesElement) {
+                        $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
+
+                        if ($nodeLi.length) {
+
+                            y = ($nodeLi.offset().top -
+                            $scope.$treeNavigatorNodesElement.offset().top) +
+                            $scope.$treeNavigatorNodesElement.scrollTop();
+
+                            $scope.$treeNavigatorNodesElement.animate({
+                                scrollTop: y
+                            }, 500);
+
+                        }
+                    }
+
+                    ga('send', 'event', 'componentBrowser', 'search', node.label);
+
+                }, 100);
             }
 
         });
 
-        $scope.getInitializedClass = function() {
-            return $scope.initialized ? 'initialized' : 'not-initialized';
-        };
+
+        init();
 
     } )
     .directive( 'componentBrowser', function ($window) {

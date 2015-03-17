@@ -2,31 +2,29 @@
 
 'use strict';
 
-module.exports = function (symbolManager, $log, $rootScope) {
+module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary) {
 
     var config,
 
         treeNavigatorData,
         treeNodesById,
-        childNodes,
+
+        classNodes,
+        componentNodes,
 
         initializeWithNodes,
-        upsertItem,
-        removeItem,
         showNode,
-        upsertComponentInterface,
 
-        parentNodes,
+        parseComponentNodes,
+        parseComponentNode,
 
-        createParentNode,
-        parseClassifications,
-        parseNode,
-        parseNodeName,
-        parseClassName,
-        parseNodeExtraInfo,
+        parseClassNodeTree,
+        parseClassNode,
+
+        parseComponentNodeExtraInfo,
         findSymbolForClassNode,
 
-        organizeTree,
+        //organizeTree,
 
         getNodeContextmenu,
         getComponentById,
@@ -36,8 +34,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
     mapFromClassNamesToSymbolTypes = require('./ClassNamesToSymbolTypes')();
 
     treeNodesById = {};
-
-    childNodes = [];
+    componentNodes = {};
 
     $log.debug('In ComponentBrowserService');
 
@@ -46,7 +43,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
         var contextMenu;
 
 
-        if (childNodes.indexOf(node) > -1) {
+        if (componentNodes[node.id]) {
 
             contextMenu = [
                 {
@@ -132,7 +129,7 @@ module.exports = function (symbolManager, $log, $rootScope) {
                             treeNavigatorData.config.state = treeNavigatorData.config.state || {};
                             treeNavigatorData.config.state.expandedNodes = treeNavigatorData.config.state.expandedNodes || [];
 
-                            angular.forEach(parentNodes, function (parentNode) {
+                            angular.forEach(classNodes, function (parentNode) {
 
                                 if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
                                     treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
@@ -154,31 +151,47 @@ module.exports = function (symbolManager, $log, $rootScope) {
 
                         }
                     }
-//
-//                    {
-//                        id: 'preferences 3',
-//                        label: 'Preferences 3',
-//                        menu: [
-//                            {
-//                                items: [
-//                                    {
-//                                        id: 'sub_preferences 1',
-//                                        label: 'Sub preferences 1'
-//                                    },
-//                                    {
-//                                        id: 'sub_preferences 2',
-//                                        label: 'Sub preferences 2',
-//                                        action: function (data) {
-//                                            $log.log(data);
-//                                        }
-//                                    }
-//                                ]
-//                            }
-//                        ]
-//                    }
                 ]
             }
         ],
+
+        loadChildren: function (e, node) {
+            console.log( 'loadChildren called:', node );
+
+            var childCategoriesDeferred = $q.defer(),
+                childComponentsDeferred = $q.defer();
+
+            if (node.childCategoriesCount) {
+
+                componentLibrary.getClassificationTree(node.id)
+
+                    .then(function(data){
+                        parseClassNodeTree(node, data);
+                        childCategoriesDeferred.resolve();
+                    });
+
+            } else {
+                childCategoriesDeferred.resolve();
+            }
+
+            if (node.childComponentCount) {
+
+                componentLibrary.getListOfComponents(node.id, 10, 0)
+
+                    .then(function(data){
+                        parseComponentNodes(node, data);
+                        childComponentsDeferred.resolve();
+                    });
+
+            } else {
+                childComponentsDeferred.resolve();
+            }
+
+
+
+            return $q.all([childCategoriesDeferred.promise, childComponentsDeferred.promise]);
+        },
+
 
         showRootLabel: false,
 
@@ -202,56 +215,6 @@ module.exports = function (symbolManager, $log, $rootScope) {
         nodeExpanderClick: function (/*e, node, isExpand*/) {
             //console.log('Expander was clicked for node:', node, isExpand);
         }
-
-    };
-
-    createParentNode = function (id, descriptor, parentId) {
-
-        var node,
-            parentNode;
-
-        node = parentNodes[id];
-
-        if (!angular.isObject(node)) {
-
-            node = {
-                id: id,
-                children: [],
-                childrenCount: 0
-            };
-
-            angular.extend(node, descriptor);
-
-            treeNodesById[id] = node;
-            parentNodes[id] = node;
-
-            if (parentId) {
-
-                parentNode = parentNodes[parentId];
-                node.parentNode = parentNode;
-
-                if (parentNode) {
-
-                    parentNode.children.push(node);
-                    parentNode.childrenCount++;
-
-                }
-
-            }
-
-        }
-
-        return node;
-    };
-
-
-    parseClassName = function (crappyName) {
-
-        var result;
-
-        result = crappyName.replace(/_/g, ' ');
-
-        return result;
 
     };
 
@@ -280,141 +243,125 @@ module.exports = function (symbolManager, $log, $rootScope) {
 
     };
 
+    parseComponentNodeExtraInfo = function(node) {
 
-    parseClassifications = function (classifications) {
-        var classes,
-            classId,
-            classNode,
-            parentId,
-            i;
+        var extraInfo;
 
-        if (classifications) {
+        if (angular.isObject(node) && angular.isObject(node.interfaces)) {
 
-            classes = classifications.split('.');
+            if (angular.isObject(node.interfaces.properties)) {
 
-        } else {
+                extraInfo = extraInfo || {};
 
-            classes = [ 'unclassified' ];
+                extraInfo.properties = {};
 
-        }
+                angular.forEach(node.interfaces.properties, function(property, key) {
 
-        parentId = treeNavigatorData.data.id;
+                    extraInfo.properties[key] = property;
 
-        for (i = 0; i < classes.length; i++) {
-
-            classId = parentId + '_' + classes[i];
-
-            classNode = createParentNode(
-                classId,
-                {
-                    label: parseClassName(classes[i]),
-                    dropChannel: 'noDrop'
-                },
-                parentId
-            );
-
-            parentId = classId;
-
-            findSymbolForClassNode(classNode, classes[i]);
+                });
+            }
 
         }
 
-        return classNode;
+        node.extraInfo = extraInfo;
 
     };
 
+    parseComponentNodes = function(parentNode, children) {
 
-    parseNodeName = function (crappyName) {
+        if (parentNode && Array.isArray(children)) {
 
-        var result;
+            angular.forEach(children, function(child) {
+                parseComponentNode(child, parentNode);
+            });
 
-        result = crappyName.replace(/_/g, ' ');
-
-        return result;
+        }
 
     };
 
+    parseComponentNode = function (nodeDescriptor, parentNode) {
 
-    parseNode = function (nodeDescriptor) {
-
-        var node,
-            parentNode,
-            label;
+        var node;
 
         node = treeNodesById[ nodeDescriptor.id ];
 
         if (!angular.isObject(node)) {
 
-            parentNode = parseClassifications(nodeDescriptor.classifications);
-
-            label = parseNodeName(nodeDescriptor.name);
-
             node = {
                 id: nodeDescriptor.id,
-                label: label,
-                description: null,
+                label: nodeDescriptor.name,
+                classificationLabels: nodeDescriptor.classificationLabels,
+                prominentProperties: nodeDescriptor.prominentProperties,
+                otherProperties: nodeDescriptor.otherProperties,
+                position: nodeDescriptor.position,
                 parentNode: parentNode,
                 draggable: true,
                 dragChannel: 'component',
                 dropChannel: 'noDrop'
             };
 
-            childNodes.push(node);
-
-            treeNodesById[node.id] = node;
+            parseComponentNodeExtraInfo(node);
 
             parentNode.children.push(node);
-            parentNode.childrenCount++;
+            componentNodes[node.id] = node;
+            treeNodesById[node.id] = node;
 
         }
-
-        //console.log(nodeDescriptor);
 
     };
 
+    parseClassNodeTree = function(fromNode, children) {
 
-    organizeTree = function (node) {
+        if (fromNode && Array.isArray(children)) {
 
-        var i,
-            totalChildrenCount;
-
-
-        if (node.childrenCount > 0) {
-            totalChildrenCount = 0;
-        } else {
-            totalChildrenCount = 1;
-        }
-
-        if (angular.isArray(node.children)) {
-
-            node.children.sort(function(a, b){
-
-                if(a.label < b.label) {
-                    return -1;
-                }
-
-                if(a.label > b.label) {
-                    return 1;
-                }
-
-                return 0;
+            angular.forEach(children, function(child) {
+                parseClassNode(child, fromNode);
             });
 
-            for (i=0; i < node.children.length; i++ ) {
-                totalChildrenCount += organizeTree( node.children[ i ] );
-            }
-            node.totalChildrenCount = totalChildrenCount;
+        }
 
-            if (node.totalChildrenCount > 0) {
+    };
+
+    parseClassNode = function (nodeDescriptor, parentNode) {
+
+        var node;
+
+        node = treeNodesById[ nodeDescriptor.id ];
+
+        if (!angular.isObject(node)) {
+
+            node = {
+                id: nodeDescriptor.id,
+                label: nodeDescriptor.label,
+                description: null,
+                parentNode: parentNode,
+                draggable: false,
+                childrenCount: nodeDescriptor.childCategoriesCount + nodeDescriptor.childComponentsCount,
+                childCategoriesCount: nodeDescriptor.childCategoriesCount,
+                childComponentCount: nodeDescriptor.childComponentsCount,
+                categoryTotal: nodeDescriptor.categoryTotal
+            };
+
+            if (node.categoryTotal > 0) {
 
                 node.extraInfo = node.extraInfo || {};
+                node.extraInfo.categoryTotal = node.categoryTotal;
+            }
 
-                node.extraInfo.totalChildrenCount = node.totalChildrenCount;
+            classNodes[node.id] = node;
+            treeNodesById[node.id] = node;
+            parentNode.children.push(node);
+
+            if (node.childrenCount) {
+                node.children = [];
+            }
+
+            if (Array.isArray(nodeDescriptor.subClasses)) {
+                parseClassNodeTree(node, nodeDescriptor.subClasses);
             }
 
         }
-
-        return totalChildrenCount;
 
     };
 
@@ -423,59 +370,24 @@ module.exports = function (symbolManager, $log, $rootScope) {
         var rootNode;
 
         treeNodesById = {};
-        parentNodes = {};
-        childNodes = [];
+        classNodes = {};
+        componentNodes = {};
 
-        rootNode = createParentNode(
+        rootNode = (
             'root',
             {
-                label: 'Root node'
+                label: 'Root node',
+                children: []
             }
         );
 
+        classNodes.root = rootNode;
+
         treeNavigatorData.data = rootNode;
-        treeNavigatorData.childNodes = childNodes;
-
-        angular.forEach(nodes, function (node) {
-
-            parseNode(node);
-
-        });
-
-        organizeTree(treeNavigatorData.data);
+        parseClassNodeTree(rootNode, nodes);
 
     };
 
-    upsertItem = function (/*data*/) {
-
-        //TODO: complete this
-
-//        var treeNode;
-//
-//        console.log(data);
-//
-//        if (treeNodesById[ data.id ]) {
-//
-//            treeNode = treeNodesById[ data.id ];
-////            listItem.title = data.name;
-////            listItem.description = data.description;
-////            listItem.data.resource = data.resource;
-//
-//        } else {
-//
-//            treeNode = {
-//
-//            };
-//
-//            treeNodesById[ data.id ] = treeNode;
-//
-//        }
-
-    };
-
-    removeItem = function () {
-        // TODO: complete this
-    };
 
     showNode = function(nodeId) {
 
@@ -504,54 +416,6 @@ module.exports = function (symbolManager, $log, $rootScope) {
         }
     };
 
-    parseNodeExtraInfo = function(node) {
-
-        var extraInfo;
-
-        if (angular.isObject(node) && angular.isObject(node.interfaces)) {
-
-//            console.log(node.interfaces);
-
-            if (angular.isObject(node.interfaces.properties)) {
-
-                extraInfo = extraInfo || {};
-
-                extraInfo.properties = {};
-
-                angular.forEach(node.interfaces.properties, function(property, key) {
-
-                    extraInfo.properties[key] = property;
-
-                });
-
-//                console.log(extraInfo.properties);
-
-            }
-
-        }
-
-        node.extraInfo = extraInfo;
-
-    };
-
-    upsertComponentInterface = function(nodeId, interfaces) {
-
-        var node;
-
-        node = treeNodesById[nodeId];
-
-        if (angular.isObject(node)) {
-
-            interfaces = interfaces || {};
-
-            node.interfaces = interfaces;
-
-            parseNodeExtraInfo(node);
-
-        }
-
-    };
-
     getComponentById = function(nodeId) {
 
         return treeNodesById[nodeId];
@@ -561,18 +425,14 @@ module.exports = function (symbolManager, $log, $rootScope) {
 
     treeNavigatorData = {
         data: {},
-        config: config,
-        childNodes: childNodes
+        config: config
     };
 
 
     this.treeNavigatorData = treeNavigatorData;
 
     this.initializeWithNodes = initializeWithNodes;
-    this.upsertItem = upsertItem;
-    this.removeItem = removeItem;
     this.showNode = showNode;
-    this.upsertComponentInterface = upsertComponentInterface;
 
     this.getComponentById = getComponentById;
 
