@@ -9,17 +9,11 @@ if (typeof module !== 'undefined' && require.main === module) {
 
     var cyphyRootDir = PATH.resolve(__dirname, '..');
     var webGme = require('webgme');
-    var CONFIG = WebGMEGlobal.getConfig();
+    var CONFIG = require('../config');
+    webGme.addToRequireJsPaths(CONFIG);
     var define = require(PATH.resolve(cyphyRootDir, 'test-conf.js')).requirejs;
     require(PATH.resolve(__dirname, 'JSON2_ordered'));
 
-    var CyPhyConfig = require(PATH.resolve(cyphyRootDir, "config.json"));
-    WebGMEGlobal.setConfig(CyPhyConfig);
-// TODO: check if command line config valid or not
-// TODO: probably we should not overwrite the dictionary and array options
-    for (var key in CyPhyConfig) {
-        CONFIG[key] = CyPhyConfig[key];
-    }
     var fatal = function fatal(msg) {
         console.log(msg);
         throw Error(msg);
@@ -27,8 +21,15 @@ if (typeof module !== 'undefined' && require.main === module) {
     };
 
     module.exports.then(function (exports) {
-        exports.withProject(CONFIG, 'TmpProject', exports.importLibrary, CONFIG, 'TmpProject', 'master', PATH.resolve(cyphyRootDir, 'meta/ADMEditor_metaOnly.json'))
-            .then(function () {
+        var imported = Q.defer();
+        exports.withProject(CONFIG, 'TmpProject', function (err, project) {
+            if (err) {
+                return imported.reject(err);
+            }
+            imported.resolve(exports.importLibrary(CONFIG, 'TmpProject', 'master', PATH.resolve(cyphyRootDir, 'meta/ADMEditor_metaOnly.json'), project));
+            return imported.promise;
+        });
+        imported.promise.then(function () {
                 return Q.nfcall(exports.writeMetaLib);
             }).then (function () {
                 return Q.nfcall(exports.writeMetaJs);
@@ -122,7 +123,7 @@ define([
     }
 
     function writeMetaLib(callback) {
-        var storage = new Storage({'host': CONFIG.mongoip, 'port': CONFIG.mongoport, 'database': CONFIG.mongodatabase}),
+        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
             project,
             core,
             projectName = 'TmpProject';
@@ -131,7 +132,7 @@ define([
                 return Q.ninvoke(storage, 'openProject', projectName);
             }).then(function (p) {
                 project = p;
-                core = new Core(project);
+                core = new Core(project, {globConf: CONFIG});
                 return Q.ninvoke(project, 'getBranchHash', 'master', '#hack');
             }).spread(function (commitHash) {
                 return Q.ninvoke(project, 'loadObject', commitHash);
