@@ -19,6 +19,7 @@ config.executor.enable = true;
 
 config.plugin.allowServerExecution = true;
 config.plugin.basePaths.push("./src/plugins/ADMEditor");
+config.plugin.basePaths.push("./src/plugins/META");
 config.rest.components = mapPaths({
             "desert": "./src/rest/desert/Desert",
             "serverinfo": "./src/rest/serverInfo/ServerInfo",
