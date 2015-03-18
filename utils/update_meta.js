@@ -162,7 +162,7 @@ define([
 
     function writeMetaJs(callback) {
         var pluginConfig = {};
-        pluginConfig.projectName = "TmpProject";
+        pluginConfig.projectName = pluginConfig.project = "TmpProject";
         pluginConfig.branch = "master";
         pluginConfig.pluginName = "PluginGenerator";
         pluginConfig.activeNode = undefined;
@@ -202,7 +202,7 @@ define([
     }
     function writeExampleModel(callback) {
         var pluginConfig = {};
-        pluginConfig.projectName = "TmpProject";
+        pluginConfig.projectName = pluginConfig.project = "TmpProject";
         pluginConfig.branch = "master";
         pluginConfig.pluginName = "MockModelGenerator";
         pluginConfig.activeNode = "/1";
