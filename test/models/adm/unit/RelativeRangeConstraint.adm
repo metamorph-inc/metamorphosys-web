@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="RelativeRangeConstraint" DesignID="{3d3f83f0-48d3-4ef7-9f80-b8d28edd0fed}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="RelativeRangeConstraint" xmlns="">
+    <ComponentInstance XPosition="119" YPosition="84" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{82a83ae1-8255-418b-9ced-25cd0924047b}" Name="Comp1">
+      <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+        <Value ID="05cbb43f-379e-448c-abf5-58cdb8d1db93" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+        <Value ID="70666f5b-ef84-4dd4-be4c-7a8e8ba71dfe" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="" ID="{82a83ae1-8255-418b-9ced-25cd0924047b}-id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" ApplyJoinData="" IDinComponentModel="id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" />
+      <ConnectorInstance ConnectorComposition="" ID="{82a83ae1-8255-418b-9ced-25cd0924047b}-id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" ApplyJoinData="" IDinComponentModel="id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="119" YPosition="224" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{2f21897c-7503-4b26-8f91-201bd4618533}" Name="Comp_5_5_offset">
+      <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+        <Value ID="685c13d3-227e-4d4f-8a7e-6e5a3c6dafae" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+        <Value ID="f19e6b33-98ca-41c7-a365-5a608ed35128" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="" ID="{2f21897c-7503-4b26-8f91-201bd4618533}-id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" ApplyJoinData="" IDinComponentModel="id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" />
+      <ConnectorInstance ConnectorComposition="" ID="{2f21897c-7503-4b26-8f91-201bd4618533}-id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" ApplyJoinData="" IDinComponentModel="id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="119" YPosition="350" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f00ce}" Name="Comp_minus_5_5_offset">
+      <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+        <Value ID="539fbed9-8e72-4165-b791-77feede37198" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+        <Value ID="eb43c392-68ef-4be1-b1bb-61b146f21522" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f00ce}-id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" ApplyJoinData="" IDinComponentModel="id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" />
+      <ConnectorInstance ConnectorComposition="" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f00ce}-id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" ApplyJoinData="" IDinComponentModel="id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="119" YPosition="350" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f0000}" Name="Comp_nonconstrained">
+      <PrimitivePropertyInstance IDinComponentModel="id-cb1bf6ed-fced-44e5-8cff-5a3765aad36e">
+        <Value ID="1838931b-5f56-4663-8c5a-2c095fd3f71b" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-15cdbad5-6620-42a2-bf0d-3808956c1860">
+        <Value ID="ef666471-8af2-4589-a255-1d03bc2fc7f9" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f0000}-id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" ApplyJoinData="" IDinComponentModel="id-c9009ee4-bfa2-4e51-89ac-56d288dcc690" />
+      <ConnectorInstance ConnectorComposition="" ID="{c77191ac-ac7c-46f0-95c1-3f42f32f0000}-id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" ApplyJoinData="" IDinComponentModel="id-f5fb8e53-7b1e-4b01-8e82-b1e7986513eb" />
+    </ComponentInstance>
+    <ContainerFeature xmlns:q2="eda" xsi:type="q2:RelativeRangeLayoutConstraint" XPosition="392" YPosition="364" XRelativeRangeMin="-5" XRelativeRangeMax="-5" YRelativeRangeMin="-5" YRelativeRangeMax="-5" RelativeLayer="Opposite" ContainerConstraintTarget="" Origin="{82a83ae1-8255-418b-9ced-25cd0924047b}" ConstraintTarget="{c77191ac-ac7c-46f0-95c1-3f42f32f00ce}" />
+    <ContainerFeature xmlns:q3="eda" xsi:type="q3:RelativeRangeLayoutConstraint" XPosition="392" YPosition="238" XRelativeRangeMin="5" XRelativeRangeMax="5" YRelativeRangeMin="5" YRelativeRangeMax="5" RelativeLayer="Same" ContainerConstraintTarget="" Origin="{82a83ae1-8255-418b-9ced-25cd0924047b}" ConstraintTarget="{2f21897c-7503-4b26-8f91-201bd4618533}" />
+    <ContainerFeature xmlns:q4="eda" xsi:type="q4:RelativeRangeLayoutConstraint" XPosition="427" YPosition="490" ContainerConstraintTarget="" Origin="{82a83ae1-8255-418b-9ced-25cd0924047b}" ConstraintTarget="{c77191ac-ac7c-46f0-95c1-3f42f32f0000}" />
+    <ContainerFeature xmlns:q5="eda" xsi:type="q5:ExactLayoutConstraint" XPosition="392" YPosition="98" X="10" Y="10" Layer="Top" Rotation="r0" ConstraintTarget="{82a83ae1-8255-418b-9ced-25cd0924047b}" ContainerConstraintTarget="" />
+  </RootContainer>
+</Design>
