@@ -151,4 +151,41 @@ describe('AdmImporterRegressions', function () {
 
         done();
     });
+
+    regression("RelativeRangeConstraint.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        var componentInstances = {};
+        RootContainer.ComponentInstance.forEach(function (comp) {
+            componentInstances[comp['@ID']] = comp;
+        });
+        var constrained = {};
+        RootContainer.ContainerFeature.forEach(function (constraint) {
+            constrained[componentInstances[constraint['@ConstraintTarget']]['@Name']] = constraint;
+        });
+        expect(componentInstances[constrained.Comp1['@ConstraintTarget']]['@Name']).to.equal('Comp1');
+        expect(componentInstances[constrained.Comp_5_5_offset['@ConstraintTarget']]['@Name']).to.equal('Comp_5_5_offset');
+        expect(componentInstances[constrained.Comp_minus_5_5_offset['@ConstraintTarget']]['@Name']).to.equal('Comp_minus_5_5_offset');
+        expect(componentInstances[constrained.Comp_nonconstrained['@ConstraintTarget']]['@Name']).to.equal('Comp_nonconstrained');
+        expect(componentInstances[constrained.Comp_5_5_offset['@Origin']]['@Name']).to.equal('Comp1');
+        expect(componentInstances[constrained.Comp_minus_5_5_offset['@Origin']]['@Name']).to.equal('Comp1');
+        expect(componentInstances[constrained.Comp_nonconstrained['@Origin']]['@Name']).to.equal('Comp1');
+        expect(constrained.Comp_5_5_offset['@XRelativeRangeMin']).to.equal('5');
+        expect(constrained.Comp_5_5_offset['@XRelativeRangeMax']).to.equal('5');
+        expect(constrained.Comp_5_5_offset['@YRelativeRangeMin']).to.equal('5');
+        expect(constrained.Comp_5_5_offset['@YRelativeRangeMax']).to.equal('5');
+        expect(constrained.Comp_5_5_offset['@RelativeLayer']).to.equal('Same');
+        expect(constrained.Comp_minus_5_5_offset['@XRelativeRangeMin']).to.equal('-5');
+        expect(constrained.Comp_minus_5_5_offset['@XRelativeRangeMax']).to.equal('-5');
+        expect(constrained.Comp_minus_5_5_offset['@YRelativeRangeMin']).to.equal('-5');
+        expect(constrained.Comp_minus_5_5_offset['@YRelativeRangeMax']).to.equal('-5');
+        expect(constrained.Comp_minus_5_5_offset['@RelativeLayer']).to.equal('Opposite');
+        expect(constrained.Comp_nonconstrained['@XRelativeRangeMin']).to.equal(undefined);
+        expect(constrained.Comp_nonconstrained['@XRelativeRangeMax']).to.equal(undefined);
+        expect(constrained.Comp_nonconstrained['@YRelativeRangeMin']).to.equal(undefined);
+        expect(constrained.Comp_nonconstrained['@YRelativeRangeMax']).to.equal(undefined);
+        expect(constrained.Comp_nonconstrained['@RelativeLayer']).to.equal(undefined);
+
+        done();
+    });
+
 });

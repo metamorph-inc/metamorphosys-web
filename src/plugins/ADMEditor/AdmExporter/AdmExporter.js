@@ -665,6 +665,17 @@ define([
             origin;
 
         var addConstraintData = function (targetNodes, targetIds) {
+            var setRange = function (xOrY, suffix) {
+                suffix = suffix || 'Range';
+                var range = self.core.getAttribute(node, xOrY + suffix);
+                if (range !== undefined) {
+                    var match = /(-?\d*(?:\.\d*)?)[-:](-?\d*(?:\.\d*)?)/.exec(range);
+                    if (match) {
+                        data['@' + xOrY + suffix + 'Min'] = match[1];
+                        data['@' + xOrY + suffix + 'Max'] = match[2];
+                    }
+                }
+            };
             var data = {
                 "@xmlns:eda": "eda",
                 "@xsi:type": "eda:" + type,
@@ -692,19 +703,18 @@ define([
                     data['@RelativeLayer'] = val;
                 }
             }
+            if (type === 'RelativeRangeLayoutConstraint') {
+                var layer = self.core.getAttribute(node, 'RelativeLayer');
+                if (layer !== undefined && layer !== 'No Restriction') {
+                    data['@RelativeLayer'] = layer;
+                }
+                setRange('X', 'RelativeRange');
+                setRange('Y', 'RelativeRange');
+                data['@Origin'] = self.core.getGuid(origin);
+            }
             if (type === 'RangeLayoutConstraint') {
                 copyAttrIfSet('LayerRange');
                 copyAttrIfSet('Type');
-                var setRange = function (xOrY) {
-                    var range = self.core.getAttribute(node, xOrY + 'Range');
-                    if (range !== undefined) {
-                        var match = /(-?\d*(?:\.\d*)?)-(-?\d*(?:\.\d*)?)/.exec(range);
-                        if (match) {
-                            data['@' + xOrY + 'RangeMin'] = match[1];
-                            data['@' + xOrY + 'RangeMax'] = match[2];
-                        }
-                    }
-                };
                 setRange('X');
                 setRange('Y');
             }
@@ -733,7 +743,7 @@ define([
             if (err) {
                 return callback(err);
             }
-            if (type === 'RelativeLayoutConstraint') {
+            if (type === 'RelativeLayoutConstraint' || type === 'RelativeRangeLayoutConstraint') {
                 self.core.loadPointer(node, 'Origin', function (err, o) {
                     if (err) {
                         return callback(err);

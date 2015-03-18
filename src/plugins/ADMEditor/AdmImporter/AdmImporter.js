@@ -706,10 +706,30 @@ define([
     };
 
     AdmImporter.prototype.createContainerFeature = function (featureData, container) {
+        function setOriginForRelativeConstraint() {
+            var origin = self.componentInstances.filter(function (ci) {
+                return ci.id === featureData['@Origin'];
+            });
+            if (origin.length) {
+                self.core.setPointer(feature, 'Origin', origin[0].node);
+            } else {
+                self.createMessage(container, 'Could not find Origin ' + featureData['@Origin'], 'error');
+            }
+        }
+        function setRangeValues(attrSuffix) {
+            if (featureData['@X' + attrSuffix + 'Min'] && featureData['@X' + attrSuffix + 'Max']) {
+                self.core.setAttribute(feature, 'X' + attrSuffix, featureData['@X' + attrSuffix + 'Min'] + ":" + featureData[
+                    '@X' + attrSuffix + 'Max']);
+            }
+            if (featureData['@Y' + attrSuffix + 'Min'] && featureData['@Y' + attrSuffix + 'Max']) {
+                self.core.setAttribute(feature, 'Y' + attrSuffix, featureData['@Y' + attrSuffix + 'Min'] + ":" + featureData[
+                    '@Y' + attrSuffix + 'Max']);
+            }
+        }
         var self = this;
         var feature;
 
-        if (['eda:RelativeLayoutConstraint', 'eda:ExactLayoutConstraint', 'eda:RangeLayoutConstraint'].indexOf(
+        if (['eda:RelativeLayoutConstraint', 'eda:ExactLayoutConstraint', 'eda:RangeLayoutConstraint', 'eda:RelativeRangeLayoutConstraint'].indexOf(
                 featureData['@xsi:type']) !== -1) {
             var type = featureData['@xsi:type'].substr(4);
             var ids = ( featureData['@ConstraintTarget'] || '' )
@@ -736,14 +756,13 @@ define([
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 copyAttrIfSet('RelativeLayer');
-                var origin = self.componentInstances.filter(function (ci) {
-                    return ci.id === featureData['@Origin'];
-                });
-                if (origin.length) {
-                    self.core.setPointer(feature, 'Origin', origin[0].node);
-                } else {
-                    self.createMessage(container, 'Could not find Origin ' + featureData['@Origin'], 'error');
-                }
+                setOriginForRelativeConstraint();
+            }
+            if (type === 'RelativeRangeLayoutConstraint') {
+                self.core.setAttribute(feature, 'RelativeLayer', 'No Restriction');
+                copyAttrIfSet('RelativeLayer');
+                setRangeValues('RelativeRange');
+                setOriginForRelativeConstraint();
             }
             if (type === 'ExactLayoutConstraint') {
                 copyAttrIfSet('X');
@@ -754,17 +773,10 @@ define([
                 });
             }
             if (type === 'RangeLayoutConstraint') {
-                if (featureData['@XRangeMin'] && featureData['@XRangeMax']) {
-                    self.core.setAttribute(feature, 'XRange', featureData['@XRangeMin'] + "-" + featureData[
-                        '@XRangeMax']);
-                }
-                if (featureData['@YRangeMin'] && featureData['@YRangeMax']) {
-                    self.core.setAttribute(feature, 'YRange', featureData['@YRangeMin'] + "-" + featureData[
-                        '@YRangeMax']);
-                }
                 self.core.setAttribute(feature, 'LayerRange', 'Either');
                 copyAttrIfSet('LayerRange');
                 copyAttrIfSet('Type');
+                setRangeValues('Range');
             }
             self.core.setAttribute(feature, 'name', type);
             constraintTargets.forEach(function (componentInstance) {

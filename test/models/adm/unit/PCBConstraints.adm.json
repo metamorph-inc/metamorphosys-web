@@ -6497,9 +6497,9 @@
         "ID": 344,
         "attributes": {
             "name": "RangeLayoutConstraint",
-            "YRange": "5.5-10.1",
             "LayerRange": "Bottom",
-            "Type": "Exclusion"
+            "Type": "Exclusion",
+            "YRange": "5.5:10.1"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6529,9 +6529,9 @@
         "ID": 345,
         "attributes": {
             "name": "RangeLayoutConstraint",
-            "XRange": "1.1-5.5",
             "LayerRange": "Top",
-            "Type": "Inclusion"
+            "Type": "Inclusion",
+            "XRange": "1.1:5.5"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6561,10 +6561,10 @@
         "ID": 346,
         "attributes": {
             "name": "RangeLayoutConstraint",
-            "XRange": "1.1-5.5",
-            "YRange": "5.5-10.1",
             "LayerRange": "Either",
-            "Type": "Inclusion"
+            "Type": "Inclusion",
+            "XRange": "1.1:5.5",
+            "YRange": "5.5:10.1"
         },
         "registry": {
             "DisplayFormat": "",
