@@ -6,6 +6,7 @@
         "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {},
         "07d79d42-e631-fb69-a1f7-25b044d94fbb": {},
         "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {},
+        "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {},
         "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
         "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
         "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
@@ -73,6 +74,15 @@
                     "position": {
                         "x": 104,
                         "y": 246
+                    }
+                }
+            },
+            "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 1031,
+                        "y": 499
                     }
                 }
             },
@@ -365,22 +375,6 @@
                 }
             }
         },
-        "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1": {
-            "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
-                "attributes": {},
-                "registry": {
-                    "position": {
-                        "x": 100,
-                        "y": 100
-                    }
-                }
-            },
-            "global": {
-                "SetID": "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1",
-                "order": 0,
-                "title": "META"
-            }
-        },
         "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": {
             "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
                 "attributes": {},
@@ -461,6 +455,15 @@
             }
         },
         "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": {
+            "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 1031,
+                        "y": 489
+                    }
+                }
+            },
             "3317c9c6-6c44-1a06-a476-11f77d722b34": {
                 "attributes": {},
                 "registry": {
@@ -967,6 +970,7 @@
                 "name": "RequirementsFolder"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1010,6 +1014,7 @@
                 "name": "Settings"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "IntervalLength": {
@@ -1057,6 +1062,7 @@
                 "name": "SimpleFormula"
             },
             "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Method": {
@@ -1096,6 +1102,7 @@
                 "name": "ADMEditorModelingLanguage"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1114,7 +1121,7 @@
                     ]
                 }
             },
-            "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
+            "parent": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1",
             "pointers": {
                 "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
             },
@@ -1126,12 +1133,76 @@
             },
             "sets": {}
         },
+        "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {
+            "attributes": {
+                "RelativeLayer": "No Restriction",
+                "XRelativeRange": "",
+                "YRelativeRange": "",
+                "name": "RelativeRangeLayoutConstraint"
+            },
+            "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "constraints": {},
+            "meta": {
+                "attributes": {
+                    "RelativeLayer": {
+                        "default": "No Restriction",
+                        "enum": [
+                            "No Restriction",
+                            "Same",
+                            "Opposite"
+                        ],
+                        "type": "string"
+                    },
+                    "XOffsetRange": {
+                        "default": "",
+                        "type": "string"
+                    },
+                    "YOffsetRange": {
+                        "default": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "pointers": {
+                    "OriginComponent": {
+                        "items": [
+                            "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+                        ],
+                        "max": 1,
+                        "maxItems": [
+                            1
+                        ],
+                        "min": 1,
+                        "minItems": [
+                            -1
+                        ]
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "OriginComponent": null,
+                "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+            },
+            "registry": {
+                "position": {
+                    "x": 100,
+                    "y": 100
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
+        },
         "1deced2f-f026-ca87-711c-d8148b1dfd3c": {
             "attributes": {
                 "INFO": "A group of requirements.",
                 "name": "RequirementCategory"
             },
             "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Priority": {
@@ -1193,6 +1264,7 @@
                 "name": "ADMFolder"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1243,6 +1315,7 @@
                 "name": "Property"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "DataType": {
@@ -1329,6 +1402,7 @@
                 "name": "Container"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "aspects": {
                     "NoValueFlow": [
@@ -1419,6 +1493,7 @@
                 "name": "ExactLayoutConstraint"
             },
             "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Layer": {
@@ -1473,6 +1548,7 @@
                 "name": "Connector"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "ID": {
@@ -1513,6 +1589,7 @@
                 "name": "Formula"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1539,6 +1616,7 @@
                 "name": "DesertConfiguration"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "AlternativeAssignments": {
@@ -1582,6 +1660,7 @@
                 "name": "RangeLayoutConstraint"
             },
             "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "LayerRange": {
@@ -1633,6 +1712,7 @@
                 "name": "LayoutConstraint"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1673,6 +1753,7 @@
                 "name": "ACMFolder"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1714,6 +1795,7 @@
                 "name": "Workflow"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1750,6 +1832,7 @@
                 "name": "AssemblyRoot"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1795,6 +1878,7 @@
                 "weightNeg": 1
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Priority": {
@@ -1841,6 +1925,7 @@
                 "name": "AVMTestBenchModel"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "aspects": {
                     "NoValueFlow": [
@@ -1938,6 +2023,7 @@
                 "name": "WorkSpace"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -1985,6 +2071,7 @@
                 "name": "ValueFlowComposition"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "VariableName": {
@@ -2056,6 +2143,7 @@
                 "threshold": 0
             },
             "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "KPP": {
@@ -2132,6 +2220,7 @@
                 "name": "CustomFormula"
             },
             "base": "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Expression": {
@@ -2169,6 +2258,7 @@
                 "name": "AVMComponentModel"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "aspects": {
                     "NoValueFlow": [
@@ -2247,6 +2337,7 @@
                 "name": "Metric"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Value": {
@@ -2278,6 +2369,7 @@
                 "name": "ATMFolder"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Results": {
@@ -2339,6 +2431,7 @@
                 "name": "DesertConfigurationSet"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Adm": {
@@ -2382,6 +2475,7 @@
                 "name": "Result"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Artifacts": {
@@ -2442,6 +2536,7 @@
                 "success": true
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "artifacts": {
@@ -2513,6 +2608,7 @@
                 "name": "DomainModel"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Class": {
@@ -2562,6 +2658,7 @@
                 "name": "Task"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "COMName": {
@@ -2606,6 +2703,7 @@
                 "name": "DomainPort"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "Class": {
@@ -2660,6 +2758,7 @@
                 "name": "RelativeLayoutConstraint"
             },
             "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "RelativeLayer": {
@@ -2720,6 +2819,7 @@
                 "name": "ConnectorComposition"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -2777,6 +2877,7 @@
                 "name": "PortMap"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+            "constraints": {},
             "meta": {
                 "attributes": {
                     "name": {
@@ -2832,7 +2933,8 @@
         "0375e1c1-1217-7aa9-5e14-53c709a2abbe": "1675023230",
         "07d79d42-e631-fb69-a1f7-25b044d94fbb": "319211427",
         "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": "711037118",
-        "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "501604959",
+        "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "759732751",
+        "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": "1103499805",
         "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
         "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
         "2bc42bca-a9be-0f33-16a7-ea847e546b37": "34094492",
@@ -2867,6 +2969,6 @@
     },
     "root": {
         "guid": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-        "path": "/501604959"
+        "path": "/759732751"
     }
 }

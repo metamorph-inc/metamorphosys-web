@@ -2,14 +2,14 @@
   "bases": {},
   "root": {
     "path": "",
-    "guid": "1342c265-b0a3-58f6-2076-1f8496119c3a"
+    "guid": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1"
   },
   "relids": {
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": "1675023230",
     "07d79d42-e631-fb69-a1f7-25b044d94fbb": "319211427",
     "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": "711037118",
-    "1342c265-b0a3-58f6-2076-1f8496119c3a": null,
-    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "501604959",
+    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "759732751",
+    "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": "1103499805",
     "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
     "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
     "2bc42bca-a9be-0f33-16a7-ea847e546b37": "34094492",
@@ -17,6 +17,7 @@
     "3e223dbc-998f-e965-9d15-99085fd445ff": "749469140",
     "58fcb797-8a06-2976-9632-d281b3c1ddd2": "1045980796",
     "65dcb250-dcb6-4cad-4617-0518a9a37d2e": "803021327",
+    "700fb14d-a86b-aefa-d1af-2d18f88fe3c1": null,
     "79f0cc09-f068-284b-5473-efcf5dfa3497": "1949671222",
     "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": "1669293789",
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": "236224320",
@@ -48,6 +49,7 @@
       "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {},
       "07d79d42-e631-fb69-a1f7-25b044d94fbb": {},
       "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {},
+      "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {},
       "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
       "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
       "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
@@ -119,7 +121,8 @@
           "y": 233
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "07d79d42-e631-fb69-a1f7-25b044d94fbb": {
       "attributes": {
@@ -170,7 +173,8 @@
           "y": 524
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {
       "attributes": {
@@ -211,9 +215,523 @@
           "y": 661
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
-    "1342c265-b0a3-58f6-2076-1f8496119c3a": {
+    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
+      "attributes": {
+        "name": "ADMEditorModelingLanguage"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+          ],
+          "minItems": [
+            -1
+          ],
+          "maxItems": [
+            -1
+          ]
+        }
+      },
+      "parent": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 81,
+          "y": 292
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {
+      "attributes": {
+        "RelativeLayer": "No Restriction",
+        "XRelativeRange": "",
+        "YRelativeRange": "",
+        "name": "RelativeRangeLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          },
+          "XOffsetRange": {
+            "type": "string",
+            "default": ""
+          },
+          "YOffsetRange": {
+            "type": "string",
+            "default": ""
+          },
+          "RelativeLayer": {
+            "type": "string",
+            "default": "No Restriction",
+            "enum": [
+              "No Restriction",
+              "Same",
+              "Opposite"
+            ]
+          }
+        },
+        "pointers": {
+          "OriginComponent": {
+            "items": [
+              "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+            ],
+            "min": 1,
+            "max": 1,
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              1
+            ]
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "OriginComponent": null,
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      },
+      "constraints": {}
+    },
+    "1deced2f-f026-ca87-711c-d8148b1dfd3c": {
+      "attributes": {
+        "INFO": "A group of requirements.",
+        "name": "RequirementCategory"
+      },
+      "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
+      "meta": {
+        "attributes": {
+          "Priority": {
+            "default": 0,
+            "type": "integer"
+          },
+          "weightPos": {
+            "default": 1,
+            "type": "float"
+          },
+          "description": {
+            "default": "",
+            "type": "string"
+          },
+          "weight": {
+            "default": 1,
+            "type": "float"
+          },
+          "weightNeg": {
+            "default": 1,
+            "type": "float"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "1deced2f-f026-ca87-711c-d8148b1dfd3c",
+            "ab281360-2719-c4e0-c3c6-4eea03401141"
+          ],
+          "minItems": [
+            -1,
+            -1
+          ],
+          "maxItems": [
+            -1,
+            -1
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae"
+      },
+      "registry": {
+        "color": "#99ffff",
+        "isAbstract": false,
+        "position": {
+          "x": 1187,
+          "y": 449
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "1f35a3aa-321d-359f-7838-242bc2d08ae5": {
+      "attributes": {
+        "INFO": "Container of designs.",
+        "name": "ADMFolder"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "1f35a3aa-321d-359f-7838-242bc2d08ae5",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34"
+          ],
+          "minItems": [
+            -1,
+            -1
+          ],
+          "maxItems": [
+            -1,
+            -1
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "SVGIcon": "Folder.svg",
+        "color": "#99ccff",
+        "position": {
+          "x": 228,
+          "y": 223
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
+      "attributes": {
+        "DataType": "String",
+        "Default": "",
+        "ID": "",
+        "INFO": "A property or parametric value.",
+        "Maximum": "inf",
+        "Minimum": "-inf",
+        "OnDataSheet": false,
+        "Unit": "",
+        "Value": "",
+        "ValueType": "Fixed",
+        "name": "Property"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "DataType": {
+            "default": "String",
+            "enum": [
+              "Real",
+              "Integer",
+              "Boolean",
+              "String"
+            ],
+            "type": "string"
+          },
+          "Default": {
+            "default": "",
+            "type": "string"
+          },
+          "ID": {
+            "default": "",
+            "type": "string"
+          },
+          "Maximum": {
+            "default": "inf",
+            "type": "string"
+          },
+          "Minimum": {
+            "default": "-inf",
+            "type": "string"
+          },
+          "OnDataSheet": {
+            "type": "boolean",
+            "default": false
+          },
+          "Unit": {
+            "default": "",
+            "type": "string"
+          },
+          "Value": {
+            "default": "",
+            "type": "string"
+          },
+          "ValueType": {
+            "default": "Fixed",
+            "enum": [
+              "Fixed",
+              "Parametric"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37"
+          ],
+          "minItems": [
+            -1
+          ],
+          "maxItems": [
+            -1
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "PortSVGIcon": "BlackPort.svg",
+        "color": "#ffe6cc",
+        "isPort": true,
+        "position": {
+          "x": 103,
+          "y": 423
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "3317c9c6-6c44-1a06-a476-11f77d722b34": {
+      "attributes": {
+        "INFO": "System of components and sub-systems.",
+        "Type": "Compound",
+        "name": "Container"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "Type": {
+            "default": "Compound",
+            "enum": [
+              "Compound",
+              "Alternative",
+              "Optional"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
+            "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "97a00dee-7375-3637-ec08-b62588d4d71d",
+            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
+            "f0508110-9a11-3b6d-ea42-2193bf0485e0",
+            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
+            "f9f20885-6316-a7b6-2196-8299f45692ff"
+          ],
+          "minItems": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "maxItems": [
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        },
+        "aspects": {
+          "NoValueFlow": [
+            "3317c9c6-6c44-1a06-a476-11f77d722b34",
+            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
+            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
+            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5"
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "color": "#cce5ff",
+        "position": {
+          "x": 168,
+          "y": 354
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "3e223dbc-998f-e965-9d15-99085fd445ff": {
+      "attributes": {
+        "Layer": "Top",
+        "Rotation": "",
+        "X": null,
+        "Y": null,
+        "name": "ExactLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "Layer": {
+            "default": "Top",
+            "enum": [
+              "Top",
+              "Bottom"
+            ],
+            "type": "string"
+          },
+          "Rotation": {
+            "default": "",
+            "enum": [
+              "0",
+              "90",
+              "180",
+              "270"
+            ],
+            "type": "string"
+          },
+          "X": {
+            "default": null,
+            "type": "float"
+          },
+          "Y": {
+            "default": null,
+            "type": "float"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 746,
+          "y": 258
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      },
+      "constraints": {}
+    },
+    "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
+      "attributes": {
+        "ID": "",
+        "INFO": "Container of domain connectors.",
+        "name": "Connector"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "ID": {
+            "default": "",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "children": {
+          "items": [
+            "f0508110-9a11-3b6d-ea42-2193bf0485e0"
+          ],
+          "minItems": [
+            -1
+          ],
+          "maxItems": [
+            -1
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "isPort": true,
+        "position": {
+          "x": 263,
+          "y": 429
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {
+      "attributes": {
+        "name": "Formula"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "isAbstract": true,
+        "position": {
+          "x": 561,
+          "y": 569
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
+    "700fb14d-a86b-aefa-d1af-2d18f88fe3c1": {
       "attributes": {
         "name": "ROOT"
       },
@@ -243,16 +761,6 @@
       "registry": {
         "MetaSheets": [
           {
-            "SetID": "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1",
-            "order": 0,
-            "title": "META"
-          },
-          {
-            "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
-            "order": 3,
-            "title": "AVM Component Model"
-          },
-          {
             "SetID": "MetaAspectSet_2a6f02e3-18d8-52a6-61d3-acfe19847740",
             "order": 0,
             "title": "META"
@@ -261,6 +769,21 @@
             "SetID": "MetaAspectSet_2d52fbad-642f-44fb-dc0a-39053b3ffbc5",
             "order": 1,
             "title": "Folders"
+          },
+          {
+            "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
+            "order": 2,
+            "title": "AVM Design Model"
+          },
+          {
+            "SetID": "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23",
+            "order": 3,
+            "title": "AVM Component Model"
+          },
+          {
+            "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
+            "order": 4,
+            "title": "AVM Test bench Model"
           },
           {
             "SetID": "MetaAspectSet_48b1b523-6b87-61a8-b6a3-83fd60c98ff6",
@@ -273,16 +796,6 @@
             "title": "Tests"
           },
           {
-            "SetID": "MetaAspectSet_5d0cd801-3952-b24c-b2c7-201d67d6bb0a",
-            "order": 2,
-            "title": "AVM Design Model"
-          },
-          {
-            "SetID": "MetaAspectSet_72a3b626-ae5c-c7a5-9922-ab8cfebe67d2",
-            "order": 4,
-            "title": "AVM Test bench Model"
-          },
-          {
             "SetID": "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35",
             "order": 7,
             "title": "LayoutConstraints"
@@ -292,7 +805,7 @@
           "FCO_ID": "/1"
         },
         "usedAddOns": "ConstraintAddOn",
-        "validPlugins": ""
+        "validPlugins": "AcmImporter AdmExporter AdmImporter TestBenchRunner"
       },
       "sets": {
         "MetaAspectSet": [
@@ -333,6 +846,16 @@
               "position": {
                 "x": 104,
                 "y": 246
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "1bf0e0e7-d4f1-a36d-416b-8af0651f138b",
+            "registry": {
+              "position": {
+                "x": 1031,
+                "y": 499
               }
             }
           },
@@ -657,18 +1180,6 @@
             }
           }
         ],
-        "MetaAspectSet_080b3ca3-3101-e949-b152-2f1d166e0ed1": [
-          {
-            "attributes": {},
-            "guid": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-            "registry": {
-              "position": {
-                "x": 100,
-                "y": 100
-              }
-            }
-          }
-        ],
         "MetaAspectSet_2155346a-4b75-18f2-a6bc-5830e8ad3d23": [
           {
             "attributes": {},
@@ -752,6 +1263,16 @@
           }
         ],
         "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": [
+          {
+            "attributes": {},
+            "guid": "1bf0e0e7-d4f1-a36d-416b-8af0651f138b",
+            "registry": {
+              "position": {
+                "x": 1031,
+                "y": 489
+              }
+            }
+          },
           {
             "attributes": {},
             "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
@@ -1265,449 +1786,8 @@
             }
           }
         ]
-      }
-    },
-    "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
-      "attributes": {
-        "name": "ADMEditorModelingLanguage"
       },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-          ],
-          "minItems": [
-            -1
-          ],
-          "maxItems": [
-            -1
-          ]
-        }
-      },
-      "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "position": {
-          "x": 81,
-          "y": 292
-        }
-      },
-      "sets": {}
-    },
-    "1deced2f-f026-ca87-711c-d8148b1dfd3c": {
-      "attributes": {
-        "INFO": "A group of requirements.",
-        "name": "RequirementCategory"
-      },
-      "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae",
-      "meta": {
-        "attributes": {
-          "Priority": {
-            "default": 0,
-            "type": "integer"
-          },
-          "weightPos": {
-            "default": 1,
-            "type": "float"
-          },
-          "description": {
-            "default": "",
-            "type": "string"
-          },
-          "weight": {
-            "default": 1,
-            "type": "float"
-          },
-          "weightNeg": {
-            "default": 1,
-            "type": "float"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "1deced2f-f026-ca87-711c-d8148b1dfd3c",
-            "ab281360-2719-c4e0-c3c6-4eea03401141"
-          ],
-          "minItems": [
-            -1,
-            -1
-          ],
-          "maxItems": [
-            -1,
-            -1
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae"
-      },
-      "registry": {
-        "color": "#99ffff",
-        "isAbstract": false,
-        "position": {
-          "x": 1187,
-          "y": 449
-        }
-      },
-      "sets": {}
-    },
-    "1f35a3aa-321d-359f-7838-242bc2d08ae5": {
-      "attributes": {
-        "INFO": "Container of designs.",
-        "name": "ADMFolder"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "1f35a3aa-321d-359f-7838-242bc2d08ae5",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34"
-          ],
-          "minItems": [
-            -1,
-            -1
-          ],
-          "maxItems": [
-            -1,
-            -1
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "SVGIcon": "Folder.svg",
-        "color": "#99ccff",
-        "position": {
-          "x": 228,
-          "y": 223
-        }
-      },
-      "sets": {}
-    },
-    "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
-      "attributes": {
-        "DataType": "String",
-        "Default": "",
-        "ID": "",
-        "INFO": "A property or parametric value.",
-        "Maximum": "inf",
-        "Minimum": "-inf",
-        "OnDataSheet": false,
-        "Unit": "",
-        "Value": "",
-        "ValueType": "Fixed",
-        "name": "Property"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "DataType": {
-            "default": "String",
-            "enum": [
-              "Real",
-              "Integer",
-              "Boolean",
-              "String"
-            ],
-            "type": "string"
-          },
-          "Default": {
-            "default": "",
-            "type": "string"
-          },
-          "ID": {
-            "default": "",
-            "type": "string"
-          },
-          "Maximum": {
-            "default": "inf",
-            "type": "string"
-          },
-          "Minimum": {
-            "default": "-inf",
-            "type": "string"
-          },
-          "OnDataSheet": {
-            "type": "boolean",
-            "default": false
-          },
-          "Unit": {
-            "default": "",
-            "type": "string"
-          },
-          "Value": {
-            "default": "",
-            "type": "string"
-          },
-          "ValueType": {
-            "default": "Fixed",
-            "enum": [
-              "Fixed",
-              "Parametric"
-            ],
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37"
-          ],
-          "minItems": [
-            -1
-          ],
-          "maxItems": [
-            -1
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "PortSVGIcon": "BlackPort.svg",
-        "color": "#ffe6cc",
-        "isPort": true,
-        "position": {
-          "x": 103,
-          "y": 423
-        }
-      },
-      "sets": {}
-    },
-    "3317c9c6-6c44-1a06-a476-11f77d722b34": {
-      "attributes": {
-        "INFO": "System of components and sub-systems.",
-        "Type": "Compound",
-        "name": "Container"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "Type": {
-            "default": "Compound",
-            "enum": [
-              "Compound",
-              "Alternative",
-              "Optional"
-            ],
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "2bc42bca-a9be-0f33-16a7-ea847e546b37",
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
-            "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
-            "97a00dee-7375-3637-ec08-b62588d4d71d",
-            "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
-            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
-            "f0508110-9a11-3b6d-ea42-2193bf0485e0",
-            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
-            "f9f20885-6316-a7b6-2196-8299f45692ff"
-          ],
-          "minItems": [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1
-          ],
-          "maxItems": [
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1,
-            -1
-          ]
-        },
-        "aspects": {
-          "NoValueFlow": [
-            "3317c9c6-6c44-1a06-a476-11f77d722b34",
-            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
-            "cb92c02d-84cf-f104-938b-b7de6641f8e5",
-            "f8d9bcd3-5655-7ddb-850d-28046a9dfba5"
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "color": "#cce5ff",
-        "position": {
-          "x": 168,
-          "y": 354
-        }
-      },
-      "sets": {}
-    },
-    "3e223dbc-998f-e965-9d15-99085fd445ff": {
-      "attributes": {
-        "Layer": "Top",
-        "Rotation": "",
-        "X": null,
-        "Y": null,
-        "name": "ExactLayoutConstraint"
-      },
-      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
-      "meta": {
-        "attributes": {
-          "Layer": {
-            "default": "Top",
-            "enum": [
-              "Top",
-              "Bottom"
-            ],
-            "type": "string"
-          },
-          "Rotation": {
-            "default": "",
-            "enum": [
-              "0",
-              "90",
-              "180",
-              "270"
-            ],
-            "type": "string"
-          },
-          "X": {
-            "default": null,
-            "type": "float"
-          },
-          "Y": {
-            "default": null,
-            "type": "float"
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
-      },
-      "registry": {
-        "position": {
-          "x": 746,
-          "y": 258
-        }
-      },
-      "sets": {
-        "ConstraintTarget": []
-      }
-    },
-    "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
-      "attributes": {
-        "ID": "",
-        "INFO": "Container of domain connectors.",
-        "name": "Connector"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "ID": {
-            "default": "",
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "children": {
-          "items": [
-            "f0508110-9a11-3b6d-ea42-2193bf0485e0"
-          ],
-          "minItems": [
-            -1
-          ],
-          "maxItems": [
-            -1
-          ]
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "isPort": true,
-        "position": {
-          "x": 263,
-          "y": 429
-        }
-      },
-      "sets": {}
-    },
-    "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {
-      "attributes": {
-        "name": "Formula"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "isAbstract": true,
-        "position": {
-          "x": 561,
-          "y": 569
-        }
-      },
-      "sets": {}
+      "constraints": {}
     },
     "79f0cc09-f068-284b-5473-efcf5dfa3497": {
       "attributes": {
@@ -1747,12 +1827,13 @@
           "y": 424
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
       "attributes": {
         "LayerRange": "",
-        "RangeType": "Inclusion",
+        "Type": "Inclusion",
         "XRange": "",
         "YRange": "",
         "name": "RangeLayoutConstraint"
@@ -1780,7 +1861,7 @@
           "name": {
             "type": "string"
           },
-          "RangeType": {
+          "Type": {
             "type": "string",
             "default": "Inclusion",
             "enum": [
@@ -1802,7 +1883,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
       "attributes": {
@@ -1841,7 +1923,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "8b1e277e-0f88-a58b-4aff-51c74250671d": {
       "attributes": {
@@ -1882,7 +1965,8 @@
           "y": 230
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "9001f172-4258-ceaa-86e9-f6e80b85853d": {
       "attributes": {
@@ -1919,7 +2003,8 @@
           "y": 449
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "97a00dee-7375-3637-ec08-b62588d4d71d": {
       "attributes": {
@@ -1959,7 +2044,8 @@
       },
       "sets": {
         "Selection": []
-      }
+      },
+      "constraints": {}
     },
     "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae": {
       "attributes": {
@@ -2006,7 +2092,8 @@
           "y": 353
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "9fab1244-f449-d3c0-bfdc-f166f724e3f2": {
       "attributes": {
@@ -2106,7 +2193,8 @@
           "y": 349
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "a0399d5f-26ab-3fac-def4-3834f5decac9": {
       "attributes": {
@@ -2152,7 +2240,8 @@
           "y": 43
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {
       "attributes": {
@@ -2220,7 +2309,8 @@
           "y": 741
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "ab281360-2719-c4e0-c3c6-4eea03401141": {
       "attributes": {
@@ -2299,7 +2389,8 @@
           "y": 450
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "be02d298-2892-180a-ed1a-138dc589dd5c": {
       "attributes": {
@@ -2332,7 +2423,8 @@
           "y": 664
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
       "attributes": {
@@ -2414,7 +2506,8 @@
           "y": 337
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
       "attributes": {
@@ -2433,7 +2526,7 @@
           "items": []
         }
       },
-      "parent": "1342c265-b0a3-58f6-2076-1f8496119c3a",
+      "parent": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1",
       "pointers": {
         "base": null
       },
@@ -2449,7 +2542,14 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {
+        "meta": {
+          "script": "function(core, node, callback) {\n    \"use strict\";\n    var error = null,\n        returnValue = {hasViolation:false,message:\"\"},\n        i,\n        neededChekings = 4,\n        meta = core.getJsonMeta(node),\n        typeIndexOfChild = function(typePathsArray,childNode){\n            var index = -1;\n\n            while(childNode && index === -1){\n                index = typePathsArray.indexOf(core.getPath(childNode));\n                childNode = core.getBase(childNode);\n            }\n\n            return index;\n        },\n        checkChildrenRules = function(){\n            var childCount = [],\n                index;\n            core.loadChildren(node,function(err,children){\n                if(err){\n                    returnValue.message += \"error during loading of node\\'s children\\n\";\n                    error = error || err;\n                    return checkingDone();\n                }\n\n                //global count check\n                //min\n                if(meta.children.min && meta.children.min !== -1){\n                    if(children.length < meta.children.min){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \"node hase fewer nodes than needed\\n\";\n                    }\n                }\n                //max\n                if(meta.children.max && meta.children.max !== -1){\n                    if(children.length > meta.children.max){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \"node hase more nodes than allowed\\n\";\n                    }\n                }\n\n                //typedCounts\n                for(i=0;i<meta.children.items.length;i++){\n                    childCount.push(0);\n                }\n                for(i=0;i<children.length;i++){\n                    index = typeIndexOfChild(meta.children.items,children[i]);\n                    if(index === -1 ){\n                        returnValue.hasViolation = true;\n                        returnValue.message += \"child \" + core.getGuid(children[i]) +\" is from prohibited type\\n\";\n                    }\n                    else {\n                        childCount[index]++;\n                    }\n                }\n                for(i=0;i<meta.children.items.length;i++){\n                    //min\n                    if(meta.children.minItems[i] !== -1){\n                        if(meta.children.minItems[i] > childCount[i]){\n                            returnValue.hasViolation = true;\n                            returnValue.message += \"too few type \"+ meta.children.items[i] +\" children\\n\";\n                        }\n                    }\n                    //max\n                    if(meta.children.maxItems[i] !== -1){\n                        if(meta.children.maxItems[i] < childCount[i]){\n                            returnValue.hasViolation = true;\n                            returnValue.message += \"too many type \"+ meta.children.items[i] +\" children\\n\";\n                        }\n                    }\n                }\n                return checkingDone();\n            });\n        },\n        checkPointerRules = function(){\n            //TODO currently there is no quantity check\n            var validNames = core.getValidPointerNames(node),\n                names = core.getPointerNames(node),\n                checkPointer = function(name){\n                    core.loadPointer(node,name,function(err,target){\n                        if(err || !target){\n                            error = error || err;\n                            returnValue.message += \"error during pointer \"+ name +\" load\\n\";\n                            return checkDone();\n                        }\n\n                        if(!core.isValidTargetOf(target,node,name)){\n                            returnValue.hasVialoation = true;\n                            returnValue.message += \"target of pointer \"+ name +\" is invalid\\n\";\n                        }\n                        return checkDone();\n                    });\n                },\n                checkDone = function(){\n                    if(--needs === 0){\n                        checkingDone();\n                    }\n                },\n                needs,i;\n            \n            needs = names.length;\n            if(needs > 0){\n                for(i=0;i<names.length;i++){\n                    if(validNames.indexOf(names[i]) === -1){\n                        returnValue.hasVialoation = true;\n                        returnValue.message += \" invalid pointer \"+ names[i] +\" has been found\\n\";\n                        checkDone();\n                    } else {\n                        checkPointer(names[i]);\n                    }\n\n                }\n            } else {\n                checkDone();\n            }\n\n        },\n        checkSetRules = function(){\n            //TODO this part is missing yet\n            checkingDone();\n        },\n        checkAttributeRules = function(){\n            var names = core.getAttributeNames(node),\n                validNames = core.getValidAttributeNames(node);\n            for(i=0;i<names.length;i++){\n                if(validNames.indexOf(names[i]) !== -1){\n                    if(!core.isValidAttributeValueOf(node,names[i],core.getAttribute(node,names[i]))){\n                        returnValue.hasViolation = true;\n                        returnValue.message += \"attribute \"+names[i]+\" has invalid value\\n\";\n                    }\n                }\n                else {\n                    returnValue.hasViolation = true;\n                    returnValue.message += \"node has an undefined attribute: \"+names[i];\n                }\n            }\n            checkingDone();\n        },\n        checkingDone = function(){\n            if(--neededChekings === 0){\n                callback(error,returnValue);\n            }\n        };\n\n    checkChildrenRules();\n    checkPointerRules();\n    checkSetRules();\n    checkAttributeRules();\n}",
+          "priority": 10,
+          "info": "this constraint will check all the meta rules defined to an object"
+        }
+      }
     },
     "d5fc3678-2722-5112-c0bb-fa758f113246": {
       "attributes": {
@@ -2480,7 +2580,8 @@
           "y": 449
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "dd35b139-3346-08f0-013c-1e3a8a522f7f": {
       "attributes": {
@@ -2542,7 +2643,8 @@
           "y": 229
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {
       "attributes": {
@@ -2582,7 +2684,8 @@
           "y": 355
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e544f3e4-e550-5750-8540-5598bbbf343c": {
       "attributes": {
@@ -2642,7 +2745,8 @@
           "y": 503
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e87743ed-b89e-d8ce-7b87-7b9aadcb4961": {
       "attributes": {
@@ -2714,7 +2818,8 @@
           "y": 61
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {
       "attributes": {
@@ -2762,7 +2867,8 @@
           "y": 429
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": {
       "attributes": {
@@ -2806,7 +2912,8 @@
           "y": 519
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": {
       "attributes": {
@@ -2861,7 +2968,8 @@
           "y": 502
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f26a44de-edb5-57c8-fd0f-242811b7816c": {
       "attributes": {
@@ -2923,7 +3031,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
       "attributes": {
@@ -2981,7 +3090,8 @@
           "y": 582
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f9f20885-6316-a7b6-2196-8299f45692ff": {
       "attributes": {
@@ -3036,7 +3146,8 @@
           "y": 657
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     }
   },
   "metaSheets": {}
