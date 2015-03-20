@@ -21,6 +21,9 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         parseClassNodeTree,
         parseClassNode,
 
+        getClassNode,
+        getComponentNode,
+
         parseComponentNodeExtraInfo,
         findSymbolForClassNode,
 
@@ -428,31 +431,50 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
     };
 
 
-    showNode = function(nodeId) {
+    getClassNode = function(id) {
 
-        // TODO: make it part of TreeNaviagtor
+        var deferred = $q.defer();
 
-        var node,
-            parentNode;
+        return deferred.promise;
 
-        node = treeNodesById[nodeId];
+    };
 
-        if (angular.isObject(node)) {
+    showNode = function(node) {
 
-            parentNode = node.parentNode;
+        var deferred = $q.defer();
 
-            while (parentNode) {
+        if (node.classifications) {
 
-                if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
-                    treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
-                }
+            getClassNode(node.classifications)
+                .then(function(classNode){
+                   deferred.resolve(classNode);
+                });
 
-                parentNode = parentNode.parentNode;
-
-            }
-
-            treeNavigatorData.config.state.selectedNodes = [ nodeId ];
+        } else {
+            deferred.reject();
         }
+
+
+        //node = treeNodesById[nodeId];
+        //
+        //if (angular.isObject(node)) {
+        //
+        //    parentNode = node.parentNode;
+        //
+        //    while (parentNode) {
+        //
+        //        if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
+        //            treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
+        //        }
+        //
+        //        parentNode = parentNode.parentNode;
+        //
+        //    }
+        //
+        //    treeNavigatorData.config.state.selectedNodes = [ nodeId ];
+        //}
+
+        return deferred.promise;
     };
 
     getComponentById = function(nodeId) {
