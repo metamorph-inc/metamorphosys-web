@@ -63,6 +63,8 @@ angular.module( 'mms.mmsApp.componentBrowser', [
 
             if (angular.isObject(selectedObject)) {
 
+                debugger;
+
                 node = selectedObject.originalObject;
 
                 componentBrowserService.showNode(node.id);
