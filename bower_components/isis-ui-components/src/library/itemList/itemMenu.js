@@ -2,20 +2,20 @@
 'use strict';
 
 angular.module(
-  'isis.ui.itemList.item.menu', []
+    'isis.ui.itemList.item.menu', []
 )
-  .directive(
+    .directive(
 
-    'ilItemMenu',
+        'ilItemMenu',
 
-    function () {
+        function () {
 
-      return {
-        restrict: 'E',
-        replace: true,
-        require: '^itemList',
-        templateUrl: '/isis-ui-components/templates/itemMenu.html'
-      };
+            return {
+                restrict: 'E',
+                replace: true,
+                require: '^itemList',
+                templateUrl: '/isis-ui-components/templates/itemMenu.html'
+            };
 
 
-    } );
+        });

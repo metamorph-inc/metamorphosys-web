@@ -29,7 +29,9 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         getNodeContextmenu,
         getComponentById,
 
-        mapFromClassNamesToSymbolTypes;
+        mapFromClassNamesToSymbolTypes,
+
+        ITEMS_PER_PAGE = 20;
 
     mapFromClassNamesToSymbolTypes = require('./ClassNamesToSymbolTypes')();
 
@@ -120,25 +122,25 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         preferencesMenu: [
             {
                 items: [
-                    {
-                        id: 'expandAll',
-                        label: 'Expand all',
-                        iconClass: 'fa fa-plus-square',
-                        action: function () {
-
-                            treeNavigatorData.config.state = treeNavigatorData.config.state || {};
-                            treeNavigatorData.config.state.expandedNodes = treeNavigatorData.config.state.expandedNodes || [];
-
-                            angular.forEach(classNodes, function (parentNode) {
-
-                                if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
-                                    treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
-                                }
-
-                            });
-
-                        }
-                    },
+                    //{
+                    //    id: 'expandAll',
+                    //    label: 'Expand all',
+                    //    iconClass: 'fa fa-plus-square',
+                    //    action: function () {
+                    //
+                    //        treeNavigatorData.config.state = treeNavigatorData.config.state || {};
+                    //        treeNavigatorData.config.state.expandedNodes = treeNavigatorData.config.state.expandedNodes || [];
+                    //
+                    //        angular.forEach(classNodes, function (parentNode) {
+                    //
+                    //            if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
+                    //                treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
+                    //            }
+                    //
+                    //        });
+                    //
+                    //    }
+                    //},
 
                     {
                         id: 'collapseAll',
@@ -155,19 +157,30 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
             }
         ],
 
-        loadChildren: function (e, node) {
-            console.log( 'loadChildren called:', node );
+        pagination: {
+            itemsPerPage: ITEMS_PER_PAGE
+        },
 
-            var childCategoriesDeferred = $q.defer(),
-                childComponentsDeferred = $q.defer();
+        loadChildren: function (e, node, countToLoad, isBackPaging) {
+
+            var deferred = $q.defer(),
+                childCategoriesDeferred = $q.defer(),
+                childComponentsDeferred = $q.defer(),
+                allChildren,
+                cursor;
+
+            allChildren = [];
 
             if (node.childCategoriesCount) {
 
                 componentLibrary.getClassificationTree(node.id)
 
                     .then(function(data){
-                        parseClassNodeTree(node, data);
+                        allChildren = allChildren.concat(parseClassNodeTree(node, data));
                         childCategoriesDeferred.resolve();
+                    })
+                    .catch(function(e){
+                       deferred.reject(e);
                     });
 
             } else {
@@ -176,11 +189,23 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
             if (node.childComponentCount) {
 
-                componentLibrary.getListOfComponents(node.id, 10, 0)
+                if (!isBackPaging) {
+                    cursor = Math.min((node.lastLoadedChildPosition || -1) + 1, node.childComponentCount-1);
+                } else {
+                    cursor = Math.max(node.firstLoadedChildPosition - countToLoad - 1, 0);
+                }
+
+                //debugger;
+
+                componentLibrary.getListOfComponents(
+                    node.id, countToLoad, cursor)
 
                     .then(function(data){
-                        parseComponentNodes(node, data);
+                        allChildren = allChildren.concat(parseComponentNodes(node, data));
                         childComponentsDeferred.resolve();
+                    })
+                    .catch(function(e){
+                        deferred.reject(e);
                     });
 
             } else {
@@ -189,7 +214,12 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
 
 
-            return $q.all([childCategoriesDeferred.promise, childComponentsDeferred.promise]);
+            $q.all([childCategoriesDeferred.promise, childComponentsDeferred.promise]).
+                then(function(){
+                    deferred.resolve(allChildren);
+                });
+
+            return deferred.promise;
         },
 
 
@@ -267,13 +297,17 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     parseComponentNodes = function(parentNode, children) {
 
+        var nodeCollector = [];
+
         if (parentNode && Array.isArray(children)) {
 
             angular.forEach(children, function(child) {
-                parseComponentNode(child, parentNode);
+                nodeCollector.push(parseComponentNode(child, parentNode));
             });
 
         }
+
+        return nodeCollector;
 
     };
 
@@ -300,23 +334,28 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
             parseComponentNodeExtraInfo(node);
 
-            parentNode.children.push(node);
             componentNodes[node.id] = node;
             treeNodesById[node.id] = node;
 
         }
 
+        return node;
+
     };
 
     parseClassNodeTree = function(fromNode, children) {
 
+        var childrenCollector = [];
+
         if (fromNode && Array.isArray(children)) {
 
             angular.forEach(children, function(child) {
-                parseClassNode(child, fromNode);
+                childrenCollector.push(parseClassNode(child, fromNode));
             });
 
         }
+
+        return childrenCollector;
 
     };
 
@@ -348,23 +387,25 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
             classNodes[node.id] = node;
             treeNodesById[node.id] = node;
-            parentNode.children.push(node);
 
             if (node.childrenCount) {
                 node.children = [];
             }
 
             if (Array.isArray(nodeDescriptor.subClasses)) {
-                parseClassNodeTree(node, nodeDescriptor.subClasses);
+                node.children = parseClassNodeTree(node, nodeDescriptor.subClasses);
             }
 
         }
+
+        return node;
 
     };
 
     initializeWithNodes = function (nodes) {
 
-        var rootNode;
+        var rootNode,
+            children;
 
         treeNodesById = {};
         classNodes = {};
@@ -381,7 +422,8 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         classNodes.root = rootNode;
 
         treeNavigatorData.data = rootNode;
-        parseClassNodeTree(rootNode, nodes);
+        children = parseClassNodeTree(rootNode, nodes);
+        rootNode.children = children;
 
     };
 

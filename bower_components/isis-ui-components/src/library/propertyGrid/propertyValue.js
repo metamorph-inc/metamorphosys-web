@@ -1,35 +1,35 @@
 /*globals define, angular, alert*/
 
 
-define( [
-  'angular',
-  'text!./templates/propertyValue.html',
-  'css!./styles/propertyValue.css',
+define([
+    'angular',
+    'text!./templates/propertyValue.html',
+    'css!./styles/propertyValue.css',
 
-  './valueWidgets'
+    './valueWidgets'
 
-], function ( ng, defaultTemplate ) {
+], function (ng, defaultTemplate) {
 
-  'use strict';
+    'use strict';
 
-  angular.module(
-    'isis.ui.propertyValue', [
-      'isis.ui.valueWidgets'
-    ]
+    angular.module(
+        'isis.ui.propertyValue', [
+            'isis.ui.valueWidgets'
+        ]
 
-  )
-    .directive(
-      'propertyValue', [ '$log', '$compile', '$valueWidgets',
-        function ( $log, $compile ) {
+    )
+        .directive(
+            'propertyValue', ['$log', '$compile', '$valueWidgets',
+                function ($log, $compile) {
 
-          return {
-            restrict: 'E',
-            replace: true,
-            template: defaultTemplate,
-            scope: false
-          };
-        }
-      ] );
+                    return {
+                        restrict: 'E',
+                        replace: true,
+                        template: defaultTemplate,
+                        scope: false
+                    };
+                }
+            ]);
 
 
-} );
+});

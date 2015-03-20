@@ -2,17 +2,17 @@
 'use strict';
 
 angular.module(
-  'isis.ui.itemList.item.stats', []
+    'isis.ui.itemList.item.stats', []
 )
-  .directive(
-    'ilItemStats',
-    function () {
+    .directive(
+        'ilItemStats',
+        function () {
 
-      return {
-        scope: false,
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/isis-ui-components/templates/itemStats.html',
-        require: '^itemList'
-      };
-    } );
+            return {
+                scope: false,
+                restrict: 'E',
+                replace: true,
+                templateUrl: '/isis-ui-components/templates/itemStats.html',
+                require: '^itemList'
+            };
+        });

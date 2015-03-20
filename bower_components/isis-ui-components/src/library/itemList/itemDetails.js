@@ -2,55 +2,55 @@
 'use strict';
 
 angular.module(
-  'isis.ui.itemList.item.details', []
+    'isis.ui.itemList.item.details', []
 )
-  .controller( 'ItemListItemDetailsController', function ( $scope ) {
+    .controller('ItemListItemDetailsController', function ($scope) {
 
-    var expanded = false;      
-      
-    $scope.config.showDetailsLabel = $scope.config.showDetailsLabel || 'Details';
-    $scope.config.hideDetailsLabel = $scope.config.hideDetailsLabel || 'Details';
+        var expanded = false;
 
-    expanded = false;
+        $scope.config.showDetailsLabel = $scope.config.showDetailsLabel || 'Details';
+        $scope.config.hideDetailsLabel = $scope.config.hideDetailsLabel || 'Details';
 
-    $scope.getExpanderClass = function () {
-      if ( expanded ) {
-        return 'glyphicon glyphicon-chevron-up';
-      } else {
-        return 'glyphicon glyphicon-chevron-right';
-      }
-    };
+        expanded = false;
 
-    $scope.getExpanderLabel = function () {
-      if ( expanded ) {
-        return $scope.config.hideDetailsLabel;
-      } else {
-        return $scope.config.showDetailsLabel;
-      }
-    };
+        $scope.getExpanderClass = function () {
+            if (expanded) {
+                return 'glyphicon glyphicon-chevron-up';
+            } else {
+                return 'glyphicon glyphicon-chevron-right';
+            }
+        };
 
-    $scope.detailsCollapserClick = function () {
-      expanded = !expanded;
-    };
+        $scope.getExpanderLabel = function () {
+            if (expanded) {
+                return $scope.config.hideDetailsLabel;
+            } else {
+                return $scope.config.showDetailsLabel;
+            }
+        };
 
-    $scope.shouldBeExpanded = function () {
-      return expanded || !$scope.config.detailsCollapsible;
-    };
+        $scope.detailsCollapserClick = function () {
+            expanded = !expanded;
+        };
 
-  } )
-  .directive(
+        $scope.shouldBeExpanded = function () {
+            return expanded || !$scope.config.detailsCollapsible;
+        };
 
-    'ilItemDetails',
+    })
+    .directive(
 
-    function () {
+        'ilItemDetails',
 
-      return {
-        restrict: 'E',
-        replace: true,
-        require: '^itemList',
-        controller: 'ItemListItemDetailsController',
-        templateUrl: '/isis-ui-components/templates/itemDetails.html'
-      };
+        function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                require: '^itemList',
+                controller: 'ItemListItemDetailsController',
+                templateUrl: '/isis-ui-components/templates/itemDetails.html'
+            };
 
 
-    } );
+        });

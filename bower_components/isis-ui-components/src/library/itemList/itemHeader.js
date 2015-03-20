@@ -2,20 +2,20 @@
 'use strict';
 
 angular.module(
-  'isis.ui.itemList.item.header', []
+    'isis.ui.itemList.item.header', []
 )
-  .directive(
+    .directive(
 
-    'ilItemHeader',
+        'ilItemHeader',
 
-    function () {
+        function () {
 
-      return {
-        restrict: 'E',
-        replace: true,
-        require: '^itemList',
-        templateUrl: '/isis-ui-components/templates/itemHeader.html'
-      };
+            return {
+                restrict: 'E',
+                replace: true,
+                require: '^itemList',
+                templateUrl: '/isis-ui-components/templates/itemHeader.html'
+            };
 
 
-    } );
+        });
