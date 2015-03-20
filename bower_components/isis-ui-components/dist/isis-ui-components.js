@@ -1153,11 +1153,16 @@ angular.module(
 
             var self = this;
 
-            self.config.state.expandedNodes.push(node.id);
+            if (self.config.state.expandedNodes.indexOf(node.id) === -1) {
 
-            if (angular.isFunction(self.config.nodeExpanderClick)) {
-                self.config.nodeExpanderClick($event, node, true);
+                self.config.state.expandedNodes.push(node.id);
+
+                if (angular.isFunction(self.config.nodeExpanderClick)) {
+                    self.config.nodeExpanderClick($event, node, true);
+                }
+
             }
+
         };
 
         TreeNavigatorController.prototype.markNodeCollapsed = function ($event, node) {
@@ -1524,9 +1529,7 @@ angular.module(
                 return self.node.unCollapsible !== true;
             };
 
-            NodeLabelController.prototype.nodeDrop = function ($event, $data) {
-
-                var self = this;
+            NodeLabelController.prototype.nodeDrop = function () {
 
                 //console.log($data, 'Dropped on ', self.node);
             };
@@ -1588,7 +1591,7 @@ angular.module(
     .directive(
         'treeNavigatorNodeList', function (ISISRecursionHelper) {
 
-            function NodeListController($log) {
+            function NodeListController() {
 
                 var self = this;
 
@@ -1640,7 +1643,7 @@ angular.module(
 
                 self.init = function() {
 
-                    if (self.nodes.length === 0) {
+                    if (self.nodes && self.nodes.length === 0) {
                         self.treeCtrl.loadSomeChildrenForNode(null, self.parentNode);
                     }
                     

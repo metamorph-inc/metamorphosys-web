@@ -6,7 +6,7 @@
             ></tree-navigator-node-label>
 
     <tree-navigator-node-list
-            ng-if="ctrl.isExpanded()"
+            ng-if="ctrl.isExpanded() && ctrl.node.children"
             parent-node="ctrl.node"
             nodes="ctrl.node.children"
             config="config"></tree-navigator-node-list>

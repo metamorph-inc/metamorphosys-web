@@ -122,9 +122,7 @@ angular.module(
                 return self.node.unCollapsible !== true;
             };
 
-            NodeLabelController.prototype.nodeDrop = function ($event, $data) {
-
-                var self = this;
+            NodeLabelController.prototype.nodeDrop = function () {
 
                 //console.log($data, 'Dropped on ', self.node);
             };

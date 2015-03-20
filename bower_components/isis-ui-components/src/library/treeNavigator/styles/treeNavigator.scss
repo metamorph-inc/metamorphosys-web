@@ -48,7 +48,6 @@
       transition: height 200ms, opacity 200ms;
     }
 
-
   }
 
   ul.node-list > li {
@@ -88,7 +87,6 @@
     text-decoration: none;
     background-color: #eee;
   }
-
 
   .loading {
     > .node-label:after {
@@ -149,8 +147,6 @@
 
     margin-right: .2ex;
 
-
-
   }
 
   .icon-arrow-down:after {
@@ -165,16 +161,15 @@
 
     margin-left: .2ex;
 
-
   }
 
   .node-expander:hover {
 
-    .icon-arrow-down:after{
+    .icon-arrow-down:after {
       border-top-color: #f90;
     }
 
-    .icon-arrow-right:after{
+    .icon-arrow-right:after {
       border-left-color: #f90;
     }
 
@@ -215,9 +210,15 @@
 
   .paging {
 
+    .last-loaded-child-position,
+    .first-loaded-child-position {
+      font-size: 90%;
+    }
+
     text-transform: uppercase;
     font-size: 80%;
     text-align: center;
+    text-decoration: none;
 
     &.page-up {
       border-bottom: 1px dotted #8099AB;

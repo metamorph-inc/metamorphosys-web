@@ -20,6 +20,11 @@
 
         li {
             position: relative;
+
+            .context-menu-trigger {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         }
 
         li.has-symbol {
