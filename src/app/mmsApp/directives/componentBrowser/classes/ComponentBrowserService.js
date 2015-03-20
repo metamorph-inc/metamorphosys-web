@@ -433,7 +433,18 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     getClassNode = function(id) {
 
-        var deferred = $q.defer();
+        var deferred = $q.defer(),
+            node,
+            parts;
+
+        if (parts.length > 1) {
+
+            node = classNodes[parts.join('/')];
+
+//            parts =
+        } else {
+//git             deferred.resolve(no)
+        }
 
         return deferred.promise;
 
