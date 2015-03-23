@@ -1,3 +1,3 @@
-pushd node_modules\webgme-domain-tools\executor_worker
+pushd node_modules\webgme\src\middleware\executor\worker
 start nw.exe
 popd

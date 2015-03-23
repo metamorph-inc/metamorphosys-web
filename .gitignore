@@ -1,4 +1,8 @@
-.idea
+.idea/workspace.xml
+.idea/gradle.xml
+.idea/tasks.xml
+.idea/dictionaries
+
 .DS_Store*
 
 node_modules
