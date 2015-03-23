@@ -13,7 +13,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         componentNodes,
 
         initializeWithNodes,
-        showNode,
+        showComponent,
 
         parseComponentNodes,
         parseComponentNode,
@@ -22,21 +22,13 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         parseClassNode,
 
         getClassNode,
-        getComponentNode,
 
         parseComponentNodeExtraInfo,
-        findSymbolForClassNode,
-
-        //organizeTree,
 
         getNodeContextmenu,
         getComponentById,
 
-        mapFromClassNamesToSymbolTypes,
-
         ITEMS_PER_PAGE = 20;
-
-    mapFromClassNamesToSymbolTypes = require('./ClassNamesToSymbolTypes')();
 
     treeNodesById = {};
     componentNodes = {};
@@ -57,7 +49,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
                             id: 'addToDesign',
                             label: 'Add to design',
                             iconClass: 'fa fa-plus-circle',
-                            action: function() {
+                            action: function () {
 
                                 ga('send', 'event', 'avmComponent', 'createFromContextmenu');
 
@@ -77,30 +69,6 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     config = {
 
-//        scopeMenu: [
-//            {
-//                items: [
-//                    {
-//                        id: 'project',
-//                        label: 'Project Hierarchy',
-//                        action: function () {
-//                            config.state.activeScope = 'project';
-//                            config.selectedScope = config.scopeMenu[ 0 ].items[ 0 ];
-//                        }
-//                    },
-//                    {
-//                        id: 'composition',
-//                        label: 'Composition',
-//                        action: function () {
-//                            config.state.activeScope = 'composition';
-//                            config.selectedScope = config.scopeMenu[ 0 ].items[ 1 ];
-//                        }
-//                    }
-//                ]
-//            }
-//
-//        ],
-//
         extraInfoTemplateUrl: '/mmsApp/templates/componentExtraInfo.html',
 
         nodeClassGetter: function (node) {
@@ -125,25 +93,6 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         preferencesMenu: [
             {
                 items: [
-                    //{
-                    //    id: 'expandAll',
-                    //    label: 'Expand all',
-                    //    iconClass: 'fa fa-plus-square',
-                    //    action: function () {
-                    //
-                    //        treeNavigatorData.config.state = treeNavigatorData.config.state || {};
-                    //        treeNavigatorData.config.state.expandedNodes = treeNavigatorData.config.state.expandedNodes || [];
-                    //
-                    //        angular.forEach(classNodes, function (parentNode) {
-                    //
-                    //            if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
-                    //                treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
-                    //            }
-                    //
-                    //        });
-                    //
-                    //    }
-                    //},
 
                     {
                         id: 'collapseAll',
@@ -164,7 +113,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
             itemsPerPage: ITEMS_PER_PAGE
         },
 
-        loadChildren: function (e, node, countToLoad, isBackPaging) {
+        loadChildren: function ($event, node, countToLoad, isBackPaging) {
 
             var deferred = $q.defer(),
                 childCategoriesDeferred = $q.defer(),
@@ -178,12 +127,12 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
                 componentLibrary.getClassificationTree(node.id)
 
-                    .then(function(data){
+                    .then(function (data) {
                         allChildren = allChildren.concat(parseClassNodeTree(node, data));
                         childCategoriesDeferred.resolve();
                     })
-                    .catch(function(e){
-                       deferred.reject(e);
+                    .catch(function (e) {
+                        deferred.reject(e);
                     });
 
             } else {
@@ -193,21 +142,19 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
             if (node.childComponentCount) {
 
                 if (!isBackPaging) {
-                    cursor = Math.min((node.lastLoadedChildPosition || -1) + 1, node.childComponentCount-1);
+                    cursor = Math.min((node.lastLoadedChildPosition || -1) + 1, node.childComponentCount - 1);
                 } else {
                     cursor = Math.max(node.firstLoadedChildPosition - countToLoad - 1, 0);
                 }
 
-                //debugger;
-
                 componentLibrary.getListOfComponents(
                     node.id, countToLoad, cursor)
 
-                    .then(function(data){
+                    .then(function (data) {
                         allChildren = allChildren.concat(parseComponentNodes(node, data));
                         childComponentsDeferred.resolve();
                     })
-                    .catch(function(e){
+                    .catch(function (e) {
                         deferred.reject(e);
                     });
 
@@ -216,9 +163,8 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
             }
 
 
-
             $q.all([childCategoriesDeferred.promise, childComponentsDeferred.promise]).
-                then(function(){
+                then(function () {
                     deferred.resolve(allChildren);
                 });
 
@@ -251,32 +197,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     };
 
-    findSymbolForClassNode = function(classNode, rawClassName) {
-
-        var symbolType,
-            symbol;
-
-        if (angular.isObject(symbolManager)) {
-
-            symbolType = mapFromClassNamesToSymbolTypes[rawClassName];
-
-            if (symbolType) {
-
-                symbol = symbolManager.getSymbol(symbolType);
-
-                classNode.symbol = symbol;
-                classNode.extraInfo = classNode.extraInfo || {};
-
-                classNode.extraInfo.symbol = symbol;
-
-            }
-
-        }
-
-
-    };
-
-    parseComponentNodeExtraInfo = function(node) {
+    parseComponentNodeExtraInfo = function (node) {
 
         var extraInfo;
 
@@ -286,7 +207,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
                 properties: []
             };
 
-            angular.forEach(node.prominentProperties, function(property) {
+            angular.forEach(node.prominentProperties, function (property) {
 
                 extraInfo.properties.push(property);
 
@@ -298,13 +219,13 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     };
 
-    parseComponentNodes = function(parentNode, children) {
+    parseComponentNodes = function (parentNode, children) {
 
         var nodeCollector = [];
 
         if (parentNode && Array.isArray(children)) {
 
-            angular.forEach(children, function(child) {
+            angular.forEach(children, function (child) {
                 nodeCollector.push(parseComponentNode(child, parentNode));
             });
 
@@ -318,7 +239,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
         var node;
 
-        node = treeNodesById[ nodeDescriptor.id ];
+        node = treeNodesById[nodeDescriptor.id];
 
         if (!angular.isObject(node)) {
 
@@ -346,13 +267,13 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
     };
 
-    parseClassNodeTree = function(fromNode, children) {
+    parseClassNodeTree = function (fromNode, children) {
 
         var childrenCollector = [];
 
         if (fromNode && Array.isArray(children)) {
 
-            angular.forEach(children, function(child) {
+            angular.forEach(children, function (child) {
                 childrenCollector.push(parseClassNode(child, fromNode));
             });
 
@@ -366,7 +287,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
         var node;
 
-        node = treeNodesById[ nodeDescriptor.id ];
+        node = treeNodesById[nodeDescriptor.id];
 
         if (!angular.isObject(node)) {
 
@@ -431,64 +352,180 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
     };
 
 
-    getClassNode = function(id) {
+    getClassNode = function (path) {
 
         var deferred = $q.defer(),
             node,
-            parts;
+            parts,
 
-        if (parts.length > 1) {
+            parentId,
+            id;
 
-            node = classNodes[parts.join('/')];
 
-//            parts =
+        node = classNodes[path];
+
+        if (node) {
+
+            // Was loaded
+            deferred.resolve(node);
+
         } else {
-//git             deferred.resolve(no)
+
+            // Root node - must have been loaded
+
+            parts = path.split('/');
+
+            if (parts.length < 2) {
+
+                id = parts[0];
+
+                node = classNodes[id];
+
+                if (node) {
+                    deferred.resolve(node);
+                } else {
+                    deferred.reject('Could not found', id);
+                }
+
+            } else {
+
+                // Get parent
+
+                parentId = (parts.slice(0, parts.length - 1)).join('/');
+
+                getClassNode(parentId)
+                    .then(function (parent) {
+
+                        if (parent.childCategoriesCount &&
+                            Array.isArray(parent.children) &&
+                            !parent.children.length) {
+
+                            componentLibrary.getClassificationTree(parent.id)
+                                .then(function (data) {
+
+                                    parent.children = parseClassNodeTree(parent, data);
+
+                                    node = classNodes[path];
+
+                                    if (node) {
+
+                                        node = classNodes[path];
+
+                                        deferred.resolve(node);
+                                    } else {
+                                        deferred.reject('Could not found', id);
+                                    }
+
+                                })
+                                .catch(function (e) {
+                                    deferred.reject(e);
+                                });
+
+                        } else {
+
+                            node = classNodes[path];
+
+                            if (node) {
+                                deferred.resolve(node);
+                            } else {
+                                deferred.reject('Could not found', id);
+                            }
+                        }
+                    })
+                    .catch(function (e) {
+                        deferred.reject(e);
+                    });
+            }
         }
 
         return deferred.promise;
 
     };
 
-    showNode = function(node) {
+    showComponent = function (path, id, position) {
 
         var deferred = $q.defer();
 
-        if (node.classifications) {
+        function expandNode(node) {
 
-            getClassNode(node.classifications)
-                .then(function(classNode){
-                   deferred.resolve(classNode);
+            if (node.parentNode) {
+                expandNode(node.parentNode);
+            }
+
+            if (treeNavigatorData.config.state.expandedNodes.indexOf(node.id) === -1) {
+                treeNavigatorData.config.state.expandedNodes.push(node.id);
+            }
+        }
+
+        function collapseNode(node) {
+
+            var index = treeNavigatorData.config.state.expandedNodes.indexOf(node.id);
+
+            if (index > -1) {
+                treeNavigatorData.config.state.expandedNodes.splice(index, 1);
+            }
+        }
+
+        if (path && id && !isNaN(position)) {
+
+            getClassNode(path)
+                .then(function (classNode) {
+
+                    var node,
+                        cursor;
+
+                    node = componentNodes[id];
+
+                    if (!isNaN(classNode.firstLoadedChildPosition) && !isNaN(classNode.lastLoadedChildPosition) &&
+                        classNode.firstLoadedChildPosition <= position &&
+                        position <= classNode.lastLoadedChildPosition &&
+                        node
+                    ) {
+
+                        treeNavigatorData.config.state.selectedNodes = [ id ];
+                        deferred.resolve(node);
+
+                    } else {
+
+                        collapseNode(classNode);
+
+                        cursor = Math.floor((position / ITEMS_PER_PAGE)) * ITEMS_PER_PAGE;
+
+                        componentLibrary.getListOfComponents(
+                            path, ITEMS_PER_PAGE, cursor)
+                            .then(function (data) {
+
+                                classNode.children = parseComponentNodes(classNode, data);
+                                classNode.firstLoadedChildPosition = cursor;
+                                classNode.lastLoadedChildPosition = cursor + ITEMS_PER_PAGE;
+
+                                node = componentNodes[id];
+                                treeNavigatorData.config.state.selectedNodes = [ id ];
+
+                                expandNode(classNode);
+
+                                deferred.resolve(node);
+
+                            })
+                            .catch(function (e) {
+                                $log.error('Could not get component node', e);
+                            });
+
+                    }
+
+
+                }).catch(function(e){
+                   $log.error('Could not get class node', e);
                 });
 
         } else {
             deferred.reject();
         }
 
-
-        //node = treeNodesById[nodeId];
-        //
-        //if (angular.isObject(node)) {
-        //
-        //    parentNode = node.parentNode;
-        //
-        //    while (parentNode) {
-        //
-        //        if (treeNavigatorData.config.state.expandedNodes.indexOf(parentNode.id) === -1) {
-        //            treeNavigatorData.config.state.expandedNodes.push(parentNode.id);
-        //        }
-        //
-        //        parentNode = parentNode.parentNode;
-        //
-        //    }
-        //
-        //    treeNavigatorData.config.state.selectedNodes = [ nodeId ];
-        //}
-
         return deferred.promise;
     };
 
-    getComponentById = function(nodeId) {
+    getComponentById = function (nodeId) {
 
         return treeNodesById[nodeId];
 
@@ -504,7 +541,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
     this.treeNavigatorData = treeNavigatorData;
 
     this.initializeWithNodes = initializeWithNodes;
-    this.showNode = showNode;
+    this.showComponent = showComponent;
 
     this.getComponentById = getComponentById;
 

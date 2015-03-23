@@ -42,14 +42,27 @@ angular.module( 'mms.mmsApp.componentBrowser', [
                     componentBrowserService.initializeWithNodes(data);
                     $scope.grandTotal = componentLibrary.getGrandTotal();
 
+                    //componentBrowserService.showComponent(
+                    //    'passive_components/inductors/single_components',
+                    //    '06550b29-12c1-40b2-bedc-0c983dfe1ade',
+                    //    39
+                    //);
+
+                    $scope.initialized = true;
+
                 })
                 .catch(function(e){
 
-                    $log.error('Could not load components', e);
+                    if (e.status === 503) {
+
+                        $log.warn('Service not available, will retry');
+                        $timeout(init, 3000);
+
+                    } else {
+                        $log.error('Could not load components', e);
+                    }
 
                 });
-
-            $scope.initialized = true;
 
         };
 
@@ -59,40 +72,44 @@ angular.module( 'mms.mmsApp.componentBrowser', [
 
         $scope.$watch('componentSearchSelection', function (selectedObject) {
 
-            var node;
+            var resultObject;
 
             if (angular.isObject(selectedObject)) {
 
-                debugger;
+                resultObject = selectedObject.originalObject;
 
-                node = selectedObject.originalObject;
+                componentBrowserService.showComponent(
+                    resultObject.classifications, resultObject.id, resultObject.position
+                )
+                    .then(function(node){
 
-                componentBrowserService.showNode(node.id);
+                        $timeout(function () {
 
-                $timeout(function () {
+                            var $nodeLi,
+                                y;
 
-                    var $nodeLi,
-                        y;
+                            if ($scope.$treeNavigatorNodesElement) {
+                                $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
 
-                    if ($scope.$treeNavigatorNodesElement) {
-                        $nodeLi = $scope.$treeNavigatorNodesElement.find('[title="' + node.label + '"]');
+                                if ($nodeLi.length) {
 
-                        if ($nodeLi.length) {
+                                    y = ($nodeLi.offset().top -
+                                    $scope.$treeNavigatorNodesElement.offset().top) +
+                                    $scope.$treeNavigatorNodesElement.scrollTop();
 
-                            y = ($nodeLi.offset().top -
-                            $scope.$treeNavigatorNodesElement.offset().top) +
-                            $scope.$treeNavigatorNodesElement.scrollTop();
+                                    $scope.$treeNavigatorNodesElement.animate({
+                                        scrollTop: y
+                                    }, 500);
 
-                            $scope.$treeNavigatorNodesElement.animate({
-                                scrollTop: y
-                            }, 500);
+                                }
+                            }
 
-                        }
-                    }
+                            ga('send', 'event', 'componentBrowser', 'search', node.label);
 
-                    ga('send', 'event', 'componentBrowser', 'search', node.label);
+                        }, 100);
 
-                }, 100);
+                    });
+
             }
 
         });

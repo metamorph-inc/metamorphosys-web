@@ -73,8 +73,14 @@ angular.module(
                                 grandTotal = data.grandTotal;
 
                             })
-                            .error(function (e) {
-                                deferred.reject('Could not load classification tree', e);
+                            .error(function (data, status, headers, config) {
+                                deferred.reject({
+                                    msg: 'Could not load classification tree',
+                                    data: data,
+                                    status: status,
+                                    headers: headers,
+                                    config: config
+                                });
                             });
 
                         return deferred.promise;
