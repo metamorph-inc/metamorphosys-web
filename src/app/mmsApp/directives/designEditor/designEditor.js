@@ -27,7 +27,10 @@ angular.module('mms.designVisualization.designEditor', [
             rootScopeEventListeners,
 
             initForContainer,
-            destroy;
+            destroy,
+
+            RandomSymbolGenerator = require('./classes/RandomSymbolGenerator.js'),
+            randomSymbolGenerator;
 
         $scope.isDummy = $state.current.name === 'dummyEditor';
 
@@ -66,6 +69,14 @@ angular.module('mms.designVisualization.designEditor', [
         initForContainer = function(selectedContainerId) {
 
             if ($scope.isDummy) {
+
+                randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
+
+                randomSymbolGenerator.generateSymbols(5);
+
+                $scope.diagram = diagramService.generateDummyDiagram('dummy', 30, 60, 1500, 1500);
+
+                $log.debug('Dummy diagram:', $scope.diagram);
 
                 $rootScope.stopBusy();
                 $rootScope.unCover();
