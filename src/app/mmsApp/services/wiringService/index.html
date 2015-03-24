@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript">
+        function draw() {
+            var canvas = document.getElementById('canvas');
+            if (canvas.getContext) {
+                var ctx = canvas.getContext('2d');
+
+                ctx.strokeRect(100, 100, 100, 100);
+                ctx.strokeRect(500, 500, 250, 100);
+                ctx.strokeRect(250, 250, 100, 100);
+                var c = [];
+                c.push({boundingBox: {xMin: 100, yMin: 100, xMax: 200, yMax: 200}, ports: []});
+                c.push({boundingBox: {xMin: 500, yMin: 500, xMax: 750, yMax: 600}, ports: []});
+                c.push({boundingBox: {xMin: 250, yMin: 250, xMax: 350, yMax: 350}, ports: []});
+                return c;
+            }
+        }
+
+        function work() {
+            var components;
+            var router = new OrthogonalRouter();
+            components = draw();
+            console.log(components);
+            var grid = {width: 1000, height: 1000};
+            router.generateVisibilityGraph( components, grid );
+            console.log(router.visibilityGraph.vertices);
+        }
+    </script>
+</head>
+<body onload="work();">
+<script src="classes/OrthogonalRouter.js"></script>
+
+
+
+
+    <canvas id="canvas" width="1000" height="1000"></canvas>
+
+</body>
+</html>
