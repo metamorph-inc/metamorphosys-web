@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/webgme-cyphy.iml" filepath="$PROJECT_DIR$/.idea/webgme-cyphy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/mms-webcyphy.iml" filepath="$PROJECT_DIR$/.idea/mms-webcyphy.iml" />
     </modules>
   </component>
 </project>
