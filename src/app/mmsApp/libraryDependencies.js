@@ -3,8 +3,6 @@ var $ = window.$;
 require('jquery-ui');
 require('bootstrap');
 
-require('ui-bootstrap');
-require('ui-bootstrap-tpls');
 require('ui-router');
 require('ui-utils');
 require('ng-grid');
@@ -29,3 +27,5 @@ require('angular-panhandler');
 require('angular-mousewheel');
 require('mousewheel')($);
 require('jscrollpane')($);
+
+require('component-library');

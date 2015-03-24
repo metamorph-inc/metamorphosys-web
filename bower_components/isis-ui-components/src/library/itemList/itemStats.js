@@ -1,23 +1,18 @@
-/*globals angular, window*/
+/*globals angular*/
 'use strict';
 
-window.moment = window.moment || require( 'moment' );
-require( 'angular-moment' );
-
 angular.module(
-  'isis.ui.itemList.item.stats', [ angular.isFunction( window.define ) ? 'angular-moment' :
-    'angularMoment'
-  ]
+    'isis.ui.itemList.item.stats', []
 )
-  .directive(
-    'ilItemStats',
-    function () {
+    .directive(
+        'ilItemStats',
+        function () {
 
-      return {
-        scope: false,
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/isis-ui-components/templates/itemStats.html',
-        require: '^itemList'
-      };
-    } );
+            return {
+                scope: false,
+                restrict: 'E',
+                replace: true,
+                templateUrl: '/isis-ui-components/templates/itemStats.html',
+                require: '^itemList'
+            };
+        });

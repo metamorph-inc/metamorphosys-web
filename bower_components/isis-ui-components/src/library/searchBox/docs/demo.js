@@ -1,8 +1,8 @@
 /*globals angular*/
 'use strict';
 
-var demoApp = angular.module( 'isis.ui.searchBox.demo', [ 'isis.ui.searchBox' ] );
+var demoApp = angular.module('isis.ui.searchBox.demo', ['isis.ui.searchBox']);
 
-demoApp.controller( 'SearchBoxDemoController', function () {
+demoApp.controller('SearchBoxDemoController', function () {
 
-} );
+});

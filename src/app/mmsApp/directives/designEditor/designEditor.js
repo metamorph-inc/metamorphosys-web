@@ -15,7 +15,8 @@ angular.module('mms.designVisualization.designEditor', [
 ])
     .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
                                                     designService, $state, $stateParams, designLayoutService,
-                                                    symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling) {
+                                                    symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
+                                                    acmImportService, componentServerUrl) {
 
         var lastComponentInstantiationPosition,
             justCreatedWires,
@@ -72,8 +73,6 @@ angular.module('mms.designVisualization.designEditor', [
 
                 addRootScopeEventListener('componentInstantiationMustBeDone', function ($event, componentData, position) {
 
-                    var nodesToCopy;
-
                     $rootScope.setProcessing();
 
                     if (!position) {
@@ -90,17 +89,8 @@ angular.module('mms.designVisualization.designEditor', [
                     lastComponentInstantiationPosition = position;
 
                     if (componentData && componentData.id) {
-
-                        nodesToCopy = {};
-
-                        nodesToCopy[componentData.id] = {
-                            registry: {
-                                position: position,
-                                rotation: 0
-                            }
-                        };
-
-                        nodeService.copyMoreNodes(layoutContext, selectedContainerId, nodesToCopy);
+                        acmImportService.importAcm($scope.layoutContext, selectedContainerId,
+                            componentServerUrl + '/getcomponent/download/' + componentData.id, position);
                     }
 
                 });

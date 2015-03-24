@@ -39,14 +39,11 @@ sourcePaths = {
 
     'src/library/contextmenu/*.js',
     'src/library/dropdownNavigator/*.js',
-    'src/library/simpleDialog/*.js',
     'src/library/treeNavigator/*.js',
     'src/library/hierarchicalMenu/*.js',
     'src/library/itemList/*.js',
-    'src/library/decisionTable/*.js',
     'src/library/validationErrorMarker/*.js',
     'src/library/taxonomyTerms/*.js',
-    'src/library/valueWidgets/*.js',
     'src/library/decisionTable/*.js'
   ],
   libraryTemplates: [
@@ -266,9 +263,9 @@ gulp.task( 'compile-all', function ( cb ) {
 gulp.task( 'prettify', function () {
   gulp.src( './src/**/*.js' )
   .pipe( prettify( {
-    'indent_size': 2,
+    'indent_size': 4,
     'indent_char': ' ',
-    'space_in_paren': true,
+    'space_in_paren': false,
     'indent_level': 0,
     'indent_with_tabs': false,
     'preserve_newlines': true,
@@ -281,7 +278,7 @@ gulp.task( 'prettify', function () {
     'break_chained_methods': true,
     'eval_code': false,
     'unescape_strings': false,
-    'wrap_line_length': 100
+    'wrap_line_length': 120
   } ) )
   .pipe( gulp.dest( './src' ) ); // edit in place
 } );

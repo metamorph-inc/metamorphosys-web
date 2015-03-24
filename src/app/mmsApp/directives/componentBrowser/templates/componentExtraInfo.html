@@ -1,0 +1,9 @@
+<div class="component-extra-info">
+    <div class="total-children-count" ng-if="::ctrl.node.categoryTotal">[{{::ctrl.node.categoryTotal}}]</div>
+    <svg class="component-symbol" ng-if="::ctrl.node.symbol">
+        <use ng-attr-width="{{::ctrl.node.symbol.width}}"
+             ng-attr-height="{{::nctrl.ode.symbol.height}}"
+             xlink:href="{{::ctrl.node.symbol.svgDecoration}}"></use>
+    </svg>
+    <property-list properties="::ctrl.node.extraInfo.properties"></property-list>
+</div>

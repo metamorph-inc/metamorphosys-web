@@ -1,32 +1,32 @@
 /*globals define, angular, alert*/
 
 
-define( [
-  'angular',
-  'text!./templates/propertyLabel.html',
-  'css!./styles/propertyLabel.css'
+define([
+    'angular',
+    'text!./templates/propertyLabel.html',
+    'css!./styles/propertyLabel.css'
 
-], function ( ng, template ) {
+], function (ng, template) {
 
-  'use strict';
+    'use strict';
 
-  angular.module(
-    'isis.ui.propertyLabel', []
+    angular.module(
+        'isis.ui.propertyLabel', []
 
-  )
-    .directive(
-      'propertyLabel',
-      function () {
+    )
+        .directive(
+            'propertyLabel',
+            function () {
 
-        return {
-          scope: {},
-          restrict: 'E',
-          replace: true,
-          template: template,
-          transclude: true
+                return {
+                    scope: {},
+                    restrict: 'E',
+                    replace: true,
+                    template: template,
+                    transclude: true
 
-        };
-      } );
+                };
+            });
 
 
-} );
+});

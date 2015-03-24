@@ -90,7 +90,8 @@ describe('TestTesting', function () {
         webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
-            activeNode: testPoint
+            activeNode: testPoint,
+            pluginConfig: { UploadedFile: 'nonexistant' }
         }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
@@ -138,7 +139,8 @@ describe('TestTesting', function () {
         webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
-            activeNode: testPoint
+            activeNode: testPoint,
+            pluginConfig: { UploadedFile: 'nonexistant' }
         }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
@@ -185,7 +187,8 @@ describe('TestTesting', function () {
         webgme.runPlugin.main(config, {
             projectName: projectName,
             pluginName: pluginName,
-            activeNode: testPoint
+            activeNode: testPoint,
+            pluginConfig: { UploadedFile: 'nonexistant' }
         }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
