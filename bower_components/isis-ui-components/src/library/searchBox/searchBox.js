@@ -4,21 +4,21 @@
 'use strict';
 
 angular.module(
-  'isis.ui.searchBox', []
+    'isis.ui.searchBox', []
 
 )
-  .directive(
-    'searchBox',
-    function () {
+    .directive(
+        'searchBox',
+        function () {
 
-      return {
-        scope: {
-          handlers: '=',
-          config: '='
-        },
-        restrict: 'E',
-        replace: true,
-        templateUrl: '/isis-ui-components/templates/searchBox.html'
+            return {
+                scope: {
+                    handlers: '=',
+                    config: '='
+                },
+                restrict: 'E',
+                replace: true,
+                templateUrl: '/isis-ui-components/templates/searchBox.html'
 
-      };
-    } );
+            };
+        });

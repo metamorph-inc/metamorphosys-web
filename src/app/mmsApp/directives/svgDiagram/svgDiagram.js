@@ -373,7 +373,8 @@ angular.module('mms.designVisualization.svgDiagram', [
                         $element,
 
                         killContextMenu,
-                        killDelete;
+                        killDelete,
+                        currentDiagramId;            
 
                     $element = $(element);
 
@@ -393,7 +394,9 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     }, function (newDiagramId, oldDiagramId) {
 
-                        if (newDiagramId && newDiagramId !== oldDiagramId) {
+                        if (newDiagramId && newDiagramId !== currentDiagramId) {
+
+                            currentDiagramId = newDiagramId;
 
                             scope.$element = $element;
 

@@ -15,7 +15,12 @@ var OrthogonalRouter = function () {
 
     this.connections = [];
 
-    this.routeConnections = function ( components, connections, grid ) {
+
+    this.routeDiagram = function( diagram ) {
+        console.log('------ This is the entry point', diagram);
+    };
+
+    this.routeConnections = function ( components, connections ) {
         // Step 1: generateVisibilityGraph
         // Step 2: AutoRouteWithGraph
         // Step 3: nudgeRoutes
@@ -126,7 +131,7 @@ var OrthogonalRouter = function () {
 
             }
 
-            //  
+            //
 
         }
 
@@ -138,7 +143,9 @@ var OrthogonalRouter = function () {
     this.compare = function ( node, compareNode, order ) {
         if ( order === 1 ) {
             // Sort by X then Y (Vertical line sweep)
-            if ( node.x > compareNode.x ) return 1;
+            if  ( node.x > compareNode.x ) {
+                return 1;
+            }
             if ( node.x < compareNode.x ) return -1;
             if (node.y > compareNode.y ) return 1;
             if (node.y < compareNode.y ) return -1;

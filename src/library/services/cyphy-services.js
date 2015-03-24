@@ -13,5 +13,6 @@ require( './WorkspaceService' );
 require( './ComponentService' );
 require( './DesignService' );
 require( './TestBenchService' );
+require( './acmImportService' );
 require( './DesertService' );
 require( './DesignLayoutService' );

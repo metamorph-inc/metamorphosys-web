@@ -7,37 +7,12 @@
 
 
 angular.module( 'cyphy.services' )
-    .service( 'designService', function ( $q, $timeout, $location, $modal, growl, nodeService, baseCyPhyService,
+    .service( 'designService', function ( $q, $timeout, $location, growl, nodeService, baseCyPhyService,
         pluginService, fileService ) {
         'use strict';
         var self = this,
             watchers = {};
 
-        this.editDesignFn = function ( data ) {
-            var modalInstance = $modal.open( {
-                templateUrl: '/cyphy-components/templates/DesignEdit.html',
-                controller: 'DesignEditController',
-                //size: size,
-                resolve: {
-                    data: function () {
-                        return data;
-                    }
-                }
-            } );
-
-            modalInstance.result.then( function ( editedData ) {
-                var attrs = {
-                    'name': editedData.name,
-                    'INFO': editedData.description
-                };
-                self.setDesignAttributes( data.context, data.id, attrs )
-                    .then( function () {
-                        console.log( 'Attribute updated' );
-                    } );
-            }, function () {
-                console.log( 'Modal dismissed at: ' + new Date() );
-            } );
-        };
 
         this.exportAsAdmFn = function ( data ) {
             self.exportDesign( data.context, data.id )
@@ -51,26 +26,6 @@ angular.module( 'cyphy.services' )
             } );
         };
 
-        this.deleteFn = function ( data ) {
-            var modalInstance = $modal.open( {
-                templateUrl: '/cyphy-components/templates/SimpleModal.html',
-                controller: 'SimpleModalController',
-                resolve: {
-                    data: function () {
-                        return {
-                            title: 'Delete Design Space',
-                            details: 'This will delete ' + data.name + ' from the workspace.'
-                        };
-                    }
-                }
-            } );
-
-            modalInstance.result.then( function () {
-                self.deleteDesign( data.context, data.id );
-            }, function () {
-                console.log( 'Modal dismissed at: ' + new Date() );
-            } );
-        };
 
         /**
          * Removes the design from the context.

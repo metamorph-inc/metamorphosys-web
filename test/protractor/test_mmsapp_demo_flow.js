@@ -3,6 +3,7 @@
 describe('Metamorphosys Tech Demo Flow', function () {
 
     var q = require('q'),
+        url = require('url'),
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
         hasClass = require('./lib/has_class.js'),
 
@@ -28,7 +29,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             projectName = 'Test_79838';
             done();
         } else {
-            require('http').get('http://localhost:8855/rest/external/copyproject/noredirect', function (res) {
+            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function (res) {
                 if (res.statusCode > 399) {
                     done(res.statusCode);
                 }
@@ -60,7 +61,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     it('Should create and load new design', function () {
 
-        browser.get('http://localhost:8855/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
+        browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
         var diagramContainer;
 

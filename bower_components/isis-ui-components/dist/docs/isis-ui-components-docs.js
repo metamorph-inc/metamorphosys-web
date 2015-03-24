@@ -3,135 +3,151 @@
 'use strict';
 
 var components = [
-  {
-    name: 'decisionTable',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'valueWidgets',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'searchBox',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'itemList',
-    sources: [ 'demo.html', 'newItemTemplate.html', 'demo.js']
-  },
-  {
-    name: 'simpleDialog',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'hierarchicalMenu',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'contextmenu',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'dropdownNavigator',
-    sources: [ 'demo.html', 'demo.js']
-  },
-  {
-    name: 'treeNavigator',
-    sources: [ 'demo.html', 'demo.js']
-  }
+    {
+      name: 'itemList',
+      sources: [ 'demo.html', 'newItemTemplate.html', 'demo.js']
+    },
+    {
+      name: 'hierarchicalMenu',
+      sources: [ 'demo.html', 'demo.js']
+    },
+    {
+      name: 'contextmenu',
+      sources: [ 'demo.html', 'demo.js']
+    },
+    {
+      name: 'dropdownNavigator',
+      sources: [ 'demo.html', 'demo.js']
+    },
+    {
+        name: 'treeNavigator',
+        sources: ['demo.html', 'demo.js']
+    }
 ];
 
-require( '../library/simpleDialog/docs/demo.js' );
-require( '../library/hierarchicalMenu/docs/demo.js' );
-require( '../library/contextmenu/docs/demo.js' );
-require( '../library/dropdownNavigator/docs/demo.js' );
-require( '../library/treeNavigator/docs/demo.js' );
-require( '../library/itemList/docs/demo.js' );
-require( '../library/searchBox/docs/demo.js' );
-require( '../library/valueWidgets/docs/demo.js' );
-require( '../library/decisionTable/docs/demo.js' );
+require('../library/hierarchicalMenu/docs/demo.js');
+require('../library/contextmenu/docs/demo.js');
+require('../library/dropdownNavigator/docs/demo.js');
+require('../library/treeNavigator/docs/demo.js');
+require('../library/itemList/docs/demo.js');
 
-require( 'angular-sanitize' );
-window.Showdown = require( 'showdown' );
-require( 'angular-markdown-directive' );
+require('angular-sanitize');
+window.Showdown = require('showdown');
+require('angular-markdown-directive');
 
-require( 'codemirror-css' );
-window.CodeMirror = require( 'codemirror' );
+require('codemirror-css');
+window.CodeMirror = require('codemirror');
 
-require( 'codemirror/mode/htmlmixed/htmlmixed' );
-require( 'codemirror/mode/xml/xml' );
-require( 'codemirror/mode/javascript/javascript' );
+require('codemirror/mode/htmlmixed/htmlmixed');
+require('codemirror/mode/xml/xml');
+require('codemirror/mode/javascript/javascript');
 
-require( 'angular-ui-codemirror' );
-require( 'ng-grid' );
-require( 'ng-grid-css');
-require( 'ui-utils');
+require('angular-ui-codemirror');
 
 
 var demoApp = angular.module(
-'isis.ui.demoApp', [
-  'isis.ui.demoApp.templates',
-  'btford.markdown',
-  'ui.codemirror',
-  'ui.bootstrap'
-].concat( components.map( function ( e ) {
-  return 'isis.ui.' + e.name + '.demo';
-} ) )
+    'isis.ui.demoApp', [
+        'isis.ui.demoApp.templates',
+        'btford.markdown',
+        'ui.codemirror'
+    ].concat(components.map(function (e) {
+        return 'isis.ui.' + e.name + '.demo';
+    }))
 );
 
-demoApp.run( function () {
-  console.log( 'DemoApp run...' );
-} );
+demoApp.run(function () {
+    console.log('DemoApp run...');
+});
 
 demoApp.controller(
-'UIComponentsDemoController',
-function ( $scope, $templateCache ) {
+    'UIComponentsDemoController',
+    function ($scope, $templateCache) {
 
-  var fileExtensionRE,
-    codeMirrorModes;
+        var fileExtensionRE,
+            codeMirrorModes;
 
-  fileExtensionRE = /(?:\.([^.]+))?$/;
+        fileExtensionRE = /(?:\.([^.]+))?$/;
 
-  codeMirrorModes = {
-    'js': 'javascript',
-    'html': 'htmlmixed'
-  };
-
-  $scope.components = components.map( function ( component ) {
-    var sources,
-    viewerOptions,
-    fileExtension;
-
-    if ( angular.isArray( component.sources ) ) {
-      sources = component.sources.map( function ( sourceFile ) {
-
-        fileExtension = fileExtensionRE.exec( sourceFile );
-
-        viewerOptions = {
-          lineWrapping: true,
-          lineNumbers: true,
-          readOnly: true,
-          mode: codeMirrorModes[fileExtension[1]] || 'xml'
+        codeMirrorModes = {
+            'js': 'javascript',
+            'html': 'htmlmixed'
         };
 
-        return {
-          fileName: sourceFile,
-          code: $templateCache.get( '/library/' + component.name + '/docs/' + sourceFile ),
-          viewerOptions: viewerOptions
-        };
-      } );
-    }
+        $scope.components = components.map(function (component) {
+            var sources,
+                viewerOptions,
+                fileExtension;
 
-    return {
-      name: component.name,
-      template: '/library/' + component.name + '/docs/demo.html',
-      docs: '/library/' + component.name + '/docs/readme.md',
-      sources: sources
+            if (angular.isArray(component.sources)) {
+                sources = component.sources.map(function (sourceFile) {
+
+                    fileExtension = fileExtensionRE.exec(sourceFile);
+
+                    viewerOptions = {
+                        lineWrapping: true,
+                        lineNumbers: true,
+                        readOnly: true,
+                        mode: codeMirrorModes[fileExtension[1]] || 'xml'
+                    };
+
+                    return {
+                        fileName: sourceFile,
+                        code: $templateCache.get('/library/' + component.name + '/docs/' +
+                            sourceFile),
+                        viewerOptions: viewerOptions
+                    };
+                });
+            }
+
+            return {
+                name: component.name,
+                template: '/library/' + component.name + '/docs/demo.html',
+                docs: '/library/' + component.name + '/docs/readme.md',
+                sources: sources,
+                selectedSourceFile: sources[0]
+            };
+        });
+
+    });
+
+window.countOfSesquatches = function (printWatchers) {
+
+    var root = angular.element(document.getElementsByTagName('body'));
+
+    var watchers = [];
+
+    var f = function (element) {
+        angular.forEach(['$scope', '$isolateScope'], function (scopeProperty) {
+            if (element.data() && element.data()
+                .hasOwnProperty(scopeProperty)) {
+                angular.forEach(element.data()[scopeProperty].$$watchers, function (watcher) {
+                    watchers.push(watcher);
+                });
+            }
+        });
+
+        angular.forEach(element.children(), function (childElement) {
+            f(angular.element(childElement));
+        });
     };
-  } );
 
-} );
-},{"../library/contextmenu/docs/demo.js":16,"../library/decisionTable/docs/demo.js":17,"../library/dropdownNavigator/docs/demo.js":18,"../library/hierarchicalMenu/docs/demo.js":19,"../library/itemList/docs/demo.js":20,"../library/searchBox/docs/demo.js":21,"../library/simpleDialog/docs/demo.js":22,"../library/treeNavigator/docs/demo.js":23,"../library/valueWidgets/docs/demo.js":24,"angular-markdown-directive":8,"angular-sanitize":9,"angular-ui-codemirror":3,"codemirror":10,"codemirror-css":5,"codemirror/mode/htmlmixed/htmlmixed":12,"codemirror/mode/javascript/javascript":13,"codemirror/mode/xml/xml":14,"ng-grid":6,"ng-grid-css":7,"showdown":25,"ui-utils":4}],2:[function(require,module,exports){
+    f(root);
+
+    // Remove duplicate watchers
+    var watchersWithoutDuplicates = [];
+    angular.forEach(watchers, function (item) {
+        if (watchersWithoutDuplicates.indexOf(item) < 0) {
+            watchersWithoutDuplicates.push(item);
+            if (printWatchers === true) {
+                console.log(item);
+            }
+        }
+    });
+
+    console.log(watchersWithoutDuplicates.length);
+
+};
+},{"../library/contextmenu/docs/demo.js":13,"../library/dropdownNavigator/docs/demo.js":14,"../library/hierarchicalMenu/docs/demo.js":15,"../library/itemList/docs/demo.js":16,"../library/treeNavigator/docs/demo.js":17,"angular-markdown-directive":5,"angular-sanitize":6,"angular-ui-codemirror":3,"codemirror":7,"codemirror-css":4,"codemirror/mode/htmlmixed/htmlmixed":9,"codemirror/mode/javascript/javascript":10,"codemirror/mode/xml/xml":11,"showdown":18}],2:[function(require,module,exports){
 /**
  * Created with IntelliJ IDEA.
  * User: Ganaraj.Pr
@@ -515,2174 +531,160 @@ angular.module("ang-drag-drop",[])
 
 },{}],3:[function(require,module,exports){
 'use strict';
+
 /**
  * Binds a CodeMirror widget to a <textarea> element.
  */
-angular.module('ui.codemirror', []).constant('uiCodemirrorConfig', {}).directive('uiCodemirror', [
-  'uiCodemirrorConfig',
-  function (uiCodemirrorConfig) {
-    return {
-      restrict: 'EA',
-      require: '?ngModel',
-      priority: 1,
-      compile: function compile() {
-        // Require CodeMirror
-        if (angular.isUndefined(window.CodeMirror)) {
-          throw new Error('ui-codemirror need CodeMirror to work... (o rly?)');
-        }
-        return function postLink(scope, iElement, iAttrs, ngModel) {
-          var options, opts, codeMirror, initialTextValue;
-          initialTextValue = iElement.text();
-          options = uiCodemirrorConfig.codemirror || {};
-          opts = angular.extend({ value: initialTextValue }, options, scope.$eval(iAttrs.uiCodemirror), scope.$eval(iAttrs.uiCodemirrorOpts));
-          if (iElement[0].tagName === 'TEXTAREA') {
-            // Might bug but still ...
-            codeMirror = window.CodeMirror.fromTextArea(iElement[0], opts);
-          } else {
-            iElement.html('');
-            codeMirror = new window.CodeMirror(function (cm_el) {
-              iElement.append(cm_el);
-            }, opts);
-          }
-          if (iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts) {
-            var codemirrorDefaultsKeys = Object.keys(window.CodeMirror.defaults);
-            scope.$watch(iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts, function updateOptions(newValues, oldValue) {
-              if (!angular.isObject(newValues)) {
-                return;
-              }
-              codemirrorDefaultsKeys.forEach(function (key) {
-                if (newValues.hasOwnProperty(key)) {
-                  if (oldValue && newValues[key] === oldValue[key]) {
-                    return;
-                  }
-                  codeMirror.setOption(key, newValues[key]);
-                }
-              });
-            }, true);
-          }
-          if (ngModel) {
-            // CodeMirror expects a string, so make sure it gets one.
-            // This does not change the model.
-            ngModel.$formatters.push(function (value) {
-              if (angular.isUndefined(value) || value === null) {
-                return '';
-              } else if (angular.isObject(value) || angular.isArray(value)) {
-                throw new Error('ui-codemirror cannot use an object or an array as a model');
-              }
-              return value;
-            });
-            // Override the ngModelController $render method, which is what gets called when the model is updated.
-            // This takes care of the synchronizing the codeMirror element with the underlying model, in the case that it is changed by something else.
-            ngModel.$render = function () {
-              //Code mirror expects a string so make sure it gets one
-              //Although the formatter have already done this, it can be possible that another formatter returns undefined (for example the required directive)
-              var safeViewValue = ngModel.$viewValue || '';
-              codeMirror.setValue(safeViewValue);
-            };
-            // Keep the ngModel in sync with changes from CodeMirror
-            codeMirror.on('change', function (instance) {
-              var newValue = instance.getValue();
-              if (newValue !== ngModel.$viewValue) {
-                // Changes to the model from a callback need to be wrapped in $apply or angular will not notice them
-                scope.$apply(function () {
-                  ngModel.$setViewValue(newValue);
-                });
-              }
-            });
-          }
-          // Watch ui-refresh and refresh the directive
-          if (iAttrs.uiRefresh) {
-            scope.$watch(iAttrs.uiRefresh, function (newVal, oldVal) {
-              // Skip the initial watch firing
-              if (newVal !== oldVal) {
-                codeMirror.refresh();
-              }
-            });
-          }
-          // Allow access to the CodeMirror instance through a broadcasted event
-          // eg: $broadcast('CodeMirror', function(cm){...});
-          scope.$on('CodeMirror', function (event, callback) {
-            if (angular.isFunction(callback)) {
-              callback(codeMirror);
-            } else {
-              throw new Error('the CodeMirror event requires a callback function');
-            }
-          });
-          // onLoad callback
-          if (angular.isFunction(opts.onLoad)) {
-            opts.onLoad(codeMirror);
-          }
-        };
-      }
-    };
-  }
-]);
-},{}],4:[function(require,module,exports){
-/**
- * angular-ui-utils - Swiss-Army-Knife of AngularJS tools (with no external dependencies!)
- * @version v0.1.1 - 2014-02-05
- * @link http://angular-ui.github.com
- * @license MIT License, http://www.opensource.org/licenses/MIT
- */
-'use strict';
-
-angular.module('ui.alias', []).config(['$compileProvider', 'uiAliasConfig', function($compileProvider, uiAliasConfig){
-  uiAliasConfig = uiAliasConfig || {};
-  angular.forEach(uiAliasConfig, function(config, alias){
-    if (angular.isString(config)) {
-      config = {
-        replace: true,
-        template: config
-      };
-    }
-    $compileProvider.directive(alias, function(){
-      return config;
-    });
-  });
-}]);
-
-'use strict';
+angular.module('ui.codemirror', [])
+  .constant('uiCodemirrorConfig', {})
+  .directive('uiCodemirror', uiCodemirrorDirective);
 
 /**
- * General-purpose Event binding. Bind any event not natively supported by Angular
- * Pass an object with keynames for events to ui-event
- * Allows $event object and $params object to be passed
- *
- * @example <input ui-event="{ focus : 'counter++', blur : 'someCallback()' }">
- * @example <input ui-event="{ myCustomEvent : 'myEventHandler($event, $params)'}">
- *
- * @param ui-event {string|object literal} The event to bind to as a string or a hash of events with their callbacks
+ * @ngInject
  */
-angular.module('ui.event',[]).directive('uiEvent', ['$parse',
-  function ($parse) {
-    return function ($scope, elm, attrs) {
-      var events = $scope.$eval(attrs.uiEvent);
-      angular.forEach(events, function (uiEvent, eventName) {
-        var fn = $parse(uiEvent);
-        elm.bind(eventName, function (evt) {
-          var params = Array.prototype.slice.call(arguments);
-          //Take out first paramater (event object);
-          params = params.splice(1);
-          fn($scope, {$event: evt, $params: params});
-          if (!$scope.$$phase) {
-            $scope.$apply();
-          }
-        });
-      });
-    };
-  }]);
+function uiCodemirrorDirective($timeout, uiCodemirrorConfig) {
 
-'use strict';
-
-/**
- * A replacement utility for internationalization very similar to sprintf.
- *
- * @param replace {mixed} The tokens to replace depends on type
- *  string: all instances of $0 will be replaced
- *  array: each instance of $0, $1, $2 etc. will be placed with each array item in corresponding order
- *  object: all attributes will be iterated through, with :key being replaced with its corresponding value
- * @return string
- *
- * @example: 'Hello :name, how are you :day'.format({ name:'John', day:'Today' })
- * @example: 'Records $0 to $1 out of $2 total'.format(['10', '20', '3000'])
- * @example: '$0 agrees to all mentions $0 makes in the event that $0 hits a tree while $0 is driving drunk'.format('Bob')
- */
-angular.module('ui.format',[]).filter('format', function(){
-  return function(value, replace) {
-    var target = value;
-    if (angular.isString(target) && replace !== undefined) {
-      if (!angular.isArray(replace) && !angular.isObject(replace)) {
-        replace = [replace];
-      }
-      if (angular.isArray(replace)) {
-        var rlen = replace.length;
-        var rfx = function (str, i) {
-          i = parseInt(i, 10);
-          return (i>=0 && i<rlen) ? replace[i] : str;
-        };
-        target = target.replace(/\$([0-9]+)/g, rfx);
-      }
-      else {
-        angular.forEach(replace, function(value, key){
-          target = target.split(':'+key).join(value);
-        });
-      }
-    }
-    return target;
-  };
-});
-
-'use strict';
-
-/**
- * Wraps the
- * @param text {string} haystack to search through
- * @param search {string} needle to search for
- * @param [caseSensitive] {boolean} optional boolean to use case-sensitive searching
- */
-angular.module('ui.highlight',[]).filter('highlight', function () {
-  return function (text, search, caseSensitive) {
-    if (search || angular.isNumber(search)) {
-      text = text.toString();
-      search = search.toString();
-      if (caseSensitive) {
-        return text.split(search).join('<span class="ui-match">' + search + '</span>');
-      } else {
-        return text.replace(new RegExp(search, 'gi'), '<span class="ui-match">$&</span>');
-      }
-    } else {
-      return text;
-    }
-  };
-});
-
-'use strict';
-
-// modeled after: angular-1.0.7/src/ng/directive/ngInclude.js
-angular.module('ui.include',[])
-.directive('uiInclude', ['$http', '$templateCache', '$anchorScroll', '$compile',
-                 function($http,   $templateCache,   $anchorScroll,   $compile) {
   return {
-    restrict: 'ECA',
-    terminal: true,
-    compile: function(element, attr) {
-      var srcExp = attr.uiInclude || attr.src,
-          fragExp = attr.fragment || '',
-          onloadExp = attr.onload || '',
-          autoScrollExp = attr.autoscroll;
+    restrict: 'EA',
+    require: '?ngModel',
+    compile: function compile() {
 
-      return function(scope, element) {
-        var changeCounter = 0,
-            childScope;
+      // Require CodeMirror
+      if (angular.isUndefined(window.CodeMirror)) {
+        throw new Error('ui-codemirror need CodeMirror to work... (o rly?)');
+      }
 
-        var clearContent = function() {
-          if (childScope) {
-            childScope.$destroy();
-            childScope = null;
-          }
-
-          element.html('');
-        };
-
-        function ngIncludeWatchAction() {
-          var thisChangeId = ++changeCounter;
-          var src = scope.$eval(srcExp);
-          var fragment = scope.$eval(fragExp);
-
-          if (src) {
-            $http.get(src, {cache: $templateCache}).success(function(response) {
-              if (thisChangeId !== changeCounter) { return; }
-
-              if (childScope) { childScope.$destroy(); }
-              childScope = scope.$new();
-
-              var contents;
-              if (fragment) {
-                contents = angular.element('<div/>').html(response).find(fragment);
-              }
-              else {
-                contents = angular.element('<div/>').html(response).contents();
-              }
-              element.html(contents);
-              $compile(contents)(childScope);
-
-              if (angular.isDefined(autoScrollExp) && (!autoScrollExp || scope.$eval(autoScrollExp))) {
-                $anchorScroll();
-              }
-
-              childScope.$emit('$includeContentLoaded');
-              scope.$eval(onloadExp);
-            }).error(function() {
-              if (thisChangeId === changeCounter) { clearContent(); }
-            });
-          } else { clearContent(); }
-        }
-
-        scope.$watch(fragExp, ngIncludeWatchAction);
-        scope.$watch(srcExp, ngIncludeWatchAction);
-      };
+      return postLink;
     }
   };
-}]);
 
-'use strict';
+  function postLink(scope, iElement, iAttrs, ngModel) {
 
-/**
- * Provides an easy way to toggle a checkboxes indeterminate property
- *
- * @example <input type="checkbox" ui-indeterminate="isUnkown">
- */
-angular.module('ui.indeterminate',[]).directive('uiIndeterminate', [
-  function () {
-    return {
-      compile: function(tElm, tAttrs) {
-        if (!tAttrs.type || tAttrs.type.toLowerCase() !== 'checkbox') {
-          return angular.noop;
-        }
+    var codemirrorOptions = angular.extend(
+      { value: iElement.text() },
+      uiCodemirrorConfig.codemirror || {},
+      scope.$eval(iAttrs.uiCodemirror),
+      scope.$eval(iAttrs.uiCodemirrorOpts)
+    );
 
-        return function ($scope, elm, attrs) {
-          $scope.$watch(attrs.uiIndeterminate, function(newVal) {
-            elm[0].indeterminate = !!newVal;
-          });
-        };
+    var codemirror = newCodemirrorEditor(iElement, codemirrorOptions);
+
+    configOptionsWatcher(
+      codemirror,
+      iAttrs.uiCodemirror || iAttrs.uiCodemirrorOpts,
+      scope
+    );
+
+    configNgModelLink(codemirror, ngModel, scope);
+
+    configUiRefreshAttribute(codemirror, iAttrs.uiRefresh, scope);
+
+    // Allow access to the CodeMirror instance through a broadcasted event
+    // eg: $broadcast('CodeMirror', function(cm){...});
+    scope.$on('CodeMirror', function(event, callback) {
+      if (angular.isFunction(callback)) {
+        callback(codemirror);
+      } else {
+        throw new Error('the CodeMirror event requires a callback function');
       }
-    };
-  }]);
-
-'use strict';
-
-/**
- * Converts variable-esque naming conventions to something presentational, capitalized words separated by space.
- * @param {String} value The value to be parsed and prettified.
- * @param {String} [inflector] The inflector to use. Default: humanize.
- * @return {String}
- * @example {{ 'Here Is my_phoneNumber' | inflector:'humanize' }} => Here Is My Phone Number
- *          {{ 'Here Is my_phoneNumber' | inflector:'underscore' }} => here_is_my_phone_number
- *          {{ 'Here Is my_phoneNumber' | inflector:'variable' }} => hereIsMyPhoneNumber
- */
-angular.module('ui.inflector',[]).filter('inflector', function () {
-  function ucwords(text) {
-    return text.replace(/^([a-z])|\s+([a-z])/g, function ($1) {
-      return $1.toUpperCase();
     });
+
+    // onLoad callback
+    if (angular.isFunction(codemirrorOptions.onLoad)) {
+      codemirrorOptions.onLoad(codemirror);
+    }
   }
 
-  function breakup(text, separator) {
-    return text.replace(/[A-Z]/g, function (match) {
-      return separator + match;
-    });
+  function newCodemirrorEditor(iElement, codemirrorOptions) {
+    var codemirrot;
+
+    if (iElement[0].tagName === 'TEXTAREA') {
+      // Might bug but still ...
+      codemirrot = window.CodeMirror.fromTextArea(iElement[0], codemirrorOptions);
+    } else {
+      iElement.html('');
+      codemirrot = new window.CodeMirror(function(cm_el) {
+        iElement.append(cm_el);
+      }, codemirrorOptions);
+    }
+
+    return codemirrot;
   }
 
-  var inflectors = {
-    humanize: function (value) {
-      return ucwords(breakup(value, ' ').split('_').join(' '));
-    },
-    underscore: function (value) {
-      return value.substr(0, 1).toLowerCase() + breakup(value.substr(1), '_').toLowerCase().split(' ').join('_');
-    },
-    variable: function (value) {
-      value = value.substr(0, 1).toLowerCase() + ucwords(value.split('_').join(' ')).substr(1).split(' ').join('');
+  function configOptionsWatcher(codemirrot, uiCodemirrorAttr, scope) {
+    if (!uiCodemirrorAttr) { return; }
+
+    var codemirrorDefaultsKeys = Object.keys(window.CodeMirror.defaults);
+    scope.$watch(uiCodemirrorAttr, updateOptions, true);
+    function updateOptions(newValues, oldValue) {
+      if (!angular.isObject(newValues)) { return; }
+      codemirrorDefaultsKeys.forEach(function(key) {
+        if (newValues.hasOwnProperty(key)) {
+
+          if (oldValue && newValues[key] === oldValue[key]) {
+            return;
+          }
+
+          codemirrot.setOption(key, newValues[key]);
+        }
+      });
+    }
+  }
+
+  function configNgModelLink(codemirror, ngModel, scope) {
+    if (!ngModel) { return; }
+    // CodeMirror expects a string, so make sure it gets one.
+    // This does not change the model.
+    ngModel.$formatters.push(function(value) {
+      if (angular.isUndefined(value) || value === null) {
+        return '';
+      } else if (angular.isObject(value) || angular.isArray(value)) {
+        throw new Error('ui-codemirror cannot use an object or an array as a model');
+      }
       return value;
-    }
-  };
-
-  return function (text, inflector) {
-    if (inflector !== false && angular.isString(text)) {
-      inflector = inflector || 'humanize';
-      return inflectors[inflector](text);
-    } else {
-      return text;
-    }
-  };
-});
-
-'use strict';
-
-/**
- * General-purpose jQuery wrapper. Simply pass the plugin name as the expression.
- *
- * It is possible to specify a default set of parameters for each jQuery plugin.
- * Under the jq key, namespace each plugin by that which will be passed to ui-jq.
- * Unfortunately, at this time you can only pre-define the first parameter.
- * @example { jq : { datepicker : { showOn:'click' } } }
- *
- * @param ui-jq {string} The $elm.[pluginName]() to call.
- * @param [ui-options] {mixed} Expression to be evaluated and passed as options to the function
- *     Multiple parameters can be separated by commas
- * @param [ui-refresh] {expression} Watch expression and refire plugin on changes
- *
- * @example <input ui-jq="datepicker" ui-options="{showOn:'click'},secondParameter,thirdParameter" ui-refresh="iChange">
- */
-angular.module('ui.jq',[]).
-  value('uiJqConfig',{}).
-  directive('uiJq', ['uiJqConfig', '$timeout', function uiJqInjectingFunction(uiJqConfig, $timeout) {
-
-  return {
-    restrict: 'A',
-    compile: function uiJqCompilingFunction(tElm, tAttrs) {
-
-      if (!angular.isFunction(tElm[tAttrs.uiJq])) {
-        throw new Error('ui-jq: The "' + tAttrs.uiJq + '" function does not exist');
-      }
-      var options = uiJqConfig && uiJqConfig[tAttrs.uiJq];
-
-      return function uiJqLinkingFunction(scope, elm, attrs) {
-
-        var linkOptions = [];
-
-        // If ui-options are passed, merge (or override) them onto global defaults and pass to the jQuery method
-        if (attrs.uiOptions) {
-          linkOptions = scope.$eval('[' + attrs.uiOptions + ']');
-          if (angular.isObject(options) && angular.isObject(linkOptions[0])) {
-            linkOptions[0] = angular.extend({}, options, linkOptions[0]);
-          }
-        } else if (options) {
-          linkOptions = [options];
-        }
-        // If change compatibility is enabled, the form input's "change" event will trigger an "input" event
-        if (attrs.ngModel && elm.is('select,input,textarea')) {
-          elm.bind('change', function() {
-            elm.trigger('input');
-          });
-        }
-
-        // Call jQuery method and pass relevant options
-        function callPlugin() {
-          $timeout(function() {
-            elm[attrs.uiJq].apply(elm, linkOptions);
-          }, 0, false);
-        }
-
-        // If ui-refresh is used, re-fire the the method upon every change
-        if (attrs.uiRefresh) {
-          scope.$watch(attrs.uiRefresh, function() {
-            callPlugin();
-          });
-        }
-        callPlugin();
-      };
-    }
-  };
-}]);
-
-'use strict';
-
-angular.module('ui.keypress',[]).
-factory('keypressHelper', ['$parse', function keypress($parse){
-  var keysByCode = {
-    8: 'backspace',
-    9: 'tab',
-    13: 'enter',
-    27: 'esc',
-    32: 'space',
-    33: 'pageup',
-    34: 'pagedown',
-    35: 'end',
-    36: 'home',
-    37: 'left',
-    38: 'up',
-    39: 'right',
-    40: 'down',
-    45: 'insert',
-    46: 'delete'
-  };
-
-  var capitaliseFirstLetter = function (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  return function(mode, scope, elm, attrs) {
-    var params, combinations = [];
-    params = scope.$eval(attrs['ui'+capitaliseFirstLetter(mode)]);
-
-    // Prepare combinations for simple checking
-    angular.forEach(params, function (v, k) {
-      var combination, expression;
-      expression = $parse(v);
-
-      angular.forEach(k.split(' '), function(variation) {
-        combination = {
-          expression: expression,
-          keys: {}
-        };
-        angular.forEach(variation.split('-'), function (value) {
-          combination.keys[value] = true;
-        });
-        combinations.push(combination);
-      });
     });
 
-    // Check only matching of pressed keys one of the conditions
-    elm.bind(mode, function (event) {
-      // No need to do that inside the cycle
-      var metaPressed = !!(event.metaKey && !event.ctrlKey);
-      var altPressed = !!event.altKey;
-      var ctrlPressed = !!event.ctrlKey;
-      var shiftPressed = !!event.shiftKey;
-      var keyCode = event.keyCode;
 
-      // normalize keycodes
-      if (mode === 'keypress' && !shiftPressed && keyCode >= 97 && keyCode <= 122) {
-        keyCode = keyCode - 32;
-      }
-
-      // Iterate over prepared combinations
-      angular.forEach(combinations, function (combination) {
-
-        var mainKeyPressed = combination.keys[keysByCode[keyCode]] || combination.keys[keyCode.toString()];
-
-        var metaRequired = !!combination.keys.meta;
-        var altRequired = !!combination.keys.alt;
-        var ctrlRequired = !!combination.keys.ctrl;
-        var shiftRequired = !!combination.keys.shift;
-
-        if (
-          mainKeyPressed &&
-          ( metaRequired === metaPressed ) &&
-          ( altRequired === altPressed ) &&
-          ( ctrlRequired === ctrlPressed ) &&
-          ( shiftRequired === shiftPressed )
-        ) {
-          // Run the function
-          scope.$apply(function () {
-            combination.expression(scope, { '$event': event });
-          });
-        }
-      });
-    });
-  };
-}]);
-
-/**
- * Bind one or more handlers to particular keys or their combination
- * @param hash {mixed} keyBindings Can be an object or string where keybinding expression of keys or keys combinations and AngularJS Exspressions are set. Object syntax: "{ keys1: expression1 [, keys2: expression2 [ , ... ]]}". String syntax: ""expression1 on keys1 [ and expression2 on keys2 [ and ... ]]"". Expression is an AngularJS Expression, and key(s) are dash-separated combinations of keys and modifiers (one or many, if any. Order does not matter). Supported modifiers are 'ctrl', 'shift', 'alt' and key can be used either via its keyCode (13 for Return) or name. Named keys are 'backspace', 'tab', 'enter', 'esc', 'space', 'pageup', 'pagedown', 'end', 'home', 'left', 'up', 'right', 'down', 'insert', 'delete'.
- * @example <input ui-keypress="{enter:'x = 1', 'ctrl-shift-space':'foo()', 'shift-13':'bar()'}" /> <input ui-keypress="foo = 2 on ctrl-13 and bar('hello') on shift-esc" />
- **/
-angular.module('ui.keypress').directive('uiKeydown', ['keypressHelper', function(keypressHelper){
-  return {
-    link: function (scope, elm, attrs) {
-      keypressHelper('keydown', scope, elm, attrs);
-    }
-  };
-}]);
-
-angular.module('ui.keypress').directive('uiKeypress', ['keypressHelper', function(keypressHelper){
-  return {
-    link: function (scope, elm, attrs) {
-      keypressHelper('keypress', scope, elm, attrs);
-    }
-  };
-}]);
-
-angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function(keypressHelper){
-  return {
-    link: function (scope, elm, attrs) {
-      keypressHelper('keyup', scope, elm, attrs);
-    }
-  };
-}]);
-
-'use strict';
-
-/*
- Attaches input mask onto input element
- */
-angular.module('ui.mask', [])
-  .value('uiMaskConfig', {
-    'maskDefinitions': {
-      '9': /\d/,
-      'A': /[a-zA-Z]/,
-      '*': /[a-zA-Z0-9]/
-    }
-  })
-  .directive('uiMask', ['uiMaskConfig', function (maskConfig) {
-    return {
-      priority: 100,
-      require: 'ngModel',
-      restrict: 'A',
-      compile: function uiMaskCompilingFunction(){
-        var options = maskConfig;
-
-        return function uiMaskLinkingFunction(scope, iElement, iAttrs, controller){
-          var maskProcessed = false, eventsBound = false,
-            maskCaretMap, maskPatterns, maskPlaceholder, maskComponents,
-          // Minimum required length of the value to be considered valid
-            minRequiredLength,
-            value, valueMasked, isValid,
-          // Vars for initializing/uninitializing
-            originalPlaceholder = iAttrs.placeholder,
-            originalMaxlength = iAttrs.maxlength,
-          // Vars used exclusively in eventHandler()
-            oldValue, oldValueUnmasked, oldCaretPosition, oldSelectionLength;
-
-          function initialize(maskAttr){
-            if (!angular.isDefined(maskAttr)) {
-              return uninitialize();
-            }
-            processRawMask(maskAttr);
-            if (!maskProcessed) {
-              return uninitialize();
-            }
-            initializeElement();
-            bindEventListeners();
-            return true;
-          }
-
-          function initPlaceholder(placeholderAttr) {
-            if(! angular.isDefined(placeholderAttr)) {
-              return;
-            }
-
-            maskPlaceholder = placeholderAttr;
-
-            // If the mask is processed, then we need to update the value
-            if (maskProcessed) {
-              eventHandler();
-            }
-          }
-
-          function formatter(fromModelValue){
-            if (!maskProcessed) {
-              return fromModelValue;
-            }
-            value = unmaskValue(fromModelValue || '');
-            isValid = validateValue(value);
-            controller.$setValidity('mask', isValid);
-            return isValid && value.length ? maskValue(value) : undefined;
-          }
-
-          function parser(fromViewValue){
-            if (!maskProcessed) {
-              return fromViewValue;
-            }
-            value = unmaskValue(fromViewValue || '');
-            isValid = validateValue(value);
-            // We have to set viewValue manually as the reformatting of the input
-            // value performed by eventHandler() doesn't happen until after
-            // this parser is called, which causes what the user sees in the input
-            // to be out-of-sync with what the controller's $viewValue is set to.
-            controller.$viewValue = value.length ? maskValue(value) : '';
-            controller.$setValidity('mask', isValid);
-            if (value === '' && controller.$error.required !== undefined) {
-              controller.$setValidity('required', false);
-            }
-            return isValid ? value : undefined;
-          }
-
-          var linkOptions = {};
-
-          if (iAttrs.uiOptions) {
-            linkOptions = scope.$eval('[' + iAttrs.uiOptions + ']');
-            if (angular.isObject(linkOptions[0])) {
-              // we can't use angular.copy nor angular.extend, they lack the power to do a deep merge
-              linkOptions = (function(original, current){
-                for(var i in original) {
-                  if (Object.prototype.hasOwnProperty.call(original, i)) {
-                    if (!current[i]) {
-                      current[i] = angular.copy(original[i]);
-                    } else {
-                      angular.extend(current[i], original[i]);
-                    }
-                  }
-                }
-                return current;
-              })(options, linkOptions[0]);
-            }
-          } else {
-            linkOptions = options;
-          }
-
-          iAttrs.$observe('uiMask', initialize);
-          iAttrs.$observe('placeholder', initPlaceholder);
-          controller.$formatters.push(formatter);
-          controller.$parsers.push(parser);
-
-          function uninitialize(){
-            maskProcessed = false;
-            unbindEventListeners();
-
-            if (angular.isDefined(originalPlaceholder)) {
-              iElement.attr('placeholder', originalPlaceholder);
-            } else {
-              iElement.removeAttr('placeholder');
-            }
-
-            if (angular.isDefined(originalMaxlength)) {
-              iElement.attr('maxlength', originalMaxlength);
-            } else {
-              iElement.removeAttr('maxlength');
-            }
-
-            iElement.val(controller.$modelValue);
-            controller.$viewValue = controller.$modelValue;
-            return false;
-          }
-
-          function initializeElement(){
-            value = oldValueUnmasked = unmaskValue(controller.$modelValue || '');
-            valueMasked = oldValue = maskValue(value);
-            isValid = validateValue(value);
-            var viewValue = isValid && value.length ? valueMasked : '';
-            if (iAttrs.maxlength) { // Double maxlength to allow pasting new val at end of mask
-              iElement.attr('maxlength', maskCaretMap[maskCaretMap.length - 1] * 2);
-            }
-            iElement.attr('placeholder', maskPlaceholder);
-            iElement.val(viewValue);
-            controller.$viewValue = viewValue;
-            // Not using $setViewValue so we don't clobber the model value and dirty the form
-            // without any kind of user interaction.
-          }
-
-          function bindEventListeners(){
-            if (eventsBound) {
-              return;
-            }
-            iElement.bind('blur', blurHandler);
-            iElement.bind('mousedown mouseup', mouseDownUpHandler);
-            iElement.bind('input keyup click focus', eventHandler);
-            eventsBound = true;
-          }
-
-          function unbindEventListeners(){
-            if (!eventsBound) {
-              return;
-            }
-            iElement.unbind('blur', blurHandler);
-            iElement.unbind('mousedown', mouseDownUpHandler);
-            iElement.unbind('mouseup', mouseDownUpHandler);
-            iElement.unbind('input', eventHandler);
-            iElement.unbind('keyup', eventHandler);
-            iElement.unbind('click', eventHandler);
-            iElement.unbind('focus', eventHandler);
-            eventsBound = false;
-          }
-
-          function validateValue(value){
-            // Zero-length value validity is ngRequired's determination
-            return value.length ? value.length >= minRequiredLength : true;
-          }
-
-          function unmaskValue(value){
-            var valueUnmasked = '',
-              maskPatternsCopy = maskPatterns.slice();
-            // Preprocess by stripping mask components from value
-            value = value.toString();
-            angular.forEach(maskComponents, function (component){
-              value = value.replace(component, '');
-            });
-            angular.forEach(value.split(''), function (chr){
-              if (maskPatternsCopy.length && maskPatternsCopy[0].test(chr)) {
-                valueUnmasked += chr;
-                maskPatternsCopy.shift();
-              }
-            });
-            return valueUnmasked;
-          }
-
-          function maskValue(unmaskedValue){
-            var valueMasked = '',
-                maskCaretMapCopy = maskCaretMap.slice();
-
-            angular.forEach(maskPlaceholder.split(''), function (chr, i){
-              if (unmaskedValue.length && i === maskCaretMapCopy[0]) {
-                valueMasked  += unmaskedValue.charAt(0) || '_';
-                unmaskedValue = unmaskedValue.substr(1);
-                maskCaretMapCopy.shift();
-              }
-              else {
-                valueMasked += chr;
-              }
-            });
-            return valueMasked;
-          }
-
-          function getPlaceholderChar(i) {
-            var placeholder = iAttrs.placeholder;
-
-            if (typeof placeholder !== 'undefined' && placeholder[i]) {
-              return placeholder[i];
-            } else {
-              return '_';
-            }
-          }
-
-          // Generate array of mask components that will be stripped from a masked value
-          // before processing to prevent mask components from being added to the unmasked value.
-          // E.g., a mask pattern of '+7 9999' won't have the 7 bleed into the unmasked value.
-          // If a maskable char is followed by a mask char and has a mask
-          // char behind it, we'll split it into it's own component so if
-          // a user is aggressively deleting in the input and a char ahead
-          // of the maskable char gets deleted, we'll still be able to strip
-          // it in the unmaskValue() preprocessing.
-          function getMaskComponents() {
-            return maskPlaceholder.replace(/[_]+/g, '_').replace(/([^_]+)([a-zA-Z0-9])([^_])/g, '$1$2_$3').split('_');
-          }
-
-          function processRawMask(mask){
-            var characterCount = 0;
-
-            maskCaretMap    = [];
-            maskPatterns    = [];
-            maskPlaceholder = '';
-
-            if (typeof mask === 'string') {
-              minRequiredLength = 0;
-
-              var isOptional = false,
-                  splitMask  = mask.split('');
-
-              angular.forEach(splitMask, function (chr, i){
-                if (linkOptions.maskDefinitions[chr]) {
-
-                  maskCaretMap.push(characterCount);
-
-                  maskPlaceholder += getPlaceholderChar(i);
-                  maskPatterns.push(linkOptions.maskDefinitions[chr]);
-
-                  characterCount++;
-                  if (!isOptional) {
-                    minRequiredLength++;
-                  }
-                }
-                else if (chr === '?') {
-                  isOptional = true;
-                }
-                else {
-                  maskPlaceholder += chr;
-                  characterCount++;
-                }
-              });
-            }
-            // Caret position immediately following last position is valid.
-            maskCaretMap.push(maskCaretMap.slice().pop() + 1);
-
-            maskComponents = getMaskComponents();
-            maskProcessed  = maskCaretMap.length > 1 ? true : false;
-          }
-
-          function blurHandler(){
-            oldCaretPosition = 0;
-            oldSelectionLength = 0;
-            if (!isValid || value.length === 0) {
-              valueMasked = '';
-              iElement.val('');
-              scope.$apply(function (){
-                controller.$setViewValue('');
-              });
-            }
-          }
-
-          function mouseDownUpHandler(e){
-            if (e.type === 'mousedown') {
-              iElement.bind('mouseout', mouseoutHandler);
-            } else {
-              iElement.unbind('mouseout', mouseoutHandler);
-            }
-          }
-
-          iElement.bind('mousedown mouseup', mouseDownUpHandler);
-
-          function mouseoutHandler(){
-            /*jshint validthis: true */
-            oldSelectionLength = getSelectionLength(this);
-            iElement.unbind('mouseout', mouseoutHandler);
-          }
-
-          function eventHandler(e){
-            /*jshint validthis: true */
-            e = e || {};
-            // Allows more efficient minification
-            var eventWhich = e.which,
-              eventType = e.type;
-
-            // Prevent shift and ctrl from mucking with old values
-            if (eventWhich === 16 || eventWhich === 91) { return;}
-
-            var val = iElement.val(),
-              valOld = oldValue,
-              valMasked,
-              valUnmasked = unmaskValue(val),
-              valUnmaskedOld = oldValueUnmasked,
-              valAltered = false,
-
-              caretPos = getCaretPosition(this) || 0,
-              caretPosOld = oldCaretPosition || 0,
-              caretPosDelta = caretPos - caretPosOld,
-              caretPosMin = maskCaretMap[0],
-              caretPosMax = maskCaretMap[valUnmasked.length] || maskCaretMap.slice().shift(),
-
-              selectionLenOld = oldSelectionLength || 0,
-              isSelected = getSelectionLength(this) > 0,
-              wasSelected = selectionLenOld > 0,
-
-            // Case: Typing a character to overwrite a selection
-              isAddition = (val.length > valOld.length) || (selectionLenOld && val.length > valOld.length - selectionLenOld),
-            // Case: Delete and backspace behave identically on a selection
-              isDeletion = (val.length < valOld.length) || (selectionLenOld && val.length === valOld.length - selectionLenOld),
-              isSelection = (eventWhich >= 37 && eventWhich <= 40) && e.shiftKey, // Arrow key codes
-
-              isKeyLeftArrow = eventWhich === 37,
-            // Necessary due to "input" event not providing a key code
-              isKeyBackspace = eventWhich === 8 || (eventType !== 'keyup' && isDeletion && (caretPosDelta === -1)),
-              isKeyDelete = eventWhich === 46 || (eventType !== 'keyup' && isDeletion && (caretPosDelta === 0 ) && !wasSelected),
-
-            // Handles cases where caret is moved and placed in front of invalid maskCaretMap position. Logic below
-            // ensures that, on click or leftward caret placement, caret is moved leftward until directly right of
-            // non-mask character. Also applied to click since users are (arguably) more likely to backspace
-            // a character when clicking within a filled input.
-              caretBumpBack = (isKeyLeftArrow || isKeyBackspace || eventType === 'click') && caretPos > caretPosMin;
-
-            oldSelectionLength = getSelectionLength(this);
-
-            // These events don't require any action
-            if (isSelection || (isSelected && (eventType === 'click' || eventType === 'keyup'))) {
-              return;
-            }
-
-            // Value Handling
-            // ==============
-
-            // User attempted to delete but raw value was unaffected--correct this grievous offense
-            if ((eventType === 'input') && isDeletion && !wasSelected && valUnmasked === valUnmaskedOld) {
-              while (isKeyBackspace && caretPos > caretPosMin && !isValidCaretPosition(caretPos)) {
-                caretPos--;
-              }
-              while (isKeyDelete && caretPos < caretPosMax && maskCaretMap.indexOf(caretPos) === -1) {
-                caretPos++;
-              }
-              var charIndex = maskCaretMap.indexOf(caretPos);
-              // Strip out non-mask character that user would have deleted if mask hadn't been in the way.
-              valUnmasked = valUnmasked.substring(0, charIndex) + valUnmasked.substring(charIndex + 1);
-              valAltered = true;
-            }
-
-            // Update values
-            valMasked = maskValue(valUnmasked);
-
-            oldValue = valMasked;
-            oldValueUnmasked = valUnmasked;
-            iElement.val(valMasked);
-            if (valAltered) {
-              // We've altered the raw value after it's been $digest'ed, we need to $apply the new value.
-              scope.$apply(function (){
-                controller.$setViewValue(valUnmasked);
-              });
-            }
-
-            // Caret Repositioning
-            // ===================
-
-            // Ensure that typing always places caret ahead of typed character in cases where the first char of
-            // the input is a mask char and the caret is placed at the 0 position.
-            if (isAddition && (caretPos <= caretPosMin)) {
-              caretPos = caretPosMin + 1;
-            }
-
-            if (caretBumpBack) {
-              caretPos--;
-            }
-
-            // Make sure caret is within min and max position limits
-            caretPos = caretPos > caretPosMax ? caretPosMax : caretPos < caretPosMin ? caretPosMin : caretPos;
-
-            // Scoot the caret back or forth until it's in a non-mask position and within min/max position limits
-            while (!isValidCaretPosition(caretPos) && caretPos > caretPosMin && caretPos < caretPosMax) {
-              caretPos += caretBumpBack ? -1 : 1;
-            }
-
-            if ((caretBumpBack && caretPos < caretPosMax) || (isAddition && !isValidCaretPosition(caretPosOld))) {
-              caretPos++;
-            }
-            oldCaretPosition = caretPos;
-            setCaretPosition(this, caretPos);
-          }
-
-          function isValidCaretPosition(pos){ return maskCaretMap.indexOf(pos) > -1; }
-
-          function getCaretPosition(input){
-            if (!input) return 0;
-            if (input.selectionStart !== undefined) {
-              return input.selectionStart;
-            } else if (document.selection) {
-              // Curse you IE
-              input.focus();
-              var selection = document.selection.createRange();
-              selection.moveStart('character', -input.value.length);
-              return selection.text.length;
-            }
-            return 0;
-          }
-
-          function setCaretPosition(input, pos){
-            if (!input) return 0;
-            if (input.offsetWidth === 0 || input.offsetHeight === 0) {
-              return; // Input's hidden
-            }
-            if (input.setSelectionRange) {
-              input.focus();
-              input.setSelectionRange(pos, pos);
-            }
-            else if (input.createTextRange) {
-              // Curse you IE
-              var range = input.createTextRange();
-              range.collapse(true);
-              range.moveEnd('character', pos);
-              range.moveStart('character', pos);
-              range.select();
-            }
-          }
-
-          function getSelectionLength(input){
-            if (!input) return 0;
-            if (input.selectionStart !== undefined) {
-              return (input.selectionEnd - input.selectionStart);
-            }
-            if (document.selection) {
-              return (document.selection.createRange().text.length);
-            }
-            return 0;
-          }
-
-          // https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
-          if (!Array.prototype.indexOf) {
-            Array.prototype.indexOf = function (searchElement /*, fromIndex */){
-              if (this === null) {
-                throw new TypeError();
-              }
-              var t = Object(this);
-              var len = t.length >>> 0;
-              if (len === 0) {
-                return -1;
-              }
-              var n = 0;
-              if (arguments.length > 1) {
-                n = Number(arguments[1]);
-                if (n !== n) { // shortcut for verifying if it's NaN
-                  n = 0;
-                } else if (n !== 0 && n !== Infinity && n !== -Infinity) {
-                  n = (n > 0 || -1) * Math.floor(Math.abs(n));
-                }
-              }
-              if (n >= len) {
-                return -1;
-              }
-              var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-              for (; k < len; k++) {
-                if (k in t && t[k] === searchElement) {
-                  return k;
-                }
-              }
-              return -1;
-            };
-          }
-
-        };
-      }
+    // Override the ngModelController $render method, which is what gets called when the model is updated.
+    // This takes care of the synchronizing the codeMirror element with the underlying model, in the case that it is changed by something else.
+    ngModel.$render = function() {
+      //Code mirror expects a string so make sure it gets one
+      //Although the formatter have already done this, it can be possible that another formatter returns undefined (for example the required directive)
+      var safeViewValue = ngModel.$viewValue || '';
+      codemirror.setValue(safeViewValue);
     };
-  }
-]);
 
-'use strict';
 
-/**
- * Add a clear button to form inputs to reset their value
- */
-angular.module('ui.reset',[]).value('uiResetConfig',null).directive('uiReset', ['uiResetConfig', function (uiResetConfig) {
-  var resetValue = null;
-  if (uiResetConfig !== undefined){
-      resetValue = uiResetConfig;
-  }
-  return {
-    require: 'ngModel',
-    link: function (scope, elm, attrs, ctrl) {
-      var aElement;
-      aElement = angular.element('<a class="ui-reset" />');
-      elm.wrap('<span class="ui-resetwrap" />').after(aElement);
-      aElement.bind('click', function (e) {
-        e.preventDefault();
-        scope.$apply(function () {
-          if (attrs.uiReset){
-            ctrl.$setViewValue(scope.$eval(attrs.uiReset));
-          }else{
-            ctrl.$setViewValue(resetValue);
-          }
-          ctrl.$render();
+    // Keep the ngModel in sync with changes from CodeMirror
+    codemirror.on('change', function(instance) {
+      var newValue = instance.getValue();
+      if (newValue !== ngModel.$viewValue) {
+        scope.$evalAsync(function() {
+          ngModel.$setViewValue(newValue);
         });
-      });
-    }
-  };
-}]);
-
-'use strict';
-
-/**
- * Set a $uiRoute boolean to see if the current route matches
- */
-angular.module('ui.route', []).directive('uiRoute', ['$location', '$parse', function ($location, $parse) {
-  return {
-    restrict: 'AC',
-    scope: true,
-    compile: function(tElement, tAttrs) {
-      var useProperty;
-      if (tAttrs.uiRoute) {
-        useProperty = 'uiRoute';
-      } else if (tAttrs.ngHref) {
-        useProperty = 'ngHref';
-      } else if (tAttrs.href) {
-        useProperty = 'href';
-      } else {
-        throw new Error('uiRoute missing a route or href property on ' + tElement[0]);
-      }
-      return function ($scope, elm, attrs) {
-        var modelSetter = $parse(attrs.ngModel || attrs.routeModel || '$uiRoute').assign;
-        var watcher = angular.noop;
-
-        // Used by href and ngHref
-        function staticWatcher(newVal) {
-          var hash = newVal.indexOf('#');
-          if (hash > -1){
-            newVal = newVal.substr(hash + 1);
-          }
-          watcher = function watchHref() {
-            modelSetter($scope, ($location.path().indexOf(newVal) > -1));
-          };
-          watcher();
-        }
-        // Used by uiRoute
-        function regexWatcher(newVal) {
-          var hash = newVal.indexOf('#');
-          if (hash > -1){
-            newVal = newVal.substr(hash + 1);
-          }
-          watcher = function watchRegex() {
-            var regexp = new RegExp('^' + newVal + '$', ['i']);
-            modelSetter($scope, regexp.test($location.path()));
-          };
-          watcher();
-        }
-
-        switch (useProperty) {
-          case 'uiRoute':
-            // if uiRoute={{}} this will be undefined, otherwise it will have a value and $observe() never gets triggered
-            if (attrs.uiRoute){
-              regexWatcher(attrs.uiRoute);
-            }else{
-              attrs.$observe('uiRoute', regexWatcher);
-            }
-            break;
-          case 'ngHref':
-            // Setup watcher() every time ngHref changes
-            if (attrs.ngHref){
-              staticWatcher(attrs.ngHref);
-            }else{
-              attrs.$observe('ngHref', staticWatcher);
-            }
-            break;
-          case 'href':
-            // Setup watcher()
-            staticWatcher(attrs.href);
-        }
-
-        $scope.$on('$routeChangeSuccess', function(){
-          watcher();
-        });
-
-        //Added for compatibility with ui-router
-        $scope.$on('$stateChangeSuccess', function(){
-          watcher();
-        });
-      };
-    }
-  };
-}]);
-
-'use strict';
-
-angular.module('ui.scroll.jqlite', ['ui.scroll']).service('jqLiteExtras', [
-  '$log', '$window', function(console, window) {
-    return {
-      registerFor: function(element) {
-        var convertToPx, css, getMeasurements, getStyle, getWidthHeight, isWindow, scrollTo;
-        css = angular.element.prototype.css;
-        element.prototype.css = function(name, value) {
-          var elem, self;
-          self = this;
-          elem = self[0];
-          if (!(!elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style)) {
-            return css.call(self, name, value);
-          }
-        };
-        isWindow = function(obj) {
-          return obj && obj.document && obj.location && obj.alert && obj.setInterval;
-        };
-        scrollTo = function(self, direction, value) {
-          var elem, method, preserve, prop, _ref;
-          elem = self[0];
-          _ref = {
-            top: ['scrollTop', 'pageYOffset', 'scrollLeft'],
-            left: ['scrollLeft', 'pageXOffset', 'scrollTop']
-          }[direction], method = _ref[0], prop = _ref[1], preserve = _ref[2];
-          if (isWindow(elem)) {
-            if (angular.isDefined(value)) {
-              return elem.scrollTo(self[preserve].call(self), value);
-            } else {
-              if (prop in elem) {
-                return elem[prop];
-              } else {
-                return elem.document.documentElement[method];
-              }
-            }
-          } else {
-            if (angular.isDefined(value)) {
-              return elem[method] = value;
-            } else {
-              return elem[method];
-            }
-          }
-        };
-        if (window.getComputedStyle) {
-          getStyle = function(elem) {
-            return window.getComputedStyle(elem, null);
-          };
-          convertToPx = function(elem, value) {
-            return parseFloat(value);
-          };
-        } else {
-          getStyle = function(elem) {
-            return elem.currentStyle;
-          };
-          convertToPx = function(elem, value) {
-            var core_pnum, left, result, rnumnonpx, rs, rsLeft, style;
-            core_pnum = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source;
-            rnumnonpx = new RegExp('^(' + core_pnum + ')(?!px)[a-z%]+$', 'i');
-            if (!rnumnonpx.test(value)) {
-              return parseFloat(value);
-            } else {
-              style = elem.style;
-              left = style.left;
-              rs = elem.runtimeStyle;
-              rsLeft = rs && rs.left;
-              if (rs) {
-                rs.left = style.left;
-              }
-              style.left = value;
-              result = style.pixelLeft;
-              style.left = left;
-              if (rsLeft) {
-                rs.left = rsLeft;
-              }
-              return result;
-            }
-          };
-        }
-        getMeasurements = function(elem, measure) {
-          var base, borderA, borderB, computedMarginA, computedMarginB, computedStyle, dirA, dirB, marginA, marginB, paddingA, paddingB, _ref;
-          if (isWindow(elem)) {
-            base = document.documentElement[{
-              height: 'clientHeight',
-              width: 'clientWidth'
-            }[measure]];
-            return {
-              base: base,
-              padding: 0,
-              border: 0,
-              margin: 0
-            };
-          }
-          _ref = {
-            width: [elem.offsetWidth, 'Left', 'Right'],
-            height: [elem.offsetHeight, 'Top', 'Bottom']
-          }[measure], base = _ref[0], dirA = _ref[1], dirB = _ref[2];
-          computedStyle = getStyle(elem);
-          paddingA = convertToPx(elem, computedStyle['padding' + dirA]) || 0;
-          paddingB = convertToPx(elem, computedStyle['padding' + dirB]) || 0;
-          borderA = convertToPx(elem, computedStyle['border' + dirA + 'Width']) || 0;
-          borderB = convertToPx(elem, computedStyle['border' + dirB + 'Width']) || 0;
-          computedMarginA = computedStyle['margin' + dirA];
-          computedMarginB = computedStyle['margin' + dirB];
-          marginA = convertToPx(elem, computedMarginA) || 0;
-          marginB = convertToPx(elem, computedMarginB) || 0;
-          return {
-            base: base,
-            padding: paddingA + paddingB,
-            border: borderA + borderB,
-            margin: marginA + marginB
-          };
-        };
-        getWidthHeight = function(elem, direction, measure) {
-          var computedStyle, measurements, result;
-          measurements = getMeasurements(elem, direction);
-          if (measurements.base > 0) {
-            return {
-              base: measurements.base - measurements.padding - measurements.border,
-              outer: measurements.base,
-              outerfull: measurements.base + measurements.margin
-            }[measure];
-          } else {
-            computedStyle = getStyle(elem);
-            result = computedStyle[direction];
-            if (result < 0 || result === null) {
-              result = elem.style[direction] || 0;
-            }
-            result = parseFloat(result) || 0;
-            return {
-              base: result - measurements.padding - measurements.border,
-              outer: result,
-              outerfull: result + measurements.padding + measurements.border + measurements.margin
-            }[measure];
-          }
-        };
-        return angular.forEach({
-          before: function(newElem) {
-            var children, elem, i, parent, self, _i, _ref;
-            self = this;
-            elem = self[0];
-            parent = self.parent();
-            children = parent.contents();
-            if (children[0] === elem) {
-              return parent.prepend(newElem);
-            } else {
-              for (i = _i = 1, _ref = children.length - 1; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
-                if (children[i] === elem) {
-                  angular.element(children[i - 1]).after(newElem);
-                  return;
-                }
-              }
-              throw new Error('invalid DOM structure ' + elem.outerHTML);
-            }
-          },
-          height: function(value) {
-            var self;
-            self = this;
-            if (angular.isDefined(value)) {
-              if (angular.isNumber(value)) {
-                value = value + 'px';
-              }
-              return css.call(self, 'height', value);
-            } else {
-              return getWidthHeight(this[0], 'height', 'base');
-            }
-          },
-          outerHeight: function(option) {
-            return getWidthHeight(this[0], 'height', option ? 'outerfull' : 'outer');
-          },
-          offset: function(value) {
-            var box, doc, docElem, elem, self, win;
-            self = this;
-            if (arguments.length) {
-              if (value === void 0) {
-                return self;
-              } else {
-                return value;
-
-              }
-            }
-            box = {
-              top: 0,
-              left: 0
-            };
-            elem = self[0];
-            doc = elem && elem.ownerDocument;
-            if (!doc) {
-              return;
-            }
-            docElem = doc.documentElement;
-            if (elem.getBoundingClientRect) {
-              box = elem.getBoundingClientRect();
-            }
-            win = doc.defaultView || doc.parentWindow;
-            return {
-              top: box.top + (win.pageYOffset || docElem.scrollTop) - (docElem.clientTop || 0),
-              left: box.left + (win.pageXOffset || docElem.scrollLeft) - (docElem.clientLeft || 0)
-            };
-          },
-          scrollTop: function(value) {
-            return scrollTo(this, 'top', value);
-          },
-          scrollLeft: function(value) {
-            return scrollTo(this, 'left', value);
-          }
-        }, function(value, key) {
-          if (!element.prototype[key]) {
-            return element.prototype[key] = value;
-          }
-        });
-      }
-    };
-  }
-]).run([
-  '$log', '$window', 'jqLiteExtras', function(console, window, jqLiteExtras) {
-    if (!window.jQuery) {
-      return jqLiteExtras.registerFor(angular.element);
-    }
-  }
-]);
-
-'use strict';
-/*
-
- List of used element methods available in JQuery but not in JQuery Lite
-
- element.before(elem)
- element.height()
- element.outerHeight(true)
- element.height(value) = only for Top/Bottom padding elements
- element.scrollTop()
- element.scrollTop(value)
- */
-
-angular.module('ui.scroll', []).directive('ngScrollViewport', [
-		'$log', function() {
-			return {
-				controller: [
-					'$scope', '$element', function(scope, element) {
-						return element;
-					}
-				]
-			};
-		}
-	]).directive('ngScroll', [
-		'$log', '$injector', '$rootScope', '$timeout', function(console, $injector, $rootScope, $timeout) {
-			return {
-				require: ['?^ngScrollViewport'],
-				transclude: 'element',
-				priority: 1000,
-				terminal: true,
-				compile: function(element, attr, linker) {
-					return function($scope, $element, $attr, controllers) {
-						var adapter, adjustBuffer, adjustRowHeight, bof, bottomVisiblePos, buffer, bufferPadding, bufferSize, clipBottom, clipTop, datasource, datasourceName, enqueueFetch, eof, eventListener, fetch, finalize, first, insert, isDatasource, isLoading, itemName, loading, match, next, pending, reload, removeFromBuffer, resizeHandler, scrollHandler, scrollHeight, shouldLoadBottom, shouldLoadTop, tempScope, topVisiblePos, viewport;
-						match = $attr.ngScroll.match(/^\s*(\w+)\s+in\s+(\w+)\s*$/);
-						if (!match) {
-							throw new Error('Expected ngScroll in form of "item_ in _datasource_" but got "' + $attr.ngScroll + '"');
-						}
-						itemName = match[1];
-						datasourceName = match[2];
-						isDatasource = function(datasource) {
-							return angular.isObject(datasource) && datasource.get && angular.isFunction(datasource.get);
-						};
-						datasource = $scope[datasourceName];
-						if (!isDatasource(datasource)) {
-							datasource = $injector.get(datasourceName);
-							if (!isDatasource(datasource)) {
-								throw new Error(datasourceName + ' is not a valid datasource');
-							}
-						}
-						bufferSize = Math.max(3, +$attr.bufferSize || 10);
-						bufferPadding = function() {
-							return viewport.height() * Math.max(0.1, +$attr.padding || 0.1);
-						};
-						scrollHeight = function(elem) {
-							return elem[0].scrollHeight || elem[0].document.documentElement.scrollHeight;
-						};
-						adapter = null;
-						linker(tempScope = $scope.$new(), function(template) {
-							var bottomPadding, createPadding, padding, repeaterType, topPadding, viewport;
-							repeaterType = template[0].localName;
-							if (repeaterType === 'dl') {
-								throw new Error('ng-scroll directive does not support <' + template[0].localName + '> as a repeating tag: ' + template[0].outerHTML);
-							}
-							if (repeaterType !== 'li' && repeaterType !== 'tr') {
-								repeaterType = 'div';
-							}
-							viewport = controllers[0] || angular.element(window);
-							viewport.css({
-								'overflow-y': 'auto',
-								'display': 'block'
-							});
-							padding = function(repeaterType) {
-								var div, result, table;
-								switch (repeaterType) {
-									case 'tr':
-										table = angular.element('<table><tr><td><div></div></td></tr></table>');
-										div = table.find('div');
-										result = table.find('tr');
-										result.paddingHeight = function() {
-											return div.height.apply(div, arguments);
-										};
-										return result;
-									default:
-										result = angular.element('<' + repeaterType + '></' + repeaterType + '>');
-										result.paddingHeight = result.height;
-										return result;
-								}
-							};
-							createPadding = function(padding, element, direction) {
-								element[{
-									top: 'before',
-									bottom: 'after'
-								}[direction]](padding);
-								return {
-									paddingHeight: function() {
-										return padding.paddingHeight.apply(padding, arguments);
-									},
-									insert: function(element) {
-										return padding[{
-											top: 'after',
-											bottom: 'before'
-										}[direction]](element);
-									}
-								};
-							};
-							topPadding = createPadding(padding(repeaterType), element, 'top');
-							bottomPadding = createPadding(padding(repeaterType), element, 'bottom');
-							tempScope.$destroy();
-							return adapter = {
-								viewport: viewport,
-								topPadding: topPadding.paddingHeight,
-								bottomPadding: bottomPadding.paddingHeight,
-								append: bottomPadding.insert,
-								prepend: topPadding.insert,
-								bottomDataPos: function() {
-									return scrollHeight(viewport) - bottomPadding.paddingHeight();
-								},
-								topDataPos: function() {
-									return topPadding.paddingHeight();
-								}
-							};
-						});
-						viewport = adapter.viewport;
-						first = 1;
-						next = 1;
-						buffer = [];
-						pending = [];
-						eof = false;
-						bof = false;
-						loading = datasource.loading || function() {};
-						isLoading = false;
-						removeFromBuffer = function(start, stop) {
-							var i, _i;
-							for (i = _i = start; start <= stop ? _i < stop : _i > stop; i = start <= stop ? ++_i : --_i) {
-								buffer[i].scope.$destroy();
-								buffer[i].element.remove();
-							}
-							return buffer.splice(start, stop - start);
-						};
-						reload = function() {
-							first = 1;
-							next = 1;
-							removeFromBuffer(0, buffer.length);
-							adapter.topPadding(0);
-							adapter.bottomPadding(0);
-							pending = [];
-							eof = false;
-							bof = false;
-							return adjustBuffer(false);
-						};
-						bottomVisiblePos = function() {
-							return viewport.scrollTop() + viewport.height();
-						};
-						topVisiblePos = function() {
-							return viewport.scrollTop();
-						};
-						shouldLoadBottom = function() {
-							return !eof && adapter.bottomDataPos() < bottomVisiblePos() + bufferPadding();
-						};
-						clipBottom = function() {
-							var bottomHeight, i, itemHeight, overage, _i, _ref;
-							bottomHeight = 0;
-							overage = 0;
-							for (i = _i = _ref = buffer.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
-								itemHeight = buffer[i].element.outerHeight(true);
-								if (adapter.bottomDataPos() - bottomHeight - itemHeight > bottomVisiblePos() + bufferPadding()) {
-									bottomHeight += itemHeight;
-									overage++;
-									eof = false;
-								} else {
-									break;
-								}
-							}
-							if (overage > 0) {
-								adapter.bottomPadding(adapter.bottomPadding() + bottomHeight);
-								removeFromBuffer(buffer.length - overage, buffer.length);
-								next -= overage;
-								return console.log('clipped off bottom ' + overage + ' bottom padding ' + (adapter.bottomPadding()));
-							}
-						};
-						shouldLoadTop = function() {
-							return !bof && (adapter.topDataPos() > topVisiblePos() - bufferPadding());
-						};
-						clipTop = function() {
-							var item, itemHeight, overage, topHeight, _i, _len;
-							topHeight = 0;
-							overage = 0;
-							for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-								item = buffer[_i];
-								itemHeight = item.element.outerHeight(true);
-								if (adapter.topDataPos() + topHeight + itemHeight < topVisiblePos() - bufferPadding()) {
-									topHeight += itemHeight;
-									overage++;
-									bof = false;
-								} else {
-									break;
-								}
-							}
-							if (overage > 0) {
-								adapter.topPadding(adapter.topPadding() + topHeight);
-								removeFromBuffer(0, overage);
-								first += overage;
-								return console.log('clipped off top ' + overage + ' top padding ' + (adapter.topPadding()));
-							}
-						};
-						enqueueFetch = function(direction, scrolling) {
-							if (!isLoading) {
-								isLoading = true;
-								loading(true);
-							}
-							if (pending.push(direction) === 1) {
-								return fetch(scrolling);
-							}
-						};
-						insert = function(index, item) {
-							var itemScope, toBeAppended, wrapper;
-							itemScope = $scope.$new();
-							itemScope[itemName] = item;
-							toBeAppended = index > first;
-							itemScope.$index = index;
-							if (toBeAppended) {
-								itemScope.$index--;
-							}
-							wrapper = {
-								scope: itemScope
-							};
-							linker(itemScope, function(clone) {
-								wrapper.element = clone;
-								if (toBeAppended) {
-									if (index === next) {
-										adapter.append(clone);
-										return buffer.push(wrapper);
-									} else {
-										buffer[index - first].element.after(clone);
-										return buffer.splice(index - first + 1, 0, wrapper);
-									}
-								} else {
-									adapter.prepend(clone);
-									return buffer.unshift(wrapper);
-								}
-							});
-							return {
-								appended: toBeAppended,
-								wrapper: wrapper
-							};
-						};
-						adjustRowHeight = function(appended, wrapper) {
-							var newHeight;
-							if (appended) {
-								return adapter.bottomPadding(Math.max(0, adapter.bottomPadding() - wrapper.element.outerHeight(true)));
-							} else {
-								newHeight = adapter.topPadding() - wrapper.element.outerHeight(true);
-								if (newHeight >= 0) {
-									return adapter.topPadding(newHeight);
-								} else {
-									return viewport.scrollTop(viewport.scrollTop() + wrapper.element.outerHeight(true));
-								}
-							}
-						};
-						adjustBuffer = function(scrolling, newItems, finalize) {
-							var doAdjustment;
-							doAdjustment = function() {
-								console.log('top {actual=' + (adapter.topDataPos()) + ' visible from=' + (topVisiblePos()) + ' bottom {visible through=' + (bottomVisiblePos()) + ' actual=' + (adapter.bottomDataPos()) + '}');
-								if (shouldLoadBottom()) {
-									enqueueFetch(true, scrolling);
-								} else {
-									if (shouldLoadTop()) {
-										enqueueFetch(false, scrolling);
-									}
-								}
-								if (finalize) {
-									return finalize();
-								}
-							};
-							if (newItems) {
-								return $timeout(function() {
-									var row, _i, _len;
-									for (_i = 0, _len = newItems.length; _i < _len; _i++) {
-										row = newItems[_i];
-										adjustRowHeight(row.appended, row.wrapper);
-									}
-									return doAdjustment();
-								});
-							} else {
-								return doAdjustment();
-							}
-						};
-						finalize = function(scrolling, newItems) {
-							return adjustBuffer(scrolling, newItems, function() {
-								pending.shift();
-								if (pending.length === 0) {
-									isLoading = false;
-									return loading(false);
-								} else {
-									return fetch(scrolling);
-								}
-							});
-						};
-						fetch = function(scrolling) {
-							var direction;
-							direction = pending[0];
-							if (direction) {
-								if (buffer.length && !shouldLoadBottom()) {
-									return finalize(scrolling);
-								} else {
-									return datasource.get(next, bufferSize, function(result) {
-										var item, newItems, _i, _len;
-										newItems = [];
-										if (result.length === 0) {
-											eof = true;
-											adapter.bottomPadding(0);
-											console.log('appended: requested ' + bufferSize + ' records starting from ' + next + ' recieved: eof');
-										} else {
-											clipTop();
-											for (_i = 0, _len = result.length; _i < _len; _i++) {
-												item = result[_i];
-												newItems.push(insert(++next, item));
-											}
-											console.log('appended: requested ' + bufferSize + ' received ' + result.length + ' buffer size ' + buffer.length + ' first ' + first + ' next ' + next);
-										}
-										return finalize(scrolling, newItems);
-									});
-								}
-							} else {
-								if (buffer.length && !shouldLoadTop()) {
-									return finalize(scrolling);
-								} else {
-									return datasource.get(first - bufferSize, bufferSize, function(result) {
-										var i, newItems, _i, _ref;
-										newItems = [];
-										if (result.length === 0) {
-											bof = true;
-											adapter.topPadding(0);
-											console.log('prepended: requested ' + bufferSize + ' records starting from ' + (first - bufferSize) + ' recieved: bof');
-										} else {
-											clipBottom();
-											for (i = _i = _ref = result.length - 1; _ref <= 0 ? _i <= 0 : _i >= 0; i = _ref <= 0 ? ++_i : --_i) {
-												newItems.unshift(insert(--first, result[i]));
-											}
-											console.log('prepended: requested ' + bufferSize + ' received ' + result.length + ' buffer size ' + buffer.length + ' first ' + first + ' next ' + next);
-										}
-										return finalize(scrolling, newItems);
-									});
-								}
-							}
-						};
-						resizeHandler = function() {
-							if (!$rootScope.$$phase && !isLoading) {
-								adjustBuffer(false);
-								return $scope.$apply();
-							}
-						};
-						viewport.bind('resize', resizeHandler);
-						scrollHandler = function() {
-							if (!$rootScope.$$phase && !isLoading) {
-								adjustBuffer(true);
-								return $scope.$apply();
-							}
-						};
-						viewport.bind('scroll', scrollHandler);
-						$scope.$watch(datasource.revision, function() {
-							return reload();
-						});
-						if (datasource.scope) {
-							eventListener = datasource.scope.$new();
-						} else {
-							eventListener = $scope.$new();
-						}
-						$scope.$on('$destroy', function() {
-							eventListener.$destroy();
-							viewport.unbind('resize', resizeHandler);
-							return viewport.unbind('scroll', scrollHandler);
-						});
-						eventListener.$on('update.items', function(event, locator, newItem) {
-							var wrapper, _fn, _i, _len, _ref;
-							if (angular.isFunction(locator)) {
-								_fn = function(wrapper) {
-									return locator(wrapper.scope);
-								};
-								for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-									wrapper = buffer[_i];
-									_fn(wrapper);
-								}
-							} else {
-								if ((0 <= (_ref = locator - first - 1) && _ref < buffer.length)) {
-									buffer[locator - first - 1].scope[itemName] = newItem;
-								}
-							}
-							return null;
-						});
-						eventListener.$on('delete.items', function(event, locator) {
-							var i, item, temp, wrapper, _fn, _i, _j, _k, _len, _len1, _len2, _ref;
-							if (angular.isFunction(locator)) {
-								temp = [];
-								for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-									item = buffer[_i];
-									temp.unshift(item);
-								}
-								_fn = function(wrapper) {
-									if (locator(wrapper.scope)) {
-										removeFromBuffer(temp.length - 1 - i, temp.length - i);
-										return next--;
-									}
-								};
-								for (i = _j = 0, _len1 = temp.length; _j < _len1; i = ++_j) {
-									wrapper = temp[i];
-									_fn(wrapper);
-								}
-							} else {
-								if ((0 <= (_ref = locator - first - 1) && _ref < buffer.length)) {
-									removeFromBuffer(locator - first - 1, locator - first);
-									next--;
-								}
-							}
-							for (i = _k = 0, _len2 = buffer.length; _k < _len2; i = ++_k) {
-								item = buffer[i];
-								item.scope.$index = first + i;
-							}
-							return adjustBuffer(false);
-						});
-						return eventListener.$on('insert.item', function(event, locator, item) {
-							var i, inserted, temp, wrapper, _fn, _i, _j, _k, _len, _len1, _len2, _ref;
-							inserted = [];
-							if (angular.isFunction(locator)) {
-								temp = [];
-								for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-									item = buffer[_i];
-									temp.unshift(item);
-								}
-								_fn = function(wrapper) {
-									var j, newItems, _k, _len2, _results;
-									if (newItems = locator(wrapper.scope)) {
-										insert = function(index, newItem) {
-											insert(index, newItem);
-											return next++;
-										};
-										if (angular.isArray(newItems)) {
-											_results = [];
-											for (j = _k = 0, _len2 = newItems.length; _k < _len2; j = ++_k) {
-												item = newItems[j];
-												_results.push(inserted.push(insert(i + j, item)));
-											}
-											return _results;
-										} else {
-											return inserted.push(insert(i, newItems));
-										}
-									}
-								};
-								for (i = _j = 0, _len1 = temp.length; _j < _len1; i = ++_j) {
-									wrapper = temp[i];
-									_fn(wrapper);
-								}
-							} else {
-								if ((0 <= (_ref = locator - first - 1) && _ref < buffer.length)) {
-									inserted.push(insert(locator, item));
-									next++;
-								}
-							}
-							for (i = _k = 0, _len2 = buffer.length; _k < _len2; i = ++_k) {
-								item = buffer[i];
-								item.scope.$index = first + i;
-							}
-							return adjustBuffer(false, inserted);
-						});
-					};
-				}
-			};
-		}
-	]);
-
-'use strict';
-
-/**
- * Adds a 'ui-scrollfix' class to the element when the page scrolls past it's position.
- * @param [offset] {int} optional Y-offset to override the detected offset.
- *   Takes 300 (absolute) or -300 or +300 (relative to detected)
- */
-angular.module('ui.scrollfix',[]).directive('uiScrollfix', ['$window', function ($window) {
-  return {
-    require: '^?uiScrollfixTarget',
-    link: function (scope, elm, attrs, uiScrollfixTarget) {
-      var top = elm[0].offsetTop,
-          $target = uiScrollfixTarget && uiScrollfixTarget.$element || angular.element($window);
-
-      if (!attrs.uiScrollfix) {
-        attrs.uiScrollfix = top;
-      } else if (typeof(attrs.uiScrollfix) === 'string') {
-        // charAt is generally faster than indexOf: http://jsperf.com/indexof-vs-charat
-        if (attrs.uiScrollfix.charAt(0) === '-') {
-          attrs.uiScrollfix = top - parseFloat(attrs.uiScrollfix.substr(1));
-        } else if (attrs.uiScrollfix.charAt(0) === '+') {
-          attrs.uiScrollfix = top + parseFloat(attrs.uiScrollfix.substr(1));
-        }
-      }
-
-      function onScroll() {
-        // if pageYOffset is defined use it, otherwise use other crap for IE
-        var offset;
-        if (angular.isDefined($window.pageYOffset)) {
-          offset = $window.pageYOffset;
-        } else {
-          var iebody = (document.compatMode && document.compatMode !== 'BackCompat') ? document.documentElement : document.body;
-          offset = iebody.scrollTop;
-        }
-        if (!elm.hasClass('ui-scrollfix') && offset > attrs.uiScrollfix) {
-          elm.addClass('ui-scrollfix');
-        } else if (elm.hasClass('ui-scrollfix') && offset < attrs.uiScrollfix) {
-          elm.removeClass('ui-scrollfix');
-        }
-      }
-
-      $target.on('scroll', onScroll);
-
-      // Unbind scroll event handler when directive is removed
-      scope.$on('$destroy', function() {
-        $target.off('scroll', onScroll);
-      });
-    }
-  };
-}]).directive('uiScrollfixTarget', [function () {
-  return {
-    controller: ['$element', function($element) {
-      this.$element = $element;
-    }]
-  };
-}]);
-
-'use strict';
-
-/**
- * uiShow Directive
- *
- * Adds a 'ui-show' class to the element instead of display:block
- * Created to allow tighter control  of CSS without bulkier directives
- *
- * @param expression {boolean} evaluated expression to determine if the class should be added
- */
-angular.module('ui.showhide',[])
-.directive('uiShow', [function () {
-  return function (scope, elm, attrs) {
-    scope.$watch(attrs.uiShow, function (newVal) {
-      if (newVal) {
-        elm.addClass('ui-show');
-      } else {
-        elm.removeClass('ui-show');
       }
     });
-  };
-}])
+  }
 
-/**
- * uiHide Directive
- *
- * Adds a 'ui-hide' class to the element instead of display:block
- * Created to allow tighter control  of CSS without bulkier directives
- *
- * @param expression {boolean} evaluated expression to determine if the class should be added
- */
-.directive('uiHide', [function () {
-  return function (scope, elm, attrs) {
-    scope.$watch(attrs.uiHide, function (newVal) {
-      if (newVal) {
-        elm.addClass('ui-hide');
-      } else {
-        elm.removeClass('ui-hide');
+  function configUiRefreshAttribute(codeMirror, uiRefreshAttr, scope) {
+    if (!uiRefreshAttr) { return; }
+
+    scope.$watch(uiRefreshAttr, function(newVal, oldVal) {
+      // Skip the initial watch firing
+      if (newVal !== oldVal) {
+        $timeout(function() {
+          codeMirror.refresh();
+        });
       }
     });
-  };
-}])
+  }
 
-/**
- * uiToggle Directive
- *
- * Adds a class 'ui-show' if true, and a 'ui-hide' if false to the element instead of display:block/display:none
- * Created to allow tighter control  of CSS without bulkier directives. This also allows you to override the
- * default visibility of the element using either class.
- *
- * @param expression {boolean} evaluated expression to determine if the class should be added
- */
-.directive('uiToggle', [function () {
-  return function (scope, elm, attrs) {
-    scope.$watch(attrs.uiToggle, function (newVal) {
-      if (newVal) {
-        elm.removeClass('ui-hide').addClass('ui-show');
-      } else {
-        elm.removeClass('ui-show').addClass('ui-hide');
-      }
-    });
-  };
-}]);
+}
+uiCodemirrorDirective.$inject = ["$timeout", "uiCodemirrorConfig"];
 
-'use strict';
-
-/**
- * Filters out all duplicate items from an array by checking the specified key
- * @param [key] {string} the name of the attribute of each object to compare for uniqueness
- if the key is empty, the entire object will be compared
- if the key === false then no filtering will be performed
- * @return {array}
- */
-angular.module('ui.unique',[]).filter('unique', ['$parse', function ($parse) {
-
-  return function (items, filterOn) {
-
-    if (filterOn === false) {
-      return items;
-    }
-
-    if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
-      var newItems = [],
-        get = angular.isString(filterOn) ? $parse(filterOn) : function (item) { return item; };
-
-      var extractValueToCompare = function (item) {
-        return angular.isObject(item) ? get(item) : item;
-      };
-
-      angular.forEach(items, function (item) {
-        var isDuplicate = false;
-
-        for (var i = 0; i < newItems.length; i++) {
-          if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
-            isDuplicate = true;
-            break;
-          }
-        }
-        if (!isDuplicate) {
-          newItems.push(item);
-        }
-
-      });
-      items = newItems;
-    }
-    return items;
-  };
-}]);
-
-'use strict';
-
-/**
- * General-purpose validator for ngModel.
- * angular.js comes with several built-in validation mechanism for input fields (ngRequired, ngPattern etc.) but using
- * an arbitrary validation function requires creation of a custom formatters and / or parsers.
- * The ui-validate directive makes it easy to use any function(s) defined in scope as a validator function(s).
- * A validator function will trigger validation on both model and input changes.
- *
- * @example <input ui-validate=" 'myValidatorFunction($value)' ">
- * @example <input ui-validate="{ foo : '$value > anotherModel', bar : 'validateFoo($value)' }">
- * @example <input ui-validate="{ foo : '$value > anotherModel' }" ui-validate-watch=" 'anotherModel' ">
- * @example <input ui-validate="{ foo : '$value > anotherModel', bar : 'validateFoo($value)' }" ui-validate-watch=" { foo : 'anotherModel' } ">
- *
- * @param ui-validate {string|object literal} If strings is passed it should be a scope's function to be used as a validator.
- * If an object literal is passed a key denotes a validation error key while a value should be a validator function.
- * In both cases validator function should take a value to validate as its argument and should return true/false indicating a validation result.
- */
-angular.module('ui.validate',[]).directive('uiValidate', function () {
-
-  return {
-    restrict: 'A',
-    require: 'ngModel',
-    link: function (scope, elm, attrs, ctrl) {
-      var validateFn, validators = {},
-          validateExpr = scope.$eval(attrs.uiValidate);
-
-      if (!validateExpr){ return;}
-
-      if (angular.isString(validateExpr)) {
-        validateExpr = { validator: validateExpr };
-      }
-
-      angular.forEach(validateExpr, function (exprssn, key) {
-        validateFn = function (valueToValidate) {
-          var expression = scope.$eval(exprssn, { '$value' : valueToValidate });
-          if (angular.isObject(expression) && angular.isFunction(expression.then)) {
-            // expression is a promise
-            expression.then(function(){
-              ctrl.$setValidity(key, true);
-            }, function(){
-              ctrl.$setValidity(key, false);
-            });
-            return valueToValidate;
-          } else if (expression) {
-            // expression is true
-            ctrl.$setValidity(key, true);
-            return valueToValidate;
-          } else {
-            // expression is false
-            ctrl.$setValidity(key, false);
-            return valueToValidate;
-          }
-        };
-        validators[key] = validateFn;
-        ctrl.$formatters.push(validateFn);
-        ctrl.$parsers.push(validateFn);
-      });
-
-      function apply_watch(watch)
-      {
-          //string - update all validators on expression change
-          if (angular.isString(watch))
-          {
-              scope.$watch(watch, function(){
-                  angular.forEach(validators, function(validatorFn){
-                      validatorFn(ctrl.$modelValue);
-                  });
-              });
-              return;
-          }
-
-          //array - update all validators on change of any expression
-          if (angular.isArray(watch))
-          {
-              angular.forEach(watch, function(expression){
-                  scope.$watch(expression, function()
-                  {
-                      angular.forEach(validators, function(validatorFn){
-                          validatorFn(ctrl.$modelValue);
-                      });
-                  });
-              });
-              return;
-          }
-
-          //object - update appropriate validator
-          if (angular.isObject(watch))
-          {
-              angular.forEach(watch, function(expression, validatorKey)
-              {
-                  //value is string - look after one expression
-                  if (angular.isString(expression))
-                  {
-                      scope.$watch(expression, function(){
-                          validators[validatorKey](ctrl.$modelValue);
-                      });
-                  }
-
-                  //value is array - look after all expressions in array
-                  if (angular.isArray(expression))
-                  {
-                      angular.forEach(expression, function(intExpression)
-                      {
-                          scope.$watch(intExpression, function(){
-                              validators[validatorKey](ctrl.$modelValue);
-                          });
-                      });
-                  }
-              });
-          }
-      }
-      // Support for ui-validate-watch
-      if (attrs.uiValidateWatch){
-          apply_watch( scope.$eval(attrs.uiValidateWatch) );
-      }
-    }
-  };
-});
-
-angular.module('ui.utils',  [
-  'ui.event',
-  'ui.format',
-  'ui.highlight',
-  'ui.include',
-  'ui.indeterminate',
-  'ui.inflector',
-  'ui.jq',
-  'ui.keypress',
-  'ui.mask',
-  'ui.reset',
-  'ui.route',
-  'ui.scrollfix',
-  'ui.scroll',
-  'ui.scroll.jqlite',
-  'ui.showhide',
-  'ui.unique',
-  'ui.validate'
-]);
-
-},{}],5:[function(require,module,exports){
-var css = "/* BASICS */\n\n.CodeMirror {\n  /* Set height, width, borders, and global font properties here */\n  font-family: monospace;\n  height: 300px;\n}\n.CodeMirror-scroll {\n  /* Set scrolling behaviour here */\n  overflow: auto;\n}\n\n/* PADDING */\n\n.CodeMirror-lines {\n  padding: 4px 0; /* Vertical padding around content */\n}\n.CodeMirror pre {\n  padding: 0 4px; /* Horizontal padding of content */\n}\n\n.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  background-color: white; /* The little square between H and V scrollbars */\n}\n\n/* GUTTER */\n\n.CodeMirror-gutters {\n  border-right: 1px solid #ddd;\n  background-color: #f7f7f7;\n  white-space: nowrap;\n}\n.CodeMirror-linenumbers {}\n.CodeMirror-linenumber {\n  padding: 0 3px 0 5px;\n  min-width: 20px;\n  text-align: right;\n  color: #999;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n.CodeMirror-guttermarker { color: black; }\n.CodeMirror-guttermarker-subtle { color: #999; }\n\n/* CURSOR */\n\n.CodeMirror div.CodeMirror-cursor {\n  border-left: 1px solid black;\n}\n/* Shown when moving in bi-directional text */\n.CodeMirror div.CodeMirror-secondarycursor {\n  border-left: 1px solid silver;\n}\n.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {\n  width: auto;\n  border: 0;\n  background: #7e7;\n}\n.cm-animate-fat-cursor {\n  width: auto;\n  border: 0;\n  -webkit-animation: blink 1.06s steps(1) infinite;\n  -moz-animation: blink 1.06s steps(1) infinite;\n  animation: blink 1.06s steps(1) infinite;\n}\n@-moz-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@-webkit-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n\n/* Can style cursor different in overwrite (non-insert) mode */\ndiv.CodeMirror-overwrite div.CodeMirror-cursor {}\n\n.cm-tab { display: inline-block; }\n\n.CodeMirror-ruler {\n  border-left: 1px solid #ccc;\n  position: absolute;\n}\n\n/* DEFAULT THEME */\n\n.cm-s-default .cm-keyword {color: #708;}\n.cm-s-default .cm-atom {color: #219;}\n.cm-s-default .cm-number {color: #164;}\n.cm-s-default .cm-def {color: #00f;}\n.cm-s-default .cm-variable,\n.cm-s-default .cm-punctuation,\n.cm-s-default .cm-property,\n.cm-s-default .cm-operator {}\n.cm-s-default .cm-variable-2 {color: #05a;}\n.cm-s-default .cm-variable-3 {color: #085;}\n.cm-s-default .cm-comment {color: #a50;}\n.cm-s-default .cm-string {color: #a11;}\n.cm-s-default .cm-string-2 {color: #f50;}\n.cm-s-default .cm-meta {color: #555;}\n.cm-s-default .cm-qualifier {color: #555;}\n.cm-s-default .cm-builtin {color: #30a;}\n.cm-s-default .cm-bracket {color: #997;}\n.cm-s-default .cm-tag {color: #170;}\n.cm-s-default .cm-attribute {color: #00c;}\n.cm-s-default .cm-header {color: blue;}\n.cm-s-default .cm-quote {color: #090;}\n.cm-s-default .cm-hr {color: #999;}\n.cm-s-default .cm-link {color: #00c;}\n\n.cm-negative {color: #d44;}\n.cm-positive {color: #292;}\n.cm-header, .cm-strong {font-weight: bold;}\n.cm-em {font-style: italic;}\n.cm-link {text-decoration: underline;}\n\n.cm-s-default .cm-error {color: #f00;}\n.cm-invalidchar {color: #f00;}\n\n/* Default styles for common addons */\n\ndiv.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}\ndiv.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}\n.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }\n.CodeMirror-activeline-background {background: #e8f2ff;}\n\n/* STOP */\n\n/* The rest of this file contains styles related to the mechanics of\n   the editor. You probably shouldn't touch them. */\n\n.CodeMirror {\n  line-height: 1;\n  position: relative;\n  overflow: hidden;\n  background: white;\n  color: black;\n}\n\n.CodeMirror-scroll {\n  /* 30px is the magic margin used to hide the element's real scrollbars */\n  /* See overflow: hidden in .CodeMirror */\n  margin-bottom: -30px; margin-right: -30px;\n  padding-bottom: 30px;\n  height: 100%;\n  outline: none; /* Prevent dragging from highlighting the element */\n  position: relative;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n.CodeMirror-sizer {\n  position: relative;\n  border-right: 30px solid transparent;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n/* The fake, visible scrollbars. Used to force redraw during scrolling\n   before actuall scrolling happens, thus preventing shaking and\n   flickering artifacts. */\n.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  position: absolute;\n  z-index: 6;\n  display: none;\n}\n.CodeMirror-vscrollbar {\n  right: 0; top: 0;\n  overflow-x: hidden;\n  overflow-y: scroll;\n}\n.CodeMirror-hscrollbar {\n  bottom: 0; left: 0;\n  overflow-y: hidden;\n  overflow-x: scroll;\n}\n.CodeMirror-scrollbar-filler {\n  right: 0; bottom: 0;\n}\n.CodeMirror-gutter-filler {\n  left: 0; bottom: 0;\n}\n\n.CodeMirror-gutters {\n  position: absolute; left: 0; top: 0;\n  padding-bottom: 30px;\n  z-index: 3;\n}\n.CodeMirror-gutter {\n  white-space: normal;\n  height: 100%;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  padding-bottom: 30px;\n  margin-bottom: -32px;\n  display: inline-block;\n  /* Hack to make IE7 behave */\n  *zoom:1;\n  *display:inline;\n}\n.CodeMirror-gutter-elt {\n  position: absolute;\n  cursor: default;\n  z-index: 4;\n}\n\n.CodeMirror-lines {\n  cursor: text;\n}\n.CodeMirror pre {\n  /* Reset some styles that the rest of the page might have set */\n  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;\n  border-width: 0;\n  background: transparent;\n  font-family: inherit;\n  font-size: inherit;\n  margin: 0;\n  white-space: pre;\n  word-wrap: normal;\n  line-height: inherit;\n  color: inherit;\n  z-index: 2;\n  position: relative;\n  overflow: visible;\n}\n.CodeMirror-wrap pre {\n  word-wrap: break-word;\n  white-space: pre-wrap;\n  word-break: normal;\n}\n\n.CodeMirror-linebackground {\n  position: absolute;\n  left: 0; right: 0; top: 0; bottom: 0;\n  z-index: 0;\n}\n\n.CodeMirror-linewidget {\n  position: relative;\n  z-index: 2;\n  overflow: auto;\n}\n\n.CodeMirror-widget {}\n\n.CodeMirror-wrap .CodeMirror-scroll {\n  overflow-x: hidden;\n}\n\n.CodeMirror-measure {\n  position: absolute;\n  width: 100%;\n  height: 0;\n  overflow: hidden;\n  visibility: hidden;\n}\n.CodeMirror-measure pre { position: static; }\n\n.CodeMirror div.CodeMirror-cursor {\n  position: absolute;\n  border-right: none;\n  width: 0;\n}\n\ndiv.CodeMirror-cursors {\n  visibility: hidden;\n  position: relative;\n  z-index: 1;\n}\n.CodeMirror-focused div.CodeMirror-cursors {\n  visibility: visible;\n}\n\n.CodeMirror-selected { background: #d9d9d9; }\n.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }\n.CodeMirror-crosshair { cursor: crosshair; }\n\n.cm-searching {\n  background: #ffa;\n  background: rgba(255, 255, 0, .4);\n}\n\n/* IE7 hack to prevent it from returning funny offsetTops on the spans */\n.CodeMirror span { *vertical-align: text-bottom; }\n\n/* Used to force a border model for a node */\n.cm-force-border { padding-right: .1px; }\n\n@media print {\n  /* Hide the cursor when printing */\n  .CodeMirror div.CodeMirror-cursors {\n    visibility: hidden;\n  }\n}\n"; (require("/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
-},{"/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify":15}],6:[function(require,module,exports){
-(function(e,n){"use strict";var t=6,o=4,i="asc",r="desc",l="_ng_field_",a="_ng_depth_",s="_ng_hidden_",c="_ng_column_",g=/CUSTOM_FILTERS/g,d=/COL_FIELD/g,u=/DISPLAY_CELL_TEMPLATE/g,f=/EDITABLE_CELL_TEMPLATE/g,h=/CELL_EDITABLE_CONDITION/g,p=/<.+>/,m=/(\([^)]*\))?$/,v=/\./g,w=/'/g,C=/^(.*)((?:\s*\[\s*\d+\s*\]\s*)|(?:\s*\[\s*"(?:[^"\\]|\\.)*"\s*\]\s*)|(?:\s*\[\s*'(?:[^'\\]|\\.)*'\s*\]\s*))(.*)$/;e.ngGrid={},e.ngGrid.i18n={},angular.module("ngGrid.services",[]);var b=angular.module("ngGrid.directives",[]),y=angular.module("ngGrid.filters",[]);angular.module("ngGrid",["ngGrid.services","ngGrid.directives","ngGrid.filters"]);var S=function(e,n,o,i){if(void 0===e.selectionProvider.selectedItems)return!0;var r,l=o.which||o.keyCode,a=!1,s=!1,c=void 0===e.selectionProvider.lastClickedRow?1:e.selectionProvider.lastClickedRow.rowIndex,g=e.columns.filter(function(e){return e.visible&&e.width>0}),d=e.columns.filter(function(e){return e.pinned});if(e.col&&(r=g.indexOf(e.col)),37!==l&&38!==l&&39!==l&&40!==l&&(i.config.noTabInterference||9!==l)&&13!==l)return!0;if(e.enableCellSelection){9===l&&o.preventDefault();var u=e.showSelectionCheckbox?1===r:0===r,f=1===r||0===r,h=r===g.length-1||r===g.length-2,p=g.indexOf(e.col)===g.length-1,m=d.indexOf(e.col)===d.length-1;if(37===l||9===l&&o.shiftKey){var v=0;u||(r-=1),f?u&&9===l&&o.shiftKey?(v=i.$canvas.width(),r=g.length-1,s=!0):v=i.$viewport.scrollLeft()-e.col.width:d.length>0&&(v=i.$viewport.scrollLeft()-g[r].width),i.$viewport.scrollLeft(v)}else(39===l||9===l&&!o.shiftKey)&&(h?p&&9===l&&!o.shiftKey?(i.$viewport.scrollLeft(0),r=e.showSelectionCheckbox?1:0,a=!0):i.$viewport.scrollLeft(i.$viewport.scrollLeft()+e.col.width):m&&i.$viewport.scrollLeft(0),p||(r+=1))}var w;w=e.configGroups.length>0?i.rowFactory.parsedData.filter(function(e){return!e.isAggRow}):i.filteredRows;var C=0;if(0!==c&&(38===l||13===l&&o.shiftKey||9===l&&o.shiftKey&&s)?C=-1:c!==w.length-1&&(40===l||13===l&&!o.shiftKey||9===l&&a)&&(C=1),C){var b=w[c+C];b.beforeSelectionChange(b,o)&&(b.continueSelection(o),e.$emit("ngGridEventDigestGridParent"),e.selectionProvider.lastClickedRow.renderedRowIndex>=e.renderedRows.length-t-2?i.$viewport.scrollTop(i.$viewport.scrollTop()+e.rowHeight):t+2>=e.selectionProvider.lastClickedRow.renderedRowIndex&&i.$viewport.scrollTop(i.$viewport.scrollTop()-e.rowHeight))}return e.enableCellSelection&&setTimeout(function(){e.domAccessProvider.focusCellElement(e,e.renderedColumns.indexOf(g[r]))},3),!1};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}),Array.prototype.indexOf||(Array.prototype.indexOf=function(e){var n=this.length>>>0,t=Number(arguments[1])||0;for(t=0>t?Math.ceil(t):Math.floor(t),0>t&&(t+=n);n>t;t++)if(t in this&&this[t]===e)return t;return-1}),Array.prototype.filter||(Array.prototype.filter=function(e){var n=Object(this),t=n.length>>>0;if("function"!=typeof e)throw new TypeError;for(var o=[],i=arguments[1],r=0;t>r;r++)if(r in n){var l=n[r];e.call(i,l,r,n)&&o.push(l)}return o}),y.filter("checkmark",function(){return function(e){return e?"✔":"✘"}}),y.filter("ngColumns",function(){return function(e){return e.filter(function(e){return!e.isAggCol})}}),angular.module("ngGrid.services").factory("$domUtilityService",["$utilityService","$window",function(e,t){var o={},i={},r=function(){var e=n("<div></div>");e.appendTo("body"),e.height(100).width(100).css("position","absolute").css("overflow","scroll"),e.append('<div style="height: 400px; width: 400px;"></div>'),o.ScrollH=e.height()-e[0].clientHeight,o.ScrollW=e.width()-e[0].clientWidth,e.empty(),e.attr("style",""),e.append('<span style="font-family: Verdana, Helvetica, Sans-Serif; font-size: 14px;"><strong>M</strong></span>'),o.LetterW=e.children().first().width(),e.remove()};return o.eventStorage={},o.AssignGridContainers=function(e,t,i){i.$root=n(t),i.$topPanel=i.$root.find(".ngTopPanel"),i.$groupPanel=i.$root.find(".ngGroupPanel"),i.$headerContainer=i.$topPanel.find(".ngHeaderContainer"),e.$headerContainer=i.$headerContainer,i.$headerScroller=i.$topPanel.find(".ngHeaderScroller"),i.$headers=i.$headerScroller.children(),i.$viewport=i.$root.find(".ngViewport"),i.$canvas=i.$viewport.find(".ngCanvas"),i.$footerPanel=i.$root.find(".ngFooterPanel");var r=e.$watch(function(){return i.$viewport.scrollLeft()},function(e){return i.$headerContainer.scrollLeft(e)});e.$on("$destroy",function(){i.$root&&(n(i.$root.parent()).off("resize.nggrid"),i.$root=null,i.$topPanel=null,i.$headerContainer=null,i.$headers=null,i.$canvas=null,i.$footerPanel=null),r()}),o.UpdateGridLayout(e,i)},o.getRealWidth=function(e){var t=0,o={visibility:"hidden",display:"block"},i=e.parents().andSelf().not(":visible");return n.swap(i[0],o,function(){t=e.outerWidth()}),t},o.UpdateGridLayout=function(e,n){if(n.$root){var t=n.$viewport.scrollTop();n.elementDims.rootMaxW=n.$root.width(),n.$root.is(":hidden")&&(n.elementDims.rootMaxW=o.getRealWidth(n.$root)),n.elementDims.rootMaxH=n.$root.height(),n.refreshDomSizes(),e.adjustScrollTop(t,!0)}},o.numberOfGrids=0,o.setStyleText=function(e,n){var o=e.styleSheet,i=e.gridId,r=t.document;o||(o=r.getElementById(i)),o||(o=r.createElement("style"),o.type="text/css",o.id=i,(r.head||r.getElementsByTagName("head")[0]).appendChild(o)),o.styleSheet&&!o.sheet?o.styleSheet.cssText=n:o.innerHTML=n,e.styleSheet=o,e.styleText=n},o.BuildStyles=function(e,n,t){var i,r=n.config.rowHeight,l=n.gridId,a=e.columns,s=0,c=e.totalRowWidth();i="."+l+" .ngCanvas { width: "+c+"px; }"+"."+l+" .ngRow { width: "+c+"px; }"+"."+l+" .ngCanvas { width: "+c+"px; }"+"."+l+" .ngHeaderScroller { width: "+(c+o.ScrollH)+"px}";for(var g=0;a.length>g;g++){var d=a[g];if(d.visible!==!1){var u=0;g===a.length-1&&s+d.width<n.elementDims.rootMaxW&&(u=n.elementDims.rootMaxW-s-d.width),i+="."+l+" .col"+g+" { width: "+(d.width+u)+"px; left: "+s+"px; height: "+r+"px }"+"."+l+" .colt"+g+" { width: "+(d.width+u)+"px; }",s+=d.width}}o.setStyleText(n,i),e.adjustScrollLeft(n.$viewport.scrollLeft()),t&&o.digest(e)},o.setColLeft=function(e,n,t){if(t.styleText){var r=i[e.index];r||(r=i[e.index]=RegExp(".col"+e.index+" { width: [0-9]+px; left: [0-9]+px"));var l=t.styleText.replace(r,".col"+e.index+" { width: "+e.width+"px; left: "+n+"px");o.setStyleText(t,l)}},o.setColLeft.immediate=1,o.RebuildGrid=function(e,n){o.UpdateGridLayout(e,n),(null==n.config.maintainColumnRatios||n.config.maintainColumnRatios)&&n.configureColumnWidths(),e.adjustScrollLeft(n.$viewport.scrollLeft()),o.BuildStyles(e,n,!0)},o.digest=function(e){e.$root.$$phase||e.$digest()},o.ScrollH=17,o.ScrollW=17,o.LetterW=10,r(),o}]),angular.module("ngGrid.services").factory("$sortService",["$parse","$utilityService",function(e,n){var t={};return t.colSortFnCache={},t.isCustomSort=!1,t.guessSortFn=function(e){var n=typeof e;switch(n){case"number":return t.sortNumber;case"boolean":return t.sortBool;case"string":return e.match(/^[-+]?[£$¤]?[\d,.]+%?$/)?t.sortNumberStr:t.sortAlpha;default:return"[object Date]"===Object.prototype.toString.call(e)?t.sortDate:t.basicSort}},t.basicSort=function(e,n){return e===n?0:n>e?-1:1},t.sortNumber=function(e,n){return e-n},t.sortNumberStr=function(e,n){var t,o,i=!1,r=!1;return t=parseFloat(e.replace(/[^0-9.-]/g,"")),isNaN(t)&&(i=!0),o=parseFloat(n.replace(/[^0-9.-]/g,"")),isNaN(o)&&(r=!0),i&&r?0:i?1:r?-1:t-o},t.sortAlpha=function(e,n){var t=e.toLowerCase(),o=n.toLowerCase();return t===o?0:o>t?-1:1},t.sortDate=function(e,n){var t=e.getTime(),o=n.getTime();return t===o?0:o>t?-1:1},t.sortBool=function(e,n){return e&&n?0:e||n?e?1:-1:0},t.sortData=function(e,o){if(o&&e){var r,l,a=e.fields.length,s=e.fields,c=o.slice(0);o.sort(function(o,g){for(var d,u,f=0,h=0;0===f&&a>h;){r=e.columns[h],l=e.directions[h],u=t.getSortFn(r,c);var p=n.evalProperty(o,s[h]),m=n.evalProperty(g,s[h]);t.isCustomSort?(d=u(p,m),f=l===i?d:0-d):null==p||null==m?null==m&&null==p?f=0:null==p?f=1:null==m&&(f=-1):(d=u(p,m),f=l===i?d:0-d),h++}return f})}},t.Sort=function(e,n){t.isSorting||(t.isSorting=!0,t.sortData(e,n),t.isSorting=!1)},t.getSortFn=function(n,o){var i,r;if(t.colSortFnCache[n.field])i=t.colSortFnCache[n.field];else if(void 0!==n.sortingAlgorithm)i=n.sortingAlgorithm,t.colSortFnCache[n.field]=n.sortingAlgorithm,t.isCustomSort=!0;else{if(r=o[0],!r)return i;i=t.guessSortFn(e("entity['"+n.field.replace(v,"']['")+"']")({entity:r})),i?t.colSortFnCache[n.field]=i:i=t.sortAlpha}return i},t}]),angular.module("ngGrid.services").factory("$utilityService",["$parse",function(t){var o=/function (.{1,})\(/,i={visualLength:function(e){var t=document.getElementById("testDataLength");t||(t=document.createElement("SPAN"),t.id="testDataLength",t.style.visibility="hidden",document.body.appendChild(t));var o=n(e);n(t).css({font:o.css("font"),"font-size":o.css("font-size"),"font-family":o.css("font-family")}),t.innerHTML=o.text();var i=t.offsetWidth;return document.body.removeChild(t),i},forIn:function(e,n){for(var t in e)e.hasOwnProperty(t)&&n(e[t],t)},endsWith:function(e,n){return e&&n&&"string"==typeof e?-1!==e.indexOf(n,e.length-n.length):!1},isNullOrUndefined:function(e){return void 0===e||null===e?!0:!1},getElementsByClassName:function(e){if(document.getElementsByClassName)return document.getElementsByClassName(e);for(var n=[],t=RegExp("\\b"+e+"\\b"),o=document.getElementsByTagName("*"),i=0;o.length>i;i++){var r=o[i].className;t.test(r)&&n.push(o[i])}return n},newId:function(){var e=(new Date).getTime();return function(){return e+=1}}(),seti18n:function(n,t){var o=e.ngGrid.i18n[t];for(var i in o)n.i18n[i]=o[i]},getInstanceType:function(e){var n=o.exec(""+e.constructor);if(n&&n.length>1){var t=n[1].replace(/^\s+|\s+$/g,"");return t}return""},init:function(){function e(n){var t=C.exec(n);if(t)return(t[1]?e(t[1]):t[1])+t[2]+(t[3]?e(t[3]):t[3]);n=n.replace(w,"\\'");var o=n.split(v),i=[o.shift()];return angular.forEach(o,function(e){i.push(e.replace(m,"']$1"))}),i.join("['")}return this.preEval=e,this.evalProperty=function(n,o){return t(e("entity."+o))({entity:n})},delete this.init,this}}.init();return i}]);var x=function(e,n,t,o){this.rowIndex=0,this.offsetTop=this.rowIndex*t,this.entity=e,this.label=e.gLabel,this.field=e.gField,this.depth=e.gDepth,this.parent=e.parent,this.children=e.children,this.aggChildren=e.aggChildren,this.aggIndex=e.aggIndex,this.collapsed=o,this.groupInitState=o,this.rowFactory=n,this.rowHeight=t,this.isAggRow=!0,this.offsetLeft=25*e.gDepth,this.aggLabelFilter=e.aggLabelFilter};x.prototype.toggleExpand=function(){this.collapsed=this.collapsed?!1:!0,this.orig&&(this.orig.collapsed=this.collapsed),this.notifyChildren()},x.prototype.setExpand=function(e){this.collapsed=e,this.orig&&(this.orig.collapsed=e),this.notifyChildren()},x.prototype.notifyChildren=function(){for(var e=Math.max(this.rowFactory.aggCache.length,this.children.length),n=0;e>n;n++)if(this.aggChildren[n]&&(this.aggChildren[n].entity[s]=this.collapsed,this.collapsed&&this.aggChildren[n].setExpand(this.collapsed)),this.children[n]&&(this.children[n][s]=this.collapsed),n>this.aggIndex&&this.rowFactory.aggCache[n]){var t=this.rowFactory.aggCache[n],o=30*this.children.length;t.offsetTop=this.collapsed?t.offsetTop-o:t.offsetTop+o}this.rowFactory.renderedChange()},x.prototype.aggClass=function(){return this.collapsed?"ngAggArrowCollapsed":"ngAggArrowExpanded"},x.prototype.totalChildren=function(){if(this.aggChildren.length>0){var e=0,n=function(t){t.aggChildren.length>0?angular.forEach(t.aggChildren,function(e){n(e)}):e+=t.children.length};return n(this),e}return this.children.length},x.prototype.copy=function(){var e=new x(this.entity,this.rowFactory,this.rowHeight,this.groupInitState);return e.orig=this,e};var T=function(e,t,o,l,a,s){var c=this,d=e.colDef,u=500,f=0,h=null;c.colDef=e.colDef,c.width=d.width,c.groupIndex=0,c.isGroupedBy=!1,c.minWidth=d.minWidth?d.minWidth:50,c.maxWidth=d.maxWidth?d.maxWidth:9e3,c.enableCellEdit=void 0!==d.enableCellEdit?d.enableCellEdit:e.enableCellEdit||e.enableCellEditOnFocus,c.cellEditableCondition=d.cellEditableCondition||e.cellEditableCondition||"true",c.headerRowHeight=e.headerRowHeight,c.displayName=void 0===d.displayName?d.field:d.displayName,c.index=e.index,c.isAggCol=e.isAggCol,c.cellClass=d.cellClass,c.sortPriority=void 0,c.cellFilter=d.cellFilter?d.cellFilter:"",c.field=d.field,c.aggLabelFilter=d.aggLabelFilter||d.cellFilter,c.visible=s.isNullOrUndefined(d.visible)||d.visible,c.sortable=!1,c.resizable=!1,c.pinnable=!1,c.pinned=e.enablePinning&&d.pinned,c.originalIndex=null==e.originalIndex?c.index:e.originalIndex,c.groupable=s.isNullOrUndefined(d.groupable)||d.groupable,e.enableSort&&(c.sortable=s.isNullOrUndefined(d.sortable)||d.sortable),e.enableResize&&(c.resizable=s.isNullOrUndefined(d.resizable)||d.resizable),e.enablePinning&&(c.pinnable=s.isNullOrUndefined(d.pinnable)||d.pinnable),c.sortDirection=void 0,c.sortingAlgorithm=d.sortFn,c.headerClass=d.headerClass,c.cursor=c.sortable?"pointer":"default",c.headerCellTemplate=d.headerCellTemplate||a.get("headerCellTemplate.html"),c.cellTemplate=d.cellTemplate||a.get("cellTemplate.html").replace(g,c.cellFilter?"|"+c.cellFilter:""),c.enableCellEdit&&(c.cellEditTemplate=d.cellEditTemplate||a.get("cellEditTemplate.html"),c.editableCellTemplate=d.editableCellTemplate||a.get("editableCellTemplate.html")),d.cellTemplate&&!p.test(d.cellTemplate)&&(c.cellTemplate=a.get(d.cellTemplate)||n.ajax({type:"GET",url:d.cellTemplate,async:!1}).responseText),c.enableCellEdit&&d.editableCellTemplate&&!p.test(d.editableCellTemplate)&&(c.editableCellTemplate=a.get(d.editableCellTemplate)||n.ajax({type:"GET",url:d.editableCellTemplate,async:!1}).responseText),d.headerCellTemplate&&!p.test(d.headerCellTemplate)&&(c.headerCellTemplate=a.get(d.headerCellTemplate)||n.ajax({type:"GET",url:d.headerCellTemplate,async:!1}).responseText),c.colIndex=function(){var e=c.pinned?"pinned ":"";return e+="col"+c.index+" colt"+c.index,c.cellClass&&(e+=" "+c.cellClass),e},c.groupedByClass=function(){return c.isGroupedBy?"ngGroupedByIcon":"ngGroupIcon"},c.toggleVisible=function(){c.visible=!c.visible},c.showSortButtonUp=function(){return c.sortable?c.sortDirection===r:c.sortable},c.showSortButtonDown=function(){return c.sortable?c.sortDirection===i:c.sortable},c.noSortVisible=function(){return!c.sortDirection},c.sort=function(n){if(!c.sortable)return!0;var t=c.sortDirection===i?r:i;return c.sortDirection=t,e.sortCallback(c,n),!1},c.gripClick=function(){f++,1===f?h=setTimeout(function(){f=0},u):(clearTimeout(h),e.resizeOnDataCallback(c),f=0)},c.gripOnMouseDown=function(e){return t.isColumnResizing=!0,e.ctrlKey&&!c.pinned?(c.toggleVisible(),l.BuildStyles(t,o),!0):(e.target.parentElement.style.cursor="col-resize",c.startMousePosition=e.clientX,c.origWidth=c.width,n(document).mousemove(c.onMouseMove),n(document).mouseup(c.gripOnMouseUp),!1)},c.onMouseMove=function(e){var n=e.clientX-c.startMousePosition,i=n+c.origWidth;return c.width=c.minWidth>i?c.minWidth:i>c.maxWidth?c.maxWidth:i,t.hasUserChangedGridColumnWidths=!0,l.BuildStyles(t,o),!1},c.gripOnMouseUp=function(e){return n(document).off("mousemove",c.onMouseMove),n(document).off("mouseup",c.gripOnMouseUp),e.target.parentElement.style.cursor="default",l.digest(t),t.isColumnResizing=!1,!1},c.copy=function(){var n=new T(e,t,o,l,a,s);return n.isClone=!0,n.orig=c,n},c.setVars=function(e){c.orig=e,c.width=e.width,c.groupIndex=e.groupIndex,c.isGroupedBy=e.isGroupedBy,c.displayName=e.displayName,c.index=e.index,c.isAggCol=e.isAggCol,c.cellClass=e.cellClass,c.cellFilter=e.cellFilter,c.field=e.field,c.aggLabelFilter=e.aggLabelFilter,c.visible=e.visible,c.sortable=e.sortable,c.resizable=e.resizable,c.pinnable=e.pinnable,c.pinned=e.pinned,c.originalIndex=e.originalIndex,c.sortDirection=e.sortDirection,c.sortingAlgorithm=e.sortingAlgorithm,c.headerClass=e.headerClass,c.headerCellTemplate=e.headerCellTemplate,c.cellTemplate=e.cellTemplate,c.cellEditTemplate=e.cellEditTemplate}},P=function(e){this.outerHeight=null,this.outerWidth=null,n.extend(this,e)},I=function(e){this.previousColumn=null,this.grid=e};I.prototype.changeUserSelect=function(e,n){e.css({"-webkit-touch-callout":n,"-webkit-user-select":n,"-khtml-user-select":n,"-moz-user-select":"none"===n?"-moz-none":n,"-ms-user-select":n,"user-select":n})},I.prototype.focusCellElement=function(e,n){if(e.selectionProvider.lastClickedRow){var t=void 0!==n?n:this.previousColumn,o=e.selectionProvider.lastClickedRow.clone?e.selectionProvider.lastClickedRow.clone.elm:e.selectionProvider.lastClickedRow.elm;if(void 0!==t&&o){var i=angular.element(o[0].children).filter(function(){return 8!==this.nodeType}),r=Math.max(Math.min(e.renderedColumns.length-1,t),0);this.grid.config.showSelectionCheckbox&&angular.element(i[r]).scope()&&0===angular.element(i[r]).scope().col.index&&(r=1),i[r]&&i[r].children[1].children[0].focus(),this.previousColumn=t}}},I.prototype.selectionHandlers=function(e,n){function t(t){if(16===t.keyCode)return r.changeUserSelect(n,"none",t),!0;if(!i){i=!0;var o=S(e,n,t,r.grid);return i=!1,o}return!0}function o(e){return 16===e.keyCode&&r.changeUserSelect(n,"text",e),!0}var i=!1,r=this;n.bind("keydown",t),n.bind("keyup",o),n.on("$destroy",function(){n.off("keydown",t),n.off("keyup",o)})};var $=function(t,o,i,r){var l=this;l.colToMove=void 0,l.groupToMove=void 0,l.assignEvents=function(){t.config.jqueryUIDraggable&&!t.config.enablePinning?(t.$groupPanel.droppable({addClasses:!1,drop:function(e){l.onGroupDrop(e)}}),t.$groupPanel.on("$destroy",function(){t.$groupPanel=null})):(t.$groupPanel.on("mousedown",l.onGroupMouseDown).on("dragover",l.dragOver).on("drop",l.onGroupDrop),t.$topPanel.on("mousedown",".ngHeaderScroller",l.onHeaderMouseDown).on("dragover",".ngHeaderScroller",l.dragOver),t.$groupPanel.on("$destroy",function(){t.$groupPanel&&t.$groupPanel.off("mousedown"),t.$groupPanel=null}),t.config.enableColumnReordering&&t.$topPanel.on("drop",".ngHeaderScroller",l.onHeaderDrop),t.$topPanel.on("$destroy",function(){t.$topPanel&&t.$topPanel.off("mousedown"),t.config.enableColumnReordering&&t.$topPanel&&t.$topPanel.off("drop"),t.$topPanel=null})),o.$on("$destroy",o.$watch("renderedColumns",function(){r(l.setDraggables)}))},l.dragStart=function(e){e.dataTransfer.setData("text","")},l.dragOver=function(e){e.preventDefault()},l.setDraggables=function(){if(t.config.jqueryUIDraggable)t.$root&&t.$root.find(".ngHeaderSortColumn").draggable({helper:"clone",appendTo:"body",stack:"div",addClasses:!1,start:function(e){l.onHeaderMouseDown(e)}}).droppable({drop:function(e){l.onHeaderDrop(e)}});else{var e=t.$root.find(".ngHeaderSortColumn");if(angular.forEach(e,function(e){e.className&&-1!==e.className.indexOf("ngHeaderSortColumn")&&(e.setAttribute("draggable","true"),e.addEventListener&&(e.addEventListener("dragstart",l.dragStart),angular.element(e).on("$destroy",function(){angular.element(e).off("dragstart",l.dragStart),e.removeEventListener("dragstart",l.dragStart)})))}),-1!==navigator.userAgent.indexOf("MSIE")){var n=t.$root.find(".ngHeaderSortColumn");n.bind("selectstart",function(){return this.dragDrop(),!1}),angular.element(n).on("$destroy",function(){n.off("selectstart")})}}},l.onGroupMouseDown=function(e){var o=n(e.target);if("ngRemoveGroup"!==o[0].className){var i=angular.element(o).scope();i&&(t.config.jqueryUIDraggable||(o.attr("draggable","true"),this.addEventListener&&(this.addEventListener("dragstart",l.dragStart),angular.element(this).on("$destroy",function(){this.removeEventListener("dragstart",l.dragStart)})),-1!==navigator.userAgent.indexOf("MSIE")&&(o.bind("selectstart",function(){return this.dragDrop(),!1}),o.on("$destroy",function(){o.off("selectstart")}))),l.groupToMove={header:o,groupName:i.group,index:i.$index})}else l.groupToMove=void 0},l.onGroupDrop=function(e){e.stopPropagation();var i,r;l.groupToMove?(i=n(e.target).closest(".ngGroupElement"),"ngGroupPanel"===i.context.className?(o.configGroups.splice(l.groupToMove.index,1),o.configGroups.push(l.groupToMove.groupName)):(r=angular.element(i).scope(),r&&l.groupToMove.index!==r.$index&&(o.configGroups.splice(l.groupToMove.index,1),o.configGroups.splice(r.$index,0,l.groupToMove.groupName))),l.groupToMove=void 0,t.fixGroupIndexes()):l.colToMove&&(-1===o.configGroups.indexOf(l.colToMove.col)&&(i=n(e.target).closest(".ngGroupElement"),"ngGroupPanel"===i.context.className||"ngGroupPanelDescription ng-binding"===i.context.className?o.groupBy(l.colToMove.col):(r=angular.element(i).scope(),r&&o.removeGroup(r.$index))),l.colToMove=void 0),o.$$phase||o.$apply()},l.onHeaderMouseDown=function(e){var t=n(e.target).closest(".ngHeaderSortColumn"),o=angular.element(t).scope();o&&(l.colToMove={header:t,col:o.col})},l.onHeaderDrop=function(e){if(l.colToMove&&!l.colToMove.col.pinned){var r=n(e.target).closest(".ngHeaderSortColumn"),a=angular.element(r).scope();if(a){if(l.colToMove.col===a.col||a.col.pinned)return;o.columns.splice(l.colToMove.col.index,1),o.columns.splice(a.col.index,0,l.colToMove.col),t.fixColumnIndexes(),l.colToMove=void 0,i.digest(o)}}},l.assignGridEventHandlers=function(){-1===t.config.tabIndex?(t.$viewport.attr("tabIndex",i.numberOfGrids),i.numberOfGrids++):t.$viewport.attr("tabIndex",t.config.tabIndex);var r,l=function(){clearTimeout(r),r=setTimeout(function(){i.RebuildGrid(o,t)},100)};n(e).on("resize.nggrid",l);var a,s=function(){clearTimeout(a),a=setTimeout(function(){i.RebuildGrid(o,t)},100)};n(t.$root.parent()).on("resize.nggrid",s),o.$on("$destroy",function(){n(e).off("resize.nggrid",l)})},l.assignGridEventHandlers(),l.assignEvents()},D=function(e,n){e.maxRows=function(){var t=Math.max(e.totalServerItems,n.data.length);return t},e.$on("$destroy",e.$watch("totalServerItems",function(){e.currentMaxPages=e.maxPages()})),e.multiSelect=n.config.enableRowSelection&&n.config.multiSelect,e.selectedItemCount=n.selectedItemCount,e.maxPages=function(){return 0===e.maxRows()?1:Math.ceil(e.maxRows()/e.pagingOptions.pageSize)},e.pageForward=function(){var n=e.pagingOptions.currentPage;e.totalServerItems>0?e.pagingOptions.currentPage=Math.min(n+1,e.maxPages()):e.pagingOptions.currentPage++},e.pageBackward=function(){var n=e.pagingOptions.currentPage;e.pagingOptions.currentPage=Math.max(n-1,1)},e.pageToFirst=function(){e.pagingOptions.currentPage=1},e.pageToLast=function(){var n=e.maxPages();e.pagingOptions.currentPage=n},e.cantPageForward=function(){var t=e.pagingOptions.currentPage,o=e.maxPages();return e.totalServerItems>0?t>=o:1>n.data.length},e.cantPageToLast=function(){return e.totalServerItems>0?e.cantPageForward():!0},e.cantPageBackward=function(){var n=e.pagingOptions.currentPage;return 1>=n}},L=function(i,r,l,a,c,g,d,u,f,h,m){var v={aggregateTemplate:void 0,afterSelectionChange:function(){},beforeSelectionChange:function(){return!0},checkboxCellTemplate:void 0,checkboxHeaderTemplate:void 0,columnDefs:void 0,data:[],dataUpdated:function(){},enableCellEdit:!1,enableCellEditOnFocus:!1,enableCellSelection:!1,enableColumnResize:!1,enableColumnReordering:!1,enableColumnHeavyVirt:!1,enablePaging:!1,enablePinning:!1,enableRowSelection:!0,enableSorting:!0,enableHighlighting:!1,excludeProperties:[],filterOptions:{filterText:"",useExternalFilter:!1},footerRowHeight:55,footerTemplate:void 0,forceSyncScrolling:!0,groups:[],groupsCollapsedByDefault:!0,headerRowHeight:30,headerRowTemplate:void 0,jqueryUIDraggable:!1,jqueryUITheme:!1,keepLastSelected:!0,maintainColumnRatios:void 0,menuTemplate:void 0,multiSelect:!0,pagingOptions:{pageSizes:[250,500,1e3],pageSize:250,currentPage:1},pinSelectionCheckbox:!1,plugins:[],primaryKey:void 0,rowHeight:30,rowTemplate:void 0,selectedItems:[],selectionCheckboxColumnWidth:25,selectWithCheckboxOnly:!1,showColumnMenu:!1,showFilter:!1,showFooter:!1,showGroupPanel:!1,showSelectionCheckbox:!1,sortInfo:{fields:[],columns:[],directions:[]},tabIndex:-1,totalServerItems:0,useExternalSorting:!1,i18n:"en",virtualizationThreshold:50,noTabInterference:!1},w=this;w.maxCanvasHt=0,w.config=n.extend(v,e.ngGrid.config,r),w.config.showSelectionCheckbox=w.config.showSelectionCheckbox&&w.config.enableColumnHeavyVirt===!1,w.config.enablePinning=w.config.enablePinning&&w.config.enableColumnHeavyVirt===!1,w.config.selectWithCheckboxOnly=w.config.selectWithCheckboxOnly&&w.config.showSelectionCheckbox!==!1,w.config.pinSelectionCheckbox=w.config.enablePinning,"string"==typeof r.columnDefs&&(w.config.columnDefs=i.$eval(r.columnDefs)),w.rowCache=[],w.rowMap=[],w.gridId="ng"+d.newId(),w.$root=null,w.$groupPanel=null,w.$topPanel=null,w.$headerContainer=null,w.$headerScroller=null,w.$headers=null,w.$viewport=null,w.$canvas=null,w.rootDim=w.config.gridDim,w.data=[],w.lateBindColumns=!1,w.filteredRows=[],w.initTemplates=function(){var e=["rowTemplate","aggregateTemplate","headerRowTemplate","checkboxCellTemplate","checkboxHeaderTemplate","menuTemplate","footerTemplate"],n=[];return angular.forEach(e,function(e){n.push(w.getTemplate(e))}),m.all(n)},w.getTemplate=function(e){var n=w.config[e],t=w.gridId+e+".html",o=m.defer();if(n&&!p.test(n))h.get(n,{cache:g}).success(function(e){g.put(t,e),o.resolve()}).error(function(){o.reject("Could not load template: "+n)});else if(n)g.put(t,n),o.resolve();else{var i=e+".html";g.put(t,g.get(i)),o.resolve()}return o.promise},"object"==typeof w.config.data&&(w.data=w.config.data),w.calcMaxCanvasHeight=function(){var e;return e=w.config.groups.length>0?w.rowFactory.parsedData.filter(function(e){return!e[s]}).length*w.config.rowHeight:w.filteredRows.length*w.config.rowHeight},w.elementDims={scrollW:0,scrollH:0,rowIndexCellW:w.config.selectionCheckboxColumnWidth,rowSelectedCellW:w.config.selectionCheckboxColumnWidth,rootMaxW:0,rootMaxH:0},w.setRenderedRows=function(e){i.renderedRows.length=e.length;for(var n=0;e.length>n;n++)!i.renderedRows[n]||e[n].isAggRow||i.renderedRows[n].isAggRow?(i.renderedRows[n]=e[n].copy(),i.renderedRows[n].collapsed=e[n].collapsed,e[n].isAggRow||i.renderedRows[n].setVars(e[n])):i.renderedRows[n].setVars(e[n]),i.renderedRows[n].rowIndex=e[n].rowIndex,i.renderedRows[n].offsetTop=e[n].offsetTop,i.renderedRows[n].selected=e[n].selected,e[n].renderedRowIndex=n;w.refreshDomSizes(),i.$emit("ngGridEventRows",e)},w.minRowsToRender=function(){var e=i.viewportDimHeight()||1;return Math.floor(e/w.config.rowHeight)},w.refreshDomSizes=function(){var e=new P;e.outerWidth=w.elementDims.rootMaxW,e.outerHeight=w.elementDims.rootMaxH,w.rootDim=e,w.maxCanvasHt=w.calcMaxCanvasHeight()},w.buildColumnDefsFromData=function(){w.config.columnDefs=[];var e=w.data[0];return e?(d.forIn(e,function(e,n){-1===w.config.excludeProperties.indexOf(n)&&w.config.columnDefs.push({field:n})}),void 0):(w.lateBoundColumns=!0,void 0)},w.buildColumns=function(){var e=w.config.columnDefs,n=[];if(e||(w.buildColumnDefsFromData(),e=w.config.columnDefs),w.config.showSelectionCheckbox&&n.push(new T({colDef:{field:"✔",width:w.elementDims.rowSelectedCellW,sortable:!1,resizable:!1,groupable:!1,headerCellTemplate:g.get(i.gridId+"checkboxHeaderTemplate.html"),cellTemplate:g.get(i.gridId+"checkboxCellTemplate.html"),pinned:w.config.pinSelectionCheckbox},index:0,headerRowHeight:w.config.headerRowHeight,sortCallback:w.sortData,resizeOnDataCallback:w.resizeOnData,enableResize:w.config.enableColumnResize,enableSort:w.config.enableSorting,enablePinning:w.config.enablePinning},i,w,a,g,d)),e.length>0){var t=w.config.showSelectionCheckbox?1:0,o=i.configGroups.length;i.configGroups.length=0,angular.forEach(e,function(e,r){r+=t;var l=new T({colDef:e,index:r+o,originalIndex:r,headerRowHeight:w.config.headerRowHeight,sortCallback:w.sortData,resizeOnDataCallback:w.resizeOnData,enableResize:w.config.enableColumnResize,enableSort:w.config.enableSorting,enablePinning:w.config.enablePinning,enableCellEdit:w.config.enableCellEdit||w.config.enableCellEditOnFocus,cellEditableCondition:w.config.cellEditableCondition},i,w,a,g,d),s=w.config.groups.indexOf(e.field);-1!==s&&(l.isGroupedBy=!0,i.configGroups.splice(s,0,l),l.groupIndex=i.configGroups.length),n.push(l)}),i.columns=n,w.config.groups.length>0&&w.rowFactory.getGrouping(w.config.groups)}},w.configureColumnWidths=function(){var e=[],n=[],t=0,o=0,r={};if(angular.forEach(i.columns,function(e,n){if(d.isNullOrUndefined(e.originalIndex))e.isAggCol&&e.visible&&(o+=25);else{var t=e.originalIndex;w.config.showSelectionCheckbox&&(0===e.originalIndex&&e.visible&&(o+=w.config.selectionCheckboxColumnWidth),t--),r[t]=n}}),angular.forEach(w.config.columnDefs,function(l,a){var s=i.columns[r[a]];l.index=a;var c,g=!1;if(d.isNullOrUndefined(l.width)?l.width="*":(g=isNaN(l.width)?d.endsWith(l.width,"%"):!1,c=g?l.width:parseInt(l.width,10)),isNaN(c)){if(c=l.width,"auto"===c){s.width=s.minWidth,o+=s.width;var u=s;return i.$on("$destroy",i.$on("ngGridEventData",function(){w.resizeOnData(u)})),void 0}if(-1!==c.indexOf("*"))return s.visible!==!1&&(t+=c.length),e.push(l),void 0;if(g)return n.push(l),void 0;throw'unable to parse column width, use percentage ("10%","20%", etc...) or "*" to use remaining width of grid'}s.visible!==!1&&(o+=s.width=parseInt(s.width,10))}),n.length>0){w.config.maintainColumnRatios=w.config.maintainColumnRatios!==!1;var l=0,s=0;angular.forEach(n,function(e){var n=i.columns[r[e.index]],t=parseFloat(e.width)/100;l+=t,n.visible||(s+=t)});var c=l-s;angular.forEach(n,function(e){var n=i.columns[r[e.index]],t=parseFloat(e.width)/100;t/=s>0?c:l;var a=w.rootDim.outerWidth*l;n.width=a*t,o+=n.width})}if(e.length>0){w.config.maintainColumnRatios=w.config.maintainColumnRatios!==!1;var g=w.rootDim.outerWidth-o;w.maxCanvasHt>i.viewportDimHeight()&&(g-=a.ScrollW);var u=Math.floor(g/t);angular.forEach(e,function(n,t){var l=i.columns[r[n.index]];l.width=u*n.width.length,l.width<l.minWidth&&(l.width=l.minWidth),l.visible!==!1&&(o+=l.width);var s=t===e.length-1;if(s&&w.rootDim.outerWidth>o){var c=w.rootDim.outerWidth-o;w.maxCanvasHt>i.viewportDimHeight()&&(c-=a.ScrollW),l.width+=c}})}},w.init=function(){return w.initTemplates().then(function(){i.selectionProvider=new H(w,i,f,d),i.domAccessProvider=new I(w),w.rowFactory=new G(w,i,a,g,d),w.searchProvider=new k(i,w,c,d),w.styleProvider=new F(i,w),i.$on("$destroy",i.$watch("configGroups",function(e){var n=[];angular.forEach(e,function(e){n.push(e.field||e)}),w.config.groups=n,w.rowFactory.filteredRowsChanged(),i.$emit("ngGridEventGroups",e)},!0)),i.$on("$destroy",i.$watch("columns",function(e){i.isColumnResizing||a.RebuildGrid(i,w),i.$emit("ngGridEventColumns",e)},!0)),i.$on("$destroy",i.$watch(function(){return r.i18n},function(e){d.seti18n(i,e)})),w.maxCanvasHt=w.calcMaxCanvasHeight(),w.config.sortInfo.fields&&w.config.sortInfo.fields.length>0&&i.$on("$destroy",i.$watch(function(){return w.config.sortInfo},function(){l.isSorting||(w.sortColumnsInit(),i.$emit("ngGridEventSorted",w.config.sortInfo))},!0))})},w.resizeOnData=function(e){var t=e.minWidth,o=d.getElementsByClassName("col"+e.index);angular.forEach(o,function(e,o){var i;if(0===o){var r=n(e).find(".ngHeaderText");i=d.visualLength(r)+10}else{var l=n(e).find(".ngCellText");i=d.visualLength(l)+10}i>t&&(t=i)}),e.width=e.longest=Math.min(e.maxWidth,t+7),a.BuildStyles(i,w,!0)},w.lastSortedColumns=[],w.sortData=function(e,t){if(t&&t.shiftKey&&w.config.sortInfo){var o=w.config.sortInfo.columns.indexOf(e);-1===o?(1===w.config.sortInfo.columns.length&&(w.config.sortInfo.columns[0].sortPriority=1),w.config.sortInfo.columns.push(e),e.sortPriority=w.config.sortInfo.columns.length,w.config.sortInfo.fields.push(e.field),w.config.sortInfo.directions.push(e.sortDirection),w.lastSortedColumns.push(e)):w.config.sortInfo.directions[o]=e.sortDirection,i.$emit("ngGridEventSorted",w.config.sortInfo)}else if(!w.config.useExternalSorting||w.config.useExternalSorting&&w.config.sortInfo){var r=n.isArray(e);w.config.sortInfo.columns.length=0,w.config.sortInfo.fields.length=0,w.config.sortInfo.directions.length=0;var l=function(e){w.config.sortInfo.columns.push(e),w.config.sortInfo.fields.push(e.field),w.config.sortInfo.directions.push(e.sortDirection),w.lastSortedColumns.push(e)};r?angular.forEach(e,function(e,n){e.sortPriority=n+1,l(e)}):(w.clearSortingData(e),e.sortPriority=void 0,l(e)),w.sortActual(),w.searchProvider.evalFilter(),i.$emit("ngGridEventSorted",w.config.sortInfo)
-}},w.sortColumnsInit=function(){w.config.sortInfo.columns?w.config.sortInfo.columns.length=0:w.config.sortInfo.columns=[];var e=[];angular.forEach(i.columns,function(n){var t=w.config.sortInfo.fields.indexOf(n.field);-1!==t&&(n.sortDirection=w.config.sortInfo.directions[t]||"asc",e[t]=n)}),1===e.length?w.sortData(e[0]):w.sortData(e)},w.sortActual=function(){if(!w.config.useExternalSorting){var e=w.data.slice(0);angular.forEach(e,function(e,n){var t=w.rowMap[n];if(void 0!==t){var o=w.rowCache[t];void 0!==o&&(e.preSortSelected=o.selected,e.preSortIndex=n)}}),l.Sort(w.config.sortInfo,e),angular.forEach(e,function(e,n){w.rowCache[n].entity=e,w.rowCache[n].selected=e.preSortSelected,w.rowMap[e.preSortIndex]=n,delete e.preSortSelected,delete e.preSortIndex})}},w.clearSortingData=function(e){e?(angular.forEach(w.lastSortedColumns,function(n){e.index!==n.index&&(n.sortDirection="",n.sortPriority=null)}),w.lastSortedColumns[0]=e,w.lastSortedColumns.length=1):(angular.forEach(w.lastSortedColumns,function(e){e.sortDirection="",e.sortPriority=null}),w.lastSortedColumns=[])},w.fixColumnIndexes=function(){for(var e=0;i.columns.length>e;e++)i.columns[e].index=e},w.fixGroupIndexes=function(){angular.forEach(i.configGroups,function(e,n){e.groupIndex=n+1})},i.elementsNeedMeasuring=!0,i.columns=[],i.renderedRows=[],i.renderedColumns=[],i.headerRow=null,i.rowHeight=w.config.rowHeight,i.jqueryUITheme=w.config.jqueryUITheme,i.showSelectionCheckbox=w.config.showSelectionCheckbox,i.enableCellSelection=w.config.enableCellSelection,i.enableCellEditOnFocus=w.config.enableCellEditOnFocus,i.footer=null,i.selectedItems=w.config.selectedItems,i.multiSelect=w.config.multiSelect,i.showFooter=w.config.showFooter,i.footerRowHeight=i.showFooter?w.config.footerRowHeight:0,i.showColumnMenu=w.config.showColumnMenu,i.forceSyncScrolling=w.config.forceSyncScrolling,i.showMenu=!1,i.configGroups=[],i.gridId=w.gridId,i.enablePaging=w.config.enablePaging,i.pagingOptions=w.config.pagingOptions,i.i18n={},d.seti18n(i,w.config.i18n),i.adjustScrollLeft=function(e){for(var n=0,t=0,o=i.columns.length,r=[],l=!w.config.enableColumnHeavyVirt,s=0,c=function(e){l?r.push(e):i.renderedColumns[s]?i.renderedColumns[s].setVars(e):i.renderedColumns[s]=e.copy(),s++},g=0;o>g;g++){var d=i.columns[g];if(d.visible!==!1){var u=d.width+n;if(d.pinned){c(d);var f=g>0?e+t:e;a.setColLeft(d,f,w),t+=d.width}else u>=e&&e+w.rootDim.outerWidth>=n&&c(d);n+=d.width}}l&&(i.renderedColumns=r)},w.prevScrollTop=0,w.prevScrollIndex=0,i.adjustScrollTop=function(e,n){if(w.prevScrollTop!==e||n){e>0&&w.$viewport[0].scrollHeight-e<=w.$viewport.outerHeight()&&i.$emit("ngGridEventScroll");var r,l=Math.floor(e/w.config.rowHeight);if(w.filteredRows.length>w.config.virtualizationThreshold){if(e>w.prevScrollTop&&w.prevScrollIndex+o>l)return;if(w.prevScrollTop>e&&l>w.prevScrollIndex-o)return;r=new R(Math.max(0,l-t),l+w.minRowsToRender()+t)}else{var a=i.configGroups.length>0?w.rowFactory.parsedData.length:w.filteredRows.length;r=new R(0,Math.max(a,w.minRowsToRender()+t))}w.prevScrollTop=e,w.rowFactory.UpdateViewableRange(r),w.prevScrollIndex=l}},i.toggleShowMenu=function(){i.showMenu=!i.showMenu},i.toggleSelectAll=function(e,n){i.selectionProvider.toggleSelectAll(e,!1,n)},i.totalFilteredItemsLength=function(){return w.filteredRows.length},i.showGroupPanel=function(){return w.config.showGroupPanel},i.topPanelHeight=function(){return w.config.showGroupPanel===!0?w.config.headerRowHeight+32:w.config.headerRowHeight},i.viewportDimHeight=function(){return Math.max(0,w.rootDim.outerHeight-i.topPanelHeight()-i.footerRowHeight-2)},i.groupBy=function(e){if(!(1>w.data.length)&&e.groupable&&e.field){e.sortDirection||e.sort({shiftKey:i.configGroups.length>0?!0:!1});var n=i.configGroups.indexOf(e);-1===n?(e.isGroupedBy=!0,i.configGroups.push(e),e.groupIndex=i.configGroups.length):i.removeGroup(n),w.$viewport.scrollTop(0),a.digest(i)}},i.removeGroup=function(e){var n=i.columns.filter(function(n){return n.groupIndex===e+1})[0];n.isGroupedBy=!1,n.groupIndex=0,i.columns[e].isAggCol&&(i.columns.splice(e,1),i.configGroups.splice(e,1),w.fixGroupIndexes()),0===i.configGroups.length&&(w.fixColumnIndexes(),a.digest(i)),i.adjustScrollLeft(0)},i.togglePin=function(e){for(var n=e.index,t=0,o=0;i.columns.length>o&&i.columns[o].pinned;o++)t++;e.pinned&&(t=Math.max(e.originalIndex,t-1)),e.pinned=!e.pinned,i.columns.splice(n,1),i.columns.splice(t,0,e),w.fixColumnIndexes(),a.BuildStyles(i,w,!0),w.$viewport.scrollLeft(w.$viewport.scrollLeft()-e.width)},i.totalRowWidth=function(){for(var e=0,n=i.columns,t=0;n.length>t;t++)n[t].visible!==!1&&(e+=n[t].width);return e},i.headerScrollerDim=function(){var e=i.viewportDimHeight(),n=w.maxCanvasHt,t=n>e,o=new P;return o.autoFitHeight=!0,o.outerWidth=i.totalRowWidth(),t?o.outerWidth+=w.elementDims.scrollW:w.elementDims.scrollH>=n-e&&(o.outerWidth+=w.elementDims.scrollW),o}},R=function(e,n){this.topRow=e,this.bottomRow=n},E=function(e,n,t,o,i){this.entity=e,this.config=n,this.selectionProvider=t,this.rowIndex=o,this.utils=i,this.selected=t.getSelection(e),this.cursor=this.config.enableRowSelection&&!this.config.selectWithCheckboxOnly?"pointer":"default",this.beforeSelectionChange=n.beforeSelectionChangeCallback,this.afterSelectionChange=n.afterSelectionChangeCallback,this.offsetTop=this.rowIndex*n.rowHeight,this.rowDisplayIndex=0};E.prototype.setSelection=function(e){this.selectionProvider.setSelection(this,e),this.selectionProvider.lastClickedRow=this},E.prototype.continueSelection=function(e){this.selectionProvider.ChangeSelection(this,e)},E.prototype.ensureEntity=function(e){this.entity!==e&&(this.entity=e,this.selected=this.selectionProvider.getSelection(this.entity))},E.prototype.toggleSelected=function(e){if(!this.config.enableRowSelection&&!this.config.enableCellSelection)return!0;var n=e.target||e;return"checkbox"===n.type&&"ngSelectionCell ng-scope"!==n.parentElement.className?!0:this.config.selectWithCheckboxOnly&&"checkbox"!==n.type?(this.selectionProvider.lastClickedRow=this,!0):(this.beforeSelectionChange(this,e)&&this.continueSelection(e),!1)},E.prototype.alternatingRowClass=function(){var e=0===this.rowIndex%2,n={ngRow:!0,selected:this.selected,even:e,odd:!e,"ui-state-default":this.config.jqueryUITheme&&e,"ui-state-active":this.config.jqueryUITheme&&!e};return n},E.prototype.getProperty=function(e){return this.utils.evalProperty(this.entity,e)},E.prototype.copy=function(){return this.clone=new E(this.entity,this.config,this.selectionProvider,this.rowIndex,this.utils),this.clone.isClone=!0,this.clone.elm=this.elm,this.clone.orig=this,this.clone},E.prototype.setVars=function(e){e.clone=this,this.entity=e.entity,this.selected=e.selected,this.orig=e};var G=function(e,n,o,i,r){var g=this;g.aggCache={},g.parentCache=[],g.dataChanged=!0,g.parsedData=[],g.rowConfig={},g.selectionProvider=n.selectionProvider,g.rowHeight=30,g.numberOfAggregates=0,g.groupedData=void 0,g.rowHeight=e.config.rowHeight,g.rowConfig={enableRowSelection:e.config.enableRowSelection,rowClasses:e.config.rowClasses,selectedItems:n.selectedItems,selectWithCheckboxOnly:e.config.selectWithCheckboxOnly,beforeSelectionChangeCallback:e.config.beforeSelectionChange,afterSelectionChangeCallback:e.config.afterSelectionChange,jqueryUITheme:e.config.jqueryUITheme,enableCellSelection:e.config.enableCellSelection,rowHeight:e.config.rowHeight},g.renderedRange=new R(0,e.minRowsToRender()+t),g.buildEntityRow=function(e,n){return new E(e,g.rowConfig,g.selectionProvider,n,r)},g.buildAggregateRow=function(n,t){var o=g.aggCache[n.aggIndex];return o||(o=new x(n,g,g.rowConfig.rowHeight,e.config.groupsCollapsedByDefault),g.aggCache[n.aggIndex]=o),o.rowIndex=t,o.offsetTop=t*g.rowConfig.rowHeight,o},g.UpdateViewableRange=function(e){g.renderedRange=e,g.renderedChange()},g.filteredRowsChanged=function(){e.lateBoundColumns&&e.filteredRows.length>0&&(e.config.columnDefs=void 0,e.buildColumns(),e.lateBoundColumns=!1,n.$evalAsync(function(){n.adjustScrollLeft(0)})),g.dataChanged=!0,e.config.groups.length>0&&g.getGrouping(e.config.groups),g.UpdateViewableRange(g.renderedRange)},g.renderedChange=function(){if(!g.groupedData||1>e.config.groups.length)return g.renderedChangeNoGroups(),e.refreshDomSizes(),void 0;g.wasGrouped=!0,g.parentCache=[];var n=0,t=g.parsedData.filter(function(e){return e.isAggRow?e.parent&&e.parent.collapsed?!1:!0:(e[s]||(e.rowIndex=n++),!e[s])});g.totalRows=t.length;for(var o=[],i=g.renderedRange.topRow;g.renderedRange.bottomRow>i;i++)t[i]&&(t[i].offsetTop=i*e.config.rowHeight,o.push(t[i]));e.setRenderedRows(o)},g.renderedChangeNoGroups=function(){for(var n=[],t=g.renderedRange.topRow;g.renderedRange.bottomRow>t;t++)e.filteredRows[t]&&(e.filteredRows[t].rowIndex=t,e.filteredRows[t].offsetTop=t*e.config.rowHeight,n.push(e.filteredRows[t]));e.setRenderedRows(n)},g.fixRowCache=function(){var n=e.data.length,t=n-e.rowCache.length;if(0>t)e.rowCache.length=e.rowMap.length=n;else for(var o=e.rowCache.length;n>o;o++)e.rowCache[o]=e.rowFactory.buildEntityRow(e.data[o],o)},g.parseGroupData=function(e){if(e.values)for(var n=0;e.values.length>n;n++)g.parentCache[g.parentCache.length-1].children.push(e.values[n]),g.parsedData.push(e.values[n]);else for(var t in e)if(t!==l&&t!==a&&t!==c&&e.hasOwnProperty(t)){var o=g.buildAggregateRow({gField:e[l],gLabel:t,gDepth:e[a],isAggRow:!0,_ng_hidden_:!1,children:[],aggChildren:[],aggIndex:g.numberOfAggregates,aggLabelFilter:e[c].aggLabelFilter},0);g.numberOfAggregates++,o.parent=g.parentCache[o.depth-1],o.parent&&(o.parent.collapsed=!1,o.parent.aggChildren.push(o)),g.parsedData.push(o),g.parentCache[o.depth]=o,g.parseGroupData(e[t])}},g.getGrouping=function(t){function d(e,n){return e.filter(function(e){return e.field===n})}g.aggCache=[],g.numberOfAggregates=0,g.groupedData={};for(var u=e.filteredRows,f=t.length,h=n.columns,p=0;u.length>p;p++){var m=u[p].entity;if(!m)return;u[p][s]=e.config.groupsCollapsedByDefault;for(var v=g.groupedData,w=0;t.length>w;w++){var C=t[w],b=d(h,C)[0],y=r.evalProperty(m,C);y=""===y||null===y?"null":""+y,v[y]||(v[y]={}),v[l]||(v[l]=C),v[a]||(v[a]=w),v[c]||(v[c]=b),v=v[y]}v.values||(v.values=[]),v.values.push(u[p])}if(h.length>0)for(var S=0;t.length>S;S++)!h[S].isAggCol&&f>=S&&h.splice(0,0,new T({colDef:{field:"",width:25,sortable:!1,resizable:!1,headerCellTemplate:'<div class="ngAggHeader"></div>',pinned:e.config.pinSelectionCheckbox},enablePinning:e.config.enablePinning,isAggCol:!0,headerRowHeight:e.config.headerRowHeight},n,e,o,i,r));e.fixColumnIndexes(),n.adjustScrollLeft(0),g.parsedData.length=0,g.parseGroupData(g.groupedData),g.fixRowCache()},e.config.groups.length>0&&e.filteredRows.length>0&&g.getGrouping(e.config.groups)},k=function(e,t,o,i){var r=this,l=[];r.extFilter=t.config.filterOptions.useExternalFilter,e.showFilter=t.config.showFilter,e.filterText="",r.fieldMap={};var a=function(e){var n={};for(var t in e)e.hasOwnProperty(t)&&(n[t.toLowerCase()]=e[t]);return n},s=function(e){if("object"==typeof e){var n=[];for(var t in e)n=n.concat(s(e[t]));return n}return[e]},c=function(e,n,t){var i;for(var r in n)if(n.hasOwnProperty(r)){var l=t[r.toLowerCase()],s=n[r];if("object"!=typeof s||s instanceof Date){var g=null,d=null;if(l&&l.cellFilter&&(d=l.cellFilter.split(":"),g=o(d[0])),null!==s&&void 0!==s){if("function"==typeof g){var u=""+g(s,d[1]?d[1].slice(1,-1):"");i=e.regex.test(u)}else i=e.regex.test(""+s);if(i)return!0}}else{var f=a(l);if(i=c(e,s,f))return!0}}return!1},g=function(e,n){var t,l=r.fieldMap[e.columnDisplay];if(!l)return!1;var a=l.cellFilter.split(":"),c=l.cellFilter?o(a[0]):null,g=n[e.column]||n[l.field.split(".")[0]]||i.evalProperty(n,l.field);if(null===g||void 0===g)return!1;if("function"==typeof c){var d=""+c("object"==typeof g?u(g,l.field):g,a[1]);t=e.regex.test(d)}else{var f=s(u(g,l.field));for(var h in f)t|=e.regex.test(f[h])}return t?!0:!1},d=function(e){for(var n=0,t=l.length;t>n;n++){var o,i=l[n];if(o=i.column?g(i,e):c(i,e,r.fieldMap),!o)return!1}return!0};r.evalFilter=function(){t.filteredRows=0===l.length?t.rowCache:t.rowCache.filter(function(e){return d(e.entity)});for(var e=0;t.filteredRows.length>e;e++)t.filteredRows[e].rowIndex=e;t.rowFactory.filteredRowsChanged()};var u=function(e,n){if("object"!=typeof e||"string"!=typeof n)return e;var t=n.split("."),o=e;if(t.length>1){for(var i=1,r=t.length;r>i;i++)if(o=o[t[i]],!o)return e;return o}return e},f=function(e,n){try{return RegExp(e,n)}catch(t){return RegExp(e.replace(/(\^|\$|\(|\)|<|>|\[|\]|\{|\}|\\|\||\.|\*|\+|\?)/g,"\\$1"))}},h=function(e){l=[];var t;if(t=n.trim(e))for(var o=t.split(";"),i=0;o.length>i;i++){var r=o[i].split(":");if(r.length>1){var a=n.trim(r[0]),s=n.trim(r[1]);a&&s&&l.push({column:a,columnDisplay:a.replace(/\s+/g,"").toLowerCase(),regex:f(s,"i")})}else{var c=n.trim(r[0]);c&&l.push({column:"",regex:f(c,"i")})}}};r.extFilter||e.$on("$destroy",e.$watch("columns",function(e){for(var n=0;e.length>n;n++){var t=e[n];if(t.field)if(t.field.match(/\./g)){for(var o=t.field.split("."),i=r.fieldMap,l=0;o.length-1>l;l++)i[o[l]]=i[o[l]]||{},i=i[o[l]];i[o[o.length-1]]=t}else r.fieldMap[t.field.toLowerCase()]=t;t.displayName&&(r.fieldMap[t.displayName.toLowerCase().replace(/\s+/g,"")]=t)}})),e.$on("$destroy",e.$watch(function(){return t.config.filterOptions.filterText},function(n){e.filterText=n})),e.$on("$destroy",e.$watch("filterText",function(n){r.extFilter||(e.$emit("ngGridEventFilter",n),h(n),r.evalFilter())}))},H=function(e,n,t,o){var i=this;i.multi=e.config.multiSelect,i.selectedItems=e.config.selectedItems,i.selectedIndex=e.config.selectedIndex,i.lastClickedRow=void 0,i.ignoreSelectedItemChanges=!1;var r=e.config.primaryKey;r&&(r=o.preEval("entity."+e.config.primaryKey)),i.pKeyParser=t(r),i.ChangeSelection=function(t,o){var r=o.which||o.keyCode,l=40===r||38===r;if(o&&o.shiftKey&&!o.keyCode&&i.multi&&e.config.enableRowSelection){if(i.lastClickedRow){var a;a=n.configGroups.length>0?e.rowFactory.parsedData.filter(function(e){return!e.isAggRow}):e.filteredRows;var s=t.rowIndex,c=i.lastClickedRowIndex;if(s===c)return!1;c>s?(s^=c,c=s^c,s^=c,s--):c++;for(var g=[];s>=c;c++)g.push(a[c]);if(g[g.length-1].beforeSelectionChange(g,o)){for(var d=0;g.length>d;d++){var u=g[d],f=u.selected;u.selected=!f,u.clone&&(u.clone.selected=u.selected);var h=i.selectedItems.indexOf(u.entity);-1===h?i.selectedItems.push(u.entity):i.selectedItems.splice(h,1)}g[g.length-1].afterSelectionChange(g,o)}return i.lastClickedRow=t,i.lastClickedRowIndex=t.rowIndex,!0}}else i.multi?(!o.keyCode||l&&!e.config.selectWithCheckboxOnly)&&i.setSelection(t,!t.selected):i.lastClickedRow===t?i.setSelection(i.lastClickedRow,e.config.keepLastSelected?!0:!t.selected):(i.lastClickedRow&&i.setSelection(i.lastClickedRow,!1),i.setSelection(t,!t.selected));return i.lastClickedRow=t,i.lastClickedRowIndex=t.rowIndex,!0},i.getSelection=function(e){return-1!==i.getSelectionIndex(e)},i.getSelectionIndex=function(n){var t=-1;if(e.config.primaryKey){var o=i.pKeyParser({entity:n});angular.forEach(i.selectedItems,function(e,n){o===i.pKeyParser({entity:e})&&(t=n)})}else t=i.selectedItems.indexOf(n);return t},i.setSelection=function(n,t){if(e.config.enableRowSelection){if(t)-1===i.getSelectionIndex(n.entity)&&(!i.multi&&i.selectedItems.length>0&&i.toggleSelectAll(!1,!0),i.selectedItems.push(n.entity));else{var o=i.getSelectionIndex(n.entity);-1!==o&&i.selectedItems.splice(o,1)}n.selected=t,n.orig&&(n.orig.selected=t),n.clone&&(n.clone.selected=t),n.afterSelectionChange(n)}},i.toggleSelectAll=function(n,t,o){var r,l,a=o?e.filteredRows:e.rowCache;if(t||e.config.beforeSelectionChange(a,n)){!o&&i.selectedItems.length>0&&(i.selectedItems.length=0);for(var s=0;a.length>s;s++)r=a[s].selected,a[s].selected=n,a[s].clone&&(a[s].clone.selected=n),!r&&n?i.selectedItems.push(a[s].entity):r&&!n&&(l=i.selectedItems.indexOf(a[s].entity),l>-1&&i.selectedItems.splice(l,1));t||e.config.afterSelectionChange(a,n)}}},F=function(e,n){e.headerCellStyle=function(e){return{height:e.headerRowHeight+"px"}},e.rowStyle=function(n){var t={top:n.offsetTop+"px",height:e.rowHeight+"px"};return n.isAggRow&&(t.left=n.offsetLeft),t},e.canvasStyle=function(){return{height:n.maxCanvasHt+"px"}},e.headerScrollerStyle=function(){return{height:n.config.headerRowHeight+"px"}},e.topPanelStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.topPanelHeight()+"px"}},e.headerStyle=function(){return{width:n.rootDim.outerWidth+"px",height:n.config.headerRowHeight+"px"}},e.groupPanelStyle=function(){return{width:n.rootDim.outerWidth+"px",height:"32px"}},e.viewportStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.viewportDimHeight()+"px"}},e.footerStyle=function(){return{width:n.rootDim.outerWidth+"px",height:e.footerRowHeight+"px"}}};b.directive("ngCellHasFocus",["$domUtilityService",function(e){var n=function(n){n.isFocused=!0,e.digest(n),n.$broadcast("ngGridEventStartCellEdit"),n.$emit("ngGridEventStartCellEdit"),n.$on("$destroy",n.$on("ngGridEventEndCellEdit",function(){n.isFocused=!1,e.digest(n)}))};return function(e,t){function o(){return e.enableCellEditOnFocus?c=!0:t.focus(),!0}function i(o){e.enableCellEditOnFocus&&(o.preventDefault(),c=!1,n(e,t))}function r(){return s=!0,e.enableCellEditOnFocus&&!c&&n(e,t),!0}function l(){return s=!1,!0}function a(o){return e.enableCellEditOnFocus||(s&&37!==o.keyCode&&38!==o.keyCode&&39!==o.keyCode&&40!==o.keyCode&&9!==o.keyCode&&!o.shiftKey&&13!==o.keyCode&&n(e,t),s&&o.shiftKey&&o.keyCode>=65&&90>=o.keyCode&&n(e,t),27===o.keyCode&&t.focus()),!0}var s=!1,c=!1;e.editCell=function(){e.enableCellEditOnFocus||setTimeout(function(){n(e,t)},0)},t.bind("mousedown",o),t.bind("click",i),t.bind("focus",r),t.bind("blur",l),t.bind("keydown",a),t.on("$destroy",function(){t.off("mousedown",o),t.off("click",i),t.off("focus",r),t.off("blur",l),t.off("keydown",a)})}}]),b.directive("ngCellText",function(){return function(e,n){function t(e){e.preventDefault()}function o(e){e.preventDefault()}n.bind("mouseover",t),n.bind("mouseleave",o),n.on("$destroy",function(){n.off("mouseover",t),n.off("mouseleave",o)})}}),b.directive("ngCell",["$compile","$domUtilityService","$utilityService",function(e,t,o){var i={scope:!1,compile:function(){return{pre:function(t,i){var r,l=t.col.cellTemplate.replace(d,o.preEval("row.entity."+t.col.field));t.col.enableCellEdit?(r=t.col.cellEditTemplate,r=r.replace(h,t.col.cellEditableCondition),r=r.replace(u,l),r=r.replace(f,t.col.editableCellTemplate.replace(d,o.preEval("row.entity."+t.col.field)))):r=l;var a=n(r);i.append(a),e(a)(t),t.enableCellSelection&&-1===a[0].className.indexOf("ngSelectionCell")&&(a[0].setAttribute("tabindex",0),a.addClass("ngCellElement"))},post:function(e,n){e.enableCellSelection&&e.domAccessProvider.selectionHandlers(e,n),e.$on("$destroy",e.$on("ngGridEventDigestCell",function(){t.digest(e)}))}}}};return i}]),b.directive("ngEditCellIf",[function(){return{transclude:"element",priority:1e3,terminal:!0,restrict:"A",compile:function(e,n,t){return function(e,n,o){var i,r;e.$on("$destroy",e.$watch(o.ngEditCellIf,function(o){i&&(i.remove(),i=void 0),r&&(r.$destroy(),r=void 0),o&&(r=e.$new(),t(r,function(e){i=e,n.after(e)}))}))}}}}]),b.directive("ngGridFooter",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"footerTemplate.html"))(t))}}}};return t}]),b.directive("ngGridMenu",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"menuTemplate.html"))(t))}}}};return t}]),b.directive("ngGrid",["$compile","$filter","$templateCache","$sortService","$domUtilityService","$utilityService","$timeout","$parse","$http","$q",function(e,t,o,i,r,l,a,s,c,g){var d={scope:!0,compile:function(){return{pre:function(d,u,f){var h=n(u),p=d.$eval(f.ngGrid);p.gridDim=new P({outerHeight:n(h).height(),outerWidth:n(h).width()});var m=new L(d,p,i,r,t,o,l,a,s,c,g);return d.$on("$destroy",function(){p.gridDim=null,p.selectRow=null,p.selectItem=null,p.selectAll=null,p.selectVisible=null,p.groupBy=null,p.sortBy=null,p.gridId=null,p.ngGrid=null,p.$gridScope=null,p.$gridServices=null,d.domAccessProvider.grid=null,angular.element(m.styleSheet).remove(),m.styleSheet=null}),m.init().then(function(){if("string"==typeof p.columnDefs?d.$on("$destroy",d.$parent.$watch(p.columnDefs,function(e){return e?(m.lateBoundColumns=!1,d.columns=[],m.config.columnDefs=e,m.buildColumns(),m.eventProvider.assignEvents(),r.RebuildGrid(d,m),void 0):(m.refreshDomSizes(),m.buildColumns(),void 0)},!0)):m.buildColumns(),"string"==typeof p.totalServerItems?d.$on("$destroy",d.$parent.$watch(p.totalServerItems,function(e){d.totalServerItems=angular.isDefined(e)?e:0})):d.totalServerItems=0,"string"==typeof p.data){var t=function(e){m.data=n.extend([],e),m.rowFactory.fixRowCache(),angular.forEach(m.data,function(e,n){var t=m.rowMap[n]||n;m.rowCache[t]&&m.rowCache[t].ensureEntity(e),m.rowMap[t]=n}),m.searchProvider.evalFilter(),m.configureColumnWidths(),m.refreshDomSizes(),m.config.sortInfo.fields.length>0&&(m.sortColumnsInit(),d.$emit("ngGridEventSorted",m.config.sortInfo)),d.$emit("ngGridEventData",m.gridId)};d.$on("$destroy",d.$parent.$watch(p.data,t)),d.$on("$destroy",d.$parent.$watch(p.data+".length",function(){t(d.$eval(p.data)),d.adjustScrollTop(m.$viewport.scrollTop(),!0)}))}return m.footerController=new D(d,m),u.addClass("ngGrid").addClass(""+m.gridId),p.enableHighlighting||u.addClass("unselectable"),p.jqueryUITheme&&u.addClass("ui-widget"),u.append(e(o.get("gridTemplate.html"))(d)),r.AssignGridContainers(d,u,m),m.eventProvider=new $(m,d,r,a),p.selectRow=function(e,n){m.rowCache[e]&&(m.rowCache[e].clone&&m.rowCache[e].clone.setSelection(n?!0:!1),m.rowCache[e].setSelection(n?!0:!1))},p.selectItem=function(e,n){p.selectRow(m.rowMap[e],n)},p.selectAll=function(e){d.toggleSelectAll(e)},p.selectVisible=function(e){d.toggleSelectAll(e,!0)},p.groupBy=function(e){if(e)d.groupBy(d.columns.filter(function(n){return n.field===e})[0]);else{var t=n.extend(!0,[],d.configGroups);angular.forEach(t,d.groupBy)}},p.sortBy=function(e){var n=d.columns.filter(function(n){return n.field===e})[0];n&&n.sort()},p.gridId=m.gridId,p.ngGrid=m,p.$gridScope=d,p.$gridServices={SortService:i,DomUtilityService:r,UtilityService:l},d.$on("$destroy",d.$on("ngGridEventDigestGrid",function(){r.digest(d.$parent)})),d.$on("$destroy",d.$on("ngGridEventDigestGridParent",function(){r.digest(d.$parent)})),d.$evalAsync(function(){d.adjustScrollLeft(0)}),angular.forEach(p.plugins,function(e){"function"==typeof e&&(e=new e);var n=d.$new();e.init(n,m,p.$gridServices),p.plugins[l.getInstanceType(e)]=e,d.$on("$destroy",function(){n.$destroy()})}),"function"==typeof p.init&&p.init(m,d),null})}}}};return d}]),b.directive("ngHeaderCell",["$compile",function(e){var n={scope:!1,compile:function(){return{pre:function(n,t){t.append(e(n.col.headerCellTemplate)(n))}}}};return n}]),b.directive("ngHeaderRow",["$compile","$templateCache",function(e,n){var t={scope:!1,compile:function(){return{pre:function(t,o){0===o.children().length&&o.append(e(n.get(t.gridId+"headerRowTemplate.html"))(t))}}}};return t}]),b.directive("ngInput",[function(){return{require:"ngModel",link:function(e,n,t,o){function i(t){switch(t.keyCode){case 37:case 38:case 39:case 40:t.stopPropagation();break;case 27:e.$$phase||e.$apply(function(){o.$setViewValue(a),n.blur()});break;case 13:(e.enableCellEditOnFocus&&e.totalFilteredItemsLength()-1>e.row.rowIndex&&e.row.rowIndex>0||e.col.enableCellEdit)&&n.blur()}return!0}function r(e){e.stopPropagation()}function l(e){e.stopPropagation()}var a,s=e.$watch("ngModel",function(){a=o.$modelValue,s()});n.bind("keydown",i),n.bind("click",r),n.bind("mousedown",l),n.on("$destroy",function(){n.off("keydown",i),n.off("click",r),n.off("mousedown",l)}),e.$on("$destroy",e.$on("ngGridEventStartCellEdit",function(){n.focus(),n.select()})),angular.element(n).bind("blur",function(){e.$emit("ngGridEventEndCellEdit")})}}}]),b.directive("ngRow",["$compile","$domUtilityService","$templateCache",function(e,n,t){var o={scope:!1,compile:function(){return{pre:function(o,i){if(o.row.elm=i,o.row.clone&&(o.row.clone.elm=i),o.row.isAggRow){var r=t.get(o.gridId+"aggregateTemplate.html");r=o.row.aggLabelFilter?r.replace(g,"| "+o.row.aggLabelFilter):r.replace(g,""),i.append(e(r)(o))}else i.append(e(t.get(o.gridId+"rowTemplate.html"))(o));o.$on("$destroy",o.$on("ngGridEventDigestRow",function(){n.digest(o)}))}}}};return o}]),b.directive("ngViewport",[function(){return function(e,n){function t(n){var t=n.target.scrollLeft,o=n.target.scrollTop;return e.$headerContainer&&e.$headerContainer.scrollLeft(t),e.adjustScrollLeft(t),e.adjustScrollTop(o),e.forceSyncScrolling?s():(clearTimeout(l),l=setTimeout(s,150)),r=t,a=o,i=!1,!0}function o(){return i=!0,n.focus&&n.focus(),!0}var i,r,l,a=0,s=function(){e.$root.$$phase||e.$digest()};n.bind("scroll",t),n.bind("mousewheel DOMMouseScroll",o),n.on("$destroy",function(){n.off("scroll",t),n.off("mousewheel DOMMouseScroll",o)}),e.enableCellSelection||e.domAccessProvider.selectionHandlers(e,n)}}]),e.ngGrid.i18n.da={ngAggregateLabel:"artikler",ngGroupPanelDescription:"Grupér rækker udfra en kolonne ved at trække dens overskift hertil.",ngSearchPlaceHolder:"Søg...",ngMenuText:"Vælg kolonner:",ngShowingItemsLabel:"Viste rækker:",ngTotalItemsLabel:"Rækker totalt:",ngSelectedItemsLabel:"Valgte rækker:",ngPageSizeLabel:"Side størrelse:",ngPagerFirstTitle:"Første side",ngPagerNextTitle:"Næste side",ngPagerPrevTitle:"Forrige side",ngPagerLastTitle:"Sidste side"},e.ngGrid.i18n.de={ngAggregateLabel:"eintrag",ngGroupPanelDescription:"Ziehen Sie eine Spaltenüberschrift hierhin um nach dieser Spalte zu gruppieren.",ngSearchPlaceHolder:"Suche...",ngMenuText:"Spalten auswählen:",ngShowingItemsLabel:"Zeige Einträge:",ngTotalItemsLabel:"Einträge gesamt:",ngSelectedItemsLabel:"Ausgewählte Einträge:",ngPageSizeLabel:"Einträge pro Seite:",ngPagerFirstTitle:"Erste Seite",ngPagerNextTitle:"Nächste Seite",ngPagerPrevTitle:"Vorherige Seite",ngPagerLastTitle:"Letzte Seite"},e.ngGrid.i18n.en={ngAggregateLabel:"items",ngGroupPanelDescription:"Drag a column header here and drop it to group by that column.",ngSearchPlaceHolder:"Search...",ngMenuText:"Choose Columns:",ngShowingItemsLabel:"Showing Items:",ngTotalItemsLabel:"Total Items:",ngSelectedItemsLabel:"Selected Items:",ngPageSizeLabel:"Page Size:",ngPagerFirstTitle:"First Page",ngPagerNextTitle:"Next Page",ngPagerPrevTitle:"Previous Page",ngPagerLastTitle:"Last Page"},e.ngGrid.i18n.es={ngAggregateLabel:"Artículos",ngGroupPanelDescription:"Arrastre un encabezado de columna aquí y soltarlo para agrupar por esa columna.",ngSearchPlaceHolder:"Buscar...",ngMenuText:"Elegir columnas:",ngShowingItemsLabel:"Artículos Mostrando:",ngTotalItemsLabel:"Artículos Totales:",ngSelectedItemsLabel:"Artículos Seleccionados:",ngPageSizeLabel:"Tamaño de Página:",ngPagerFirstTitle:"Primera Página",ngPagerNextTitle:"Página Siguiente",ngPagerPrevTitle:"Página Anterior",ngPagerLastTitle:"Última Página"},e.ngGrid.i18n.fa={ngAggregateLabel:"موردها",ngGroupPanelDescription:"یک عنوان ستون اینجا را بردار و به گروهی از آن ستون بیانداز.",ngSearchPlaceHolder:"جستجو...",ngMenuText:"انتخاب ستون‌ها:",ngShowingItemsLabel:"نمایش موردها:",ngTotalItemsLabel:"همهٔ موردها:",ngSelectedItemsLabel:"موردهای انتخاب‌شده:",ngPageSizeLabel:"اندازهٔ صفحه:",ngPagerFirstTitle:"صفحهٔ اول",ngPagerNextTitle:"صفحهٔ بعد",ngPagerPrevTitle:"صفحهٔ قبل",ngPagerLastTitle:"آخرین صفحه"},e.ngGrid.i18n.fr={ngAggregateLabel:"articles",ngGroupPanelDescription:"Faites glisser un en-tête de colonne ici et déposez-le vers un groupe par cette colonne.",ngSearchPlaceHolder:"Recherche...",ngMenuText:"Choisir des colonnes:",ngShowingItemsLabel:"Articles Affichage des:",ngTotalItemsLabel:"Nombre total d'articles:",ngSelectedItemsLabel:"Éléments Articles:",ngPageSizeLabel:"Taille de page:",ngPagerFirstTitle:"Première page",ngPagerNextTitle:"Page Suivante",ngPagerPrevTitle:"Page précédente",ngPagerLastTitle:"Dernière page"},e.ngGrid.i18n.nl={ngAggregateLabel:"items",ngGroupPanelDescription:"Sleep hier een kolomkop om op te groeperen.",ngSearchPlaceHolder:"Zoeken...",ngMenuText:"Kies kolommen:",ngShowingItemsLabel:"Toon items:",ngTotalItemsLabel:"Totaal items:",ngSelectedItemsLabel:"Geselecteerde items:",ngPageSizeLabel:"Pagina grootte:, ",ngPagerFirstTitle:"Eerste pagina",ngPagerNextTitle:"Volgende pagina",ngPagerPrevTitle:"Vorige pagina",ngPagerLastTitle:"Laatste pagina"},e.ngGrid.i18n["pt-br"]={ngAggregateLabel:"itens",ngGroupPanelDescription:"Arraste e solte uma coluna aqui para agrupar por essa coluna",ngSearchPlaceHolder:"Procurar...",ngMenuText:"Selecione as colunas:",ngShowingItemsLabel:"Mostrando os Itens:",ngTotalItemsLabel:"Total de Itens:",ngSelectedItemsLabel:"Items Selecionados:",ngPageSizeLabel:"Tamanho da Página:",ngPagerFirstTitle:"Primeira Página",ngPagerNextTitle:"Próxima Página",ngPagerPrevTitle:"Página Anterior",ngPagerLastTitle:"Última Página"},e.ngGrid.i18n.ru={ngAggregateLabel:"записи",ngGroupPanelDescription:"Перетащите сюда заголовок колонки для группировки по этой колонке.",ngSearchPlaceHolder:"Искать...",ngMenuText:"Выберите столбцы:",ngShowingItemsLabel:"Показаны записи:",ngTotalItemsLabel:"Всего записей:",ngSelectedItemsLabel:"Выбранные записи:",ngPageSizeLabel:"Строк на странице:",ngPagerFirstTitle:"Первая страница",ngPagerNextTitle:"Следующая страница",ngPagerPrevTitle:"Предыдущая страница",ngPagerLastTitle:"Последняя страница"},e.ngGrid.i18n["zh-cn"]={ngAggregateLabel:"条目",ngGroupPanelDescription:"拖曳表头到此处以进行分组",ngSearchPlaceHolder:"搜索...",ngMenuText:"数据分组与选择列：",ngShowingItemsLabel:"当前显示条目：",ngTotalItemsLabel:"条目总数：",ngSelectedItemsLabel:"选中条目：",ngPageSizeLabel:"每页显示数：",ngPagerFirstTitle:"回到首页",ngPagerNextTitle:"下一页",ngPagerPrevTitle:"上一页",ngPagerLastTitle:"前往尾页"},e.ngGrid.i18n["zh-tw"]={ngAggregateLabel:"筆",ngGroupPanelDescription:"拖拉表頭到此處以進行分組",ngSearchPlaceHolder:"搜尋...",ngMenuText:"選擇欄位：",ngShowingItemsLabel:"目前顯示筆數：",ngTotalItemsLabel:"總筆數：",ngSelectedItemsLabel:"選取筆數：",ngPageSizeLabel:"每頁顯示：",ngPagerFirstTitle:"第一頁",ngPagerNextTitle:"下一頁",ngPagerPrevTitle:"上一頁",ngPagerLastTitle:"最後頁"},angular.module("ngGrid").run(["$templateCache",function(e){e.put("aggregateTemplate.html",'<div ng-click="row.toggleExpand()" ng-style="rowStyle(row)" class="ngAggregate">\r\n    <span class="ngAggregateText">{{row.label CUSTOM_FILTERS}} ({{row.totalChildren()}} {{AggItemsLabel}})</span>\r\n    <div class="{{row.aggClass()}}"></div>\r\n</div>\r\n'),e.put("cellEditTemplate.html",'<div ng-cell-has-focus ng-dblclick="CELL_EDITABLE_CONDITION && editCell()">\r\n	<div ng-edit-cell-if="!(isFocused && CELL_EDITABLE_CONDITION)">	\r\n		DISPLAY_CELL_TEMPLATE\r\n	</div>\r\n	<div ng-edit-cell-if="isFocused && CELL_EDITABLE_CONDITION">\r\n		EDITABLE_CELL_TEMPLATE\r\n	</div>\r\n</div>\r\n'),e.put("cellTemplate.html",'<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text>{{COL_FIELD CUSTOM_FILTERS}}</span></div>'),e.put("checkboxCellTemplate.html",'<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-checked="row.selected" /></div>'),e.put("checkboxHeaderTemplate.html",'<input class="ngSelectionHeader" type="checkbox" ng-show="multiSelect" ng-model="allSelected" ng-change="toggleSelectAll(allSelected, true)"/>'),e.put("editableCellTemplate.html",'<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" />'),e.put("footerTemplate.html",'<div ng-show="showFooter" class="ngFooterPanel" ng-class="{\'ui-widget-content\': jqueryUITheme, \'ui-corner-bottom\': jqueryUITheme}" ng-style="footerStyle()">\r\n    <div class="ngTotalSelectContainer" >\r\n        <div class="ngFooterTotalItems" ng-class="{\'ngNoMultiSelect\': !multiSelect}" >\r\n            <span class="ngLabel">{{i18n.ngTotalItemsLabel}} {{maxRows()}}</span><span ng-show="filterText.length > 0" class="ngLabel">({{i18n.ngShowingItemsLabel}} {{totalFilteredItemsLength()}})</span>\r\n        </div>\r\n        <div class="ngFooterSelectedItems" ng-show="multiSelect">\r\n            <span class="ngLabel">{{i18n.ngSelectedItemsLabel}} {{selectedItems.length}}</span>\r\n        </div>\r\n    </div>\r\n    <div class="ngPagerContainer" style="float: right; margin-top: 10px;" ng-show="enablePaging" ng-class="{\'ngNoMultiSelect\': !multiSelect}">\r\n        <div style="float:left; margin-right: 10px;" class="ngRowCountPicker">\r\n            <span style="float: left; margin-top: 3px;" class="ngLabel">{{i18n.ngPageSizeLabel}}</span>\r\n            <select style="float: left;height: 27px; width: 100px" ng-model="pagingOptions.pageSize" >\r\n                <option ng-repeat="size in pagingOptions.pageSizes">{{size}}</option>\r\n            </select>\r\n        </div>\r\n        <div style="float:left; margin-right: 10px; line-height:25px;" class="ngPagerControl" style="float: left; min-width: 135px;">\r\n            <button type="button" class="ngPagerButton" ng-click="pageToFirst()" ng-disabled="cantPageBackward()" title="{{i18n.ngPagerFirstTitle}}"><div class="ngPagerFirstTriangle"><div class="ngPagerFirstBar"></div></div></button>\r\n            <button type="button" class="ngPagerButton" ng-click="pageBackward()" ng-disabled="cantPageBackward()" title="{{i18n.ngPagerPrevTitle}}"><div class="ngPagerFirstTriangle ngPagerPrevTriangle"></div></button>\r\n            <input class="ngPagerCurrent" min="1" max="{{currentMaxPages}}" type="number" style="width:50px; height: 24px; margin-top: 1px; padding: 0 4px;" ng-model="pagingOptions.currentPage"/>\r\n            <span class="ngGridMaxPagesNumber" ng-show="maxPages() > 0">/ {{maxPages()}}</span>\r\n            <button type="button" class="ngPagerButton" ng-click="pageForward()" ng-disabled="cantPageForward()" title="{{i18n.ngPagerNextTitle}}"><div class="ngPagerLastTriangle ngPagerNextTriangle"></div></button>\r\n            <button type="button" class="ngPagerButton" ng-click="pageToLast()" ng-disabled="cantPageToLast()" title="{{i18n.ngPagerLastTitle}}"><div class="ngPagerLastTriangle"><div class="ngPagerLastBar"></div></div></button>\r\n        </div>\r\n    </div>\r\n</div>\r\n'),e.put("gridTemplate.html",'<div class="ngTopPanel" ng-class="{\'ui-widget-header\':jqueryUITheme, \'ui-corner-top\': jqueryUITheme}" ng-style="topPanelStyle()">\r\n    <div class="ngGroupPanel" ng-show="showGroupPanel()" ng-style="groupPanelStyle()">\r\n        <div class="ngGroupPanelDescription" ng-show="configGroups.length == 0">{{i18n.ngGroupPanelDescription}}</div>\r\n        <ul ng-show="configGroups.length > 0" class="ngGroupList">\r\n            <li class="ngGroupItem" ng-repeat="group in configGroups">\r\n                <span class="ngGroupElement">\r\n                    <span class="ngGroupName">{{group.displayName}}\r\n                        <span ng-click="removeGroup($index)" class="ngRemoveGroup">x</span>\r\n                    </span>\r\n                    <span ng-hide="$last" class="ngGroupArrow"></span>\r\n                </span>\r\n            </li>\r\n        </ul>\r\n    </div>\r\n    <div class="ngHeaderContainer" ng-style="headerStyle()">\r\n        <div ng-header-row class="ngHeaderScroller" ng-style="headerScrollerStyle()"></div>\r\n    </div>\r\n    <div ng-grid-menu></div>\r\n</div>\r\n<div class="ngViewport" unselectable="on" ng-viewport ng-class="{\'ui-widget-content\': jqueryUITheme}" ng-style="viewportStyle()">\r\n    <div class="ngCanvas" ng-style="canvasStyle()">\r\n        <div ng-style="rowStyle(row)" ng-repeat="row in renderedRows" ng-click="row.toggleSelected($event)" ng-class="row.alternatingRowClass()" ng-row></div>\r\n    </div>\r\n</div>\r\n<div ng-grid-footer></div>\r\n'),e.put("headerCellTemplate.html",'<div class="ngHeaderSortColumn {{col.headerClass}}" ng-style="{\'cursor\': col.cursor}" ng-class="{ \'ngSorted\': !col.noSortVisible() }">\r\n    <div ng-click="col.sort($event)" ng-class="\'colt\' + col.index" class="ngHeaderText">{{col.displayName}}</div>\r\n    <div class="ngSortButtonDown" ng-click="col.sort($event)" ng-show="col.showSortButtonDown()"></div>\r\n    <div class="ngSortButtonUp" ng-click="col.sort($event)" ng-show="col.showSortButtonUp()"></div>\r\n    <div class="ngSortPriority">{{col.sortPriority}}</div>\r\n    <div ng-class="{ ngPinnedIcon: col.pinned, ngUnPinnedIcon: !col.pinned }" ng-click="togglePin(col)" ng-show="col.pinnable"></div>\r\n</div>\r\n<div ng-show="col.resizable" class="ngHeaderGrip" ng-click="col.gripClick($event)" ng-mousedown="col.gripOnMouseDown($event)"></div>\r\n'),e.put("headerRowTemplate.html",'<div ng-style="{ height: col.headerRowHeight }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngHeaderCell">\r\n	<div class="ngVerticalBar" ng-style="{height: col.headerRowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>\r\n	<div ng-header-cell></div>\r\n</div>'),e.put("menuTemplate.html",'<div ng-show="showColumnMenu || showFilter"  class="ngHeaderButton" ng-click="toggleShowMenu()">\r\n    <div class="ngHeaderButtonArrow"></div>\r\n</div>\r\n<div ng-show="showMenu" class="ngColMenu">\r\n    <div ng-show="showFilter">\r\n        <input placeholder="{{i18n.ngSearchPlaceHolder}}" type="text" ng-model="filterText"/>\r\n    </div>\r\n    <div ng-show="showColumnMenu">\r\n        <span class="ngMenuText">{{i18n.ngMenuText}}</span>\r\n        <ul class="ngColList">\r\n            <li class="ngColListItem" ng-repeat="col in columns | ngColumns">\r\n                <label><input ng-disabled="col.pinned" type="checkbox" class="ngColListCheckbox" ng-model="col.visible"/>{{col.displayName}}</label>\r\n				<a title="Group By" ng-class="col.groupedByClass()" ng-show="col.groupable && col.visible" ng-click="groupBy(col)"></a>\r\n				<span class="ngGroupingNumber" ng-show="col.groupIndex > 0">{{col.groupIndex}}</span>          \r\n            </li>\r\n        </ul>\r\n    </div>\r\n</div>'),e.put("rowTemplate.html",'<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}">\r\n	<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }">&nbsp;</div>\r\n	<div ng-cell></div>\r\n</div>')
-}])})(window,jQuery);
-},{}],7:[function(require,module,exports){
-var css = ".ngGrid{background-color:#fdfdfd}.ngGrid input[type=\"checkbox\"]{margin:0;padding:0}.ngGrid input{vertical-align:top}.ngGrid.unselectable{-moz-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-o-user-select:none;user-select:none}.ngViewport{overflow:auto;min-height:20px}.ngViewport:focus{outline:0}.ngCanvas{position:relative}.ngVerticalBar{position:absolute;right:0;width:0}.ngVerticalBarVisible{width:1px;background-color:#d4d4d4}#testDataLength{position:absolute;top:0;right:0;z-index:-100000}.ngHeaderContainer{position:relative;overflow:hidden;font-weight:bold;background-color:inherit}.ngHeaderCell{position:absolute;top:0;bottom:0;background-color:inherit}.ngHeaderCell.pinned{z-index:1}.ngHeaderSortColumn{position:absolute;overflow:hidden}.ngTopPanel{position:relative;z-index:1;background-color:#eaeaea;border-bottom:1px solid #d4d4d4}.ngSortButtonDown{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:0 5px 5px 5px;height:0;width:0}.ngNoSort{cursor:default}.ngHeaderButton{position:absolute;right:2px;top:8px;-moz-border-radius:50%;-webkit-border-radius:50%;border-radius:50%;width:14px;height:14px;z-index:1;background-color:#9fbbb4;cursor:pointer}.ngSortButtonUp{position:absolute;top:3px;left:0;right:0;margin-left:auto;margin-right:auto;border-color:gray transparent;border-style:solid;border-width:5px 5px 0 5px;height:0;width:0}.ngHeaderScroller{position:absolute;background-color:inherit}.ngSortPriority{position:absolute;top:-5px;left:1px;font-size:6pt;font-weight:bold}.ngHeaderGrip{cursor:col-resize;width:10px;right:-5px;top:0;height:100%;position:absolute;background-color:transparent}.ngHeaderText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngHeaderButtonArrow{position:absolute;top:4px;left:3px;width:0;height:0;border-style:solid;border-width:6.5px 4.5px 0 4.5px;border-color:#4d4d4d transparent transparent transparent}.ngPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);background-repeat:no-repeat;position:absolute;right:5px;top:5px;height:10px;width:10px}.ngUnPinnedIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAlElEQVQoU33PPQrCQBRF4fFnI2KfZVi5ARvdgo1l6mwmkCJVOgluwd5OwUoDtnoOxAei8cLXTN7cvEl/skCNDCMPfsUPO5zQwOHIDEvYtMURHe6wOVLgigvOePRyeDkyR4ln7wZ//7XfFBu8B23+aDJjrHGAwza7hjtHJvDmHg7b7Bru7AMjK7Rw2ObBVHDY5oGk9AKQNB2zy8MBTgAAAABJRU5ErkJggg==);background-repeat:no-repeat;position:absolute;height:10px;width:10px;right:5px;top:5px}.ngColMenu{right:2px;padding:5px;top:25px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;background-color:#bdd0cb;position:absolute;border:2px solid #d4d4d4;z-index:1}.ngColListCheckbox{position:relative;right:3px;top:4px}.ngColList{list-style-type:none;margin-top:2px;margin-left:8px}.ngColListItem{white-space:nowrap}.ngMenuText{position:relative;top:2px;left:2px}.ngGroupPanel{background-color:#eaeaea;overflow:hidden;border-bottom:1px solid #d4d4d4}.ngGroupPanelDescription{margin-top:5px;margin-left:5px}.ngGroupList{list-style-type:none;margin:0;padding:0}.ngAggHeader{position:absolute;border:0}.ngGroupElement{float:left;height:100%;width:100%}.ngGroupIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAEFJREFUKFNjoAhISkr+h2J5JDZODNXGwGBsbPwfhIGAA8bGh6HaGBiAGhxAGJmND4M1gQCSM0adCsVQbcPcqQwMALWDGyDvWPefAAAAAElFTkSuQmCC);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupedByIcon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAANCAYAAACZ3F9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAElJREFUKFNjoAhISkr+R8LyaHwMDNXGwGBsbPwfhoGAA5mPDUO1oWpE52PDYE0gALTFAYbR+dgwWBMIoPlh1I9ADNU2NPzIwAAAFQYI9E4OLvEAAAAASUVORK5CYII=);background-repeat:no-repeat;height:15px;width:15px;position:absolute;right:-2px;top:2px}.ngGroupName{background-color:#fdfdfd;border:1px solid #d4d4d4;padding:3px 10px;float:left;margin-left:0;margin-top:2px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;font-weight:bold}.ngGroupArrow{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:6px solid black;margin-top:10px;margin-left:5px;margin-right:5px;float:right}.ngGroupingNumber{position:absolute;right:-10px;top:-2px}.ngAggArrowCollapsed{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #000}.ngGroupItem{float:left}.ngGroupItem:first-child{margin-left:2px}.ngRemoveGroup{width:5px;-moz-opacity:.4;opacity:.4;margin-top:-1px;margin-left:5px}.ngRemoveGroup:hover{color:black;text-decoration:none;cursor:pointer;-moz-opacity:.7;opacity:.7}.ngAggArrowExpanded{position:absolute;left:8px;bottom:10px;width:0;height:0;border-style:solid;border-width:0 0 9px 9px;border-color:transparent transparent #000 transparent}.ngAggregate{position:absolute;background-color:#c9dde1;border-bottom:1px solid beige;overflow:hidden;top:0;bottom:0;right:-1px;left:0}.ngAggregateText{position:absolute;left:27px;top:5px;line-height:20px;white-space:nowrap}.ngRow{position:absolute;border-bottom:1px solid #d4d4d4}.ngRow.odd{background-color:#fdfdfd}.ngRow.even{background-color:#f3f3f3}.ngRow.selected{background-color:#c9dde1}.ngCell{overflow:hidden;position:absolute;top:0;bottom:0;background-color:inherit}.ngCell.pinned{z-index:1}.ngCellText{padding:5px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;white-space:nowrap;-ms-text-overflow:ellipsis;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden}.ngSelectionCell{margin-top:9px;margin-left:6px}.ngSelectionHeader{position:absolute;top:11px;left:6px}.ngCellElement:focus{outline:0;background-color:#b3c4c7}.ngRow.canSelect{cursor:pointer}.ngSelectionCheckbox{margin-top:9px;margin-left:6px}.ngFooterPanel{background-color:#eaeaea;padding:0;border-top:1px solid #d4d4d4;position:relative}.nglabel{display:block;float:left;font-weight:bold;padding-right:5px}.ngTotalSelectContainer{float:left;margin:5px;margin-top:7px}.ngFooterSelectedItems{padding:2px}.ngFooterTotalItems.ngnoMultiSelect{padding:0!important}.ngGridMaxPagesNumber{vertical-align:middle}.ngPagerFirstBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:-3px}.ngPagerButton{height:25px;min-width:26px}.ngPagerFirstTriangle{width:0;height:0;border-style:solid;border-width:5px 8.7px 5px 0;border-color:transparent #4d4d4d transparent transparent;margin-left:2px}.ngPagerNextTriangle{margin-left:1px}.ngPagerPrevTriangle{margin-left:0}.ngPagerLastTriangle{width:0;height:0;border-style:solid;border-width:5px 0 5px 8.7px;border-color:transparent transparent transparent #4d4d4d;margin-left:-1px}.ngPagerLastBar{width:10px;border-left:2px solid #4d4d4d;margin-top:-6px;height:12px;margin-left:1px}.ngFooterTotalItems{padding:2px}"; (require("/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
-},{"/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify":15}],8:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+var css = "/* BASICS */\n\n.CodeMirror {\n  /* Set height, width, borders, and global font properties here */\n  font-family: monospace;\n  height: 300px;\n}\n.CodeMirror-scroll {\n  /* Set scrolling behaviour here */\n  overflow: auto;\n}\n\n/* PADDING */\n\n.CodeMirror-lines {\n  padding: 4px 0; /* Vertical padding around content */\n}\n.CodeMirror pre {\n  padding: 0 4px; /* Horizontal padding of content */\n}\n\n.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  background-color: white; /* The little square between H and V scrollbars */\n}\n\n/* GUTTER */\n\n.CodeMirror-gutters {\n  border-right: 1px solid #ddd;\n  background-color: #f7f7f7;\n  white-space: nowrap;\n}\n.CodeMirror-linenumbers {}\n.CodeMirror-linenumber {\n  padding: 0 3px 0 5px;\n  min-width: 20px;\n  text-align: right;\n  color: #999;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n.CodeMirror-guttermarker { color: black; }\n.CodeMirror-guttermarker-subtle { color: #999; }\n\n/* CURSOR */\n\n.CodeMirror div.CodeMirror-cursor {\n  border-left: 1px solid black;\n}\n/* Shown when moving in bi-directional text */\n.CodeMirror div.CodeMirror-secondarycursor {\n  border-left: 1px solid silver;\n}\n.CodeMirror.cm-fat-cursor div.CodeMirror-cursor {\n  width: auto;\n  border: 0;\n  background: #7e7;\n}\n.CodeMirror.cm-fat-cursor div.CodeMirror-cursors {\n  z-index: 1;\n}\n\n.cm-animate-fat-cursor {\n  width: auto;\n  border: 0;\n  -webkit-animation: blink 1.06s steps(1) infinite;\n  -moz-animation: blink 1.06s steps(1) infinite;\n  animation: blink 1.06s steps(1) infinite;\n}\n@-moz-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@-webkit-keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n@keyframes blink {\n  0% { background: #7e7; }\n  50% { background: none; }\n  100% { background: #7e7; }\n}\n\n/* Can style cursor different in overwrite (non-insert) mode */\ndiv.CodeMirror-overwrite div.CodeMirror-cursor {}\n\n.cm-tab { display: inline-block; text-decoration: inherit; }\n\n.CodeMirror-ruler {\n  border-left: 1px solid #ccc;\n  position: absolute;\n}\n\n/* DEFAULT THEME */\n\n.cm-s-default .cm-keyword {color: #708;}\n.cm-s-default .cm-atom {color: #219;}\n.cm-s-default .cm-number {color: #164;}\n.cm-s-default .cm-def {color: #00f;}\n.cm-s-default .cm-variable,\n.cm-s-default .cm-punctuation,\n.cm-s-default .cm-property,\n.cm-s-default .cm-operator {}\n.cm-s-default .cm-variable-2 {color: #05a;}\n.cm-s-default .cm-variable-3 {color: #085;}\n.cm-s-default .cm-comment {color: #a50;}\n.cm-s-default .cm-string {color: #a11;}\n.cm-s-default .cm-string-2 {color: #f50;}\n.cm-s-default .cm-meta {color: #555;}\n.cm-s-default .cm-qualifier {color: #555;}\n.cm-s-default .cm-builtin {color: #30a;}\n.cm-s-default .cm-bracket {color: #997;}\n.cm-s-default .cm-tag {color: #170;}\n.cm-s-default .cm-attribute {color: #00c;}\n.cm-s-default .cm-header {color: blue;}\n.cm-s-default .cm-quote {color: #090;}\n.cm-s-default .cm-hr {color: #999;}\n.cm-s-default .cm-link {color: #00c;}\n\n.cm-negative {color: #d44;}\n.cm-positive {color: #292;}\n.cm-header, .cm-strong {font-weight: bold;}\n.cm-em {font-style: italic;}\n.cm-link {text-decoration: underline;}\n.cm-strikethrough {text-decoration: line-through;}\n\n.cm-s-default .cm-error {color: #f00;}\n.cm-invalidchar {color: #f00;}\n\n/* Default styles for common addons */\n\ndiv.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}\ndiv.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}\n.CodeMirror-matchingtag { background: rgba(255, 150, 0, .3); }\n.CodeMirror-activeline-background {background: #e8f2ff;}\n\n/* STOP */\n\n/* The rest of this file contains styles related to the mechanics of\n   the editor. You probably shouldn't touch them. */\n\n.CodeMirror {\n  line-height: 1;\n  position: relative;\n  overflow: hidden;\n  background: white;\n  color: black;\n}\n\n.CodeMirror-scroll {\n  /* 30px is the magic margin used to hide the element's real scrollbars */\n  /* See overflow: hidden in .CodeMirror */\n  margin-bottom: -30px; margin-right: -30px;\n  padding-bottom: 30px;\n  height: 100%;\n  outline: none; /* Prevent dragging from highlighting the element */\n  position: relative;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n.CodeMirror-sizer {\n  position: relative;\n  border-right: 30px solid transparent;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n}\n\n/* The fake, visible scrollbars. Used to force redraw during scrolling\n   before actuall scrolling happens, thus preventing shaking and\n   flickering artifacts. */\n.CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {\n  position: absolute;\n  z-index: 6;\n  display: none;\n}\n.CodeMirror-vscrollbar {\n  right: 0; top: 0;\n  overflow-x: hidden;\n  overflow-y: scroll;\n}\n.CodeMirror-hscrollbar {\n  bottom: 0; left: 0;\n  overflow-y: hidden;\n  overflow-x: scroll;\n}\n.CodeMirror-scrollbar-filler {\n  right: 0; bottom: 0;\n}\n.CodeMirror-gutter-filler {\n  left: 0; bottom: 0;\n}\n\n.CodeMirror-gutters {\n  position: absolute; left: 0; top: 0;\n  padding-bottom: 30px;\n  z-index: 3;\n}\n.CodeMirror-gutter {\n  white-space: normal;\n  height: 100%;\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  padding-bottom: 30px;\n  margin-bottom: -32px;\n  display: inline-block;\n  /* Hack to make IE7 behave */\n  *zoom:1;\n  *display:inline;\n}\n.CodeMirror-gutter-wrapper {\n  position: absolute;\n  z-index: 4;\n  height: 100%;\n}\n.CodeMirror-gutter-elt {\n  position: absolute;\n  cursor: default;\n  z-index: 4;\n}\n\n.CodeMirror-lines {\n  cursor: text;\n  min-height: 1px; /* prevents collapsing before first draw */\n}\n.CodeMirror pre {\n  /* Reset some styles that the rest of the page might have set */\n  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;\n  border-width: 0;\n  background: transparent;\n  font-family: inherit;\n  font-size: inherit;\n  margin: 0;\n  white-space: pre;\n  word-wrap: normal;\n  line-height: inherit;\n  color: inherit;\n  z-index: 2;\n  position: relative;\n  overflow: visible;\n}\n.CodeMirror-wrap pre {\n  word-wrap: break-word;\n  white-space: pre-wrap;\n  word-break: normal;\n}\n\n.CodeMirror-linebackground {\n  position: absolute;\n  left: 0; right: 0; top: 0; bottom: 0;\n  z-index: 0;\n}\n\n.CodeMirror-linewidget {\n  position: relative;\n  z-index: 2;\n  overflow: auto;\n}\n\n.CodeMirror-widget {}\n\n.CodeMirror-wrap .CodeMirror-scroll {\n  overflow-x: hidden;\n}\n\n.CodeMirror-measure {\n  position: absolute;\n  width: 100%;\n  height: 0;\n  overflow: hidden;\n  visibility: hidden;\n}\n.CodeMirror-measure pre { position: static; }\n\n.CodeMirror div.CodeMirror-cursor {\n  position: absolute;\n  border-right: none;\n  width: 0;\n}\n\ndiv.CodeMirror-cursors {\n  visibility: hidden;\n  position: relative;\n  z-index: 3;\n}\n.CodeMirror-focused div.CodeMirror-cursors {\n  visibility: visible;\n}\n\n.CodeMirror-selected { background: #d9d9d9; }\n.CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }\n.CodeMirror-crosshair { cursor: crosshair; }\n\n.cm-searching {\n  background: #ffa;\n  background: rgba(255, 255, 0, .4);\n}\n\n/* IE7 hack to prevent it from returning funny offsetTops on the spans */\n.CodeMirror span { *vertical-align: text-bottom; }\n\n/* Used to force a border model for a node */\n.cm-force-border { padding-right: .1px; }\n\n@media print {\n  /* Hide the cursor when printing */\n  .CodeMirror div.CodeMirror-cursors {\n    visibility: hidden;\n  }\n}\n\n/* See issue #2901 */\n.cm-tab-wrap-hack:after { content: ''; }\n\n/* Help users use markselection to safely style text background */\nspan.CodeMirror-selectedtext { background: none; }\n"; (require("/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify"))(css); module.exports = css;
+},{"/Users/laszlojuracz/Projects/morph/isis-ui-components/node_modules/cssify":12}],5:[function(require,module,exports){
 /*
  * angular-markdown-directive v0.3.1
  * (c) 2013-2014 Brian Ford http://briantford.com
@@ -2720,7 +722,7 @@ angular.module('btford.markdown', ['ngSanitize']).
     };
   }]);
 
-},{}],9:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*
  AngularJS v1.2.10
  (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -2736,7 +738,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
 (m.push('target="'),m.push(b),m.push('" '));m.push('href="');m.push(a);m.push('">');g(c);m.push("</a>")}if(!c)return c;for(var l,k=c,m=[],n,p;l=k.match(e);)n=l[0],l[2]==l[3]&&(n="mailto:"+n),p=l.index,g(k.substr(0,p)),f(n,l[0].replace(d,"")),k=k.substring(p+l[0].length);g(k);return a(m.join(""))}}])})(window,window.angular);
 //# sourceMappingURL=angular-sanitize.min.js.map
 
-},{}],10:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -10767,7 +8769,7 @@ n=document.createElement("pre"),M=/^(\s*)([\s\S]*?)(\s*)$/;h.module("ngSanitize"
   return CodeMirror;
 });
 
-},{}],11:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -11486,7 +9488,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
 
 });
 
-},{"../../lib/codemirror":10}],12:[function(require,module,exports){
+},{"../../lib/codemirror":7}],9:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -11609,7 +9611,7 @@ CodeMirror.defineMIME("text/html", "htmlmixed");
 
 });
 
-},{"../../lib/codemirror":10,"../css/css":11,"../javascript/javascript":13,"../xml/xml":14}],13:[function(require,module,exports){
+},{"../../lib/codemirror":7,"../css/css":8,"../javascript/javascript":10,"../xml/xml":11}],10:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12297,7 +10299,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 });
 
-},{"../../lib/codemirror":10}],14:[function(require,module,exports){
+},{"../../lib/codemirror":7}],11:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12683,7 +10685,7 @@ if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
 
 });
 
-},{"../../lib/codemirror":10}],15:[function(require,module,exports){
+},{"../../lib/codemirror":7}],12:[function(require,module,exports){
 module.exports = function (css, customDocument) {
   var doc = customDocument || document;
   if (doc.createStyleSheet) {
@@ -12722,1512 +10724,1021 @@ module.exports.byUrl = function(url) {
   }
 };
 
-},{}],16:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*globals console, angular*/
 
 'use strict';
 
-var demoApp = angular.module( 'isis.ui.contextmenu.demo', [ 'isis.ui.contextmenu' ] );
+var demoApp = angular.module('isis.ui.contextmenu.demo', ['isis.ui.contextmenu']);
 
-demoApp.controller( 'ContextmenuCustomTemplateController', function ( $scope, contextmenuService ) {
-  $scope.parameter = {};
+demoApp.controller('ContextmenuCustomTemplateController', function ($scope, contextmenuService) {
+    $scope.parameter = {};
 
-  $scope.closeClick = function () {
-    console.log( 'closing this manually' );
-    contextmenuService.close();
-  };
+    $scope.closeClick = function () {
+        console.log('closing this manually');
+        contextmenuService.close();
+    };
 
-  $scope.isValid = function ( num ) {
-    console.log( 'Who knows if is valid?', num );
+    $scope.isValid = function (num) {
+        console.log('Who knows if is valid?', num);
 
-    if ( parseInt( num, 10 ) === 4 ) {
-      $scope.parameter.invalid = false;
-    } else {
-      $scope.parameter.invalid = true;
-    }
-  };
+        if (parseInt(num, 10) === 4) {
+            $scope.parameter.invalid = false;
+        } else {
+            $scope.parameter.invalid = true;
+        }
+    };
 
-} );
+});
 
-demoApp.controller( 'ContextmenuDemoController', function ( $scope ) {
+demoApp.controller('ContextmenuDemoController', function ($scope) {
 
-  var menuData = [ {
-    id: 'top',
-    items: [ {
-      id: 'newProject',
-      label: 'New project ...',
-      iconClass: 'glyphicon glyphicon-plus',
-      action: function () {
-        console.log( 'New project clicked' );
-      },
-      actionData: {}
+    var menuData = [{
+        id: 'top',
+        items: [{
+            id: 'newProject',
+            label: 'New project ...',
+            iconClass: 'glyphicon glyphicon-plus',
+            action: function () {
+                console.log('New project clicked');
+            },
+            actionData: {}
+        }, {
+            id: 'importProject',
+            label: 'Import project ...',
+            iconClass: 'glyphicon glyphicon-import',
+            action: function () {
+                console.log('Import project clicked');
+            },
+            actionData: {}
+        }]
     }, {
-      id: 'importProject',
-      label: 'Import project ...',
-      iconClass: 'glyphicon glyphicon-import',
-      action: function () {
-        console.log( 'Import project clicked' );
-      },
-      actionData: {}
-    } ]
-  }, {
-    id: 'projects',
-    label: 'Recent projects',
-    totalItems: 20,
-    items: [],
-    showAllItems: function () {
-      console.log( 'Recent projects clicked' );
+        id: 'projects',
+        label: 'Recent projects',
+        totalItems: 20,
+        items: [],
+        showAllItems: function () {
+            console.log('Recent projects clicked');
+        }
+    }, {
+        id: 'preferences',
+        label: 'preferences',
+        items: [{
+            id: 'showPreferences',
+            label: 'Show preferences',
+            action: function () {
+                console.log('Show preferences');
+            },
+            menu: [{
+                items: [{
+                    id: 'preferences 1',
+                    label: 'Preferences 1'
+                }, {
+                    id: 'preferences 2',
+                    label: 'Preferences 2'
+                }, {
+                    id: 'preferences 3',
+                    label: 'Preferences 3',
+                    menu: [{
+                        items: [{
+                            id: 'sub_preferences 1',
+                            label: 'Sub preferences 1'
+                        }, {
+                            id: 'sub_preferences 2',
+                            label: 'Sub preferences 2'
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    }];
+
+    $scope.menuConfig1 = {
+        triggerEvent: 'click',
+        position: 'right bottom'
+    };
+
+    $scope.menuConfig2 = {
+        triggerEvent: 'mouseover',
+        position: 'left bottom',
+        contentTemplateUrl: 'contextmenu-custom-content.html',
+        doNotAutoClose: true,
+        menuCssClass: 'green-shadow'
+    };
+
+    $scope.menuData = menuData;
+
+    $scope.preContextMenu = function (e) {
+        console.log('In preContextMenu ', e);
+    };
+
+
+});
+},{}],14:[function(require,module,exports){
+/*globals console, angular*/
+'use strict';
+
+var demoApp = angular.module('isis.ui.dropdownNavigator.demo', ['isis.ui.dropdownNavigator']);
+
+demoApp.controller('DropdownDemoController', function ($scope) {
+    var firstMenu,
+        secondMenu;
+
+    firstMenu = {
+        id: 'root',
+        label: 'GME',
+        //            isSelected: true,
+        itemClass: 'gme-root',
+        menu: []
+    };
+
+    secondMenu = {
+        id: 'secondItem',
+        label: 'Projects',
+        menu: []
+    };
+
+    firstMenu.menu = [{
+        id: 'top',
+        items: [{
+            id: 'newProject',
+            label: 'New project ...',
+            iconClass: 'glyphicon glyphicon-plus',
+            action: function () {
+                console.log('New project clicked');
+            },
+            actionData: {}
+        }, {
+            id: 'importProject',
+            label: 'Import project ...',
+            iconClass: 'glyphicon glyphicon-import',
+            action: function () {
+                console.log('Import project clicked');
+            },
+            actionData: {}
+        }]
+    }, {
+        id: 'projects',
+        label: 'Recent projects',
+        totalItems: 20,
+        items: [],
+        showAllItems: function () {
+            console.log('Recent projects clicked');
+        }
+    }, {
+        id: 'preferences',
+        label: 'preferences',
+        items: [{
+            id: 'showPreferences',
+            label: 'Show preferences',
+            action: function () {
+                console.log('Show preferences');
+            },
+            menu: [{
+                items: [{
+                    id: 'preferences 1',
+                    label: 'Preferences 1'
+                }, {
+                    id: 'preferences 2',
+                    label: 'Preferences 2'
+                }, {
+                    id: 'preferences 3',
+                    label: 'Preferences 3',
+                    menu: [{
+                        items: [{
+                            id: 'sub_preferences 1',
+                            label: 'Sub preferences 1'
+                        }, {
+                            id: 'sub_preferences 2',
+                            label: 'Sub preferences 2'
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    }];
+
+
+    secondMenu = {
+        id: 'secondItem',
+        label: 'Projects',
+        menu: []
+    };
+
+    secondMenu.menu = [{
+        id: 'secondMenuMenu',
+        items: [
+
+            {
+                id: 'showPreferences',
+                label: 'Show preferences',
+                action: function () {
+                    console.log('Show preferences');
+                },
+                menu: [{
+                    items: [{
+                        id: 'preferences 1',
+                        label: 'Preferences 1'
+                    }, {
+                        id: 'preferences 2',
+                        label: 'Preferences 2'
+                    }, {
+                        id: 'preferences 3',
+                        label: 'Preferences 3',
+                        menu: [{
+                            items: [{
+                                id: 'sub_preferences 1',
+                                label: 'Sub preferences 1'
+                            }, {
+                                id: 'sub_preferences 2',
+                                label: 'Sub preferences 2'
+                            }]
+                        }]
+                    }]
+                }]
+            }
+        ]
+    }];
+
+    $scope.navigator = {
+        items: [
+            firstMenu,
+            secondMenu
+        ],
+        separator: true
+    };
+
+
+});
+},{}],15:[function(require,module,exports){
+/*globals console, angular*/
+'use strict';
+
+var demoApp = angular.module('isis.ui.hierarchicalMenu.demo', [
+    'isis.ui.hierarchicalMenu'
+]);
+
+demoApp.controller('HierarchicalMenuDemoController', function ($scope) {
+
+    var menu;
+
+    menu = [{
+        id: 'top',
+        items: [{
+            id: 'newProject',
+            label: 'New project ...',
+            iconClass: 'glyphicon glyphicon-plus',
+            action: function () {
+                console.log('New project clicked');
+            },
+            actionData: {}
+        }, {
+            id: 'importProject',
+            label: 'Import project ...',
+            iconClass: 'glyphicon glyphicon-import',
+            action: function () {
+                console.log('Import project clicked');
+            },
+            actionData: {}
+        }, {
+            id: 'importProject_disabled',
+            disabled: true,
+            label: 'Import project (disabled)...',
+            iconClass: 'glyphicon glyphicon-import',
+            action: function () {
+                console.log('Import project disabled clicked');
+            },
+            actionData: {}
+        }]
+    }, {
+        id: 'projects',
+        label: 'Recent projects',
+        totalItems: 20,
+        items: [],
+        showAllItems: function () {
+            console.log('Recent projects clicked');
+        }
+    }, {
+        id: 'preferences',
+        label: 'preferences',
+        items: [{
+            id: 'showPreferences',
+            label: 'Show preferences',
+            action: function () {
+                console.log('Show preferences');
+            },
+            menu: [{
+                items: [{
+                    id: 'preferences 1',
+                    label: 'Preferences 1'
+                }, {
+                    id: 'preferences 2',
+                    label: 'Preferences 2'
+                }, {
+                    id: 'preferences 3',
+                    label: 'Preferences 3',
+                    menu: [{
+                        items: [{
+                            id: 'sub_preferences 1',
+                            label: 'Sub preferences 1',
+                            action: function () {
+                                console.log('This should work');
+                            }
+                        }, {
+                            id: 'sub_preferences 2',
+                            label: 'Sub preferences 2',
+                            action: function () {
+                                console.log('This should work');
+                            }
+                        }]
+                    }]
+                }, {
+                    id: 'preferences 3 (disabled)',
+                    label: 'Preferences 3 (disabled)',
+                    disabled: true,
+                    menu: [{
+                        items: [{
+                            id: 'sub_preferences 1 (disabled)',
+                            label: 'Sub preferences 1 (disabled)',
+                            action: function () {
+                                console.log('This should not work');
+                            }
+                        }, {
+                            id: 'sub_preferences 2 (disabled)',
+                            label: 'Sub preferences 2 (disabled)',
+                            action: function () {
+                                console.log('This should not work');
+                            }
+                        }]
+                    }]
+                }]
+            }]
+        }]
+    }];
+
+    $scope.menu = menu;
+
+});
+},{}],16:[function(require,module,exports){
+/*globals angular*/
+'use strict';
+
+var demoApp = angular.module('isis.ui.itemList.demo', ['isis.ui.itemList']);
+
+demoApp.controller('ListItemDetailsDemoController', function ($scope) {
+    $scope.parameter = {};
+
+    $scope.isValid = function (num) {
+        console.log('Who knows if is valid?', num);
+
+        if (parseInt(num, 10) === 4) {
+            $scope.parameter.invalid = false;
+        } else {
+            $scope.parameter.invalid = true;
+        }
+    };
+
+
+});
+
+demoApp.controller('ListItemDetailsDemoController2', function ($scope) {
+    var i,
+        items2 = [],
+        itemGenerator2,
+        config;
+
+    itemGenerator2 = function (id) {
+
+        return {
+            id: id,
+            title: 'List sub-item ' + id,
+            toolTip: 'Open item',
+            description: 'This is description here',
+            lastUpdated: {
+                time: Date.now(),
+                user: 'N/A'
+
+            },
+            stats: [{
+                value: id,
+                tooltip: 'Orders',
+                iconClass: 'fa fa-cubes'
+            }],
+            details: 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
+        };
+    };
+
+
+    for (i = 0; i < 20; i++) {
+        items2.push(itemGenerator2(i));
     }
-  }, {
-    id: 'preferences',
-    label: 'preferences',
-    items: [ {
-      id: 'showPreferences',
-      label: 'Show preferences',
-      action: function () {
-        console.log( 'Show preferences' );
-      },
-      menu: [ {
-        items: [ {
-          id: 'preferences 1',
-          label: 'Preferences 1'
-        }, {
-          id: 'preferences 2',
-          label: 'Preferences 2'
-        }, {
-          id: 'preferences 3',
-          label: 'Preferences 3',
-          menu: [ {
-            items: [ {
-              id: 'sub_preferences 1',
-              label: 'Sub preferences 1'
+
+    config = {
+
+        sortable: true,
+        secondaryItemMenu: true,
+        detailsCollapsible: false,
+        showDetailsLabel: 'Show details',
+        hideDetailsLabel: 'Hide details',
+
+        // Event handlers
+
+        itemSort: function (jQEvent, ui) {
+            console.log('Sort happened', jQEvent, ui);
+        },
+
+        itemClick: function (event, item) {
+            console.log('Clicked: ' + item);
+        },
+
+        itemContextmenuRenderer: function (e, item) {
+            console.log('Contextmenu was triggered for node:', item);
+
+            return [{
+                items: [
+
+                    {
+                        id: 'create',
+                        label: 'Create new',
+                        disabled: true,
+                        iconClass: 'fa fa-plus'
+                    }
+                ]
+            }];
+        },
+
+        detailsRenderer: function (item) {
+            item.details = 'My details are here now!';
+        },
+
+        newItemForm: {
+            title: 'Create new item',
+            itemTemplateUrl: '/library/itemList/docs/newItemTemplate.html',
+            expanded: false,
+            controller: function ($scope) {
+                $scope.createItem = function (newItem) {
+
+                    newItem.url = 'something';
+                    newItem.toolTip = newItem.title;
+
+                    items2.push(newItem);
+
+                    $scope.newItem = {};
+
+                    config.newItemForm.expanded = false; // this is how you close the form itself
+
+                };
+            }
+        }
+
+    };
+
+    $scope.listData2 = {
+        items: items2
+    };
+
+    $scope.config2 = config;
+
+});
+
+demoApp.directive('demoSubList', function () {
+    return {
+        restrict: 'E',
+        replace: false,
+        scope: {
+            listData: '=',
+            config: '='
+        },
+        template: '<item-list list-data="listData" config="config" class="col-md-12"></item-list>'
+    };
+});
+
+demoApp.controller('ItemListDemoController', function ($scope) {
+
+
+    var
+    i,
+
+        items = [],
+
+        itemGenerator,
+        getItemContextmenu,
+        config;
+
+    itemGenerator = function (id) {
+
+        var lastUpdated;
+
+        if (Math.random() > 0.5) {
+            lastUpdated = {
+                time: Date.now(),
+                user: 'N/A'
+
+            };
+        }
+
+        return {
+            id: id,
+            title: 'List item ' + id,
+            cssClass: 'my-item',
+            toolTip: 'Open item',
+            description: 'This is description here',
+            headerTemplateUrl: Math.random() > 0.5 ?
+                '/library/itemList/docs/headerTemplate.html' : undefined,
+            taxonomyTerms: [{
+                id: 'tag1',
+                name: 'Tag A',
+                url: 'http://vanderbilt.edu'
             }, {
-              id: 'sub_preferences 2',
-              label: 'Sub preferences 2'
-            } ]
-          } ]
-        } ]
-      } ]
-    } ]
-  } ];
-
-  $scope.menuConfig1 = {
-    triggerEvent: 'click',
-    position: 'right bottom'
-  };
-
-  $scope.menuConfig2 = {
-    triggerEvent: 'mouseover',
-    position: 'left bottom',
-    contentTemplateUrl: 'contextmenu-custom-content.html',
-    doNotAutoClose: true,
-    menuCssClass: 'green-shadow'
-  };
-
-  $scope.menuData = menuData;
-
-  $scope.preContextMenu = function ( e ) {
-    console.log( 'In preContextMenu ', e );
-  };
+                id: 'tag2',
+                name: 'Tag B',
+                url: 'http://vanderbilt.edu'
+            }],
+            lastUpdated: lastUpdated,
+            stats: [{
+                value: id,
+                toolTip: 'Orders',
+                iconClass: 'fa fa-cubes'
+            }],
+            details: 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.',
+            detailsTemplateUrl: Math.random() < 0.5 ? 'list-item-details.html' : 'list-item-details2.html'
+        };
+    };
 
 
-} );
+    for (i = 0; i < 20; i++) {
+        items.push(itemGenerator(i));
+    }
+
+    getItemContextmenu = function (item) {
+
+        var defaultItemContextmenu = [{
+            items: [{
+                id: 'create',
+                label: 'Create new',
+                disabled: true,
+                iconClass: 'fa fa-plus'
+            }, {
+                id: 'dummy',
+                label: 'Just for test ' + item.id,
+
+                actionData: item,
+
+                action: function (data) {
+                    console.log('testing ', data);
+                }
+
+            }, {
+                id: 'rename',
+                label: 'Rename'
+            }, {
+                id: 'preferences 3',
+                label: 'Preferences 3',
+                menu: [{
+                    items: [{
+                        id: 'sub_preferences 1',
+                        label: 'Sub preferences 1'
+                    }, {
+                        id: 'sub_preferences 2',
+                        label: 'Sub preferences 2',
+                        action: function (data) {
+                            console.log('testing2 ', data);
+                        }
+                    }]
+                }]
+            }]
+        }];
+
+        return defaultItemContextmenu;
+
+    };
+
+    config = {
+
+        sortable: true,
+        secondaryItemMenu: true,
+        detailsCollapsible: true,
+        showDetailsLabel: 'Show details',
+        hideDetailsLabel: 'Hide details',
+
+        noItemsMessage: 'List is empty.',
+
+        // Event handlers
+
+        itemSort: function (jQEvent, ui) {
+            console.log('Sort happened', jQEvent, ui);
+        },
+
+        itemClick: function (event, item) {
+            console.log('Clicked: ' + item);
+        },
+
+        itemContextmenuRenderer: function (e, item) {
+            console.log('Contextmenu was triggered for node:', item);
+
+            return getItemContextmenu(item);
+        },
+
+        detailsRenderer: function (item) {
+            item.details = 'My details are here now!';
+        },
+
+        newItemForm: {
+            title: 'Create new item',
+            itemTemplateUrl: '/library/itemList/docs/newItemTemplate.html',
+            expanded: false,
+            controller: function ($scope) {
+                $scope.createItem = function (newItem) {
+
+                    newItem.url = 'something';
+                    newItem.toolTip = newItem.title;
+
+                    items.push(newItem);
+
+                    $scope.newItem = {};
+
+                    config.newItemForm.expanded = false; // this is how you close the form itself
+
+                };
+            }
+        },
+
+        filter: {}
+
+    };
+
+    $scope.listData = {
+        items: items
+    };
+
+    $scope.config = config;
+
+});
 },{}],17:[function(require,module,exports){
 /*globals angular*/
 'use strict';
 
-var demoApp = angular.module('isis.ui.decisionTable.demo', [ 'isis.ui.decisionTable' ]);
+require('ngDragDrop');
 
-demoApp.service('decisionTableDataProvider', [function () {
+var demoApp = angular.module('isis.ui.treeNavigator.demo', [
+    'isis.ui.treeNavigator',
+    'ang-drag-drop'
+]);
 
-  var dummyData;
+demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $timeout) {
 
-  dummyData = {
-    'declarations': [
-      { 'ref': 'ref_e1', 'name': 'event'}
-    ],
-    'table': {
-      'rows': [
-        {'event1_a': 'true', 'action_1': 'X'},
-        {'action_1': 'a=100', 'event1': 'a&lt;100'}
-      ],
-      'conditions': {
-        'event1_a': {
-          'index': 1,
-          'exp': 'ref_e1.a'
-        },
-        'event1': {
-          'index': 0,
-          'exp': 'ref_e1'
-        }
-      },
-      'actions': {
-        'action_1': {
-          'index': 0,
-          'exp': 'Action.out'
-        }
-      }
+    var config,
+        treeNodes = {},
 
-    }
-  };
+        addNode,
+        removeNode,
+        getNodeContextmenu,
+        dummyTreeDataGenerator,
+        sortChildren;
 
+    getNodeContextmenu = function (node) {
 
-  this.loadData = function () {
-    var result,
-    conditionsColumnDefs = [],
-    actionsColumnDefs = [];
-
-
-    result = {
-      declarations: {
-        data: [],
-        columnDefs: [
-          { field: 'ref', displayName: 'Reference' },
-          { field: 'name', displayName: 'Name' }
-        ]
-      },
-      decisions: {
-        data: [
-          {'event1_a': 'true', 'action_1': 'X'},
-          {'action_1': 'a=100', 'event1': 'a&lt;100'}
-        ],
-        columnDefs: []
-      }
-    };
-
-    angular.forEach(dummyData.declarations, function(declaration) {
-      result.declarations.data.push({
-        ref: declaration.ref,
-        name: declaration.name
-      });
-    });
-
-    angular.forEach(dummyData.table.conditions, function (condition, columnName) {
-      conditionsColumnDefs[ condition.index ] = {
-        field: columnName,
-        displayName: condition.exp
-      };
-    });
-
-    angular.forEach(dummyData.table.actions, function (action, columnName) {
-      actionsColumnDefs[ action.index ] = {
-        field: columnName,
-        displayName: action.exp
-      };
-    });
-
-    result.decisions.columnDefs = conditionsColumnDefs.concat(actionsColumnDefs);
-
-    return result;
-  };
-
-}
-])
-;
-
-demoApp.controller('DecisionTableDemoController', function ($scope, decisionTableDataProvider) {
-
-  var config,
-  initialData;
-
-  config = {
-
-  };
-
-  initialData = decisionTableDataProvider.loadData();
-
-  $scope.tableData = {
-    declarations: initialData.declarations,
-    decisions: initialData.decisions
-  };
-  $scope.config = config;
-});
-},{}],18:[function(require,module,exports){
-/*globals console, angular*/
-'use strict';
-
-var demoApp = angular.module( 'isis.ui.dropdownNavigator.demo', [ 'isis.ui.dropdownNavigator' ] );
-
-demoApp.controller( 'DropdownDemoController', function ( $scope ) {
-  var firstMenu,
-    secondMenu;
-
-  firstMenu = {
-    id: 'root',
-    label: 'GME',
-    //            isSelected: true,
-    itemClass: 'gme-root',
-    menu: []
-  };
-
-  secondMenu = {
-    id: 'secondItem',
-    label: 'Projects',
-    menu: []
-  };
-
-  firstMenu.menu = [ {
-    id: 'top',
-    items: [ {
-      id: 'newProject',
-      label: 'New project ...',
-      iconClass: 'glyphicon glyphicon-plus',
-      action: function () {
-        console.log( 'New project clicked' );
-      },
-      actionData: {}
-    }, {
-      id: 'importProject',
-      label: 'Import project ...',
-      iconClass: 'glyphicon glyphicon-import',
-      action: function () {
-        console.log( 'Import project clicked' );
-      },
-      actionData: {}
-    } ]
-  }, {
-    id: 'projects',
-    label: 'Recent projects',
-    totalItems: 20,
-    items: [],
-    showAllItems: function () {
-      console.log( 'Recent projects clicked' );
-    }
-  }, {
-    id: 'preferences',
-    label: 'preferences',
-    items: [ {
-      id: 'showPreferences',
-      label: 'Show preferences',
-      action: function () {
-        console.log( 'Show preferences' );
-      },
-      menu: [ {
-        items: [ {
-          id: 'preferences 1',
-          label: 'Preferences 1'
-        }, {
-          id: 'preferences 2',
-          label: 'Preferences 2'
-        }, {
-          id: 'preferences 3',
-          label: 'Preferences 3',
-          menu: [ {
-            items: [ {
-              id: 'sub_preferences 1',
-              label: 'Sub preferences 1'
+        var defaultNodeContextmenu = [{
+            items: [{
+                id: 'create',
+                label: 'Create new',
+                disabled: true,
+                iconClass: 'fa fa-plus',
+                menu: []
             }, {
-              id: 'sub_preferences 2',
-              label: 'Sub preferences 2'
-            } ]
-          } ]
-        } ]
-      } ]
-    } ]
-  } ];
+                id: 'dummy',
+                label: 'Just for test ' + node.id,
 
+                actionData: node,
 
-  secondMenu = {
-    id: 'secondItem',
-    label: 'Projects',
-    menu: []
-  };
-
-  secondMenu.menu = [ {
-    id: 'secondMenuMenu',
-    items: [
-
-      {
-        id: 'showPreferences',
-        label: 'Show preferences',
-        action: function () {
-          console.log( 'Show preferences' );
-        },
-        menu: [ {
-          items: [ {
-            id: 'preferences 1',
-            label: 'Preferences 1'
-          }, {
-            id: 'preferences 2',
-            label: 'Preferences 2'
-          }, {
-            id: 'preferences 3',
-            label: 'Preferences 3',
-            menu: [ {
-              items: [ {
-                id: 'sub_preferences 1',
-                label: 'Sub preferences 1'
-              }, {
-                id: 'sub_preferences 2',
-                label: 'Sub preferences 2'
-              } ]
-            } ]
-          } ]
-        } ]
-      }
-    ]
-  } ];
-
-  $scope.navigator = {
-    items: [
-      firstMenu,
-      secondMenu
-    ],
-    separator: true
-  };
-
-
-} );
-},{}],19:[function(require,module,exports){
-/*globals console, angular*/
-'use strict';
-
-var demoApp = angular.module( 'isis.ui.hierarchicalMenu.demo', [ 'ui.bootstrap',
-  'isis.ui.hierarchicalMenu'
-] );
-
-demoApp.controller( 'HierarchicalMenuDemoController', function ( $scope ) {
-
-  var menu;
-
-  menu = [
-    {
-      id: 'top',
-      items: [
-        {
-          id: 'newProject',
-          label: 'New project ...',
-          iconClass: 'glyphicon glyphicon-plus',
-          action: function () {
-            console.log( 'New project clicked' );
-          },
-          actionData: {}
-        },
-        {
-          id: 'importProject',
-          label: 'Import project ...',
-          iconClass: 'glyphicon glyphicon-import',
-          action: function () {
-            console.log( 'Import project clicked' );
-          },
-          actionData: {}
-        },
-        {
-          id: 'importProject_disabled',
-          disabled: true,
-          label: 'Import project (disabled)...',
-          iconClass: 'glyphicon glyphicon-import',
-          action: function () {
-            console.log( 'Import project disabled clicked' );
-          },
-          actionData: {}
-        }
-      ]
-    },
-    {
-      id: 'projects',
-      label: 'Recent projects',
-      totalItems: 20,
-      items: [],
-      showAllItems: function () {
-        console.log( 'Recent projects clicked' );
-      }
-    },
-    {
-      id: 'preferences',
-      label: 'preferences',
-      items: [
-        {
-          id: 'showPreferences',
-          label: 'Show preferences',
-          action: function () {
-            console.log( 'Show preferences' );
-          },
-          menu: [
-            {
-              items: [
-                {
-                  id: 'preferences 1',
-                  label: 'Preferences 1'
-                },
-                {
-                  id: 'preferences 2',
-                  label: 'Preferences 2'
-                },
-                {
-                  id: 'preferences 3',
-                  label: 'Preferences 3',
-                  menu: [
-                    {
-                      items: [
-                        {
-                          id: 'sub_preferences 1',
-                          label: 'Sub preferences 1',
-                          action: function () {
-                            console.log( 'This should work' );
-                          }
-                        },
-                        {
-                          id: 'sub_preferences 2',
-                          label: 'Sub preferences 2',
-                          action: function () {
-                            console.log( 'This should work' );
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  id: 'preferences 3 (disabled)',
-                  label: 'Preferences 3 (disabled)',
-                  disabled: true,
-                  menu: [
-                    {
-                      items: [
-                        {
-                          id: 'sub_preferences 1 (disabled)',
-                          label: 'Sub preferences 1 (disabled)',
-                          action: function () {
-                            console.log( 'This should not work' );
-                          }
-                        },
-                        {
-                          id: 'sub_preferences 2 (disabled)',
-                          label: 'Sub preferences 2 (disabled)',
-                          action: function () {
-                            console.log( 'This should not work' );
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                action: function (data) {
+                    $log.log('testing ', data);
                 }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ];
 
-  $scope.menu = menu;
+            }, {
+                id: 'rename',
+                label: 'Rename'
+            }, {
+                id: 'delete',
+                label: 'Delete',
+                iconClass: 'fa fa-minus',
+                actionData: {
+                    id: node.id
+                },
+                action: function (data) {
+                    removeNode(data.id);
+                }
+            }, {
+                id: 'preferences 3',
+                label: 'Preferences 3',
+                menu: [{
+                    items: [{
+                        id: 'sub_preferences 1',
+                        label: 'Sub preferences 1'
+                    }, {
+                        id: 'sub_preferences 2',
+                        label: 'Sub preferences 2',
+                        action: function (data) {
+                            $log.log('testing2 ', data);
+                        }
+                    }]
+                }]
+            }]
+        }];
 
-} );
-},{}],20:[function(require,module,exports){
-/*globals angular*/
-'use strict';
+        return defaultNodeContextmenu;
 
-var demoApp = angular.module( 'isis.ui.itemList.demo', [ 'isis.ui.itemList' ] );
-
-demoApp.controller( 'ListItemDetailsDemoController', function ( $scope ) {
-  $scope.parameter = {};
-
-  $scope.isValid = function ( num ) {
-    console.log( 'Who knows if is valid?', num );
-
-    if ( parseInt( num, 10 ) === 4 ) {
-      $scope.parameter.invalid = false;
-    } else {
-      $scope.parameter.invalid = true;
-    }
-  };
-
-
-} );
-
-demoApp.controller( 'ListItemDetailsDemoController2', function ( $scope ) {
-  var i,
-    items2 = [],
-    itemGenerator2,
-    config;
-
-  itemGenerator2 = function ( id ) {
-    return {
-      id: id,
-      title: 'List sub-item ' + id,
-      toolTip: 'Open item',
-      description: 'This is description here',
-      lastUpdated: {
-        time: Date.now(),
-        user: 'N/A'
-
-      },
-      stats: [ {
-        value: id,
-        tooltip: 'Orders',
-        iconClass: 'fa fa-cubes'
-      } ],
-      details: 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.'
     };
-  };
+
+    dummyTreeDataGenerator = function (treeNode, name, maxCount, levels, idOffset) {
+        var i,
+            id,
+            count,
+            childNode;
+
+        levels = levels || 0;
+
+        count = maxCount;
+
+        for (i = 0; i < count; i += 1) {
+            id = name + (i + (idOffset || 0));
+
+            childNode = addNode(treeNode, id, i);
+
+            if (levels > 0) {
+                dummyTreeDataGenerator(childNode, id + '.', maxCount, levels - 1);
+            }
+        }
+
+        return treeNode.children;
+
+    };
+
+    addNode = function (parentTreeNode, id, i) {
+        var newTreeNode,
+            children = [];
 
 
-  for ( i = 0; i < 20; i++ ) {
-    items2.push( itemGenerator2( i ) );
-  }
+        // node structure
+        newTreeNode = {
+            label: id,
+            extraInfo: 'Extra info',
+            children: children,
+            childrenCount: 0,
+            nodeData: {},
+            iconClass: 'fa fa-file-o',
 
-  config = {
-
-    sortable: true,
-    secondaryItemMenu: true,
-    detailsCollapsible: true,
-    showDetailsLabel: 'Show details',
-    hideDetailsLabel: 'Hide details',
-
-    // Event handlers
-
-    itemSort: function ( jQEvent, ui ) {
-      console.log( 'Sort happened', jQEvent, ui );
-    },
-
-    itemClick: function ( event, item ) {
-      console.log( 'Clicked: ' + item );
-    },
-
-    itemContextmenuRenderer: function ( e, item ) {
-      console.log( 'Contextmenu was triggered for node:', item );
-
-      return [ {
-        items: [
-
-          {
-            id: 'create',
-            label: 'Create new',
-            disabled: true,
-            iconClass: 'fa fa-plus'
-          }
-        ]
-      } ];
-    },
-
-    detailsRenderer: function ( item ) {
-      item.details = 'My details are here now!';
-    },
-
-    newItemForm: {
-      title: 'Create new item',
-      itemTemplateUrl: '/library/itemList/docs/newItemTemplate.html',
-      expanded: false,
-      controller: function ( $scope ) {
-        $scope.createItem = function ( newItem ) {
-
-          newItem.url = 'something';
-          newItem.toolTip = newItem.title;
-
-          items2.push( newItem );
-
-          $scope.newItem = {};
-
-          config.newItemForm.expanded = false; // this is how you close the form itself
-
+            draggable: true,
+            dragChannel: 'a',
+            dropChannel: (Math.random() > 0.5) ? 'a' : 'b',
+            order: i
         };
-      }
-    }
 
-  };
+        newTreeNode.id = id;
 
-  $scope.listData2 = {
-    items: items2
-  };
-
-  $scope.config2 = config;
-
-} );
-
-demoApp.directive( 'demoSubList', function () {
-  return {
-    restrict: 'E',
-    replace: false,
-    scope: {
-      listData: '=',
-      config: '='
-    },
-    template: '<item-list list-data="listData" config="config" class="col-md-12"></item-list>'
-  };
-} );
-
-demoApp.controller( 'ItemListDemoController', function ( $scope ) {
+        // add the new node to the map
+        treeNodes[newTreeNode.id] = newTreeNode;
 
 
-  var
-  i,
+        if (parentTreeNode) {
+            // if a parent was given add the new node as a child node
+            parentTreeNode.iconClass = undefined;
+            parentTreeNode.children.push(newTreeNode);
 
-    items = [],
 
-    itemGenerator,
-    getItemContextmenu,
-    config;
+            parentTreeNode.childrenCount = parentTreeNode.children.length;
 
-  itemGenerator = function ( id ) {
-    return {
-      id: id,
-      title: 'List item ' + id,
-      cssClass: 'my-item',
-      toolTip: 'Open item',
-      description: 'This is description here',
-      headerTemplateUrl: Math.random() > 0.5 ? '/library/itemList/docs/headerTemplate.html' : undefined,
-      taxonomyTerms: [
-        {
-          id: 'tag1',
-          name: 'Tag A',
-          url: 'http://vanderbilt.edu'
+            if (newTreeNode.childrenCount === 0) {
+                newTreeNode.childrenCount = 5000;
+            }
+
+
+            if (newTreeNode.childrenCount) {
+                newTreeNode.iconClass = undefined;
+            }
+
+            sortChildren(parentTreeNode.children);
+
+            newTreeNode.parentId = parentTreeNode.id;
+        } else {
+
+            // if no parent is given replace the current root node with this node
+            $scope.treeData = newTreeNode;
+            $scope.treeData.unCollapsible = true;
+            newTreeNode.parentId = null;
+        }
+
+        return newTreeNode;
+    };
+
+    removeNode = function (id) {
+        var
+        parentNode,
+            nodeToDelete = treeNodes[id];
+
+        $log.debug('Removing a node ' + id);
+
+        if (nodeToDelete) {
+            if (nodeToDelete.parentId !== null && treeNodes[nodeToDelete.parentId] !==
+                undefined) {
+                // find parent node
+                parentNode = treeNodes[nodeToDelete.parentId];
+
+                // remove nodeToDelete from parent node's children
+                parentNode.children = parentNode.children.filter(function (el) {
+                    return el.id !== id;
+                });
+
+                parentNode.childrenCount = parentNode.children.length;
+
+                if (parentNode.childrenCount === 0) {
+                    parentNode.iconClass = 'fa fa-file-o';
+                }
+            }
+
+            delete treeNodes[id];
+        }
+
+    };
+
+    sortChildren = function (values) {
+        var orderBy = ['label', 'id'];
+
+        values.sort(function (a, b) {
+            var i,
+                key,
+                result;
+
+            for (i = 0; i < orderBy.length; i += 1) {
+                key = orderBy[i];
+                if (a.hasOwnProperty(key) && b.hasOwnProperty(key)) {
+                    result = a[key].toLowerCase()
+                        .localeCompare(b[key].toLowerCase());
+                    if (result !== 0) {
+                        return result;
+                    }
+                }
+            }
+
+            // a must be equal to b
+            return 0;
+        });
+
+        return values;
+    };
+
+    config = {
+
+        //folderIconClass: 'glyphicon glyphicon-folder-close',
+
+        scopeMenu: [{
+                items: [{
+                    id: 'project',
+                    label: 'Project Hierarchy',
+                    action: function () {
+                        $scope.config.state.activeScope = 'project';
+                        $scope.config.selectedScope = $scope.config.scopeMenu[0].items[0];
+                    }
+                }, {
+                    id: 'composition',
+                    label: 'Composition',
+                    action: function () {
+                        $scope.config.state.activeScope = 'composition';
+                        $scope.config.selectedScope = $scope.config.scopeMenu[0].items[1];
+                    }
+                }]
+            }
+
+        ],
+
+        preferencesMenu: [{
+            items: [{
+                    id: 'preferences 1',
+                    label: 'Preferences 1'
+                },
+
+                {
+                    id: 'preferences 2',
+                    label: 'Preferences 2'
+                },
+
+                {
+                    id: 'preferences 3',
+                    label: 'Preferences 3',
+                    menu: [{
+                        items: [{
+                            id: 'sub_preferences 1',
+                            label: 'Sub preferences 1'
+                        }, {
+                            id: 'sub_preferences 2',
+                            label: 'Sub preferences 2',
+                            action: function (data) {
+                                $log.log(data);
+                            }
+                        }]
+                    }]
+                }
+            ]
+        }],
+
+        showRootLabel: true,
+
+        // Tree Event callbacks
+
+        nodeClick: function (e, node) {
+            console.log('Node was clicked:', node);
         },
-        {
-          id: 'tag2',
-          name: 'Tag B',
-          url: 'http://vanderbilt.edu'
-        }
-      ],
-      lastUpdated: {
-        time: Date.now(),
-        user: 'N/A'
 
-      },
-      stats: [
-        {
-          value: id,
-          toolTip: 'Orders',
-          iconClass: 'fa fa-cubes'
-        }
-      ],
-      details: 'Some detailed text. Lorem ipsum ama fea rin the poc ketofmyja cket.',
-      detailsTemplateUrl: Math.random() < 0.5 ? 'list-item-details.html' : 'list-item-details2.html'
-    };
-  };
+        nodeDblclick: function (e, node) {
+            console.log('Node was double-clicked:', node);
+        },
 
+        nodeContextmenuRenderer: function (e, node) {
+            console.log('Contextmenu was triggered for node:', node);
 
-  for ( i = 0; i < 20; i++ ) {
-    items.push( itemGenerator( i ) );
-  }
+            return getNodeContextmenu(node);
 
-  getItemContextmenu = function ( item ) {
+        },
 
-    var defaultItemContextmenu = [ {
-      items: [ {
-        id: 'create',
-        label: 'Create new',
-        disabled: true,
-        iconClass: 'fa fa-plus'
-      }, {
-        id: 'dummy',
-        label: 'Just for test ' + item.id,
+        nodeExpanderClick: function (e, node, isExpand) {
+            console.log('Expander was clicked for node:', node, isExpand);
+        },
 
-        actionData: item,
+        pagination: {
+            itemsPerPage: 10
+        },
 
-        action: function ( data ) {
-          console.log( 'testing ', data );
-        }
+        loadChildren: function (e, node, count, isBackpaging) {
+            var deferred = $q.defer();
 
-      }, {
-        id: 'rename',
-        label: 'Rename'
-      }, {
-        id: 'preferences 3',
-        label: 'Preferences 3',
-        menu: [ {
-          items: [ {
-            id: 'sub_preferences 1',
-            label: 'Sub preferences 1'
-          }, {
-            id: 'sub_preferences 2',
-            label: 'Sub preferences 2',
-            action: function ( data ) {
-              console.log( 'testing2 ', data );
-            }
-          } ]
-        } ]
-      } ]
-    } ];
+            console.log('--loading children');
 
-    return defaultItemContextmenu;
+            $timeout(function () {
 
-  };
+                    var dummyParent = {
+                        children: []
+                    },
+                        newChildren,
+                        offset;
 
-  config = {
+                    if (!isBackpaging) {
 
-    sortable: true,
-    secondaryItemMenu: true,
-    detailsCollapsible: true,
-    showDetailsLabel: 'Show details',
-    hideDetailsLabel: 'Hide details',
+                        if (!isNaN(node.lastLoadedChildPosition)) {
+                            offset = node.lastLoadedChildPosition + 1;
+                        } else {
+                            offset = 0;
+                        }
 
-    noItemsMessage: 'List is empty.',
+                    } else {
 
-    // Event handlers
+                        offset = node.firstLoadedChildPosition - count;
 
-    itemSort: function ( jQEvent, ui ) {
-      console.log( 'Sort happened', jQEvent, ui );
-    },
-
-    itemClick: function ( event, item ) {
-      console.log( 'Clicked: ' + item );
-    },
-
-    itemContextmenuRenderer: function ( e, item ) {
-      console.log( 'Contextmenu was triggered for node:', item );
-
-      return getItemContextmenu( item );
-    },
-
-    detailsRenderer: function ( item ) {
-      item.details = 'My details are here now!';
-    },
-
-    newItemForm: {
-      title: 'Create new item',
-      itemTemplateUrl: '/library/itemList/docs/newItemTemplate.html',
-      expanded: false,
-      controller: function ( $scope ) {
-        $scope.createItem = function ( newItem ) {
-
-          newItem.url = 'something';
-          newItem.toolTip = newItem.title;
-
-          items.push( newItem );
-
-          $scope.newItem = {};
-
-          config.newItemForm.expanded = false; // this is how you close the form itself
-
-        };
-      }
-    },
-
-    filter: {}
-
-  };
-
-  $scope.listData = {
-    items: items
-  };
-
-  $scope.config = config;
-
-} );
-
-},{}],21:[function(require,module,exports){
-/*globals angular*/
-'use strict';
-
-var demoApp = angular.module( 'isis.ui.searchBox.demo', [ 'isis.ui.searchBox' ] );
-
-demoApp.controller( 'SearchBoxDemoController', function () {
-
-} );
-},{}],22:[function(require,module,exports){
-/*globals console, angular*/
-
-'use strict';
-
-var isValid,
-  demoApp = angular.module( 'isis.ui.simpleDialog.demo', [ 'isis.ui.simpleDialog' ] ),
-
-  parameter = {
-    value: 10,
-    invalid: true
-  };
-
-demoApp.controller( 'ConfirmDialogDemoController', function ( $scope, $simpleDialog ) {
-
-  isValid = function () {
-
-    var result = ( Number( parameter.value ) === 4 );
-
-    console.log( 'Validator was called' );
-    console.log( 'Sum is: ' + parameter.value, result );
-    parameter.invalid = !result;
-
-    return result;
-
-  };
-
-
-  $scope.parameter = parameter;
-
-  $scope.isValid = function () {
-    isValid();
-    if ( !$scope.$$phase ) {
-      $scope.$apply();
-    }
-  };
-
-  $scope.openDialog = function () {
-
-    $simpleDialog.open( {
-      dialogTitle: 'Are you sure?',
-      dialogContentTemplate: 'confirm-content-template',
-      onOk: function () {
-        console.log( 'OK was picked' );
-      },
-      onCancel: function () {
-        console.log( 'This was canceled' );
-      },
-      validator: isValid,
-      size: 'lg', // can be sm or lg
-      scope: $scope
-    } );
-
-  };
-
-
-} );
-
-demoApp.controller( 'ConfirmDialogDemoDataController', function () {
-
-} );
-},{}],23:[function(require,module,exports){
-/*globals angular*/
-'use strict';
-
-require( 'ngDragDrop' );
-
-var demoApp = angular.module( 'isis.ui.treeNavigator.demo', [
-  'isis.ui.treeNavigator',
-  'ang-drag-drop'
-] );
-
-demoApp.controller( 'TreeNavigatorDemoController', function ( $scope, $log, $q ) {
-
-  var config,
-  treeNodes = {},
-
-  addNode,
-  removeNode,
-  getNodeContextmenu,
-  dummyTreeDataGenerator,
-  sortChildren;
-
-  getNodeContextmenu = function ( node ) {
-
-    var defaultNodeContextmenu = [
-      {
-        items: [
-          {
-            id: 'create',
-            label: 'Create new',
-            disabled: true,
-            iconClass: 'fa fa-plus',
-            menu: []
-          },
-          {
-            id: 'dummy',
-            label: 'Just for test ' + node.id,
-
-            actionData: node,
-
-            action: function ( data ) {
-              $log.log( 'testing ', data );
-            }
-
-          },
-          {
-            id: 'rename',
-            label: 'Rename'
-          },
-          {
-            id: 'delete',
-            label: 'Delete',
-            iconClass: 'fa fa-minus',
-            actionData: {
-              id: node.id
-            },
-            action: function ( data ) {
-              removeNode( data.id );
-            }
-          },
-          {
-            id: 'preferences 3',
-            label: 'Preferences 3',
-            menu: [
-              {
-                items: [
-                  {
-                    id: 'sub_preferences 1',
-                    label: 'Sub preferences 1'
-                  },
-                  {
-                    id: 'sub_preferences 2',
-                    label: 'Sub preferences 2',
-                    action: function ( data ) {
-                      $log.log( 'testing2 ', data );
                     }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ];
 
-    return defaultNodeContextmenu;
+                    newChildren = dummyTreeDataGenerator(dummyParent, 'Async ' + node.id,
+                        count || 20, 0, offset);
+                    deferred.resolve(newChildren);
+                },
+                500
+            );
 
-  };
+            return deferred.promise;
+        }
 
-  dummyTreeDataGenerator = function ( treeNode, name, maxCount, levels ) {
-    var i,
-    id,
-    count,
-    childNode;
-
-    levels = levels || 0;
-
-    count = Math.round(
-    Math.random() * maxCount
-    ) + 1;
-
-    for ( i = 0; i < count; i += 1 ) {
-      id = name + i;
-
-      childNode = addNode( treeNode, id, i );
-
-      if ( levels > 0 ) {
-        dummyTreeDataGenerator( childNode, id + '.', maxCount, levels - 1 );
-      }
-    }
-  };
-
-  addNode = function ( parentTreeNode, id, i ) {
-    var newTreeNode,
-    children = [];
-
-
-    // node structure
-    newTreeNode = {
-      label: id,
-      extraInfo: 'Extra info',
-      children: children,
-      childrenCount: 0,
-      nodeData: {},
-      iconClass: 'fa fa-file-o',
-
-      draggable: true,
-      dragChannel: 'a',
-      dropChannel: ( Math.random() > 0.5 ) ? 'a' : 'b',
-      order: i
     };
 
-    newTreeNode.id = id;
+    $scope.config = config;
+    //$scope.config.disableManualSelection = true;
+    $scope.config.selectedScope = $scope.config.scopeMenu[0].items[0];
+    $scope.config.nodeClassGetter = function (node) {
+        var nodeCssClass = '';
 
-    // add the new node to the map
-    treeNodes[ newTreeNode.id ] = newTreeNode;
-
-
-    if ( parentTreeNode ) {
-      // if a parent was given add the new node as a child node
-      parentTreeNode.iconClass = undefined;
-      parentTreeNode.children.push( newTreeNode );
-
-
-      parentTreeNode.childrenCount = parentTreeNode.children.length;
-
-      if ( newTreeNode.childrenCount === 0 ) {
-        newTreeNode.childrenCount = Math.round( Math.random() );
-      }
-
-
-      if ( newTreeNode.childrenCount ) {
-        newTreeNode.iconClass = undefined;
-      }
-
-      sortChildren( parentTreeNode.children );
-
-      newTreeNode.parentId = parentTreeNode.id;
-    } else {
-
-      // if no parent is given replace the current root node with this node
-      $scope.treeData = newTreeNode;
-      $scope.treeData.unCollapsible = true;
-      newTreeNode.parentId = null;
-    }
-
-    return newTreeNode;
-  };
-
-  removeNode = function ( id ) {
-    var
-    parentNode,
-    nodeToDelete = treeNodes[ id ];
-
-    $log.debug( 'Removing a node ' + id );
-
-    if ( nodeToDelete ) {
-      if ( nodeToDelete.parentId !== null && treeNodes[ nodeToDelete.parentId ] !== undefined ) {
-        // find parent node
-        parentNode = treeNodes[ nodeToDelete.parentId ];
-
-        // remove nodeToDelete from parent node's children
-        parentNode.children = parentNode.children.filter( function ( el ) {
-          return el.id !== id;
-        } );
-
-        parentNode.childrenCount = parentNode.children.length;
-
-        if ( parentNode.childrenCount === 0 ) {
-          parentNode.iconClass = 'fa fa-file-o';
+        if (node.order % 2 === 0) {
+            nodeCssClass = 'even';
         }
-      }
 
-      delete treeNodes[ id ];
-    }
+        return nodeCssClass;
+    };
+    $scope.treeData = {};
+    $scope.config.state = {
+        // id of activeNode
+        activeNode: 'Node item 0.0',
 
-  };
+        // ids of selected nodes
+        selectedNodes: ['Node item 0.0'],
 
-  sortChildren = function ( values ) {
-    var orderBy = [ 'label', 'id' ];
+        expandedNodes: ['Node item 0', 'Node item 0.0'],
 
-    values.sort( function ( a, b ) {
-      var i,
-      key,
-      result;
+        // id of active scope
+        activeScope: 'project'
+    };
 
-      for ( i = 0; i < orderBy.length; i += 1 ) {
-        key = orderBy[ i ];
-        if ( a.hasOwnProperty( key ) && b.hasOwnProperty( key ) ) {
-          result = a[ key ].toLowerCase()
-          .localeCompare( b[ key ].toLowerCase() );
-          if ( result !== 0 ) {
-            return result;
-          }
-        }
-      }
 
-      // a must be equal to b
-      return 0;
-    } );
+    addNode(null, 'ROOT');
+    dummyTreeDataGenerator($scope.treeData, 'Node item ', 1, 1);
 
-    return values;
-  };
-
-  config = {
-
-    scopeMenu: [
-      {
-        items: [
-          {
-            id: 'project',
-            label: 'Project Hierarchy',
-            action: function () {
-              $scope.config.state.activeScope = 'project';
-              $scope.config.selectedScope = $scope.config.scopeMenu[ 0 ].items[ 0 ];
-            }
-          },
-          {
-            id: 'composition',
-            label: 'Composition',
-            action: function () {
-              $scope.config.state.activeScope = 'composition';
-              $scope.config.selectedScope = $scope.config.scopeMenu[ 0 ].items[ 1 ];
-            }
-          }
-        ]
-      }
-
-    ],
-
-    preferencesMenu: [
-      {
-        items: [
-          {
-            id: 'preferences 1',
-            label: 'Preferences 1'
-          },
-
-          {
-            id: 'preferences 2',
-            label: 'Preferences 2'
-          },
-
-          {
-            id: 'preferences 3',
-            label: 'Preferences 3',
-            menu: [
-              {
-                items: [
-                  {
-                    id: 'sub_preferences 1',
-                    label: 'Sub preferences 1'
-                  },
-                  {
-                    id: 'sub_preferences 2',
-                    label: 'Sub preferences 2',
-                    action: function ( data ) {
-                      $log.log( data );
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ],
-
-    showRootLabel: true,
-
-    // Tree Event callbacks
-
-    nodeClick: function ( e, node ) {
-      console.log( 'Node was clicked:', node );
-    },
-
-    nodeDblclick: function ( e, node ) {
-      console.log( 'Node was double-clicked:', node );
-    },
-
-    nodeContextmenuRenderer: function ( e, node ) {
-      console.log( 'Contextmenu was triggered for node:', node );
-
-      return getNodeContextmenu( node );
-
-    },
-
-    nodeExpanderClick: function ( e, node, isExpand ) {
-      console.log( 'Expander was clicked for node:', node, isExpand );
-    },
-
-    loadChildren: function ( e, node ) {
-      var deferred = $q.defer();
-
-      setTimeout(
-      function () {
-        dummyTreeDataGenerator( node, 'Async ' + node.id, 5, 0 );
-        deferred.resolve();
-      },
-      2000
-      );
-
-      return deferred.promise;
-    }
-
-  };
-
-  $scope.config = config;
-  //$scope.config.disableManualSelection = true;
-  $scope.config.selectedScope = $scope.config.scopeMenu[ 0 ].items[ 0 ];
-  $scope.config.nodeClassGetter = function(node) {
-    var nodeCssClass = '';
-
-    if (node.order % 2 === 0) {
-      nodeCssClass = 'even';
-    }
-
-    return nodeCssClass;
-  };
-  $scope.treeData = {};
-  $scope.config.state = {
-    // id of activeNode
-    activeNode: 'Node item 0.0',
-
-    // ids of selected nodes
-    selectedNodes: [ 'Node item 0.0' ],
-
-    expandedNodes: [ 'Node item 0', 'Node item 0.1' ],
-
-    // id of active scope
-    activeScope: 'project'
-  };
-
-
-  addNode( null, 'ROOT' );
-  dummyTreeDataGenerator( $scope.treeData, 'Node item ', 5, 3 );
-
-} );
-},{"ngDragDrop":2}],24:[function(require,module,exports){
-/*globals angular*/
-'use strict';
-
-var demoApp = angular.module( 'isis.ui.valueWidgets.demo', [ 'isis.ui.valueWidgets' ] );
-
-demoApp.controller( 'ValueWidgetsDemoController', function ( $scope ) {
-
-  var onValueChange,
-  validators,
-  selectedOption,
-  options;
-
-  selectedOption = {
-    label: 'Should be selected',
-    value: 'option_selected'
-  };
-
-  options = [
-    {
-      label: 'Option 1',
-      value: 'option_1'
-    },
-    {
-      label: 'Option 2',
-      value: 'option_2'
-    },
-    {
-      label: 'Option 3',
-      value: 'option_3'
-    },
-    {
-      label: 'Option 4',
-      value: 'option_4'
-    },
-    {
-      label: 'Option 5',
-      value: 'option_5'
-    }
-  ];
-
-  options.push( selectedOption );
-
-  onValueChange = function ( val ) {
-    console.log( 'Value changed:', val );
-  };
-
-  validators = {
-
-    shorterThanTwenty: {
-      id: 'shorterThanTwenty',
-      errorMessage: 'This is not shorter than 20!',
-      method: function ( modelValue, viewValue ) {
-        var value = modelValue || viewValue;
-
-        return !value || angular.isString( value ) && value.length < 20;
-      }
-    },
-
-    shouldNotBeNo: {
-      id: 'shouldNotBeNo',
-      errorMessage: 'This can not be No!',
-      method: function ( modelValue, viewValue ) {
-        var value = modelValue || viewValue;
-
-        return value !== false;
-      }
-    },
-
-    shouldNotBeUndefinedOrNull: {
-      id: 'shouldNotBeNo',
-      errorMessage: 'This can not be undefined or null!',
-      method: function ( modelValue, viewValue ) {
-        var value = modelValue || viewValue;
-
-        return value !== undefined && value !== null;
-      }
-    }
-
-  };
-
-  $scope.widgets = [
-
-    {
-      model: 'A string',
-      modelConfigEdit: {
-        validators: [ validators.shorterThanTwenty ],
-        placeHolder: 'Enter something shorter than 20',
-        modelChange: onValueChange
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        validators: [ validators.shorterThanTwenty ],
-        placeHolder: 'N/A'
-      },
-      widgetConfigEdit: {
-        label: 'stringWidget (autocomplete)',
-        errorMessagesEmbedded: true,
-        tooltip: 'Enter something here. This value represents a very important something.',
-        autoCompleteItems: ['john', 'bill', 'charlie', 'robert', 'alban',
-          'oscar', 'marie', 'celine', 'brad', 'drew', 'rebecca', 'michel',
-          'francis', 'jean', 'paul', 'pierre', 'nicolas', 'alfred', 'gerard',
-          'louis', 'albert', 'edouard', 'benoit', 'guillaume', 'nicolas', 'joseph']
-
-      },
-      widgetConfigDisplay: {
-        label: 'stringWidget'
-      },
-      inputConfig: {
-        name: 'stringWidget',
-        id: 'stringWidget'
-      }
-    },
-
-    {
-      modelConfigEdit: {
-        validators: [ validators.shouldNotBeUndefinedOrNull ],
-        placeHolder: 'Credit card',
-        modelChange: onValueChange
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        validators: [],
-        placeHolder: 'N/A'
-      },
-      widgetConfigEdit: {
-        label: 'stringWidget with mask',
-        errorMessagesEmbedded: true,
-        tooltip: 'Enter credit card number here.',
-        mask: '9999 9999 9999 9999'
-      },
-      widgetConfigDisplay: {
-        label: 'stringWidget'
-      },
-      inputConfig: {
-        name: 'stringWidget',
-        id: 'stringWidget'
-      }
-    },
-
-    {
-      model: 'The letter A stands for apple but can cause your brain melt. This is something you would not want to risk.',
-      modelChange: onValueChange,
-      modelConfigEdit: {
-        validators: [ validators.shorterThanTwenty ],
-        placeHolder: 'Enter something',
-        modelChange: onValueChange
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        validators: [ validators.shorterThanTwenty ],
-        placeHolder: 'N/A'
-      },
-      widgetType: 'string',
-      widgetConfigEdit: {
-        label: 'stringWidget - multiline',
-        errorMessagesEmbedded: true,
-        tooltip: 'Enter something here. This value represents a very important something.',
-        multiLine: true,
-        rows: 6
-      },
-      widgetConfigDisplay: {
-        label: 'stringWidget - multiline'
-      },
-      inputConfig: {
-        name: 'stringWidget',
-        id: 'stringWidget'
-      }
-    },
-
-    {
-      model: true,
-      modelConfigEdit: {
-        validators: [ validators.shouldNotBeNo ],
-        modelChange: onValueChange
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        validators: []
-      },
-
-      widgetConfigEdit: {
-        label: 'checkboxWidget:',
-        errorMessagesEmbedded: true,
-        tooltip: 'Click it'
-      },
-      widgetConfigDisplay: {
-        label: 'checkboxWidget:'
-      },
-      inputConfig: {
-        name: 'checkboxWidget',
-        id: 'checkboxWidget'
-      }
-    },
-
-    {
-      model: undefined,
-      widgetType: 'checkbox',
-      modelConfigEdit: {
-        validators: [ validators.shouldNotBeUndefinedOrNull ],
-        modelChange: onValueChange
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        placeHolder: 'No set',
-        validators: []
-      },
-
-      widgetConfigEdit: {
-        label: 'checkboxWidget (no default value):',
-        errorMessagesEmbedded: true,
-        trueLabel: 'Yes',
-        falseLabel: 'No',
-        tooltip: 'Some tooltip text'
-      },
-      widgetConfigDisplay: {
-        label: 'checkboxWidget (no default value):'
-      },
-      inputConfig: {
-        name: 'checkboxWidget',
-        id: 'checkboxWidget'
-      }
-    },
-
-    {
-      model: selectedOption,
-      widgetType: 'select',
-      modelConfigEdit: {
-        validators: [ validators.shouldNotBeUndefinedOrNull ],
-        modelChange: onValueChange,
-        placeHolder: '---',
-        options: options
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        placeHolder: 'Not set',
-        validators: []
-      },
-
-      widgetConfigEdit: {
-        label: 'selectWidget (no default value):',
-        errorMessagesEmbedded: true,
-        trueLabel: 'Yes',
-        falseLabel: 'No',
-        tooltip: 'Some tooltip text'
-      },
-      widgetConfigDisplay: {
-        label: 'selectWidget (no default value):'
-      },
-      inputConfig: {
-        name: 'selectWidget',
-        id: 'selectWidget'
-      }
-    },
-
-
-    {
-      model: [selectedOption],
-      widgetType: 'select',
-      modelConfigEdit: {
-        validators: [ validators.shouldNotBeUndefinedOrNull ],
-        modelChange: onValueChange,
-        multiple: true,
-        placeHolder: '---',
-        options: options
-      },
-      modelConfigDisplay: {
-        modelChange: onValueChange,
-        placeHolder: 'Not set',
-        multiple: true,
-        validators: []
-      },
-
-      widgetConfigEdit: {
-        label: 'selectWidget (multiple):',
-        errorMessagesEmbedded: true,
-        trueLabel: 'Yes',
-        falseLabel: 'No',
-        tooltip: 'Some tooltip text'
-      },
-      widgetConfigDisplay: {
-        label: 'selectWidget (multiple):'
-      },
-      inputConfig: {
-        name: 'selectWidget',
-        id: 'selectWidget'
-      }
-    }
-
-
-  ];
-
-} );
-},{}],25:[function(require,module,exports){
+});
+},{"ngDragDrop":2}],18:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 //

@@ -11,10 +11,12 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
         var self = this,
             SimpleRouter = require('./classes/SimpleRouter.js'),
             ElbowRouter = require('./classes/ElbowRouter.js'),
+            OrthogonalRouter = require('./classes/OrthogonalRouter.js'),            
             routers = {
 
                 SimpleRouter: new SimpleRouter(),
-                ElbowRouter: new ElbowRouter()
+                ElbowRouter: new ElbowRouter(),
+                OrthogonalRouter: new OrthogonalRouter()                
 
             };
 
@@ -62,6 +64,16 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
             }
 
             return segments;
+
+        };
+
+        this.routeDiagram = function(diagram, routerType, params) {
+
+            var router = routers[routerType];
+
+            if (router && angular.isFunction(router.routeDiagram)) {
+                router.routeDiagram(diagram, params);
+            }
 
         };
 

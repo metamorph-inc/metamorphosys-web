@@ -1,35 +1,33 @@
 <div class="node-label"
-      data-ng-class="{ 'loading': isNodeLoading(node) }"
-      data-ng-click="nodeClick($event, node)"
-      isis-contextmenu
-      contextmenu="nodeContextmenu($event, node)"
-      contextmenu-data="nodeContextMenuData">
-    <a class="node-expander"
-        data-ng-if="canNodeExpand(node) && canNodeCollapse(node)"
-        data-ng-click="nodeExpanderClick($event, node)">
-        <i data-ng-if="!isNodeExpanded(node)" data-ng-class="node.collapsedIconClass || config.collapsedIconClass"></i>
-        <i data-ng-if="isNodeExpanded(node) && canNodeCollapse(node)" data-ng-class="node.expandedIconClass || config.expandedIconClass"></i>
-    </a>
-    <span class="label-and-extra-info"
-          ui-draggable="{{node.draggable}}"
-          drag-channel="{{node.dragChannel}}"
-          ui-on-drop="nodeDrop($event,node, $data)"
-          drop-channel="{{node.dropChannel}}"
-          drag="node.id">
-        <i data-ng-if="node.childrenCount && config.folderIconClass || node.iconClass || config.nodeIconClass"
-           data-ng-class="node.childrenCount && config.folderIconClass || node.iconClass || config.nodeIconClass"></i>
-        <span class="drag-handle">
-            <span class="label-text"
-                  data-ng-dblclick="nodeDblclick($event, node)"
-                  data-ng-if="node.label">{{ node.label }}</span>
-            <span class="noname"
-                  data-ng-dblclick="nodeDblClick($event, node)"
-                  data-ng-if="!node.label">No name</span>
-            <span data-ng-if="node.extraInfo">
-                <div class="node-extra-info" ng-include="config.extraInfoTemplateUrl"></div>
+      data-isis-sglclick="::ctrl.nodeClick($event)"
+      data-ng-dblclick="::ctrl.nodeDblclick($event)">
+    <div isis-contextmenu
+         contextmenu="::ctrl.nodeContextmenu($event)"
+         contextmenu-data="ctrl.nodeContextMenuData">
+        <a class="node-expander"
+            isis-stop-event
+            data-ng-if="ctrl.canExpand() && ctrl.canCollapse()"
+            data-isis-sglclick="::ctrl.nodeExpanderClick($event)">
+            <i data-ng-if="!ctrl.isExpanded()" data-ng-class="::ctrl.getCollapsedIconClass()"></i>
+            <i data-ng-if="ctrl.isExpanded() && ctrl.canCollapse()" data-ng-class="::ctrl.getExpandedIconClass()"></i>
+        </a>
+        <span class="label-and-extra-info"
+              ui-draggable="{{ctrl.node.draggable}}"
+              drag-channel="{{ctrl.node.dragChannel}}"
+              ui-on-drop="ctrl.nodeDrop($event, $data)"
+              drop-channel="{{::ctrl.node.dropChannel}}"
+              drag="::ctrl.node.id">
+            <i data-ng-if="::(ctrl.node.childrenCount && ctrl.treeCtrl.config.folderIconClass || ctrl.node.iconClass || ctrl.treeCtrl.config.nodeIconClass)"
+               data-ng-class="::(ctrl.node.childrenCount && ctrl.treeCtrl.config.folderIconClass || ctrl.node.iconClass || ctrl.treeCtrl.config.nodeIconClass)"></i>
+            <span class="drag-handle">
+                <span class="label-text"
+                      data-ng-if="ctrl.node.label">{{ ctrl.node.label }}</span>
+                <span class="noname"
+                      data-ng-if="!ctrl.node.label">No name</span>
+                <span data-ng-if="ctrl.node.extraInfo">
+                    <div class="node-extra-info" ng-include="ctrl.treeCtrl.config.extraInfoTemplateUrl"></div>
+                </span>
             </span>
         </span>
-    </span>
-    <i data-ng-if="node.childrenCount && config.folderIconClass"
-       data-ng-class="node.childrenCount && config.folderIconClass"></i>
+    </div>
 </div>
