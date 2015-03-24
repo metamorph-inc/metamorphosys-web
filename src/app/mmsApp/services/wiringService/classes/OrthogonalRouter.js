@@ -12,6 +12,10 @@ var OrthogonalRouter = function () {
 
     this.connections = [];
 
+    this.routeDiagram = function( diagram ) {
+        console.log('------ This is the entry point', diagram);
+    };
+
     this.routeConnections = function ( components, connections ) {
         // Step 1: generateVisibilityGraph
         // Step 2: AutoRouteWithGraph

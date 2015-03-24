@@ -486,6 +486,19 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
                 items: wiringMenu
             },
             {
+                id: 'diagramRouteMenu',
+                items: [
+                    {
+                        id: 'rerouteDiagram',
+                        label: 'Reroute diagram',
+                        iconClass: 'glyphicon glyphicon-random',
+                        action: function () {
+                            wiringService.routeDiagram($scope.diagram, 'OrthogonalRouter');
+                        }
+                    }
+                ]
+            },
+            {
                 id: 'printMenu',
                 items: [
                     {
