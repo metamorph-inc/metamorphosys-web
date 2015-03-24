@@ -9,14 +9,14 @@ require('../keyboardMap/keyboardMap.js');
 require('./operationCommitHandlersForGME.js');
 
 angular.module('mms.designVisualization.designEditor', [
-    'mms.testbenchActions',
-    'mms.designVisualization.operations.gmeCommitHandlers',
-    'mms.keyboardMap'
-])
-    .controller('DesignEditorController', function ($scope, $rootScope, diagramService, $log, connectionHandling,
-                                                    designService, $state, $stateParams, designLayoutService,
-                                                    symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-                                                    acmImportService, componentServerUrl) {
+        'mms.testbenchActions',
+        'mms.designVisualization.operations.gmeCommitHandlers',
+        'mms.keyboardMap'
+    ])
+    .controller('DesignEditorController', function($scope, $rootScope, diagramService, $log, connectionHandling,
+        designService, $state, $stateParams, designLayoutService,
+        symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
+        acmImportService, componentServerUrl) {
 
         var lastComponentInstantiationPosition,
             justCreatedWires,
@@ -29,23 +29,30 @@ angular.module('mms.designVisualization.designEditor', [
             initForContainer,
             destroy;
 
+        $scope.isDummy = $state.current.name === 'dummyEditor';
 
-        addRootScopeEventListener = function (event, fn) {
+        if ($scope.isDummy) {
+            $scope.editorWidth = 100;
+        } else {
+            $scope.editorWidth = 75;            
+        }
+
+        addRootScopeEventListener = function(event, fn) {
 
             rootScopeEventListeners = rootScopeEventListeners || {};
             rootScopeEventListeners[event] = $rootScope.$on(event, fn);
 
         };
 
-        removeAllRootScopeEventListeners = function () {
-            angular.forEach(rootScopeEventListeners, function (fn) {
+        removeAllRootScopeEventListeners = function() {
+            angular.forEach(rootScopeEventListeners, function(fn) {
                 fn();
             });
 
             rootScopeEventListeners = {};
         };
 
-        destroy = function () {
+        destroy = function() {
 
             removeAllRootScopeEventListeners();
 
@@ -56,9 +63,17 @@ angular.module('mms.designVisualization.designEditor', [
 
         };
 
-        initForContainer = function (selectedContainerId) {
+        initForContainer = function(selectedContainerId) {
 
-            if (selectedContainerId) {
+            if ($scope.isDummy) {
+
+                $rootScope.stopBusy();
+                $rootScope.unCover();
+                $rootScope.stopProcessing();
+
+
+            } else if (selectedContainerId) {
+
 
                 $scope.activeWorkSpace = projectHandling.getSelectedWorkspace();
                 $scope.layoutContext = layoutContext = projectHandling.getContainerLayoutContext();
@@ -71,7 +86,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 //console.log('=======================================ADDING LISTENERS');
 
-                addRootScopeEventListener('componentInstantiationMustBeDone', function ($event, componentData, position) {
+                addRootScopeEventListener('componentInstantiationMustBeDone', function($event, componentData, position) {
 
                     $rootScope.setProcessing();
 
@@ -95,12 +110,12 @@ angular.module('mms.designVisualization.designEditor', [
 
                 });
 
-                addRootScopeEventListener('wireCreationMustBeDone', function ($event, wire, msg) {
+                addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
 
                     $rootScope.setProcessing();
 
                     nodeService.getMetaNodes(layoutContext)
-                        .then(function (meta) {
+                        .then(function(meta) {
 
                             var metaId;
 
@@ -109,7 +124,7 @@ angular.module('mms.designVisualization.designEditor', [
                             nodeService.startTransaction(layoutContext, msg || 'New wire creation');
 
                             nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
-                                .then(function (node) {
+                                .then(function(node) {
 
                                     node.setRegistry('wireSegments', angular.copy(wire.segments));
                                     node.makePointer('src', wire.end1.port.id);
@@ -130,20 +145,20 @@ angular.module('mms.designVisualization.designEditor', [
 
                 });
 
-                addRootScopeEventListener('wireSegmentsMustBeSaved', function ($event, wire, message) {
+                addRootScopeEventListener('wireSegmentsMustBeSaved', function($event, wire, message) {
                     designLayoutService.setWireSegments(layoutContext, wire.id, angular.copy(wire.segments), message || 'Updating wire');
                 });
 
-                addRootScopeEventListener('wireDeletionMustBeDone', function ($event, wire, message) {
+                addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                     $rootScope.setProcessing();
                     nodeService.destroyNode(layoutContext, wire.id, message || 'Deleting wire');
                 });
 
-                addRootScopeEventListener('componentDeletionMustBeDone', function ($event, components, msg) {
+                addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
 
                     var startDeletionOfComponent;
 
-                    startDeletionOfComponent = function (component) {
+                    startDeletionOfComponent = function(component) {
 
                         var i,
                             wires,
@@ -163,7 +178,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                                 deleteMessage += ' with wires';
 
-                                nodeIdsToDelete = wires.map(function (wire) {
+                                nodeIdsToDelete = wires.map(function(wire) {
                                     return wire.id;
                                 });
 
@@ -184,7 +199,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                     if (angular.isArray(components)) {
 
-                        angular.forEach(components, function (component) {
+                        angular.forEach(components, function(component) {
                             startDeletionOfComponent(component);
                         });
 
@@ -198,83 +213,83 @@ angular.module('mms.designVisualization.designEditor', [
 
 
                 designLayoutService.watchDiagramElements(
-                    layoutContext,
-                    selectedContainerId,
-                    function (designStructureUpdateObject) {
+                        layoutContext,
+                        selectedContainerId,
+                        function(designStructureUpdateObject) {
 
-                        $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+                            $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                        switch (designStructureUpdateObject.type) {
+                            switch (designStructureUpdateObject.type) {
 
-                            case 'load':
+                                case 'load':
 
-                                $timeout(function () {
+                                    $timeout(function() {
 
-                                    if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
-                                        justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
+                                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                                                justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                                        diagramService.createNewComponentFromFromCyPhyElement(
+                                            diagramService.createNewComponentFromFromCyPhyElement(
+                                                selectedContainerId,
+                                                designStructureUpdateObject.data);
+
+                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                        }
+                                    });
+
+                                    break;
+
+                                case 'unload':
+
+                                    diagramService.deleteComponentOrWireById(
+                                        selectedContainerId,
+                                        designStructureUpdateObject.id);
+
+                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
+
+                                    break;
+
+                                default:
+                                case 'update':
+
+                                    if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                                        diagramService.updateComponentsAndItsWiresPosition(
                                             selectedContainerId,
-                                            designStructureUpdateObject.data);
-
-                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                            designStructureUpdateObject.id,
+                                            designStructureUpdateObject.data.position
+                                        );
                                     }
-                                });
 
-                                break;
+                                    if (designStructureUpdateObject.updateType === 'rotationChange') {
 
-                            case 'unload':
+                                        diagramService.updateComponentsAndItsWiresRotation(
+                                            selectedContainerId,
+                                            designStructureUpdateObject.id,
+                                            designStructureUpdateObject.data.rotation
+                                        );
+                                    }
 
-                                diagramService.deleteComponentOrWireById(
-                                    selectedContainerId,
-                                    designStructureUpdateObject.id);
+                                    if (designStructureUpdateObject.updateType === 'detailsChange') {
 
-                                gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
+                                        diagramService.updateWireSegments(
+                                            selectedContainerId,
+                                            designStructureUpdateObject.id,
+                                            angular.copy(designStructureUpdateObject.data.details.wireSegments)
+                                        );
+                                    }
 
-                                break;
+                                    break;
 
-                            default :
-                            case 'update':
+                            }
 
-                                if (designStructureUpdateObject.updateType === 'positionChange') {
+                            $rootScope.stopProcessing();
 
-                                    diagramService.updateComponentsAndItsWiresPosition(
-                                        selectedContainerId,
-                                        designStructureUpdateObject.id,
-                                        designStructureUpdateObject.data.position
-                                    );
-                                }
-
-                                if (designStructureUpdateObject.updateType === 'rotationChange') {
-
-                                    diagramService.updateComponentsAndItsWiresRotation(
-                                        selectedContainerId,
-                                        designStructureUpdateObject.id,
-                                        designStructureUpdateObject.data.rotation
-                                    );
-                                }
-
-                                if (designStructureUpdateObject.updateType === 'detailsChange') {
-
-                                    diagramService.updateWireSegments(
-                                        selectedContainerId,
-                                        designStructureUpdateObject.id,
-                                        angular.copy(designStructureUpdateObject.data.details.wireSegments)
-                                    );
-                                }
-
-                                break;
-
-                        }
-
-                        $rootScope.stopProcessing();
-
-                    })
-                    .then(function (cyPhyLayout) {
+                        })
+                    .then(function(cyPhyLayout) {
 
                         $log.debug('Diagram elements', cyPhyLayout);
 
-                        $timeout(function () {
+                        $timeout(function() {
 
                             $scope.diagram =
                                 diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
@@ -283,7 +298,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                         });
 
-                        $timeout(function () {
+                        $timeout(function() {
                             $rootScope.stopBusy();
                             $rootScope.unCover();
                             $rootScope.stopProcessing();
@@ -299,7 +314,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                     });
 
-                $scope.fabClick = function () {
+                $scope.fabClick = function() {
 
                     $log.debug('Fab was clicked');
 
@@ -311,17 +326,17 @@ angular.module('mms.designVisualization.designEditor', [
 
         $rootScope.stopProcessing();
 
-        $scope.$on('$destroy', function () {
+        $scope.$on('$destroy', function() {
             destroy();
         });
 
         initForContainer(projectHandling.getSelectedContainerId());
 
-        $scope.$watch(function () {
+        $scope.$watch(function() {
 
             return projectHandling.getSelectedContainerId();
 
-        }, function (newVal, oldVal) {
+        }, function(newVal, oldVal) {
 
             if (newVal !== oldVal) {
 
@@ -334,7 +349,7 @@ angular.module('mms.designVisualization.designEditor', [
 
     })
     .directive('designEditor', [
-        function () {
+        function() {
 
             return {
                 restrict: 'E',
@@ -345,4 +360,5 @@ angular.module('mms.designVisualization.designEditor', [
                 templateUrl: '/mmsApp/templates/designEditor.html'
 
             };
-        }]);
+        }
+    ]);
