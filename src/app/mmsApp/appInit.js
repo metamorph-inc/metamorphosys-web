@@ -3,7 +3,7 @@
 'use strict';
 
 angular.module('CyPhyApp').config(function (
-    $stateProvider, $urlRouterProvider, $mdThemingProvider
+    $stateProvider, $urlRouterProvider, $mdThemingProvider, dummyDiagramEnabled
 ) {
 
     var retrieveGivenProject,
@@ -303,6 +303,18 @@ angular.module('CyPhyApp').config(function (
                 }
             }
         });
+
+    if (dummyDiagramEnabled) {
+        $stateProvider.state('dummyEditor', {
+            url: '/dummyEditor',
+            views: {
+                'mainView@': {
+                    templateUrl: '/mmsApp/templates/editor.html'
+                },
+                'onCover@': {}
+            }            
+        });
+    }
 
 
     $mdThemingProvider.theme('default')
