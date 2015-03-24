@@ -109,7 +109,7 @@ define(['plugin/PluginConfig',
         self.nameDeferred = Q.defer();
         uploadedFileHash = self.config.UploadedFile;
 
-        uploadedFileHash = '879bcccf5749419bb90fd30e28f75cb2f4826018';
+        // uploadedFileHash = '123fc7afde0166ced3b9c2eb5c7655cc36bc9760';
 
         self.updateMETA(self.metaTypes);
 
@@ -126,11 +126,11 @@ define(['plugin/PluginConfig',
                             return self.isMetaTypeOf(node, self.metaTypes.WorkSpace);
                         });
                         if (workSpaces.length === 0) {
-                            return self.core.createNode({
+                            var workspace = self.core.createNode({
                                 base: self.metaTypes.WorkSpace,
-                                parent: self.rootNode,
-                                name: 'WorkSpace'
+                                parent: self.rootNode
                             });
+                            return workspace;
                         } else {
                             return workSpaces[0];
                         }
@@ -146,8 +146,8 @@ define(['plugin/PluginConfig',
             self.acmFolder = self.core.createNode({
                 base: self.metaTypes.ACMFolder,
                 parent: self.workSpace,
-                name: 'Components'
             });
+            self.core.setAttribute(self.acmFolder, 'name', 'Components');
 
             var acmZips = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
@@ -155,59 +155,89 @@ define(['plugin/PluginConfig',
                         filename !== 'testbenches.zip';
                 });
 
-            var importAcm = function (i) {
-                if (i >= acmZips.length) {
-                    return Q([]);
-                }
+            return throttle(acmZips, function (acmZip) {
                 var config = {
-                    UploadedFile: self.artifact.descriptor.content[acmZips[i]].content,
+                    UploadedFile: self.artifact.descriptor.content[acmZip].content,
                     DeleteExisting: true
                 };
 
-                var pluginRun = self.runPlugin(AcmImporter, config, {activeNode: self.acmFolder}).then(function (result) {
-                    return importAcm(i + 1)
-                        .then(function (results) {
-                            results.push(result);
-                            return results;
-                        });
-                });
-
-                return pluginRun;
-            };
-
-            return importAcm(0);
+                return self.runPlugin(AcmImporter, config, {activeNode: self.acmFolder});
+            });
         }).then(function () {
             self.admFolder = self.core.createNode({
                 base: self.metaTypes.ADMFolder,
-                parent: self.workSpace,
-                name: 'Designs'
+                parent: self.workSpace
             });
+            self.core.setAttribute(self.admFolder, 'name', 'Designs');
 
             var adms = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
                     return (filename.lastIndexOf('.adm') === filename.length - 4);
                 });
 
-            var importAdm = function (i) {
-                if (i >= adms.length) {
-                    return Q([]);
-                }
+            return throttle(adms, function (adm) {
                 var config = {
-                    admFile: self.artifact.descriptor.content[adms[i]].content
+                    admFile: self.artifact.descriptor.content[adm].content
                 };
+                return self.runPlugin(AdmImporter, config, {activeNode: self.admFolder});
+            });
+        }).then(function () {
+            self.atmFolder = self.core.createNode({
+                base: self.metaTypes.ATMFolder,
+                parent: self.workSpace
+            });
+            self.core.setAttribute(self.atmFolder, 'name', 'TestBenches');
 
-                var pluginRun = self.runPlugin(AdmImporter, config, {activeNode: self.admFolder}).then(function (result) {
-                    return importAdm(i + 1)
-                        .then(function (results) {
-                            results.push(result);
-                            return results;
+            var testbenches_zip = Object.getOwnPropertyNames(self.artifact.descriptor.content)
+                .filter(function (filename) {
+                    return filename === 'testbenches.zip';
+                })[0];
+            if (!testbenches_zip) {
+                return Q.reject('Uploaded files must include testbenches.zip');
+            }
+            var testbenches_json = Object.getOwnPropertyNames(self.artifact.descriptor.content)
+                .filter(function (filename) {
+                    return filename === 'testbenches.json';
+                })[0];
+            if (!testbenches_json) {
+                return Q.reject('Uploaded files must include testbenches.json');
+            }
+            // TODO check for missing testbenches_zip or json
+            var designModels;
+
+            return Q.ninvoke(self.core, 'loadChildren', self.admFolder)
+                .then(function(designModels_) {
+                    designModels = designModels_;
+                }).then(function () {
+                    return Q.ninvoke(self.blobClient, 'getObject', self.artifact.descriptor.content[testbenches_json].content);
+                }).then(function(testBenches) {
+                    // {"/Testing/PlaceAndRoute_1x2": "Template_Module_1x2__few_bga_connections"}
+                    var tbs = Object.getOwnPropertyNames(testBenches);
+                    return throttle(tbs, function (tb) {
+                        var tbModel = self.core.createNode({
+                            base: self.metaTypes.AVMTestBenchModel,
+                            parent: self.atmFolder
                         });
+                        self.core.setAttribute(tbModel, 'name', testBenches[tb]);
+
+                        var design = designModels.filter(function (design) {
+                            return self.core.getAttribute(design, 'name') === testBenches[tb];
+                        })[0]; // TODO check for undefined
+                        self.core.setPointer(tbModel, 'TopLevelSystemUnderTest', design);
+                        self.core.setAttribute(tbModel, 'TestBenchFiles', self.artifact.descriptor.content[testbenches_zip].content);
+                        self.core.setAttribute(tbModel, 'ID', tb);
+
+                        self.core.createNode({
+                            base: self.metaTypes.Container,
+                            parent: tbModel,
+                            name: self.core.getAttribute(design, 'name')
+                        });
+                        return Q([]);
+                    });
                 });
 
-                return pluginRun;
-            };
 
-            return importAdm(0);
+
         }).then(function () {
             return Q.ninvoke(self, 'save', 'ProjectImporter');
         }).then(function () {
@@ -261,6 +291,27 @@ define(['plugin/PluginConfig',
                 return result;
             });
     };
+
+    function throttle(input, fn) {
+        var doit = function (i) {
+            return fn(input[i])
+                .then(function (result) {
+                    i++;
+                    if (i < input.length) {
+                        return doit(i)
+                            .then(function (res) {
+                                res.push(result);
+                                return res;
+                            });
+                    }
+                    return [result];
+                });
+        };
+        if (input.length === 0) {
+            return Q([]);
+        }
+        return doit(0);
+    }
 
     return ProjectImporter;
 });
