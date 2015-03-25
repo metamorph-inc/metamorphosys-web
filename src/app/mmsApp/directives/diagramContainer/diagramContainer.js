@@ -67,8 +67,8 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     if ($event && $event.originalEvent) {
 
-                        x = $event.originalEvent.offsetX || 100;
-                        y = $event.originalEvent.offsetY || 100;
+                        x = $event.originalEvent.offsetX || $event.originalEvent.layerX || 100;
+                        y = $event.originalEvent.offsetY || $event.originalEvent.layerY || 100;
 
                         position = {
                             x: x - 20,

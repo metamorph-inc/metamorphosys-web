@@ -1,44 +1,35 @@
-# HOWTO run webgme-cyphy in Docker
-# 0. On Windows or OSX, install boot2docker and configure it
-#    bash "c:\Program Files\Boot2Docker for Windows\start.sh"
-#    "c:\Program Files\Boot2Docker for Windows\boot2docker.exe" stop
-#    "c:\Program Files\Oracle\VirtualBox\VBoxManage" modifyvm "boot2docker-vm" --natpf1 "containerssh,tcp,,80,,80"
-#    bash "c:\Program Files\Boot2Docker for Windows\start.sh"
-#    ssh-agent
-#    "c:\Program Files\Boot2Docker for Windows\boot2docker.exe" ssh -A
-# 1. Run a mongodb container
-#    docker run --name webgme_mongo -d dockerfile/mongodb
-# 2. Run a webgme-cyphy container
-#    git clone https://mmsbmachine@bitbucket.org/metamorphsoftwareinc/mms-webcyphy.git
-#	     password: MMSbuild
-#    docker build -t mms-webcyphy ./mms-webcyphy
-#    docker run -p 80:8855 --name mms-webcyphy --link webgme_mongo:webgme_mongo -d mms-webcyphy
-# 3. Inspect/stop/kill/rm/cleanup
-#    docker logs mms-webcyphy
-#    docker kill mms-webcyphy
-#    docker rm mms-webcyphy
-#    docker rmi mms-webcyphy
-
-# TROUBLESHOOTING
-# Sometimes other applications (we're looking at you, Skype) will listen on port 80. Use 'netstat -nab | grep "80"' on the host computer to find competing listeners.
-
-FROM dockerfile/nodejs
+FROM ubuntu:14.04
 MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 
-# create webgme user
-RUN adduser --disabled-password --home=/webgme --gecos "" webgme
-RUN echo "webgme ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN printf 'deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\ndeb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\n' > /etc/apt/sources.list.d/chris-lea-node_js-trusty.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B9316A7BC7917B12 #44A334DA # 87374F5D
 
-RUN mkdir -p /tmp
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /webgme && cp -a /tmp/node_modules /webgme
+RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential git-core nodejs mongodb-server
+RUN apt-get install -y --no-install-recommends python moreutils
 
-WORKDIR /webgme
-USER webgme
+RUN npm install -g npm@2.5.0
 
-ADD . /webgme
-RUN sed -i "s|.*mongoip.*|\"mongoip\": \"webgme_mongo\",|g" config.json
+RUN npm install -g gulp
+
+RUN echo smallfiles = true >> /etc/mongodb.conf
+
+VOLUME ["/mms-webcyphy"]
+WORKDIR /mms-webcyphy
+
+RUN echo '#!/bin/bash -ex' >> /root/run.sh &&\
+  echo '/etc/init.d/mongodb start' >> /root/run.sh &&\
+  echo 'git show HEAD:src/app/mmsApp/config.client.default.json | sed s@http://localhost:3000@http://$COMPONENT_SERVER_PORT_3000_TCP_ADDR:$COMPONENT_SERVER_PORT_3000_TCP_PORT@ | sponge src/app/mmsApp/config.client.json' >> /root/run.sh &&\
+  echo 'npm install && node node_modules/gulp/bin/gulp.js compile-all' >> /root/run.sh &&\
+  echo 'node app.js > app1.log 2> app2.log' >> /root/run.sh
+
 
 EXPOSE 8855
-CMD ["sudo", "node", "app.js"]
+
+CMD ["bash", "-xe", "/root/run.sh"]
+
+# docker build -t mms-webcyphy mms-webcyphy
+# docker kill mms-webcyphy ; docker rm mms-webcyphy
+# docker run --rm --name mms-webcyphy -v `pwd`/mms-webcyphy:/mms-webcyphy -p 8855:8855 --link component-server:component-server -t mms-webcyphy
+# docker exec mms-webcyphy mongorestore
+
+

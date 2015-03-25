@@ -3,21 +3,30 @@
 describe('Metamorphosys Tech Demo Flow', function () {
 
     var q = require('q'),
+        url = require('url'),
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
         hasClass = require('./lib/has_class.js'),
 
         gmeEventTimeLimit = 8000,
         uiEventTimeLimit = 200,
+        componentLibraryQueryTimeLimit = 2000,
 
         projectName,
         url,
 
         browser2,
 
-        targetComponentLabel = '3 Axis Accelerometer',
-
         $rootScope1,
-        $rootScope2;
+        $rootScope2,
+
+        // For component library interactions
+
+        searchTerm  = '12',
+        searchTermX = 'xy',
+        categoryToUnfold = 'Optoelectronics',
+        subCategoryToUnfold = 'Detectors',        
+        componentToDrag = 'TSL2561',
+        targetComponentLabel = 'TSL2561';
 
 
     require('./lib/find_diagramComponent_by_labelText.js');
@@ -28,7 +37,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             projectName = 'Test_79838';
             done();
         } else {
-            require('http').get('http://localhost:8855/rest/external/copyproject/noredirect', function (res) {
+            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function (res) {
                 if (res.statusCode > 399) {
                     done(res.statusCode);
                 }
@@ -60,7 +69,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     it('Should create and load new design', function () {
 
-        browser.get('http://localhost:8855/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
+        browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
         var diagramContainer;
 
@@ -158,7 +167,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         searchDropdown = element(by.css('.component-search .angucomplete-dropdown'));
         searchResults = element.all(by.css('.component-search .angucomplete-row'));
 
-        componentSearchInput.sendKeys('sens')
+        componentSearchInput.sendKeys(searchTerm)
             .then(function () {
 
                 browser.wait(function () {
@@ -170,14 +179,16 @@ describe('Metamorphosys Tech Demo Flow', function () {
                         expect(searchResults.count()).toBeGreaterThan(0);
 
 
-                        componentSearchInput.sendKeys('enona')
+                        componentSearchInput.sendKeys(searchTermX)
                             .then(function () {
 
                                 // Making sure back-space/delete works in input field
                                 componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
                                     .then(function () {
 
-                                        expect(componentSearchInput.getAttribute('value')).toEqual('sensenon');
+                                        var term = searchTerm + searchTermX;
+
+                                        expect(componentSearchInput.getAttribute('value')).toEqual( term.substring(0, term.length - 1));
 
                                         browser.wait(function () {
                                                 return searchDropdown.isDisplayed();
@@ -196,40 +207,82 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    it('Shoud display Sensors category', function () {
+    it('Shoud display ' + categoryToUnfold + ' category', function () {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('.component-browser li[title=sensors]'));
+        sensorCategoryItem = element(by.css('.component-browser li[title=' + categoryToUnfold + ']'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
 
     });
 
-    it('Sensors category should expand and show sensors', function () {
+    it( categoryToUnfold + ' category should expand', function () {
 
-        var sensorCategoryExpander,
+        var categoryExpander,
             childrenList,
-            sensors;
+            items;
 
-        sensorCategoryExpander = element(by.css('.component-browser li[title=sensors] .node-expander'));
-        childrenList = element(by.css('.component-browser li[title=sensors] > .node-list'));
-        sensors = childrenList.all(by.css('li'));
+        categoryExpander = element(by.css('.component-browser li[title=' + categoryToUnfold + '] .node-expander'));
 
-        sensorCategoryExpander.click()
+        categoryExpander.click()
             .then(function () {
+
+                browser.sleep(componentLibraryQueryTimeLimit);
+
+                childrenList = element(by.css('.component-browser li[title=' + categoryToUnfold + '] > .node-list'));
 
                 browser.wait(function () {
                         return childrenList.isDisplayed();
                     },
-                    1000,
-                    'no sensors in category')
+                    2000,
+                    'no items in category')
                     .then(function () {
-                        expect(sensors.count()).toBeGreaterThan(0);
+                        items = childrenList.all(by.css('li'));
+                        expect(items.count()).toBeGreaterThan(0);
                     });
 
             });
 
     });
+
+    it('Shoud display ' + subCategoryToUnfold + ' subcategory', function () {
+
+        var sensorCategoryItem;
+
+        sensorCategoryItem = element(by.css('.component-browser li[title=' + subCategoryToUnfold + ']'));
+        expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
+
+    });
+
+    it( subCategoryToUnfold + ' category should expand', function () {
+
+        var categoryExpander,
+            childrenList,
+            items;
+
+        categoryExpander = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] .node-expander'));
+
+        categoryExpander.click()
+            .then(function () {
+
+                browser.sleep(componentLibraryQueryTimeLimit);
+
+                childrenList = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] > .node-list'));
+
+                browser.wait(function () {
+                        return childrenList.isDisplayed();
+                    },
+                    1000,
+                    'no items in category')
+                    .then(function () {
+                        items = childrenList.all(by.css('li'));
+                        expect(items.count()).toBeGreaterThan(0);
+                    });
+
+            });
+
+    });
+
 
     it('Should be able to navigate to same project and design in other browser', function () {
 
@@ -266,6 +319,9 @@ describe('Metamorphosys Tech Demo Flow', function () {
         expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(4);
 
         closeButton = browser2.element(by.css('.about-dialog .md-actions button.md-primary'));
+
+        browser.sleep(2000);
+
         closeButton.click();
 
     });
@@ -280,13 +336,13 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser.driver.executeScript(dragAndDropHelper)
             .then(function () {
-                browser.driver.executeScript(function () {
+                browser.driver.executeScript(function (componentTitle) {
 
-                    $('li[title="3 Axis Accelerometer"] .label-and-extra-info').simulateDragDrop({
+                    $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
                         dropTarget: $('.diagram-container')
                     });
 
-                }).then(function () {
+                }, componentToDrag).then(function () {
 
                     //browser.sleep(5000);
 
@@ -315,10 +371,10 @@ describe('Metamorphosys Tech Demo Flow', function () {
             otherComponentBox,
             rotateCWButton,
             rotateCCWButton,
-            checkComponentRotation = function (browser, targetComponentLabel, expectedAngle) {
-                browser.driver.executeScript(function (targetComponentLabel) {
+            checkComponentRotation = function (browser, componentLabel, expectedAngle) {
+                browser.driver.executeScript(function (componentLabel) {
 
-                    return Math.acos(window.componentBoxByLabel(targetComponentLabel)[0].getCTM().a) / Math.PI * 180;
+                    return Math.acos(window.componentBoxByLabel(componentLabel)[0].getCTM().a) / Math.PI * 180;
 
                 }, targetComponentLabel).then(function (angle) {
                     expect(angle).toEqual(expectedAngle);
@@ -346,11 +402,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
         browser2.actions().mouseMove(otherComponentBox).perform();
         browser2.actions().click(protractor.Button.RIGHT).perform();
 
-        browser2.sleep(uiEventTimeLimit);
+        browser2.sleep(uiEventTimeLimit * 2);
 
         browser2.actions().click(rotateCCWButton).perform();
 
-        browser.sleep(gmeEventTimeLimit);
+        browser.sleep(gmeEventTimeLimit * 2);
 
         checkComponentRotation(browser2, targetComponentLabel, 0);
         checkComponentRotation(browser, targetComponentLabel, 0);
@@ -372,11 +428,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
         otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
-        browser.driver.executeScript(function (targetComponentLabel) {
+        browser.driver.executeScript(function (componentLabel) {
 
             var m;
 
-            m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+            m = window.componentBoxByLabel(componentLabel)[0].getCTM();
 
             return {
                 x: m.e,
@@ -406,13 +462,13 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
             browser.actions().mouseUp().perform();
 
-            browser.sleep(gmeEventTimeLimit);
+            browser.sleep(gmeEventTimeLimit * 2);
 
-            browser.driver.executeScript(function (targetComponentLabel) {
+            browser.driver.executeScript(function (componentLabel) {
 
                 var m;
 
-                m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+                m = window.componentBoxByLabel(componentLabel)[0].getCTM();
 
                 return {
                     x: m.e,
@@ -422,11 +478,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
             }, targetComponentLabel).then(function (newPosition1) {
 
 
-                browser2.driver.executeScript(function (targetComponentLabel) {
+                browser2.driver.executeScript(function (componentLabel) {
 
                     var m;
 
-                    m = window.componentBoxByLabel(targetComponentLabel)[0].getCTM();
+                    m = window.componentBoxByLabel(componentLabel)[0].getCTM();
 
                     return {
                         x: m.e,
@@ -473,7 +529,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             componentBox = element(by.diagramComponentLabel(targetComponentLabel));
             otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
-            browser.driver.executeScript(function (targetComponentLabel) {
+            browser.driver.executeScript(function (componentLabel) {
 
                 var e;
 

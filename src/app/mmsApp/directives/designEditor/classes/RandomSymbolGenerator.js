@@ -57,6 +57,7 @@ module.exports = function(symbolManagerProvider) {
             };
 
             symbolManagerProvider.makeBoxSymbol(
+                'box',
                 'random_' + idPostfix,
                 descriptor,
                 portDescriptors,

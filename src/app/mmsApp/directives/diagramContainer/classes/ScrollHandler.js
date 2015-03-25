@@ -85,11 +85,36 @@ module.exports = function ($scope, $timeout, $log) {
                 jspPane = $scope.$contentPane.find('.jspPane');
                 updateVisibleArea();
 
-                spaceBarKiller = function(e) {
+                spaceBarKiller = function(event) {
 
-                    if(e.keyCode === 32) {
-                        e.preventDefault();
-                        return false;
+                    var d,
+                        doPrevent;
+
+                    if (event.keyCode === 32) { // Delete
+
+                        doPrevent = true;
+
+                        d = event.srcElement || event.target;
+
+                        if (d.tagName) {
+
+                            if ((d.tagName.toUpperCase() === 'INPUT' &&
+                                (
+                                d.type.toUpperCase() === 'TEXT' ||
+                                d.type.toUpperCase() === 'PASSWORD' ||
+                                d.type.toUpperCase() === 'FILE' ||
+                                d.type.toUpperCase() === 'EMAIL' ||
+                                d.type.toUpperCase() === 'SEARCH' ||
+                                d.type.toUpperCase() === 'DATE' )
+                                ) ||
+                                d.tagName.toUpperCase() === 'TEXTAREA') {
+                                doPrevent = d.readOnly || d.disabled;
+                            }
+                        }
+                    }
+
+                    if (doPrevent) {
+                        event.preventDefault();
                     }
 
                 };

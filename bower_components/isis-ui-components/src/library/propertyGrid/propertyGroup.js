@@ -1,39 +1,39 @@
 /*globals define, angular, alert*/
 
 
-define( [
-  'angular',
-  'text!./templates/propertyGroup.html',
-  'css!./styles/propertyGroup.css',
+define([
+    'angular',
+    'text!./templates/propertyGroup.html',
+    'css!./styles/propertyGroup.css',
 
-  './propertyGridRow'
+    './propertyGridRow'
 
-], function ( ng, template ) {
+], function (ng, template) {
 
-  'use strict';
+    'use strict';
 
-  angular.module(
-    'isis.ui.propertyGroup', [
-      'isis.ui.propertyGridRow'
-    ]
+    angular.module(
+        'isis.ui.propertyGroup', [
+            'isis.ui.propertyGridRow'
+        ]
 
-  )
-    .directive(
-      'propertyGroup',
-      function () {
+    )
+        .directive(
+            'propertyGroup',
+            function () {
 
-        return {
-          scope: {
-            label: '=',
-            items: '=',
-            config: '='
-          },
-          restrict: 'E',
-          replace: true,
-          template: template
+                return {
+                    scope: {
+                        label: '=',
+                        items: '=',
+                        config: '='
+                    },
+                    restrict: 'E',
+                    replace: true,
+                    template: template
 
-        };
-      } );
+                };
+            });
 
 
-} );
+});

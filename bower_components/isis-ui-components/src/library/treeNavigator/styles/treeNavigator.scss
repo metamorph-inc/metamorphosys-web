@@ -16,7 +16,12 @@
     height: 2em;
 
     .scope-selector {
+      float: left;
       padding-right: .5x;
+    }
+
+    .preferences-menu {
+      float: right;
     }
 
     a {
@@ -32,6 +37,17 @@
   ul.node-list {
     list-style-type: none;
     padding: 0;
+    position: relative;
+
+    .loading-cover {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 0;
+      background-color: #fff;
+      transition: height 200ms, opacity 200ms;
+    }
+
   }
 
   ul.node-list > li {
@@ -72,10 +88,21 @@
     background-color: #eee;
   }
 
-  .node-label.loading:after {
-    display: block;
-    content: 'Loading...';
-    padding-left: 2ex;
+  .loading {
+    > .node-label:after {
+
+      display: block;
+      content: 'Loading...';
+      padding-left: 2ex;
+      color: #aaa;
+      font-style: italic;
+      font-size: 85%;
+    }
+
+    > .node-list > .loading-cover {
+      opacity: .5;
+      height: 100%;
+    }
   }
 
   .node-extra-info {
@@ -120,8 +147,6 @@
 
     margin-right: .2ex;
 
-
-
   }
 
   .icon-arrow-down:after {
@@ -136,16 +161,15 @@
 
     margin-left: .2ex;
 
-
   }
 
   .node-expander:hover {
 
-    .icon-arrow-down:after{
+    .icon-arrow-down:after {
       border-top-color: #f90;
     }
 
-    .icon-arrow-right:after{
+    .icon-arrow-right:after {
       border-left-color: #f90;
     }
 
@@ -182,6 +206,37 @@
 
   .on-drag-hover {
     background-color: #ccffcc;
+  }
+
+  .paging {
+
+    .last-loaded-child-position,
+    .first-loaded-child-position {
+      font-size: 90%;
+    }
+
+    text-transform: uppercase;
+    font-size: 80%;
+    text-align: center;
+    text-decoration: none;
+
+    &.page-up {
+      border-bottom: 1px dotted #8099AB;
+    }
+
+    &.page-down {
+      border-top: 1px dotted #8099AB;
+    }
+
+    a {
+
+      display: block;
+      padding: 1ex 0;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 
 }

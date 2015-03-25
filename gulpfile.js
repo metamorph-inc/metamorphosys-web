@@ -75,7 +75,7 @@ var argv = require('yargs').argv,
     docsRoot = buildRoot + '/docs/',
 
     gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
+    eslint = require('gulp-eslint'),
     browserify = require('browserify'),
     concat = require('gulp-concat'),
     buffer = require('gulp-buffer'),
@@ -88,9 +88,11 @@ var argv = require('yargs').argv,
     templateCache = require('gulp-angular-templatecache'),
     template = require('gulp-template'),
 
+    babelify = require('babelify'),
+    gulpNgConfig = require('gulp-ng-config'),
     prettify = require('gulp-js-prettify'),
     shell = require('gulp-shell'),
-    fs = require('fs'),
+    fs = require('fs-extra'),
     path = require('path'),
 
     svgstore = require('gulp-svgstore'),
@@ -142,8 +144,8 @@ gulp.task('lint-docs', function () {
     console.log('Linting docs...');
 
     gulp.src(sourcePaths.docsScripts)
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(eslint())
+        .pipe(eslint.format());
 
 });
 
@@ -161,6 +163,7 @@ gulp.task('browserify-docs', function () {
 
     bundle = function () {
         return bundler
+//            .transform(babelify)
             .bundle()
             .on('error', swallowError)
             .pipe(source(libraryName + '-docs.js'))
@@ -232,8 +235,8 @@ gulp.task('lint-library', function () {
     console.log('Linting library...');
 
     gulp.src(sourcePaths.libraryScripts)
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(eslint())
+        .pipe(eslint.format());
 
 });
 
@@ -251,6 +254,7 @@ gulp.task('browserify-library', function () {
 
     bundle = function () {
         return bundler
+//            .transform(babelify)
             .bundle()
             .on('error', swallowError)
             .pipe(source(libraryName + '.js'))
@@ -328,7 +332,7 @@ applications = getDirectories( sourcePaths.appSourcesFolders ).filter(
     function(folder) {
         return doNotCompileApps.indexOf(folder) === -1;
     }
-)
+);
 
 registerAppTasks = function (appName) {
 
@@ -355,6 +359,23 @@ registerAppTasks = function (appName) {
         appFilePath = 'scripts/' + appName + '-app.js',
         templateFilePath = 'scripts/' + appName + '-app-templates.js';
 
+    if (!fs.existsSync(appSourceRoot + 'config.client.json') &&
+        fs.existsSync(appSourceRoot + 'config.client.default.json')) {
+
+        console.log('Client config created from default.');
+        fs.copySync(appSourceRoot + 'config.client.default.json', appSourceRoot + 'config.client.json');
+
+    }
+
+    gulp.src(appSourceRoot + 'config.client.json')
+        .pipe(gulpNgConfig('mms.' + appName + '.config'))
+        .pipe(rename(function (path) {
+            path.basename = 'appConfig';
+            path.extname = '.js';
+        }))
+        .pipe(gulp.dest(appSourceRoot));
+
+
     gulp.task('generate-svg-map-' + appName, function () {
         return gulp.src( appSvgSymbols )
             .pipe(svgmin())
@@ -367,8 +388,8 @@ registerAppTasks = function (appName) {
         console.log('Linting ' + appName + '-app...');
 
         gulp.src(appSources)
-            .pipe(jshint())
-            .pipe(jshint.reporter('default'));
+            .pipe(eslint())
+            .pipe(eslint.format());
 
     });
 
@@ -387,6 +408,7 @@ registerAppTasks = function (appName) {
 
         bundle = function () {
             return bundler
+//                .transform(babelify)
                 .bundle()
                 .on('error', swallowError)
                 .pipe(source(appSourceRoot + 'app.js'))
@@ -675,8 +697,14 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 
             appImages = sourcePaths.appImagePatterns.map(function(imageType) {
                 return appSourceRoot + imageType;
-            });
+            }),
 
+            appLibs = loadAppLibs(appName);
+
+        if (appLibs && appLibs.scripts) {
+            // appSources = appSources.concat(appLibs.scripts);
+            gulp.watch(appLibs.scripts, ['copy-' + appName + '-libs']);
+        }
         gulp.watch(appSources, [ 'compile-' + appName + '-scripts' ]);
         gulp.watch(appHtmls, [ 'compile-' + appName + '-templates' ]);
         gulp.watch(appStyles, [ 'compile-' + appName + '-styles' ]);

@@ -34,10 +34,14 @@ require('./directives/busyCover/busyCover.js');
 require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
+require('./directives/componentBrowser/componentBrowser' );
 
 require('./directives/mainNavigator/mainNavigator');
 
 var CyPhyApp = angular.module('CyPhyApp', [
+
+    'mms.mmsApp.config',
+
     'ui.router',
 
     'gme.services',
@@ -48,8 +52,6 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     // app specific templates
     'cyphy.mmsApp.templates',
-
-    'ui.bootstrap',
 
     'mms.utils',
     'mms.errorReporter',
@@ -73,6 +75,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.designEditor',
     'mms.mainNavigator',
 
+    'mms.mmsApp.componentBrowser',
+
     'angucomplete-alt',
     'ngTouch',
     'ngMaterial',
@@ -80,6 +84,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'ngCookies'
 ]);
 
+require('./appInit');
 require('./appConfig');
 
 
