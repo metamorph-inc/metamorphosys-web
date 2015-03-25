@@ -13,6 +13,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="mms-webcyphy node_modules" level="project" />
     <orderEntry type="library" name="webgme-cyphy node_modules" level="project" />
   </component>
 </module>
