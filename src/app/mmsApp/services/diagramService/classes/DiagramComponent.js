@@ -2,22 +2,22 @@
 
 'use strict';
 
-var glMatrix = require( 'glMatrix' );
+var glMatrix = require('glMatrix');
 
-var DiagramComponent = function ( descriptor ) {
+var DiagramComponent = function(descriptor) {
 
-    if ( !angular.isObject( descriptor.symbol ) ) {
-        throw new Error( 'No symbol found for component ' + this.id );
+    if (!angular.isObject(descriptor.symbol)) {
+        throw new Error('No symbol found for component ' + this.id);
     }
 
-    angular.extend( this, descriptor );
+    angular.extend(this, descriptor);
 
     // For rotation
-    this._centerOffset = [ this.symbol.width / 2, this.symbol.height / 2 ];
+    this._centerOffset = [this.symbol.width / 2, this.symbol.height / 2];
 
 };
 
-DiagramComponent.prototype.isInViewPort = function ( viewPort, padding ) {
+DiagramComponent.prototype.isInViewPort = function(viewPort, padding) {
 
     //TODO: count width and height for orientation
     padding = padding || {
@@ -26,16 +26,16 @@ DiagramComponent.prototype.isInViewPort = function ( viewPort, padding ) {
     };
 
     return (
-        angular.isObject( viewPort ) &&
-        this.x + this.symbol.width >= ( viewPort.left + padding.x ) &&
-        this.x <= ( viewPort.right - padding.x ) &&
-        this.y + this.symbol.height >= ( viewPort.top + padding.y ) &&
-        this.y <= ( viewPort.bottom - padding.y ) );
+        angular.isObject(viewPort) &&
+        this.x + this.symbol.width >= (viewPort.left + padding.x) &&
+        this.x <= (viewPort.right - padding.x) &&
+        this.y + this.symbol.height >= (viewPort.top + padding.y) &&
+        this.y <= (viewPort.bottom - padding.y));
 };
 
-DiagramComponent.prototype.getTransformationMatrix = function () {
+DiagramComponent.prototype.getTransformationMatrix = function() {
 
-    if ( !angular.isArray( this.transformationMatrix ) ) {
+    if (!angular.isArray(this.transformationMatrix)) {
         this.updateTransformationMatrix();
     }
 
@@ -54,10 +54,76 @@ DiagramComponent.prototype.getGridPosition = function() {
 
 };
 
+DiagramComponent.prototype.getGridBoundingBox = function() {
 
-DiagramComponent.prototype.getSVGTransformationMatrix = function () {
+    var normRotation,
+        localTopLeftCornerPosition,
+        boundingBox,
 
-    if ( !angular.isArray( this.svgTransformationMatrix ) ) {
+        symbolHeight = this.symbol.height,
+        symbolWidth = this.symbol.width;
+
+    normRotation = this.rotation % 360;
+
+    localTopLeftCornerPosition = this.getGridPosition();
+
+    //TODO: Make it generic if we enable arbitrary rotation
+
+    switch (normRotation) {
+
+        case 90:
+
+            boundingBox = {
+                x: localTopLeftCornerPosition.x - symbolHeight,
+                y: localTopLeftCornerPosition.y,
+                witdh: symbolHeight,
+                height: symbolWidth
+            };
+
+            break;
+
+        case 180:
+
+            boundingBox = {
+                x: localTopLeftCornerPosition.x - symbolWidth,
+                y: localTopLeftCornerPosition.y - symbolHeight,
+                witdh: symbolWidth,
+                height: symbolHeight
+            };
+
+            break;
+
+        case 270:
+
+            boundingBox = {
+                x: localTopLeftCornerPosition.x,
+                y: localTopLeftCornerPosition.y - symbolWidth,
+                witdh: symbolHeight,
+                height: symbolWidth
+            };
+
+            break;
+
+        default:
+        case 0:
+
+            boundingBox = {
+                x: localTopLeftCornerPosition.x,
+                y: localTopLeftCornerPosition.y,
+                witdh: symbolWidth,
+                height: symbolHeight
+            };
+
+
+    }
+
+    return boundingBox;
+
+};
+
+DiagramComponent.prototype.getSVGTransformationMatrix = function() {
+
+    if (!angular.isArray(this.svgTransformationMatrix)) {
         this.updateTransformationMatrix();
     }
 
@@ -65,14 +131,14 @@ DiagramComponent.prototype.getSVGTransformationMatrix = function () {
 
 };
 
-DiagramComponent.prototype.getSVGTransformationString = function () {
+DiagramComponent.prototype.getSVGTransformationString = function() {
 
     var transMatrix = this.getSVGTransformationMatrix();
 
-    return transMatrix.join( ', ' );
+    return transMatrix.join(', ');
 };
 
-DiagramComponent.prototype.updateTransformationMatrix = function () {
+DiagramComponent.prototype.updateTransformationMatrix = function() {
 
     var rotationRad,
         //sinA, cosA,
@@ -80,9 +146,9 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
         transformMat3,
         result;
 
-    if ( angular.isNumber( this.rotation ) &&
-        angular.isNumber( this.x ) &&
-        angular.isNumber( this.y ) ) {
+    if (angular.isNumber(this.rotation) &&
+        angular.isNumber(this.x) &&
+        angular.isNumber(this.y)) {
 
         rotationRad = this.rotation / 180 * Math.PI;
 
@@ -90,7 +156,7 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
 
         translation = glMatrix.vec2.create();
 
-        glMatrix.vec2.set( translation, this.x + this._centerOffset[0], this.y + this._centerOffset[1]);
+        glMatrix.vec2.set(translation, this.x + this._centerOffset[0], this.y + this._centerOffset[1]);
 
         glMatrix.mat3.translate(
             transformMat3,
@@ -104,7 +170,7 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
             rotationRad
         );
 
-        glMatrix.vec2.set( translation, -this._centerOffset[0], -this._centerOffset[1]);
+        glMatrix.vec2.set(translation, -this._centerOffset[0], -this._centerOffset[1]);
 
         glMatrix.mat3.translate(
             transformMat3,
@@ -115,12 +181,12 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
         this.transformationMatrix = transformMat3;
 
         this.svgTransformationMatrix = [
-            transformMat3[ 0 ],
-            transformMat3[ 1 ],
-            transformMat3[ 3 ],
-            transformMat3[ 4 ],
-            transformMat3[ 6 ],
-            transformMat3[ 7 ]
+            transformMat3[0],
+            transformMat3[1],
+            transformMat3[3],
+            transformMat3[4],
+            transformMat3[6],
+            transformMat3[7]
         ];
 
         result = this.transformationMatrix;
@@ -131,7 +197,7 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
 
 };
 
-DiagramComponent.prototype.getPosition = function () {
+DiagramComponent.prototype.getPosition = function() {
 
     return {
         x: this.x,
@@ -141,9 +207,9 @@ DiagramComponent.prototype.getPosition = function () {
 };
 
 
-DiagramComponent.prototype.setPosition = function ( x, y ) {
+DiagramComponent.prototype.setPosition = function(x, y) {
 
-    if ( angular.isNumber( x ) && angular.isNumber( y ) ) {
+    if (angular.isNumber(x) && angular.isNumber(y)) {
 
         this.x = x;
         this.y = y;
@@ -151,57 +217,55 @@ DiagramComponent.prototype.setPosition = function ( x, y ) {
         this.updateTransformationMatrix();
 
     } else {
-        throw new Error( 'Coordinates must be numbers!' );
+        throw new Error('Coordinates must be numbers!');
     }
 };
 
-DiagramComponent.prototype.rotate = function ( angle ) {
+DiagramComponent.prototype.rotate = function(angle) {
 
-    if ( angular.isNumber( angle ) ) {
+    if (angular.isNumber(angle)) {
 
         this.rotation += angle;
 
         this.updateTransformationMatrix();
 
     } else {
-        throw new Error( 'Angle must be number!' );
+        throw new Error('Angle must be number!');
     }
 };
 
-DiagramComponent.prototype.setRotation = function ( newRotation ) {
+DiagramComponent.prototype.setRotation = function(newRotation) {
 
-    if ( angular.isNumber( newRotation ) ) {
-
-        this.rotation = newRotation;
+    if (angular.isNumber(newRotation)) {
 
         this.updateTransformationMatrix();
 
     } else {
-        throw new Error( 'Angle must be number!' );
+        throw new Error('Angle must be number!');
     }
 };
 
-DiagramComponent.prototype.registerPortInstances = function ( newPorts ) {
+DiagramComponent.prototype.registerPortInstances = function(newPorts) {
 
     var self = this;
 
     this.portInstances = this.portInstances || [];
 
-    angular.forEach( newPorts, function ( newPort ) {
+    angular.forEach(newPorts, function(newPort) {
 
         newPort.parentComponent = self;
-        self.portInstances.push( newPort );
+        self.portInstances.push(newPort);
 
-    } );
+    });
 };
 
-DiagramComponent.prototype.getTransformedDimensions = function () {
+DiagramComponent.prototype.getTransformedDimensions = function() {
     //  var width, height;
 };
 
-DiagramComponent.prototype.localToGlobal = function () {
+DiagramComponent.prototype.localToGlobal = function() {
 
-    if ( !this.transformationMatrix ) {
+    if (!this.transformationMatrix) {
         this.transformationMatrix = this.getTransformationMatrix();
     }
 
