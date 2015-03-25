@@ -4,11 +4,5 @@
         "title": "Project Analyzer",
         "panel": "panels/ProjectAnalyzer/ProjectAnalyzerPanel",
         "DEBUG_ONLY": false
-    },
-    {
-        "id": "NetLabelPanel",
-        "title": "NetLabelPanel",
-        "panel": "panels/NetLabel/NetLabelPanel",
-        "DEBUG_ONLY": true
     }
 ]
