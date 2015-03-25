@@ -37,7 +37,7 @@ angular.module('mms.designVisualization.designEditor', [
         if ($scope.isDummy) {
             $scope.editorWidth = 100;
         } else {
-            $scope.editorWidth = 75;            
+            $scope.editorWidth = 75;
         }
 
         addRootScopeEventListener = function(event, fn) {
