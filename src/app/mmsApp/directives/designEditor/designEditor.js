@@ -37,7 +37,7 @@ angular.module('mms.designVisualization.designEditor', [
         if ($scope.isDummy) {
             $scope.editorWidth = 100;
         } else {
-            $scope.editorWidth = 75;            
+            $scope.editorWidth = 75;
         }
 
         addRootScopeEventListener = function(event, fn) {
@@ -74,7 +74,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 randomSymbolGenerator.generateSymbols(5);
 
-                $scope.diagram = diagramService.generateDummyDiagram('dummy', 30, 60, 1500, 1500);
+                $scope.diagram = diagramService.generateDummyDiagram('dummy', 5, 0, 1500, 1500);
 
                 $log.debug('Dummy diagram:', $scope.diagram);
 

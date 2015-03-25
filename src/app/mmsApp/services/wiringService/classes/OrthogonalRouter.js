@@ -17,7 +17,9 @@ var OrthogonalRouter = function () {
 
 
     this.routeDiagram = function( diagram ) {
+
         console.log('------ This is the entry point', diagram);
+        self.generateVisibilityGraph(diagram);
     };
 
     this.routeConnections = function ( components, connections ) {
@@ -28,7 +30,7 @@ var OrthogonalRouter = function () {
         // Step 5: drawConnections <-- Is this done here or somewhere else??
     };
 
-    this.generateVisibilityGraph = function ( components, grid ) {
+    this.generateVisibilityGraph = function ( diagram ) {
         /*
             Takes in the set of components with their coordinates of interest and generates orthogonal visibility grid.
 
@@ -62,13 +64,13 @@ var OrthogonalRouter = function () {
         var edges = [];
 
         // Get interesting nodes from components.
-        this.visibilityGraph.vertices = this.getNodes( components );
+        this.getNodes( diagram.components );
 
         // We will first get the interesting horizontal line segment, so sort by Y coordinate
         var sortedY = this.visibilityGraph.vertices;
         sortedY.sort(function ( a, b ) { return self.compare(a, b, 0); });
 
-        var horzSegments = this.lineSweep(sortedY, "horizontal", grid.width);
+        var horzSegments = this.lineSweep(sortedY, "horizontal", diagram.config.width);
 
 
 
@@ -85,17 +87,22 @@ var OrthogonalRouter = function () {
     };
 
     this.getNodesFromComponent = function ( component ) {
-        this.visibilityGraph.vertices.push( { x: component.boundingBox.xMin, y: component.boundingBox.yMin } );
-        this.visibilityGraph.vertices.push( { x: component.boundingBox.xMin, y: component.boundingBox.yMax } );
-        this.visibilityGraph.vertices.push( { x: component.boundingBox.xMax, y: component.boundingBox.yMin } );
-        this.visibilityGraph.vertices.push( { x: component.boundingBox.xMax, y: component.boundingBox.yMax } );
+        var xc = [0.0, component.symbol.width],
+            yc = [0.0, component.symbol.height],
+            i, j, k;
 
-        var i;
-        for ( i = 0; i < component.ports.length; i++ ) {
-            this.visibilityGraph.vertices.push({x: component.ports[i].x,
-                                                y: component.ports[i].y,
+        for ( i = 0; i < 2; i++ ) {
+            for ( j = 0; j < 2; j++ ) {
+                this.visibilityGraph.vertices.push( { x: component.x + xc[i], y: component.y + yc[j] });
+            }
+        }
+
+        for ( k = 0; k < component.portInstances.length; k++ ) {
+            var portPos = component.portInstances[k].getGridPosition();
+            this.visibilityGraph.vertices.push({x: portPos.x,
+                                                y: portPos.y,
                                                 isPort: true,
-                                                direction: component.ports[i].direction});
+                                                direction: component.portInstances[k].portSymbol.side});
         }
     };
 
@@ -146,16 +153,30 @@ var OrthogonalRouter = function () {
             if  ( node.x > compareNode.x ) {
                 return 1;
             }
-            if ( node.x < compareNode.x ) return -1;
-            if (node.y > compareNode.y ) return 1;
-            if (node.y < compareNode.y ) return -1;
+            if ( node.x < compareNode.x ) {
+                return -1;
+            }
+            if (node.y > compareNode.y ) {
+                return 1;
+            }
+            if (node.y < compareNode.y ) {
+                return -1;
+            }
         }
         else {
             // Sort by Y then X (Horizontal line sweep)
-            if (node.y > compareNode.y ) return 1;
-            if (node.y < compareNode.y ) return -1;
-            if ( node.x > compareNode.x ) return 1;
-            if ( node.x < compareNode.x ) return -1;
+            if (node.y > compareNode.y ) {
+                return 1;
+            }
+            if (node.y < compareNode.y ) {
+                return -1;
+            }
+            if ( node.x > compareNode.x ) {
+                return 1;
+            }
+            if ( node.x < compareNode.x ) {
+                return -1;
+            }
         }
         return 0; // Same point
     };
@@ -204,4 +225,4 @@ var OrthogonalRouter = function () {
 
 };
 
-//module.exports = OrthogonalRouter;
+module.exports = OrthogonalRouter;

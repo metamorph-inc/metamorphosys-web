@@ -248,7 +248,6 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
                 });
 
-            debugger;
 
             provider.registerSymbol(symbol);
 
