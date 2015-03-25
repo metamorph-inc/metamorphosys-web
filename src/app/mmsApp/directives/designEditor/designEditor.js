@@ -76,7 +76,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 $scope.diagram = diagramService.generateDummyDiagram('dummy', 30, 60, 1500, 1500);
 
-                $log.debug('Dummy diagram:', $scope.diagram);
+                console.log('Dummy diagram:', $scope.diagram);
 
                 $rootScope.stopBusy();
                 $rootScope.unCover();
