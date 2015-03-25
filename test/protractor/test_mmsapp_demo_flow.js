@@ -42,9 +42,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
                     done(res.statusCode);
                 }
                 res.setEncoding('utf8');
+                projectName = '';
                 res.on('data', function (chunk) {
-                    /* fair assumption that projectName fits in one chunk */
-                    projectName = chunk;
+                    projectName += chunk;
+                });
+                res.on('end', function () {
                     done();
                 });
             });
