@@ -43,6 +43,25 @@ DiagramComponent.prototype.getTransformationMatrix = function () {
 
 };
 
+DiagramComponent.prototype.getGridPosition = function() {
+
+    if (this.rotation % 180 !== 0) {
+        var transformationMatrix = this.getTransformationMatrix();
+
+        return {
+            x: transformationMatrix[6],
+            y: transformationMatrix[7]
+        };
+    }
+    else {
+        return {
+            x: this.x,
+            y: this.y
+        };
+    }
+
+};
+
 
 DiagramComponent.prototype.getSVGTransformationMatrix = function () {
 
@@ -70,7 +89,7 @@ DiagramComponent.prototype.updateTransformationMatrix = function () {
         result;
 
     if ( angular.isNumber( this.rotation ) &&
-        angular.isNumber( this.x ),
+        angular.isNumber( this.x ) &&
         angular.isNumber( this.y ) ) {
 
         rotationRad = this.rotation / 180 * Math.PI;

@@ -8,11 +8,6 @@ var OrthogonalRouter = function () {
 
     self.name = 'OrthogonalRouter';
 
-    this.visibilityGraph = {
-        vertices: [],
-        edges: []
-    };
-
     this.connections = [];
 
 
@@ -61,6 +56,10 @@ var OrthogonalRouter = function () {
             }
 
          */
+        this.visibilityGraph = {
+            vertices: [],
+            edges: []
+        };
         var edges = [];
 
         // Get interesting nodes from components.
@@ -87,15 +86,16 @@ var OrthogonalRouter = function () {
     };
 
     this.getNodesFromComponent = function ( component ) {
-        var xc = [0.0, component.symbol.width],
-            yc = [0.0, component.symbol.height],
-            i, j, k;
+        var compPos = component.getGridPosition(),
+            xyNoFlip = component.rotation % 180 === 0,  // If rotated 90 or 270, width/height values switch
+            xc = xyNoFlip*component.symbol.width + !xyNoFlip*component.symbol.height,
+            yc = xyNoFlip*component.symbol.height + !xyNoFlip*component.symbol.width,
+            k;
 
-        for ( i = 0; i < 2; i++ ) {
-            for ( j = 0; j < 2; j++ ) {
-                this.visibilityGraph.vertices.push( { x: component.x + xc[i], y: component.y + yc[j] });
-            }
-        }
+        this.visibilityGraph.vertices.push( { x: compPos.x, y: compPos.y});
+        this.visibilityGraph.vertices.push( { x: compPos.x, y: compPos.y + yc});
+        this.visibilityGraph.vertices.push( { x: compPos.x + xc, y: compPos.y});
+        this.visibilityGraph.vertices.push( { x: compPos.x + xc, y: compPos.y + yc});
 
         for ( k = 0; k < component.portInstances.length; k++ ) {
             var portPos = component.portInstances[k].getGridPosition();
