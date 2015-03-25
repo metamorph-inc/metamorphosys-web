@@ -45,20 +45,12 @@ DiagramComponent.prototype.getTransformationMatrix = function () {
 
 DiagramComponent.prototype.getGridPosition = function() {
 
-    if (this.rotation % 180 !== 0) {
-        var transformationMatrix = this.getTransformationMatrix();
+    var transformationMatrix = this.getTransformationMatrix();
 
-        return {
-            x: transformationMatrix[6],
-            y: transformationMatrix[7]
-        };
-    }
-    else {
-        return {
-            x: this.x,
-            y: this.y
-        };
-    }
+    return {
+        x: transformationMatrix[6],
+        y: transformationMatrix[7]
+    };
 
 };
 
