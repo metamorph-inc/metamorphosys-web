@@ -402,11 +402,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
         browser2.actions().mouseMove(otherComponentBox).perform();
         browser2.actions().click(protractor.Button.RIGHT).perform();
 
-        browser2.sleep(uiEventTimeLimit * 2);
+        browser2.sleep(uiEventTimeLimit);
 
         browser2.actions().click(rotateCCWButton).perform();
 
-        browser.sleep(gmeEventTimeLimit * 2);
+        browser.sleep(gmeEventTimeLimit);
 
         checkComponentRotation(browser2, targetComponentLabel, 0);
         checkComponentRotation(browser, targetComponentLabel, 0);
@@ -462,7 +462,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
             browser.actions().mouseUp().perform();
 
-            browser.sleep(gmeEventTimeLimit * 2);
+            browser.sleep(gmeEventTimeLimit);
 
             browser.driver.executeScript(function (componentLabel) {
 
