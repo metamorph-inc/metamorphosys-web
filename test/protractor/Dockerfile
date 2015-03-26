@@ -20,10 +20,10 @@ RUN wget http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/34.0/linux-x86_
 RUN dpkg --remove firefox
 ENV PATH="/firefox:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-VOLUME ["/mms-webcyphy"]
+#VOLUME ["/mms-webcyphy"]
 WORKDIR /mms-webcyphy
 
 # docker build -t mms-webcyphy-protractor protractor
 # docker kill mms-webcyphy-protractor ; docker rm mms-webcyphy-protractor
-# docker run --rm --name mms-webcyphy-protractor -v `pwd`/mms-webcyphy:/mms-webcyphy --link mms-webcyphy:mms-webcyphy --link component-server:component-server -t mms-webcyphy-protractor bash test/protractor/docker-script.sh
+# docker run --rm --name mms-webcyphy-protractor --volumes-from mms-webcyphy --link mms-webcyphy:mms-webcyphy --link component-server:component-server -t mms-webcyphy-protractor bash test/protractor/docker-script.sh
 

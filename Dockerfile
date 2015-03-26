@@ -21,13 +21,14 @@ RUN cd /mms-webcyphy && npm install
 
 ADD . /mms-webcyphy
 
+VOLUME ["/mms-webcyphy"]
 WORKDIR /mms-webcyphy
 
 RUN echo '#!/bin/bash -ex' >> /root/run.sh &&\
   echo '/etc/init.d/mongodb start' >> /root/run.sh &&\
   echo 'cat src/app/mmsApp/config.client.default.json | sed s@http://localhost:3000@http://$COMPONENT_SERVER_PORT_3000_TCP_ADDR:$COMPONENT_SERVER_PORT_3000_TCP_PORT@ | sponge src/app/mmsApp/config.client.json' >> /root/run.sh &&\
   echo 'node node_modules/gulp/bin/gulp.js compile-all' >> /root/run.sh &&\
-  echo 'node app.js > app1.log 2> app2.log' >> /root/run.sh
+  echo 'node app.js' >> /root/run.sh
 
 
 EXPOSE 8855
