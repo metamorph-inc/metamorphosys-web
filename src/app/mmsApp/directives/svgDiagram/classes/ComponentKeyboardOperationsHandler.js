@@ -2,9 +2,9 @@
 
 'use strict';
 
-module.exports = function ($scope, $rootScope, operationsManager) {
+module.exports = function($scope, $rootScope, operationsManager) {
 
-    $scope.$on('keydownOnDocument', function ($event, event) {
+    $scope.$on('keydownOnDocument', function($event, event) {
 
         var operation,
             component,
@@ -16,9 +16,12 @@ module.exports = function ($scope, $rootScope, operationsManager) {
             offset,
             getDragDescriptor;
 
-        getDragDescriptor = function (component) {
+        getDragDescriptor = function(component) {
 
-            var offset = { x:0, y:0 };
+            var offset = {
+                x: 0,
+                y: 0
+            };
 
             return {
                 component: component,
@@ -68,7 +71,7 @@ module.exports = function ($scope, $rootScope, operationsManager) {
                     $scope.diagram,
                     $scope.diagram.getSelectedComponents()[0]
                 );
-                operation.set( event.shiftKey ? -90 : 90 );
+                operation.set(event.shiftKey ? -90 : 90);
                 operation.finish();
 
             }
@@ -76,7 +79,7 @@ module.exports = function ($scope, $rootScope, operationsManager) {
 
             // Translate: 38, 39, 40, 37
 
-            if( event.keyCode >= 37 && event.keyCode <= 40 ) {
+            if (event.keyCode >= 37 && event.keyCode <= 40) {
 
                 component = selectedComponents[0];
 
@@ -100,7 +103,7 @@ module.exports = function ($scope, $rootScope, operationsManager) {
 
                     // Drag along other selected components
 
-                    angular.forEach($scope.diagram.state.selectedComponentIds, function (selectedComponentId) {
+                    angular.forEach($scope.diagram.state.selectedComponentIds, function(selectedComponentId) {
 
                         var selectedComponent;
 
@@ -126,19 +129,31 @@ module.exports = function ($scope, $rootScope, operationsManager) {
 
 
                     if (event.keyCode === 38) {
-                        offset = { x: 0, y: -10 * multiplier };
+                        offset = {
+                            x: 0,
+                            y: -10 * multiplier
+                        };
                     }
 
                     if (event.keyCode === 39) {
-                        offset = { x: 10 * multiplier, y:0 };
+                        offset = {
+                            x: 10 * multiplier,
+                            y: 0
+                        };
                     }
 
                     if (event.keyCode === 40) {
-                        offset = { x: 0, y: 10 * multiplier };
+                        offset = {
+                            x: 0,
+                            y: 10 * multiplier
+                        };
                     }
 
                     if (event.keyCode === 37) {
-                        offset = { x: -10 * multiplier, y:0 };
+                        offset = {
+                            x: -10 * multiplier,
+                            y: 0
+                        };
                     }
 
                     operation.set(offset);

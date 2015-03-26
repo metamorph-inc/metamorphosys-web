@@ -192,7 +192,9 @@ angular.module('mms.designVisualization.diagramContainer', [
                 link: function (scope, element) {
 
                     var $element,
-                        $contentPane;
+                        $contentPane,
+                        processDropHandler,
+                        processDragOverOrEnter;
 
                     $log.debug('In diagram container', scope.visibleArea);
 
@@ -231,7 +233,8 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     });
 
-                    var processDragOverOrEnter = function(event) {
+                    processDragOverOrEnter = function(event) {
+
                         if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
                             return;
                         }
@@ -242,17 +245,23 @@ angular.module('mms.designVisualization.diagramContainer', [
                             event.dataTransfer.effectAllowed = 'none';
                         }
                         return false;
+
                     };
-                    element.bind('dragover', processDragOverOrEnter);
-                    element.bind('dragenter', processDragOverOrEnter);
-                    element.bind('drop', function(event) {
+
+                    processDropHandler = function(event) {
+
                         if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
                             return;
                         }
                         event.preventDefault();
                         scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
                         return false;
-                    });
+
+                    };
+
+                    element.bind('dragover', processDragOverOrEnter);
+                    element.bind('dragenter', processDragOverOrEnter);
+                    element.bind('drop', processDropHandler);
 
                     $timeout(function() {
                         scope.$broadcast('DiagramContainerInitialized');
@@ -286,6 +295,10 @@ angular.module('mms.designVisualization.diagramContainer', [
                             jsp.scrollTo(0,0);
                         }
 
+                    });
+
+                    scope.$on('$destroy', function(){
+                        element.off();
                     });
 
                 }
