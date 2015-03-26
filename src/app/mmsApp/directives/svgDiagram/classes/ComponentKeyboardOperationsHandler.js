@@ -61,7 +61,7 @@ module.exports = function ($scope, $rootScope, operationsManager) {
 
             // Rotate: r, Sh-r
 
-            if (event.keyCode === 82) {
+            if (event.keyCode === 82 && !(event.ctrlKey || event.metaKey)) {
 
                 operation = operationsManager.initNew(
                     'RotateComponents',
