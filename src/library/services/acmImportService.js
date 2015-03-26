@@ -20,12 +20,35 @@ angular.module( 'cyphy.services' )
             };
             //console.log(JSON.stringify(config));
             pluginService.runPlugin( context, 'AcmImporter', config )
-                .then( function ( /* result */ ) {
+                .then( function (result) {
+                    if (result.error) {
+                        return $q.reject(result.error);
+                    }
                 } )
                 .
                 catch ( function ( reason ) {
                 $log( 'Something went terribly wrong, ' + reason );
             } );
+        };
+
+        this.storeDroppedAcm = function ( file ) {
+            var deferred = $q.defer();
+
+            var blobClient = new GME.classes.BlobClient(
+                {
+                    httpsecure: window.location.protocol === 'https:',
+                    server: window.location.hostname,
+                    serverPort: window.location.port
+                }
+            );
+            blobClient.putFile(file.name, file, function (err, hash) {
+                if (err) {
+                    deferred.reject(err);
+                }
+                deferred.resolve(blobClient.getDownloadURL(hash));
+            });
+
+            return deferred.promise;
         };
 
     } );

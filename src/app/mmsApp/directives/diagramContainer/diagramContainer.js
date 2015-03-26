@@ -10,7 +10,7 @@ angular.module('mms.designVisualization.diagramContainer', [
         'mms.designVisualization.drawingGrid',
         'isis.ui.contextmenu'
 
-    ])
+])
     .controller('DiagramContainerController', [
         '$scope',
         '$timeout',
@@ -18,7 +18,9 @@ angular.module('mms.designVisualization.diagramContainer', [
         '$window',
         'componentBrowserService',
         '$rootScope',
-        function ($scope, $timeout, $log, $window, componentBrowserService, $rootScope) {
+        'componentServerUrl',
+        'acmImportService',
+        function ($scope, $timeout, $log, $window, componentBrowserService, $rootScope, componentServerUrl, acmImportService) {
 
             var self = this,
 
@@ -27,7 +29,25 @@ angular.module('mms.designVisualization.diagramContainer', [
                 compiledDirectives,
 
                 ScrollHandler,
-                scrollHandler;
+                scrollHandler,
+                getPositionFromEvent = function($event) {
+                    var position,
+                        x,
+                        y;
+                    if ($event && $event.originalEvent) {
+
+                        x = $event.originalEvent.offsetX || $event.originalEvent.layerX || 100;
+                        y = $event.originalEvent.offsetY || $event.originalEvent.layerY || 100;
+
+                        position = {
+                            x: x - 20,
+                            y: y - 20
+                        };
+
+                    }
+
+                    return position;
+                };
 
             compiledDirectives = {};
 
@@ -54,6 +74,19 @@ angular.module('mms.designVisualization.diagramContainer', [
             };
 
 
+
+            $scope.aFileWasDroppedOnMe = function(file, $event) {
+                var position = getPositionFromEvent($event);
+
+                acmImportService.storeDroppedAcm(file)
+                    .then(function (url) {
+                        $rootScope.$emit('componentInstantiationMustBeDone', url, position);
+                    })
+                    .catch(function (err) {
+                        $log.error("Error creating drag-n-drop component: " + err);
+                    });
+            };
+
             $scope.somethingWasDroppedOnMe = function($event, $data) {
 
                 var component,
@@ -65,22 +98,12 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                 if (component) {
 
-                    if ($event && $event.originalEvent) {
-
-                        x = $event.originalEvent.offsetX || $event.originalEvent.layerX || 100;
-                        y = $event.originalEvent.offsetY || $event.originalEvent.layerY || 100;
-
-                        position = {
-                            x: x - 20,
-                            y: y - 20
-                        };
-
-                    }
+                    position = getPositionFromEvent($event);
 
                     ga('send', 'event', 'avmComponent', 'dropped', component.id);
 
-                    $rootScope.$emit('componentInstantiationMustBeDone', component, position);
-
+                    $rootScope.$emit('componentInstantiationMustBeDone',
+                        componentServerUrl + '/getcomponent/download/' + component.id, position);
                 }
 
             };
@@ -206,6 +229,29 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                         });
 
+                    });
+
+                    var processDragOverOrEnter = function(event) {
+                        if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
+                            return;
+                        }
+                        event.preventDefault();
+                        if (event.dataTransfer.items[0].type === 'application/x-zip-compressed') {
+                            event.dataTransfer.effectAllowed = 'copy';
+                        } else {
+                            event.dataTransfer.effectAllowed = 'none';
+                        }
+                        return false;
+                    };
+                    element.bind('dragover', processDragOverOrEnter);
+                    element.bind('dragenter', processDragOverOrEnter);
+                    element.bind('drop', function(event) {
+                        if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
+                            return;
+                        }
+                        event.preventDefault();
+                        scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
+                        return false;
                     });
 
                     $timeout(function() {

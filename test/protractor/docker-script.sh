@@ -20,6 +20,6 @@ sleep 5
 nohup bash -c "webdriver-manager start 2>&1 &"
 sleep 5
 #npm run test_all
-git show HEAD:protractor_conf.js | sed s@http://localhost:8855@http://$MMS_WEBCYPHY_PORT_8855_TCP_ADDR:$MMS_WEBCYPHY_PORT_8855_TCP_PORT@ > protractor_conf.js
-protractor --browser firefox protractor_conf.js
+cat protractor_conf.js | sed s@http://localhost:8855@http://$MMS_WEBCYPHY_PORT_8855_TCP_ADDR:$MMS_WEBCYPHY_PORT_8855_TCP_PORT@ > protractor_conf_docker.js
+protractor --browser firefox protractor_conf_docker.js
 
