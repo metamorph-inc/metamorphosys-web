@@ -1,5 +1,5 @@
 define( [
-    'logManager',
+    'common/LogManager',
     'css!./styles/ProjectAnalyzerWidget.css'
 ], function ( logManager ) {
 
