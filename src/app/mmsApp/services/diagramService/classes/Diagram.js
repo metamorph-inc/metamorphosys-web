@@ -2,7 +2,9 @@
 
 'use strict';
 
-var Diagram = function (descriptor) {
+(function(){
+
+var Diagram = function(descriptor) {
 
     angular.extend(this, descriptor);
 
@@ -24,9 +26,29 @@ var Diagram = function (descriptor) {
         selectedComponentIds: []
     };
 
+    sortComponentsByZ(this.components);
+
 };
 
-Diagram.prototype.addComponent = function (aDiagramComponent) {
+
+function sortComponentsByZ(components) {
+
+    components.sort(function(a, b){
+
+        var result = 0;
+
+        if (!isNaN(a.z) && !isNaN(b.z)) {
+            result = a.z - b.z;
+        }
+
+        return result;
+
+    });
+
+};
+
+
+Diagram.prototype.addComponent = function(aDiagramComponent) {
 
     var i,
         port;
@@ -42,16 +64,18 @@ Diagram.prototype.addComponent = function (aDiagramComponent) {
             this.portsById[port.id] = port;
 
         }
+
+        sortComponentsByZ(this.components);        
     }
 
 };
 
-Diagram.prototype.addWire = function (aWire) {
+Diagram.prototype.addWire = function(aWire) {
 
-    var self=this,
+    var self = this,
         registerWireForEnds;
 
-    registerWireForEnds = function (wire) {
+    registerWireForEnds = function(wire) {
 
         var componentId;
 
@@ -108,8 +132,8 @@ Diagram.prototype.deleteWireById = function(anId) {
 
         index = self.wiresByComponentId[componentId].indexOf(wire);
 
-        if (index >  -1) {
-            self.wiresByComponentId[componentId].splice(index,1);
+        if (index > -1) {
+            self.wiresByComponentId[componentId].splice(index, 1);
         }
 
         componentId = wire.end2.component.id;
@@ -118,8 +142,8 @@ Diagram.prototype.deleteWireById = function(anId) {
 
         index = self.wiresByComponentId[componentId].indexOf(wire);
 
-        if (index >  -1) {
-            self.wiresByComponentId[componentId].splice(index,1);
+        if (index > -1) {
+            self.wiresByComponentId[componentId].splice(index, 1);
         }
 
         index = self.wires.indexOf(wire);
@@ -167,6 +191,8 @@ Diagram.prototype.deleteComponentById = function(anId) {
 
         component = null;
 
+        sortComponentsByZ(this.components);        
+
     }
 
 };
@@ -206,14 +232,14 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 };
 
 
-Diagram.prototype.getWiresForComponents = function (components) {
+Diagram.prototype.getWiresForComponents = function(components) {
 
     var self = this,
         setOfWires = [];
 
-    angular.forEach(components, function (component) {
+    angular.forEach(components, function(component) {
 
-        angular.forEach(self.wiresByComponentId[component.id], function (wire) {
+        angular.forEach(self.wiresByComponentId[component.id], function(wire) {
 
             if (setOfWires.indexOf(wire) === -1) {
                 setOfWires.push(wire);
@@ -226,22 +252,22 @@ Diagram.prototype.getWiresForComponents = function (components) {
 
 };
 
-Diagram.prototype.updateComponentPosition = function (componentId, newPosition) {
+Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
     var self = this,
         component;
 
-        component = self.componentsById[componentId];
+    component = self.componentsById[componentId];
 
-        if (angular.isObject(component)) {
+    if (angular.isObject(component)) {
 
-            component.setPosition(newPosition.x, newPosition.y);
+        component.setPosition(newPosition.x, newPosition.y);
 
-        }
+    }
 
 };
 
-Diagram.prototype.updateComponentRotation = function (componentId, newRotation) {
+Diagram.prototype.updateComponentRotation = function(componentId, newRotation) {
 
     var self = this,
         component;
@@ -256,13 +282,13 @@ Diagram.prototype.updateComponentRotation = function (componentId, newRotation) 
 
 };
 
-Diagram.prototype.isComponentSelected = function (component) {
+Diagram.prototype.isComponentSelected = function(component) {
 
     return this.state.selectedComponentIds.indexOf(component.id) > -1;
 
 };
 
-Diagram.prototype.getSelectedComponents = function () {
+Diagram.prototype.getSelectedComponents = function() {
 
     var self,
         selectedComponents;
@@ -270,7 +296,7 @@ Diagram.prototype.getSelectedComponents = function () {
     self = this;
     selectedComponents = [];
 
-    angular.forEach(this.state.selectedComponentIds, function(componentId){
+    angular.forEach(this.state.selectedComponentIds, function(componentId) {
 
         selectedComponents.push(self.componentsById[componentId]);
 
@@ -280,5 +306,113 @@ Diagram.prototype.getSelectedComponents = function () {
 
 };
 
+Diagram.prototype.getHighestZ = function() {
+
+    var i,
+        component,
+        z;
+
+    for (i = 0; i < this.components.length; i++) {
+
+        component = this.components[i];
+
+        if (!isNaN(component.z)) {
+
+            if (isNaN(z)) {
+                z = component.z;
+            } else {
+
+                if (z < component.z) {
+                    z = component.z;
+                }
+
+            }
+
+        }
+    }
+
+    if (isNaN(z)) {
+        z = -1;
+    }
+
+    return z;
+
+};
+
+Diagram.prototype.getLowestZ = function() {
+
+    var i,
+        component,
+        z;
+
+    for (i = 0; i < this.components.length; i++) {
+
+        component = this.components[i];
+
+        if (!isNaN(component.z)) {
+
+            if (isNaN(z)) {
+                z = component.z;
+            } else {
+
+                if (z > component.z) {
+                    z = component.z;
+                }
+
+            }
+
+        }
+    }
+
+    if (isNaN(z)) {
+        z = -1;
+    }
+
+    return z;
+
+};
+
+Diagram.prototype.getComponentById = function(componentId) {
+
+    return this.componentsById[componentId];
+
+};
+
+
+Diagram.prototype.bringComponentToFront = function(componentId) {
+
+    var component,
+        z;
+
+    component = this.getComponentById(componentId);
+
+    if (component) {
+
+        z = this.getHighestZ();
+        component.z = z + 1;
+    }
+
+    sortComponentsByZ(this.components);
+
+};
+
+Diagram.prototype.bringComponentToBack = function(componentId) {
+
+    var component,
+        z;
+
+    component = this.getComponentById(componentId);
+
+    if (component) {
+
+        z = this.getLowestZ();
+        component.z = z - 1;
+    }
+
+    sortComponentsByZ(this.components);
+
+};
 
 module.exports = Diagram;
+
+})();

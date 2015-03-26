@@ -50,6 +50,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         target,
                         snappedPosition;
 
+                    if (dragTargetsDescriptor && Array.isArray(dragTargetsDescriptor.targets)) {
+
                     for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
 
                         target = dragTargetsDescriptor.targets[i];
@@ -57,12 +59,14 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         snappedPosition = gridService.getSnappedPosition(
                             {
                                 x: offset.x + target.deltaToCursor.x,
-                                y: offset.y + target.deltaToCursor.y
+                                y: offset.y + target.deltaToCursor.y,
+                                z: offset.z + target.deltaToCursor.x
                             });
 
                         target.component.setPosition(
                             snappedPosition.x,
-                            snappedPosition.y
+                            snappedPosition.y,
+                            snappedPosition.z
                         );
 
                     }
@@ -79,7 +83,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                             target.component.setPosition(
                                 target.originalPosition.x,
-                                target.originalPosition.y
+                                target.originalPosition.y,
+                                target.originalPosition.z
                             );
 
                         });

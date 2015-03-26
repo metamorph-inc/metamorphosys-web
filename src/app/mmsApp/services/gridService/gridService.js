@@ -287,7 +287,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             return {
                 x: x,
-                y: y
+                y: y,
+                z: position.z
             };
 
         };

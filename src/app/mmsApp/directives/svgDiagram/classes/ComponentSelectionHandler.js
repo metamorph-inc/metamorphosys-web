@@ -10,7 +10,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
         toggleComponentSelected;
 
 
-    moveComponentElementToFront = function ( componentId ) {
+    moveComponentElementToFront = function(componentId) {
 
         var z,
             component,
@@ -18,8 +18,9 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
         needsTobeReordered = false;
 
-        z = diagramService.getHighestZ();
-        component = $scope.diagram.componentsById[ componentId ];
+        component = $scope.diagram.componentsById[componentId];
+
+        $scope.diagram.bringComponentToFront(componentId);
 
         if (angular.isObject(component)) {
 
@@ -42,35 +43,35 @@ module.exports = function($scope, diagramService, gridService, $log) {
     };
 
 
-    toggleComponentSelected =  function ( component, $event ) {
+    toggleComponentSelected = function(component, $event) {
 
         var index;
 
         $scope.diagram.config = $scope.diagram.config || {};
 
-        if ( angular.isObject( component ) && $scope.diagram.config.disallowSelection !== true && component.nonSelectable !== true ) {
+        if (angular.isObject(component) && $scope.diagram.config.disallowSelection !== true && component.nonSelectable !== true) {
 
-            index = $scope.diagram.state.selectedComponentIds.indexOf( component.id );
+            index = $scope.diagram.state.selectedComponentIds.indexOf(component.id);
 
-            if ( index > -1 ) {
+            if (index > -1) {
 
-                $scope.diagram.state.selectedComponentIds.splice( index, 1 );
+                $scope.diagram.state.selectedComponentIds.splice(index, 1);
 
             } else {
 
-                if ( $scope.diagram.state.selectedComponentIds.length > 0 &&
+                if ($scope.diagram.state.selectedComponentIds.length > 0 &&
                     $scope.diagram.config.multiSelect !== true &&
-                    $event.shiftKey !== true ) {
+                    $event.shiftKey !== true) {
 
-                    angular.forEach( $scope.diagram.state.selectedComponentIds, function ( componentId ) {
-                        $scope.diagram.componentsById[ componentId ].selected = false;
-                    } );
+                    angular.forEach($scope.diagram.state.selectedComponentIds, function(componentId) {
+                        $scope.diagram.componentsById[componentId].selected = false;
+                    });
                     $scope.diagram.state.selectedComponentIds = [];
                 }
 
-                $scope.diagram.state.selectedComponentIds.push( component.id );
+                $scope.diagram.state.selectedComponentIds.push(component.id);
 
-                moveComponentElementToFront( component.id );
+                moveComponentElementToFront(component.id);
 
             }
 
@@ -82,7 +83,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
 
     onComponentMouseUp = function(component, $event) {
-        toggleComponentSelected( component, $event );
+        toggleComponentSelected(component, $event);
 
     };
 
