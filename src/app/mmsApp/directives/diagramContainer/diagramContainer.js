@@ -246,7 +246,7 @@ angular.module('mms.designVisualization.diagramContainer', [
                     element.bind('dragover', processDragOverOrEnter);
                     element.bind('dragenter', processDragOverOrEnter);
                     element.bind('drop', function(event) {
-                        if (!event || event.dataTransfer.files.length === 0) {
+                        if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
                             return;
                         }
                         event.preventDefault();
