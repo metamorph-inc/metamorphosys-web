@@ -16,8 +16,7 @@ RUN echo Xvfb :99 -ac -screen 0 1024x768x24 \& > /etc/init.d/xvfb
 ENV DISPLAY=":99.0"
 
 # 2/5/2015 firefox-35 + protractor is broken! use firefox-34
-RUN wget http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/34.0/linux-x86_64/en-US/firefox-34.0.tar.bz2 && tar xjf firefox-34.0.tar.bz2 --directory /
-RUN dpkg --remove firefox
+RUN curl -f -s -S http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/34.0/linux-x86_64/en-US/firefox-34.0.tar.bz2 | tar xj --directory / && dpkg --remove firefox
 ENV PATH="/firefox:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 #VOLUME ["/mms-webcyphy"]
