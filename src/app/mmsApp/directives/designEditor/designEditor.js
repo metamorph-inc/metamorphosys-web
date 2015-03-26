@@ -16,7 +16,7 @@ angular.module('mms.designVisualization.designEditor', [
     .controller('DesignEditorController', function($scope, $rootScope, diagramService, $log, connectionHandling,
         designService, $state, $stateParams, designLayoutService,
         symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-        acmImportService, componentServerUrl) {
+        acmImportService) {
 
         var lastComponentInstantiationPosition,
             justCreatedWires,
@@ -37,7 +37,7 @@ angular.module('mms.designVisualization.designEditor', [
         if ($scope.isDummy) {
             $scope.editorWidth = 100;
         } else {
-            $scope.editorWidth = 75;            
+            $scope.editorWidth = 75;
         }
 
         addRootScopeEventListener = function(event, fn) {
@@ -97,7 +97,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 //console.log('=======================================ADDING LISTENERS');
 
-                addRootScopeEventListener('componentInstantiationMustBeDone', function($event, componentData, position) {
+                addRootScopeEventListener('componentInstantiationMustBeDone', function($event, componentUrl, position) {
 
                     $rootScope.setProcessing();
 
@@ -114,9 +114,9 @@ angular.module('mms.designVisualization.designEditor', [
 
                     lastComponentInstantiationPosition = position;
 
-                    if (componentData && componentData.id) {
+                    if (componentUrl) {
                         acmImportService.importAcm($scope.layoutContext, selectedContainerId,
-                            componentServerUrl + '/getcomponent/download/' + componentData.id, position);
+                            componentUrl, position);
                     }
 
                 });
