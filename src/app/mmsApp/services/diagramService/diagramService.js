@@ -4,7 +4,8 @@
 
 angular.module('mms.designVisualization.diagramService', [
         'mms.designVisualization.symbolServices',
-        'mms.designVisualization.operationsManager'
+        'mms.designVisualization.operationsManager',
+        'mms.utils'
     ])
     .service('diagramService', [
         '$q',
@@ -13,7 +14,7 @@ angular.module('mms.designVisualization.diagramService', [
         '$stateParams',
         'wiringService',
         'operationsManager',
-        function($q, $timeout, symbolManager, $stateParams, wiringService /*, operationsManager*/ ) {
+        function($q, $timeout, symbolManager, $stateParams, wiringService, mmsUtils ) {
 
             var
                 self = this,
@@ -39,7 +40,7 @@ angular.module('mms.designVisualization.diagramService', [
             ComponentPort = require('./classes/ComponentPort');
             Wire = require('./classes/Wire.js');
 
-            dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService);
+            dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService, mmsUtils);
             cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService);
 
             this.addComponent = function(diagramId, aDiagramComponent) {
@@ -67,7 +68,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagram.updateComponentPosition(componentId, newPosition);
 
-                    setOfWires = diagram.wiresByComponentId[componentId];
+                    setOfWires = diagram.getWiresByComponentId(componentId);
 
                     angular.forEach(setOfWires, function(wire) {
 
@@ -91,7 +92,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagram.updateComponentRotation(componentId, newRotation);
 
-                    setOfWires = diagram.wiresByComponentId[componentId];
+                    setOfWires = diagram.getWiresByComponentId(componentId);
 
                     angular.forEach(setOfWires, function(wire) {
 

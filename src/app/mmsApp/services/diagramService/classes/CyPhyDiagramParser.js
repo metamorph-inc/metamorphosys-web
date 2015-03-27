@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function (symbolManager, diagramService, wiringService) {
+module.exports = function(symbolManager, diagramService, wiringService) {
 
     var getDiagram,
         getDiagramElement,
@@ -26,7 +26,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     ComponentPort = require('./ComponentPort');
     Wire = require('./Wire.js');
 
-    minePortsFromInterfaces = function (element) {
+    minePortsFromInterfaces = function(element) {
 
         var minX,
             maxX,
@@ -51,7 +51,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         if (angular.isObject(element.interfaces)) {
 
-            angular.forEach(element.interfaces.connectors, function (innerConnector) {
+            angular.forEach(element.interfaces.connectors, function(innerConnector) {
 
                 var x;
 
@@ -77,7 +77,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             });
 
-            allInterConnectors.sort(function (a, b) {
+            allInterConnectors.sort(function(a, b) {
 
                 if (a.position.y > b.position.y) {
                     return 1;
@@ -93,7 +93,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             median = (minX + maxX) / 2;
 
-            angular.forEach(allInterConnectors, function (innerConnector) {
+            angular.forEach(allInterConnectors, function(innerConnector) {
 
                 var portSymbol;
 
@@ -135,7 +135,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     };
 
 
-    labelParser = function (crappyName) {
+    labelParser = function(crappyName) {
 
         var result;
 
@@ -153,8 +153,8 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         if (angular.isObject(element.details) && angular.isObject(diagram)) {
 
-            sourcePort = diagram.portsById[element.details.sourceId];
-            destinationPort = diagram.portsById[element.details.destinationId];
+            sourcePort = diagram.getPortById(element.details.sourceId);
+            destinationPort = diagram.getPortById(element.details.destinationId);
 
             if (sourcePort && destinationPort) {
 
@@ -188,7 +188,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    connectorParser = function(element,  zIndex) {
+    connectorParser = function(element, zIndex) {
         var portInstance,
             symbol,
             newDiagramComponent;
@@ -221,7 +221,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    containerParser = function(element,  zIndex) {
+    containerParser = function(element, zIndex) {
         var symbol,
             newDiagramComponent,
             portStuff;
@@ -232,12 +232,10 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         symbol = symbolManager.makeBoxSymbol(
             'container-box',
-            element.name,
-            {
+            element.name, {
                 showPortLabels: true,
                 limitLabelWidthTo: 150
-            }, portStuff.portDescriptors,
-            {
+            }, portStuff.portDescriptors, {
                 minWidth: 200,
                 portWireLeadInIncrement: 8,
                 portWireLength: 14,
@@ -269,7 +267,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
     };
 
-    avmComponentModelParser = function(element,  zIndex) {
+    avmComponentModelParser = function(element, zIndex) {
 
         var portStuff,
             newModelComponent,
@@ -281,9 +279,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         if (angular.isString(element.name) &&
             element.name.charAt(0) === 'C' &&
-            ( !isNaN(element.name.charAt(1)) ||
-            element.name.charAt(1) === ' ' ||
-            element.name.charAt(1) === '_')
+            (!isNaN(element.name.charAt(1)) ||
+                element.name.charAt(1) === ' ' ||
+                element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -321,9 +319,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         } else if (angular.isString(element.name) &&
             element.name.charAt(0) === 'L' &&
-            ( !isNaN(element.name.charAt(1)) ||
-            element.name.charAt(1) === ' ' ||
-            element.name.charAt(1) === '_')
+            (!isNaN(element.name.charAt(1)) ||
+                element.name.charAt(1) === ' ' ||
+                element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -361,9 +359,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
         } else if (angular.isString(element.name) &&
             element.name.charAt(0) === 'R' &&
-            ( !isNaN(element.name.charAt(1)) ||
-            element.name.charAt(1) === ' ' ||
-            element.name.charAt(1) === '_')
+            (!isNaN(element.name.charAt(1)) ||
+                element.name.charAt(1) === ' ' ||
+                element.name.charAt(1) === '_')
         ) {
 
             // Cheap shot to figure if it is a capacitor
@@ -439,7 +437,6 @@ module.exports = function (symbolManager, diagramService, wiringService) {
         //    newModelComponent.registerPortInstances(portStuff.portInstances);
         //
         //}
-
         else {
 
             if (element.name !== 'pcb') {
@@ -448,8 +445,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
                     element.name, {
                         showPortLabels: true,
                         limitLabelWidthTo: 150
-                    }, portStuff.portDescriptors,
-                    {
+                    }, portStuff.portDescriptors, {
                         minWidth: 200,
                         portWireLeadInIncrement: 10
                     });
@@ -481,7 +477,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
     };
 
 
-    getDiagram = function (diagramElements) {
+    getDiagram = function(diagramElements) {
 
         var i,
             newDiagramComponent,
@@ -501,19 +497,9 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             diagram.config.width = 2500;
             diagram.config.height = 2500;
 
-            angular.forEach(diagramElements.Connector, function (element) {
+            angular.forEach(diagramElements.Connector, function(element) {
 
-                newDiagramComponent = connectorParser(element,  i);
-
-                diagram.addComponent(newDiagramComponent);
-
-                i++;
-
-            });
-
-            angular.forEach(diagramElements.AVMComponentModel, function (element) {
-
-                newDiagramComponent = avmComponentModelParser(element,  i);
+                newDiagramComponent = connectorParser(element, i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -521,9 +507,19 @@ module.exports = function (symbolManager, diagramService, wiringService) {
 
             });
 
-            angular.forEach(diagramElements.Container, function (element) {
+            angular.forEach(diagramElements.AVMComponentModel, function(element) {
 
-                newDiagramComponent = containerParser(element,  i);
+                newDiagramComponent = avmComponentModelParser(element, i);
+
+                diagram.addComponent(newDiagramComponent);
+
+                i++;
+
+            });
+
+            angular.forEach(diagramElements.Container, function(element) {
+
+                newDiagramComponent = containerParser(element, i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -532,7 +528,7 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             });
 
 
-            angular.forEach(diagramElements.ConnectorComposition, function (element) {
+            angular.forEach(diagramElements.ConnectorComposition, function(element) {
 
                 wire = wireParser(element, diagram);
 

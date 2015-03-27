@@ -11,12 +11,13 @@ require('./operationCommitHandlersForGME.js');
 angular.module('mms.designVisualization.designEditor', [
         'mms.testbenchActions',
         'mms.designVisualization.operations.gmeCommitHandlers',
-        'mms.keyboardMap'
+        'mms.keyboardMap',
+        'mms.utils'
     ])
     .controller('DesignEditorController', function($scope, $rootScope, diagramService, $log, connectionHandling,
         designService, $state, $stateParams, designLayoutService,
         symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-        acmImportService) {
+        acmImportService, mmsUtils) {
 
         var lastComponentInstantiationPosition,
             justCreatedWires,
@@ -70,7 +71,7 @@ angular.module('mms.designVisualization.designEditor', [
 
             if ($scope.isDummy) {
 
-                randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
+                randomSymbolGenerator = new RandomSymbolGenerator(symbolManager, mmsUtils);
 
                 randomSymbolGenerator.generateSymbols(5);
 

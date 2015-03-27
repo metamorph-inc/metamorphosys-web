@@ -107,7 +107,7 @@ module.exports = function($scope, $rootScope, operationsManager) {
 
                         var selectedComponent;
 
-                        selectedComponent = $scope.diagram.componentsById[selectedComponentId];
+                        selectedComponent = $scope.diagram.getComponentById(selectedComponentId);
 
                         possibbleDragTargetsDescriptor.targets.push(getDragDescriptor(
                             selectedComponent));

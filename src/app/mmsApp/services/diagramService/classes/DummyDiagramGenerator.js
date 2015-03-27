@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function(symbolManager, diagramService, wiringService) {
+module.exports = function(symbolManager, diagramService, wiringService, mmsUtils) {
 
     var getDiagram;
 
@@ -31,7 +31,9 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             Diagram,
             DiagramComponent,
             ComponentPort,
-            Wire;
+            Wire,
+
+            components;
 
         Diagram = require('./Diagram');
         DiagramComponent = require('./DiagramComponent.js');
@@ -113,19 +115,21 @@ module.exports = function(symbolManager, diagramService, wiringService) {
 
         }
 
+        components = diagram.getComponents();
+
         for (i = 0; i < countOfWires; i++) {
 
             id = 'wire_' + i;
 
-            component1 = diagram.components.getRandomElement();
+            component1 = mmsUtils.getRandomElementFromArray(components);
 
             port1 = component1.portInstances.getRandomElement();
             port2 = undefined;
 
             while (!angular.isDefined(port2) || port1 === port2) {
 
-                component2 = diagram.components.getRandomElement();
-                port2 = component2.portInstances.getRandomElement();
+                component2 = mmsUtils.getRandomElementFromArray(components);
+                port2 = mmsUtils.getRandomElementFromArray(component2.portInstances);
             }
 
             wire = new Wire({

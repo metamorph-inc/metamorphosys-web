@@ -9,40 +9,6 @@ module.exports = function($scope, diagramService, gridService, $log) {
         moveComponentElementToFront,
         toggleComponentSelected;
 
-
-    moveComponentElementToFront = function(componentId) {
-
-        var z,
-            component,
-            needsTobeReordered;
-
-        needsTobeReordered = false;
-
-        component = $scope.diagram.componentsById[componentId];
-
-        $scope.diagram.bringComponentToFront(componentId);
-
-        if (angular.isObject(component)) {
-
-            if (isNaN(component.z)) {
-                component.z = z;
-                needsTobeReordered = true;
-            } else {
-                if (component.z < z) {
-                    component.z = z + 1;
-                    needsTobeReordered = true;
-                }
-            }
-
-            if (needsTobeReordered) {
-                gridService.reorderVisibleComponents($scope.id);
-            }
-
-        }
-
-    };
-
-
     toggleComponentSelected = function(component, $event) {
 
         var index;
@@ -71,7 +37,7 @@ module.exports = function($scope, diagramService, gridService, $log) {
 
                 $scope.diagram.state.selectedComponentIds.push(component.id);
 
-                moveComponentElementToFront(component.id);
+                $scope.diagram.bringComponentToFront(component.id);
 
             }
 

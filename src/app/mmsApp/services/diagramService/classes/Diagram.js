@@ -2,18 +2,14 @@
 
 'use strict';
 
-(function(){
-
 var Diagram = function(descriptor) {
 
-    angular.extend(this, descriptor);
-
-    this.components = [];
-    this.componentsById = {};
-    this.wires = [];
-    this.wiresById = {};
-    this.wiresByComponentId = {};
-    this.portsById = {};
+    this._components = [];
+    this._componentsById = {};
+    this._wires = [];
+    this._wiresById = {};
+    this._wiresByComponentId = {};
+    this._portsById = {};
 
     this.config = {
         editable: true,
@@ -26,14 +22,14 @@ var Diagram = function(descriptor) {
         selectedComponentIds: []
     };
 
-    sortComponentsByZ(this.components);
+    sortComponentsByZ(this._components);
 
 };
 
 
 function sortComponentsByZ(components) {
 
-    components.sort(function(a, b){
+    components.sort(function(a, b) {
 
         var result = 0;
 
@@ -45,7 +41,7 @@ function sortComponentsByZ(components) {
 
     });
 
-};
+}
 
 
 Diagram.prototype.addComponent = function(aDiagramComponent) {
@@ -53,19 +49,19 @@ Diagram.prototype.addComponent = function(aDiagramComponent) {
     var i,
         port;
 
-    if (angular.isObject(aDiagramComponent) && !angular.isDefined(this.componentsById[aDiagramComponent.id])) {
+    if (angular.isObject(aDiagramComponent) && !angular.isDefined(this._componentsById[aDiagramComponent.id])) {
 
-        this.componentsById[aDiagramComponent.id] = aDiagramComponent;
-        this.components.push(aDiagramComponent);
+        this._componentsById[aDiagramComponent.id] = aDiagramComponent;
+        this._components.push(aDiagramComponent);
 
         for (i = 0; i < aDiagramComponent.portInstances.length; i++) {
 
             port = aDiagramComponent.portInstances[i];
-            this.portsById[port.id] = port;
+            this._portsById[port.id] = port;
 
         }
 
-        sortComponentsByZ(this.components);        
+        sortComponentsByZ(this._components);
     }
 
 };
@@ -83,18 +79,18 @@ Diagram.prototype.addWire = function(aWire) {
 
             componentId = wire.end1.component.id;
 
-            self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+            self._wiresByComponentId[componentId] = self._wiresByComponentId[componentId] || [];
 
-            if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
-                self.wiresByComponentId[componentId].push(wire);
+            if (self._wiresByComponentId[componentId].indexOf(wire) === -1) {
+                self._wiresByComponentId[componentId].push(wire);
             }
 
             componentId = wire.end2.component.id;
 
-            self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+            self._wiresByComponentId[componentId] = self._wiresByComponentId[componentId] || [];
 
-            if (self.wiresByComponentId[componentId].indexOf(wire) === -1) {
-                self.wiresByComponentId[componentId].push(wire);
+            if (self._wiresByComponentId[componentId].indexOf(wire) === -1) {
+                self._wiresByComponentId[componentId].push(wire);
             }
 
         }
@@ -102,10 +98,10 @@ Diagram.prototype.addWire = function(aWire) {
     };
 
 
-    if (angular.isObject(aWire) && !angular.isDefined(this.wiresById[aWire.id])) {
+    if (angular.isObject(aWire) && !angular.isDefined(this._wiresById[aWire.id])) {
 
-        this.wiresById[aWire.id] = aWire;
-        this.wires.push(aWire);
+        this._wiresById[aWire.id] = aWire;
+        this._wires.push(aWire);
 
         registerWireForEnds(aWire);
 
@@ -122,34 +118,34 @@ Diagram.prototype.deleteWireById = function(anId) {
 
     self = this;
 
-    wire = self.wiresById[anId];
+    wire = self._wiresById[anId];
 
     if (angular.isObject(wire)) {
 
         componentId = wire.end1.component.id;
 
-        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+        self._wiresByComponentId[componentId] = self._wiresByComponentId[componentId] || [];
 
-        index = self.wiresByComponentId[componentId].indexOf(wire);
+        index = self._wiresByComponentId[componentId].indexOf(wire);
 
         if (index > -1) {
-            self.wiresByComponentId[componentId].splice(index, 1);
+            self._wiresByComponentId[componentId].splice(index, 1);
         }
 
         componentId = wire.end2.component.id;
 
-        self.wiresByComponentId[componentId] = self.wiresByComponentId[componentId] || [];
+        self._wiresByComponentId[componentId] = self._wiresByComponentId[componentId] || [];
 
-        index = self.wiresByComponentId[componentId].indexOf(wire);
+        index = self._wiresByComponentId[componentId].indexOf(wire);
 
         if (index > -1) {
-            self.wiresByComponentId[componentId].splice(index, 1);
+            self._wiresByComponentId[componentId].splice(index, 1);
         }
 
-        index = self.wires.indexOf(wire);
-        self.wires.splice(index, 1);
+        index = self._wires.indexOf(wire);
+        self._wires.splice(index, 1);
 
-        delete self.wiresById[wire.id];
+        delete self._wiresById[wire.id];
 
     }
 
@@ -164,12 +160,12 @@ Diagram.prototype.deleteComponentById = function(anId) {
 
     self = this;
 
-    component = this.componentsById[anId];
+    component = this._componentsById[anId];
 
     if (angular.isObject(component)) {
 
 
-        angular.forEach(self.wiresByComponentId[component.id], function(wire) {
+        angular.forEach(self._wiresByComponentId[component.id], function(wire) {
             self.deleteWireById(wire.id);
         });
 
@@ -179,19 +175,19 @@ Diagram.prototype.deleteComponentById = function(anId) {
             self.state.selectedComponentIds.splice(index, 1);
         }
 
-        index = self.components.indexOf(component);
-        self.components.splice(index, 1);
+        index = self._components.indexOf(component);
+        self._components.splice(index, 1);
 
-        delete self.wiresByComponentId[component.id];
-        delete self.componentsById[component.id];
+        delete self._wiresByComponentId[component.id];
+        delete self._componentsById[component.id];
 
         for (i = 0; i < component.portInstances.length; i++) {
-            delete this.portsById[component.portInstances[i].id];
+            delete this._portsById[component.portInstances[i].id];
         }
 
         component = null;
 
-        sortComponentsByZ(this.components);        
+        sortComponentsByZ(this._components);
 
     }
 
@@ -207,7 +203,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
     success = false;
 
-    element = self.componentsById[anId];
+    element = self._componentsById[anId];
 
     if (angular.isObject(element)) {
 
@@ -216,7 +212,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
     } else {
 
-        element = self.wiresById[anId];
+        element = self._wiresById[anId];
 
         if (angular.isObject(element)) {
 
@@ -239,7 +235,7 @@ Diagram.prototype.getWiresForComponents = function(components) {
 
     angular.forEach(components, function(component) {
 
-        angular.forEach(self.wiresByComponentId[component.id], function(wire) {
+        angular.forEach(self._wiresByComponentId[component.id], function(wire) {
 
             if (setOfWires.indexOf(wire) === -1) {
                 setOfWires.push(wire);
@@ -252,12 +248,27 @@ Diagram.prototype.getWiresForComponents = function(components) {
 
 };
 
+
+Diagram.prototype.getWiresByComponentId = function(componentId) {
+
+    return this._wiresByComponentId[componentId];
+
+};
+
+Diagram.prototype.getComponents = function() {
+    return this._components;
+};
+
+Diagram.prototype.getWires = function() {
+    return this._wires;
+};
+
 Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
     var self = this,
         component;
 
-    component = self.componentsById[componentId];
+    component = self._componentsById[componentId];
 
     if (angular.isObject(component)) {
 
@@ -267,12 +278,13 @@ Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
 };
 
+
 Diagram.prototype.updateComponentRotation = function(componentId, newRotation) {
 
     var self = this,
         component;
 
-    component = self.componentsById[componentId];
+    component = self._componentsById[componentId];
 
     if (angular.isObject(component)) {
 
@@ -298,7 +310,7 @@ Diagram.prototype.getSelectedComponents = function() {
 
     angular.forEach(this.state.selectedComponentIds, function(componentId) {
 
-        selectedComponents.push(self.componentsById[componentId]);
+        selectedComponents.push(self._componentsById[componentId]);
 
     });
 
@@ -312,9 +324,9 @@ Diagram.prototype.getHighestZ = function() {
         component,
         z;
 
-    for (i = 0; i < this.components.length; i++) {
+    for (i = 0; i < this._components.length; i++) {
 
-        component = this.components[i];
+        component = this._components[i];
 
         if (!isNaN(component.z)) {
 
@@ -345,9 +357,9 @@ Diagram.prototype.getLowestZ = function() {
         component,
         z;
 
-    for (i = 0; i < this.components.length; i++) {
+    for (i = 0; i < this._components.length; i++) {
 
-        component = this.components[i];
+        component = this._components[i];
 
         if (!isNaN(component.z)) {
 
@@ -374,7 +386,14 @@ Diagram.prototype.getLowestZ = function() {
 
 Diagram.prototype.getComponentById = function(componentId) {
 
-    return this.componentsById[componentId];
+    return this._componentsById[componentId];
+
+};
+
+
+Diagram.prototype.getPortById = function(portId) {
+
+    return this._portsById[portId];
 
 };
 
@@ -392,7 +411,7 @@ Diagram.prototype.bringComponentToFront = function(componentId) {
         component.z = z + 1;
     }
 
-    sortComponentsByZ(this.components);
+    sortComponentsByZ(this._components);
 
 };
 
@@ -409,10 +428,8 @@ Diagram.prototype.bringComponentToBack = function(componentId) {
         component.z = z - 1;
     }
 
-    sortComponentsByZ(this.components);
+    sortComponentsByZ(this._components);
 
 };
 
 module.exports = Diagram;
-
-})();
