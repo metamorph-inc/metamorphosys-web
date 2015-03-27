@@ -5,8 +5,6 @@
 module.exports = function($scope, diagramService, gridService, $log) {
 
     var onComponentMouseUp,
-
-        moveComponentElementToFront,
         toggleComponentSelected;
 
     toggleComponentSelected = function(component, $event) {
@@ -36,8 +34,6 @@ module.exports = function($scope, diagramService, gridService, $log) {
                 }
 
                 $scope.diagram.state.selectedComponentIds.push(component.id);
-
-                $scope.diagram.bringComponentToFront(component.id);
 
             }
 
