@@ -43,20 +43,6 @@ angular.module('mms.designVisualization.diagramService', [
             dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService, mmsUtils);
             cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService);
 
-            this.addComponent = function(diagramId, aDiagramComponent) {
-
-                var diagram;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    diagram.addComponent(aDiagramComponent);
-
-                }
-
-            };
-
             this.updateComponentsAndItsWiresPosition = function(diagramId, componentId, newPosition) {
 
                 var diagram,
@@ -105,60 +91,6 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
-            this.updateWireSegments = function(diagramId, wireId, newSegments) {
-
-                var diagram,
-                    wire;
-
-                console.log(newSegments);
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    wire = diagram.wiresById[wireId];
-
-                    if (angular.isObject(wire)) {
-
-                        wire.segments = newSegments;
-
-                    }
-
-                }
-
-            };
-
-            this.addWire = function(diagramId, aWire) {
-
-                var diagram;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    diagram.addWire(aWire);
-
-                }
-
-            };
-
-            this.getWiresForComponents = function(diagramId, components) {
-
-                var diagram,
-                    wires;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    wires = diagram.getWiresForComponents(components);
-
-                }
-
-                return wires || [];
-
-            };
-
             this.createDiagramFromCyPhyElements = function(diagramId, diagramElements) {
 
                 var diagram;
@@ -187,7 +119,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     newDiagramStuff = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        self.getHighestZ() + 1,
+                        diagram.getHighestZ() + 1,
                         diagram
                     );
 
@@ -215,25 +147,6 @@ angular.module('mms.designVisualization.diagramService', [
                 }
 
                 return diagram;
-
-            };
-
-            this.deleteComponentOrWireById = function(diagramId, elementId) {
-
-                var diagram,
-                    result;
-
-                result = false;
-
-                diagram = diagrams[diagramId];
-
-                if (diagram) {
-
-                    result = diagram.deleteComponentOrWireById(elementId);
-
-                }
-
-                return result;
 
             };
 

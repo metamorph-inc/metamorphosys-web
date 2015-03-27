@@ -138,16 +138,21 @@ angular.module('mms.designVisualization.designEditor', [
                             nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
                                 .then(function(node) {
 
-                                    node.setRegistry('wireSegments', angular.copy(wire.segments));
-                                    node.makePointer('src', wire.end1.port.id);
-                                    node.makePointer('dst', wire.end2.port.id);
+                                    var diagram = diagramService.getDiagram(selectedContainerId);
 
-                                    nodeService.completeTransaction(layoutContext);
+                                    if (diagram) {
 
-                                    wire.id = node.id;
-                                    diagramService.addWire(selectedContainerId, wire);
-                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                        node.setRegistry('wireSegments', angular.copy(wire.segments));
+                                        node.makePointer('src', wire.end1.port.id);
+                                        node.makePointer('dst', wire.end2.port.id);
 
+                                        nodeService.completeTransaction(layoutContext);
+
+                                        wire.id = node.id;
+                                        diagram.addWire(wire);
+                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
+                                    }
 
                                     $rootScope.stopProcessing();
 
@@ -175,7 +180,8 @@ angular.module('mms.designVisualization.designEditor', [
                         var i,
                             wires,
                             deleteMessage,
-                            nodeIdsToDelete;
+                            nodeIdsToDelete,
+                            diagram = diagramService.getDiagram(selectedContainerId);
 
 
                         if (angular.isObject(component)) {
@@ -184,7 +190,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                             deleteMessage = 'Deleting design element';
 
-                            wires = diagramService.getWiresForComponents(selectedContainerId, [component]);
+                            wires = diagram.getWiresForComponents([component]);
 
                             if (wires.length > 0) {
 
@@ -229,6 +235,8 @@ angular.module('mms.designVisualization.designEditor', [
                         selectedContainerId,
                         function(designStructureUpdateObject) {
 
+                            var diagram = diagramService.getDiagram(selectedContainerId);
+
                             $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
                             switch (designStructureUpdateObject.type) {
@@ -252,8 +260,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                                 case 'unload':
 
-                                    diagramService.deleteComponentOrWireById(
-                                        selectedContainerId,
+                                    diagram.deleteComponentOrWireById(
                                         designStructureUpdateObject.id);
 
                                     gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
@@ -283,8 +290,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                                     if (designStructureUpdateObject.updateType === 'detailsChange') {
 
-                                        diagramService.updateWireSegments(
-                                            selectedContainerId,
+                                        diagram.updateWireSegments(
                                             designStructureUpdateObject.id,
                                             angular.copy(designStructureUpdateObject.data.details.wireSegments)
                                         );

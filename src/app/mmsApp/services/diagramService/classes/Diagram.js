@@ -263,6 +263,18 @@ Diagram.prototype.getWires = function() {
     return this._wires;
 };
 
+Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
+
+    var wire = this._wiresById[wireId];
+
+    if (angular.isObject(wire)) {
+
+        wire.segments = newSegments;
+
+    }
+
+};
+
 Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
     var self = this,
