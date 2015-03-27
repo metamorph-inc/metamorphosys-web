@@ -74,7 +74,7 @@ angular.module('mms.designVisualization.designEditor', [
 
                 randomSymbolGenerator.generateSymbols(5);
 
-                $scope.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
+                $scope.diagram = diagramService.generateDummyDiagram('dummy', 5, 0, 1500, 1500);
 
                 console.log('Dummy diagram:', $scope.diagram);
 
