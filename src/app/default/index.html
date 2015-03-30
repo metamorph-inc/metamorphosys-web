@@ -9,10 +9,25 @@
 
     <!-- Include App Styles-->
     <link type="text/css" rel="stylesheet" href="<%= stylesFilePath %>">
-
+    <script type="text/javascript">
+        function bootstrapWithGmeConfig() {
+            var http = new XMLHttpRequest(),
+                configUrl = window.location.origin + '/gmeConfig.json';
+            http.onreadystatechange = function () {
+                if (http.readyState === 4 && http.status === 200) {
+                    window.GME.gmeConfig = JSON.parse(http.responseText);
+                    angular.bootstrap(document, ['CyPhyApp']);
+                } else if (http.readyState === 4 && http.status !== 200) {
+                    console.error('Could not load gmeConfig at', configUrl);
+                }
+            };
+            http.open('GET', configUrl, true);
+            http.send();
+        }
+    </script>
     <title></title>
 </head>
-<body on-gme-init="angular.bootstrap(document, ['CyPhyApp']);">
+<body on-gme-init="bootstrapWithGmeConfig();">
 <div growl></div>
 <!--<a ui-sref="workspaces">State 1</a>-->
 <!--<a ui-sref="workspaceDetails({workspaceId: 0})">State 2</a>-->

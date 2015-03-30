@@ -57,9 +57,7 @@ angular.module( 'CyPhyApp', [
         'use strict';
         var connectionId = 'my-db-connection-id';
 
-        dataStoreService.connectToDatabase( connectionId, {
-            host: window.location.basename
-        } )
+        dataStoreService.connectToDatabase( connectionId, window.GME.gmeConfig)
             .then( function () {
                 // select default project and branch (master)
                 return projectService.selectProject( connectionId, 'ADMEditor' );
