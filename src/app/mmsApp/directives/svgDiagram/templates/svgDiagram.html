@@ -30,6 +30,21 @@
               ng-attr-x2="{{segment.x2}}"
               ng-attr-y2="{{segment.y2}}"/>
     </g>
+    <g class="sweepLine-container">
+        <line style="stroke-width: 1; stroke: #07D34F;"
+              ng-repeat="segment in diagram.sweepLines"
+              ng-attr-x1="{{segment.x1}}"
+              ng-attr-y1="{{segment.y1}}"
+              ng-attr-x2="{{segment.x2}}"
+              ng-attr-y2="{{segment.y2}}"/>
+    </g>
+    <g class="sweepPoint-container">
+        <circle style="stroke-width: 1; stroke: #FF0505;"
+              ng-repeat="point in diagram.sweepPoints"
+              ng-attr-cx="{{point.x}}"
+              ng-attr-cy="{{point.y}}"
+              ng-attr-r="{{5}}"/>
+    </g>
 
     <!--<polygon points="100,10 40,198 190,78 10,78 160,198"-->
              <!--style="fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;" />-->

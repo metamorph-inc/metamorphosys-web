@@ -72,33 +72,36 @@ DiagramComponent.prototype.getGridBoundingBox = function() {
     switch (normRotation) {
 
         case 90:
+        case -270:
 
             boundingBox = {
                 x: localTopLeftCornerPosition.x - symbolHeight,
                 y: localTopLeftCornerPosition.y,
-                witdh: symbolHeight,
+                width: symbolHeight,
                 height: symbolWidth
             };
 
             break;
 
         case 180:
+        case -180:
 
             boundingBox = {
                 x: localTopLeftCornerPosition.x - symbolWidth,
                 y: localTopLeftCornerPosition.y - symbolHeight,
-                witdh: symbolWidth,
+                width: symbolWidth,
                 height: symbolHeight
             };
 
             break;
 
         case 270:
+        case -90:
 
             boundingBox = {
                 x: localTopLeftCornerPosition.x,
                 y: localTopLeftCornerPosition.y - symbolWidth,
-                witdh: symbolHeight,
+                width: symbolHeight,
                 height: symbolWidth
             };
 
@@ -110,7 +113,7 @@ DiagramComponent.prototype.getGridBoundingBox = function() {
             boundingBox = {
                 x: localTopLeftCornerPosition.x,
                 y: localTopLeftCornerPosition.y,
-                witdh: symbolWidth,
+                width: symbolWidth,
                 height: symbolHeight
             };
 

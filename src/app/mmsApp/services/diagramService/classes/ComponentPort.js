@@ -76,10 +76,10 @@ ComponentPort.prototype.getGridWireAngle = function() {
     var result = 0;
 
     if (angular.isObject(this.portSymbol) && angular.isObject(this.parentComponent)) {
-        
+
         this.portSymbol.wireAngle = this.portSymbol.wireAngle || 0;
 
-        result = this.portSymbol.wireAngle + this.parentComponent.rotation;
+        result = ( this.portSymbol.wireAngle + this.parentComponent.rotation ) % 360;
     }
 
     return result;
