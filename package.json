@@ -7,7 +7,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "webgme": "0.7.0",
+    "webgme": "=0.8.2",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
     "ng-gme": "=0.0.2"

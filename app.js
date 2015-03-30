@@ -1,13 +1,15 @@
+/*jshint node:true*/
 /**
- * Created by Zsolt on 4/4/2014.
+ * @author lattmann / https://github.com/lattmann
  */
 
-var config = require('./config.json'),
-    webgme = require('webgme');
+var gmeConfig = require('./config'),
+    webgme = require('webgme'),
+    myServer;
 
-// updating default configuration with ours
-WebGMEGlobal.setConfig(config);
+webgme.addToRequireJsPaths(gmeConfig);
 
-// standalone server uses WebGMEGlobal.getConfig() if no configuration defined
-var myServer = new webgme.standaloneServer();
-myServer.start();
+myServer = new webgme.standaloneServer(gmeConfig);
+myServer.start(function () {
+    //console.log('server up');
+});
