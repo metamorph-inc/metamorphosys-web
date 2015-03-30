@@ -1,8 +1,8 @@
-/*global angular*/
+/*global angular, document*/
 
 'use strict';
 
-angular.module('CyPhyApp').config(function (
+angular.module('CyPhyApp').config(function(
     $stateProvider, $urlRouterProvider, $mdThemingProvider, dummyDiagramEnabled
 ) {
 
@@ -12,59 +12,59 @@ angular.module('CyPhyApp').config(function (
         retrieveGivenDesign,
         retrieveGivenContainer;
 
-    retrieveGivenProject = function ($state, $stateParams, projectHandling, $log, errorReporter) {
+    retrieveGivenProject = function($state, $stateParams, projectHandling, $log, errorReporter) {
 
         return projectHandling.selectProject($stateParams.projectId)
-            .then(function (projectId) {
+            .then(function(projectId) {
                 $log.debug('givenProject found', projectId);
                 return projectId;
             })
-            .catch(function (msg) {
+            .catch(function(msg) {
                 errorReporter.log(msg);
-                $state.go('404', {}, { replace: 'replace' });
+                $state.go('404');
             });
     };
 
-    retrieveGivenBranch = function (givenProjectId, $state, $stateParams, projectHandling, $log, errorReporter) {
+    retrieveGivenBranch = function(givenProjectId, $state, $stateParams, projectHandling, $log, errorReporter) {
         return projectHandling.selectBranch($stateParams.branchId)
-            .then(function (branchId) {
+            .then(function(branchId) {
                 $log.debug('givenBranch found', branchId);
                 return branchId;
             })
-            .catch(function (msg) {
+            .catch(function(msg) {
                 errorReporter.log(msg);
-                $state.go('404', {}, { replace: 'replace' });
+                $state.go('404');
             });
     };
 
-    retrieveGivenWorkspace = function (givenBranchId, $state, $stateParams,
-                                       projectHandling, $log, errorReporter) {
+    retrieveGivenWorkspace = function(givenBranchId, $state, $stateParams,
+        projectHandling, $log, errorReporter) {
         return projectHandling.selectWorkspace($stateParams.workspaceId)
-            .then(function (workspaceId) {
+            .then(function(workspaceId) {
                 $log.debug('givenWorkspace found', workspaceId);
                 return workspaceId;
             })
-            .catch(function (msg) {
+            .catch(function(msg) {
                 errorReporter.log(msg);
-                $state.go('404', {}, { replace: 'replace' });
+                $state.go('404');
             });
     };
 
-    retrieveGivenDesign = function (givenWorkspaceId, $state, $stateParams,
-                                    projectHandling, $log, errorReporter) {
+    retrieveGivenDesign = function(givenWorkspaceId, $state, $stateParams,
+        projectHandling, $log, errorReporter) {
         return projectHandling.selectDesign($stateParams.designId)
-            .then(function (designId) {
+            .then(function(designId) {
                 $log.debug('givenDesign found', designId);
                 return designId;
             })
-            .catch(function (msg) {
+            .catch(function(msg) {
                 errorReporter.log(msg);
-                $state.go('404', {}, { replace: 'replace' });
+                $state.go('404');
             });
     };
 
-    retrieveGivenContainer = function (givenDesignId, $state, $stateParams,
-                                       projectHandling, $log, errorReporter, $q) {
+    retrieveGivenContainer = function(givenDesignId, $state, $stateParams,
+        projectHandling, $log, errorReporter, $q) {
         var deferred;
 
         deferred = $q.defer();
@@ -72,22 +72,22 @@ angular.module('CyPhyApp').config(function (
         if ($stateParams.containerId) {
 
             projectHandling.selectContainer($stateParams.containerId)
-                .then(function (containerId) {
+                .then(function(containerId) {
                     $log.debug('givenContainer found', containerId);
                     deferred.resolve(containerId);
                 })
-                .catch(function (msg) {
+                .catch(function(msg) {
                     errorReporter.log(msg);
-                    $state.go('404', {}, { replace: 'replace' });
+                    $state.go('404');
                 });
         } else {
             // Setting design as selected container
             projectHandling.selectContainer(givenDesignId)
-                .then(function (containerId) {
+                .then(function(containerId) {
                     $log.debug('givenContainer found', containerId);
                     deferred.resolve(containerId);
                 })
-                .catch(function (msg) {
+                .catch(function(msg) {
                     errorReporter.log(msg);
                     //  $state.go('404');
                 });
@@ -112,14 +112,28 @@ angular.module('CyPhyApp').config(function (
     //
     //});
 
-    $urlRouterProvider.otherwise('/404');
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
 
+        .state('getDispacthed', {
+            url: '/',
+            views: {
+                'onCover': {
+                    template: '',
+                    controller: function() {
+                        document.location.href = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
+                    }
+                }
+            }
+
+        })
         .state('createDesign', {
             url: '/createDesign/{projectId:string}',
             onEnter: function($state, $stateParams) {
-                $state.go('editor.project', { projectId: $stateParams.projectId });
+                $state.go('editor.project', {
+                    projectId: $stateParams.projectId
+                });
             }
         })
         .state('editor', {
@@ -145,12 +159,12 @@ angular.module('CyPhyApp').config(function (
             resolve: {
                 givenProjectId: retrieveGivenProject
             },
-            onEnter: function (projectHandling, $rootScope, $stateParams, $log, $state, errorReporter) {
+            onEnter: function(projectHandling, $rootScope, $stateParams, $log, $state, errorReporter) {
 
                 $log.debug('No branch specified - have to create branch here');
 
                 projectHandling.cloneMaster()
-                    .then(function (data) {
+                    .then(function(data) {
 
                         $log.debug('New branch creation successful', data);
                         $state.go('editor.branch', {
@@ -159,9 +173,9 @@ angular.module('CyPhyApp').config(function (
                         });
 
                     })
-                    .catch(function (msg) {
+                    .catch(function(msg) {
                         errorReporter.log(msg);
-                        $state.go('404', {}, { replace: 'replace' });
+                        $state.go('404');
                     });
             }
 
@@ -172,7 +186,7 @@ angular.module('CyPhyApp').config(function (
                 givenProjectId: retrieveGivenProject,
                 givenBranchId: retrieveGivenBranch
             },
-            onEnter: function (projectHandling, $log, $stateParams, $state, errorReporter) {
+            onEnter: function(projectHandling, $log, $stateParams, $state, errorReporter) {
 
                 var workspaces,
                     workspaceIds,
@@ -205,7 +219,7 @@ angular.module('CyPhyApp').config(function (
 
                 if (!workspaceFound) {
                     errorReporter.log('No workspaces in project');
-                    $state.go('404', {}, { replace: 'replace' });
+                    $state.go('404');
                 }
 
             }
@@ -218,7 +232,7 @@ angular.module('CyPhyApp').config(function (
                 givenBranchId: retrieveGivenBranch,
                 givenWorkspaceId: retrieveGivenWorkspace
             },
-            onEnter: function (projectHandling, $log, $stateParams, $state, errorReporter) {
+            onEnter: function(projectHandling, $log, $stateParams, $state, errorReporter) {
 
                 var designs,
                     designIds;
@@ -259,7 +273,7 @@ angular.module('CyPhyApp').config(function (
 
                 } else {
                     errorReporter.log('No designs in project');
-                    $state.go('404', {}, { replace: 'replace' });
+                    $state.go('404');
                 }
 
             }
@@ -284,7 +298,6 @@ angular.module('CyPhyApp').config(function (
             }
         })
         .state('404', {
-            url: '/404',
             views: {
                 'onCover': {
                     templateUrl: '/mmsApp/templates/404.html',
@@ -312,7 +325,7 @@ angular.module('CyPhyApp').config(function (
                     templateUrl: '/mmsApp/templates/editor.html'
                 },
                 'onCover@': {}
-            }            
+            }
         });
     }
 
@@ -322,4 +335,3 @@ angular.module('CyPhyApp').config(function (
         .accentPalette('orange');
 
 });
-

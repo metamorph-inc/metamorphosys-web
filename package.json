@@ -121,6 +121,7 @@
     "test_functional_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/functional",
     "test_all": "node node_modules/istanbul/lib/cli.js --hook-run-in-context test node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
     "test_all_cover": "node node_modules/istanbul/lib/cli.js --hook-run-in-context cover node_modules/mocha/bin/_mocha -- -R spec --recursive test/unit test/functional",
+    "test_protractor": "protractor protractor_conf.js",
     "jsdoc": "node_modules/.bin/jsdoc src -r",
     "plugin": "node node_modules/webgme/bin/run_plugin.js -c config.json"
   }

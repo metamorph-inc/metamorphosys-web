@@ -1,12 +1,11 @@
 .design-editor {
 
-  * {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-  }
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+  
 
   height: 100%;
   width: 100%;

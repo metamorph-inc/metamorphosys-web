@@ -916,6 +916,9 @@ define( [ 'plugin/PluginConfig',
             acmXml = acmZip.file( /\.acm$/ ),
             msg;
 
+        acmXml = acmXml.filter(function (entry) {
+            return entry.name.indexOf('__MACOSX') !== 0;
+        });
         if ( acmXml.length === 1 ) {
             converterResult = self.convertXmlString2Json( acmXml[ 0 ].asText() );
 
