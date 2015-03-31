@@ -8,6 +8,8 @@ angular.module('mms.diagramComponentInspector', [])
 
             }
 
+            
+
             return {
                 restrict: 'E',
                 controller: DiagramComponentInspectorController,
@@ -18,7 +20,8 @@ angular.module('mms.diagramComponentInspector', [])
                 templateUrl: '/mmsApp/templates/diagramComponentInspector.html',
                 require: [],
                 scope: {
-                    component: '='
+                    component: '=',
+                    config: '='
                 }
             };
         }

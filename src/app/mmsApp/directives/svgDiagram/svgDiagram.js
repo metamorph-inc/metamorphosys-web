@@ -364,7 +364,9 @@ angular.module('mms.designVisualization.svgDiagram', [
                 controller: 'SVGDiagramController',
                 require: '^diagramContainer',
                 restrict: 'E',
-                scope: false,
+                scope: {
+                    diagram: '='
+                },
                 replace: true,
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
                 link: function (scope, element, attributes, diagramContainerController) {
@@ -393,6 +395,8 @@ angular.module('mms.designVisualization.svgDiagram', [
                         return scope.diagram && scope.diagram.id;
 
                     }, function (newDiagramId, oldDiagramId) {
+
+                        debugger;
 
                         if (newDiagramId && newDiagramId !== currentDiagramId) {
 

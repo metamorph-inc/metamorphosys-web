@@ -36,17 +36,19 @@ angular.module('mms.designEditor', [
                     initForContainer,
                     destroy,
                     RandomSymbolGenerator = require('./classes/RandomSymbolGenerator.js'),
-                    randomSymbolGenerator;
+                    randomSymbolGenerator,
 
-                this._drawerHeight = 0;
-                this._element = null;
+                    self = this;
 
-                $scope.isDummy = $state.current.name === 'dummyEditor';
+                self._drawerHeight = 0;
+                self._element = null;
 
-                if ($scope.isDummy) {
-                    $scope.editorWidth = 100;
+                self.isDummy = $state.current.name === 'dummyEditor';
+
+                if (self.isDummy) {
+                    self.editorWidth = 100;
                 } else {
-                    $scope.editorWidth = 75;
+                    self.editorWidth = 75;
                 }
 
                 addRootScopeEventListener = function(event, fn) {
@@ -68,24 +70,24 @@ angular.module('mms.designEditor', [
 
                     removeAllRootScopeEventListeners();
 
-                    if ($scope.layoutContext) {
+                    if (self.layoutContext) {
                         $log.debug('Cleaning up designLayout watchers');
-                        designLayoutService.unregisterWatcher($scope.layoutContext);
+                        designLayoutService.unregisterWatcher(self.layoutContext);
                     }
 
                 };
 
                 initForContainer = function(selectedContainerId) {
 
-                    if ($scope.isDummy) {
+                    if (self.isDummy) {
 
                         randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
 
                         randomSymbolGenerator.generateSymbols(5);
 
-                        $scope.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
+                        self.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
 
-                        console.log('Dummy diagram:', $scope.diagram);
+                        console.log('Dummy diagram:', self.diagram);
 
                         $rootScope.stopBusy();
                         $rootScope.unCover();
@@ -95,13 +97,13 @@ angular.module('mms.designEditor', [
                     } else if (selectedContainerId) {
 
 
-                        $scope.activeWorkSpace = projectHandling.getSelectedWorkspace();
-                        $scope.layoutContext = layoutContext = projectHandling.getContainerLayoutContext();
+                        self.activeWorkSpace = projectHandling.getSelectedWorkspace();
+                        self.layoutContext = layoutContext = projectHandling.getContainerLayoutContext();
 
                         justCreatedWires = [];
 
-                        $scope.diagram = null;
-                        $scope.diagramContainerConfig = {};
+                        self.diagram = null;
+                        self.diagramContainerConfig = {};
 
 
                         //console.log('=======================================ADDING LISTENERS');
@@ -122,7 +124,7 @@ angular.module('mms.designEditor', [
                             }
 
                             if (componentUrl) {
-                                acmImportService.importAcm($scope.layoutContext, selectedContainerId,
+                                acmImportService.importAcm(self.layoutContext, selectedContainerId,
                                     componentUrl, position);
                             }
 
@@ -309,10 +311,10 @@ angular.module('mms.designEditor', [
 
                                 $timeout(function() {
 
-                                    $scope.diagram =
+                                    self.diagram =
                                         diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
 
-                                    $log.debug('Drawing diagram:', $scope.diagram);
+                                    $log.debug('Drawing diagram:', self.diagram);
 
                                 });
 
@@ -332,7 +334,7 @@ angular.module('mms.designEditor', [
 
                             });
 
-                        $scope.fabClick = function() {
+                        self.fabClick = function() {
 
                             $log.debug('Fab was clicked');
 
@@ -416,6 +418,8 @@ angular.module('mms.designEditor', [
             return {
                 restrict: 'E',
                 controller: DesignEditorController,
+                controllerAs: 'designEditorCtrl',
+                bindToController: true,
                 scope: true,
                 replace: true,
                 transclude: true,

@@ -16,18 +16,39 @@
         top: 0;
         width: 100%;
         left: 0;
+        padding: 3px 10px;
 
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         -o-user-select: none;
-
         user-select: none;
+
+		.drawer-main-navigator {
+			padding: 0;
+			list-style-type: none;
+
+			> li {
+				color: #555;
+				cursor: pointer;
+
+				i {
+					font-size: 85%;
+				}
+			}
+		}
+
         .drawer-expander {
             position: absolute;
             right: 10px;
             top: 4px;
             cursor: pointer;
+        }
+
+        transition: background 200ms;
+
+        &:hover {
+        	background: rgba(200,200,200,.1);
         }
     }
 
