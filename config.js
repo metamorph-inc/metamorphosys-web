@@ -1,4 +1,5 @@
 /*jshint node: true*/
+/* global __dirname */
 
 var path = require('path');
 var config = require('webgme/config/config.default');
@@ -23,7 +24,8 @@ config.plugin.basePaths.push('./src/plugins/META');
 config.rest.components = mapPaths({
             'desert': './src/rest/desert/Desert',
             'serverinfo': './src/rest/serverInfo/ServerInfo',
-            'copyproject': './src/rest/copyproject/CopyProject'
+            'copyproject': './src/rest/copyproject/CopyProject',
+            'acminfo': './src/rest/acminfo/AcmInfo'
         });
 config.visualization.visualizerDescriptors.push('./Visualizers.json');
 config.storage.keyType = 'rand160Bits';
@@ -36,9 +38,10 @@ config.requirejsPaths = {
         'widgets/ProjectAnalyzer': './src/widgets/ProjectAnalyzer',
         'executor': './node_modules/webgme/src/middleware/executor',
         'desert': './src/rest/desert',
-        'serverinfo': './src/rest/serverInfo',
-        'CyPhyApp' : './src/client',
-        'CyPhyMETA' : './meta',
+        'acminfo': './src/rest/acminfo',
+        //'serverinfo': './src/rest/serverInfo',
+        'CyPhyApp': './src/client',
+        'CyPhyMETA': './meta',
         'cyphyDist': './dist'
     };
 

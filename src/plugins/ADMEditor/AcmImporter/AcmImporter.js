@@ -965,7 +965,8 @@ define( [ 'plugin/PluginConfig',
                     Role: true,
                     Formula: true,
                     Operand: true,
-                    Port: true
+                    Port: true,
+                    ResourceDependency: true
                 }
             } );
 
