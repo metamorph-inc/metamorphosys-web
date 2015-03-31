@@ -72,7 +72,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
     'mms.designVisualization.processingCover',
-    'mms.designVisualization.designEditor',
+    'mms.designEditor',
     'mms.mainNavigator',
 
     'mms.mmsApp.componentBrowser',

@@ -6,9 +6,11 @@
 
 require('../testbenchActions/testbenchActions.js');
 require('../keyboardMap/keyboardMap.js');
+require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
 
-angular.module('mms.designVisualization.designEditor', [
+angular.module('mms.designEditor', [
+        'mms.designEditor.footerDrawer',
         'mms.testbenchActions',
         'mms.designVisualization.operations.gmeCommitHandlers',
         'mms.keyboardMap'
@@ -365,7 +367,7 @@ angular.module('mms.designVisualization.designEditor', [
             return {
                 restrict: 'E',
                 controller: 'DesignEditorController',
-                $scope: true,
+                scope: true,
                 replace: true,
                 transclude: true,
                 templateUrl: '/mmsApp/templates/designEditor.html'
