@@ -8,6 +8,7 @@
     width: 100%;
     z-index: 10;
     left: 0;
+    padding-top: 26px;
     header {
         height: 26px;
         border-bottom: 1px solid #eee;
@@ -28,5 +29,9 @@
             top: 4px;
             cursor: pointer;
         }
+    }
+
+    .drawer-content {
+    	padding: 10px;
     }
 }

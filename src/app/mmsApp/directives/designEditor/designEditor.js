@@ -6,6 +6,7 @@ var EventDispatcher = require('../../classes/EventDispatcher');
 
 require('../testbenchActions/testbenchActions.js');
 require('../keyboardMap/keyboardMap.js');
+require('../diagramComponentInspector/diagramComponentInspector.js');
 require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
 
@@ -13,7 +14,8 @@ angular.module('mms.designEditor', [
         'mms.designEditor.footerDrawer',
         'mms.testbenchActions',
         'mms.designVisualization.operations.gmeCommitHandlers',
-        'mms.keyboardMap'
+        'mms.keyboardMap',
+        'mms.diagramComponentInspector'
     ])
     .directive('designEditor', [
         function() {
