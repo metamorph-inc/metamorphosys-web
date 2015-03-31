@@ -37,7 +37,7 @@ if (testPaths) {
         paths:paths
     });
 }
-requirejs(['logManager'], function (LogManager) {
+requirejs(['common/LogManager'], function (LogManager) {
     LogManager.setLogLevel(0);
 });
 

@@ -4,7 +4,7 @@
  */
 
 var os = require( 'os' );
-define( [ 'logManager',
+define( [ 'common/LogManager',
     'child_process'
 ], function ( logManager, child_process ) {
     'use strict';

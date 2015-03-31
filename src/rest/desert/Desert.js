@@ -2,7 +2,7 @@
  * Created by pmeijer on 6/23/2014.
  */
 
-define( [ 'logManager',
+define( [ 'common/LogManager',
     'blob/BlobRunPluginClient',
     'blob/BlobFSBackend',
     'fs',
