@@ -241,6 +241,8 @@ DiagramComponent.prototype.setRotation = function(newRotation) {
 
     if (angular.isNumber(newRotation)) {
 
+        this.rotation = newRotation;
+
         this.updateTransformationMatrix();
 
     } else {

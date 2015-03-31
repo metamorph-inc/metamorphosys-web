@@ -38,3 +38,4 @@ public
 
 config.client.json
 config.server.json
+src/app/mmsApp/appConfig.js

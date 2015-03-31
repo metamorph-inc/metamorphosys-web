@@ -114,7 +114,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
                 );
 
             } else {
-                document.location.href = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
+                document.location.reload();
                 deferred.resolve();
             }
         }

@@ -5,7 +5,8 @@ var ComponentBrowserService = require('./classes/ComponentBrowserService.js');
 
 
 angular.module( 'mms.mmsApp.componentBrowser', [
-    'mms.componentBrowser.componentLibrary'
+    'mms.componentBrowser.componentLibrary',
+    'material.components.autocomplete'
 ] )
     .config( function(componentLibraryProvider, componentServerUrl){
         componentLibraryProvider.setServerUrl(componentServerUrl);

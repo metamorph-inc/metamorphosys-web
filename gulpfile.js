@@ -697,8 +697,14 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 
             appImages = sourcePaths.appImagePatterns.map(function(imageType) {
                 return appSourceRoot + imageType;
-            });
+            }),
 
+            appLibs = loadAppLibs(appName);
+
+        if (appLibs && appLibs.scripts) {
+            // appSources = appSources.concat(appLibs.scripts);
+            gulp.watch(appLibs.scripts, ['copy-' + appName + '-libs']);
+        }
         gulp.watch(appSources, [ 'compile-' + appName + '-scripts' ]);
         gulp.watch(appHtmls, [ 'compile-' + appName + '-templates' ]);
         gulp.watch(appStyles, [ 'compile-' + appName + '-styles' ]);
