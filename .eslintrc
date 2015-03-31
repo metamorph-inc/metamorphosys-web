@@ -1,4 +1,8 @@
 {
+    "globals": {
+        "angular": true
+    },
+
     // I want to use babel-eslint for parsing!
     "parser": "babel-eslint",
     "env": {

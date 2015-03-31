@@ -1,9 +1,32 @@
+@import '../../../styles/colors';
 .footer-drawer {
-	background-color: red;
-  height: 30px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 10;
-  left: 0;	
+    background: linear-gradient(to bottom, #fff, #f5f5f5);
+    border-top: 1px solid rgba(0, 0, 0, .12);
+    height: 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+    left: 0;
+    header {
+        height: 26px;
+        border-bottom: 1px solid #eee;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+
+        user-select: none;
+        .drawer-expander {
+            position: absolute;
+            right: 10px;
+            top: 4px;
+            cursor: pointer;
+        }
+    }
 }

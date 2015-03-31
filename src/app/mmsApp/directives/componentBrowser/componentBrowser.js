@@ -129,7 +129,8 @@ angular.module( 'mms.mmsApp.componentBrowser', [
             replace: true,
             templateUrl: '/mmsApp/templates/componentBrowser.html',
             controller: 'ComponentBrowserController',
-            link: function(scope, element) {
+            require: '?^designEditor',
+            link: function(scope, element, attributes, designEditorCtrl) {
 
                 var $treeNavigatorNodesElement,
                     $parent,
@@ -172,15 +173,12 @@ angular.module( 'mms.mmsApp.componentBrowser', [
                     'resize', scope.adjustTreeNavigatorSize
                 );
 
-                scope.$on('destroy', function(){
 
-                    $windowElement.unbind(
-                        'resize', scope.adjustTreeNavigatorSize
-                    );
+                if (designEditorCtrl) {
+                    designEditorCtrl.addEventListener('resize', scope.adjustTreeNavigatorSize);
+                }                
 
-                });
-
-                $(document).bind('keyup', function (event) {
+                function onDocumenKeyup(event) {
 
                     var d,
                         doIt,
@@ -222,7 +220,25 @@ angular.module( 'mms.mmsApp.componentBrowser', [
 
                     }
 
+                }
+
+                $(document).bind('keyup', onDocumenKeyup);
+
+
+                scope.$on('destroy', function(){
+
+                    $(document).unbind('keyup', onDocumenKeyup);
+
+                    if (designEditorCtrl) {
+                        designEditorCtrl.removeEventListener('resize', scope.adjustTreeNavigatorSize);
+                    }
+
+                    $windowElement.unbind(
+                        'resize', scope.adjustTreeNavigatorSize
+                    );
+
                 });
+
             }
         };
     } );
