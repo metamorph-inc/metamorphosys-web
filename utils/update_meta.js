@@ -40,11 +40,11 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 
 define([
-    'core/core',
-    'storage/serveruserstorage',
-    'coreclient/serialization',
+    'common/core/core',
+    'common/storage/serveruserstorage',
+    'common/core/users/serialization',
     'blob/BlobClient',
-    'logManager'
+    'common/LogManager'
 ], function (Core, Storage, Serialization, BlobClient, LogManager) {
     'use strict';
 
