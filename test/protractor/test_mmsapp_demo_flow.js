@@ -24,9 +24,9 @@ describe('Metamorphosys Tech Demo Flow', function () {
         searchTerm  = '12',
         searchTermX = 'xy',
         categoryToUnfold = 'Optoelectronics',
-        subCategoryToUnfold = 'Detectors',        
-        componentToDrag = 'TSL2561',
-        targetComponentLabel = 'TSL2561';
+        subCategoryToUnfold = 'Optocouplers-optoisolators',
+        componentToDrag = 'ILD213T',
+        targetComponentLabel = 'ILD213T';
 
 
     require('./lib/find_diagramComponent_by_labelText.js');
