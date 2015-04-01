@@ -40,28 +40,37 @@ define(['xmljsonconverter',
 
                 (function setIcon() {
                     var icon = component.ResourceDependency.filter(function (dependency) {
-                        return dependency['@Name'].toLowerCase() === 'icon.png';
+                        return endsWith(dependency['@Path'].toLowerCase(), 'icon.png');
                     })[0];
-                    if (icon && icon['@Path'] && acmZip.file(icon['@Path'])) {
-                        acmInfo.icon = 'data:image/png;base64,' + acmZip.file(icon['@Path']).asNodeBuffer().toString('base64');
+                    if (icon && icon['@Path']) {
+                        var path = icon['@Path'].replace('\\', '/');
+                        if (acmZip.file(path)) {
+                            acmInfo.icon = 'data:image/png;base64,' + acmZip.file(path).asNodeBuffer().toString('base64');
+                        }
                     }
                 })();
 
                 (function setDatasheet() {
                     var dependency = component.ResourceDependency.filter(function (dep) {
-                        return endsWith(dep['@Name'].toLowerCase(), '.pdf');
+                        return endsWith(dep['@Path'].toLowerCase(), '.pdf');
                     })[0];
-                    if (dependency && dependency['@Path'] && acmZip.file(dependency['@Path'])) {
-                        acmInfo.datasheet = dependency['@Path']; // TODO make this a url
+                    if (dependency && dependency['@Path']) {
+                        var path = dependency['@Path'].replace('\\', '/');
+                        if (acmZip.file(path)) {
+                            acmInfo.datasheet = self.getUrlForZipPath(path);
+                        }
                     }
                 })();
 
                 (function setMarkdown() {
                     var dependency = component.ResourceDependency.filter(function (dep) {
-                        return endsWith(dep['@Name'].toLowerCase(), '.md') || endsWith(dep['@Name'].toLowerCase(), '.mdown');
+                        return endsWith(dep['@Path'].toLowerCase(), '.md') || endsWith(dep['@Name'].toLowerCase(), '.mdown');
                     })[0];
-                    if (dependency && dependency['@Path'] && acmZip.file(dependency['@Path'])) {
-                        acmInfo.datasheet = acmZip.file(dependency['@Path']).asText(); // TODO render this
+                    if (dependency && dependency['@Path']) {
+                        var path = dependency['@Path'].replace('\\', '/');
+                        if (acmZip.file(path)) {
+                            acmInfo.datasheet = acmZip.file(path).asText(); // TODO render this
+                        }
                     }
                 })();
 
@@ -71,6 +80,10 @@ define(['xmljsonconverter',
                         var propInfo = acmInfo.properties[prop['@Name']] = {};
                         if (prop.Value && prop.Value.ValueExpression && prop.Value.ValueExpression.Value) {
                             propInfo.value = prop.Value.ValueExpression.Value['#text'];
+                        } else if (prop.Value && prop.Value.ValueExpression && prop.Value.ValueExpression.AssignedValue && prop.Value.ValueExpression.AssignedValue.Value) {
+                            propInfo.value = prop.Value.ValueExpression.AssignedValue.Value['#text'];
+                        } else if (prop.Value && prop.Value.ValueExpression && prop.Value.ValueExpression.Default && prop.Value.ValueExpression.Default.Value) {
+                            propInfo.value = prop.Value.ValueExpression.Default.Value['#text'];
                         }
                     });
                 })();
