@@ -22,7 +22,9 @@ module.exports = function(value, elems, compare) {
 
         if (notPlaced) {
             elems.push(value);
+            return elems.length;
         }
+        return i;
 
     }
 

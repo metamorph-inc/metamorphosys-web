@@ -1,6 +1,6 @@
-/*globals angular*/
-
 'use strict';
+
+var insert = require("../../mmsUtils/classes/simpleInsert.js");
 
 var OrthogonalRouter = function () {
 
@@ -83,20 +83,36 @@ var OrthogonalRouter = function () {
         var nodes = [],
             incompleteNodes = [];
         for ( var s = 0; s < vertSegments.length; s++ ) {
-            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes,
-                                                    nodes, diagram.config.height, diagram.config.width);
+            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes, nodes);
         }
+
+        // NOTE:
+        // At this point, all nodes and neighbors are determined except for far East nodes, and nodes who are a port
+        // on the left-hand side of a component. The E neighbor never would have been found for these. Handle this
+        // during A* search. (Could also loop through components again, but that is costly...). Just add to nodes.
+        var j = 0;
+        while (incompleteNodes.length !== 0) {
+            var incNode = incompleteNodes[j];
+            nodes.push( {v: incNode.v,
+                north: incNode.north,
+                south: incNode.south,
+                west: incNode.west,
+                east: incNode.east} );
+            incompleteNodes.splice(j, 1);
+        }
+
+
 
         edges = edges.concat(horzSegments);
         edges = edges.concat(vertSegments);
         diagram.sweepLines = edges;
-        diagram.sweepPoints = [].concat(vertices);
+        diagram.sweepPoints = vertices;
 
         // At this point the edges of the grid are known. Need to determine all of the intersecting points created
         // by these segments as they represent the vertices of the grid. Each edge has two vertices.
 
 
-        this.visibilityGraph.vertices = vertices;
+        this.visibilityGraph.vertices = nodes;
         this.visibilityGraph.edges = edges;
 
 
@@ -104,8 +120,7 @@ var OrthogonalRouter = function () {
 
     };
 
-    this.getSegmentIntersections = function ( segment, segmentSet, intersections, incompleteNodes, nodes,
-                                              gridHeight, gridWidth ) {
+    this.getSegmentIntersections = function ( segment, segmentSet, intersections, incompleteNodes, nodes ) {
         // segment is the line that will be compared against all lines in the segment set.
         // Segments in segmentSet are sorted from top-down or left-right due to line sweep.
 
@@ -116,7 +131,7 @@ var OrthogonalRouter = function () {
             var checkSegX = segmentSet[i].x2 - segmentSet[i].x1,
                 checkSegY = segmentSet[i].y2 - segmentSet[i].y1,
                 denominator = segX * checkSegY - checkSegX * segY,
-                positive_denom = denominator > 0;
+                positiveDenom = denominator > 0;
 
             if ( denominator === 0 ) {
                 continue;  // collinear - shouldn't happen in this context, but still check.
@@ -127,8 +142,8 @@ var OrthogonalRouter = function () {
             if ( share !== null ) {
                 if ( myIndexOfPoint(share, intersections) === -1 ) {
                     intersections.push(share);
-                    populateNode( share, segment, segmentSet[i], nodes,
-                                  incompleteNodes, gridHeight, gridWidth );
+                    populateNode2( share, segment, segmentSet[i], nodes,
+                                  incompleteNodes );
                 }
                 continue;
             }
@@ -138,14 +153,14 @@ var OrthogonalRouter = function () {
                 numerator1 = segX * newSegY - segY * newSegX,
                 numerator2 = checkSegX * newSegY - checkSegY * newSegX;
 
-            if ( (numerator1 < 0) === positive_denom ) {
+            if ( (numerator1 < 0) === positiveDenom ) {
                 continue;  // collinear
             }
-            else if ( (numerator2 < 0) === positive_denom ) {
+            else if ( (numerator2 < 0) === positiveDenom ) {
                 continue; // collinear
             }
-            else if ( (numerator1 > denominator) === positive_denom ||
-                    (numerator2 > denominator) === positive_denom ) {
+            else if ( (numerator1 > denominator) === positiveDenom ||
+                    (numerator2 > denominator) === positiveDenom ) {
                 continue; // no intersection
             }
 
@@ -159,126 +174,26 @@ var OrthogonalRouter = function () {
             intersections.push(intersection);
 
             // There is an intersection, so need to store the vertex's neighbors
-            populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes, gridHeight, gridWidth );
-
+            // populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes, gridHeight, gridWidth );
+            populateNode2( intersection, segment, segmentSet[i], nodes, incompleteNodes );
 
         }
         return intersections;
     };
 
-    function populateNode( vertex, vertSeg, horzSeg, nodes, incompleteNodes, gridHeight, gridWidth ) {
-        var node = new PathNode( vertex );
-        node.vertSeg = vertSeg;
-        node.horzSeg = horzSeg;
-
-        // Nodes are determined in order, sorted by X then Y, so (10, 70) comes before (10, 80).
-        // Need to determine the N, S, W, E neighbors for each node. Only the N and W neighbors
-        // can be determined when the node is created based on previous nodes and/or the upper
-        // left boundary. The default value for N, S, W, E is null, and means there is no valid
-        // neighbor in that direction for that node.
-
-        // If incompleteNodes is populated, means a the previous node can be completed by the
-        // current node. If the previous node has the same X value, but different Y value, the
-        // previous node's S neighbor is the current node's vertex IFF the previous and current
-        // nodes' vertical segments share an endpoint. Otherwise the previous node has no S neighbor
-        // and the current node has no N neighbor. An example are two ports of a component being in
-        // vertical line.
-
-        // If the current and FIRST entry of incompleteNodes share a Y value but not an X value,
-        // then you now know the current node's W neighbor and the other node's E neighbor, provided
-        // a similar constraint as above holds.
-
-        // Once a node has all 4 cardinal directions populated, remove from incompleteNodes and push to
-        // nodes.
-        if ( incompleteNodes.length === 0 ) {
-            node.north = null;
-            node.west = null;
-            incompleteNodes.push(node);
-            return;
+    var compareY = function (a, b) {
+        try {
+            return a.v.y - b.v.y;
+        } catch (err) {
+            return -99;
         }
+    };
 
-        var idx = incompleteNodes.length - 1,
-            prevNode = incompleteNodes[idx],
-            firstNode = incompleteNodes[0];
-        if ( node.v.x === prevNode.v.x ) {
-            if ( self.isPointOnLine(prevNode.vertSeg, {x:vertSeg.x1, y:vertSeg.y1}) ) {
-                node.north = prevNode.v;
-                prevNode.south = node.v;
+    var compareX = function (a, b) {
+        return a.v.x - b.v.x;
+    };
 
-                // If vertex is an endpoint and horzSeg is 0, west is border
-                if (horzSeg.x1 === 0) {
-                    node.west = null;
-                }
-            }
-            else {
-                // Segments defining vertices don't share points, the N/S directions are invalid.
-                node.north = null;
-                prevNode.south = null;
-            }
-        }
-        if ( node.v.y === firstNode.v.y ) {
-            if (self.isPointOnLine(firstNode.horzSeg, {x:horzSeg.x1, y:horzSeg.y1})) {
-                node.west = firstNode.v;
-                firstNode.east = node.v;
-                if ( node.v.y !== prevNode.v.y ) {
-                    prevNode.south = null;
-                    node.north = null;
-                }
-            }
-            else {
-                firstNode.east = null;
-                node.west = null;
-            }
-        }
-        else {
-            while ( idx > 0 ) {
-                prevNode = incompleteNodes[idx];
-                if ( node.v.y === prevNode.v.y ) {
-                    if (self.isPointOnLine(prevNode.horzSeg, {x: horzSeg.x1, y: horzSeg.y1})) {
-                        node.west = prevNode.v;
-                        prevNode.east = node.v;
-                        if (node.v.x !== prevNode.v.x) {
-                            prevNode.south = null;
-                            node.north = null;
-                        }
-                    }
-                    else {
-                        prevNode.east = null;
-                        node.west = null;
-                    }
-                    break;
-                }
-                else {
-                    idx = idx - 1;
-                }
-            }
-        }
-
-        incompleteNodes.push(node);
-
-        if (prevNode.hasOwnProperty('north') && prevNode.hasOwnProperty('south') &&
-            prevNode.hasOwnProperty('west') && prevNode.hasOwnProperty('east')) {
-            // Node is now completely defined
-            nodes.push( {v: prevNode.v,
-                         north: prevNode.north,
-                         south: prevNode.south,
-                         west: prevNode.west,
-                         east: prevNode.east} );
-            incompleteNodes.splice(idx, 1);
-        }
-        else if (firstNode.hasOwnProperty('north') && firstNode.hasOwnProperty('south') &&
-                 firstNode.hasOwnProperty('west') && firstNode.hasOwnProperty('east')) {
-            // Node is now completely defined
-            nodes.push( {v: firstNode.v,
-                north: firstNode.north,
-                south: firstNode.south,
-                west: firstNode.west,
-                east: firstNode.east} );
-            incompleteNodes.splice(0, 1);
-        }
-    }
-
-    function populateNode2( vertex, vertSeg, horzSeg, nodes, incompleteNodes, gridHeight, gridWidth ) {
+    function populateNode2( vertex, vertSeg, horzSeg, nodes, incompleteNodes ) {
         var node = new PathNode( vertex );
         node.vertSeg = vertSeg;
         node.horzSeg = horzSeg;
@@ -316,14 +231,121 @@ var OrthogonalRouter = function () {
 
          */
 
-
-
         if ( incompleteNodes.length === 0 ) {
             node.north = null;
             node.west = null;
-            incompleteNodes.push(node);
-            return;
+            insert(node, incompleteNodes, compareY);
+            return node;
         }
+
+        // Add new node to list
+        var idx = insert(node, incompleteNodes, compareY) - 1,
+            matchNode = null,
+            smallNeighbor = null,
+            checkComplete = false;
+
+        node = incompleteNodes[idx];
+
+        // Check if Y value is duplicated. If it is, new node will be added directly after the existing one.
+        if (idx !== 0 && compareY(incompleteNodes[idx], incompleteNodes[idx-1]) === 0) {
+
+            checkComplete = true;
+            matchNode = incompleteNodes[idx-1];
+            smallNeighbor = idx-1 === 0 ? null : idx - 2;
+
+            var largeNeighbor = idx === incompleteNodes.length - 1 ? null : idx + 1;
+
+            ///// Horizontal segments
+            // See if the horizontal segments of each node overlap at all. If so, there is a segment between them.
+            // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
+            if (self.isPointOnLine(matchNode.horzSeg, {x:horzSeg.x1, y:horzSeg.y1})) {
+                node.west = matchNode.v;
+                matchNode.east = node.v;
+            }
+            else {
+                matchNode.east = null;
+                node.west = null;
+            }
+
+            if (smallNeighbor === null) {
+                // This node is at the top of the grid. Since points are sorted, we know previous point was
+                // the largest Y value for that X, so the previous node's S is null and this node's N is null.
+                node.north = null;
+                incompleteNodes[incompleteNodes.length - 2].south = null;
+            }
+            if (largeNeighbor === null) {
+                incompleteNodes[incompleteNodes.length - 2].south = null;
+            }
+
+        }
+        else {
+            // Node didn't exist, so it was added.
+            node.west = null;
+        }
+
+        // Grab closest small neighbor in Y that has the same X value, provided node isn't first in list.
+        if (idx !== 0) {
+            var i = idx - 1;
+
+            smallNeighbor = incompleteNodes[i];
+            while (compareX(node, smallNeighbor) !== 0 && manhattanDistance(node.v, smallNeighbor.v) !== 0) {
+                i -= 1;
+                if (i < 0) {
+                    console.log('No vertical segment match.');
+                    node.north = null;
+                    break;
+                }
+                else {
+                    // If here, you have a node who is closer to current node, but to the left on a different line.
+                    // If this happens, it means that this 'close' node is a port who will not have an E neighbor.
+                    // smallNeighbor.east = null;
+
+                    // Check if providing this direction completed that node.
+
+                    smallNeighbor = incompleteNodes[i];
+                }
+            }
+
+
+            // Make sure smallNeighbor was found
+            if (node.north !== null) {
+                // See if the vertical segments of each node overlap at all. If so, there is a segment between them.
+                // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
+                if (self.isPointOnLine(smallNeighbor.vertSeg, {x: vertSeg.x1, y: vertSeg.y1})) {
+                    node.north = smallNeighbor.v;
+                    smallNeighbor.south = node.v;
+                }
+                else {
+                    smallNeighbor.south = null;
+                    node.north = null;
+                }
+            }
+        }
+        else {
+            node.north = null;
+        }
+
+        if (checkComplete) {
+            // Only nodes that can be completed are ones where a matchNode has been found and filled out.
+            if (matchNode.hasOwnProperty('north') && matchNode.hasOwnProperty('south') &&
+                matchNode.hasOwnProperty('west') && matchNode.hasOwnProperty('east')) {
+                // Node is now completely defined
+                nodes.push( {v: matchNode.v,
+                    north: matchNode.north,
+                    south: matchNode.south,
+                    west: matchNode.west,
+                    east: matchNode.east} );
+                incompleteNodes.splice(idx-1, 1);
+            }
+        }
+
+
+    }
+
+
+
+
+
 
     this.doShareEndPoint = function ( seg1, seg2 ) {
         if ( this.isPointOnLine(seg1, {x: seg2.x1, y: seg2.y1}) ) {
@@ -594,82 +616,6 @@ var OrthogonalRouter = function () {
         }
         return -1;
     }
-
-    this.lineSweep = function ( nodes, method, sweepLength ) {
-      // NOT USED - REMOVE
-      // Perform line sweep algorithm on grid. Method can either be vertical or horizontal implementation of line sweep.
-        var segments = [],
-            openObjects = [],
-            horzNodes = nodes,
-            i, j;
-
-
-        // Components are sorted by Y coordinate and then X coordinate for position.
-        // The Y coordinate sorting allows for the event queue to be know (steps in for loop where sweep line will go).
-
-        // Due to sorting, each node's closest left and right neighbors are known.
-        // If first or last entry, neighbor is boundary of grid.
-
-        // If neighbor is at the same Y coordinate, objects are colinear, so grab the nearest neighbor of the neighbor.
-        // Repeat until either neighbor is not colinear or boundary is hit.
-
-        // At each event an object will be either open or closed. If object is opened, compare coordinates as above,
-        // but also check the coordinates of any nodes in the openObjects queue.
-
-        segments.push({ x1: 0, y1: horzNodes[0].y, x2: horzNodes[0].x, y2: horzNodes[0].y });
-        segments.push({ x1: horzNodes[0].x, y1: horzNodes[0].y, x2: sweepLength, y2: horzNodes[0].y });
-
-        for ( i = 1; i < horzNodes.length; i++ ) {
-            // If node is a port that is on top or bottom, ignore and skip this node.
-            if (typeof horzNodes[i].isPort !== "undefined" &&
-                ( horzNodes[i].direction === 270 || horzNodes[i].direction === 90 )) {
-                horzNodes.splice(i);
-                i--;
-                continue;
-            }
-
-            var leftSegment = { x1: 0, y1: horzNodes[i].y, x2: horzNodes[i].x, y2: horzNodes[i].y },
-                rightSegment = { x1: horzNodes[i].x, y1: horzNodes[i].y, x2: sweepLength, y2: horzNodes[i].y };
-
-            for ( j = 0; j < openObjects.length; j++ ) {
-
-                if (openObjects[j].x2 < horzNodes[i].x) {
-                    leftSegment.x1 = Math.max(openObjects[j].x2, leftSegment.x1);
-                }
-                if (openObjects[j].x1 > horzNodes[i].x) {
-                    rightSegment.x2 = Math.min(openObjects[j].x1, rightSegment.xs);
-                }
-
-
-                if (typeof horzNodes[i - 1].isPort === "undefined" && typeof horzNodes[i].isPort === "undefined") {
-                    if (openObjects[j].x1 === horzNodes[i - 1].x && openObjects[j].x2 === horzNodes[i].x) {
-                        // This and the previous nodes make up a segment already in OpenObjects... closing of object.
-                        openObjects.splice(j);
-                    }
-                }
-            }
-            if ( openObjects.length === 0 ) {
-                    openObjects.push( { x1: horzNodes[i-1].x, y1: horzNodes[i-1].y, x2: horzNodes[i].x, y2: horzNodes[i].y});
-                }
-
-
-
-            if ( segments.indexOf( leftSegment ) === -1 ) {
-                segments.push(leftSegment);
-            }
-            if ( segments.indexOf( rightSegment ) === -1 ) {
-                segments.push(rightSegment);
-            }
-
-            console.log(horzNodes[i]);
-            console.log(leftSegment);
-            console.log(rightSegment);
-            console.log(segments.length);
-
-
-        }
-        return segments;
-    };
 
     // Lexagraphical sorting
     this.compare = function ( node, compareNode, order ) {
