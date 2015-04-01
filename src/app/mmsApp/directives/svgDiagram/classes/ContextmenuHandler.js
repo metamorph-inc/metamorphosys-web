@@ -47,7 +47,7 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
                 target: $event.target
             });
 
-            $scope.$element.triggerHandler(openContextMenuEvent);
+            $scope.$element.find('>svg').triggerHandler(openContextMenuEvent);
 
         });
 

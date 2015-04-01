@@ -1,32 +1,27 @@
 <div class="design-editor">
     <div class="content-wrapper" layout="row">
         <diagram-container
-            diagram="designEditorCtrl.diagram"
-            config="designEditorCtrl.diagramContainerConfig"
-            flex="{{::designEditorCtrl.editorWidth}}">
-            <svg-diagram 
-                diagram="designEditorCtrl.diagram"
-            ></svg-diagram>
-
+        diagram="designEditorCtrl.diagram"
+        config="designEditorCtrl.diagramContainerConfig"
+        flex="{{::designEditorCtrl.editorWidth}}">
+        <drawing-grid diagram="designEditorCtrl.diagram">
+        <svg-diagram
+        diagram="designEditorCtrl.diagram"
+        ></svg-diagram>
+        </drawing-grid>
         </diagram-container>
-
-
         <div ng-if="::!designEditorCtrl.isDummy" class="component-browser-container sidebar" flex="25">
-
             <component-browser auto-height="true"></component-browser>
-
             <testbench-actions></testbench-actions>
-
         </div>
-
         <keyboard-map class="design-editor-keyboard-map"></keyboard-map>
     </div>
     <footer-drawer>
+    {{designEditorCtrl.inspectableComponent}}
         <diagram-component-inspector
-            component="designEditorCtrl.getSelectedComponent()"
-            config=""
+        component="designEditorCtrl.inspectableComponent"
+        config=""
         >
         </diagram-component-inspector>
     </footer-drawer>
-
 </div>

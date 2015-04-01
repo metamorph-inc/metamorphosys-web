@@ -1,34 +1,39 @@
-/*globals angular, $*/
-
 'use strict';
 
-// Move this to GME eventually
-
-angular.module( 'mms.designVisualization.drawingGrid', [] )
-    .directive( 'drawingGrid', [ '$log',
+angular.module( 'mms.drawingGrid', [] )
+    .directive( 'drawingGrid', 
         function () {
 
-            return {
-                restrict: 'E',
-                replace: true,
-                transclude: true,
-                templateUrl: '/mmsApp/templates/drawingGrid.html',
-                link: function (scope, element) {
+            function DrawingGridController() {
+            }
 
-                    var $element;
+            DrawingGridController.prototype.getStyle = function() {
 
-                    $element = $(element);
+                var result = {};
 
-                    scope.$watch('diagram.config.width', function(newVal) {
-                       $element.outerWidth(newVal);
-                    });
-
-                    scope.$watch('diagram.config.height', function(newVal) {
-                        $element.outerHeight(newVal);
-                    });
+                if (this.diagram) {
+                    
+                    result = {
+                        width: this.diagram.config.width + 'px',
+                        height: this.diagram.config.height + 'px'
+                    };
 
                 }
 
+                return result;
 
             };
-        }] );
+
+            return {
+                restrict: 'E',
+                controller: DrawingGridController,
+                controllerAs: 'ctrl',
+                bindToController: true,
+                replace: true,
+                transclude: true,
+                templateUrl: '/mmsApp/templates/drawingGrid.html',
+                scope: {
+                    diagram: '='
+                }        
+            };
+        } );

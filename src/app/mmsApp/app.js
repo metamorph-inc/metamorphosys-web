@@ -21,10 +21,6 @@ require('./services/wiringService/wiringService.js');
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');
 
-require('./directives/diagramContainer/diagramContainer.js');
-require('./directives/fabricCanvas/fabricCanvas.js');
-require('./directives/svgDiagram/svgDiagram.js');
-
 require('./directives/symbols/componentSymbol.js');
 
 require('./directives/resizing/resizeToHeight.js');
@@ -65,9 +61,6 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.wiringService',
     'mms.designVisualization.diagramService',
 
-    'mms.designVisualization.diagramContainer',
-    'mms.designVisualization.fabricCanvas',
-    'mms.designVisualization.svgDiagram',
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',

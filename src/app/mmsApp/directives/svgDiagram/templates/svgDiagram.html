@@ -1,19 +1,19 @@
-<svg class="svg-diagram"
+<div class="svg-diagram-wrapper"
     ng-mousemove="onDiagramMouseMove($event)"
     ng-mouseleave="onDiagramMouseLeave($event)"
     ng-click="onDiagramClick($event)"
     ng-mouseup="onDiagramMouseUp($event)"
     ng-mousedown="onDiagramMouseDown($event)"
     msd-wheel="onDiagramMouseWheel($event, $delta, $deltaX, $deltaY)"
+>
 
-    ng-class="getCssClass()">
+    <svg class="svg-diagram"
+        isis-contextmenu
+        contextmenu-data="contextMenuData"
+        contextmenu-config="{ triggerEvent: 'openContextMenu' }"
+        ng-class="getCssClass()"
+        >
 
-    <g
-    isis-contextmenu
-    contextmenu-data="contextMenuData"
-    contextmenu-config="{ triggerEvent: 'openContextMenu' }"
-
-    >
         <g class="wire-container">
             <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
         </g>
@@ -31,8 +31,8 @@
                   ng-attr-x2="{{segment.x2}}"
                   ng-attr-y2="{{segment.y2}}"/>
         </g>
-    </g>
-    <!--<polygon points="100,10 40,198 190,78 10,78 160,198"-->
-             <!--style="fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;" />-->
+        <!--<polygon points="100,10 40,198 190,78 10,78 160,198"-->
+                 <!--style="fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;" />-->
 
-</svg>
+    </svg>
+</div>

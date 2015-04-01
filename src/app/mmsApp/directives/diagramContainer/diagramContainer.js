@@ -6,8 +6,8 @@
 
 require('../drawingGrid/drawingGrid.js');
 
-angular.module('mms.designVisualization.diagramContainer', [
-        'mms.designVisualization.drawingGrid',
+angular.module('mms.diagramContainer', [
+        'mms.drawingGrid',
         'isis.ui.contextmenu'
 
     ])

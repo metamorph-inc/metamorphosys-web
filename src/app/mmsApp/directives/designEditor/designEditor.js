@@ -9,13 +9,17 @@ require('../keyboardMap/keyboardMap.js');
 require('../diagramComponentInspector/diagramComponentInspector.js');
 require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
+require('../diagramContainer/diagramContainer.js');
+require('../svgDiagram/svgDiagram.js');
 
 angular.module('mms.designEditor', [
         'mms.designEditor.footerDrawer',
         'mms.testbenchActions',
         'mms.designVisualization.operations.gmeCommitHandlers',
         'mms.keyboardMap',
-        'mms.diagramComponentInspector'
+        'mms.diagramComponentInspector',
+        'mms.svgDiagram',        
+        'mms.diagramContainer'
     ])
     .directive('designEditor', [
         function() {
@@ -39,6 +43,8 @@ angular.module('mms.designEditor', [
                     randomSymbolGenerator,
 
                     self = this;
+
+                self.inspectableComponent = null;
 
                 self._drawerHeight = 0;
                 self._element = null;
@@ -367,6 +373,26 @@ angular.module('mms.designEditor', [
 
                 });
 
+                $scope.$watch(function() {
+
+                    return self.diagram && self.diagram.state.selectedComponentIds;
+
+                }, function(newVal, oldVal) {
+
+                    if (newVal != null && ( oldVal == null || ( newVal[0] !== oldVal[0] ))) {
+
+                        if (newVal.length === 1) {
+                            self.inspectableComponent = self.diagram.getComponentById(self.diagram.state.selectedComponentIds[0]);
+                        } else {
+                            self.inspectableComponent = null;
+                        }
+
+                    } else {
+                        self.inspectableComponent = null;
+                    }
+
+                });
+
             }
 
             DesignEditorController.prototype.adjustToDrawerHeight = function(height) {
@@ -409,8 +435,17 @@ angular.module('mms.designEditor', [
                 }
 
                 return height;
+            };
 
+            DesignEditorController.prototype.getSelectedComponents = function() {
 
+                var result = {};
+
+                // if (this.diagram) {
+                //     result = this.diagram;
+                // }
+
+                return result;
             };
 
             EventDispatcher.prototype.apply(DesignEditorController.prototype);
@@ -432,5 +467,5 @@ angular.module('mms.designEditor', [
                 }
 
             };
-        }
+        }        
     ]);

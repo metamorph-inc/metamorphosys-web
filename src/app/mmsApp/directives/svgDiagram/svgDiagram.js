@@ -10,7 +10,7 @@ require('./operations/moveComponents.js');
 require('./operations/rotateComponents.js');
 require('./operations/moveWires.js');
 
-angular.module('mms.designVisualization.svgDiagram', [
+angular.module('mms.svgDiagram', [
     'mms.designVisualization.gridService',
     'mms.designVisualization.componentWire',
 
@@ -125,7 +125,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
         $scope.onDiagramMouseDown = function ($event) {
 
-            if ($event.which === 3) {
+           if ($event.which === 3) {
                 contextMenuHandler.onDiagramContextmenu($event);
             } else {
 
@@ -382,7 +382,7 @@ angular.module('mms.designVisualization.svgDiagram', [
 
                     killContextMenu = function ($event) {
 
-                        $log.debug('killing default contextmenu');
+                        $log.debug('Not showing default contextmenu');
 
                         $event.stopPropagation();
 
@@ -395,8 +395,6 @@ angular.module('mms.designVisualization.svgDiagram', [
                         return scope.diagram && scope.diagram.id;
 
                     }, function (newDiagramId, oldDiagramId) {
-
-                        debugger;
 
                         if (newDiagramId && newDiagramId !== currentDiagramId) {
 

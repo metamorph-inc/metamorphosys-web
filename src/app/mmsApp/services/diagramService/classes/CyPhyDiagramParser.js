@@ -245,8 +245,6 @@ module.exports = function (symbolManager, diagramService, wiringService) {
             }
         );
 
-        console.log(element.rotation);
-
         newDiagramComponent = new DiagramComponent({
             id: element.id,
             label: labelParser(element.name),
