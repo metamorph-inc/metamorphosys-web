@@ -14,6 +14,8 @@ if (typeof window === 'undefined') {
 describe('AcmInfo', function () {
     'use strict';
 
+    var q = require('q');
+
     var superagent;
     before(function (done) {
         requirejs(['superagent'], function (superagent_) {
@@ -22,30 +24,80 @@ describe('AcmInfo', function () {
         });
     });
 
-    it('should get 3_Axis_Accelerometer data', function (done) {
-        superagent.get('http://localhost:' + config.server.port + '/rest/external/acminfo/c3abb612d483c98552a36d91ac94a2cad67d3cb2')
+    function getAcmInfo(hash) {
+        var deferred = q.defer();
+        superagent.get('http://localhost:' + config.server.port + '/rest/external/acminfo/' + hash)
             .end(function (err, res) {
                 if (err || res.status > 399) {
-                    done(err || res.status);
+                    return deferred.reject(err || res.status);
                 } else {
                     var info = JSON.parse(res.text);
-                    var startOfIconUrl = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgA';
-                    expect(info.icon.substr(0, startOfIconUrl.length)).to.equal(startOfIconUrl);
-                    delete info.icon;
-                    // console.log(JSON.stringify(info, null, 4));
-                    expect(info).to.deep.equal({
-                        "properties": {
-                            "octopart_mpn": {
-                                "value": "ADXL345BCCZ"
-                            }
-                        },
-                        "name": "3_Axis_Accelerometer",
-                        "classification": "sensors"
-                    });
-
-                    done();
+                    deferred.resolve(info);
                 }
             });
+        return deferred.promise;
+    }
+
+    it('should get 3_Axis_Accelerometer data', function (done) {
+        getAcmInfo('c3abb612d483c98552a36d91ac94a2cad67d3cb2')
+            .then(function (info) {
+                var startOfIconUrl = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgA';
+                expect(info.icon.substr(0, startOfIconUrl.length)).to.equal(startOfIconUrl);
+                delete info.icon;
+                // console.log(JSON.stringify(info, null, 4));
+                expect(info).to.deep.equal({
+                    'properties': {
+                        'octopart_mpn': {
+                            'value': 'ADXL345BCCZ'
+                        }
+                    },
+                    'name': '3_Axis_Accelerometer',
+                    'classification': 'sensors'
+                });
+            })
+            .nodeify(done);
+    });
+
+    it('should get USBSerial_FTDI_232R data w/datasheet', function (done) {
+        getAcmInfo('9127635cc180eefbb253279e2953dca07d14953a')
+            .then(function (info) {
+                // console.log(JSON.stringify(info, null, 4));
+                expect(info).to.deep.equal({
+                    'properties': {
+                        'octopart_mpn': {
+                            'value': 'FT232RL'
+                        }
+                    },
+                    'datasheet': '/rest/blob/download/9127635cc180eefbb253279e2953dca07d14953a/doc%2FDS_FT232R.pdf',
+                    'name': 'USBSerial_FTDI_232R',
+                    'classification': 'active.interface-chips'
+                });
+            })
+            .nodeify(done);
+    });
+
+
+    it('should get Resistor_R0603 data w/ R', function (done) {
+        getAcmInfo('129bed216d1e60f9ad18cdeb6441089638dacd7d')
+            .then(function (info) {
+                var startOfIconUrl = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgA';
+                expect(info.icon.substr(0, startOfIconUrl.length)).to.equal(startOfIconUrl);
+                delete info.icon;
+                // console.log(JSON.stringify(info, null, 4));
+                expect(info).to.deep.equal({
+                    'properties': {
+                        'octopart_mpn': {
+                            'value': 'RC0603JR-0710KL'
+                        },
+                        'R': {
+                            'value': '10000'
+                        }
+                    },
+                    'name': 'Resistor_R0603',
+                    'classification': 'passive.resistors'
+                });
+            })
+            .nodeify(done);
     });
 
 });

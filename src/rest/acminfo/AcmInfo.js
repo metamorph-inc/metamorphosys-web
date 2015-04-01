@@ -11,12 +11,16 @@ define(['logManager',
         'use strict';
 
         var logger = logManager.create('server.rest.acminfo'),
-            blobClient;
+            blobClient,
+            url = require('url');
 
         var newParseAcm = function (id) {
             var parse = new ParseAcm(id);
             parse.getAcmZip = function getAcmZip() {
                 return q.ninvoke(blobClient, 'getObject', id);
+            };
+            parse.getUrlForZipPath = function getUrlForZipPath(path) {
+                return url.parse(blobClient.getDownloadURL(id, path)).path;
             };
             return parse;
         };
@@ -31,10 +35,10 @@ define(['logManager',
                     res.send(json);
                 }).catch(function (err) {
                     logger.warning(err + ' ' + err.stack);
-                    res.send(500);
+                    res.sendStatus(500);
                 });
             } else {
-                res.send(404);
+                res.sendStatus(404);
             }
         };
 
