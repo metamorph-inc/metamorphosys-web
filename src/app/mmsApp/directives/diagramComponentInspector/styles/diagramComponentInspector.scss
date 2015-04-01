@@ -18,11 +18,23 @@
 	}
 
 	.inspectable-name {
+
+		display: inline-block;
 		font-weight: bold;
 		font-size: 110%;
+
+		&:hover {
+			.name-edit-icon {			
+				opacity: 1;
+			}
+		}
 	}
 
-	.name-edit-icon,
+	.name-edit-icon {
+		cursor: pointer;
+		opacity: 0;
+	}
+
 	.name-save-icon {
 		cursor: pointer;
 	}

@@ -22,7 +22,8 @@ angular.module('mms.svgDiagram', [
 
     'isis.ui.contextmenu'
 ])
-    .controller('SVGDiagramController', function ($scope, $rootScope, $log, diagramService, wiringService, gridService, $window, $timeout, contextmenuService, operationsManager) {
+    .controller('SVGDiagramController', function ($scope, $rootScope, $log, diagramService, wiringService, 
+        gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
 
         var
 
@@ -114,7 +115,8 @@ angular.module('mms.svgDiagram', [
         componentKeyboardOperationsHandler = new ComponentKeyboardOperationsHandler(
             $scope,
             $rootScope,
-            operationsManager
+            operationsManager,
+            mmsUtils
         );
 
         //

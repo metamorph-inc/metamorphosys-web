@@ -63,5 +63,32 @@ angular.module('mms.utils', [])
             return array;
         };
 
+        this.ifNotFromInput = function(event) {
+
+            var d,
+                result = true;
+
+            d = event.srcElement || event.target;
+
+            if (d.tagName) {
+
+                if ((d.tagName.toUpperCase() === 'INPUT' &&
+                    (
+                    d.type.toUpperCase() === 'TEXT' ||
+                    d.type.toUpperCase() === 'PASSWORD' ||
+                    d.type.toUpperCase() === 'FILE' ||
+                    d.type.toUpperCase() === 'EMAIL' ||
+                    d.type.toUpperCase() === 'SEARCH' ||
+                    d.type.toUpperCase() === 'DATE' )
+                    ) ||
+                    d.tagName.toUpperCase() === 'TEXTAREA') {
+                    result = d.readOnly || d.disabled;
+                }
+            }
+
+            return result;
+
+        };
+
     }
 ] );
