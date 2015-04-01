@@ -142,8 +142,7 @@ var OrthogonalRouter = function () {
             if ( share !== null ) {
                 if ( myIndexOfPoint(share, intersections) === -1 ) {
                     intersections.push(share);
-                    populateNode2( share, segment, segmentSet[i], nodes,
-                                  incompleteNodes );
+                    populateNode( share, segment, segmentSet[i], nodes, incompleteNodes );
                 }
                 continue;
             }
@@ -175,7 +174,7 @@ var OrthogonalRouter = function () {
 
             // There is an intersection, so need to store the vertex's neighbors
             // populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes, gridHeight, gridWidth );
-            populateNode2( intersection, segment, segmentSet[i], nodes, incompleteNodes );
+            populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes );
 
         }
         return intersections;
@@ -193,7 +192,7 @@ var OrthogonalRouter = function () {
         return a.v.x - b.v.x;
     };
 
-    function populateNode2( vertex, vertSeg, horzSeg, nodes, incompleteNodes ) {
+    function populateNode( vertex, vertSeg, horzSeg, nodes, incompleteNodes ) {
         var node = new PathNode( vertex );
         node.vertSeg = vertSeg;
         node.horzSeg = horzSeg;
@@ -460,7 +459,20 @@ var OrthogonalRouter = function () {
                         prevNode = null;
                         continue;
                     }
-                    left = leftIter.key;
+
+                    if (typeof nodes[i].direction !== "undefined" && nodes[i].y > leftIter.key) {
+                        // Means the port is not in line with the bounding box (inside of it). Grab the next top iter.
+                        leftIter = binTree.lt(leftIter.key);
+                        if (leftIter.valid) {
+                            left = leftIter.key;
+                        }
+                        else {
+                            left = 0;
+                        }
+                    }
+                    else {
+                        left = leftIter.key;
+                    }
                 }
                 else {
                     left = 0;
@@ -474,7 +486,8 @@ var OrthogonalRouter = function () {
                 if (rightIter.valid) {
                     var seg = {y1: nodes[i].y, y2: rightIter.key};
                     if (myIndexOf(seg, openObjects) !== -1) {
-                        // Means this segment is in the list of open segments, grab the closest node from rightIter
+                        // Means this segment is in the list of open segments, grab the closest node from rightIter that
+                        // isn't a part of the open segment.
                         rightIter = binTree.gt(rightIter.key);
                         if (rightIter.valid) {
                             right = rightIter.key;
