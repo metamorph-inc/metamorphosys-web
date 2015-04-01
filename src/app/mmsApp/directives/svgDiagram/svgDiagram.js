@@ -292,7 +292,7 @@ angular.module('mms.svgDiagram', [
 
         this.onComponentDoubleClick = function(component) {
 
-            if (component.isContainer) {
+            if (component.metaType === 'Container') {
                 $rootScope.$emit('containerMustBeOpened', component);
             }
 

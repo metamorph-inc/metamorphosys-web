@@ -56,7 +56,7 @@ module.exports = function($scope, $rootScope, operationsManager) {
 
                 component = selectedComponents[0];
 
-                if (component.isContainer) {
+                if (component.metaType === 'Container') {
                     $rootScope.$emit('containerMustBeOpened', component);
                 }
 

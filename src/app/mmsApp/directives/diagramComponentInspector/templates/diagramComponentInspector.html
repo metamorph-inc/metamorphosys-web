@@ -1,4 +1,4 @@
 <div class="diagram-component-inspector">
-	{{ctrl.component}}
-	Select a component to inspect.
+	<div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
+	<div ng-if="ctrl.inspectable" class="no-inspectable-message">{{ctrl.inspectable.id}}</div>
 </div>

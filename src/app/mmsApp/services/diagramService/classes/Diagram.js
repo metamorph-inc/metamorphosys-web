@@ -2,7 +2,9 @@
 
 'use strict';
 
-var Diagram = function(descriptor) {
+var EventDispatcher = require('../../../classes/EventDispatcher');
+
+var Diagram = function() {
 
     this._components = [];
     this._componentsById = {};
@@ -312,23 +314,6 @@ Diagram.prototype.isComponentSelected = function(component) {
 
 };
 
-Diagram.prototype.getSelectedComponents = function() {
-
-    var self,
-        selectedComponents;
-
-    self = this;
-    selectedComponents = [];
-
-    angular.forEach(this.state.selectedComponentIds, function(componentId) {
-
-        selectedComponents.push(self._componentsById[componentId]);
-
-    });
-
-    return selectedComponents;
-
-};
 
 Diagram.prototype.getHighestZ = function() {
 
@@ -443,5 +428,130 @@ Diagram.prototype.bringComponentToBack = function(componentId) {
     sortComponentsByZ(this._components);
 
 };
+
+Diagram.prototype.getSelectedComponents = function() {
+
+    var self,
+        selectedComponents;
+
+    self = this;
+    selectedComponents = [];
+
+    angular.forEach(this.state.selectedComponentIds, function(componentId) {
+
+        selectedComponents.push(self._componentsById[componentId]);
+
+    });
+
+    return selectedComponents;
+
+};
+
+Diagram.prototype.selectComponent = function(componentId) {
+
+    var component = this.getComponentById(componentId),
+        index;
+
+    if (!this.config.disallowSelection !== true && component && component.nonSelectable !== true) {
+
+        index = this.state.selectedComponentIds.indexOf(component.id);
+
+        if (index === -1) {
+
+            this.state.selectedComponentIds.push(componentId);
+
+            this.dispatchEvent({
+                type: 'selectionChange',
+                message: this.state.selectedComponentIds
+            });
+
+        }
+
+    }
+
+};
+
+Diagram.prototype.selectComponent = function(componentId) {
+
+    var component = this.getComponentById(componentId),
+        index;
+
+    if (this.config.disallowSelection !== true && component && component.nonSelectable !== true) {
+
+        index = this.state.selectedComponentIds.indexOf(component.id);
+
+        if (index === -1) {
+
+            this.state.selectedComponentIds.push(componentId);
+
+            component.selected = true;
+
+            this.dispatchEvent({
+                type: 'selectionChange',
+                message: this.state.selectedComponentIds
+            });
+
+        }
+
+    }
+
+};
+
+Diagram.prototype.deselectComponent = function(componentId) {
+
+    var component = this.getComponentById(componentId),
+        index;
+
+    if (this.config.disallowSelection !== true && component && component.nonSelectable !== true) {
+
+        index = this.state.selectedComponentIds.indexOf(component.id);
+
+        if (index > -1) {
+
+            this.state.selectedComponentIds.splice(index, 1);
+
+            component.selected = false;
+
+            this.dispatchEvent({
+                type: 'selectionChange',
+                message: this.state.selectedComponentIds
+            });
+
+        }
+
+    }
+
+};
+
+Diagram.prototype.clearSelection = function(silent) {
+
+    var self = this;
+
+    if (this.state.selectedComponentIds.length) {
+
+        this.state.selectedComponentIds.forEach(function(cId) {
+
+            var component = self.getComponentById(cId);
+
+            component.selected = false;
+
+        });
+
+        this.state.selectedComponentIds = [];
+
+        if (silent !== true) {
+
+            this.dispatchEvent({
+                type: 'selectionChange',
+                message: this.state.selectedComponentIds
+            });
+
+        }
+
+    }
+
+};
+
+EventDispatcher.prototype.apply(Diagram.prototype);
 
 module.exports = Diagram;

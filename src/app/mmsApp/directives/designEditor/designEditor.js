@@ -41,6 +41,8 @@ angular.module('mms.designEditor', [
                     RandomSymbolGenerator = require('./classes/RandomSymbolGenerator.js'),
                     randomSymbolGenerator,
 
+                    selectionHandler,
+
                     self = this;
 
                 self.inspectableComponent = null;
@@ -55,6 +57,24 @@ angular.module('mms.designEditor', [
                 } else {
                     self.editorWidth = 75;
                 }
+
+
+                selectionHandler = function(event) {
+
+                    var selection = event.message;
+
+                    if (selection.length === 1) {
+
+                        self.inspectableComponent = self.diagram.getComponentById(selection[0]);
+
+                        $log.debug('inspectableComponent', self.inspectableComponent );
+
+                    } else {
+
+                        self.inspectableComponent = null;
+
+                    }
+                };
 
                 addRootScopeEventListener = function(event, fn) {
 
@@ -75,6 +95,10 @@ angular.module('mms.designEditor', [
 
                     removeAllRootScopeEventListeners();
 
+                    if (self.diagram) {
+                        self.diagram.removeEventListener('selectionChange', selectionHandler);                                                        
+                    }
+
                     if (self.layoutContext) {
                         $log.debug('Cleaning up designLayout watchers');
                         designLayoutService.unregisterWatcher(self.layoutContext);
@@ -91,6 +115,8 @@ angular.module('mms.designEditor', [
                         randomSymbolGenerator.generateSymbols(5);
 
                         self.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
+
+                        self.diagram.addEventListener('selectionChange', selectionHandler);
 
                         console.log('Dummy diagram:', self.diagram);
 
@@ -331,6 +357,8 @@ angular.module('mms.designEditor', [
                             self.diagram =
                                 diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
 
+                            self.diagram.addEventListener('selectionChange', selectionHandler);                                
+
                             $log.debug('Drawing diagram:', self.diagram);
 
                         });
@@ -380,26 +408,6 @@ angular.module('mms.designEditor', [
                         destroy();
                         initForContainer(newVal);
 
-                    }
-
-                });
-
-                $scope.$watch(function() {
-
-                    return self.diagram && self.diagram.state.selectedComponentIds;
-
-                }, function(newVal, oldVal) {
-
-                    if (newVal != null && ( oldVal == null || ( newVal[0] !== oldVal[0] ))) {
-
-                        if (newVal.length === 1) {
-                            self.inspectableComponent = self.diagram.getComponentById(self.diagram.state.selectedComponentIds[0]);
-                        } else {
-                            self.inspectableComponent = null;
-                        }
-
-                    } else {
-                        self.inspectableComponent = null;
                     }
 
                 });

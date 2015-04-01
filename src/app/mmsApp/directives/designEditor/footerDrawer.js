@@ -14,6 +14,8 @@ angular.module('mms.designEditor.footerDrawer', [])
                 this._editorCtrl = null;
                 this._expanded = false;
 
+                this.toggle();                
+
             }
 
             DrawerController.prototype.expand = function(height) {

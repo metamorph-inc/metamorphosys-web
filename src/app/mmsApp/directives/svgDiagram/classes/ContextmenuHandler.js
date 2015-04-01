@@ -353,7 +353,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
         ];
 
-        if (component.isContainer) {
+        if (component.metaType === 'Container') {
 
             $scope.contextMenuData.unshift({
                 id: 'navigate',

@@ -1,14 +1,24 @@
 'use strict';
 
-angular.module('mms.diagramComponentInspector', [])
+require('./inspectedContainerDetails.js');
+require('./inspectedComponentDetails.js');
+
+angular.module('mms.diagramComponentInspector', [
+        'mms.diagramComponentInspector.inspectedContainerDetails',
+        'mms.diagramComponentInspector.inspectedComponentDetails'
+    ])
     .directive('diagramComponentInspector', [
         function() {
 
             function DiagramComponentInspectorController() {
 
+                this.config = this.config || {
+                    noInspectableMessage: 'Select a diagram element to inspect.'
+                };
+
             }
 
-            
+
 
             return {
                 restrict: 'E',
@@ -20,8 +30,8 @@ angular.module('mms.diagramComponentInspector', [])
                 templateUrl: '/mmsApp/templates/diagramComponentInspector.html',
                 require: [],
                 scope: {
-                    component: '=',
-                    config: '='
+                    inspectable: '=',
+                    config: '@'
                 }
             };
         }

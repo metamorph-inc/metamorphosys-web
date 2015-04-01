@@ -207,7 +207,8 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             symbol: symbol,
             nonSelectable: false,
             locationLocked: false,
-            draggable: true
+            draggable: true,
+            metaType: 'Connector'
         });
 
         portInstance = new ComponentPort({
@@ -256,7 +257,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             nonSelectable: false,
             locationLocked: false,
             draggable: true,
-            isContainer: true
+            metaType: 'Container'
         });
 
         newDiagramComponent.registerPortInstances(portStuff.portInstances);
@@ -298,7 +299,8 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 symbol: symbol,
                 nonSelectable: false,
                 locationLocked: false,
-                draggable: true
+                draggable: true,
+                metaType === 'AVMComponent'
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -338,7 +340,8 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 symbol: symbol,
                 nonSelectable: false,
                 locationLocked: false,
-                draggable: true
+                draggable: true,
+                metaType === 'AVMComponent'                
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -378,7 +381,8 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 symbol: symbol,
                 nonSelectable: false,
                 locationLocked: false,
-                draggable: true
+                draggable: true,
+                metaType === 'AVMComponent'                
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -460,7 +464,8 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                     symbol: symbol,
                     nonSelectable: false,
                     locationLocked: false,
-                    draggable: true
+                    draggable: true,
+                    metaType === 'AVMComponent'                    
                 });
 
 
