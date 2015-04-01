@@ -307,7 +307,7 @@ angular.module('mms.diagramContainer', [
                             designEditorCtrl.removeEventListener('resize', ctrl.scrollHandler.onWindowResize);
                         }
 
-                        $windowElement.unBind('resize', ctrl.scrollHandler.onWindowResize);
+                        $windowElement.unbind('resize', ctrl.scrollHandler.onWindowResize);
 
                         element.off();
                     });
