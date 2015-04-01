@@ -201,18 +201,23 @@ DiagramComponent.prototype.getPosition = function() {
 
     return {
         x: this.x,
-        y: this.y
+        y: this.y,
+        z: this.z
     };
 
 };
 
 
-DiagramComponent.prototype.setPosition = function(x, y) {
+DiagramComponent.prototype.setPosition = function(x, y, z) {
 
     if (angular.isNumber(x) && angular.isNumber(y)) {
 
         this.x = x;
         this.y = y;
+
+        if (!isNaN(z)) {
+            this.z = z;
+        }
 
         this.updateTransformationMatrix();
 

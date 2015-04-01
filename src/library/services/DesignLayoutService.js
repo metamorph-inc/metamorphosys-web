@@ -182,7 +182,7 @@ angular.module('cyphy.services')
                         updateType = 'nameChange';
                     }
 
-                    if (newPos.x !== child.position.x || newPos.y !== child.position.y) {
+                    if (newPos.x !== child.position.x || newPos.y !== child.position.y || newPos.z !== child.position.z) {
                         child.position = newPos;
 
                         hadChanges = true;

@@ -19,16 +19,15 @@ angular.module('mms.designEditor', [
         'mms.keyboardMap',
         'mms.diagramComponentInspector',
         'mms.svgDiagram',        
-        'mms.diagramContainer'
+        'mms.diagramContainer',
+        'mms.utils'        
     ])
-    .directive('designEditor', [
-        function() {
-
+    .directive('designEditor', function() {
 
             function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
                 designService, $state, $stateParams, designLayoutService,
                 symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-                acmImportService) {
+                acmImportService, mmsUtils) {
 
                 var justCreatedWires,
                     layoutContext,
@@ -87,7 +86,7 @@ angular.module('mms.designEditor', [
 
                     if (self.isDummy) {
 
-                        randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
+                        randomSymbolGenerator = new RandomSymbolGenerator(symbolManager, mmsUtils);
 
                         randomSymbolGenerator.generateSymbols(5);
 
@@ -152,9 +151,21 @@ angular.module('mms.designEditor', [
                                     nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
                                         .then(function(node) {
 
-                                            node.setRegistry('wireSegments', angular.copy(wire.segments));
-                                            node.makePointer('src', wire.end1.port.id);
-                                            node.makePointer('dst', wire.end2.port.id);
+                                            var diagram = diagramService.getDiagram(selectedContainerId);
+
+                                            if (diagram) {
+
+                                                node.setRegistry('wireSegments', angular.copy(wire.segments));
+                                                node.makePointer('src', wire.end1.port.id);
+                                                node.makePointer('dst', wire.end2.port.id);
+
+                                                nodeService.completeTransaction(layoutContext);
+
+                                                wire.id = node.id;
+                                                diagram.addWire(wire);
+                                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
+                                            }
 
                                             nodeService.completeTransaction(layoutContext);
 
@@ -189,8 +200,8 @@ angular.module('mms.designEditor', [
                                 var i,
                                     wires,
                                     deleteMessage,
-                                    nodeIdsToDelete;
-
+                                    nodeIdsToDelete,
+                                    diagram = diagramService.getDiagram(selectedContainerId);
 
                                 if (angular.isObject(component)) {
 
@@ -198,7 +209,7 @@ angular.module('mms.designEditor', [
 
                                     deleteMessage = 'Deleting design element';
 
-                                    wires = diagramService.getWiresForComponents(selectedContainerId, [component]);
+                                    wires = diagram.getWiresForComponents([component]);
 
                                     if (wires.length > 0) {
 
@@ -238,107 +249,107 @@ angular.module('mms.designEditor', [
                         });
 
 
-                        designLayoutService.watchDiagramElements(
-                                layoutContext,
-                                selectedContainerId,
-                                function(designStructureUpdateObject) {
+                    designLayoutService.watchDiagramElements(
+                        layoutContext,
+                        selectedContainerId,
+                        function(designStructureUpdateObject) {
 
-                                    $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+                            $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
 
-                                    switch (designStructureUpdateObject.type) {
+                            switch (designStructureUpdateObject.type) {
 
-                                        case 'load':
+                                case 'load':
 
-                                            $timeout(function() {
+                                    $timeout(function() {
 
-                                                if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
-                                                        justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
+                                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                                                justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                                                    diagramService.createNewComponentFromFromCyPhyElement(
-                                                        selectedContainerId,
-                                                        designStructureUpdateObject.data);
-
-                                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId);
-                                                }
-                                            });
-
-                                            break;
-
-                                        case 'unload':
-
-                                            diagramService.deleteComponentOrWireById(
+                                            diagramService.createNewComponentFromFromCyPhyElement(
                                                 selectedContainerId,
-                                                designStructureUpdateObject.id);
+                                                designStructureUpdateObject.data);
 
-                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
+                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                        }
+                                    });
 
-                                            break;
+                                    break;
 
-                                        default:
-                                        case 'update':
+                                case 'unload':
 
-                                            if (designStructureUpdateObject.updateType === 'positionChange') {
+                                    diagramService.deleteComponentOrWireById(
+                                        selectedContainerId,
+                                        designStructureUpdateObject.id);
 
-                                                diagramService.updateComponentsAndItsWiresPosition(
-                                                    selectedContainerId,
-                                                    designStructureUpdateObject.id,
-                                                    designStructureUpdateObject.data.position
-                                                );
-                                            }
+                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
 
-                                            if (designStructureUpdateObject.updateType === 'rotationChange') {
+                                    break;
 
-                                                diagramService.updateComponentsAndItsWiresRotation(
-                                                    selectedContainerId,
-                                                    designStructureUpdateObject.id,
-                                                    designStructureUpdateObject.data.rotation
-                                                );
-                                            }
+                                default:
+                                case 'update':
 
-                                            if (designStructureUpdateObject.updateType === 'detailsChange') {
+                                    if (designStructureUpdateObject.updateType === 'positionChange') {
 
-                                                diagramService.updateWireSegments(
-                                                    selectedContainerId,
-                                                    designStructureUpdateObject.id,
-                                                    angular.copy(designStructureUpdateObject.data.details.wireSegments)
-                                                );
-                                            }
-
-                                            break;
-
+                                        diagramService.updateComponentsAndItsWiresPosition(
+                                            selectedContainerId,
+                                            designStructureUpdateObject.id,
+                                            designStructureUpdateObject.data.position
+                                        );
                                     }
 
-                                    $rootScope.stopProcessing();
+                                    if (designStructureUpdateObject.updateType === 'rotationChange') {
 
-                                })
-                            .then(function(cyPhyLayout) {
-
-                                $log.debug('Diagram elements', cyPhyLayout);
-
-                                $timeout(function() {
-
-                                    self.diagram =
-                                        diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
-
-                                    $log.debug('Drawing diagram:', self.diagram);
-
-                                });
-
-                                $timeout(function() {
-                                    $rootScope.stopBusy();
-                                    $rootScope.unCover();
-                                    $rootScope.stopProcessing();
-
-                                    if ($cookies.seenMMSWelcome !== 'true') {
-
-                                        $rootScope.openHelpDialog();
-                                        $cookies.seenMMSWelcome = 'true';
-
+                                        diagramService.updateComponentsAndItsWiresRotation(
+                                            selectedContainerId,
+                                            designStructureUpdateObject.id,
+                                            designStructureUpdateObject.data.rotation
+                                        );
                                     }
 
-                                }, 200);
+                                    if (designStructureUpdateObject.updateType === 'detailsChange') {
 
-                            });
+                                        diagramService.updateWireSegments(
+                                            selectedContainerId,
+                                            designStructureUpdateObject.id,
+                                            angular.copy(designStructureUpdateObject.data.details.wireSegments)
+                                        );
+                                    }
+
+                                    break;
+
+                            }
+
+                            $rootScope.stopProcessing();
+
+                        })
+                    .then(function(cyPhyLayout) {
+
+                        $log.debug('Diagram elements', cyPhyLayout);
+
+                        $timeout(function() {
+
+                            self.diagram =
+                                diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
+
+                            $log.debug('Drawing diagram:', self.diagram);
+
+                        });
+
+                        $timeout(function() {
+                            $rootScope.stopBusy();
+                            $rootScope.unCover();
+                            $rootScope.stopProcessing();
+
+                            if ($cookies.seenMMSWelcome !== 'true') {
+
+                                $rootScope.openHelpDialog();
+                                $cookies.seenMMSWelcome = 'true';
+
+                            }
+
+                        }, 200);
+
+                    });
 
                         self.fabClick = function() {
 
@@ -468,4 +479,4 @@ angular.module('mms.designEditor', [
 
             };
         }        
-    ]);
+    );

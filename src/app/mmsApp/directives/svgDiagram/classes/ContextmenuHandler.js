@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function ($scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
+module.exports = function($scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
 
     var
         onComponentContextmenu,
@@ -16,7 +16,7 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     $log.debug('Initializing context menus.');
 
-    getOffsetToMouse = function ($event) {
+    getOffsetToMouse = function($event) {
 
         var offset;
 
@@ -29,11 +29,11 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     };
 
-    openMenu = function ($event) {
+    openMenu = function($event) {
 
         contextmenuService.close();
 
-        $timeout(function () {
+        $timeout(function() {
 
             var openContextMenuEvent;
 
@@ -53,11 +53,11 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     };
 
-    onDiagramMouseDown = function () {
+    onDiagramMouseDown = function() {
         contextmenuService.close();
     };
 
-    onWireContextmenu = function (wire, segment, $event, wasCorner) {
+    onWireContextmenu = function(wire, segment, $event, wasCorner) {
 
         var wiringMenu;
 
@@ -70,156 +70,135 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
         wiringMenu = [];
 
-        angular.forEach($scope.routerTypes, function (routerType) {
+        angular.forEach($scope.routerTypes, function(routerType) {
 
-            wiringMenu.push(
-                {
-                    id: routerType.id,
-                    label: routerType.label,
-                    action: function () {
-                        wiringService.routeWire(wire, routerType.type, routerType.params);
-                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
-                    }
+            wiringMenu.push({
+                id: routerType.id,
+                label: routerType.label,
+                action: function() {
+                    wiringService.routeWire(wire, routerType.type, routerType.params);
+                    $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                 }
-            );
+            });
 
         });
 
-        $scope.contextMenuData = [
-            {
+        $scope.contextMenuData = [{
                 id: 'adjust',
-                items: [
-                    {
-                        id: 'redraw',
-                        label: 'Redraw wire',
-                        menu: [
-                            {
-                                items: wiringMenu
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
+                items: [{
+                    id: 'redraw',
+                    label: 'Redraw wire',
+                    menu: [{
+                        items: wiringMenu
+                    }]
+                }]
+            }, {
                 id: 'delete',
-                items: [
-                    {
-                        id: 'destroy',
-                        label: 'Destroy wire',
-                        iconClass: 'fa fa-trash-o',
-                        action: function () {
+                items: [{
+                    id: 'destroy',
+                    label: 'Destroy wire',
+                    iconClass: 'fa fa-trash-o',
+                    action: function() {
 
-                            ga('send', 'event', 'wire', 'destroy', wire.id);
+                        ga('send', 'event', 'wire', 'destroy', wire.id);
 
-                            $rootScope.$emit('wireDeletionMustBeDone', wire);
-                        }
+                        $rootScope.$emit('wireDeletionMustBeDone', wire);
                     }
-                ]
+                }]
             }
 
         ];
 
         if (wasCorner) {
 
-            $scope.contextMenuData.unshift(
-                {
+            $scope.contextMenuData.unshift({
 
-                    id: 'cornerManipulation',
-                    items: [
-                        {
-                            id: 'destroyCorner',
-                            label: 'Destroy corner',
-                            iconClass: 'fa fa-minus',
-                            action: function () {
+                id: 'cornerManipulation',
+                items: [{
+                    id: 'destroyCorner',
+                    label: 'Destroy corner',
+                    iconClass: 'fa fa-minus',
+                    action: function() {
 
-                                var sIndex,
-                                    nextSegment;
+                        var sIndex,
+                            nextSegment;
 
-                                sIndex = wire.segments.indexOf(segment);
+                        sIndex = wire.segments.indexOf(segment);
 
-                                nextSegment = wire.segments[sIndex + 1];
+                        nextSegment = wire.segments[sIndex + 1];
 
-                                wire.segments[sIndex + 1] = wiringService.getSegmentsBetweenPositions(
-                                    {
-                                        end1: {
-                                            x: segment.x1,
-                                            y: segment.y1
-                                        },
-                                        end2: {
-                                            x: nextSegment.x2,
-                                            y: nextSegment.y2
-                                        }
-                                    }, 'SimpleRouter')[0];
-
-                                wire.segments.splice(sIndex, 1);
-
-                                ga('send', 'event', 'corner', 'destroy', wire.id, sIndex);
-
-                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        wire.segments[sIndex + 1] = wiringService.getSegmentsBetweenPositions({
+                            end1: {
+                                x: segment.x1,
+                                y: segment.y1
+                            },
+                            end2: {
+                                x: nextSegment.x2,
+                                y: nextSegment.y2
                             }
-                        }
-                    ]
-                }
-            );
+                        }, 'SimpleRouter')[0];
+
+                        wire.segments.splice(sIndex, 1);
+
+                        ga('send', 'event', 'corner', 'destroy', wire.id, sIndex);
+
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                }]
+            });
 
         } else {
 
-            $scope.contextMenuData.unshift(
-                {
+            $scope.contextMenuData.unshift({
 
-                    id: 'cornerManipulation',
-                    items: [
-                        {
-                            id: 'addCorner',
-                            label: 'Add corner',
-                            iconClass: 'fa fa-plus',
-                            action: function () {
+                id: 'cornerManipulation',
+                items: [{
+                    id: 'addCorner',
+                    label: 'Add corner',
+                    iconClass: 'fa fa-plus',
+                    action: function() {
 
-                                var sIndex,
-                                    newSegment,
-                                    newPosition;
+                        var sIndex,
+                            newSegment,
+                            newPosition;
 
-                                sIndex = wire.segments.indexOf(segment);
+                        sIndex = wire.segments.indexOf(segment);
 
-                                newPosition = getOffsetToMouse($event);
+                        newPosition = getOffsetToMouse($event);
 
-                                newSegment = wiringService.getSegmentsBetweenPositions(
-                                    {
-                                        end1: {
-                                            x: newPosition.x,
-                                            y: newPosition.y
-                                        },
+                        newSegment = wiringService.getSegmentsBetweenPositions({
+                            end1: {
+                                x: newPosition.x,
+                                y: newPosition.y
+                            },
 
-                                        end2: {
-                                            x: segment.x2,
-                                            y: segment.y2
-                                        }
-                                    }, 'SimpleRouter')[0];
-
-
-                                wire.segments[sIndex] = wiringService.getSegmentsBetweenPositions(
-                                    {
-                                        end1: {
-                                            x: segment.x1,
-                                            y: segment.y1
-                                        },
-
-                                        end2: {
-                                            x: newPosition.x,
-                                            y: newPosition.y
-                                        }
-                                    }, 'SimpleRouter')[0];
-
-                                wire.segments.splice(sIndex + 1, 0, newSegment);
-
-                                ga('send', 'event', 'corner', 'add', wire.id, sIndex);
-
-                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            end2: {
+                                x: segment.x2,
+                                y: segment.y2
                             }
-                        }
-                    ]
-                }
-            );
+                        }, 'SimpleRouter')[0];
+
+
+                        wire.segments[sIndex] = wiringService.getSegmentsBetweenPositions({
+                            end1: {
+                                x: segment.x1,
+                                y: segment.y1
+                            },
+
+                            end2: {
+                                x: newPosition.x,
+                                y: newPosition.y
+                            }
+                        }, 'SimpleRouter')[0];
+
+                        wire.segments.splice(sIndex + 1, 0, newSegment);
+
+                        ga('send', 'event', 'corner', 'add', wire.id, sIndex);
+
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                }]
+            });
 
 
         }
@@ -230,7 +209,7 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     };
 
-    onComponentContextmenu = function (component, $event) {
+    onComponentContextmenu = function(component, $event) {
 
         var inSelection,
             selectedComponents,
@@ -241,27 +220,25 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
         ga('send', 'event', 'component', 'contextmenu');
 
-        angular.forEach($scope.routerTypes, function (routerType) {
+        angular.forEach($scope.routerTypes, function(routerType) {
 
-            wiringMenu.push(
-                {
-                    id: routerType.id,
-                    label: routerType.label,
-                    action: function () {
+            wiringMenu.push({
+                id: routerType.id,
+                label: routerType.label,
+                action: function() {
 
-                        var wires = $scope.diagram.getWiresForComponents([component]);
+                    var wires = $scope.diagram.getWiresForComponents([component]);
 
-                        angular.forEach(wires, function (wire) {
+                    angular.forEach(wires, function(wire) {
 
-                            ga('send', 'event', 'wire', 'redraw', wire.id);
+                        ga('send', 'event', 'wire', 'redraw', wire.id);
 
-                            wiringService.routeWire(wire, routerType.type, routerType.params);
-                            $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        wiringService.routeWire(wire, routerType.type, routerType.params);
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
 
-                        });
-                    }
+                    });
                 }
-            );
+            });
 
         });
 
@@ -278,77 +255,100 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
             destroyLabel = 'Destroy';
         }
 
-        $scope.contextMenuData = [
-            {
+        $scope.contextMenuData = [{
                 id: 'reposition',
-                items: [
-                    {
-                        id: 'rotateCW',
-                        label: 'Rotate CW',
-                        keyboardShortcut: 'R',
-                        iconClass: 'fa fa-rotate-right',
-                        action: function () {
+                items: [{
+                    id: 'rotateCW',
+                    label: 'Rotate CW',
+                    keyboardShortcut: 'R',
+                    iconClass: 'fa fa-rotate-right',
+                    action: function() {
 
-                            var operation;
+                        var operation;
 
-                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
-                            operation.set(90);
-                            operation.finish();
-                        }
-                    },
-                    {
-                        id: 'rotateCCW',
-                        label: 'Rotate CCW',
-                        keyboardShortcut: '⇧R',
-                        iconClass: 'fa fa-rotate-left',
-                        action: function () {
-
-                            var operation;
-
-                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
-                            operation.set(-90);
-                            operation.finish();
-
-                        }
+                        operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
+                        operation.set(90);
+                        operation.finish();
                     }
-                ]
-            },
-            {
+                }, {
+                    id: 'rotateCCW',
+                    label: 'Rotate CCW',
+                    keyboardShortcut: '⇧R',
+                    iconClass: 'fa fa-rotate-left',
+                    action: function() {
+
+                        var operation;
+
+                        operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
+                        operation.set(-90);
+                        operation.finish();
+
+                    }
+                }, {
+                    id: 'bringToFront',
+                    label: 'Bring to front',
+                    keyboardShortcut: ']',
+                    action: function() {
+
+                        var operation,
+                            possibbleDragTargetsDescriptor;
+
+
+                        possibbleDragTargetsDescriptor = {
+                            targets: [component]
+                        };
+
+
+                        operation = operationsManager.initNew(
+                            'MoveComponents',
+                            $scope.diagram,
+                            possibbleDragTargetsDescriptor
+                        );
+
+                        operation.set({
+                            x: 0,
+                            y: 0,
+                            z: $scope.diagram.getHighestZ()
+                        });
+
+                    }
+                }, {
+                    id: 'bringToFront',
+                    label: 'Send to back',
+                    keyboardShortcut: '[',
+                    action: function() {
+                        $scope.diagram.bringComponentToBack(component.id);
+                    }
+                }]
+            }, {
                 id: 'adjust',
-                items: [
-                    {
-                        id: 'redraw',
-                        label: 'Redraw all wires',
-                        menu: [
-                            {
-                                items: wiringMenu
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
+                items: [{
+                    id: 'redraw',
+                    label: 'Redraw all wires',
+                    menu: [{
+                        items: wiringMenu
+                    }]
+                }]
+            }, {
                 id: 'delete',
-                items: [
-                    {
-                        id: 'destroy',
-                        label: destroyLabel,
-                        iconClass: 'fa fa-trash-o',
-                        keyboardShortcut: 'Del',
-                        action: function () {
+                items: [{
+                    id: 'destroy',
+                    label: destroyLabel,
+                    iconClass: 'fa fa-trash-o',
+                    keyboardShortcut: 'Del',
+                    action: function() {
 
-                            ga('send', 'event', 'component', 'destroy', component.id);
+                        ga('send', 'event', 'component', 'destroy', component.id);
 
-                            if (!inSelection) {
-                                $rootScope.$emit('componentDeletionMustBeDone', component);
-                            } else {
-                                $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
-                            }
-
-
+                        if (!inSelection) {
+                            $rootScope.$emit('componentDeletionMustBeDone', component);
+                        } else {
+                            $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
                         }
+
+
                     }
-                ]
+                }]
             }
 
         ];
@@ -356,20 +356,17 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
         if (component.isContainer) {
 
             $scope.contextMenuData.unshift({
-                    id: 'navigate',
-                    items: [
-                        {
-                            id: 'lookInside',
-                            label: 'Look inside',
-                            keyboardShortcut: 'Enter',
-                            iconClass: 'fa fa-sign-in',
-                            action: function () {
-                                $rootScope.$emit('containerMustBeOpened', component);
-                            }
-                        }
-                    ]
-                }
-            );
+                id: 'navigate',
+                items: [{
+                    id: 'lookInside',
+                    label: 'Look inside',
+                    keyboardShortcut: 'Enter',
+                    iconClass: 'fa fa-sign-in',
+                    action: function() {
+                        $rootScope.$emit('containerMustBeOpened', component);
+                    }
+                }]
+            });
 
         }
 
@@ -379,25 +376,21 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     };
 
-    onPortContextmenu = function (component, port, $event) {
+    onPortContextmenu = function(component, port, $event) {
 
-        $scope.contextMenuData = [
-            {
-                id: 'properties',
-                items: [
-                    {
-                        id: 'info',
-                        label: 'Info',
-                        disabled: true,
-                        iconClass: null,
-                        action: function () {
-                            console.log('Port info');
-                        },
-                        actionData: {}
-                    }
-                ]
-            }
-        ];
+        $scope.contextMenuData = [{
+            id: 'properties',
+            items: [{
+                id: 'info',
+                label: 'Info',
+                disabled: true,
+                iconClass: null,
+                action: function() {
+                    console.log('Port info');
+                },
+                actionData: {}
+            }]
+        }];
 
         openMenu($event);
 
@@ -407,7 +400,7 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
     };
 
-    onDiagramContextmenu = function ($event) {
+    onDiagramContextmenu = function($event) {
 
         var wiringMenu;
 
@@ -415,90 +408,77 @@ module.exports = function ($scope, $rootScope, diagramService, $timeout, context
 
         ga('send', 'event', 'diagram', 'contextmenu');
 
-        angular.forEach($scope.routerTypes, function (routerType) {
+        angular.forEach($scope.routerTypes, function(routerType) {
             var selected;
 
             selected = routerType.id === $scope.selectedRouter.id;
 
-            wiringMenu.push(
-                {
-                    id: routerType.id,
-                    label: routerType.label,
-                    cssClass: selected ? 'selected' : 'not-selected',
-                    iconClass: selected ? 'fa fa-check' : undefined,
-                    action: function () {
+            wiringMenu.push({
+                id: routerType.id,
+                label: routerType.label,
+                cssClass: selected ? 'selected' : 'not-selected',
+                iconClass: selected ? 'fa fa-check' : undefined,
+                action: function() {
 
-                        ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
+                    ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
 
-                        $scope.selectedRouter = routerType;
+                    $scope.selectedRouter = routerType;
 
-                    }
                 }
-            );
+            });
 
         });
 
 
-        $scope.contextMenuData = [
-            {
-                id: 'testbenches',
-                items: [
-                    {
-                        id: 'generatePCB',
-                        label: 'Generate PCB',
-                        disabled: !angular.isFunction($rootScope.startTestbench) || $rootScope.runningTestbench,
-                        iconClass: 'fa fa-play',
-                        action: function () {
-                            $rootScope.startTestbench();
-                        },
-                        actionData: {}
+        $scope.contextMenuData = [{
+            id: 'testbenches',
+            items: [{
+                id: 'generatePCB',
+                label: 'Generate PCB',
+                disabled: !angular.isFunction($rootScope.startTestbench) || $rootScope.runningTestbench,
+                iconClass: 'fa fa-play',
+                action: function() {
+                    $rootScope.startTestbench();
+                },
+                actionData: {}
+            }]
+
+        }, {
+            id: 'gridSettings',
+            items: [{
+                id: 'snapToGrid',
+                label: 'Snap to grid',
+                cssClass: $rootScope.snapToGrid ? 'selected' : 'not-selected',
+                iconClass: $rootScope.snapToGrid ? 'fa fa-check' : undefined,
+                action: function() {
+
+                    if ($rootScope.snapToGrid === true) {
+                        $rootScope.snapToGrid = false;
+                    } else {
+                        $rootScope.snapToGrid = true;
                     }
-                ]
 
-            },
-            {
-                id: 'gridSettings',
-                items: [
-                    {
-                        id: 'snapToGrid',
-                        label: 'Snap to grid',
-                        cssClass: $rootScope.snapToGrid ? 'selected' : 'not-selected',
-                        iconClass: $rootScope.snapToGrid ? 'fa fa-check' : undefined,
-                        action: function () {
+                    ga('send', 'event', 'diagram', 'changeSnapToGrid', $rootScope.snapToGrid);
 
-                            if ($rootScope.snapToGrid === true) {
-                                $rootScope.snapToGrid = false;
-                            } else {
-                                $rootScope.snapToGrid = true;
-                            }
+                },
+                actionData: {}
+            }]
 
-                            ga('send', 'event', 'diagram', 'changeSnapToGrid', $rootScope.snapToGrid);
-
-                        },
-                        actionData: {}
-                    }
-                ]
-
-            },
-            {
-                id: 'wiringMethods',
-                label: 'Wiring method',
-                items: wiringMenu
-            },
-            {
-                id: 'printMenu',
-                items: [
-                    {
-                        id: 'printDiagram',
-                        label: 'Print diagram',
-                        iconClass: 'glyphicon glyphicon-print',
-                        action: function () {
-                            window.print();
-                        }
-                    }
-                ]
-            }
-        ];
+        }, {
+            id: 'wiringMethods',
+            label: 'Wiring method',
+            items: wiringMenu
+        }, {
+            id: 'printMenu',
+            items: [{
+                id: 'printDiagram',
+                label: 'Print diagram',
+                iconClass: 'glyphicon glyphicon-print',
+                action: function() {
+                    window.print();
+                }
+            }]
+        }];
 
         openMenu($event);
 
