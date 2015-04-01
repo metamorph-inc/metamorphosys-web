@@ -209,6 +209,8 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
     if (angular.isObject(element)) {
 
+        this.deselectComponent(anId);
+
         self.deleteComponentById(element.id);
         success = true;
 

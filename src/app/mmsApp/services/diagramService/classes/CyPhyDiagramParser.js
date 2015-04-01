@@ -255,6 +255,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             scaleY: 1,
             symbol: symbol,
             nonSelectable: false,
+            readonly: false,
             locationLocked: false,
             draggable: true,
             metaType: 'Container'
@@ -298,9 +299,10 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 scaleY: 1,
                 symbol: symbol,
                 nonSelectable: false,
+                readonly: false,
                 locationLocked: false,
                 draggable: true,
-                metaType === 'AVMComponent'
+                metaType: 'AVMComponent'
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -339,9 +341,10 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 scaleY: 1,
                 symbol: symbol,
                 nonSelectable: false,
+                readonly: false,
                 locationLocked: false,
                 draggable: true,
-                metaType === 'AVMComponent'                
+                metaType: 'AVMComponent'                
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -380,9 +383,10 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 scaleY: 1,
                 symbol: symbol,
                 nonSelectable: false,
+                readonly: false,
                 locationLocked: false,
                 draggable: true,
-                metaType === 'AVMComponent'                
+                metaType: 'AVMComponent'                
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -465,7 +469,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                     nonSelectable: false,
                     locationLocked: false,
                     draggable: true,
-                    metaType === 'AVMComponent'                    
+                    metaType: 'AVMComponent'                    
                 });
 
 

@@ -1,20 +1,32 @@
 'use strict';
 
+require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
 
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
-        'mms.diagramComponentInspector.inspectedComponentDetails'
+        'mms.diagramComponentInspector.inspectedComponentDetails',
+        'mms.contentEditable'
     ])
     .directive('diagramComponentInspector', [
         function() {
 
             function DiagramComponentInspectorController() {
 
+                this.nameEditing = false;
+
                 this.config = this.config || {
-                    noInspectableMessage: 'Select a diagram element to inspect.'
+                    noInspectableMessage: 'Select a single diagram element to inspect.'
                 };
+
+                this.startNameEdit = function() {
+                    this.nameEditing = true;
+                }; 
+
+                this.finishNameEdit = function() {
+                    this.nameEditing = false;
+                }; 
 
             }
 

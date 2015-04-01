@@ -142,7 +142,7 @@ angular.module('mms.svgDiagram', [
             if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                 $event.which !== 3) {
 
-                $scope.diagram.state.selectedComponentIds = [];
+                $scope.diagram.clearSelection();
 
             }
 

@@ -1,3 +1,30 @@
 .diagram-component-inspector {
 	
+	.no-inspectable-message {
+		text-align: center;
+  		height: 140px;
+  		line-height: 140px;
+  		font-style: italic;
+	}
+
+	.inspectable-name-display {
+		height: 30px;
+		line-height: 30px;
+		padding-left: 3px;
+	}
+
+	.inspectable-name-edit {
+		height: 30px;
+	}
+
+	.inspectable-name {
+		font-weight: bold;
+		font-size: 110%;
+	}
+
+	.name-edit-icon,
+	.name-save-icon {
+		cursor: pointer;
+	}
+
 }

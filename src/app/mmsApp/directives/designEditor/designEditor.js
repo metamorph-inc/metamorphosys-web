@@ -303,8 +303,7 @@ angular.module('mms.designEditor', [
 
                                 case 'unload':
 
-                                    diagramService.deleteComponentOrWireById(
-                                        selectedContainerId,
+                                    self.diagram.deleteComponentOrWireById(
                                         designStructureUpdateObject.id);
 
                                     gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);

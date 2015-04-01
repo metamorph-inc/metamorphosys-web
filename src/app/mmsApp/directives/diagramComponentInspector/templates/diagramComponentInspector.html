@@ -1,4 +1,15 @@
 <div class="diagram-component-inspector">
 	<div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
-	<div ng-if="ctrl.inspectable" class="no-inspectable-message">{{ctrl.inspectable.id}}</div>
+	<div ng-if="ctrl.inspectable">
+		<div class="inspectable-name">
+			<div class="inspectable-name-display" ng-if="!ctrl.nameEditing">
+				{{ctrl.inspectable.label}} 
+				<a class="name-edit-icon" ng-click="ctrl.startNameEdit()"><i class="glyphicon glyphicon-pencil"></i></a>
+			</div>
+			<div  class="inspectable-name-edit" ng-if="ctrl.nameEditing">
+				<input ng-model="ctrl.inspectable.label" >
+				<a class="name-save-icon" ng-click="ctrl.finishNameEdit()"><i class="glyphicon glyphicon-ok"></i></a>	
+			</div>
+		</div>
+	</div>
 </div>
