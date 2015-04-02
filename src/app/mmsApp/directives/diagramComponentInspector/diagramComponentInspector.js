@@ -14,6 +14,8 @@ angular.module('mms.diagramComponentInspector', [
 
             function DiagramComponentInspectorController() {
 
+                var self = this;
+                
                 this.nameEditing = false;
 
                 this.config = this.config || {
@@ -27,6 +29,16 @@ angular.module('mms.diagramComponentInspector', [
                 this.finishNameEdit = function() {
                     this.nameEditing = false;
                 }; 
+
+                this.onNameChange = function() {
+                };
+
+                this.nameInputKeys = function(e) {
+
+                 if (e.keyCode === 27) {
+                      self.nameForm.name.$rollbackViewValue();
+                    }
+                };
 
             }
 
