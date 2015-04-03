@@ -1,15 +1,16 @@
+/*globals requireJS*/
+
+//N.B. WebGME defines requireJS
 /**
  * Created by pmeijer on 6/23/2014.
  */
 
-define( [
-    'fs',
-    'path',
-    'child_process',
-    'desert/MetaPath'
-], function ( fs, path, child_process, MetaPath ) {
+
     'use strict';
     var logger,
+        fs = require('fs'),
+        child_process = require('child_process'),
+        MetaPath = require('./MetaPath'),
         DesertBackEnd,
         dbe,
         DesertRest,
@@ -17,11 +18,9 @@ define( [
         desertRestInfo,
         desertRestCancel,
         running = {},
-        Logger = require(path.join(requireJS.s.contexts._.config.baseUrl, 'server/logger')),
-        BlobRunPluginClient = require(path.join(requireJS.s.contexts._.config.baseUrl,
-            'server/middleware/blob/BlobRunPluginClient')),
-        BlobFSBackend = require(path.join(requireJS.s.contexts._.config.baseUrl,
-            'server/middleware/blob/BlobFSBackend')),
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
+        BlobRunPluginClient = require('../../../node_modules/webgme/src/server/middleware/blob/BlobRunPluginClient'),
+        BlobFSBackend = require('../../../node_modules/webgme/src/server/middleware/blob/BlobFSBackend'),
         setup;
 
     DesertBackEnd = function ( logger ) {
@@ -263,5 +262,4 @@ define( [
         return DesertRest;
     };
 
-    return setup;
-} );
+module.exports = setup;

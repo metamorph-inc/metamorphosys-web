@@ -3,10 +3,6 @@
  * Created by pmeijer on 8/4/2014.
  */
 
-
-define( ['os',
-    'child_process'
-], function ( os, child_process ) {
     'use strict';
 
     var serverInfoRestInit,
@@ -14,7 +10,9 @@ define( ['os',
         serverInfoRestNode,
         serverInfoRestNpm,
         serverInfoRestAll,
-        Logger = require(require('path').join(requireJS.s.contexts._.config.baseUrl, 'server/logger')),
+        child_process = require('child_process'),
+        os = require('os'),
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
         logger,
         setup;
 
@@ -128,5 +126,4 @@ define( ['os',
         return serverInfoRestInit;
     };
 
-    return setup;
-} );
+module.exports = setup;
