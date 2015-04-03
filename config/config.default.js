@@ -15,8 +15,8 @@ config.executor.enable = true;
 
 config.visualization.visualizerDescriptors.push('./Visualizers.json');
 
-//config.rest.components.desert = './src/rest/desert/Desert';
-//config.rest.components.serverinfo = './src/rest/serverInfo/ServerInfo';
+config.rest.components.desert = 'desert/Desert'; //This is not really maintained, use executor instead
+config.rest.components.serverinfo = 'serverinfo/ServerInfo';
 
 config.requirejsPaths.ejs = './node_modules/webgme/src/common/util/ejs';
 config.requirejsPaths.xmljsonconverter = './utils/xmljsonconverter';
@@ -25,6 +25,8 @@ config.requirejsPaths.executor = './node_modules/webgme/src/middleware/executor'
 config.requirejsPaths.requirejs = './src/client';
 config.requirejsPaths.CyPhyMETA = './meta';
 config.requirejsPaths.cyphyDist = './dist';
+config.requirejsPaths.desert = './src/rest/desert';
+config.requirejsPaths.serverinfo = './src/rest/serverInfo';
 
 config.requirejsPaths['panels/ProjectAnalyzer'] = './src/panels/ProjectAnalyzer';
 config.requirejsPaths['widgets/ProjectAnalyzer'] = './src/widgets/ProjectAnalyzer';

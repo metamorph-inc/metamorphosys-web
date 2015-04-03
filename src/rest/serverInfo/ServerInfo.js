@@ -1,12 +1,12 @@
-/*globals define, require, process, WebGMEGlobal */
+/*globals define, require, process, requireJS*/
 /**
  * Created by pmeijer on 8/4/2014.
  */
 
-var os = require( 'os' );
-define( [ 'logManager',
+
+define( ['os',
     'child_process'
-], function ( logManager, child_process ) {
+], function ( os, child_process ) {
     'use strict';
 
     var serverInfoRestInit,
@@ -14,12 +14,12 @@ define( [ 'logManager',
         serverInfoRestNode,
         serverInfoRestNpm,
         serverInfoRestAll,
-        setup,
-        logger = logManager.create( 'REST-SERVER-INFO' );
+        Logger = require(require('path').join(requireJS.s.contexts._.config.baseUrl, 'server/logger')),
+        logger,
+        setup;
 
     serverInfoRestInit = function ( req, res, next ) {
-        var config = WebGMEGlobal.getConfig(),
-            url = req.url.split( '/' ),
+        var url = req.url.split( '/' ),
             handlers = {
                 os: serverInfoRestOS,
                 node: serverInfoRestNode,
@@ -27,7 +27,7 @@ define( [ 'logManager',
                 all: serverInfoRestAll
             };
 
-        logger.debug( 'Version info request' );
+        logger.debug( 'Version info request: ', url[1] );
 
         if ( handlers.hasOwnProperty( url[ 1 ] ) ) {
             handlers[ url[ 1 ] ]( req, res, next );
@@ -122,9 +122,11 @@ define( [ 'logManager',
         } );
     };
 
-    setup = function () {
+    setup = function (_gmeConfig, _ensureAuthenticated) {
+        logger = Logger.create('web-cyphy:server:middleware:ExampleRestComponent', _gmeConfig.server.log);
+        logger.debug('serverInfoRest setup done');
         return serverInfoRestInit;
     };
 
-    return setup();
+    return setup;
 } );

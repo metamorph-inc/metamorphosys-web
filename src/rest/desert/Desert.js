@@ -2,16 +2,14 @@
  * Created by pmeijer on 6/23/2014.
  */
 
-define( [ 'logManager',
-    'blob/BlobRunPluginClient',
-    'blob/BlobFSBackend',
+define( [
     'fs',
     'path',
     'child_process',
     'desert/MetaPath'
-], function ( logManager, BlobRunPluginClient, BlobFSBackend, fs, path, child_process, MetaPath ) {
+], function ( fs, path, child_process, MetaPath ) {
     'use strict';
-    var logger = logManager.create( 'REST-DESERT' ),
+    var logger,
         DesertBackEnd,
         dbe,
         DesertRest,
@@ -19,6 +17,11 @@ define( [ 'logManager',
         desertRestInfo,
         desertRestCancel,
         running = {},
+        Logger = require(path.join(requireJS.s.contexts._.config.baseUrl, 'server/logger')),
+        BlobRunPluginClient = require(path.join(requireJS.s.contexts._.config.baseUrl,
+            'server/middleware/blob/BlobRunPluginClient')),
+        BlobFSBackend = require(path.join(requireJS.s.contexts._.config.baseUrl,
+            'server/middleware/blob/BlobFSBackend')),
         setup;
 
     DesertBackEnd = function ( logger ) {
@@ -154,8 +157,7 @@ define( [ 'logManager',
     };
 
     DesertRest = function ( req, res, next ) {
-        var config = WebGMEGlobal.getConfig(),
-            url = req.url.split( '/' ),
+        var url = req.url.split( '/' ),
             handlers = {
                 create: desertRestCreate,
                 cancel: desertRestCancel,
@@ -255,9 +257,11 @@ define( [ 'logManager',
         }
     };
 
-    setup = function () { //it has to be done this way, but this is probably a placeholder for later option parameters...
+    setup = function (_gmeConfig /*, _authentication*/) {
+        logger = Logger.create('web-cyphy:server:middleware:ExampleRestComponent', _gmeConfig.server.log);
+        logger.debug('serverInfoRest setup done');
         return DesertRest;
     };
 
-    return setup();
+    return setup;
 } );
