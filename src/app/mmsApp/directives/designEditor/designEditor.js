@@ -161,6 +161,12 @@ angular.module('mms.designEditor', [
 
                         });
 
+                        addRootScopeEventListener('componentNameMustBeSaved', function($event, component) {
+
+                            console.log(component);
+
+                        });
+
                         addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
 
                             $rootScope.setProcessing();

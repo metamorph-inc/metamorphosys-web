@@ -11,9 +11,11 @@
 					<input ng-model="ctrl.inspectable.label" 
 						name="name"
 						ng-maxlength="20" 
-						ng-change="ctrl.onNameChange()" 
-						ng-keydown="ctrl.nameInputKeys($event)">
-					<a class="name-save-icon" ng-click="ctrl.finishNameEdit()"><i class="glyphicon glyphicon-ok"></i></a>	
+						ng-blur="ctrl.cancelNameEdit(nameForm.name)"
+						ng-keyup="ctrl.onKeyup(nameForm.name, $event)"
+						ng-model-options="{ updateOn: '' }"
+						>
+					<a class="name-save-icon" ng-click="ctrl.completeNameEdit(nameForm.name)"><i class="glyphicon glyphicon-ok"></i></a>	
 				</form>
 			</div>
 			<div class="inspectable-details" ng-switch="ctrl.inspectable.metaType">

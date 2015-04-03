@@ -12,37 +12,57 @@ angular.module('mms.diagramComponentInspector', [
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController() {
+            function DiagramComponentInspectorController($scope, $rootScope) {
 
                 var self = this;
-                
+
+                this.$rootScope = $rootScope;
                 this.nameEditing = false;
 
                 this.config = this.config || {
                     noInspectableMessage: 'Select a single diagram element to inspect.'
                 };
 
-                this.startNameEdit = function() {
-                    this.nameEditing = true;
-                }; 
 
-                this.finishNameEdit = function() {
-                    this.nameEditing = false;
-                }; 
+                $scope.$watch(function() {
+                    return self.inspectable;
+                }, function(newVal, oldVal) {
 
-                this.onNameChange = function() {
-                };
-
-                this.nameInputKeys = function(e) {
-
-                 if (e.keyCode === 27) {
-                      self.nameForm.name.$rollbackViewValue();
+                    if (newVal !== oldVal) {
+                        self.nameEditing = false;
                     }
-                };
+
+                });
 
             }
 
+            DiagramComponentInspectorController.prototype.startNameEdit = function() {
+                this.nameEditing = true;
+            };
 
+            DiagramComponentInspectorController.prototype.completeNameEdit = function(control) {
+
+                control.$commitViewValue();
+                this.$rootScope.$emit('componentNameMustBeSaved', this.inspectable);
+
+                this.nameEditing = false;
+            };
+
+            DiagramComponentInspectorController.prototype.cancelNameEdit = function(control) {
+                control.$rollbackViewValue();
+                this.nameEditing = false;
+            };
+
+            DiagramComponentInspectorController.prototype.onKeyup = function(control, e) {
+                
+                if (e.keyCode === 27) {
+                    this.cancelNameEdit(control);
+                }
+
+                if (e.keyCode === 13) {
+                    this.completeNameEdit(control);                
+                }
+            };
 
             return {
                 restrict: 'E',
@@ -54,8 +74,7 @@ angular.module('mms.diagramComponentInspector', [
                 templateUrl: '/mmsApp/templates/diagramComponentInspector.html',
                 require: [],
                 scope: {
-                    inspectable: '=',
-                    config: '@'
+                    inspectable: '='
                 }
             };
         }
