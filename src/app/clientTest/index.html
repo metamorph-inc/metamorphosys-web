@@ -54,7 +54,7 @@
         // once the webgme Client is loaded and ready we can use it.
 
 
-        var client = new GME.classes.Client({host: window.location.basename});
+        var client = new GME.classes.Client({GME.gmeConfig});
 
         client.connectToDatabaseAsync({}, function (err) {
             var terrId;

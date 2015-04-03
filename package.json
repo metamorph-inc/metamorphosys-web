@@ -7,10 +7,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "webgme": "=0.8.2",
+    "webgme": "https://github.com/webgme/webgme/tarball/master",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
-    "ng-gme": "=0.0.2"
+    "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
   },
   "devDependencies": {
     "angular-markdown-directive": "^0.3.0",

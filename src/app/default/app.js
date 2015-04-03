@@ -1,4 +1,4 @@
-/*globals angular, console, window, require*/
+/*globals angular, console, window, require, GME*/
 
 angular.module( 'CyPhyApp', [
     'ui.router',
@@ -57,7 +57,7 @@ angular.module( 'CyPhyApp', [
         'use strict';
         var connectionId = 'my-db-connection-id';
 
-        dataStoreService.connectToDatabase( connectionId, window.GME.gmeConfig)
+        dataStoreService.connectToDatabase( connectionId, GME.gmeConfig)
             .then( function () {
                 // select default project and branch (master)
                 return projectService.selectProject( connectionId, 'ADMEditor' );
