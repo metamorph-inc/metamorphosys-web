@@ -74,6 +74,7 @@ angular.module('cyphy.services')
                 deleteInElementsById,
 
                 getConnectorCompositionDetails,
+                getComponentDetails,
                 parseNewChild,
                 findChildForNode,
 
@@ -154,6 +155,13 @@ angular.module('cyphy.services')
 
             };
 
+            getComponentDetails = function (componentNode) {
+
+                return {
+                    resource: componentNode.getAttribute('Resource')
+                };
+            };
+
             onChildUpdate = function () {
 
                 var newName,
@@ -162,7 +170,8 @@ angular.module('cyphy.services')
                     newRotation,
                     hadChanges,
                     child,
-                    updateType;
+                    updateType,
+                    detailsFn;
 
                 // BaseName never changes, does it?
 
@@ -199,9 +208,13 @@ angular.module('cyphy.services')
 
                     }
 
-                    if (child.baseName === 'ConnectorComposition') {
+                    detailsFn = {
+                        'ConnectorComposition': getConnectorCompositionDetails,
+                        'AVMComponentModel': getComponentDetails
+                    }[child.baseName];
+                    if (detailsFn) {
 
-                        newDetails = getConnectorCompositionDetails(this);
+                        newDetails = detailsFn(this);
 
                         if (!angular.equals(newDetails, child.details)) {
 
@@ -295,6 +308,10 @@ angular.module('cyphy.services')
                     child.details = getConnectorCompositionDetails(node);
                 }
 
+                if (child.baseName === 'AVMComponentModel') {
+
+                    child.details = getComponentDetails(node);
+                }
 
                 $q.all(parsePromises)
                     .then(function () {
