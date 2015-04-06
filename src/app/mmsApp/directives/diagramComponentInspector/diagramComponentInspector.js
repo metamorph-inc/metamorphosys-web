@@ -43,7 +43,7 @@ angular.module('mms.diagramComponentInspector', [
             DiagramComponentInspectorController.prototype.completeNameEdit = function(control) {
 
                 control.$commitViewValue();
-                this.$rootScope.$emit('componentNameMustBeSaved', this.inspectable);
+                this.$rootScope.$emit('componentLabelMustBeSaved', this.inspectable);
 
                 this.nameEditing = false;
             };

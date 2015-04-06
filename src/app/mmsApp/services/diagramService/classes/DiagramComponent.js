@@ -275,8 +275,17 @@ DiagramComponent.prototype.localToGlobal = function() {
     if (!this.transformationMatrix) {
         this.transformationMatrix = this.getTransformationMatrix();
     }
+};
 
+DiagramComponent.prototype.getLabel = function() {
 
+    return this.label;
+
+};
+
+DiagramComponent.prototype.setLabel = function(newLabel) {
+
+    this.label = newLabel;
 
 };
 

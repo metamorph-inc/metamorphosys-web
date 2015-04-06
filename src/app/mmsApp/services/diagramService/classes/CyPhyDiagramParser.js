@@ -233,7 +233,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
 
         symbol = symbolManager.makeBoxSymbol(
             'container-box',
-            element.name, {
+            element.name || element.id, {
                 showPortLabels: true,
                 limitLabelWidthTo: 150
             }, portStuff.portDescriptors, {

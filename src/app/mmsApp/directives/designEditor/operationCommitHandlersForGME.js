@@ -3,22 +3,22 @@
 'use strict';
 
 angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
-    .run(function (operationsManager, projectHandling, designLayoutService, $timeout, $q) {
+    .run(function(operationsManager, projectHandling, designLayoutService, $timeout, $q, nodeService) {
 
-        operationsManager.registerCommitHandler('RotateComponents', function (data) {
+        operationsManager.registerCommitHandler('RotateComponents', function(data) {
 
             var i,
                 deferred;
 
-            i = 1;
+            i = 0;
 
             deferred = $q.defer();
 
             //nodeService.startTransaction(designCtx, data.message);
 
-            angular.forEach(data.components, function (component) {
+            angular.forEach(data.components, function(component) {
 
-                $timeout(function () {
+                $timeout(function() {
 
                     designLayoutService.setRotation(
                         projectHandling.getContainerLayoutContext(),
@@ -26,7 +26,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                         component.rotation,
                         data.message
                     );
-                }, 10 * i);
+                }, 10 * i, false);
 
                 i++;
 
@@ -45,17 +45,17 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
         });
 
 
-        operationsManager.registerCommitHandler('MoveComponents', function (data) {
+        operationsManager.registerCommitHandler('MoveComponents', function(data) {
 
             var i;
 
-            i = 1;
+            i = 0;
 
             //nodeService.startTransaction(designCtx, data.message);
 
-            angular.forEach(data.components, function (component) {
+            angular.forEach(data.components, function(component) {
 
-                $timeout(function () {
+                $timeout(function() {
 
                     designLayoutService.setPosition(
                         projectHandling.getContainerLayoutContext(),
@@ -63,7 +63,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                         component.getPosition(),
                         data.message
                     );
-                }, 10 * i);
+                }, 10 * i, false);
 
                 i++;
 
@@ -79,17 +79,17 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
         });
 
 
-        operationsManager.registerCommitHandler('MoveWires', function (data) {
+        operationsManager.registerCommitHandler('MoveWires', function(data) {
 
             var i;
 
-            i = 1;
+            i = 0;
 
             //nodeService.startTransaction(designCtx, data.message);
 
-            angular.forEach(data.wires, function (wire) {
+            angular.forEach(data.wires, function(wire) {
 
-                $timeout(function () {
+                $timeout(function() {
 
                     designLayoutService.setWireSegments(
                         projectHandling.getContainerLayoutContext(),
@@ -98,7 +98,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                         data.message || 'Updating wire'
                     );
 
-                }, 10 * i);
+                }, 10 * i, false);
 
                 i++;
 
@@ -114,5 +114,39 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
             //nodeService.completeTransaction(designCtx);
 
         });
-    }
-);
+
+        operationsManager.registerCommitHandler('RelabelComponent', function(data) {
+
+            var i,
+                label,
+                context;
+
+
+            context = projectHandling.getContainerLayoutContext();
+
+            angular.forEach(data.components, function(component) {
+
+                label = component.getLabel();
+
+                $timeout(function() {
+
+                    nodeService.loadNode(context, component.id).then(function(node) {
+
+                        node.setAttribute('name', label, data.message);
+
+                    });
+                }, 10 * i, false);
+
+                i++;
+
+            });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'drag', label);
+            }
+
+
+            //nodeService.completeTransaction(designCtx);
+
+        });
+    });
