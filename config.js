@@ -17,6 +17,11 @@ config.client.appDir = path.join(__dirname, 'public/apps/mmsApp');
 config.executor.enable = true;
 // config.executor.nonce = null;
 
+config.log = {
+            level: 2, // 5 = ALL, 4 = DEBUG, 3 = INFO, 2 = WARNING, 1 = ERROR, 0 = OFF
+            file: 'server.log'
+        };
+
 
 config.plugin.allowServerExecution = true;
 config.plugin.basePaths.push('./src/plugins/ADMEditor');

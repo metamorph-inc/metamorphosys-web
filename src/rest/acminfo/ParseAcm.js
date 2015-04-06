@@ -76,7 +76,7 @@ define(['xmljsonconverter',
 
                 (function setProperties() {
                     acmInfo.properties = {};
-                    component.Property.forEach(function (prop) {
+                    (component.Property || []).forEach(function (prop) {
                         var propInfo = acmInfo.properties[prop['@Name']] = {};
                         if (prop.Value && prop.Value.ValueExpression && prop.Value.ValueExpression.Value) {
                             propInfo.value = prop.Value.ValueExpression.Value['#text'];
