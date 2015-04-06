@@ -46,6 +46,9 @@ angular.module('mms.diagramComponentInspector', [
 
                                                 if (response.data) {
 
+
+                                                    console.log(response.data);
+
                                                     if (angular.isString(response.data.classification)) {
 
                                                         response.data.classification.split('.').map(function(className) {
