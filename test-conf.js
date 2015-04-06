@@ -13,12 +13,12 @@ exports.config = CONFIG;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
 CONFIG.mongo.options.server = CONFIG.mongo.options.server || {};
 CONFIG.mongo.options.server.socketOptions = {connectTimeoutMS: 500};
-CONFIG.log.level = 0;
 var webgme = require('webgme');
 var requirejs = webgme.requirejs;
 webgme.addToRequireJsPaths(CONFIG);
 var requirejsBase = webgme.requirejs.s.contexts._.config.baseUrl;
 requirejs.define('gmeConfig', function () { return CONFIG; });
+requirejs.define('test-conf', function () { return exports; });
 
 // specifies all test specific requirejs paths for server side tests
 // read it from the config file
@@ -37,9 +37,6 @@ if (testPaths) {
         paths:paths
     });
 }
-requirejs(['common/LogManager'], function (LogManager) {
-    LogManager.setLogLevel(0);
-});
 
 exports.requirejs = requirejs;
 

@@ -15,16 +15,16 @@ define( [], function () {
         var config;
         //console.log(isNode);
 
-        if ( isNode ) {
-            config = WebGMEGlobal.getConfig();
-            this.server = '127.0.0.1';
-            this.serverPort = config.port;
-            this.httpsecure = config.httpsecure;
-
-            this._clientSession = null; // parameters.sessionId;;
-
-            this.http = this.httpsecure ? require( 'https' ) : require( 'http' ); // or https
-        }
+        //if ( isNode ) {
+        //    config = WebGMEGlobal.getConfig();
+        //    this.server = '127.0.0.1';
+        //    this.serverPort = config.port;
+        //    this.httpsecure = config.httpsecure;
+        //
+        //    this._clientSession = null; // parameters.sessionId;;
+        //
+        //    this.http = this.httpsecure ? require( 'https' ) : require( 'http' ); // or https
+        //}
 
         // TODO: TOKEN???
         this.versionInfoUrl = '/rest/external/serverinfo/';
