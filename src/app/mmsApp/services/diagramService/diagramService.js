@@ -65,6 +65,8 @@ angular.module('mms.designVisualization.diagramService', [
 
                 }
 
+                diagram.sortComponentsByZ();
+
             };
 
             this.updateComponentsAndItsWiresRotation = function(diagramId, componentId, newRotation) {

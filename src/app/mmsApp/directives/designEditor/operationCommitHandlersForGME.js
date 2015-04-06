@@ -145,8 +145,36 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                 ga('send', 'event', 'component', 'drag', label);
             }
 
+        });
 
-            //nodeService.completeTransaction(designCtx);
+        operationsManager.registerCommitHandler('ReorderComponent', function(data) {
+
+            var i,
+                label;
+
+            angular.forEach(data.components, function(component) {
+
+                label = component.getLabel();
+
+                $timeout(function() {
+
+                    designLayoutService.setPosition(
+                        projectHandling.getContainerLayoutContext(),
+                        component.id,
+                        component.getPosition(),
+                        data.message
+                    );
+
+                }, 10 * i, false);
+
+                i++;
+
+            });
+
+            if (angular.isFunction(ga)) {
+                ga('send', 'event', 'component', 'drag', label);
+            }
 
         });
+
     });

@@ -290,35 +290,34 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                     keyboardShortcut: ']',
                     action: function() {
 
-                        var operation,
-                            possibbleDragTargetsDescriptor;
-
-
-                        possibbleDragTargetsDescriptor = {
-                            targets: [component]
-                        };
-
+                        var operation;
 
                         operation = operationsManager.initNew(
-                            'MoveComponents',
+                            'ReorderComponent',
                             $scope.diagram,
-                            possibbleDragTargetsDescriptor
+                            component
                         );
 
-                        operation.set({
-                            x: 0,
-                            y: 0,
-                            z: $scope.diagram.getHighestZ()
-                        });
-
-                    }
+                        operation.set($scope.diagram.getHighestZ() + 1);
+                        operation.finish();
+                    }                    
                 }, {
-                    id: 'bringToFront',
+                    id: 'sendToBack',
                     label: 'Send to back',
                     keyboardShortcut: '[',
                     action: function() {
-                        $scope.diagram.bringComponentToBack(component.id);
-                    }
+
+                        var operation;
+
+                        operation = operationsManager.initNew(
+                            'ReorderComponent',
+                            $scope.diagram,
+                            component
+                        );
+
+                        operation.set($scope.diagram.getLowestZ() - 1);
+                        operation.finish();
+                    }                    
                 }]
             }, {
                 id: 'adjust',

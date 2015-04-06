@@ -2,13 +2,13 @@
 
 'use strict';
 
-angular.module('mms.designVisualization.operations.orderComponent', [])
+angular.module('mms.designVisualization.operations.reorderComponent', [])
 
 .run(function(operationsManager) {
 
     var type;
 
-    type = 'OrderComponents';
+    type = 'ReorderComponent';
 
     operationsManager.registerOperation({
         type: type,
@@ -38,7 +38,7 @@ angular.module('mms.designVisualization.operations.orderComponent', [])
 
                 position = component.getPosition();
                 position.z = z;
-                component.setPosition(position);
+                component.setPosition(position.x, position.y, position.z);
 
                 message = 'Reordering ' + component.label + ' to ' + z;
 

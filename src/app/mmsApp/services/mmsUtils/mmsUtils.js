@@ -2,6 +2,8 @@
 
 'use strict';
 
+var inserter = require('./classes/simpleInsert.js');
+
 angular.module('mms.utils', [])
     .service( 'mmsUtils', [
     function () {
@@ -89,6 +91,8 @@ angular.module('mms.utils', [])
             return result;
 
         };
+
+        this.inserter = inserter;
 
     }
 ] );

@@ -228,6 +228,17 @@ DiagramComponent.prototype.setPosition = function(x, y, z) {
     }
 };
 
+DiagramComponent.prototype.setPositionZ = function(z) {
+
+    if (angular.isNumber(z)) {
+
+        this.z = z;
+
+    } else {
+        throw new Error('Coordinates must be numbers!');
+    }
+};
+
 DiagramComponent.prototype.rotate = function(angle) {
 
     if (angular.isNumber(angle)) {

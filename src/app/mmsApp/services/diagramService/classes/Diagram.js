@@ -2,7 +2,28 @@
 
 'use strict';
 
-var EventDispatcher = require('../../../classes/EventDispatcher');
+var EventDispatcher = require('../../../classes/EventDispatcher'),
+    inserter = require('../../mmsUtils/classes/simpleInsert');
+
+function sortComponentsByZ(components) {
+
+    components.sort(function(a, b) {
+
+        var result = 0;
+
+        if (!isNaN(a.z) && !isNaN(b.z)) {
+            result = a.z - b.z;
+        }
+
+        return result;
+
+    });
+
+}
+
+function zDiffer(a, b) {
+    return a.z - b.z;
+}
 
 var Diagram = function() {
 
@@ -28,23 +49,9 @@ var Diagram = function() {
 
 };
 
-
-function sortComponentsByZ(components) {
-
-    components.sort(function(a, b) {
-
-        var result = 0;
-
-        if (!isNaN(a.z) && !isNaN(b.z)) {
-            result = a.z - b.z;
-        }
-
-        return result;
-
-    });
-
-}
-
+Diagram.prototype.sortComponentsByZ = function() {
+    sortComponentsByZ(this._components);
+};
 
 Diagram.prototype.addComponent = function(aDiagramComponent) {
 
@@ -54,7 +61,8 @@ Diagram.prototype.addComponent = function(aDiagramComponent) {
     if (angular.isObject(aDiagramComponent) && !angular.isDefined(this._componentsById[aDiagramComponent.id])) {
 
         this._componentsById[aDiagramComponent.id] = aDiagramComponent;
-        this._components.push(aDiagramComponent);
+
+        inserter(aDiagramComponent, this._components, zDiffer);
 
         for (i = 0; i < aDiagramComponent.portInstances.length; i++) {
 
@@ -62,8 +70,6 @@ Diagram.prototype.addComponent = function(aDiagramComponent) {
             this._portsById[port.id] = port;
 
         }
-
-        sortComponentsByZ(this._components);
     }
 
 };
@@ -288,7 +294,7 @@ Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
     if (angular.isObject(component)) {
 
-        component.setPosition(newPosition.x, newPosition.y);
+        component.setPosition(newPosition.x, newPosition.y, newPosition.z);
 
     }
 
@@ -319,29 +325,15 @@ Diagram.prototype.isComponentSelected = function(component) {
 
 Diagram.prototype.getHighestZ = function() {
 
-    var i,
-        component,
-        z;
+    var z,
+        l;
 
-    for (i = 0; i < this._components.length; i++) {
+    l = this._components.length;
 
-        component = this._components[i];
-
-        if (!isNaN(component.z)) {
-
-            if (isNaN(z)) {
-                z = component.z;
-            } else {
-
-                if (z < component.z) {
-                    z = component.z;
-                }
-
-            }
-
-        }
+    if (l) {
+        z = this._components[l-1].z;
     }
-
+    
     if (isNaN(z)) {
         z = -1;
     }
@@ -352,29 +344,15 @@ Diagram.prototype.getHighestZ = function() {
 
 Diagram.prototype.getLowestZ = function() {
 
-    var i,
-        component,
-        z;
+    var z,
+        l;
 
-    for (i = 0; i < this._components.length; i++) {
+    l = this._components.length;
 
-        component = this._components[i];
-
-        if (!isNaN(component.z)) {
-
-            if (isNaN(z)) {
-                z = component.z;
-            } else {
-
-                if (z > component.z) {
-                    z = component.z;
-                }
-
-            }
-
-        }
+    if (l) {
+        z = this._components[0].z;
     }
-
+    
     if (isNaN(z)) {
         z = -1;
     }
