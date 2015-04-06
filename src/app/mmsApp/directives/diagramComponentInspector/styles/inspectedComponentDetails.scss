@@ -1,12 +1,24 @@
 .inspected-component-details {
+    .property-list {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .icon {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1em;
+        border: 1px solid #ddd;
 
-	.property-list {
-		display: inline-block;
-		vertical-align: top;
-	}
+        img {
+			max-height: 115px;
+        }
+    }
 
-	.icon {
-		display: inline-block;
-		vertical-align: top;
-	}
+    .documentation {
+    	display: inline-block;
+    	margin-left: 1em;
+  		max-height: 100px;
+  		overflow: auto;
+  		min-width: 200px;
+    }
 }
