@@ -12,23 +12,91 @@ angular.module('mms.diagramComponentInspector', [
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController($scope, $rootScope) {
+            function DiagramComponentInspectorController($scope, $http) {
 
-                this.$rootScope = $rootScope;
-                this.nameEditing = false;
+                var self = this;
 
                 this.config = this.config || {
                     noInspectableMessage: 'Select a single diagram element to inspect.'
                 };
 
+                this.classificationTags = [];
+
+
+                $scope.$watch(function() {
+                    return self.inspectable;
+                }, function(newInspectable, oldInspectable) {
+
+                    if (newInspectable !== oldInspectable) {
+
+                        self.classificationTags = [];
+
+                        if (newInspectable) {
+
+                            if(newInspectable.metaType === 'AVMComponent') {
+
+                                if (newInspectable.details) {
+
+                                    if (!newInspectable.details.acmInfo) {
+
+                                        if (newInspectable.details.resource) {
+
+                                            $http.get('/rest/external/acminfo/' + newInspectable.details.resource)
+                                            .then(function(response){
+
+                                                if (response.data) {
+
+
+                                                    console.log(response.data);
+
+                                                    if (angular.isString(response.data.classification)) {
+
+                                                        response.data.classification.split('.').map(function(className) {
+
+                                                            newInspectable.classificationTags.push({
+                                                                id: className,
+                                                                name: className.replace(/_/g, ' ')
+                                                            });
+                                                        });
+                                                    }
+
+                                                    newInspectable.details.properties = [];
+
+                                                    angular.forEach(response.data.properties, function(prop, propName) {
+
+                                                        newInspectable.details.properties.push({
+                                                            name: propName,
+                                                            value: prop.value,
+                                                            unit: prop.unit
+                                                        });
+
+                                                    });
+
+                                                    if (angular.isString(response.data.name)) {
+                                                        response.data.name.replace(/_/g, ' ');
+                                                    }
+                                                    
+                                                    newInspectable.details.acmInfo = response.data;
+
+                                                }
+
+                                            });
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    }
+
+                });
+
+
             }
-
-
-            DiagramComponentInspectorController.prototype.commitName = function(control) {
-
-                this.$rootScope.$emit('componentLabelMustBeSaved', this.inspectable);
-
-            };
 
             DiagramComponentInspectorController.prototype.isNameValid = function(data) {
 

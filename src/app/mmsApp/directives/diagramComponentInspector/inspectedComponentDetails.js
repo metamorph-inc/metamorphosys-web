@@ -10,8 +10,6 @@ angular.module('mms.diagramComponentInspector.inspectedComponentDetails', [
 
             }
 
-
-
             return {
                 restrict: 'E',
                 controller: InspectorController,

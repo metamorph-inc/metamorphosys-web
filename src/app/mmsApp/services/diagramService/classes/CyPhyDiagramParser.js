@@ -208,7 +208,12 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             nonSelectable: false,
             locationLocked: false,
             draggable: true,
-            metaType: 'Connector'
+            metaType: 'Connector'                        
+        });
+
+        newDiagramComponent.classificationTags.push({
+            id: 'connector',
+            name: 'Connector'
         });
 
         portInstance = new ComponentPort({
@@ -259,6 +264,12 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             locationLocked: false,
             draggable: true,
             metaType: 'Container'
+        });
+
+
+        newDiagramComponent.classificationTags.push({
+            id: 'subcircuit',
+            name: 'Subcircuit'
         });
 
         newDiagramComponent.registerPortInstances(portStuff.portInstances);
@@ -477,6 +488,16 @@ module.exports = function(symbolManager, diagramService, wiringService) {
 
             }
 
+        }
+
+        if (newModelComponent) {
+
+            newModelComponent.details = element.details;
+            newModelComponent.classificationTags.push({
+                id: 'component',
+                name: 'Component'
+            });
+            
         }
 
         return newModelComponent;

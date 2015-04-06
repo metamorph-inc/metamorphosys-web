@@ -6,6 +6,8 @@ var glMatrix = require('glMatrix');
 
 var DiagramComponent = function(descriptor) {
 
+    this.classificationTags = [];
+
     if (!angular.isObject(descriptor.symbol)) {
         throw new Error('No symbol found for component ' + this.id);
     }

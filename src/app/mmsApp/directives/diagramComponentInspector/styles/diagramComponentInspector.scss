@@ -1,5 +1,6 @@
 .diagram-component-inspector {
 	
+
 	.no-inspectable-message {
 		text-align: center;
   		height: 140px;
@@ -7,44 +8,31 @@
   		font-style: italic;
 	}
 
-	.inspectable-name-display {
-		height: 30px;
-		line-height: 30px;
-		padding-left: 3px;
-
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;		
-
-        cursor: default;
+	.editable-error {
+		position: absolute;
 	}
 
-	.inspectable-name-edit {
-		height: 30px;
-	}
-
-	.inspectable-name {
-
+	.classification-tags {
 		display: inline-block;
-		font-weight: bold;
-		font-size: 110%;
+		margin-left: 1ex;
+		vertical-align: top;
 
-		&:hover {
-			.name-edit-icon {			
-				opacity: 1;
-			}
+		.taxonomy-term {
+			cursor: default;
+			opacity: 1;
+			background-color: #0D47A1;
 		}
 	}
 
-	.name-edit-icon {
-		cursor: pointer;
-		opacity: 0;
+	.original-name {
+		vertical-align: top;		
+  		display: inline-block;
+  		margin-left: 1ex;		
+  		color: #aaa;  		
 	}
 
-	.name-save-icon {
-		cursor: pointer;
+	.inspectable-details {
+		position: absolute;
+		top: 50px;
 	}
-
 }
