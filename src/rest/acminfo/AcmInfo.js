@@ -3,7 +3,7 @@
  http://localhost:8855/rest/external/acminfo/8cc3c61bf55695128925b21b583054cfdecaed49
  */
 
-define(['logManager',
+define(['common/LogManager',
         'blob/BlobClient',
         'q',
         'acminfo/ParseAcm'
