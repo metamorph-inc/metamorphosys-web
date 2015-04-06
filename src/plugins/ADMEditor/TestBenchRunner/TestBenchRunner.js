@@ -130,8 +130,8 @@ define(['plugin/PluginConfig',
             callback('Active node is not present!', self.result);
             return;
         }
-        if (self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) === false) {
-            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel.', 'error');
+        if (self.isMetaTypeOf(self.activeNode, self.META.AVMTestBenchModel) === false && self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
+            self.createMessage(null, 'This plugin must be called from an AVMTestBenchModel or AVMDesignModel.', 'error');
             callback(null, self.result);
             return;
         }
@@ -139,7 +139,21 @@ define(['plugin/PluginConfig',
         self.runExecution = currentConfig.run;
         self.saveToModel = currentConfig.save;
         self.cfgPath = currentConfig.configurationPath;
+        self.activeNodeName = self.core.getAttribute(self.activeNode, 'name');
 
+        if (self.isMetaTypeOf(self.activeNode, self.META.Container)) {
+            self.referencedDesign = self.activeNode;
+            self.getAdmAndAcms2(self.referencedDesign, function (err) {
+                self.generateExecutionFiles(null, function (err, artifact) {
+                    if (err) {
+                        callback('Could generateExecutionFiles : err' + err.toString(), self.result);
+                        return;
+                    }
+                    self.saveAndRun(artifact, null, callback);
+                });
+            });
+            return;
+        }
         self.getTestBenchInfo(self.activeNode, function (err, testBenchInfo) {
             if (err) {
                 self.logger.error('getTestBenchInfo returned with error: ' + err.toString());
@@ -161,124 +175,134 @@ define(['plugin/PluginConfig',
                         callback('Could generateExecutionFiles : err' + err.toString(), self.result);
                         return;
                     }
-                    artifact.save(function (err, hash) {
-                        if (err) {
-                            callback('Could not save artifact : err' + err.toString(), self.result);
-                            return;
-                        }
-                        self.result.addArtifact(hash);
-                        if (self.runExecution) {
-                            self.executeJob(hash, testBenchInfo, function (err, success) {
+                    self.saveAndRun(artifact, testBenchInfo, callback);
+                });
+            });
+        });
+    };
+
+    TestBenchRunner.prototype.saveAndRun = function (artifact, testBenchInfo, callback) {
+        var self = this;
+        artifact.save(function (err, hash) {
+            if (err) {
+                callback('Could not save artifact : err' + err.toString(), self.result);
+                return;
+            }
+            self.result.addArtifact(hash);
+            if (self.runExecution) {
+                self.executeJob(hash, testBenchInfo, function (err, success) {
+                    if (err) {
+                        self.logger.error(err);
+                        self.createMessage(null, err, 'error');
+
+                        callback(err, self.result);
+                        return;
+                    }
+                    self.result.setSuccess(success);
+                    if ((testBenchInfo && self.saveToModel) && self.cfgPath) {
+                        self.loadLatestRoot(function (err, latestRootNode) {
+                            if (err) {
+                                self.logger.error(err);
+                                callback(err, self.result);
+                                return;
+                            }
+                            self.core.loadByPath(latestRootNode, self.resultsData
+                                .configurationPath, function (err, cfgNode) {
+                                var resultNode;
                                 if (err) {
                                     self.logger.error(err);
                                     callback(err, self.result);
                                     return;
                                 }
-                                self.result.setSuccess(success);
-                                if (self.saveToModel && self.cfgPath) {
-                                    self.loadLatestRoot(function (err, latestRootNode) {
-                                        if (err) {
-                                            self.logger.error(err);
-                                            callback(err, self.result);
-                                            return;
-                                        }
-                                        self.core.loadByPath(latestRootNode, self.resultsData
-                                            .configurationPath, function (err, cfgNode) {
-                                            var resultNode;
+                                self.core.loadByPath(latestRootNode, self.resultsData
+                                    .resultMetaNodePath, function (err,
+                                                                   resMetaNode) {
+                                    if (err) {
+                                        self.logger.error(err);
+                                        callback(err, self.result);
+                                        return;
+                                    }
+
+                                    self.core.loadByPath(
+                                        latestRootNode, self.resultsData
+                                            .executedTestBenchPath,
+                                        function (err, tbNode) {
                                             if (err) {
                                                 self.logger.error(err);
                                                 callback(err, self.result);
                                                 return;
                                             }
-                                            self.core.loadByPath(latestRootNode, self.resultsData
-                                                .resultMetaNodePath, function (err,
-                                                                               resMetaNode) {
-                                                if (err) {
-                                                    self.logger.error(err);
-                                                    callback(err, self.result);
-                                                    return;
-                                                }
-
-                                                self.core.loadByPath(
-                                                    latestRootNode, self.resultsData
-                                                        .executedTestBenchPath,
-                                                    function (err, tbNode) {
-                                                        if (err) {
-                                                            self.logger.error(err);
-                                                            callback(err, self.result);
-                                                            return;
-                                                        }
-                                                        resultNode = self.core.createNode({
-                                                            parent: cfgNode,
-                                                            base: resMetaNode
-                                                        });
-                                                        self.core.setAttribute(
-                                                            resultNode, 'name', new Date()
-                                                                .toString());
-                                                        self.core.setAttribute(
-                                                            resultNode, 'CfgAdm',
-                                                            self.resultsData.cfgAdm
-                                                        );
-                                                        self.core.setPointer(
-                                                            resultNode,
-                                                            'ExecutedTestBench',
-                                                            tbNode);
-                                                        self.core.setAttribute(
-                                                            resultNode,
-                                                            'TestBenchManifest',
-                                                            'See Artifacts...');
-                                                        self.core.setAttribute(
-                                                            resultNode, 'Artifacts',
-                                                            self.resultsData.testBenchManifest
-                                                        );
-                                                        self.logger.info(
-                                                            'Execution succeeded for test-bench "' +
-                                                            testBenchInfo.name +
-                                                            '".');
-                                                        self.save('Test-bench "' +
-                                                            testBenchInfo.name +
-                                                            '" results was updated after execution.',
-                                                            function (err) {
-                                                                if (err) {
-                                                                    self.result.setSuccess(
-                                                                        false);
-                                                                    callback(err,
-                                                                        self.result
-                                                                    );
-                                                                }
-                                                                self.createMessage(
-                                                                    resultNode,
-                                                                    'Results saved to result node.',
-                                                                    'info');
-                                                                callback(null,
-                                                                    self.result);
-                                                            });
-                                                    });
+                                            if (self.resultsData.dashboard) {
+                                                self.core.setAttribute(testBenchInfo.node, 'Results', self.resultsData.dashboard);
+                                            }
+                                            resultNode = self.core.createNode({
+                                                parent: cfgNode,
+                                                base: resMetaNode
                                             });
+                                            self.core.setAttribute(
+                                                resultNode, 'name', new Date()
+                                                    .toString());
+                                            self.core.setAttribute(
+                                                resultNode, 'CfgAdm',
+                                                self.resultsData.cfgAdm
+                                            );
+                                            self.core.setPointer(
+                                                resultNode,
+                                                'ExecutedTestBench',
+                                                tbNode);
+                                            self.core.setAttribute(
+                                                resultNode,
+                                                'TestBenchManifest',
+                                                'See Artifacts...');
+                                            self.core.setAttribute(
+                                                resultNode, 'Artifacts',
+                                                self.resultsData.testBenchManifest
+                                            );
+                                            self.logger.info(
+                                                'Execution succeeded for test-bench "' +
+                                                self.activeNodeName +
+                                                '".');
+                                            self.save('Test-bench "' +
+                                                self.activeNodeNamee +
+                                                '" results was updated after execution.',
+                                                function (err) {
+                                                    if (err) {
+                                                        self.result.setSuccess(
+                                                            false);
+                                                        callback(err,
+                                                            self.result
+                                                        );
+                                                    }
+                                                    self.createMessage(
+                                                        resultNode,
+                                                        'Results saved to result node.',
+                                                        'info');
+                                                    callback(null,
+                                                        self.result);
+                                                });
                                         });
-                                    });
-                                } else if (self.saveToModel && success) {
-                                    self.save('Test-bench "' + testBenchInfo.name +
-                                    '" results was updated after execution.', function (err) {
-                                        if (err) {
-                                            self.result.setSuccess(false);
-                                            callback(err, self.result);
-                                        }
-                                        self.createMessage(null,
-                                            'Results saved to test-bench node.', 'info');
-                                        callback(null, self.result);
-                                    });
-                                } else {
-                                    callback(null, self.result);
-                                }
+                                });
                             });
-                        } else {
-                            self.result.setSuccess(true);
+                        });
+                    } else if (self.saveToModel && success) {
+                        self.save('Test-bench "' + self.activeNodeName +
+                        '" results was updated after execution.', function (err) {
+                            if (err) {
+                                self.result.setSuccess(false);
+                                callback(err, self.result);
+                            }
+                            self.createMessage(null,
+                                'Results saved to test-bench node.', 'info');
                             callback(null, self.result);
-                        }
-                    });
+                        });
+                    } else {
+                        callback(null, self.result);
+                    }
                 });
-            });
+            } else {
+                self.result.setSuccess(true);
+                callback(null, self.result);
+            }
         });
     };
 
@@ -327,6 +351,31 @@ define(['plugin/PluginConfig',
         });
     };
 
+    TestBenchRunner.prototype.getAdmAndAcms2 = function (designNode, callback) {
+        var self = this;
+        self.initializeAdmExporter();
+        self.admExporter.rootPath = self.core.getPath(designNode);
+        self.admExporter.setupDesertCfg(self.cfgPath, function (err) {
+            if (err) {
+                callback('Failed setting up desertConfigurations, err: ' + err);
+                return;
+            }
+            if (self.admExporter.selectedAlternatives) {
+                self.logger.info('Running on single configuration');
+                self.logger.info(JSON.stringify(self.admExporter.selectedAlternatives, null));
+            }
+            self.admExporter.exploreDesign(designNode, true, function (err) {
+                if (err) {
+                    callback('AdmExporter.exploreDesign failed with error: ' + err);
+                    return;
+                }
+                self.admData = self.admExporter.admData;
+                self.designAcmFiles = self.admExporter.acmFiles;
+                callback(null);
+            });
+        });
+    };
+
     TestBenchRunner.prototype.getAdmAndAcms = function (designNode, testBenchInfos, callback) {
         var self = this;
         self.checkDesignAgainstTLSUTs(designNode, testBenchInfos, function (err, result) {
@@ -339,27 +388,7 @@ define(['plugin/PluginConfig',
                 callback('Design did not match TopLevelSystemUnderTests!');
                 return;
             }
-            self.initializeAdmExporter();
-            self.admExporter.rootPath = self.core.getPath(designNode);
-            self.admExporter.setupDesertCfg(self.cfgPath, function (err) {
-                if (err) {
-                    callback('Failed setting up desertConfigurations, err: ' + err);
-                    return;
-                }
-                if (self.admExporter.selectedAlternatives) {
-                    self.logger.info('Running on single configuration');
-                    self.logger.info(JSON.stringify(self.admExporter.selectedAlternatives, null));
-                }
-                self.admExporter.exploreDesign(designNode, true, function (err) {
-                    if (err) {
-                        callback('AdmExporter.exploreDesign failed with error: ' + err);
-                        return;
-                    }
-                    self.admData = self.admExporter.admData;
-                    self.designAcmFiles = self.admExporter.acmFiles;
-                    callback(null);
-                });
-            });
+            self.getAdmAndAcms2(designNode, callback);
         });
     };
 
@@ -500,7 +529,7 @@ define(['plugin/PluginConfig',
         filesToAdd[self.admData['@Name'] + '.adm'] = self.admString;
         filesToAdd['run_execution.cmd'] = self.run_exec_cmd;
         filesToAdd['execute.py'] = self.exec_py;
-        executorConfig = JSON.stringify({
+        executorConfig = {
             cmd: 'run_execution.cmd',
             resultArtifacts: [
                 //    {
@@ -526,22 +555,9 @@ define(['plugin/PluginConfig',
                     resultPatterns: ['designs/**']
                 }]
 
-        }, null, 4);
-        filesToAdd['executor_config.json'] = executorConfig;
-        testbenchConfig = JSON.stringify({
-            name: testBenchInfo.name,
-            path: testBenchInfo.path
-        }, null, 4);
-        filesToAdd['testbench_config.json'] = testbenchConfig;
-        self.logger.info('TestBenchConfig : ' + testbenchConfig);
-        self.logger.info('ExecutorConfig  : ' + executorConfig);
+        };
 
-        artifact = self.blobClient.createArtifact(testBenchInfo.name);
-        artifact.addMetadataHash('tbAsset.zip', testBenchInfo.testBenchFilesHash, function (err, hash) {
-            if (err) {
-                callback('Could not add tbAsset.zip from test-bench : err' + err.toString());
-                return;
-            }
+        var addObjectHashes = function addObjectHashes() {
             artifact.addObjectHashes(self.designAcmFiles, function (err, hashes) {
                 if (err) {
                     callback('Could not add acm files : err' + err.toString());
@@ -555,7 +571,35 @@ define(['plugin/PluginConfig',
                     callback(null, artifact);
                 });
             });
-        });
+        };
+
+        artifact = self.blobClient.createArtifact(self.activeNodeName);
+        filesToAdd['executor_config.json'] = JSON.stringify(executorConfig, null, 4);
+        if (testBenchInfo) {
+            testbenchConfig = JSON.stringify({
+                name: testBenchInfo.name,
+                path: testBenchInfo.path
+            }, null, 4);
+            filesToAdd['testbench_config.json'] = testbenchConfig;
+            self.logger.info('TestBenchConfig : ' + testbenchConfig);
+            self.logger.info('ExecutorConfig  : ' + filesToAdd['executor_config.json']);
+
+            artifact.addMetadataHash('tbAsset.zip', testBenchInfo.testBenchFilesHash, function (err, hash) {
+                if (err) {
+                    callback('Could not add tbAsset.zip from test-bench : err' + err.toString());
+                    return;
+                }
+                addObjectHashes();
+            });
+        } else {
+            executorConfig.resultArtifacts.push(
+                {
+                    name: 'mga',
+                    resultPatterns: ['*.mga', 'components/**', 'designs/**']
+                });
+            filesToAdd['executor_config.json'] = JSON.stringify(executorConfig, null, 4);
+            addObjectHashes();
+        }
     };
 
     TestBenchRunner.prototype.executeJob = function (artifactHash, testBenchInfo, callback) {
@@ -573,14 +617,14 @@ define(['plugin/PluginConfig',
             var intervalID,
                 atSucceedJob;
             if (err) {
-                callback('Creating job failed for "' + testBenchInfo.name + '", err: ' + err.toString(), false);
+                callback('Creating job failed for "' + self.activeNodeName + '", err: ' + err.toString(), false);
                 return;
             }
             self.logger.info('Initial job-info:' + JSON.stringify(jobInfo, null, 4));
 
             atSucceedJob = function (jInfo) {
                 var key;
-                self.logger.info('Execution for test-bench "' + testBenchInfo.name + '"  succeeded.');
+                self.logger.info('Execution for test-bench "' + self.activeNodeName + '"  succeeded.');
                 self.logger.info('Its final JobInfo looks like : ' + JSON.stringify(jInfo, null, 4));
                 for (key in jInfo.resultHashes) {
                     if (jInfo.resultHashes.hasOwnProperty(key)) {
@@ -595,22 +639,20 @@ define(['plugin/PluginConfig',
                     if (metadata.content.hasOwnProperty('_FAILED.txt')) {
                         self.createMessage(testBenchInfo.node,
                             'Execution had errors - download execution_results for "' +
-                            testBenchInfo.name + '" and read _FAILED.txt', 'error');
+                            self.activeNodeName + '" and read _FAILED.txt', 'error');
                         callback(null, false);
                         return;
-                    }
-                    if (jInfo.resultHashes.dashboard) {
-                        self.core.setAttribute(testBenchInfo.node, 'Results', jInfo.resultHashes.dashboard);
                     }
                     // Save data that is needed for storing data result node.
                     self.resultsData = {
                         cfgAdm: jInfo.resultHashes.cfgAdm,
-                        executedTestBenchPath: self.core.getPath(testBenchInfo.node),
+                        executedTestBenchPath: self.core.getPath(self.activeNode),
                         testBenchManifest: jInfo.resultHashes.testBenchManifest,
                         resultMetaNodePath: self.core.getPath(self.meta.Result),
-                        configurationPath: self.cfgPath
+                        configurationPath: self.cfgPath,
+                        dashboard: jInfo.resultHashes.dashboard
                     };
-                    self.logger.info('Execution succeeded for test-bench "' + testBenchInfo.name + '".');
+                    self.logger.info('Execution succeeded for test-bench "' + self.activeNodeName + '".');
                     callback(null, true);
                 });
             };
@@ -629,8 +671,8 @@ define(['plugin/PluginConfig',
                     if (jInfo.status === 'SUCCESS') {
                         atSucceedJob(jInfo);
                     } else {
-                        self.result.addArtifact(jInfo.resultHashes[testBenchInfo.name + '_logs']);
-                        self.result.addArtifact(jInfo.resultHashes[testBenchInfo.name + '_all']);
+                        self.result.addArtifact(jInfo.resultHashes.logs);
+                        self.result.addArtifact(jInfo.resultHashes.all);
                         callback('Job execution failed', false);
                     }
                 });
