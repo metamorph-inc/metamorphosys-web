@@ -13,32 +13,34 @@ if (process.argv.length < 3) {
     return;
 }
 
-var config = require('./config.json'),
+var config = require('./config.js'),
     webgme = require('webgme'),
     fs = require('fs'),
     path = require('path');
 
 var startDir = path.resolve(process.argv[2]);
 
-config.paths.blob = './node_modules/webgme/src/middleware/blob'
-// updating default configuration with ours
-WebGMEGlobal.setConfig(config);
-
-//var requirejs = WebGMEGlobal.requirejs;
-//var BlobFSBackend = requirejs('blob/BlobFSBackend');
-//var BlobRunPluginClient = requirejs('blob/BlobRunPluginClient');
-//var blobClient = new BlobRunPluginClient(blobBackend);
-
-var bc = WebGMEGlobal.requirejs('blob/BlobClient');
+var bc = webgme.requirejs('blob/BlobClient');
 var host, port, httpsecure;
 if (process.argv[3]) {
     var url = require('url').parse(process.argv[3]);
+    host = url.hostname;
+    httpsecure = url.protocol === 'https:';
+    port = url.port || (httpsecure ? 443 : 80);
 } else {
     host = 'localhost';
-    port = config.port;
+    port = config.server.port;
     httpsecure = false;
 }
-var blobClient = new bc({server: process.argv[3] || , serverPort: port, httpsecure: httpsecure });
+console.log('host ' +  port)
+var blobClient = new bc({server: host, serverPort: port, httpsecure: httpsecure,
+  keepaliveAgentOptions : {
+    maxSockets: 1,
+    maxFreeSockets: 10,
+    timeout: 60000,
+    keepAliveTimeout: 30000 // free socket keep alive for 30 seconds
+}
+});
 
 var walk = function(dir, done) {
     var results = [];
@@ -119,8 +121,6 @@ function AddFiles(err, files, callback) {
                     }
 
                     console.log('All files were added successfully.');
-
-                    var port = WebGMEGlobal.getConfig().port;
 
                     console.log(artifactName + ' - localhost:' + port);
                     console.log(' - metadata: localhost:' + port + blobClient.getMetadataURL(artifactHash));
