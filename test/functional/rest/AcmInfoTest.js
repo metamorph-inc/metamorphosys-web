@@ -100,4 +100,27 @@ describe('AcmInfo', function () {
             .nodeify(done);
     });
 
+    it('should have markdown', function (done) {
+        getAcmInfo('3332d44782501b6d3d6248f073340f76170d0ee7')
+            .then(function (info) {
+                delete info.icon;
+                var startOfDocumentation = '<h1>PART NAME</h1>\n<h2>BP103-3/4</h2>';
+                expect(info.documentation.substr(0, startOfDocumentation.length)).to.equal(startOfDocumentation);
+                delete info.documentation;
+                expect(info).to.deep.equal(
+                    {
+                        'classification': 'optoelectronics.detectors.single_sensor_detectors.phototransistor',
+                        'datasheet': '/rest/blob/download/3332d44782501b6d3d6248f073340f76170d0ee7/doc%2FBP103_datasheet.pdf',
+                        'name': 'BP103-3-4',
+                        'properties': {
+                            'octopart_mpn': {
+                                'value': 'BP103-3/4'
+                            }
+                        }
+                    }
+                );
+            })
+            .nodeify(done);
+    });
+
 });

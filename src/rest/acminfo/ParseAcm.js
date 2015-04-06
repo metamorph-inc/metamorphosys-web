@@ -6,6 +6,7 @@ define(['xmljsonconverter',
 ], function (xmljsonconverter, q, JSZip) {
 
     'use strict';
+    var commonmark = require('commonmark');
 
     var ParseAcm = function (id) {
         this.id = id;
@@ -69,7 +70,10 @@ define(['xmljsonconverter',
                     if (dependency && dependency['@Path']) {
                         var path = dependency['@Path'].replace('\\', '/');
                         if (acmZip.file(path)) {
-                            acmInfo.datasheet = acmZip.file(path).asText(); // TODO render this
+                            var reader = new commonmark.Parser();
+                            var writer = new commonmark.HtmlRenderer();
+                            var parsed = reader.parse(acmZip.file(path).asText());
+                            acmInfo.documentation = writer.render(parsed);
                         }
                     }
                 })();
