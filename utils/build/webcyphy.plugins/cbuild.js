@@ -12,7 +12,7 @@
         jszip: './node_modules/webgme/src/client/lib/jszip/jszip',
         ejs: './node_modules/webgme/src/common/util/ejs',
         executor: './node_modules/webgme/src/middleware/executor',
-        superagent: './node_modules/webgme/node_modules/superagent/superagent',
+        superagent: './node_modules/webgme/src/client/lib/superagent/superagent',
         'plugin/AdmExporter': './src/plugins/ADMEditor',
         'plugin/TestBenchRunner': './src/plugins/ADMEditor',
         'plugin/AtmExporter': './src/plugins/ADMEditor',
