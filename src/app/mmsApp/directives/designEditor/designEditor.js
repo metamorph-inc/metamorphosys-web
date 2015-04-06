@@ -373,6 +373,8 @@ angular.module('mms.designEditor', [
 
                                                 if (component) {
                                                     component.setLabel(designStructureUpdateObject.data.name);
+
+                                                    $rootScope.$emit('nameWasChanged', projectHandling.getSelectedContainer());
                                                 }
 
                                             }

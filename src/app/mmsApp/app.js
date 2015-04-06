@@ -74,12 +74,18 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'ngTouch',
     'ngMaterial',
     'ang-drag-drop',
-    'ngCookies'
+    'ngCookies',
+
+    'xeditable'
 ]);
 
 require('./appInit');
 require('./appConfig');
 
+CyPhyApp.run(function(editableOptions, editableThemes) {
+    editableThemes.bs3.buttonsClass = 'md-raised md-primary md-button md-default-theme';
+    editableOptions.theme = 'bs3';
+});
 
 CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
                                                $timeout, projectHandling, $animate) {

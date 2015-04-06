@@ -2,24 +2,13 @@
 	<div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
 	<div ng-if="ctrl.inspectable">
 		<div class="inspectable-name">
-			<div class="inspectable-name-display" ng-if="!ctrl.nameEditing">
-				{{ctrl.inspectable.label}} 
-				<a ng-if="ctrl.inspectable.readonly !== true" class="name-edit-icon" ng-click="ctrl.startNameEdit()"><i class="glyphicon glyphicon-pencil"></i></a>
-			</div>
-			<div  class="inspectable-name-edit" ng-if="ctrl.nameEditing">
-				<form name="nameForm">
-					<input ng-model="ctrl.inspectable.label" 
-						name="name"
-						ng-maxlength="20" 
-						ng-blur="ctrl.cancelNameEdit(nameForm.name)"
-						ng-keyup="ctrl.onKeyup(nameForm.name, $event)"
-						ng-model-options="{ updateOn: '' }"
-						>
-					<a class="name-save-icon" ng-click="ctrl.completeNameEdit(nameForm.name)"><i class="glyphicon glyphicon-ok"></i></a>	
-				</form>
-			</div>
-			<div class="inspectable-details" ng-switch="ctrl.inspectable.metaType">
-			</div>
+  			<a href="#" editable-text="ctrl.inspectable.label"
+  				onbeforesave="ctrl.isNameValid($data)"
+  				onaftersave="ctrl.commitName()">
+  				{{ ctrl.inspectable.label || "empty" }}
+  			</a>			
 		</div>
+		<div class="inspectable-details" ng-switch="ctrl.inspectable.metaType">
+		</div>		
 	</div>
 </div>

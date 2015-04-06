@@ -14,8 +14,6 @@ angular.module('mms.diagramComponentInspector', [
 
             function DiagramComponentInspectorController($scope, $rootScope) {
 
-                var self = this;
-
                 this.$rootScope = $rootScope;
                 this.nameEditing = false;
 
@@ -23,45 +21,21 @@ angular.module('mms.diagramComponentInspector', [
                     noInspectableMessage: 'Select a single diagram element to inspect.'
                 };
 
-
-                $scope.$watch(function() {
-                    return self.inspectable;
-                }, function(newVal, oldVal) {
-
-                    if (newVal !== oldVal) {
-                        self.nameEditing = false;
-                    }
-
-                });
-
             }
 
-            DiagramComponentInspectorController.prototype.startNameEdit = function() {
-                this.nameEditing = true;
-            };
 
-            DiagramComponentInspectorController.prototype.completeNameEdit = function(control) {
+            DiagramComponentInspectorController.prototype.commitName = function(control) {
 
-                control.$commitViewValue();
                 this.$rootScope.$emit('componentLabelMustBeSaved', this.inspectable);
 
-                this.nameEditing = false;
             };
 
-            DiagramComponentInspectorController.prototype.cancelNameEdit = function(control) {
-                control.$rollbackViewValue();
-                this.nameEditing = false;
-            };
+            DiagramComponentInspectorController.prototype.isNameValid = function(data) {
 
-            DiagramComponentInspectorController.prototype.onKeyup = function(control, e) {
-                
-                if (e.keyCode === 27) {
-                    this.cancelNameEdit(control);
+                if (data.length < 1 || data.length > 20) {
+                    return 'Name should be between 1 and 20 characters long!';
                 }
 
-                if (e.keyCode === 13) {
-                    this.completeNameEdit(control);                
-                }
             };
 
             return {

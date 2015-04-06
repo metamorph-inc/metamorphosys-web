@@ -9,52 +9,50 @@ angular.module(
         'mms.designSelector'
     ])
 
-    .directive(
+.directive(
     'mainNavigator',
 
-    function () {
+    function() {
 
         return {
             scope: {},
             restrict: 'E',
             replace: true,
-            controller: function ($rootScope, $scope, $mdDialog, projectHandling) {
+            controller: function($rootScope, $scope, $mdDialog, projectHandling) {
 
                 var self = this,
                     defaultNavigatorItems,
-                    parseDesignName;
+                    parseDesignName,
+                    renderNavigator;
 
-                defaultNavigatorItems = [
-                    {
-                        id: 'root',
-                        label: '',
-                        itemClass: 'cyphy-root',
-                        action: function (item, ev) {
+                defaultNavigatorItems = [{
+                    id: 'root',
+                    label: '',
+                    itemClass: 'cyphy-root',
+                    action: function(item, ev) {
 
-                            function DialogController($scope) {
+                        function DialogController($scope) {
 
-                                $scope.designsToSelect = require('./designsToSelect.js');
+                            $scope.designsToSelect = require('./designsToSelect.js');
 
-                            }
+                        }
 
-                            $mdDialog.show({
+                        $mdDialog.show({
                                 controller: DialogController,
                                 template: '<md-dialog class="design-selector-dialog"><design-selector designs="::designsToSelect"></design-selector></md-dialog>',
                                 targetEvent: ev
                             })
-                                .then(function () {
-                                });
+                            .then(function() {});
 
-                        }
                     }
-                ];
+                }];
 
                 this.navigator = {
                     separator: true,
                     items: angular.copy(defaultNavigatorItems, [])
                 };
 
-                parseDesignName = function (originalName) {
+                parseDesignName = function(originalName) {
 
                     var result;
 
@@ -64,9 +62,8 @@ angular.module(
 
                 };
 
-                $scope.$watch(function () {
-                    return projectHandling.getSelectedContainer();
-                }, function (activeContainer) {
+
+                renderNavigator = function(activeContainer) {
 
                     var path,
                         designs,
@@ -83,12 +80,12 @@ angular.module(
                             items: []
                         };
 
-                        angular.forEach(designs, function(design){
+                        angular.forEach(designs, function(design) {
 
                             designMenu.items.push({
                                 id: design.id,
                                 label: parseDesignName(design.name),
-                                action: function () {
+                                action: function() {
 
                                     if (projectHandling.getSelectedDesignId() !== design.id) {
                                         $rootScope.$emit('designMustBeOpened', design);
@@ -105,7 +102,7 @@ angular.module(
 
                         }
 
-                        angular.forEach(path, function (container) {
+                        angular.forEach(path, function(container) {
 
                             var item,
                                 submenu;
@@ -113,7 +110,7 @@ angular.module(
                             item = {
                                 id: container.id,
                                 label: parseDesignName(container.name),
-                                action: function () {
+                                action: function() {
 
                                     if (projectHandling.getSelectedContainerId() !== container.id) {
                                         $rootScope.$emit('containerMustBeOpened', container);
@@ -128,12 +125,12 @@ angular.module(
                                     items: []
                                 };
 
-                                angular.forEach(container.childContainers, function (childContainer) {
+                                angular.forEach(container.childContainers, function(childContainer) {
 
                                     submenu.items.push({
                                         id: childContainer.id,
                                         label: parseDesignName(childContainer.name),
-                                        action: function () {
+                                        action: function() {
 
                                             if (projectHandling.getSelectedContainerId() !== childContainer.id) {
                                                 $rootScope.$emit('containerMustBeOpened', childContainer);
@@ -161,15 +158,21 @@ angular.module(
                         self.navigator.items = angular.copy(defaultNavigatorItems, []);
                     }
 
+                };
+
+                $rootScope.$on('nameWasChanged', function($e, container) {
+                    renderNavigator(container);
                 });
 
+                $scope.$watch(function() {
+                    return projectHandling.getSelectedContainer();
+                }, renderNavigator);
 
             },
             bindToController: true,
             controllerAs: 'ctrl',
             templateUrl: '/mmsApp/templates/mainNavigator.html',
-            link: function () {
-            }
+            link: function() {}
         };
     }
 );
