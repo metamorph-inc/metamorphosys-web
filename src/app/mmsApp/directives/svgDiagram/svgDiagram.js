@@ -13,20 +13,20 @@ require('./operations/relabelComponent.js');
 require('./operations/moveWires.js');
 
 angular.module('mms.svgDiagram', [
-    'mms.designVisualization.gridService',
-    'mms.designVisualization.componentWire',
+        'mms.designVisualization.gridService',
+        'mms.designVisualization.componentWire',
 
-    'mms.designVisualization.operationsManager',
-    'mms.designVisualization.operations.moveComponents',
-    'mms.designVisualization.operations.rotateComponents',
-    'mms.designVisualization.operations.reorderComponent',
-    'mms.designVisualization.operations.relabelComponent',
-    'mms.designVisualization.operations.moveWire',
-    'monospaced.mousewheel',
+        'mms.designVisualization.operationsManager',
+        'mms.designVisualization.operations.moveComponents',
+        'mms.designVisualization.operations.rotateComponents',
+        'mms.designVisualization.operations.reorderComponent',
+        'mms.designVisualization.operations.relabelComponent',
+        'mms.designVisualization.operations.moveWire',
+        'monospaced.mousewheel',
 
-    'isis.ui.contextmenu'
-])
-    .controller('SVGDiagramController', function ($scope, $rootScope, $log, diagramService, wiringService, 
+        'isis.ui.contextmenu'
+    ])
+    .controller('SVGDiagramController', function($scope, $rootScope, $log, diagramService, wiringService,
         gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
 
         var
@@ -129,9 +129,9 @@ angular.module('mms.svgDiagram', [
 
         $scope.selectedRouter = $scope.routerTypes[0];
 
-        $scope.onDiagramMouseDown = function ($event) {
+        $scope.onDiagramMouseDown = function($event) {
 
-           if ($event.which === 3) {
+            if ($event.which === 3) {
                 contextMenuHandler.onDiagramContextmenu($event);
             } else {
 
@@ -142,7 +142,7 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        $scope.onDiagramMouseUp = function ($event) {
+        $scope.onDiagramMouseUp = function($event) {
 
 
             if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
@@ -159,12 +159,12 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        $scope.onDiagramClick = function (/*$event*/) {
+        $scope.onDiagramClick = function( /*$event*/ ) {
 
 
         };
 
-        $scope.onDiagramMouseMove = function ($event) {
+        $scope.onDiagramMouseMove = function($event) {
 
             componentDragHandler.onDiagramMouseMove($event);
             wireDragHandler.onDiagramMouseMove($event);
@@ -173,7 +173,7 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        $scope.getCssClass = function () {
+        $scope.getCssClass = function() {
 
             var result = '';
 
@@ -193,11 +193,11 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        $scope.onDiagramMouseWheel = function(/*$event, $delta, $deltaX, $deltaY*/) {
-//            console.log($event, $delta, $deltaX, $deltaY);
+        $scope.onDiagramMouseWheel = function( /*$event, $delta, $deltaX, $deltaY*/ ) {
+            //            console.log($event, $delta, $deltaX, $deltaY);
         };
 
-        $scope.onDiagramMouseLeave = function ($event) {
+        $scope.onDiagramMouseLeave = function($event) {
 
             componentDragHandler.onDiagramMouseLeave($event);
             wireDragHandler.onDiagramMouseLeave($event);
@@ -206,19 +206,19 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        $$window.blur(function ($event) {
-
+        function onWindowBlur($event) {
             componentDragHandler.onWindowBlur($event);
             wireDragHandler.onWindowBlur($event);
             wireDrawHandler.onWindowBlur($event);
             panHandler.onWindowBlur($event);
+        }
 
-        });
+        $$window.on('blur', onWindowBlur);
 
 
         // Interactions with components
 
-        this.onComponentMouseUp = function (component, $event) {
+        this.onComponentMouseUp = function(component, $event) {
 
             if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                 $event.which !== 3) {
@@ -234,7 +234,7 @@ angular.module('mms.svgDiagram', [
             }
         };
 
-        this.onPortMouseDown = function (component, port, $event) {
+        this.onPortMouseDown = function(component, port, $event) {
 
             if (!wireDrawHandler.wiring && $event.which === 3) {
 
@@ -246,7 +246,7 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        this.onPortMouseUp = function (component, port, $event) {
+        this.onPortMouseUp = function(component, port, $event) {
 
             if (panHandler.panning) {
                 panHandler.onPortMouseUp($event);
@@ -256,13 +256,13 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        this.onPortClick = function (component, port, $event) {
+        this.onPortClick = function(component, port, $event) {
 
             $event.stopPropagation();
 
         };
 
-        this.onComponentMouseDown = function (component, $event) {
+        this.onComponentMouseDown = function(component, $event) {
 
             if ($event.which === 3) {
 
@@ -275,14 +275,14 @@ angular.module('mms.svgDiagram', [
             }
         };
 
-        this.onWireMouseUp = function (wire, segment, $event) {
+        this.onWireMouseUp = function(wire, segment, $event) {
 
             wireDragHandler.onWireMouseUp(wire, segment, $event);
             $event.stopPropagation();
 
         };
 
-        this.onWireMouseDown = function (wire, segment, $event) {
+        this.onWireMouseDown = function(wire, segment, $event) {
 
             if ($event.which === 3) {
 
@@ -304,14 +304,14 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        this.onWireCornerMouseUp = function (wire, segment, $event) {
+        this.onWireCornerMouseUp = function(wire, segment, $event) {
 
             wireDragHandler.onWireMouseUp(wire, segment, $event);
             $event.stopPropagation();
 
         };
 
-        this.onWireCornerMouseDown = function (wire, segment, $event) {
+        this.onWireCornerMouseDown = function(wire, segment, $event) {
 
             if ($event.which === 3) {
 
@@ -325,21 +325,21 @@ angular.module('mms.svgDiagram', [
             }
         };
 
-        this.isEditable = function () {
+        this.isEditable = function() {
 
             $scope.diagram.config = $scope.diagram.config || {};
 
             return $scope.diagram.config.editable === true;
         };
 
-        this.disallowSelection = function () {
+        this.disallowSelection = function() {
 
             $scope.diagram.config = $scope.diagram.config || {};
 
             return $scope.diagram.config.disallowSelection === true;
         };
 
-        this.registerComponentElement = function (id, el) {
+        this.registerComponentElement = function(id, el) {
 
             componentElements = componentElements || {};
 
@@ -347,7 +347,7 @@ angular.module('mms.svgDiagram', [
 
         };
 
-        this.unregisterComponentElement = function (id) {
+        this.unregisterComponentElement = function(id) {
 
             componentElements = componentElements || {};
 
@@ -357,6 +357,11 @@ angular.module('mms.svgDiagram', [
 
         $rootScope.snapToGrid = true;
 
+        $scope.$on('$destroy', function() {
+            $$window.off('blur', onWindowBlur);
+        });
+
+
     })
     .directive('svgDiagram', [
         '$rootScope',
@@ -364,7 +369,7 @@ angular.module('mms.svgDiagram', [
         'diagramService',
         'gridService',
         '$timeout',
-        function ($rootScope, $log, diagramService, gridService, $timeout) {
+        function($rootScope, $log, diagramService, gridService, $timeout) {
 
             return {
                 controller: 'SVGDiagramController',
@@ -375,18 +380,18 @@ angular.module('mms.svgDiagram', [
                 },
                 replace: true,
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
-                link: function (scope, element, attributes, diagramContainerController) {
+                link: function(scope, element, attributes, diagramContainerController) {
 
                     var id,
                         $element,
 
                         killContextMenu,
                         killDelete,
-                        currentDiagramId;            
+                        currentDiagramId;
 
                     $element = $(element);
 
-                    killContextMenu = function ($event) {
+                    killContextMenu = function($event) {
 
                         $log.debug('Not showing default contextmenu');
 
@@ -396,11 +401,11 @@ angular.module('mms.svgDiagram', [
 
                     };
 
-                    scope.$watch(function(){
+                    scope.$watch(function() {
 
                         return scope.diagram && scope.diagram.id;
 
-                    }, function (newDiagramId, oldDiagramId) {
+                    }, function(newDiagramId, oldDiagramId) {
 
                         if (newDiagramId && newDiagramId !== currentDiagramId) {
 
@@ -427,9 +432,10 @@ angular.module('mms.svgDiagram', [
                     });
 
                     scope.$watch(
-                        function () {
+                        function() {
                             return diagramContainerController.getVisibleArea();
-                        }, function (visibleArea) {
+                        },
+                        function(visibleArea) {
 
                             if (scope.$element) {
                                 scope.elementOffset = scope.$element.offset();
@@ -444,7 +450,7 @@ angular.module('mms.svgDiagram', [
 
                     $element.bind('contextmenu', killContextMenu);
 
-                    killDelete = function (event) {
+                    killDelete = function(event) {
 
                         var d,
                             doPrevent;
@@ -458,13 +464,13 @@ angular.module('mms.svgDiagram', [
                             if (d.tagName) {
 
                                 if ((d.tagName.toUpperCase() === 'INPUT' &&
-                                    (
-                                    d.type.toUpperCase() === 'TEXT' ||
-                                    d.type.toUpperCase() === 'PASSWORD' ||
-                                    d.type.toUpperCase() === 'FILE' ||
-                                    d.type.toUpperCase() === 'EMAIL' ||
-                                    d.type.toUpperCase() === 'SEARCH' ||
-                                    d.type.toUpperCase() === 'DATE' )
+                                        (
+                                            d.type.toUpperCase() === 'TEXT' ||
+                                            d.type.toUpperCase() === 'PASSWORD' ||
+                                            d.type.toUpperCase() === 'FILE' ||
+                                            d.type.toUpperCase() === 'EMAIL' ||
+                                            d.type.toUpperCase() === 'SEARCH' ||
+                                            d.type.toUpperCase() === 'DATE')
                                     ) ||
                                     d.tagName.toUpperCase() === 'TEXTAREA') {
                                     doPrevent = d.readOnly || d.disabled;
@@ -478,13 +484,24 @@ angular.module('mms.svgDiagram', [
 
                     };
 
-                    $(document).bind('keydown', function (event) {
+
+                    function keyDownHandler(event) {
 
                         killDelete(event);
 
-                        $timeout(function () {
+                        $timeout(function() {
                             scope.$emit('keydownOnDocument', event);
                         });
+
+                    }
+
+                    $(document).bind('keydown', keyDownHandler);
+
+
+                    scope.$on('$destroy', function() {
+
+                        $(document).unbind('keydown', keyDownHandler);                        
+                        $element.unbind('contextmenu', killContextMenu);
 
                     });
 
