@@ -162,7 +162,6 @@ describe('AdmImporterRegressions', function () {
         expect(constrained.C1c['@Notes']).to.be.empty;
         expect(constrained.C2a['@Notes']).to.be.empty;
         expect(constrained.C3a2['@Notes']).to.be.empty;
-        expect(constrained.C3b2['@Notes']).to.be.empty;
 
         done();
     });
