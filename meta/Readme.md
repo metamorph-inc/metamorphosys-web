@@ -13,12 +13,14 @@ uncomment // writeRegressionJson(); from /test/lib/plugins/ADMEditor/AdmImporter
 8. using classic WebGME interface, update the metalib for the *Template_Module_1x2*
 9. mongodump
 
-# How to Update the Tests
+# How to Update the Importer/Exporter Tests
 1. Do the Metamodel stuff first if there's a meta change
-2. Modify your input ADM and/or ACM files
+2. Modify your input ADM and/or ACM files, and/or the Importer/Exporter code
 3. node test\models\combine_templates.js
 4. uncomment // writeRegressionJson(); from /test/lib/plugins/ADMEditor/AdmImporter/AdmImporterTestLib.js and /test/lib/plugins/ADMEditor/AcmImporter/AcmImporterTestLib.js
 5. run the tests
 6. Copy the generated .json files from the repository root directory to test\models\<acm or adm>\unit, as appropriate
 7. Run node test\models\combine_templates.js again to update the combined regression data that the tests run against
+
+_NOTE:_ ADMExporter tests are in /test/unit/plugins/ADMEditor/AdmImporter/AdmImporterRegressions.js
 
