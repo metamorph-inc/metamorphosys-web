@@ -24,18 +24,24 @@ describe('AcmInfo', function () {
         });
     });
 
-    function getAcmInfo(hash) {
+    function get(url) {
         var deferred = q.defer();
-        superagent.get('http://localhost:' + config.server.port + '/rest/external/acminfo/' + hash)
+        superagent.get(url)
             .end(function (err, res) {
                 if (err || res.status > 399) {
                     return deferred.reject(err || res.status);
                 } else {
-                    var info = JSON.parse(res.text);
-                    deferred.resolve(info);
+                    deferred.resolve(res);
                 }
             });
         return deferred.promise;
+    }
+
+    function getAcmInfo(hash) {
+        return get('http://localhost:' + config.server.port + '/rest/external/acminfo/' + hash)
+            .then(function (res) {
+                return JSON.parse(res.text);
+            });
     }
 
     it('should get 3_Axis_Accelerometer data', function (done) {
@@ -68,10 +74,11 @@ describe('AcmInfo', function () {
                             'value': 'FT232RL'
                         }
                     },
-                    'datasheet': '/rest/blob/download/9127635cc180eefbb253279e2953dca07d14953a/doc%2FDS_FT232R.pdf',
+                    'datasheet': '/rest/external/acminfo/getfile/9127635cc180eefbb253279e2953dca07d14953a/doc%2FDS_FT232R.pdf',
                     'name': 'USBSerial_FTDI_232R',
                     'classification': 'active.interface-chips'
                 });
+                return get('http://localhost:' + config.server.port + info.datasheet);
             })
             .nodeify(done);
     });
@@ -110,7 +117,7 @@ describe('AcmInfo', function () {
                 expect(info).to.deep.equal(
                     {
                         'classification': 'optoelectronics.detectors.single_sensor_detectors.phototransistor',
-                        'datasheet': '/rest/blob/download/3332d44782501b6d3d6248f073340f76170d0ee7/doc%2FBP103_datasheet.pdf',
+                        'datasheet': '/rest/external/acminfo/getfile/3332d44782501b6d3d6248f073340f76170d0ee7/doc%2FBP103_datasheet.pdf',
                         'name': 'BP103-3-4',
                         'properties': {
                             'octopart_mpn': {
