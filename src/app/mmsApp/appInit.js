@@ -121,8 +121,17 @@ angular.module('CyPhyApp').config(function(
             views: {
                 'onCover': {
                     template: '',
-                    controller: function() {
-                        document.location.href = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
+                    controller: function($injector) {
+
+                        var url;
+
+                        if ($injector.has('dispatcherUrl')) {
+                            url = $injector.get('dispatcherUrl');
+                        } else {
+                            url = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
+                        }
+
+                        document.location.href = url;
                     }
                 }
             }

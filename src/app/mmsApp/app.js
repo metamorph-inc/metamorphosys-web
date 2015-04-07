@@ -241,7 +241,9 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 });
 
 
-CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
+CyPhyApp.controller('NotFoundController', 
+    [ '$rootScope', '$log'],
+    function ($rootScope, $log) {
 
     var self = this;
 
