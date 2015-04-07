@@ -16,6 +16,16 @@ define(['xmljsonconverter',
         return input.lastIndexOf(suffix) === (input.length - suffix.length);
     }
 
+    ParseAcm.prototype.getfile = function getfile(path) {
+        var self = this;
+        return this.getAcmZip()
+            .then(function (acmXmlZip) {
+                var acmZip = new JSZip(acmXmlZip);
+
+                return acmZip.file(path).asNodeBuffer();
+            });
+    };
+
     ParseAcm.prototype.parse = function parseAcm() {
         var self = this;
         return this.getAcmZip()
@@ -58,7 +68,7 @@ define(['xmljsonconverter',
                     if (dependency && dependency['@Path']) {
                         var path = dependency['@Path'].replace('\\', '/');
                         if (acmZip.file(path)) {
-                            acmInfo.datasheet = self.getUrlForZipPath(path);
+                            acmInfo.datasheet = self.getDatasheetUrl(path);
                         }
                     }
                 })();

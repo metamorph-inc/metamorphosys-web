@@ -10,7 +10,8 @@ define(['common/LogManager',
     ], function (logManager, BlobClient, q, ParseAcm) {
         'use strict';
 
-        var logger = logManager.create('server.rest.acminfo'),
+        var contentDisposition = require('content-disposition'),
+            logger = logManager.create('server.rest.acminfo'),
             blobClient,
             url = require('url');
 
@@ -19,20 +20,33 @@ define(['common/LogManager',
             parse.getAcmZip = function getAcmZip() {
                 return q.ninvoke(blobClient, 'getObject', id);
             };
-            parse.getUrlForZipPath = function getUrlForZipPath(path) {
-                return url.parse(blobClient.getDownloadURL(id, path)).path;
+            parse.getDatasheetUrl = function getDatasheetUrl(path) {
+                return '/rest/external/acminfo/getfile/' + id + '/' + encodeURIComponent(path);
             };
             return parse;
         };
 
         var acmInfo = function (req, res/*, next*/) {
-            var url = req.url.split('/');
+            var url = req.url.split('/'),
+                id;
 
             if (url.length === 2) {
-                var id = url[1];
+                id = url[1];
 
                 newParseAcm(id).parse().then(function (json) {
                     res.send(json);
+                }).catch(function (err) {
+                    logger.warning(err + ' ' + err.stack);
+                    res.sendStatus(500);
+                });
+            } else if (url.length === 4 && url[1] === 'getfile') {
+                id = url[2];
+                var path = decodeURIComponent(url[3]);
+                var filename = path.substring(path.lastIndexOf('/') + 1);
+
+                newParseAcm(id).getfile(path).then(function (buffer) {
+                    res.setHeader('Content-Disposition', contentDisposition(filename, {type: 'attachment'}));
+                    res.send(buffer);
                 }).catch(function (err) {
                     logger.warning(err + ' ' + err.stack);
                     res.sendStatus(500);
