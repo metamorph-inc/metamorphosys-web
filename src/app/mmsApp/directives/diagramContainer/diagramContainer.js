@@ -227,6 +227,8 @@ angular.module('mms.diagramContainer', [
 
                     processDragOverOrEnter = function(event) {
 
+                        debugger;
+
                         if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
                             return false;
                         }

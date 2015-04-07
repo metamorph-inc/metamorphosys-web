@@ -73,7 +73,6 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'angucomplete-alt',
     'ngTouch',
     'ngMaterial',
-    'ang-drag-drop',
     'ngCookies',
 
     'xeditable'
