@@ -18,7 +18,8 @@ var OrthogonalRouter = function () {
         var end = performance.now();
         console.log("Graph time: " + (end - start));
 
-        self.autoRouteWithGraph(this.visibilityGraph, diagram.wires);
+        var optimalConnections = self.autoRouteWithGraph(this.visibilityGraph, diagram.wires);
+        diagram.optimalConnections = optimalConnections[0];
 
     };
 
@@ -93,11 +94,15 @@ var OrthogonalRouter = function () {
         var j = 0;
         while (incompleteNodes.length !== 0) {
             var incNode = incompleteNodes[j];
-            nodes.push( {v: incNode.v,
-                north: incNode.north,
-                south: incNode.south,
-                west: incNode.west,
-                east: incNode.east} );
+
+            if ( incNode.v.x in nodes === false ) {
+                nodes[incNode.v.x] = { };
+            }
+            nodes[incNode.v.x][incNode.v.y] = { v: incNode.v,
+                                                north: incNode.north,
+                                                south: typeof incNode.south === "undefined" ? null : incNode.south,
+                                                west: incNode.west,
+                                                east: typeof incNode.east === "undefined" ? null : incNode.east };
             incompleteNodes.splice(j, 1);
         }
 
@@ -270,7 +275,7 @@ var OrthogonalRouter = function () {
                 // This node is at the top of the grid. Since points are sorted, we know previous point was
                 // the largest Y value for that X, so the previous node's S is null and this node's N is null.
                 node.north = null;
-                incompleteNodes[incompleteNodes.length - 2].south = null;
+                incompleteNodes[incompleteNodes.length - 1].south = null;
             }
             if (largeNeighbor === null) {
                 incompleteNodes[incompleteNodes.length - 2].south = null;
@@ -329,11 +334,16 @@ var OrthogonalRouter = function () {
             if (matchNode.hasOwnProperty('north') && matchNode.hasOwnProperty('south') &&
                 matchNode.hasOwnProperty('west') && matchNode.hasOwnProperty('east')) {
                 // Node is now completely defined
-                nodes.push( {v: matchNode.v,
-                    north: matchNode.north,
-                    south: matchNode.south,
-                    west: matchNode.west,
-                    east: matchNode.east} );
+                if ( matchNode.v.x in nodes === false ) {
+                    nodes[matchNode.v.x] =  { };
+                }
+                nodes[matchNode.v.x][matchNode.v.y] = { v: matchNode.v,
+                                                        north: matchNode.north,
+                                                        south: matchNode.south,
+                                                        west: matchNode.west,
+                                                        east: matchNode.east };
+
+
                 incompleteNodes.splice(idx-1, 1);
             }
         }
@@ -683,17 +693,25 @@ var OrthogonalRouter = function () {
              }
 
         */
-        var optimalConnections = [];  // Each element will be a wire
+        var optimalConnections = [];  // Each element will be an array of wires
 
 
         for ( var i = 0; i < wires.length; i++ ) {
             // Find the optimal route for this wire
-            this.findOptimalRoute( visibilityGrid,
-                                   wires[i].end1.port.getGridPosition(),
-                                   wires[i].end2.port.getGridPosition() );
+            //optimalConnections.push(this.findOptimalRoute( visibilityGrid.vertices,
+            //                                               wires[i].end1.port.getGridPosition(),
+            //                                               wires[i].end2.port.getGridPosition() ));
+
+            optimalConnections.push(this.findRouteWithoutBends( visibilityGrid.vertices,
+                                                            wires[i].end1.port.getGridPosition(),
+                                                            wires[i].end2.port.getGridPosition() ));
+
 
             // overwrite the wires 'segments' field with the optimal route.
+
+
         }
+        return optimalConnections;
 
     };
 
@@ -703,41 +721,287 @@ var OrthogonalRouter = function () {
             Returns an array of vertical/horizontal segments making up the connection.
         */
 
-        var segments = [],
-            openHeap = getHeap(),
-            destinationNode = new PathNode(endPt),
-            closestNode = new PathNode(startPt);
+        var segments,
+            destinationNode = visibilityGrid[endPt.x][endPt.y],
+            closestNode = visibilityGrid[startPt.x][startPt.y],
+            currentNode = closestNode;
 
-        start.md = manhattanDistance(startPt, endPt);
+        currentNode.cost = 0;
+        currentNode.bends = 0;
+        currentNode.distance = 0;
+        currentNode.heuristic = manhattanDistance(currentNode.v, destinationNode.v);
 
-        openHeap.push(closestNode);
-
-        while( openHeap.size() > 0 ) {
-            var currentNode = openHeap.pop();
-
-            // Have we reached the destination?
-            if ( currentNode === destinationNode ) {
-                return route(currentNode);
-            }
-
-            // Move currentNode from open to closed.
+        while( isSamePoint(destinationNode, currentNode) === false ) {
+            // Move currentNode from open to closed, examine its neighbors
             currentNode.closed = true;
 
-            // Find the neighbors of the node.
+            var test = 0;
+            // Process each of the node's four neighbors
+            var neighbors = [currentNode.north, currentNode.south, currentNode.west, currentNode.east];
+            for (var j = 0; j < 4; j++ ) {
+                var n = neighbors[j];
 
+                if ( n === null || visibilityGrid[n.x][n.y].closed ) {
+                    // If neighbor is invalid or it has already been processed and set to closed, skip.
+                    if ( n !== null ) {
+                        n.closed = true;
+                    }
+                    test++;
+                    if (test === 4) {
+                        console.log('quit');
+                        return;
+                    }
+                    continue;
+                }
 
+                // Distance between this node and the neighbor
+                var distance = manhattanDistance(currentNode.v, n),
+                    bends = currentNode.bends;
+                if (typeof currentNode.dir !== "undefined") {
+                    // Handle initial loop, as start point doesn't have defined direction
+                    if ( ((currentNode.dir === 0 || currentNode.dir === 1) && currentNode.v.x !== n.x) ||
+                         ((currentNode.dir === 2 || currentNode.dir === 3) && currentNode.v.y !== n.y) ) {
+                        // Bend has occurred
+                        bends += 5000;  // Can't be one, because graph has ~1500 pixels each direction
+                    }
+                }
+
+                var cost = distance + bends,
+                    remBends = estimateRemainingBends(currentNode.v, destinationNode.v, j);
+
+                n.cost = cost;
+                n.distance = distance;
+                n.bends = bends;
+                n.remBends = remBends;
+                n.parent = currentNode.v;
+                n.heuristic = manhattanDistance({x: n.x, y: n.y}, destinationNode.v) + remBends;
+                n.dir = j;
+
+                // Update visibilityGrid node at neighbor to show as visited
+                visibilityGrid[n.x][n.y].closed = true;
+                visibilityGrid[n.x][n.y].cost = cost;
+                visibilityGrid[n.x][n.y].distance = distance;
+                visibilityGrid[n.x][n.y].bends = bends;
+                visibilityGrid[n.x][n.y].remBends = remBends;
+                visibilityGrid[n.x][n.y].parent = currentNode.v;
+                visibilityGrid[n.x][n.y].heuristic = n.heuristic;
+                visibilityGrid[n.x][n.y].dir = j;
+            }
+
+            // Sort the neighbors by their cost functions.
+            neighbors.sort( function (a, b) {
+                if ( a === null || typeof a.cost === "undefined") { return 1; }
+                if ( b === null || typeof b.cost === "undefined") { return -1; }
+                if ( a.closed ) { return 1; }
+                if ( b.closed ) { return -1; }
+                return ( (a.cost + a.heuristic) - (b.cost + b.heuristic) );
+            });
+
+            // Choose node which minimizes cost function. Need to make sure neighbor wins for right reasons.
+            var winner = neighbors[0],
+                invalidWinnerEW = (winner.y === endPt.y && winner.x !== endPt.x) &&
+                                  (visibilityGrid[winner.x][winner.y].east === null ||
+                                  visibilityGrid[winner.x][winner.y].west === null ),
+                invalidWinnerNS = (winner.x === endPt.x && winner.y !== endPt.y) &&
+                                  (visibilityGrid[winner.x][winner.y].north === null ||
+                                   visibilityGrid[winner.x][winner.y].south === null );
+
+            if (invalidWinnerEW || invalidWinnerNS) {
+                winner = neighbors[1];
+            }
+
+            // Set current node as one which minimizes the cost function.
+            currentNode = visibilityGrid[winner.x][winner.y];
         }
 
-
-
-
-
-
-
-
+        // Destination node reached, return route.
+        // TODO: return the traced path
+        segments = returnPath(visibilityGrid, currentNode, startPt);
+        return segments;
 
 
     };
+
+
+    ///////////  ASTAR  //////////
+    
+
+
+    this.findRouteWithoutBends = function ( visibilityGrid, startPt, endPt ) {
+        /*
+         Given the orthogonal grid and two points to be connected, find optimal route.  --> A* search
+         Returns an array of vertical/horizontal segments making up the connection.
+         */
+
+        var segments,
+            destinationNode = visibilityGrid[endPt.x][endPt.y],
+            closestNode = visibilityGrid[startPt.x][startPt.y],
+            currentNode = closestNode;
+
+        currentNode.cost = 0;
+        currentNode.distance = 0;
+        currentNode.heuristic = manhattanDistance(currentNode.v, destinationNode.v);
+
+        while( isSamePoint(destinationNode, currentNode) === false ) {
+            // Move currentNode from open to closed, examine its neighbors
+            currentNode.closed = true;
+
+            var test = 0;
+            // Process each of the node's four neighbors
+            var neighbors = [currentNode.north, currentNode.south, currentNode.west, currentNode.east];
+            for (var j = 0; j < 4; j++ ) {
+                var n = neighbors[j];
+
+                if ( n === null || visibilityGrid[n.x][n.y].closed ) {
+                    // If neighbor is invalid or it has already been processed and set to closed, skip.
+                    if ( n !== null ) {
+                        n.closed = true;
+                    }
+                    test++;
+                    if (test === 4) {
+                        console.log('quit');
+                        return;
+                    }
+                    continue;
+                }
+
+                // Distance between this node and the neighbor
+                var distance = manhattanDistance(currentNode.v, n);
+
+                var cost = distance;
+
+                n.cost = cost;
+                n.distance = distance;
+                n.parent = currentNode.v;
+                n.heuristic = manhattanDistance({x: n.x, y: n.y}, destinationNode.v);
+
+                // Update visibilityGrid node at neighbor to show as visited
+                visibilityGrid[n.x][n.y].closed = true;
+                visibilityGrid[n.x][n.y].cost = cost;
+                visibilityGrid[n.x][n.y].distance = distance;
+                visibilityGrid[n.x][n.y].parent = currentNode.v;
+                visibilityGrid[n.x][n.y].heuristic = n.heuristic;
+            }
+
+            // Sort the neighbors by their cost functions.
+            neighbors.sort( function (a, b) {
+                if ( a === null || typeof a.cost === "undefined") { return 1; }
+                if ( b === null || typeof b.cost === "undefined") { return -1; }
+                if ( a.closed ) { return 1; }
+                if ( b.closed ) { return -1; }
+                return ( (a.cost + a.heuristic) - (b.cost + b.heuristic) );
+            });
+
+            // Choose node which minimizes cost function. Need to make sure neighbor wins for right reasons.
+            //var winner = neighbors[0],
+            //    invalidWinnerEW = (winner.y === endPt.y && winner.x !== endPt.x) &&
+            //        (visibilityGrid[winner.x][winner.y].east === null ||
+            //        visibilityGrid[winner.x][winner.y].west === null ),
+            //    invalidWinnerNS = (winner.x === endPt.x && winner.y !== endPt.y) &&
+            //        (visibilityGrid[winner.x][winner.y].north === null ||
+            //        visibilityGrid[winner.x][winner.y].south === null );
+            //
+            //if (invalidWinnerEW || invalidWinnerNS) {
+            //    winner = neighbors[1];
+            //}
+            var winner = neighbors[0];
+
+            // Set current node as one which minimizes the cost function.
+            currentNode = visibilityGrid[winner.x][winner.y];
+        }
+
+        // Destination node reached, return route.
+        // TODO: return the traced path
+        segments = returnPath(visibilityGrid, currentNode, startPt);
+        return segments;
+
+
+    };
+
+    function returnPath(visibilityGrid, currentNode, startPt) {
+        var segments = [],
+            segment;
+
+        while ( typeof currentNode.parent !== "undefined" ) {
+            segment = {};
+            segment.x1 = currentNode.v.x;
+            segment.y1 = currentNode.v.y;
+            segment.x2 = currentNode.parent.x;
+            segment.y2 = currentNode.parent.y;
+
+            if (segment.x1 === segment.x2) {
+                segment.orientation = "horizontal";
+            }
+            else {
+                segment.orientation = "vertical";
+            }
+
+            currentNode = visibilityGrid[currentNode.parent.x][currentNode.parent.y];
+            segments.push(segment);
+
+        }
+        segment = {};
+        segment.x1 = currentNode.v.x;
+        segment.y1 = currentNode.v.y;
+        segment.x2 = startPt.x;
+        segment.y2 = startPt.y;
+
+        if (segment.x1 === segment.x2) {
+            segment.orientation = "horizontal";
+        }
+        else {
+            segment.orientation = "vertical";
+        }
+        segments.push(segment);
+        return segments;
+
+    }
+
+
+    function estimateRemainingBends(start, end, dir) {
+        // Dir is known from index in neighbors [N, S, W, E]
+        var sameLine = false,
+            inFront = false;
+
+        if ((dir === 0 || dir === 1) && (start.x === end.x)) {
+            sameLine = true;
+        }
+        if ((dir === 2 || dir === 3) && (start.y === end.y)) {
+            sameLine = true;
+        }
+
+        if (dir === 0 && (start.y - end.y > 0)) {
+            inFront = true;
+        }
+        if (dir === 1 && (end.y - start.y > 0)) {
+            inFront = true;
+        }
+        if (dir === 2 && (start.x - end.x > 0)) {
+            inFront = true;
+        }
+        if (dir === 3 && (end.x - start.x > 0 )) {
+            inFront = true;
+        }
+
+        if (sameLine) {
+            if (inFront) {
+                return 0;
+            }
+            else {
+                return 15000;
+            }
+        }
+        else if (inFront) {
+            return 5000;
+            }
+        else {
+            return 10000;
+        }
+    }
+
+    function isSamePoint(a, b) {
+        return compareX(a, b) === 0 && compareY(a, b) === 0;
+    }
 
     function PathNode( v ) {
         this.v = {x: v.x, y: v.y};
