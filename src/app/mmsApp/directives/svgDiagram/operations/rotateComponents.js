@@ -30,17 +30,20 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
             this.finish = function() {
 
                 var componentsToRotate,
+                    selectedComponents,
                     component,
                     affectedWires,
                     message;
 
-                componentsToRotate = [];
-
                 component = this.component;
 
-                componentsToRotate.push(this.component);
+                selectedComponents = diagram.getSelectedComponents();
 
-                componentsToRotate = diagram.getSelectedComponents();
+                if (selectedComponents.indexOf(component) > -1) {
+                    componentsToRotate = selectedComponents;
+                } else {
+                    componentsToRotate = [ component ];
+                }
 
                 affectedWires = diagram.getWiresForComponents(
                     componentsToRotate
