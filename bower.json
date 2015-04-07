@@ -21,6 +21,6 @@
   },
   "resolutions": {
     "angular": "~1.3.13",
-    "isis-ui-components": "0.2.7"
+    "isis-ui-components": "0.2.8"
   }
 }
