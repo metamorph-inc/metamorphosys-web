@@ -225,37 +225,35 @@ angular.module('mms.diagramContainer', [
 
                     });
 
-                    processDragOverOrEnter = function(event) {
+                    // processDragOverOrEnter = function(event) {
 
-                        debugger;
+                    //     console.log(event.dataTransfer.getData('componentId'));
 
-                        if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
-                            return false;
-                        }
-                        event.preventDefault();
-                        if (event.dataTransfer.items[0].type === 'application/x-zip-compressed') {
-                            event.dataTransfer.effectAllowed = 'copy';
-                        } else {
-                            event.dataTransfer.effectAllowed = 'none';
-                        }
-                        return false;
+                    //     debugger;
 
-                    };
+                    //     if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
+                    //         return false;
+                    //     }
+                    //     event.preventDefault();
+                    //     if (event.dataTransfer.items[0].type === 'application/x-zip-compressed') {
+                    //         event.dataTransfer.effectAllowed = 'copy';
+                    //     } else {
+                    //         event.dataTransfer.effectAllowed = 'none';
+                    //     }
+                    //     return false;
 
-                    processDropHandler = function(event) {
+                    // };
 
-                        if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
-                            return false;
-                        }
-                        event.preventDefault();
-                        scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
-                        return false;
+                    // processDropHandler = function(event) {
 
-                    };
+                    //     if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
+                    //         return false;
+                    //     }
+                    //     event.preventDefault();
+                    //     scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
+                    //     return false;
 
-                    element.bind('dragover', processDragOverOrEnter);
-                    element.bind('dragenter', processDragOverOrEnter);
-                    element.bind('drop', processDropHandler);
+                    // };
 
                     $timeout(function() {
                         scope.$broadcast('DiagramContainerInitialized');

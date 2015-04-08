@@ -193,7 +193,16 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
         nodeExpanderClick: function (/*e, node, isExpand*/) {
             //console.log('Expander was clicked for node:', node, isExpand);
-        }
+        },
+
+        nodeDragStart: function(e, node) {
+            console.log('Component drag start', e, node);
+            e.dataTransfer.setData('componentId', node.id);
+        },
+
+        nodeDragEnd: function(e) {
+            console.log('Component drag end', e);
+        }        
 
     };
 

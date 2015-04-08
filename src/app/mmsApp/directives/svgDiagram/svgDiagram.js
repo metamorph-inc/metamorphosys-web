@@ -26,368 +26,403 @@ angular.module('mms.svgDiagram', [
 
         'isis.ui.contextmenu'
     ])
-    .controller('SVGDiagramController', function($scope, $rootScope, $log, diagramService, wiringService,
-        gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
+    .directive('svgDiagram', 
+        function($rootScope, $log, diagramService, wiringService,
+                gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
 
-        var
+            function SVGDiagramController($scope) {
 
-            ComponentSelectionHandler = require('./classes/ComponentSelectionHandler'),
-            componentSelectionHandler,
+                var
+                    ComponentSelectionHandler = require('./classes/ComponentSelectionHandler'),
+                    componentSelectionHandler,
 
-            ComponentDragHandler = require('./classes/ComponentDragHandler'),
-            componentDragHandler,
+                    ComponentDragHandler = require('./classes/ComponentDragHandler'),
+                    componentDragHandler,
 
-            WireDragHandler = require('./classes/WireDragHandler'),
-            wireDragHandler,
+                    WireDragHandler = require('./classes/WireDragHandler'),
+                    wireDragHandler,
 
-            WireDrawHandler = require('./classes/WireDrawHandler'),
-            wireDrawHandler,
+                    WireDrawHandler = require('./classes/WireDrawHandler'),
+                    wireDrawHandler,
 
-            ContextMenuHandler = require('./classes/ContextmenuHandler'),
-            contextMenuHandler,
+                    ContextMenuHandler = require('./classes/ContextmenuHandler'),
+                    contextMenuHandler,
 
-            PanHandler = require('./classes/PanHandler'),
-            panHandler,
+                    PanHandler = require('./classes/PanHandler'),
+                    panHandler,
 
-            ComponentKeyboardOperationsHandler = require('./classes/ComponentKeyboardOperationsHandler'),
-            componentKeyboardOperationsHandler,
+                    ComponentKeyboardOperationsHandler = require('./classes/ComponentKeyboardOperationsHandler'),
+                    componentKeyboardOperationsHandler,
 
-            componentElements,
+                    componentElements,
 
-            $$window;
+                    $$window;
 
-        $$window = $($window);
+                $$window = $($window);
 
-        // Setting up handlers
+                // Setting up handlers
 
-        componentDragHandler = new ComponentDragHandler(
-            $scope,
-            diagramService,
-            wiringService,
-            operationsManager,
-            $timeout,
-            gridService,
-            $log
-        );
+                componentDragHandler = new ComponentDragHandler(
+                    $scope,
+                    diagramService,
+                    wiringService,
+                    operationsManager,
+                    $timeout,
+                    gridService,
+                    $log
+                );
 
-        wireDragHandler = new WireDragHandler(
-            $scope,
-            $rootScope,
-            diagramService,
-            wiringService,
-            operationsManager,
-            $timeout,
-            gridService,
-            $log
-        );
+                wireDragHandler = new WireDragHandler(
+                    $scope,
+                    $rootScope,
+                    diagramService,
+                    wiringService,
+                    operationsManager,
+                    $timeout,
+                    gridService,
+                    $log
+                );
 
-        componentSelectionHandler = new ComponentSelectionHandler(
-            $scope,
-            diagramService,
-            gridService,
-            $log,
-            $timeout
-        );
+                componentSelectionHandler = new ComponentSelectionHandler(
+                    $scope,
+                    diagramService,
+                    gridService,
+                    $log,
+                    $timeout
+                );
 
-        wireDrawHandler = new WireDrawHandler(
-            $scope,
-            $rootScope,
-            diagramService,
-            wiringService,
-            gridService,
-            $timeout,
-            $log
-        );
+                wireDrawHandler = new WireDrawHandler(
+                    $scope,
+                    $rootScope,
+                    diagramService,
+                    wiringService,
+                    gridService,
+                    $timeout,
+                    $log
+                );
 
-        contextMenuHandler = new ContextMenuHandler(
-            $scope,
-            $rootScope,
-            diagramService,
-            $timeout,
-            contextmenuService,
-            operationsManager,
-            wiringService,
-            $log
-        );
+                contextMenuHandler = new ContextMenuHandler(
+                    $scope,
+                    $rootScope,
+                    diagramService,
+                    $timeout,
+                    contextmenuService,
+                    operationsManager,
+                    wiringService,
+                    $log
+                );
 
 
-        panHandler = new PanHandler(
-            $scope,
-            $log
-        );
+                panHandler = new PanHandler(
+                    $scope,
+                    $log
+                );
 
-        componentKeyboardOperationsHandler = new ComponentKeyboardOperationsHandler(
-            $scope,
-            $rootScope,
-            operationsManager,
-            mmsUtils
-        );
+                componentKeyboardOperationsHandler = new ComponentKeyboardOperationsHandler(
+                    $scope,
+                    $rootScope,
+                    operationsManager,
+                    mmsUtils
+                );
 
-        //
+                //
 
-        $scope.routerTypes = wiringService.getRouterTypes();
+                $scope.routerTypes = wiringService.getRouterTypes();
 
-        $scope.selectedRouter = $scope.routerTypes[0];
+                $scope.selectedRouter = $scope.routerTypes[0];
 
-        $scope.onDiagramMouseDown = function($event) {
+                $scope.onDiagramMouseDown = function($event) {
 
-            if ($event.which === 3) {
-                contextMenuHandler.onDiagramContextmenu($event);
-            } else {
+                    if ($event.which === 3) {
+                        contextMenuHandler.onDiagramContextmenu($event);
+                    } else {
 
-                contextMenuHandler.onDiagramMouseDown($event);
-                panHandler.onDiagramMouseDown($event);
+                        contextMenuHandler.onDiagramMouseDown($event);
+                        panHandler.onDiagramMouseDown($event);
+
+                    }
+
+                };
+
+                $scope.onDiagramMouseUp = function($event) {
+
+
+                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                        $event.which !== 3) {
+
+                        $scope.diagram.clearSelection();
+
+                    }
+
+                    componentDragHandler.onDiagramMouseUp($event);
+                    wireDragHandler.onDiagramMouseUp($event);
+                    wireDrawHandler.onDiagramMouseUp($event);
+                    panHandler.onDiagramMouseUp($event);
+
+                };
+
+                $scope.onDiagramClick = function( /*$event*/ ) {
+
+
+                };
+
+                $scope.onDiagramMouseMove = function($event) {
+
+                    componentDragHandler.onDiagramMouseMove($event);
+                    wireDragHandler.onDiagramMouseMove($event);
+                    wireDrawHandler.onDiagramMouseMove($event);
+                    panHandler.onDiagramMouseMove($event);
+
+                };
+
+                $scope.getCssClass = function() {
+
+                    var result = '';
+
+                    if (componentDragHandler.dragging) {
+                        result += ' dragging';
+                    }
+
+                    if (panHandler.panning) {
+                        result += ' panning';
+                    }
+
+                    if (panHandler.pannable) {
+                        result += ' pannable';
+                    }
+
+                    return result;
+
+                };
+
+                $scope.onDiagramMouseWheel = function( /*$event, $delta, $deltaX, $deltaY*/ ) {
+                    //            console.log($event, $delta, $deltaX, $deltaY);
+                };
+
+                $scope.onDiagramMouseLeave = function($event) {
+
+                    componentDragHandler.onDiagramMouseLeave($event);
+                    wireDragHandler.onDiagramMouseLeave($event);
+                    wireDrawHandler.onDiagramMouseLeave($event);
+                    panHandler.onDiagramMouseLeave($event);
+
+                };
+
+                function onWindowBlur($event) {
+                    componentDragHandler.onWindowBlur($event);
+                    wireDragHandler.onWindowBlur($event);
+                    wireDrawHandler.onWindowBlur($event);
+                    panHandler.onWindowBlur($event);
+                }
+
+                $$window.on('blur', onWindowBlur);
+
+
+                // Interactions with components
+
+                this.onComponentMouseUp = function(component, $event) {
+
+                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                        $event.which !== 3) {
+
+                        componentSelectionHandler.onComponentMouseUp(component, $event);
+                        $event.stopPropagation();
+
+                        componentDragHandler.onComponentMouseUp(component, $event);
+
+                    } else {
+                        componentDragHandler.onComponentMouseUp(component, $event);
+                        panHandler.onComponentMouseUp($event);
+                    }
+                };
+
+                this.onPortMouseDown = function(component, port, $event) {
+
+                    if (!wireDrawHandler.wiring && $event.which === 3) {
+
+                        contextMenuHandler.onPortContextmenu(component, port, $event);
+
+                    } else {
+                        wireDrawHandler.onPortMouseDown(component, port, $event);
+                    }
+
+                };
+
+                this.onPortMouseUp = function(component, port, $event) {
+
+                    if (panHandler.panning) {
+                        panHandler.onPortMouseUp($event);
+                    }
+
+                    $event.stopPropagation();
+
+                };
+
+                this.onPortClick = function(component, port, $event) {
+
+                    $event.stopPropagation();
+
+                };
+
+                this.onComponentMouseDown = function(component, $event) {
+
+                    if ($event.which === 3) {
+
+                        contextMenuHandler.onComponentContextmenu(component, $event);
+
+                    } else {
+
+                        componentDragHandler.onComponentMouseDown(component, $event);
+
+                    }
+                };
+
+                this.onWireMouseUp = function(wire, segment, $event) {
+
+                    wireDragHandler.onWireMouseUp(wire, segment, $event);
+                    $event.stopPropagation();
+
+                };
+
+                this.onWireMouseDown = function(wire, segment, $event) {
+
+                    if ($event.which === 3) {
+
+                        contextMenuHandler.onWireContextmenu(wire, segment, $event);
+
+
+                    } else {
+
+                        wireDragHandler.onWireMouseDown(wire, segment, $event);
+
+                    }
+                };
+
+                this.onComponentDoubleClick = function(component) {
+
+                    if (component.metaType === 'Container') {
+                        $rootScope.$emit('containerMustBeOpened', component);
+                    }
+
+                };
+
+                this.onWireCornerMouseUp = function(wire, segment, $event) {
+
+                    wireDragHandler.onWireMouseUp(wire, segment, $event);
+                    $event.stopPropagation();
+
+                };
+
+                this.onWireCornerMouseDown = function(wire, segment, $event) {
+
+                    if ($event.which === 3) {
+
+                        contextMenuHandler.onWireContextmenu(wire, segment, $event, true);
+
+
+                    } else {
+
+                        wireDragHandler.onWireMouseDown(wire, segment, $event, true);
+
+                    }
+                };
+
+                this.isEditable = function() {
+
+                    $scope.diagram.config = $scope.diagram.config || {};
+
+                    return $scope.diagram.config.editable === true;
+                };
+
+                this.disallowSelection = function() {
+
+                    $scope.diagram.config = $scope.diagram.config || {};
+
+                    return $scope.diagram.config.disallowSelection === true;
+                };
+
+                this.registerComponentElement = function(id, el) {
+
+                    componentElements = componentElements || {};
+
+                    componentElements[id] = el;
+
+                };
+
+                this.unregisterComponentElement = function(id) {
+
+                    componentElements = componentElements || {};
+
+                    delete componentElements[id];
+
+                };
+
+                $rootScope.snapToGrid = true;
+
+                $scope.$on('$destroy', function() {
+                    $$window.off('blur', onWindowBlur);
+                });
+
 
             }
 
-        };
+            SVGDiagramController.prototype._onDragenter = function(e) {
 
-        $scope.onDiagramMouseUp = function($event) {
+                console.log(e.dataTransfer.getData('componentId'));
 
+                if (!e || !e.dataTransfer.items || e.dataTransfer.items.length === 0 || e.dataTransfer.items[0].kind !== 'file') {
+                    return false;
+                }
+                e.preDefault();
+                if (e.dataTransfer.items[0].type === 'application/x-zip-compressed') {
+                    e.dataTransfer.effectAllowed = 'copy';
+                } else {
+                    e.dataTransfer.effectAllowed = 'none';
+                }
+                return false;
 
-            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                $event.which !== 3) {
 
-                $scope.diagram.clearSelection();
+            };
 
-            }
+            SVGDiagramController.prototype._onDragleave = function(e) {
 
-            componentDragHandler.onDiagramMouseUp($event);
-            wireDragHandler.onDiagramMouseUp($event);
-            wireDrawHandler.onDiagramMouseUp($event);
-            panHandler.onDiagramMouseUp($event);
+            };
 
-        };
+            SVGDiagramController.prototype._onDrop = function(e) {
 
-        $scope.onDiagramClick = function( /*$event*/ ) {
+                if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
+                    return false;
+                }
+                e.preDefault();
+                scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
+                return false;
 
+            };
 
-        };
-
-        $scope.onDiagramMouseMove = function($event) {
-
-            componentDragHandler.onDiagramMouseMove($event);
-            wireDragHandler.onDiagramMouseMove($event);
-            wireDrawHandler.onDiagramMouseMove($event);
-            panHandler.onDiagramMouseMove($event);
-
-        };
-
-        $scope.getCssClass = function() {
-
-            var result = '';
-
-            if (componentDragHandler.dragging) {
-                result += ' dragging';
-            }
-
-            if (panHandler.panning) {
-                result += ' panning';
-            }
-
-            if (panHandler.pannable) {
-                result += ' pannable';
-            }
-
-            return result;
-
-        };
-
-        $scope.onDiagramMouseWheel = function( /*$event, $delta, $deltaX, $deltaY*/ ) {
-            //            console.log($event, $delta, $deltaX, $deltaY);
-        };
-
-        $scope.onDiagramMouseLeave = function($event) {
-
-            componentDragHandler.onDiagramMouseLeave($event);
-            wireDragHandler.onDiagramMouseLeave($event);
-            wireDrawHandler.onDiagramMouseLeave($event);
-            panHandler.onDiagramMouseLeave($event);
-
-        };
-
-        function onWindowBlur($event) {
-            componentDragHandler.onWindowBlur($event);
-            wireDragHandler.onWindowBlur($event);
-            wireDrawHandler.onWindowBlur($event);
-            panHandler.onWindowBlur($event);
-        }
-
-        $$window.on('blur', onWindowBlur);
-
-
-        // Interactions with components
-
-        this.onComponentMouseUp = function(component, $event) {
-
-            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                $event.which !== 3) {
-
-                componentSelectionHandler.onComponentMouseUp(component, $event);
-                $event.stopPropagation();
-
-                componentDragHandler.onComponentMouseUp(component, $event);
-
-            } else {
-                componentDragHandler.onComponentMouseUp(component, $event);
-                panHandler.onComponentMouseUp($event);
-            }
-        };
-
-        this.onPortMouseDown = function(component, port, $event) {
-
-            if (!wireDrawHandler.wiring && $event.which === 3) {
-
-                contextMenuHandler.onPortContextmenu(component, port, $event);
-
-            } else {
-                wireDrawHandler.onPortMouseDown(component, port, $event);
-            }
-
-        };
-
-        this.onPortMouseUp = function(component, port, $event) {
-
-            if (panHandler.panning) {
-                panHandler.onPortMouseUp($event);
-            }
-
-            $event.stopPropagation();
-
-        };
-
-        this.onPortClick = function(component, port, $event) {
-
-            $event.stopPropagation();
-
-        };
-
-        this.onComponentMouseDown = function(component, $event) {
-
-            if ($event.which === 3) {
-
-                contextMenuHandler.onComponentContextmenu(component, $event);
-
-            } else {
-
-                componentDragHandler.onComponentMouseDown(component, $event);
-
-            }
-        };
-
-        this.onWireMouseUp = function(wire, segment, $event) {
-
-            wireDragHandler.onWireMouseUp(wire, segment, $event);
-            $event.stopPropagation();
-
-        };
-
-        this.onWireMouseDown = function(wire, segment, $event) {
-
-            if ($event.which === 3) {
-
-                contextMenuHandler.onWireContextmenu(wire, segment, $event);
-
-
-            } else {
-
-                wireDragHandler.onWireMouseDown(wire, segment, $event);
-
-            }
-        };
-
-        this.onComponentDoubleClick = function(component) {
-
-            if (component.metaType === 'Container') {
-                $rootScope.$emit('containerMustBeOpened', component);
-            }
-
-        };
-
-        this.onWireCornerMouseUp = function(wire, segment, $event) {
-
-            wireDragHandler.onWireMouseUp(wire, segment, $event);
-            $event.stopPropagation();
-
-        };
-
-        this.onWireCornerMouseDown = function(wire, segment, $event) {
-
-            if ($event.which === 3) {
-
-                contextMenuHandler.onWireContextmenu(wire, segment, $event, true);
-
-
-            } else {
-
-                wireDragHandler.onWireMouseDown(wire, segment, $event, true);
-
-            }
-        };
-
-        this.isEditable = function() {
-
-            $scope.diagram.config = $scope.diagram.config || {};
-
-            return $scope.diagram.config.editable === true;
-        };
-
-        this.disallowSelection = function() {
-
-            $scope.diagram.config = $scope.diagram.config || {};
-
-            return $scope.diagram.config.disallowSelection === true;
-        };
-
-        this.registerComponentElement = function(id, el) {
-
-            componentElements = componentElements || {};
-
-            componentElements[id] = el;
-
-        };
-
-        this.unregisterComponentElement = function(id) {
-
-            componentElements = componentElements || {};
-
-            delete componentElements[id];
-
-        };
-
-        $rootScope.snapToGrid = true;
-
-        $scope.$on('$destroy', function() {
-            $$window.off('blur', onWindowBlur);
-        });
-
-
-    })
-    .directive('svgDiagram', [
-        '$rootScope',
-        '$log',
-        'diagramService',
-        'gridService',
-        '$timeout',
-        function($rootScope, $log, diagramService, gridService, $timeout) {
 
             return {
-                controller: 'SVGDiagramController',
-                require: '^diagramContainer',
+                controller: SVGDiagramController,
+                require: ['^diagramContainer', 'svgDiagram'],
                 restrict: 'E',
                 scope: {
                     diagram: '='
                 },
                 replace: true,
                 templateUrl: '/mmsApp/templates/svgDiagram.html',
-                link: function(scope, element, attributes, diagramContainerController) {
+                link: function(scope, element, attributes, controllers) {
 
                     var id,
                         $element,
 
                         killContextMenu,
                         killDelete,
-                        currentDiagramId;
+                        currentDiagramId,
+                        diagramContainerController = controllers[0],
+                        svgDiagramController = controllers[1],
+
+                        dropHandler,
+                        dragenterHandler,
+                        dragleaveHandler;
 
                     $element = $(element);
 
@@ -497,11 +532,22 @@ angular.module('mms.svgDiagram', [
 
                     $(document).bind('keydown', keyDownHandler);
 
+                    dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
+                    dragenterHandler = svgDiagramController._onDragenter.bind(svgDiagramController);
+                    dragleaveHandler = svgDiagramController._onDragleave.bind(svgDiagramController);
+
+                    element[0].addEventListener('dragenter', dragenterHandler);
+                    element[0].addEventListener('dragleave', dragleaveHandler);
+                    element[0].addEventListener('drop', dropHandler);
 
                     scope.$on('$destroy', function() {
 
-                        $(document).unbind('keydown', keyDownHandler);                        
+                        $(document).unbind('keydown', keyDownHandler);
                         $element.unbind('contextmenu', killContextMenu);
+
+                        element[0].removeEventListener('dragenter', dropHandler);
+                        element[0].removeEventListener('dragleave', dragleaveHandler);
+                        element[0].removeEventListener('drop', dropHandler);
 
                     });
 
@@ -509,4 +555,4 @@ angular.module('mms.svgDiagram', [
 
             };
         }
-    ]);
+    );
