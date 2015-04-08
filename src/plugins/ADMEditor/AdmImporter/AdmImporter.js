@@ -778,6 +778,7 @@ define([
                 copyAttrIfSet('Type');
                 setRangeValues('Range');
             }
+            copyAttrIfSet('Notes');
             self.core.setAttribute(feature, 'name', type);
             constraintTargets.forEach(function (componentInstance) {
                 self.core.addMember(feature, 'ConstraintTarget', componentInstance.node);

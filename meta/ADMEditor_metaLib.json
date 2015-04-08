@@ -1144,6 +1144,10 @@
             "constraints": {},
             "meta": {
                 "attributes": {
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "RelativeLayer": {
                         "default": "No Restriction",
                         "enum": [
@@ -1504,6 +1508,10 @@
                         ],
                         "type": "string"
                     },
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "Rotation": {
                         "default": "",
                         "enum": [
@@ -1672,6 +1680,10 @@
                         ],
                         "type": "string"
                     },
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "Type": {
                         "default": "Inclusion",
                         "enum": [
@@ -1709,12 +1721,17 @@
         },
         "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
             "attributes": {
+                "Notes": "",
                 "name": "LayoutConstraint"
             },
             "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
             "constraints": {},
             "meta": {
                 "attributes": {
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     }
@@ -2761,6 +2778,10 @@
             "constraints": {},
             "meta": {
                 "attributes": {
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "RelativeLayer": {
                         "default": "Either",
                         "enum": [
