@@ -385,7 +385,7 @@ var OrthogonalRouter = function () {
     };
 
     this.horizontalLineSweep = function ( nodes, sweepLength ) {
-        // Perform line sweep algorithm on grid.
+        // Perform line sweep algorithm on grid. Generate vertical line segments.
         var createTree = require("functional-red-black-tree");
         var segments = [],
             openObjects = [],
@@ -415,7 +415,7 @@ var OrthogonalRouter = function () {
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are collinear, skip.
                     if (leftIter.value === nodes[i].x) {
-                        if (binTree.length % 2 === 0) {
+                        if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
                             // even number of keys, therefore this is part of an object segment.
                             openObjects.push({y1: leftIter.key, y2: nodes[i].y});
                         }
@@ -428,19 +428,28 @@ var OrthogonalRouter = function () {
                         // remove the line defined by them from the openObjects list.
                         binTree = binTree.remove(prevNode);
                         binTree = binTree.remove(nodes[i].y);
-                        openObjects.splice(myIndexOf({ y1: prevNode, y2: nodes[i].y }, openObjects), 1);
+                        openObjects.splice(myIndexOfY({ y1: prevNode, y2: nodes[i].y }, openObjects), 1);
                         prevNode = null;
                         continue;
                     }
-
+                    left = leftIter.key;
                     if (typeof nodes[i].direction !== "undefined" && nodes[i].y > leftIter.key) {
-                        // Means the port is not in line with the bounding box (inside of it). Grab the next top iter.
-                        leftIter = binTree.lt(leftIter.key);
-                        if (leftIter.valid) {
-                            left = leftIter.key;
+                        var keyIsMin = false;
+                        for (var n = 0; n < openObjects.length; n++) {
+                            if ( openObjects[n].y1 === leftIter.key ) {
+                                keyIsMin = true;
+                                break;
+                            }
                         }
-                        else {
-                            left = 0;
+                        if (keyIsMin) {
+                            // Means the port is not in line with the bounding box (inside of it). Grab the next top iter.
+                            leftIter = binTree.lt(leftIter.key);
+                            if (leftIter.valid) {
+                                left = leftIter.key;
+                            }
+                            else {
+                                left = 0;
+                            }
                         }
                     }
                     else {
@@ -455,28 +464,30 @@ var OrthogonalRouter = function () {
             }
             // bottom
             if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 || nodes[i].direction === -270) {
-                var right, rightIter = binTree.gt(nodes[i].y);
-                if (rightIter.valid) {
-                    var seg = {y1: nodes[i].y, y2: rightIter.key};
-                    if (myIndexOf(seg, openObjects) !== -1) {
-                        // Means this segment is in the list of open segments, grab the closest node from rightIter that
-                        // isn't a part of the open segment.
-                        rightIter = binTree.gt(rightIter.key);
-                        if (rightIter.valid) {
-                            right = rightIter.key;
-                        }
-                        else {
-                            right = sweepLength;
-                        }
-                    }
-                    else {
-                        right = rightIter.key;
-                    }
+                var right = findNextValidRightNeighbor ( nodes[i], "y", binTree, openObjects, sweepLength);
 
-                }
-                else {
-                    right = sweepLength;
-                }
+                //var rightIter = binTree.gt(nodes[i].y);
+                //if (rightIter.valid) {
+                //    var seg = {y1: nodes[i].y, y2: rightIter.key};
+                //    if (myIndexOfY(seg, openObjects) !== -1) {
+                //        // Means this segment is in the list of open segments, grab the closest node from rightIter that
+                //        // isn't a part of the open segment.
+                //        rightIter = binTree.gt(rightIter.key);
+                //        if (rightIter.valid) {
+                //            right = rightIter.key;
+                //        }
+                //        else {
+                //            right = sweepLength;
+                //        }
+                //    }
+                //    else {
+                //        right = rightIter.key;
+                //    }
+                //
+                //}
+                //else {
+                //    right = sweepLength;
+                //}
                 var rightSegment = { y1: nodes[i].y, x1: nodes[i].x, y2: right, x2: nodes[i].x };
                 segments.push(rightSegment);
             }
@@ -491,9 +502,8 @@ var OrthogonalRouter = function () {
         return segments;
     };
 
-
     this.verticalLineSweep = function ( nodes, sweepLength ) {
-        // Perform line sweep algorithm on grid. Method can either be vertical or horizontal implementation of line sweep.
+        // Perform line sweep algorithm on grid.
         var createTree = require("functional-red-black-tree");
         var segments = [],
             openObjects = [],
@@ -523,7 +533,7 @@ var OrthogonalRouter = function () {
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are colinear, skip.
                     if (leftIter.value === nodes[i].y) {
-                        if (binTree.length % 2 === 0) {
+                        if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
                             // even number of keys, therefore this is part of an object segment.
                             openObjects.push({x1: leftIter.key, x2: nodes[i].x});
                         }
@@ -536,11 +546,34 @@ var OrthogonalRouter = function () {
                         // remove the line defined by them from the openObjects list.
                         binTree = binTree.remove(prevNode);
                         binTree = binTree.remove(nodes[i].x);
-                        openObjects.splice(myIndexOf({ x1: prevNode, x2: nodes[i].x }, openObjects), 1);
+                        openObjects.splice(myIndexOfX({ x1: prevNode, x2: nodes[i].x }, openObjects), 1);
                         prevNode = null;
                         continue;
                     }
                     left = leftIter.key;
+                    if (typeof nodes[i].direction !== "undefined" && nodes[i].x > leftIter.key) {
+                        // Check that leftIter.key is actually a part of the openObject that the port belongs to
+                        var keyIsMin = false;
+                        for (var n = 0; n < openObjects.length; n++) {
+                            if ( openObjects[n].x1 === leftIter.key ) {
+                                keyIsMin = true;
+                                break;
+                            }
+                        }
+                        if (keyIsMin) {
+                            // Means the port is not in line with the bounding box (inside of it). Grab the next left iter.
+                            leftIter = binTree.lt(leftIter.key);
+                            if (leftIter.valid) {
+                                left = leftIter.key;
+                            }
+                            else {
+                                left = 0;
+                            }
+                        }
+                    }
+                    else {
+                        left = leftIter.key;
+                    }
                 }
                 else {
                     left = 0;
@@ -550,27 +583,29 @@ var OrthogonalRouter = function () {
             }
             // right
             if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 || nodes[i].direction === 360 ) {
-                var right, rightIter = binTree.gt(nodes[i].x);
-                if (rightIter.valid) {
-                    var seg = {x1: nodes[i].x, x2: rightIter.key};
-                    if (myIndexOf(seg, openObjects) !== -1) {
-                        // Means this segment is in the list of open segments, grab the closest node from rightIter
-                        rightIter = binTree.gt(rightIter.key);
-                        if (rightIter.valid) {
-                            right = rightIter.key;
-                        }
-                        else {
-                            right = sweepLength;
-                        }
-                    }
-                    else {
-                        right = rightIter.key;
-                    }
+                var right = findNextValidRightNeighbor(nodes[i], "x", binTree, openObjects, sweepLength);
 
-                }
-                else {
-                    right = sweepLength;
-                }
+                //var rightIter = binTree.gt(nodes[i].x);
+                //if (rightIter.valid) {
+                //    var seg = {x1: nodes[i].x, x2: rightIter.key};
+                //    if (myIndexOfX(seg, openObjects) !== -1) {
+                //        // Means this segment is in the list of open segments, grab the closest node from rightIter
+                //        rightIter = binTree.gt(rightIter.key);
+                //        if (rightIter.valid) {
+                //            right = rightIter.key;
+                //        }
+                //        else {
+                //            right = sweepLength;
+                //        }
+                //    }
+                //    else {
+                //        right = rightIter.key;
+                //    }
+                //
+                //}
+                //else {
+                //    right = sweepLength;
+                //}
                 var rightSegment = { x1: nodes[i].x, y1: nodes[i].y, x2: right, y2: nodes[i].y };
                 segments.push(rightSegment);
             }
@@ -585,10 +620,97 @@ var OrthogonalRouter = function () {
         return segments;
     };
 
-    function myIndexOf(o, arr) {
+    function findNextValidRightNeighbor ( node, axis, binTree, openObjects, sweepLength) {
+        var right, rightIter = binTree.gt(node[axis]);
+        if (rightIter.valid) {
+            var seg = {};
+            seg[axis+1] = node[axis];
+            seg[axis+2] = rightIter.key;  // {y1: node[axis], y2: rightIter.key}
+
+            var ltoe = inSetAndLessThanOrEqual(seg, openObjects, axis+1, axis+2);
+            // X-coords will be the same, need to see if y2 coord of seg is equal or less than open object y2
+            if (ltoe !== -1) {
+                // Means this segment is in the list of open segments, grab the closest node from rightIter that
+                // isn't a part of the open segment. The object may have many ports so...
+
+                // Need to check if seg is on line that defines an open object. In the case where there is a port,
+                // seg will lie on the line of an open object. Need to repeatedly grab the node's right neighbor
+                // defines the open object completely (x = x & y = y).
+
+                while ( ltoe.equal === false ) {
+                    rightIter = binTree.gt(rightIter.key);
+                    seg[axis+2] = rightIter.key;
+                    ltoe = inSetAndLessThanOrEqual(seg, openObjects, axis+1, axis+2);
+                }
+
+                // At this point the line is defined along the object, but this segment's visibility will continue
+                // either to the next open object, or to the boundary. So need to grab the right neighbor once more.
+
+                rightIter = binTree.gt(rightIter.key);
+                if (rightIter.valid) {
+                    right = rightIter.key;
+                }
+                else {
+                    right = sweepLength;
+                }
+            }
+            else {
+                right = rightIter.key;
+                if (typeof node.direction !== "undefined" && node[axis] < rightIter.key) {
+                    var keyIsMin = false;
+                    for (var n = 0; n < openObjects.length; n++) {
+                        if ( openObjects[n][axis+2] === rightIter.key ) {
+                            keyIsMin = true;
+                            break;
+                        }
+                    }
+                    if (keyIsMin) {
+                        // Means the port is not in line with the bounding box (inside of it). Grab the next left iter.
+                        rightIter = binTree.gt(rightIter.key);
+                        if (rightIter.valid) {
+                            right = rightIter.key;
+                        }
+                        else {
+                            right = sweepLength;
+                        }
+                    }
+                }
+            }
+
+        }
+        else {
+            right = sweepLength;
+        }
+        return right;
+    }
+
+    function myIndexOfX(o, arr) {
         for (var i = 0; i < arr.length; i++) {
             if (arr[i].x1 === o.x1 && arr[i].x2 === o.x2) {
                 return i;
+            }
+        }
+        return -1;
+    }
+
+    function myIndexOfY(o, arr, a, b) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i][a] === o[a] && arr[i][b] === o[b]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    function inSetAndLessThanOrEqual(o, arr, min, max) {
+        // Checks if segments with same starting point have same ending point. If segments do not have
+        // matching starting points, return -1.
+        for (var i = 0; i < arr.length; i++) {
+            if (o[max] < arr[i][max] && o[min] === arr[i][min]) {
+                return {"idx": i, "equal": false};
+            }
+            if (o[max] === arr[i][max] && o[min] === arr[i][min]) {
+                return {"idx": i, "equal": true};
             }
         }
         return -1;
