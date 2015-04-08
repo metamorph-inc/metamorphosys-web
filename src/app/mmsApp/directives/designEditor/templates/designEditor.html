@@ -1,23 +1,26 @@
-<div class="design-editor" layout="row">
-
-    <diagram-container
-        diagram="diagram"
-        config="diagramContainerConfig"
-        flex="{{::editorWidth}}">
-        <drawing-grid ng-attr-id="svg-container-drawing-grid">
-            <svg-diagram></svg-diagram>
+<div class="design-editor">
+    <div class="content-wrapper" layout="row">
+        <diagram-container
+        diagram="designEditorCtrl.diagram"
+        config="designEditorCtrl.diagramContainerConfig"
+        flex="{{::designEditorCtrl.editorWidth}}">
+        <drawing-grid diagram="designEditorCtrl.diagram">
+        <svg-diagram
+        diagram="designEditorCtrl.diagram"
+        ></svg-diagram>
         </drawing-grid>
-    </diagram-container>
-
-
-    <div ng-if="::!isDummy" class="component-browser-container sidebar" flex="25">
-
-        <component-browser auto-height="true"></component-browser>
-
-        <testbench-actions></testbench-actions>
-
+        </diagram-container>
+        <div ng-if="::!designEditorCtrl.isDummy" class="component-browser-container sidebar" flex="25">
+            <component-browser auto-height="true"></component-browser>
+            <testbench-actions></testbench-actions>
+        </div>
+        <keyboard-map class="design-editor-keyboard-map"></keyboard-map>
     </div>
+    <footer-drawer>
 
-    <keyboard-map class="design-editor-keyboard-map"></keyboard-map>
-
+        <diagram-component-inspector
+            inspectable="designEditorCtrl.inspectableComponent"
+        >
+        </diagram-component-inspector>
+    </footer-drawer>
 </div>

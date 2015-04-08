@@ -1,4 +1,5 @@
 {
     "componentServerUrl": "http://localhost:3000",
-    "dummyDiagramEnabled": false
+    "dummyDiagramEnabled": false,
+    "dispatcherUrl": "http://www.metamorphsoftware.com"
 }

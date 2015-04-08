@@ -163,7 +163,7 @@ gulp.task('browserify-docs', function () {
 
     bundle = function () {
         return bundler
-//            .transform(babelify)
+            .transform(babelify)
             .bundle()
             .on('error', swallowError)
             .pipe(source(libraryName + '-docs.js'))

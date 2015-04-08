@@ -21,10 +21,6 @@ require('./services/wiringService/wiringService.js');
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');
 
-require('./directives/diagramContainer/diagramContainer.js');
-require('./directives/fabricCanvas/fabricCanvas.js');
-require('./directives/svgDiagram/svgDiagram.js');
-
 require('./directives/symbols/componentSymbol.js');
 
 require('./directives/resizing/resizeToHeight.js');
@@ -65,14 +61,11 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designVisualization.wiringService',
     'mms.designVisualization.diagramService',
 
-    'mms.designVisualization.diagramContainer',
-    'mms.designVisualization.fabricCanvas',
-    'mms.designVisualization.svgDiagram',
     'mms.designVisualization.symbols',
     'mms.resizeToWindow',
     'mms.designVisualization.busyCover',
     'mms.designVisualization.processingCover',
-    'mms.designVisualization.designEditor',
+    'mms.designEditor',
     'mms.mainNavigator',
 
     'mms.mmsApp.componentBrowser',
@@ -81,12 +74,18 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'ngTouch',
     'ngMaterial',
     'ang-drag-drop',
-    'ngCookies'
+    'ngCookies',
+
+    'xeditable'
 ]);
 
 require('./appInit');
 require('./appConfig');
 
+CyPhyApp.run(function(editableOptions, editableThemes) {
+    editableThemes.bs3.buttonsClass = 'md-raised md-primary md-button md-default-theme';
+    editableOptions.theme = 'bs3';
+});
 
 CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
                                                $timeout, projectHandling, $animate) {
@@ -242,26 +241,6 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 });
 
 
-CyPhyApp.controller('NotFoundController', function ($rootScope, $log) {
-
-    var self = this;
-
-    $log.debug('in NotFoundController');
-
-    this.clickRetry = function () {
-
-        self.leftBehind = true;
-        $rootScope.retry()
-            .catch(function () {
-                self.leftBehind = false;
-            });
-
-    };
-
-    $rootScope.stopBusy();
-    $rootScope.cover();
-
-});
 
 CyPhyApp.controller('DisconnectedController', function ($rootScope) {
 

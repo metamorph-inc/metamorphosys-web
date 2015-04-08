@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(symbolManagerProvider) {
+module.exports = function(symbolManagerProvider, mmsUtils) {
 
     var generateSymbols;
 
@@ -35,7 +35,7 @@ module.exports = function(symbolManagerProvider) {
                     label: 'Port-' + j
                 };
 
-                placement = placements.getRandomElement();
+                placement = mmsUtils.getRandomElementFromArray(placements);
 
                 sides[placement].push(port);
             }

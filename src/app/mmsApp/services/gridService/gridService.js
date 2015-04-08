@@ -182,9 +182,9 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             grid = grids[ id ] = {
                 id: id,
-                components: diagram.components,
+                components: diagram.getComponents(),
                 visibleDiagramComponents: [],
-                wires: diagram.wires,
+                wires: diagram.getWires(),
                 visibleWires: [],
                 viewPort: {},
                 insideVisibleDiagramComponentsRecalculate: false,
@@ -287,7 +287,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
             return {
                 x: x,
-                y: y
+                y: y,
+                z: position.z
             };
 
         };

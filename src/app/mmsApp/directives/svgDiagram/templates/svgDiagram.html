@@ -1,37 +1,32 @@
-<svg class="svg-diagram"
+<div class="svg-diagram-wrapper"
     ng-mousemove="onDiagramMouseMove($event)"
     ng-mouseleave="onDiagramMouseLeave($event)"
     ng-click="onDiagramClick($event)"
     ng-mouseup="onDiagramMouseUp($event)"
     ng-mousedown="onDiagramMouseDown($event)"
     msd-wheel="onDiagramMouseWheel($event, $delta, $deltaX, $deltaY)"
-
-    ng-class="getCssClass()"
-    isis-contextmenu
-    contextmenu-data="contextMenuData"
-    contextmenu-config="{ triggerEvent: 'openContextMenu' }"
 >
 
+    <svg class="svg-diagram"
+        isis-contextmenu
+        contextmenu-data="contextMenuData"
+        contextmenu-config="{ triggerEvent: 'openContextMenu' }"
+        ng-class="getCssClass()"
         >
-    <g class="wire-container">
-        <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
-    </g>
-    <g class="component-container">
-        <!--<component-symbol ng-repeat="component in diagram.components | inViewPort : $parent.visibleArea : -0.3" component="component"></component-symbol>-->
-        <!--<component-symbol ng-repeat="component in diagram.components" component="component" ng-if="component.isInViewPort($parent.$parent.visibleArea, {x:-300, y:-200})"></component-symbol>-->
-        <component-symbol ng-repeat="component in visibleObjects.components track by component.id" component="component"></component-symbol>
-        <!--<component-symbol ng-repeat="component in diagram.components" ng-if="visibleDiagramComponents[component.id]" component="component"></component-symbol>-->
-    </g>
 
-    <g class="new-wire-line" ng-if="newWireLine">
-        <line ng-repeat="segment in newWireLine.segments"
-              ng-attr-x1="{{segment.x1}}"
-              ng-attr-y1="{{segment.y1}}"
-              ng-attr-x2="{{segment.x2}}"
-              ng-attr-y2="{{segment.y2}}"/>
-    </g>
+        <g class="wire-container">
+            <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
+        </g>
+        <g class="component-container">
+            <component-symbol ng-repeat="component in visibleObjects.components track by component.id" component="component"></component-symbol>
+        </g>
 
-    <!--<polygon points="100,10 40,198 190,78 10,78 160,198"-->
-             <!--style="fill:lime;stroke:purple;stroke-width:5;fill-rule:evenodd;" />-->
-
-</svg>
+        <g class="new-wire-line" ng-if="newWireLine">
+            <line ng-repeat="segment in newWireLine.segments"
+                  ng-attr-x1="{{segment.x1}}"
+                  ng-attr-y1="{{segment.y1}}"
+                  ng-attr-x2="{{segment.x2}}"
+                  ng-attr-y2="{{segment.y2}}"/>
+        </g>
+    </svg>
+</div>

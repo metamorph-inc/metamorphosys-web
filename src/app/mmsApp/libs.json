@@ -8,7 +8,8 @@
         "./node_modules/webgme/dist/webgme.classes.build.js",
         "./public/gme_plugins_for_cyphy/webcyphy.plugins.build.js",
         "./public/cyphy-library/cyphy-components.js",
-        "./public/cyphy-library/cyphy-components-templates.js"
+        "./public/cyphy-library/cyphy-components-templates.js",
+        "./bower_components/angular-xeditable/dist/js/xeditable.js"
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",
@@ -23,7 +24,8 @@
         "./bower_components/adapt-strap/dist/adapt-strap.css",
         "./node_modules/ng-gme/dist/ng-gme.css",
         "./bower_components/isis-ui-components/dist/isis-ui-components.css",
-        "./public/cyphy-library/cyphy-components.css"
+        "./public/cyphy-library/cyphy-components.css",
+        "./bower_components/angular-xeditable/dist/css/xeditable.css"        
     ],
     "fonts": [
         "./bower_components/bootstrap/dist/fonts/*",

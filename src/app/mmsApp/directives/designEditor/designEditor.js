@@ -2,374 +2,530 @@
 
 'use strict';
 
-// Move this to GME eventually
+var EventDispatcher = require('../../classes/EventDispatcher');
 
 require('../testbenchActions/testbenchActions.js');
 require('../keyboardMap/keyboardMap.js');
+require('../diagramComponentInspector/diagramComponentInspector.js');
+require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
+require('../diagramContainer/diagramContainer.js');
+require('../svgDiagram/svgDiagram.js');
 
-angular.module('mms.designVisualization.designEditor', [
+angular.module('mms.designEditor', [
+        'mms.designEditor.footerDrawer',
         'mms.testbenchActions',
         'mms.designVisualization.operations.gmeCommitHandlers',
-        'mms.keyboardMap'
+        'mms.keyboardMap',
+        'mms.diagramComponentInspector',
+        'mms.svgDiagram',
+        'mms.diagramContainer',
+        'mms.utils'
     ])
-    .controller('DesignEditorController', function($scope, $rootScope, diagramService, $log, connectionHandling,
-        designService, $state, $stateParams, designLayoutService,
-        symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-        acmImportService) {
+    .directive('designEditor', function() {
 
-        var lastComponentInstantiationPosition,
-            justCreatedWires,
-            layoutContext,
+        function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
+            designService, $state, $stateParams, designLayoutService,
+            symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
+            acmImportService, mmsUtils, operationsManager) {
 
-            addRootScopeEventListener,
-            removeAllRootScopeEventListeners,
-            rootScopeEventListeners,
+            var justCreatedWires,
+                layoutContext,
 
-            initForContainer,
-            destroy,
+                addRootScopeEventListener,
+                removeAllRootScopeEventListeners,
+                rootScopeEventListeners,
 
-            RandomSymbolGenerator = require('./classes/RandomSymbolGenerator.js'),
-            randomSymbolGenerator;
+                initForContainer,
+                destroy,
+                RandomSymbolGenerator = require('./classes/RandomSymbolGenerator.js'),
+                randomSymbolGenerator,
 
-        $scope.isDummy = $state.current.name === 'dummyEditor';
+                selectionHandler,
 
-        if ($scope.isDummy) {
-            $scope.editorWidth = 100;
-        } else {
-            $scope.editorWidth = 75;
-        }
+                self = this;
 
-        addRootScopeEventListener = function(event, fn) {
+            self.inspectableComponent = null;
 
-            rootScopeEventListeners = rootScopeEventListeners || {};
-            rootScopeEventListeners[event] = $rootScope.$on(event, fn);
+            self._drawerHeight = 0;
+            self._element = null;
 
-        };
+            self.isDummy = $state.current.name === 'dummyEditor';
 
-        removeAllRootScopeEventListeners = function() {
-            angular.forEach(rootScopeEventListeners, function(fn) {
-                fn();
-            });
-
-            rootScopeEventListeners = {};
-        };
-
-        destroy = function() {
-
-            removeAllRootScopeEventListeners();
-
-            if ($scope.layoutContext) {
-                $log.debug('Cleaning up designLayout watchers');
-                designLayoutService.unregisterWatcher($scope.layoutContext);
+            if (self.isDummy) {
+                self.editorWidth = 100;
+            } else {
+                self.editorWidth = 75;
             }
 
-        };
 
-        initForContainer = function(selectedContainerId) {
+            selectionHandler = function(event) {
 
-            if ($scope.isDummy) {
+                var selection = event.message;
 
-                randomSymbolGenerator = new RandomSymbolGenerator(symbolManager);
+                if (selection.length === 1) {
 
-                randomSymbolGenerator.generateSymbols(5);
+                    self.inspectableComponent = self.diagram.getComponentById(selection[0]);
 
-                $scope.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
+                    $log.debug('inspectableComponent', self.inspectableComponent);
 
-                console.log('Dummy diagram:', $scope.diagram);
+                } else {
 
-                $rootScope.stopBusy();
-                $rootScope.unCover();
-                $rootScope.stopProcessing();
+                    self.inspectableComponent = null;
 
+                }
+            };
 
-            } else if (selectedContainerId) {
+            addRootScopeEventListener = function(event, fn) {
 
+                rootScopeEventListeners = rootScopeEventListeners || {};
+                rootScopeEventListeners[event] = $rootScope.$on(event, fn);
 
-                $scope.activeWorkSpace = projectHandling.getSelectedWorkspace();
-                $scope.layoutContext = layoutContext = projectHandling.getContainerLayoutContext();
+            };
 
-                justCreatedWires = [];
-
-                $scope.diagram = null;
-                $scope.diagramContainerConfig = {};
-
-
-                //console.log('=======================================ADDING LISTENERS');
-
-                addRootScopeEventListener('componentInstantiationMustBeDone', function($event, componentUrl, position) {
-
-                    $rootScope.setProcessing();
-
-                    if (!position) {
-                        position = gridService.getViewPortCenter(selectedContainerId);
-                    }
-
-                    if (!position) {
-                        position = {
-                            x: 0,
-                            y: 0
-                        };
-                    }
-
-                    lastComponentInstantiationPosition = position;
-
-                    if (componentUrl) {
-                        acmImportService.importAcm($scope.layoutContext, selectedContainerId,
-                            componentUrl, position);
-                    }
-
+            removeAllRootScopeEventListeners = function() {
+                angular.forEach(rootScopeEventListeners, function(fn) {
+                    fn();
                 });
 
-                addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
+                rootScopeEventListeners = {};
+            };
 
-                    $rootScope.setProcessing();
+            destroy = function() {
 
-                    nodeService.getMetaNodes(layoutContext)
-                        .then(function(meta) {
+                self.inspectableComponent = null;
+                
+                removeAllRootScopeEventListeners();
 
-                            var metaId;
+                if (self.diagram) {
+                    self.diagram.removeEventListener('selectionChange', selectionHandler);
+                }
 
-                            metaId = meta.byName.ConnectorComposition.id;
+                if (self.layoutContext) {
+                    $log.debug('Cleaning up designLayout watchers');
+                    designLayoutService.unregisterWatcher(self.layoutContext);
+                }
 
-                            nodeService.startTransaction(layoutContext, msg || 'New wire creation');
+            };
 
-                            nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
-                                .then(function(node) {
+            initForContainer = function(selectedContainerId) {
 
-                                    node.setRegistry('wireSegments', angular.copy(wire.segments));
-                                    node.makePointer('src', wire.end1.port.id);
-                                    node.makePointer('dst', wire.end2.port.id);
+                if (self.isDummy) {
 
-                                    nodeService.completeTransaction(layoutContext);
+                    randomSymbolGenerator = new RandomSymbolGenerator(symbolManager, mmsUtils);
 
-                                    wire.id = node.id;
-                                    diagramService.addWire(selectedContainerId, wire);
-                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                    randomSymbolGenerator.generateSymbols(5);
 
+                    self.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
 
-                                    $rootScope.stopProcessing();
+                    self.diagram.addEventListener('selectionChange', selectionHandler);
 
-                                });
+                    console.log('Dummy diagram:', self.diagram);
 
-                        });
-
-                });
-
-                addRootScopeEventListener('wireSegmentsMustBeSaved', function($event, wire, message) {
-                    designLayoutService.setWireSegments(layoutContext, wire.id, angular.copy(wire.segments), message || 'Updating wire');
-                });
-
-                addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
-                    $rootScope.setProcessing();
-                    nodeService.destroyNode(layoutContext, wire.id, message || 'Deleting wire');
-                });
-
-                addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
-
-                    var startDeletionOfComponent;
-
-                    startDeletionOfComponent = function(component) {
-
-                        var i,
-                            wires,
-                            deleteMessage,
-                            nodeIdsToDelete;
+                    $rootScope.stopBusy();
+                    $rootScope.unCover();
+                    $rootScope.stopProcessing();
 
 
-                        if (angular.isObject(component)) {
+                } else if (selectedContainerId) {
 
-                            nodeIdsToDelete = [];
 
-                            deleteMessage = 'Deleting design element';
+                    self.activeWorkSpace = projectHandling.getSelectedWorkspace();
+                    self.layoutContext = layoutContext = projectHandling.getContainerLayoutContext();
 
-                            wires = diagramService.getWiresForComponents(selectedContainerId, [component]);
+                    justCreatedWires = [];
 
-                            if (wires.length > 0) {
+                    self.diagram = null;
+                    self.diagramContainerConfig = {};
 
-                                deleteMessage += ' with wires';
 
-                                nodeIdsToDelete = wires.map(function(wire) {
-                                    return wire.id;
-                                });
+                    //console.log('=======================================ADDING LISTENERS');
 
-                            }
+                    addRootScopeEventListener('componentInstantiationMustBeDone', function($event, componentUrl, position) {
 
-                            nodeIdsToDelete.unshift(component.id);
+                        $rootScope.setProcessing();
 
-                            for (i = 0; i < nodeIdsToDelete.length; i++) {
-                                nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
-                            }
-
+                        if (!position) {
+                            position = gridService.getViewPortCenter(selectedContainerId);
                         }
-                    };
 
-                    $rootScope.setProcessing();
+                        if (!position) {
+                            position = {
+                                x: 0,
+                                y: 0
+                            };
+                        }
 
-                    nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
-
-                    if (angular.isArray(components)) {
-
-                        angular.forEach(components, function(component) {
-                            startDeletionOfComponent(component);
-                        });
-
-                    } else {
-                        startDeletionOfComponent(components);
-                    }
-
-                    nodeService.completeTransaction(layoutContext);
-
-                });
-
-
-                designLayoutService.watchDiagramElements(
-                        layoutContext,
-                        selectedContainerId,
-                        function(designStructureUpdateObject) {
-
-                            $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
-
-                            switch (designStructureUpdateObject.type) {
-
-                                case 'load':
-
-                                    $timeout(function() {
-
-                                        if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
-                                                justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
-
-                                            diagramService.createNewComponentFromFromCyPhyElement(
-                                                selectedContainerId,
-                                                designStructureUpdateObject.data);
-
-                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
-                                        }
-                                    });
-
-                                    break;
-
-                                case 'unload':
-
-                                    diagramService.deleteComponentOrWireById(
-                                        selectedContainerId,
-                                        designStructureUpdateObject.id);
-
-                                    gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
-
-                                    break;
-
-                                default:
-                                case 'update':
-
-                                    if (designStructureUpdateObject.updateType === 'positionChange') {
-
-                                        diagramService.updateComponentsAndItsWiresPosition(
-                                            selectedContainerId,
-                                            designStructureUpdateObject.id,
-                                            designStructureUpdateObject.data.position
-                                        );
-                                    }
-
-                                    if (designStructureUpdateObject.updateType === 'rotationChange') {
-
-                                        diagramService.updateComponentsAndItsWiresRotation(
-                                            selectedContainerId,
-                                            designStructureUpdateObject.id,
-                                            designStructureUpdateObject.data.rotation
-                                        );
-                                    }
-
-                                    if (designStructureUpdateObject.updateType === 'detailsChange') {
-
-                                        diagramService.updateWireSegments(
-                                            selectedContainerId,
-                                            designStructureUpdateObject.id,
-                                            angular.copy(designStructureUpdateObject.data.details.wireSegments)
-                                        );
-                                    }
-
-                                    break;
-
-                            }
-
-                            $rootScope.stopProcessing();
-
-                        })
-                    .then(function(cyPhyLayout) {
-
-                        $log.debug('Diagram elements', cyPhyLayout);
-
-                        $timeout(function() {
-
-                            $scope.diagram =
-                                diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
-
-                            $log.debug('Drawing diagram:', $scope.diagram);
-
-                        });
-
-                        $timeout(function() {
-                            $rootScope.stopBusy();
-                            $rootScope.unCover();
-                            $rootScope.stopProcessing();
-
-                            if ($cookies.seenMMSWelcome !== 'true') {
-
-                                $rootScope.openHelpDialog();
-                                $cookies.seenMMSWelcome = 'true';
-
-                            }
-
-                        }, 200);
+                        if (componentUrl) {
+                            acmImportService.importAcm(self.layoutContext, selectedContainerId,
+                                componentUrl, position);
+                        }
 
                     });
 
-                $scope.fabClick = function() {
+                    addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
-                    $log.debug('Fab was clicked');
+                        var operation;
 
-                };
+                        operation = operationsManager.initNew(
+                            'RelabelComponent',
+                            diagramService.getDiagram(selectedContainerId), component
+                        );
+                        operation.set(component.getLabel());
+                        operation.finish();
 
-                $rootScope.loading = false;
+
+                    });
+
+                    addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
+
+                        $rootScope.setProcessing();
+
+                        nodeService.getMetaNodes(layoutContext)
+                            .then(function(meta) {
+
+                                var metaId;
+
+                                metaId = meta.byName.ConnectorComposition.id;
+
+                                nodeService.startTransaction(layoutContext, msg || 'New wire creation');
+
+                                nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
+                                    .then(function(node) {
+
+                                        var diagram = diagramService.getDiagram(selectedContainerId);
+
+                                        if (diagram) {
+
+                                            node.setRegistry('wireSegments', angular.copy(wire.segments));
+                                            node.makePointer('src', wire.end1.port.id);
+                                            node.makePointer('dst', wire.end2.port.id);
+
+                                            nodeService.completeTransaction(layoutContext);
+
+                                            wire.id = node.id;
+                                            diagram.addWire(wire);
+                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
+                                        }
+
+                                        nodeService.completeTransaction(layoutContext);
+
+                                        wire.id = node.id;
+                                        diagramService.addWire(selectedContainerId, wire);
+                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
+
+                                        $rootScope.stopProcessing();
+
+                                    });
+
+                            });
+
+                    });
+
+                    addRootScopeEventListener('wireSegmentsMustBeSaved', function($event, wire, message) {
+                        designLayoutService.setWireSegments(layoutContext, wire.id, angular.copy(wire.segments), message || 'Updating wire');
+                    });
+
+                    addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
+                        $rootScope.setProcessing();
+                        nodeService.destroyNode(layoutContext, wire.id, message || 'Deleting wire');
+                    });
+
+                    addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
+
+                        var startDeletionOfComponent;
+
+                        startDeletionOfComponent = function(component) {
+
+                            var i,
+                                wires,
+                                deleteMessage,
+                                nodeIdsToDelete,
+                                diagram = diagramService.getDiagram(selectedContainerId);
+
+                            if (angular.isObject(component)) {
+
+                                nodeIdsToDelete = [];
+
+                                deleteMessage = 'Deleting design element';
+
+                                wires = diagram.getWiresForComponents([component]);
+
+                                if (wires.length > 0) {
+
+                                    deleteMessage += ' with wires';
+
+                                    nodeIdsToDelete = wires.map(function(wire) {
+                                        return wire.id;
+                                    });
+
+                                }
+
+                                nodeIdsToDelete.unshift(component.id);
+
+                                for (i = 0; i < nodeIdsToDelete.length; i++) {
+                                    nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
+                                }
+
+                            }
+                        };
+
+                        $rootScope.setProcessing();
+
+                        nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
+
+                        if (angular.isArray(components)) {
+
+                            angular.forEach(components, function(component) {
+                                startDeletionOfComponent(component);
+                            });
+
+                        } else {
+                            startDeletionOfComponent(components);
+                        }
+
+                        nodeService.completeTransaction(layoutContext);
+
+                    });
+
+
+                    designLayoutService.watchDiagramElements(
+                            layoutContext,
+                            selectedContainerId,
+                            function(designStructureUpdateObject) {
+
+                                var diagram,
+                                    component;
+
+                                $log.debug('DiagramElementsUpdate', designStructureUpdateObject);
+
+                                switch (designStructureUpdateObject.type) {
+
+                                    case 'load':
+
+                                        $timeout(function() {
+
+                                            if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
+                                                    justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
+
+                                                diagramService.createNewComponentFromFromCyPhyElement(
+                                                    selectedContainerId,
+                                                    designStructureUpdateObject.data);
+
+                                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                            }
+                                        });
+
+                                        break;
+
+                                    case 'unload':
+
+                                        self.diagram.deleteComponentOrWireById(
+                                            designStructureUpdateObject.id);
+
+                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
+
+                                        break;
+
+                                    default:
+                                    case 'update':
+
+                                        if (designStructureUpdateObject.updateType === 'positionChange') {
+
+                                            diagramService.updateComponentsAndItsWiresPosition(
+                                                selectedContainerId,
+                                                designStructureUpdateObject.id,
+                                                designStructureUpdateObject.data.position
+                                            );
+                                        }
+
+                                        if (designStructureUpdateObject.updateType === 'rotationChange') {
+
+                                            diagramService.updateComponentsAndItsWiresRotation(
+                                                selectedContainerId,
+                                                designStructureUpdateObject.id,
+                                                designStructureUpdateObject.data.rotation
+                                            );
+                                        }
+
+                                        if (designStructureUpdateObject.updateType === 'detailsChange') {
+
+                                            diagram = diagramService.getDiagram(selectedContainerId);
+
+                                            if (diagram) {
+
+                                                diagram.updateWireSegments(
+                                                    designStructureUpdateObject.id,
+                                                    angular.copy(designStructureUpdateObject.data.details.wireSegments)
+                                                );
+
+                                            }
+
+                                        }
+
+                                        if (designStructureUpdateObject.updateType === 'nameChange') {
+
+                                            diagram = diagramService.getDiagram(selectedContainerId);
+
+                                            if (diagram) {
+
+                                                component = diagram.getComponentById(designStructureUpdateObject.id);
+
+                                                if (component) {
+                                                    component.setLabel(designStructureUpdateObject.data.name);
+
+                                                    $rootScope.$emit('nameWasChanged', projectHandling.getSelectedContainer());
+                                                }
+
+                                            }
+
+                                        }
+
+                                        break;
+
+                                }
+
+                                $rootScope.stopProcessing();
+
+                            })
+                        .then(function(cyPhyLayout) {
+
+                            $log.debug('Diagram elements', cyPhyLayout);
+
+                            $timeout(function() {
+
+                                self.diagram =
+                                    diagramService.createDiagramFromCyPhyElements(selectedContainerId, cyPhyLayout.elements);
+
+                                self.diagram.addEventListener('selectionChange', selectionHandler);
+
+                                $log.debug('Drawing diagram:', self.diagram);
+
+                            });
+
+                            $timeout(function() {
+                                $rootScope.stopBusy();
+                                $rootScope.unCover();
+                                $rootScope.stopProcessing();
+
+                                if ($cookies.seenMMSWelcome !== 'true') {
+
+                                    $rootScope.openHelpDialog();
+                                    $cookies.seenMMSWelcome = 'true';
+
+                                }
+
+                            }, 200);
+
+                        });
+
+                    self.fabClick = function() {
+
+                        $log.debug('Fab was clicked');
+
+                    };
+
+                    $rootScope.loading = false;
+                }
+            };
+
+            $rootScope.stopProcessing();
+
+            $scope.$on('$destroy', function() {
+                destroy();
+            });
+
+            initForContainer(projectHandling.getSelectedContainerId());
+
+            $scope.$watch(function() {
+
+                return projectHandling.getSelectedContainerId();
+
+            }, function(newVal, oldVal) {
+
+                if (newVal !== oldVal) {
+
+                    destroy();
+                    initForContainer(newVal);
+
+                }
+
+            });
+
+        }
+
+        DesignEditorController.prototype.adjustToDrawerHeight = function(height) {
+
+            if (!isNaN(height) && this._element) {
+
+                this._element.style['padding-bottom'] = height + 'px';
+
+                this.dispatchEvent({
+                    type: 'resize',
+                    message: this.getHeight()
+                });
+
             }
+
         };
 
-        $rootScope.stopProcessing();
+        DesignEditorController.prototype.registerElement = function(element) {
 
-        $scope.$on('$destroy', function() {
-            destroy();
-        });
+            this._element = element;
+            this.adjustToDrawerHeight();
 
-        initForContainer(projectHandling.getSelectedContainerId());
+        };
 
-        $scope.$watch(function() {
+        DesignEditorController.prototype.registerElement = function(element) {
 
-            return projectHandling.getSelectedContainerId();
+            this._element = element;
+            this.adjustToDrawerHeight();
 
-        }, function(newVal, oldVal) {
+        };
 
-            if (newVal !== oldVal) {
+        DesignEditorController.prototype.getHeight = function() {
 
-                destroy();
-                initForContainer(newVal);
+            var offsetHeight,
+                height;
+
+            if (this._element) {
+                offsetHeight = this._element.offsetHeight;
+                height = offsetHeight - this._drawerHeight;
+            }
+
+            return height;
+        };
+
+        DesignEditorController.prototype.getSelectedComponents = function() {
+
+            var result = {};
+
+            // if (this.diagram) {
+            //     result = this.diagram;
+            // }
+
+            return result;
+        };
+
+        EventDispatcher.prototype.apply(DesignEditorController.prototype);
+
+        return {
+            restrict: 'E',
+            controller: DesignEditorController,
+            controllerAs: 'designEditorCtrl',
+            bindToController: true,
+            scope: true,
+            replace: true,
+            transclude: true,
+            require: 'designEditor',
+            templateUrl: '/mmsApp/templates/designEditor.html',
+            link: function(scope, element, attr, ctrl) {
+
+                ctrl.registerElement(element[0]);
 
             }
 
-        });
-
-    })
-    .directive('designEditor', [
-        function() {
-
-            return {
-                restrict: 'E',
-                controller: 'DesignEditorController',
-                $scope: true,
-                replace: true,
-                transclude: true,
-                templateUrl: '/mmsApp/templates/designEditor.html'
-
-            };
-        }
-    ]);
+        };
+    });

@@ -2,12 +2,10 @@
 @import '_bootstrap_overrides.scss';
 @import '_material_overrides.scss';
 @import 'print';
-
 .mms-app {
     font-family: 'Titillium Web', sans-serif;
     overflow: hidden;
 }
-
 
 .md-dialog-container h1 {
     border-bottom: 1px solid #ddd;
@@ -45,16 +43,13 @@ h1.main-view-header {
 }
 
 .sidebar {
-
     background: linear-gradient(to bottom, #fff, #f5f5f5);
-    border-left: 1px solid rgba(0,0,0,.12);
-
+    border-left: 1px solid rgba(0, 0, 0, .12);
     h2 {
         padding: 1ex 1ex;
         margin: 0;
         color: #555;
     }
-
     overflow: hidden;
 }
 
@@ -67,8 +62,7 @@ h1.main-view-header {
     cursor: copy;
 }
 
-.drag-handle {
-}
+.drag-handle {}
 
 .badge {
     background-color: #E7EBF6;
@@ -77,24 +71,20 @@ h1.main-view-header {
 
 md-toast.success {
     background-color: $mmsGreen !important;
-
     .md-button.md-default-theme.md-raised {
         margin-left: 20px;
         background-color: rgba(0, 111, 10, 1);
         color: #fff;
     }
-
 }
 
 md-toast.failure {
     background-color: $mmsRed !important;
-
     .md-button.md-default-theme.md-raised {
         margin-left: 20px;
         background-color: #6F1900;
         color: #fff;
     }
-
 }
 
 md-tabs.md-default-theme .md-header {
@@ -111,7 +101,7 @@ md-tabs.md-default-theme md-tabs-ink-bar {
 }
 
 .md-dialog-container {
-    background-color: rgba(0,0,0,.6) !important;
+    background-color: rgba(0, 0, 0, .6) !important;
 }
 
 img.scale-it {
@@ -126,5 +116,23 @@ img.bordered {
     max-width: 800px;
 }
 
-#social-media {
+#social-media {}
+
+.editable-error {
+    font-weight: normal;
+    font-size: 90%;
+    padding-top: 0;
+    margin-top: 0;
+    color: $mmsRed;
+}
+
+.editable-controls {
+    button {
+        padding: .5ex 1ex;
+    }
+
+    input {
+        padding: 0 1ex;
+        height: 26px;        
+    }
 }

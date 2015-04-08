@@ -131,7 +131,7 @@ define(['common/LogManager'
                     .send(projectName);
             });
         } else {
-            res.send(404);
+            res.sendStatus(404);
         }
     };
 

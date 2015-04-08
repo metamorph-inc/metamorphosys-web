@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, $rootScope, operationsManager) {
+module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
 
     $scope.$on('keydownOnDocument', function($event, event) {
 
@@ -37,8 +37,7 @@ module.exports = function($scope, $rootScope, operationsManager) {
 
         };
 
-        if ($scope.diagram && $scope.diagram.state && $scope.diagram.state.selectedComponentIds.length) {
-
+        if ( mmsUtils.ifNotFromInput(event) &&  $scope.diagram && $scope.diagram.state && $scope.diagram.state.selectedComponentIds.length) {
 
             selectedComponents = $scope.diagram.getSelectedComponents();
 
@@ -56,7 +55,7 @@ module.exports = function($scope, $rootScope, operationsManager) {
 
                 component = selectedComponents[0];
 
-                if (component.isContainer) {
+                if (component.metaType === 'Container') {
                     $rootScope.$emit('containerMustBeOpened', component);
                 }
 
@@ -107,7 +106,7 @@ module.exports = function($scope, $rootScope, operationsManager) {
 
                         var selectedComponent;
 
-                        selectedComponent = $scope.diagram.componentsById[selectedComponentId];
+                        selectedComponent = $scope.diagram.getComponentById(selectedComponentId);
 
                         possibbleDragTargetsDescriptor.targets.push(getDragDescriptor(
                             selectedComponent));
