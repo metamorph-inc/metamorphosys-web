@@ -142,7 +142,7 @@ angular.module('CyPhyApp').config(function(
             views: {
                 'onCover': {
                     template: '',
-                    controller: function($injector) {
+                    controller: function($injector, $window, $timeout) {
 
                         var url;
 
@@ -152,7 +152,9 @@ angular.module('CyPhyApp').config(function(
                             url = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
                         }
 
-                        document.location.href = url;
+                        $timeout(function(){
+                            $window.location.href = url;
+                        }, 200, false);
                     }
                 }
             }

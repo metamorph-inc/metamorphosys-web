@@ -162,7 +162,6 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
         $log.debug('stateChangeSuccess', to);
 
-
     });
 
 
