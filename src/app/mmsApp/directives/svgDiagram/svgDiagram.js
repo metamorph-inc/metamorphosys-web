@@ -26,9 +26,11 @@ angular.module('mms.svgDiagram', [
 
         'isis.ui.contextmenu'
     ])
-    .directive('svgDiagram', 
+    .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService,
-                gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
+            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
+
+            var DiagramDropHandler = require('./mixins/DiagramDropHandler');
 
             function SVGDiagramController($scope) {
 
@@ -366,39 +368,7 @@ angular.module('mms.svgDiagram', [
 
             }
 
-            SVGDiagramController.prototype._onDragenter = function(e) {
-
-                console.log(e.dataTransfer.getData('componentId'));
-
-                if (!e || !e.dataTransfer.items || e.dataTransfer.items.length === 0 || e.dataTransfer.items[0].kind !== 'file') {
-                    return false;
-                }
-                e.preDefault();
-                if (e.dataTransfer.items[0].type === 'application/x-zip-compressed') {
-                    e.dataTransfer.effectAllowed = 'copy';
-                } else {
-                    e.dataTransfer.effectAllowed = 'none';
-                }
-                return false;
-
-
-            };
-
-            SVGDiagramController.prototype._onDragleave = function(e) {
-
-            };
-
-            SVGDiagramController.prototype._onDrop = function(e) {
-
-                if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
-                    return false;
-                }
-                e.preDefault();
-                scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
-                return false;
-
-            };
-
+            DiagramDropHandler.prototype.apply(SVGDiagramController.prototype);
 
             return {
                 controller: SVGDiagramController,

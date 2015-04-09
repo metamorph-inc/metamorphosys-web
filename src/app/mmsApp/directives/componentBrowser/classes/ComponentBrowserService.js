@@ -197,7 +197,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
 
         nodeDragStart: function(e, node) {
             console.log('Component drag start', e, node);
-            e.dataTransfer.setData('componentId', node.id);
+            e.dataTransfer.setData('text', node.id);
         },
 
         nodeDragEnd: function(e) {

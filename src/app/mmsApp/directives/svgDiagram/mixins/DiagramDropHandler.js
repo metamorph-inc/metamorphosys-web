@@ -3,12 +3,14 @@
 var DiagramDropHandler = function() {};
 
 DiagramDropHandler.prototype.apply = function(object) {
-
+    object._onDragenter = DiagramDropHandler._onDragenter;
+    object._onDragleave = DiagramDropHandler._onDragleave;
+    object._onDrop = DiagramDropHandler._onDrop;    
 };
 
 DiagramDropHandler._onDragenter = function(e) {
 
-    console.log(e.dataTransfer.getData('componentId'));
+    console.log(e.dataTransfer.getData('text'));
 
     if (!e || !e.dataTransfer.items || e.dataTransfer.items.length === 0 || e.dataTransfer.items[0].kind !== 'file') {
         return false;
@@ -35,7 +37,7 @@ DiagramDropHandler._onDrop = function(e) {
         return false;
     }
     e.preDefault();
-    $scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
+    this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     return false;
 
 };
