@@ -1,6 +1,6 @@
 .git
 
-# copy of .gitignore EXCEPT dump:
+# copy of .gitignore EXCEPT dump, blob-local-storage
 
 .idea
 .DS_Store*
@@ -10,7 +10,7 @@ node_modules
 # webgme temp files and directories
 server.log
 app.log
-blob-local-storage
+#blob-local-storage
 
 # domain-tools project temp files and directories
 executor-temp

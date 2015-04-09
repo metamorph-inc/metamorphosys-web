@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function ($scope, $timeout, $log) {
+module.exports = function($scope, $timeout, $log) {
 
     var jsp,
         jspReinit,
@@ -21,13 +21,13 @@ module.exports = function ($scope, $timeout, $log) {
         onWindowResize;
 
 
-    updateVisibleArea = function () {
+    updateVisibleArea = function() {
 
         var left,
             top,
             _updateVisibleArea;
 
-        _updateVisibleArea = function(){
+        _updateVisibleArea = function() {
 
             $scope.visibleArea = {
                 left: left || 0,
@@ -65,7 +65,7 @@ module.exports = function ($scope, $timeout, $log) {
 
     };
 
-    jspReinit = function () {
+    jspReinit = function() {
 
         $timeout.cancel(jspReinitPromise);
 
@@ -73,114 +73,106 @@ module.exports = function ($scope, $timeout, $log) {
 
     };
 
-    $scope.$on('DiagramContainerInitialized', function () {
+    $scope.$on('DiagramContainerInitialized', function() {
 
         $scope.$contentPane
 
             .bind('jsp-initialised',
-            function () {
+                function() {
 
-                var spaceBarKiller;
+                    var spaceBarKiller;
 
-                jspPane = $scope.$contentPane.find('.jspPane');
-                updateVisibleArea();
+                    jspPane = $scope.$contentPane.find('.jspPane');
+                    updateVisibleArea();
 
-                spaceBarKiller = function(event) {
+                    spaceBarKiller = function(event) {
 
-                    var d,
-                        doPrevent;
+                        var d,
+                            doPrevent;
 
-                    if (event.keyCode === 32) { // Delete
+                        if (event.keyCode === 32) { // Space
 
-                        doPrevent = true;
+                            doPrevent = true;
 
-                        d = event.srcElement || event.target;
+                            d = event.srcElement || event.target;
 
-                        if (d.tagName) {
+                            if (d.tagName) {
 
-                            if ((d.tagName.toUpperCase() === 'INPUT' &&
-                                (
-                                d.type.toUpperCase() === 'TEXT' ||
-                                d.type.toUpperCase() === 'PASSWORD' ||
-                                d.type.toUpperCase() === 'FILE' ||
-                                d.type.toUpperCase() === 'EMAIL' ||
-                                d.type.toUpperCase() === 'SEARCH' ||
-                                d.type.toUpperCase() === 'DATE' )
-                                ) ||
-                                d.tagName.toUpperCase() === 'TEXTAREA') {
-                                doPrevent = d.readOnly || d.disabled;
+                                if ((d.tagName.toUpperCase() === 'INPUT' &&
+                                        (
+                                            d.type.toUpperCase() === 'TEXT' ||
+                                            d.type.toUpperCase() === 'PASSWORD' ||
+                                            d.type.toUpperCase() === 'FILE' ||
+                                            d.type.toUpperCase() === 'EMAIL' ||
+                                            d.type.toUpperCase() === 'SEARCH' ||
+                                            d.type.toUpperCase() === 'DATE')
+                                    ) ||
+                                    d.tagName.toUpperCase() === 'TEXTAREA') {
+                                    doPrevent = d.readOnly || d.disabled;
+                                }
                             }
                         }
-                    }
 
-                    if (doPrevent) {
-                        event.preventDefault();
-                    }
+                        if (doPrevent) {
+                            event.preventDefault();
+                        }
 
-                };
+                    };
 
-                jspPane.keypress(spaceBarKiller);
+                    jspPane.keypress(spaceBarKiller);
 
-            }
-        )
-            .bind('jsp-scroll-y', function (event, aScrollPositionY) {
+                }
+            )
+            .bind('jsp-scroll-y', function(event, aScrollPositionY) {
 
                 scrollPositionY = aScrollPositionY;
 
                 updateVisibleArea();
-            }
-        )
-            .bind('jsp-scroll-x', function (event, aScrollPositionX) {
+            })
+            .bind('jsp-scroll-x', function(event, aScrollPositionX) {
 
                 scrollPositionX = aScrollPositionX;
 
                 updateVisibleArea();
-            }
-        )
-//            .bind(
-//            'jsp-arrow-change',
-//            function (event, isAtTop, isAtBottom, isAtLeft, isAtRight) {
-//                console.log('Handle jsp-arrow-change', this,
-//                    'isAtTop=', isAtTop,
-//                    'isAtBottom=', isAtBottom,
-//                    'isAtLeft=', isAtLeft,
-//                    'isAtRight=', isAtRight);
-//            }
-//        )
-            .jScrollPane(
-            {
+            })
+            //            .bind(
+            //            'jsp-arrow-change',
+            //            function (event, isAtTop, isAtBottom, isAtLeft, isAtRight) {
+            //                console.log('Handle jsp-arrow-change', this,
+            //                    'isAtTop=', isAtTop,
+            //                    'isAtBottom=', isAtBottom,
+            //                    'isAtLeft=', isAtLeft,
+            //                    'isAtRight=', isAtRight);
+            //            }
+            //        )
+            .jScrollPane({
                 verticalDragMinHeight: 60,
                 verticalDragMaxHeight: 60,
                 horizontalDragMinWidth: 60,
                 horizontalDragMaxWidth: 60,
                 animateScroll: true,
                 mouseWheelSpeed: 0
-            }
-        );
+            });
 
         jsp = $scope.$contentPane.data('jsp');
 
         jspReinit();
     });
 
-    $scope.$on('DiagramInitialized', function () {
+    $scope.$on('DiagramInitialized', function() {
         jspReinit();
     });
 
-    $scope.$on('contentPan', function($event, distance) {{
+    $scope.$on('contentPan', function($event, distance) {
 
         if (angular.isObject(jsp)) {
 
-//            $log.debug('jsp.scrollBy', distance);
+            //            $log.debug('jsp.scrollBy', distance);
             jsp.scrollBy(-distance.x, -distance.y, false);
 
         }
 
-    }});
-
-    window.onkeydown = function(e) {
-        return (e.keyCode !== 32);
-    };
+    });
 
     onWindowResize = function() {
         jspReinit();

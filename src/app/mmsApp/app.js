@@ -161,7 +161,6 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
         $log.debug('stateChangeSuccess', to);
 
-
     });
 
 
@@ -240,28 +239,6 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 });
 
 
-CyPhyApp.controller('NotFoundController', 
-    [ '$rootScope', '$log'],
-    function ($rootScope, $log) {
-
-    var self = this;
-
-    $log.debug('in NotFoundController');
-
-    this.clickRetry = function () {
-
-        self.leftBehind = true;
-        $rootScope.retry()
-            .catch(function () {
-                self.leftBehind = false;
-            });
-
-    };
-
-    $rootScope.stopBusy();
-    $rootScope.cover();
-
-});
 
 CyPhyApp.controller('DisconnectedController', function ($rootScope) {
 

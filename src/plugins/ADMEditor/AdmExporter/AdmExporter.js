@@ -726,6 +726,7 @@ define([
                 });
                 copyAttrIfSet('Layer');
             }
+            copyAttrIfSet('Notes');
 
             data['@ConstraintTarget'] = targetNodes
                 .filter(function (node) {

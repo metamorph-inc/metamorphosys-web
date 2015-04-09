@@ -114,6 +114,27 @@ angular.module('CyPhyApp').config(function(
 
     $urlRouterProvider.otherwise('/');
 
+  function NotFoundController($rootScope, $log) {
+
+        var self = this;
+
+        $log.debug('in NotFoundController');
+
+        this.clickRetry = function () {
+
+            self.leftBehind = true;
+            $rootScope.retry()
+                .catch(function () {
+                    self.leftBehind = false;
+                });
+
+        };
+
+        $rootScope.stopBusy();
+        $rootScope.cover();
+
+    }
+
     $stateProvider
 
         .state('getDispacthed', {
@@ -121,7 +142,7 @@ angular.module('CyPhyApp').config(function(
             views: {
                 'onCover': {
                     template: '',
-                    controller: function($injector) {
+                    controller: function($injector, $window, $timeout) {
 
                         var url;
 
@@ -131,7 +152,9 @@ angular.module('CyPhyApp').config(function(
                             url = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
                         }
 
-                        document.location.href = url;
+                        $timeout(function(){
+                            $window.location.href = url;
+                        }, 200, false);
                     }
                 }
             }
@@ -310,7 +333,7 @@ angular.module('CyPhyApp').config(function(
             views: {
                 'onCover': {
                     templateUrl: '/mmsApp/templates/404.html',
-                    controller: 'NotFoundController',
+                    controller: NotFoundController,
                     controllerAs: 'page'
                 }
             }

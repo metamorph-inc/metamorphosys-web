@@ -149,6 +149,20 @@ describe('AdmImporterRegressions', function () {
         expect(componentInstances[constrained.C3a1['@Origin']]['@Name']).to.equal('C3a2');
         expect(componentInstances[constrained.C3b1['@Origin']]['@Name']).to.equal('C3b2');
 
+        // Check Notes export
+        expect(constrained.C1b['@Notes']).to.be.equal('TestNotes');
+        expect(constrained.C1d['@Notes']).to.be.equal('TestNotes');
+        expect(constrained.C2b['@Notes']).to.be.equal('TestNotes');
+        expect(constrained.C2c['@Notes']).to.be.equal('TestNotes');
+        expect(constrained.C3a1['@Notes']).to.be.equal('TestNotes');
+        expect(constrained.C3b1['@Notes']).to.be.equal('TestNotes');
+
+        // Check that nodes without Notes don't have notes
+        expect(constrained.C1a['@Notes']).to.be.empty;
+        expect(constrained.C1c['@Notes']).to.be.empty;
+        expect(constrained.C2a['@Notes']).to.be.empty;
+        expect(constrained.C3a2['@Notes']).to.be.empty;
+
         done();
     });
 
