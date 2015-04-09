@@ -63,7 +63,7 @@ var OrthogonalRouter = function () {
         var nodes = [],
             incompleteNodes = [];
         for ( var s = 0; s < vertSegments.length; s++ ) {
-            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes, nodes);
+            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes, nodes,  diagram.config.height);
         }
 
         // NOTE:
@@ -79,9 +79,9 @@ var OrthogonalRouter = function () {
             }
             nodes[incNode.v.x][incNode.v.y] = { v: incNode.v,
                                                 north: incNode.north,
-                                                south: typeof incNode.south === "undefined" ? null : incNode.south,
+                                                south: typeof incNode.south === "undefined" ? diagram.config.height : incNode.south,
                                                 west: incNode.west,
-                                                east: typeof incNode.east === "undefined" ? null : incNode.east };
+                                                east: typeof incNode.east === "undefined" ? diagram.config.width : incNode.east };
             incompleteNodes.splice(j, 1);
         }
 
@@ -104,7 +104,7 @@ var OrthogonalRouter = function () {
 
     };
 
-    this.getSegmentIntersections = function ( segment, segmentSet, intersections, incompleteNodes, nodes ) {
+    this.getSegmentIntersections = function ( segment, segmentSet, intersections, incompleteNodes, nodes, gh ) {
         // segment is the line that will be compared against all lines in the segment set.
         // Segments in segmentSet are sorted from top-down or left-right due to line sweep.
 
@@ -126,7 +126,7 @@ var OrthogonalRouter = function () {
             if ( share !== null ) {
                 if ( myIndexOfPoint(share, intersections) === -1 ) {
                     intersections.push(share);
-                    populateNode( share, segment, segmentSet[i], nodes, incompleteNodes );
+                    populateNode( share, segment, segmentSet[i], nodes, incompleteNodes, gh );
                 }
                 continue;
             }
@@ -158,13 +158,13 @@ var OrthogonalRouter = function () {
 
             // There is an intersection, so need to store the vertex's neighbors
             // populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes, gridHeight, gridWidth );
-            populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes );
+            populateNode( intersection, segment, segmentSet[i], nodes, incompleteNodes, gh );
 
         }
         return intersections;
     };
 
-    function populateNode( vertex, vertSeg, horzSeg, nodes, incompleteNodes ) {
+    function populateNode( vertex, vertSeg, horzSeg, nodes, incompleteNodes, gh ) {
         var node = new PathNode( vertex );
         node.vertSeg = vertSeg;
         node.horzSeg = horzSeg;
@@ -203,8 +203,8 @@ var OrthogonalRouter = function () {
          */
 
         if ( incompleteNodes.length === 0 ) {
-            node.north = null;
-            node.west = null;
+            node.north = 0;
+            node.west = 0;
             insert(node, incompleteNodes, compareY);
             return node;
         }
@@ -234,24 +234,24 @@ var OrthogonalRouter = function () {
                 matchNode.east = node.v;
             }
             else {
-                matchNode.east = null;
-                node.west = null;
+                matchNode.east = matchNode.v.x;
+                node.west = node.v.x;
             }
 
             if (smallNeighbor === null) {
                 // This node is at the top of the grid. Since points are sorted, we know previous point was
                 // the largest Y value for that X, so the previous node's S is null and this node's N is null.
-                node.north = null;
-                incompleteNodes[incompleteNodes.length - 1].south = null;
+                node.north = 0;
+                incompleteNodes[incompleteNodes.length - 1].south = gh;
             }
             if (largeNeighbor === null) {
-                incompleteNodes[incompleteNodes.length - 2].south = null;
+                incompleteNodes[incompleteNodes.length - 2].south = gh;
             }
 
         }
         else {
             // Node didn't exist, so it was added.
-            node.west = null;
+            node.west = 0;
         }
 
         // Grab closest small neighbor in Y that has the same X value, provided node isn't first in list.
@@ -263,7 +263,7 @@ var OrthogonalRouter = function () {
                 i -= 1;
                 if (i < 0) {
                     console.log('No vertical segment match.');
-                    node.north = null;
+                    node.north = 0;
                     break;
                 }
                 else {
@@ -279,7 +279,7 @@ var OrthogonalRouter = function () {
 
 
             // Make sure smallNeighbor was found
-            if (node.north !== null) {
+            if (node.north !== 0) {
                 // See if the vertical segments of each node overlap at all. If so, there is a segment between them.
                 // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
                 if (self.isPointOnLine(smallNeighbor.vertSeg, {x: vertSeg.x1, y: vertSeg.y1})) {
@@ -287,13 +287,13 @@ var OrthogonalRouter = function () {
                     smallNeighbor.south = node.v;
                 }
                 else {
-                    smallNeighbor.south = null;
-                    node.north = null;
+                    smallNeighbor.south = smallNeighbor.v.y;
+                    node.north = node.v.y;
                 }
             }
         }
         else {
-            node.north = null;
+            node.north = 0;
         }
 
         if (checkComplete) {
@@ -396,11 +396,13 @@ var OrthogonalRouter = function () {
         for ( i = 0; i < nodes.length; i++ ) {
             var checkRemove = true;
 
-
             // If node is a port that is on left or right, ignore and skip this node.
-            if (typeof nodes[i].isPort !== "undefined" &&
-                ( nodes[i].direction === 180 || nodes[i].direction === 360 ||
-                  nodes[i].direction === -180 || nodes[i].direction === 0 )) {
+            var isInvalidPort = (typeof nodes[i].isPort !== "undefined" &&
+                                ( nodes[i].direction === 180 || nodes[i].direction === 360 ||
+                                  nodes[i].direction === -180 || nodes[i].direction === 0 ));
+
+            // If port is on left/right and inside of the component bounding box, a vertical segment needs to be made.
+            if (isInvalidPort) {
                 continue;
             }
 
@@ -410,14 +412,15 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // top
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 270 || nodes[i].direction === -90) {
+            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 270 ||
+                                                          nodes[i].direction === -90) {
                 var left, leftIter = binTree.lt(nodes[i].y);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are collinear, skip.
                     if (leftIter.value === nodes[i].x) {
                         if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
                             // even number of keys, therefore this is part of an object segment.
-                            openObjects.push({y1: leftIter.key, y2: nodes[i].y});
+                            openObjects.push({y1: leftIter.key, y2: nodes[i].y, x: nodes[i].x});
                         }
                         continue;
                     }
@@ -463,31 +466,10 @@ var OrthogonalRouter = function () {
                 segments.push(leftSegment);
             }
             // bottom
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 || nodes[i].direction === -270) {
+            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 ||
+                                                          nodes[i].direction === -270) {
                 var right = findNextValidRightNeighbor ( nodes[i], "y", binTree, openObjects, sweepLength);
 
-                //var rightIter = binTree.gt(nodes[i].y);
-                //if (rightIter.valid) {
-                //    var seg = {y1: nodes[i].y, y2: rightIter.key};
-                //    if (myIndexOfY(seg, openObjects) !== -1) {
-                //        // Means this segment is in the list of open segments, grab the closest node from rightIter that
-                //        // isn't a part of the open segment.
-                //        rightIter = binTree.gt(rightIter.key);
-                //        if (rightIter.valid) {
-                //            right = rightIter.key;
-                //        }
-                //        else {
-                //            right = sweepLength;
-                //        }
-                //    }
-                //    else {
-                //        right = rightIter.key;
-                //    }
-                //
-                //}
-                //else {
-                //    right = sweepLength;
-                //}
                 var rightSegment = { y1: nodes[i].y, x1: nodes[i].x, y2: right, x2: nodes[i].x };
                 segments.push(rightSegment);
             }
@@ -515,10 +497,13 @@ var OrthogonalRouter = function () {
             var checkRemove = true;
 
 
-            // If node is a port that is on top or bottom, ignore and skip this node.
-            if (typeof nodes[i].isPort !== "undefined" &&
-                ( nodes[i].direction === 270 || nodes[i].direction === 90 ||
-                  nodes[i].direction === -270 || nodes[i].direction === -90 )) {
+            // If node is a port that is on bottom or top, ignore and skip this node.
+            var isInvalidPort = (typeof nodes[i].isPort !== "undefined" &&
+                                ( nodes[i].direction === 270 || nodes[i].direction === 90 ||
+                                  nodes[i].direction === -270 || nodes[i].direction === -90));
+
+            // If port is on top/bottom and inside of the component bounding box, a horz segment needs to be made.
+            if (isInvalidPort) {
                 continue;
             }
 
@@ -528,14 +513,15 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // left
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 180 || nodes[i].direction === -180) {
+            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 180 ||
+                                                          nodes[i].direction === -180) {
                 var left, leftIter = binTree.lt(nodes[i].x);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are colinear, skip.
                     if (leftIter.value === nodes[i].y) {
                         if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
                             // even number of keys, therefore this is part of an object segment.
-                            openObjects.push({x1: leftIter.key, x2: nodes[i].x});
+                            openObjects.push({x1: leftIter.key, x2: nodes[i].x, y: nodes[i].y});
                         }
                         continue;
                     }
@@ -582,30 +568,10 @@ var OrthogonalRouter = function () {
                 segments.push(leftSegment);
             }
             // right
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 || nodes[i].direction === 360 ) {
+            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 ||
+                                                          nodes[i].direction === 360) {
                 var right = findNextValidRightNeighbor(nodes[i], "x", binTree, openObjects, sweepLength);
 
-                //var rightIter = binTree.gt(nodes[i].x);
-                //if (rightIter.valid) {
-                //    var seg = {x1: nodes[i].x, x2: rightIter.key};
-                //    if (myIndexOfX(seg, openObjects) !== -1) {
-                //        // Means this segment is in the list of open segments, grab the closest node from rightIter
-                //        rightIter = binTree.gt(rightIter.key);
-                //        if (rightIter.valid) {
-                //            right = rightIter.key;
-                //        }
-                //        else {
-                //            right = sweepLength;
-                //        }
-                //    }
-                //    else {
-                //        right = rightIter.key;
-                //    }
-                //
-                //}
-                //else {
-                //    right = sweepLength;
-                //}
                 var rightSegment = { x1: nodes[i].x, y1: nodes[i].y, x2: right, y2: nodes[i].y };
                 segments.push(rightSegment);
             }
@@ -616,6 +582,7 @@ var OrthogonalRouter = function () {
                     }
                 }
             }
+
         }
         return segments;
     };
@@ -693,9 +660,9 @@ var OrthogonalRouter = function () {
         return -1;
     }
 
-    function myIndexOfY(o, arr, a, b) {
+    function myIndexOfY(o, arr) {
         for (var i = 0; i < arr.length; i++) {
-            if (arr[i][a] === o[a] && arr[i][b] === o[b]) {
+            if (arr[i].y1 === o.y1 && arr[i].y2 === o.y2) {
                 return i;
             }
         }
@@ -839,48 +806,47 @@ var OrthogonalRouter = function () {
             for (var j = 0; j < 4; j++ ) {
                 var neighbor = neighbors.neighbors[j];
 
-                if ( neighbor === null || visibilityGrid[neighbor.x][neighbor.y].closed ) {
-                    continue;  // Invalid node, do not process
-                }
+                if ( isNaN(neighbor) && !visibilityGrid[neighbor.x][neighbor.y].closed ) {
 
-                // Point to neighbor's entry in visibilityGrid as this has more information than just node neighbor
-                var n = visibilityGrid[neighbor.x][neighbor.y];
+                    // Point to neighbor's entry in visibilityGrid as this has more information than just node neighbor
+                    var n = visibilityGrid[neighbor.x][neighbor.y];
 
-                // Get g(x), shortest distance from start node to current node
-                var distance = manhattanDistance(currentNode.v, n.v),
-                    bends = (j !== 0 && j !== 3) ? 5000 : 0,  // Neighbors are sorted in straight, R, L, reverse order
-                    cost = currentNode.cost + distance + bends,
-                    remBends = estimateRemainingBends(currentNode.v, destinationNode.v, neighbors.map[j]),
-                    visited = n.visited;
+                    // Get g(x), shortest distance from start node to current node
+                    var distance = manhattanDistance(currentNode.v, n.v),
+                        bends = (j !== 0 && j !== 3) ? 5000 : 0,  // Neighbors are sorted in straight, R, L, reverse order
+                        cost = currentNode.cost + distance + bends,
+                        remBends = estimateRemainingBends(currentNode.v, destinationNode.v, neighbors.map[j]),
+                        visited = n.visited;
 
-                if ((typeof n.cost === "undefined" || n.cost === null) ||
-                        (!visited && (cost+remBends) < (n.cost+ n.remBends))) {
-                    // So far, a possible optimal route has been found
-                    n.visited = true;
-                    n.parent = currentNode;
-                    n.dir = neighbors.map[j];
-                    n.bends = bends;
-                    n.remBends = remBends;
-                    n.heuristic = manhattanDistance(n.v, destinationNode.v) + n.remBends;
-                    n.cost = cost;
-                    n.score = n.cost + n.heuristic;
-                }
+                    if ((typeof n.cost === "undefined" || n.cost === null) ||
+                        (!visited && (cost + remBends) < (n.cost + n.remBends))) {
+                        // So far, a possible optimal route has been found
+                        n.visited = true;
+                        n.parent = currentNode;
+                        n.dir = neighbors.map[j];
+                        n.bends = bends;
+                        n.remBends = remBends;
+                        n.heuristic = manhattanDistance(n.v, destinationNode.v) + n.remBends;
+                        n.cost = cost;
+                        n.score = n.cost + n.heuristic;
+                    }
 
-                // Update closest node if the partial cost and estimated remaining cost is better than the closest.
-                // If they are tied, go with the one which has a better partial cost.
-                if (((n.score) < (closestNode.score)) || (n.score === closestNode.score &&
-                                                          n.cost < closestNode.cost)) {
-                    closestNode = n;
-                }
+                    // Update closest node if the partial cost and estimated remaining cost is better than the closest.
+                    // If they are tied, go with the one which has a better partial cost.
+                    if (((n.score) < (closestNode.score)) || (n.score === closestNode.score &&
+                        n.cost < closestNode.cost)) {
+                        closestNode = n;
+                    }
 
-                // If this node has not yet been encountered, add it to the priority queue. If it has,
-                // then its score needs to be re-checked against the other nodes in the queue.
-                if (!visited) {
-                    openHeap.push(n);
-                    searchedNodes.push(n);  // Mark the node as searched.
-                }
-                else {
-                    openHeap.rescoreElement(n);
+                    // If this node has not yet been encountered, add it to the priority queue. If it has,
+                    // then its score needs to be re-checked against the other nodes in the queue.
+                    if (!visited) {
+                        openHeap.push(n);
+                        searchedNodes.push(n);  // Mark the node as searched.
+                    }
+                    else {
+                        openHeap.rescoreElement(n);
+                    }
                 }
             }
 
@@ -942,31 +908,29 @@ var OrthogonalRouter = function () {
             segment.y1 = currentNode.v.y;
             segment.x2 = currentNode.parent.v.x;
             segment.y2 = currentNode.parent.v.y;
+            segment.objectLeft = null;   // How far to left/top can you go before hitting object/boundary?
+            segment.objectRight = null;  // " " to right/bottom
 
             if (segment.x1 === segment.x2) {
-                segment.orientation = "horizontal";
+                segment.orientation = "vertical";
             }
             else {
-                segment.orientation = "vertical";
+                segment.orientation = "horizontal";
+            }
+
+            if (segments.length !== 0 && segments[segments.length - 1].orientation === segment.orientation) {
+                segments[segments.length - 1].x2 = segment.x2;
+                segments[segments.length - 1].y2 = segment.y2;
+            }
+            else {
+                segments.push(segment);
             }
 
             currentNode = visibilityGrid[currentNode.parent.v.x][currentNode.parent.v.y];
-            segments.push(segment);
+
 
         }
-        segment = {};
-        segment.x1 = currentNode.v.x;
-        segment.y1 = currentNode.v.y;
-        segment.x2 = startPt.x;
-        segment.y2 = startPt.y;
 
-        if (segment.x1 === segment.x2) {
-            segment.orientation = "horizontal";
-        }
-        else {
-            segment.orientation = "vertical";
-        }
-        segments.push(segment);
         return segments;
 
     }
