@@ -173,6 +173,17 @@ def import_components(mga_path, dir_path='components_extracted'):
     return rc
 
 
+def set_testbench_properties(testbench_config, testbench_mga):
+    for name, property in testbench_config.get('properties', {}).iteritems():
+        prop_mga = testbench_mga.GetObjectByPathDisp("@%s|kind=Parameter" % name)
+        if not prop_mga:
+            prop_mga = testbench_mga.GetObjectByPathDisp("@%s|kind=Property" % name)
+        if not prop_mga:
+            prop_mga = testbench_mga.CreateChildObject(testbench_mga.Meta.RoleByName('Property'))
+            prop_mga.Name = name
+        prop_mga.SetStrAttrByNameDisp('Value', str(property['Value']))
+
+
 def import_design(mga_path, adm_file, testbench_config):
     project_conn_str = 'MGA={0}'.format(mga_path)
     project = win32com.client.Dispatch('Mga.MgaProject')
@@ -210,6 +221,8 @@ def import_design(mga_path, adm_file, testbench_config):
                     logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
                 else:
                     logger.debug(' [null reference]')
+                    
+                set_testbench_properties(testbench_config, testbench_mga)
             except pywintypes.com_error as err:
                 logger.error(err.message)
                 raise RuntimeError('Given test-bench not found or setup correctly.')

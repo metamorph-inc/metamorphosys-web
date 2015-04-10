@@ -341,7 +341,22 @@ define(['plugin/PluginConfig',
                         return;
                     }
                     self.referencedDesign = design;
-                    callback(null, testBenchInfo);
+                    self.core.loadChildren(testBenchNode, function (err, children) {
+                        if (err) {
+                            return callback(err);
+                        }
+                        var properties = testBenchInfo.properties = {};
+                        children.filter(function (child) {
+                            return self.isMetaTypeOf(child, self.META.Property);
+                        }).forEach(function (child) {
+                            var property = properties[self.core.getAttribute(child, 'name')] = {};
+                            ['name', 'Value', 'Default', 'Unit', 'Minimum', 'Maximum'].forEach(function (attrName) {
+                                property[attrName] = self.core.getAttribute(child, attrName);
+                            });
+                        });
+
+                        callback(null, testBenchInfo);
+                    });
                 });
             } else {
                 self.createMessage(testBenchNode, 'No TopLevelSystemUnderTest reference set for test-bench.',
@@ -578,7 +593,8 @@ define(['plugin/PluginConfig',
         if (testBenchInfo) {
             testbenchConfig = JSON.stringify({
                 name: testBenchInfo.name,
-                path: testBenchInfo.path
+                path: testBenchInfo.path,
+                properties: testBenchInfo.properties
             }, null, 4);
             filesToAdd['testbench_config.json'] = testbenchConfig;
             self.logger.info('TestBenchConfig : ' + testbenchConfig);
