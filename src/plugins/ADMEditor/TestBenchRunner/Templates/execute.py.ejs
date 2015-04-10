@@ -128,6 +128,21 @@ def parse_xme_and_save_to_mga(file_name):
 
     return mga_path
 
+def create_blank_mga(mga_filename):
+    mga_path = os.path.abspath(mga_filename)
+
+    project = win32com.client.DispatchEx('Mga.MgaProject')
+    project.Create('MGA={0}'.format(mga_path), 'CyPhyML')
+    try:
+        import pythoncom
+        pythoncom.PumpWaitingMessages() # SignalBlocksAddOn will create libs here
+        pythoncom.PumpWaitingMessages()
+        project.Save()
+        logging.debug("Mga saved to " + mga_filename)
+    finally:
+        project.Close(True)
+
+    return mga_path
 
 def extract_components(src_path='ACMs', dst_path='components_extracted'):
     if os.path.isdir(dst_path):
@@ -158,6 +173,17 @@ def import_components(mga_path, dir_path='components_extracted'):
     return rc
 
 
+def set_testbench_properties(testbench_config, testbench_mga):
+    for name, property in testbench_config.get('properties', {}).iteritems():
+        prop_mga = testbench_mga.GetObjectByPathDisp("@%s|kind=Parameter" % name)
+        if not prop_mga:
+            prop_mga = testbench_mga.GetObjectByPathDisp("@%s|kind=Property" % name)
+        if not prop_mga:
+            prop_mga = testbench_mga.CreateChildObject(testbench_mga.Meta.RoleByName('Property'))
+            prop_mga.Name = name
+        prop_mga.SetStrAttrByNameDisp('Value', str(property['Value']))
+
+
 def import_design(mga_path, adm_file, testbench_config):
     project_conn_str = 'MGA={0}'.format(mga_path)
     project = win32com.client.Dispatch('Mga.MgaProject')
@@ -172,30 +198,34 @@ def import_design(mga_path, adm_file, testbench_config):
         logger.debug('Transaction began.')
         is_in_transaction = True
         ## Find the test-bench and find the design placeholder.
-        testbench_mga = project.ObjectByPath(testbench_config['path'])
-        if not testbench_mga:
-            raise RuntimeError('Given test-bench path "' + testbench_config['path'] + '" does not exist in project!')
-        try:
-            logger.debug('Path returned MgaObject of type: {0}'.format(testbench_mga.MetaBase.Name))
-            #if not testbench_mga.MetaBase.Name == 'TestBench':
-            #    raise NotImplementedError('Only CyPhy TestBench supported!')
-            testbench_id = testbench_mga.ID
-            logger.debug('Found test-bench "{0}".'.format(testbench_mga.Name))
-            logger.debug('Test-bench ID : {0}.'.format(testbench_id))
-            tlsut_mga = [o for o in testbench_mga.GetChildrenOfKind('TopLevelSystemUnderTest')]
-            if tlsut_mga:
-                tlsut_mga = tlsut_mga[0]
-            else:
-                tlsut_role = testbench_mga.Meta.GetRoleByNameDisp('TopLevelSystemUnderTest')
-                tlsut_mga = testbench_mga.CreateChildObject(tlsut_role)
-            logger.debug('TopLevelSystem under test {0} name :'.format(tlsut_mga.Name))
-            if tlsut_mga.Referred:
-                logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
-            else:
-                logger.debug(' [null reference]')
-        except pywintypes.com_error as err:
-            logger.error(err.message)
-            raise RuntimeError('Given test-bench not found or setup correctly.')
+        testbench_id = None
+        if testbench_config:
+            testbench_mga = project.ObjectByPath(testbench_config['path'])
+            if not testbench_mga:
+                raise RuntimeError('Given test-bench path "' + testbench_config['path'] + '" does not exist in project!')
+            try:
+                logger.debug('Path returned MgaObject of type: {0}'.format(testbench_mga.MetaBase.Name))
+                #if not testbench_mga.MetaBase.Name == 'TestBench':
+                #    raise NotImplementedError('Only CyPhy TestBench supported!')
+                testbench_id = testbench_mga.ID
+                logger.debug('Found test-bench "{0}".'.format(testbench_mga.Name))
+                logger.debug('Test-bench ID : {0}.'.format(testbench_id))
+                tlsut_mga = [o for o in testbench_mga.GetChildrenOfKind('TopLevelSystemUnderTest')]
+                if tlsut_mga:
+                    tlsut_mga = tlsut_mga[0]
+                else:
+                    tlsut_role = testbench_mga.Meta.GetRoleByNameDisp('TopLevelSystemUnderTest')
+                    tlsut_mga = testbench_mga.CreateChildObject(tlsut_role)
+                logger.debug('TopLevelSystem under test {0} name :'.format(tlsut_mga.Name))
+                if tlsut_mga.Referred:
+                    logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
+                else:
+                    logger.debug(' [null reference]')
+                    
+                set_testbench_properties(testbench_config, testbench_mga)
+            except pywintypes.com_error as err:
+                logger.error(err.message)
+                raise RuntimeError('Given test-bench not found or setup correctly.')
         ## Import the design.
         logger.debug('Calling CyPhyDesignImporter.ImportDesign.')
         design_mga = design_importer.ImportDesignToDesignSpaceIfApplicable(project, adm_file)
@@ -224,13 +254,15 @@ def import_design(mga_path, adm_file, testbench_config):
                     design_ids.append(cfg_mga.ID)
         else:
             design_ids.append(design_id)
-        ## Reference the design from the top-level-system-under-test.
-        logger.debug('Creating ReferenceSwitcher')
-        ref_switcher = win32com.client.Dispatch('MGA.Interpreter.ReferenceSwitcher')
-        logger.debug('Switching referred in test-bench to design.')
-        tlsut_mga.Name = design_mga.Name
-        ref_switcher.SwitchReference(design_mga, tlsut_mga)
-        logger.debug('Design was placed in test-bench.')
+ 
+        if testbench_config:
+            ## Reference the design from the top-level-system-under-test.
+            logger.debug('Creating ReferenceSwitcher')
+            ref_switcher = win32com.client.Dispatch('MGA.Interpreter.ReferenceSwitcher')
+            logger.debug('Switching referred in test-bench to design.')
+            tlsut_mga.Name = design_mga.Name
+            ref_switcher.SwitchReference(design_mga, tlsut_mga)
+            logger.debug('Design was placed in test-bench.')
         logger.debug('About to commit transaction..')
         project.CommitTransaction()
         logger.debug('Transaction committed.')
@@ -379,8 +411,10 @@ if __name__ == '__main__':
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
-    with zipfile.ZipFile('tbAsset.zip') as zippy:
-        zippy.extractall('.')
+
+    extract_components()
+    logger.info('(1) Components extracted...')
+
     try:
         adm_path = [f for f in os.listdir('.') if f.endswith('.adm')][0]
     except IndexError:
@@ -388,18 +422,25 @@ if __name__ == '__main__':
         with open('_FAILED.txt', 'ab+') as f_out:
             f_out.write('Execution failed! See log/execute.log.')
         sys.exit(1)
-    try:
-        xme_path = [f for f in os.listdir('.') if f.endswith('.xme')][0]
-    except IndexError:
-        logger.error('Could not find an adm or xme file at {0}'.format(os.getcwd()))
-        with open('_FAILED.txt', 'ab+') as f_out:
-            f_out.write('Execution failed! See log/execute.log.')
-        sys.exit(1)
-    with open('testbench_config.json', 'r') as f_in:
-        test_bench_config = json.load(f_in)
-    extract_components()
-    logger.info('(1) Components extracted...')
-    mga_file = parse_xme_and_save_to_mga(xme_path)
+    if os.path.isfile('tbAsset.zip'):
+        with zipfile.ZipFile('tbAsset.zip') as zippy:
+            zippy.extractall('.')
+            
+        try:
+            xme_path = [f for f in os.listdir('.') if f.endswith('.xme')][0]
+        except IndexError:
+            logger.error('Could not find an adm or xme file at {0}'.format(os.getcwd()))
+            with open('_FAILED.txt', 'ab+') as f_out:
+                f_out.write('Execution failed! See log/execute.log.')
+            sys.exit(1)
+        with open('testbench_config.json', 'r') as f_in:
+            test_bench_config = json.load(f_in)
+        mga_file = parse_xme_and_save_to_mga(xme_path)
+    else:
+        xme_path = None
+        test_bench_config = None
+        mga_file = create_blank_mga(os.path.splitext(adm_path)[0] + ".mga")
+
     logger.info('(2) Mga created...')
     rc = import_components(mga_file)
     if rc == 0:
@@ -423,8 +464,9 @@ if __name__ == '__main__':
                         error_msg + ' See logs for more info.')
             sys.exit(1)
 
-    logger.info('(4) Design imported and placed in test-bench.')
-    call_master_interpreter(mga_file, test_bench_id, cfg_ids)
-    logger.info('(5) MasterInterpreter finished.')
-    run_execution_jobs()
-    logger.info('(6) Job execution completed.')
+    if test_bench_id:
+        logger.info('(4) Design imported and placed in test-bench.')
+        call_master_interpreter(mga_file, test_bench_id, cfg_ids)
+        logger.info('(5) MasterInterpreter finished.')
+        run_execution_jobs()
+        logger.info('(6) Job execution completed.')

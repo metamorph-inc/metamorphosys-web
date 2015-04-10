@@ -3,13 +3,13 @@
  config.json: "rextrast": { "copyproject": "./src/rest/copyproject/CopyProject", ...
  http://localhost:8855/rest/external/copyproject
  */
-define(['common/LogManager'
-], function (logManager) {
+
     'use strict';
 
     var path = require('path'),
         BSON_FILE = path.join('dump', 'CyPhy', 'Template_Module_1x2.bson'),
-        logger = logManager.create('REST-COPYPROJECT'),
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
+        logger,
         mongodb = require('mongodb'),
         BSONStream = require('bson-stream'),
         fs = require('fs'),
@@ -95,7 +95,7 @@ define(['common/LogManager'
             childProcess.execFile('mongorestore', ['--help'], function (err/*, stdout, stderr*/) {
                 if (err) {
                     useMongoRestore = false;
-                    logger.warning(
+                    logger.warn(
                         'mongorestore is unavailable (is it on the PATH?). Using slower node.js implementation'
                     );
                 } else {
@@ -135,8 +135,8 @@ define(['common/LogManager'
         }
     };
 
-    return function (gmeConfig) {
+    module.exports = function (gmeConfig) {
         CONFIG = gmeConfig;
+        logger = Logger.create('gme:meta-morph:REST-COPYPROJECT', gmeConfig.server.log);
         return CopyProject;
     };
-});

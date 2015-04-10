@@ -175,7 +175,7 @@ define( [ 'plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTest
                         msg = '"' + testName + '" has an invalid plugin registered "' + pluginNames[ i ] +
                             '" the test ' +
                             'for that plugin will not be generated.';
-                        self.logger.warning( msg );
+                        self.logger.warn( msg );
                         self.createMessage( node, msg );
                     }
                 }
@@ -183,7 +183,7 @@ define( [ 'plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTest
             } );
         } else {
             msg = '"' + testName + '" did is a test but did not have a TestPoint - it will not be included.';
-            self.logger.warning( msg );
+            self.logger.warn( msg );
             self.createMessage( node, msg );
             callback( null );
         }

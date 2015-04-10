@@ -1,19 +1,18 @@
-/* global define,require,console */
+/* globals module, require, requireJS, console */
 /*
  http://localhost:8855/rest/external/acminfo/8cc3c61bf55695128925b21b583054cfdecaed49
  */
 
-define(['common/LogManager',
-        'blob/BlobClient',
-        'q',
-        'acminfo/ParseAcm'
-    ], function (logManager, BlobClient, q, ParseAcm) {
-        'use strict';
+     'use strict';
 
-        var contentDisposition = require('content-disposition'),
-            logger = logManager.create('server.rest.acminfo'),
-            blobClient,
-            url = require('url');
+    var ParseAcm = require('./ParseAcm'),
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
+        logger,
+        q = require('q'),
+        BlobClient = requireJS('blob/BlobClient'),
+        contentDisposition = require('content-disposition'),
+        logger = Logger.create('server.rest.acminfo'),
+        blobClient;
 
         var newParseAcm = function (id) {
             var parse = new ParseAcm(id);
@@ -56,15 +55,13 @@ define(['common/LogManager',
             }
         };
 
-        return function (gmeConfig) {
-            //ParseAcm = require.nodeRequire('../../' + gmeConfig.rest.components.acminfo + '/../ParseAcm')
-            blobClient = new BlobClient({
-                serverPort: gmeConfig.server.port,
-                httpsecure: gmeConfig.server.https.enable,
-                server: '127.0.0.1'
-                // webgmeclientsession: webGMESessionId
-            });
-            return acmInfo;
-        };
-    }
-);
+    module.exports = function (gmeConfig) {
+        logger = Logger.create('gme:meta-morph:REST-AcmInfo', gmeConfig.server.log);
+        blobClient = new BlobClient({
+            serverPort: gmeConfig.server.port,
+            httpsecure: gmeConfig.server.https.enable,
+            server: '127.0.0.1'
+            // webgmeclientsession: webGMESessionId
+        });
+        return acmInfo;
+    };

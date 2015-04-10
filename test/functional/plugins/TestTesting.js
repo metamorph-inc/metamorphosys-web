@@ -1,4 +1,4 @@
-/*globals window, require, describe, it,before */
+/*globals window, require, describe, it,before,after */
 
 
 if (typeof window === 'undefined') {
@@ -7,6 +7,7 @@ if (typeof window === 'undefined') {
     var webgme = require('webgme');
     var requirejs = require('../../../test-conf.js').requirejs;
     var config = require('../../../test-conf.js').config;
+    var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
 }
@@ -21,6 +22,9 @@ describe('TestTesting', function () {
     var Artifact;
     var acmTemplates;
     var admTemplates;
+
+    testConf.useServer(before, after);
+
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/functional/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
             BlobClient = BlobClient_;
@@ -55,11 +59,11 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -71,11 +75,11 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -87,12 +91,12 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1059726760/686890673',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
             pluginConfig: { UploadedFile: 'nonexistant' }
-        }, function (err, result) {
+        }, { UploadedFile: 'nonexistant' }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -104,11 +108,11 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null ,config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -120,11 +124,11 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -136,12 +140,12 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1671134528/1332252948',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
             pluginConfig: { UploadedFile: 'nonexistant' }
-        }, function (err, result) {
+        }, { UploadedFile: 'nonexistant' }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -152,11 +156,11 @@ describe('TestTesting', function () {
         var pluginName = 'AdmExporter',
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = true;
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -168,11 +172,11 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint
-        }, function (err, result) {
+        }, {}, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -184,12 +188,12 @@ describe('TestTesting', function () {
             testPoint = '/1007576016/1659905525/1591506645',
             expectedSuccess = false;
 
-        webgme.runPlugin.main(config, {
+        webgme.runPlugin.main(null, config, {
             projectName: projectName,
             pluginName: pluginName,
             activeNode: testPoint,
             pluginConfig: { UploadedFile: 'nonexistant' }
-        }, function (err, result) {
+        }, { UploadedFile: 'nonexistant' }, function (err, result) {
             chai.expect(err).to.equal(null);
             chai.expect(result.getSuccess()).to.equal(expectedSuccess);
             done();
@@ -218,12 +222,12 @@ describe('TestTesting', function () {
                 if (err) {
                     return done(err);
                 }
-                webgme.runPlugin.main(config, {
+                webgme.runPlugin.main(null, config, {
                     projectName: projectName,
                     pluginName: pluginName,
                     activeNode: testPoint,
                     pluginConfig: { UploadedFile: hash }
-                }, function (err, result) {
+                }, { UploadedFile: hash}, function (err, result) {
                     chai.expect(err).to.equal(null);
                     chai.expect(result.getSuccess()).to.equal(expectedSuccess);
                     done();
@@ -242,12 +246,12 @@ describe('TestTesting', function () {
             if (err) {
                 return done(err);
             }
-            webgme.runPlugin.main(config, {
+            webgme.runPlugin.main(null, config, {
                 projectName: projectName,
                 pluginName: pluginName,
                 activeNode: testPoint,
                 pluginConfig: { admFile: hash }
-            }, function (err, result) {
+            }, { admFile: hash }, function (err, result) {
                 chai.expect(err).to.equal(null);
                 chai.expect(result.getSuccess()).to.equal(expectedSuccess);
                 done();

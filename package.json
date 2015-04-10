@@ -10,7 +10,8 @@
     "bson-stream": "0.0.4",
     "commonmark": "^0.18.1",
     "content-disposition": "^0.5.0",
-    "webgme": "https://github.com/metamorph-inc/webgme/tarball/b19be7982dc844c97da30481501ebb101b34c7eb",
+    "mongodb": "=1.4.34",
+    "webgme": "https://github.com/webgme/webgme/tarball/bc543f9b43ff03675a50a282bfdc0103fe2db49b",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
     "ng-gme": "=0.1.1"
