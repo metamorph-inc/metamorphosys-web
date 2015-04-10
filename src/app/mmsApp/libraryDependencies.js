@@ -20,7 +20,6 @@ require('angular-ui-codemirror');
 require('chance');
 require('Array.prototype.find');
 require('glMatrix');
-require('ngDragDrop');
 
 require('hamster');
 require('angular-panhandler');

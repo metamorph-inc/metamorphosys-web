@@ -56,10 +56,10 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             }
         };
 
-        element.addEventListener('drop', dropTarget.onDrop);
-        element.addEventListener('dragover', this._onDragOverEnterLeave);
-        element.addEventListener('dragenter', dropTarget.onDragenter);
-        element.addEventListener('dragleave', dropTarget.onDragleave);
+        element.addEventListener('drop', dropTarget.onDrop, false);
+        element.addEventListener('dragover', this._onDragOverEnterLeave, false);
+        element.addEventListener('dragenter', dropTarget.onDragenter, false);
+        element.addEventListener('dragleave', dropTarget.onDragleave, false);
 
         if (typeof channelStr === 'string') {
 

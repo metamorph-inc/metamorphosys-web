@@ -88,7 +88,6 @@
     "chance": "./bower_components/chance/chance.js",
     "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
     "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
-    "ngDragDrop": "./bower_components/angular-native-dragdrop/draganddrop.js",
     "ngTouch": "./bower_components/angular-touch/angular-touch.min.js",
     "hamster": "./bower_components/hamsterjs/hamster.js",
     "angular-panhandler": "./bower_components/angular-panhandler/dist/angular-panhandler.min.js",

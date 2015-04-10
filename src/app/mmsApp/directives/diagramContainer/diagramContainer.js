@@ -20,32 +20,14 @@ angular.module('mms.diagramContainer', [
         '$rootScope',
         'componentServerUrl',
         'acmImportService',
-        function($scope, $timeout, $log, $window, componentBrowserService, $rootScope, componentServerUrl, acmImportService) {
+        function($scope, $timeout, $log, $window, componentBrowserService, $rootScope) {
 
             var self = this,
 
                 compiledDirectives,
 
                 ScrollHandler,
-                scrollHandler,
-                getPositionFromEvent = function($event) {
-                    var position,
-                        x,
-                        y;
-                    if ($event && $event.originalEvent) {
-
-                        x = $event.originalEvent.offsetX || $event.originalEvent.layerX || 100;
-                        y = $event.originalEvent.offsetY || $event.originalEvent.layerY || 100;
-
-                        position = {
-                            x: x - 20,
-                            y: y - 20
-                        };
-
-                    }
-
-                    return position;
-                };
+                scrollHandler;
 
             compiledDirectives = {};
 
@@ -63,20 +45,6 @@ angular.module('mms.diagramContainer', [
                 classString += self.isEditable() ? ' editable' : 'readonly';
 
                 return classString;
-            };
-
-
-
-            $scope.aFileWasDroppedOnMe = function(file, $event) {
-                var position = getPositionFromEvent($event);
-
-                acmImportService.storeDroppedAcm(file)
-                    .then(function(url) {
-                        $rootScope.$emit('componentInstantiationMustBeDone', url, position);
-                    })
-                    .catch(function(err) {
-                        $log.error("Error creating drag-n-drop component: " + err);
-                    });
             };
 
             $scope.getInitializedClass = function() {

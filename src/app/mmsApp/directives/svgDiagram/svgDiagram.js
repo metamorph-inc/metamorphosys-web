@@ -28,7 +28,8 @@ angular.module('mms.svgDiagram', [
     ])
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService, componentBrowserService, componentServerUrl,
-            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService) {
+            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 
+            acmImportService) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
 
@@ -66,6 +67,9 @@ angular.module('mms.svgDiagram', [
                 this.componentBrowserService = componentBrowserService;
                 this.mmsUtils = mmsUtils;
                 this.componentServerUrl = componentServerUrl;                
+                this.$log = $log;
+                this.acmImportService = acmImportService;
+                this.dndService = dndService;
 
                 // Setting up handlers
 
@@ -220,6 +224,7 @@ angular.module('mms.svgDiagram', [
                     wireDragHandler.onWindowBlur($event);
                     wireDrawHandler.onWindowBlur($event);
                     panHandler.onWindowBlur($event);
+                    dndService.stopDrag();
                 }
 
                 $$window.on('blur', onWindowBlur);
@@ -395,10 +400,7 @@ angular.module('mms.svgDiagram', [
                         diagramContainerController = controllers[0],
                         svgDiagramController = controllers[1],
 
-                        dropHandler,
-                        dragenterHandler,
-                        dragleaveHandler,
-                        dragoverHandler;
+                        dropHandler;
 
                     $element = $(element);
 
@@ -516,12 +518,21 @@ angular.module('mms.svgDiagram', [
                         dropHandler
                     );
 
+                    // dragenterFromOutsideHandler = svgDiagramController._onDragenterFromOutside.bind(svgDiagramController);
+                    // dragleaveFromOutsideHandler = svgDiagramController._onDragleaveFromOutside.bind(svgDiagramController);                    
+
+                    // document.documentElement.addEventListener('dragenter', dragenterFromOutsideHandler, false);
+                    // document.documentElement.addEventListener('dragenter', dragleaveFromOutsideHandler, false);                    
+
                     scope.$on('$destroy', function() {
 
                         $(document).unbind('keydown', keyDownHandler);
                         $element.unbind('contextmenu', killContextMenu);
 
                         dndService.unregisterDropTarget( element[0] );
+
+                        // document.documentElement.removeEventListener('dragenter', dragenterFromOutsideHandler);
+                        // document.documentElement.removeEventListener('dragenter', dragleaveFromOutsideHandler);                    
 
                     });
 
