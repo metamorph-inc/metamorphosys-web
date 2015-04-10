@@ -39,3 +39,4 @@ public
 config.client.json
 config.server.json
 src/app/mmsApp/appConfig.js
+server-error.log

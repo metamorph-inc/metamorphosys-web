@@ -45,7 +45,10 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
         dropTarget = {
             targetElement: element,
-            onDrop: dropHandler,
+            onDrop: function(e) {
+                self.stopDrag();
+                dropHandler(e);
+            },
             onDragenter: function(e) {
                 element.classList.add('drag-entered');                
                 self._onDragOverEnterLeave(e);
