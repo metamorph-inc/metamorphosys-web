@@ -27,7 +27,7 @@ angular.module('mms.svgDiagram', [
         'isis.ui.contextmenu'
     ])
     .directive('svgDiagram',
-        function($rootScope, $log, diagramService, wiringService,
+        function($rootScope, $log, diagramService, wiringService, componentBrowserService, componentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
@@ -61,6 +61,11 @@ angular.module('mms.svgDiagram', [
                     $$window;
 
                 $$window = $($window);
+
+                this.$rootScope = $rootScope;
+                this.componentBrowserService = componentBrowserService;
+                this.mmsUtils = mmsUtils;
+                this.componentServerUrl = componentServerUrl;                
 
                 // Setting up handlers
 

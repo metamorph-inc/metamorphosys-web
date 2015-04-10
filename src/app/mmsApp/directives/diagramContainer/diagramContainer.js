@@ -79,25 +79,6 @@ angular.module('mms.diagramContainer', [
                     });
             };
 
-            $scope.somethingWasDroppedOnMe = function($event, $data) {
-
-                var component,
-                    position;
-
-                component = componentBrowserService.getComponentById($data);
-
-                if (component) {
-
-                    position = getPositionFromEvent($event);
-
-                    ga('send', 'event', 'avmComponent', 'dropped', component.id);
-
-                    $rootScope.$emit('componentInstantiationMustBeDone',
-                        componentServerUrl + '/getcomponent/download/' + component.id, position);
-                }
-
-            };
-
             $scope.getInitializedClass = function() {
                 return $scope.initialized ? 'initialized' : 'not-initialized';
             };
