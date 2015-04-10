@@ -27,7 +27,7 @@ describe('TestBenchRunner', function () {
             admTemplates = admTemplates_;
             jszip = jszip_;
             done();
-        });
+        }, done);
     });
 
     var projectName = 'TestTestBenchRunner';
@@ -60,14 +60,17 @@ describe('TestBenchRunner', function () {
             if (err) {
                 return done(err);
             }
+            var storage = undefined;
             // console.log(hash); // 95f5f253ec1bd748cf668024c0d51b9cc9f565f3
 
-            webgme.runPlugin.main(CONFIG, {
+            webgme.runPlugin.main(
+                storage,
+                CONFIG, {
                 projectName: projectName,
                 pluginName: pluginName,
                 activeNode: testPoint,
                 pluginConfig: {}
-            }, function (err, result) {
+            }, {}, function (err, result) {
                 chai.expect(err).to.equal(null);
                 chai.expect(result.getSuccess()).to.equal(true);
                 var bc = newBlobClient();

@@ -200,7 +200,7 @@ define( [ 'plugin/PluginConfig',
         if ( testBenchData.Workflow && testBenchData.Workflow[ '@Name' ] ) {
             self.createWorkflow( testBench, testBenchData.Workflow );
         } else {
-            self.logger.warning( 'There was no workflow defined!' );
+            self.logger.warn( 'There was no workflow defined!' );
             self.createMessage( testBench, 'There was no Workflow defined!', 'warning' );
         }
 
@@ -349,7 +349,7 @@ define( [ 'plugin/PluginConfig',
                 } );
             }
         } else {
-            self.logger.warning( 'No Tasks in work-flow!' );
+            self.logger.warn( 'No Tasks in work-flow!' );
             self.createMessage( workflow, 'There were no tasks defined in the workflow.', 'warning' );
         }
     };

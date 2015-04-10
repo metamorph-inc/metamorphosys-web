@@ -1,12 +1,8 @@
-/*globals define, require, process, WebGMEGlobal */
+/*globals define, require, process, requireJS*/
 /**
  * Created by pmeijer on 8/4/2014.
  */
 
-var os = require( 'os' );
-define( [ 'common/LogManager',
-    'child_process'
-], function ( logManager, child_process ) {
     'use strict';
 
     var serverInfoRestInit,
@@ -14,7 +10,11 @@ define( [ 'common/LogManager',
         serverInfoRestNode,
         serverInfoRestNpm,
         serverInfoRestAll,
-        logger = logManager.create( 'REST-SERVER-INFO' );
+        child_process = require('child_process'),
+        os = require('os'),
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
+        logger,
+        setup;
 
     serverInfoRestInit = function ( req, res, next ) {
         var url = req.url.split( '/' ),
@@ -25,7 +25,7 @@ define( [ 'common/LogManager',
                 all: serverInfoRestAll
             };
 
-        logger.debug( 'Version info request' );
+        logger.debug( 'Version info request: ', url[1] );
 
         if ( handlers.hasOwnProperty( url[ 1 ] ) ) {
             handlers[ url[ 1 ] ]( req, res, next );
@@ -120,7 +120,10 @@ define( [ 'common/LogManager',
         } );
     };
 
-    return function () {
+    setup = function (_gmeConfig, _ensureAuthenticated) {
+        logger = Logger.create('web-cyphy:server:middleware:ServerInfo', _gmeConfig.server.log);
+        logger.debug('serverInfoRest setup done');
         return serverInfoRestInit;
     };
-} );
+
+module.exports = setup;

@@ -41,7 +41,7 @@ config.requirejsPaths = {
 
         'panels/ProjectAnalyzer': './src/panels/ProjectAnalyzer',
         'widgets/ProjectAnalyzer': './src/widgets/ProjectAnalyzer',
-        'executor': './node_modules/webgme/src/middleware/executor',
+        'executor': './node_modules/webgme/src/common/executor',
         'desert': './src/rest/desert',
         'acminfo': './src/rest/acminfo',
         //'serverinfo': './src/rest/serverInfo',
@@ -60,7 +60,7 @@ function mapPaths(paths) {
         key;
 
     for (key in paths) {
-        mapped[key] = path.relative('node_modules/webgme/src', paths[key]);
+        mapped[key] = path.resolve(paths[key]);
     }
     return mapped;
 }
