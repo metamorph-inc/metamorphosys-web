@@ -1,6 +1,6 @@
 "use strict";
 
-define( [ 'common/LogManager',
+define( [ 'js/logger',
     'js/util',
     'js/Utils/METAAspectHelper',
     'js/Constants',
