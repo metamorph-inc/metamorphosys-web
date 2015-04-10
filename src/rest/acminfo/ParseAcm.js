@@ -1,12 +1,11 @@
-/* globals define */
+/* globals module, require, requireJS */
+'use strict';
 
-define(['xmljsonconverter',
-    'q',
-    'jszip'
-], function (xmljsonconverter, q, JSZip) {
 
-    'use strict';
-    var commonmark = require('commonmark');
+var xmljsonconverter = requireJS('xmljsonconverter'),
+    q = require('q'),
+    JSZip = requireJS('jszip'),
+    commonmark = require('commonmark');
 
     var ParseAcm = function (id) {
         this.id = id;
@@ -131,5 +130,4 @@ define(['xmljsonconverter',
         return converter.convertFromString(acmXmlString);
     };
 
-    return ParseAcm;
-});
+    module.exports = ParseAcm;
