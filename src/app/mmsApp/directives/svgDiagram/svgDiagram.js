@@ -28,7 +28,7 @@ angular.module('mms.svgDiagram', [
     ])
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService,
-            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils) {
+            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
 
@@ -392,7 +392,8 @@ angular.module('mms.svgDiagram', [
 
                         dropHandler,
                         dragenterHandler,
-                        dragleaveHandler;
+                        dragleaveHandler,
+                        dragoverHandler;
 
                     $element = $(element);
 
@@ -503,21 +504,19 @@ angular.module('mms.svgDiagram', [
                     $(document).bind('keydown', keyDownHandler);
 
                     dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
-                    dragenterHandler = svgDiagramController._onDragenter.bind(svgDiagramController);
-                    dragleaveHandler = svgDiagramController._onDragleave.bind(svgDiagramController);
 
-                    element[0].addEventListener('dragenter', dragenterHandler);
-                    element[0].addEventListener('dragleave', dragleaveHandler);
-                    element[0].addEventListener('drop', dropHandler);
+                    dndService.registerDropTarget(
+                        element[0], 
+                        'component subscircuit',
+                        dropHandler
+                    );
 
                     scope.$on('$destroy', function() {
 
                         $(document).unbind('keydown', keyDownHandler);
                         $element.unbind('contextmenu', killContextMenu);
 
-                        element[0].removeEventListener('dragenter', dropHandler);
-                        element[0].removeEventListener('dragleave', dragleaveHandler);
-                        element[0].removeEventListener('drop', dropHandler);
+                        dndService.unregisterDropTarget( element[0] );
 
                     });
 

@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary) {
+module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary, dndService) {
 
     var config,
 
@@ -196,12 +196,12 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         },
 
         nodeDragStart: function(e, node) {
-            console.log('Component drag start', e, node);
-            e.dataTransfer.setData('text', node.id);
+            e.dataTransfer.setData('component_id', node.id);
+            dndService.startDrag(node, 'component');
         },
 
         nodeDragEnd: function(e) {
-            console.log('Component drag end', e);
+            dndService.stopDrag();            
         }        
 
     };

@@ -1,4 +1,13 @@
 .svg-diagram-wrapper {
+
+	&.drop-target {
+		background-color: rgba(33,150,243,.15);
+
+		&.drag-entered {
+			background-color: rgba(33,150,243,.25);			
+		}
+	}
+
 	.svg-diagram {
 
 		width: 100%;

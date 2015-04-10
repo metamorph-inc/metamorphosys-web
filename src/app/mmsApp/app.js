@@ -17,6 +17,7 @@ require('./services/operationsManager/operationsManager.js');
 require('./services/diagramService/diagramService.js');
 require('./services/gridService/gridService.js');
 require('./services/wiringService/wiringService.js');
+require('./services/dndService/dndService.js');
 
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');
@@ -69,6 +70,8 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.mainNavigator',
 
     'mms.mmsApp.componentBrowser',
+
+    'mms.dndService',
 
     'angucomplete-alt',
     'ngTouch',
