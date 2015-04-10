@@ -1,4 +1,4 @@
-/*globals window, require, describe, it,before */
+/*globals window, require, describe, it,before,after */
 
 if (typeof window === 'undefined') {
 
@@ -6,6 +6,7 @@ if (typeof window === 'undefined') {
     var webgme = require('webgme');
     var requirejs = require('../../../test-conf.js').requirejs;
     var config = require('../../../test-conf.js').config;
+    var testConf = require('../../../test-conf.js');
 
     var chai = require('chai'),
         expect = chai.expect;
@@ -15,6 +16,8 @@ describe('AcmInfo', function () {
     'use strict';
 
     var q = require('q');
+
+    testConf.useServer(before, after);
 
     var superagent;
     before(function (done) {

@@ -7,6 +7,7 @@ if (typeof window === 'undefined') {
     var requirejs = require('../../../test-conf.js').requirejs;
     var webgme = require('webgme');
     var CONFIG = require('../../../test-conf.js').config;
+    var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
 }
@@ -19,6 +20,9 @@ describe('TestBenchRunner', function () {
     var acmTemplates;
     var admTemplates;
     var jszip;
+
+    testConf.useServer(before, after);
+
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates', 'jszip'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_, jszip_) {
             BlobClient = BlobClient_;

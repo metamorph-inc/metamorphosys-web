@@ -1,4 +1,4 @@
-/*globals window, require, describe, it,before */
+/*globals window, require, describe, it,before,after */
 
 
 if (typeof window === 'undefined') {
@@ -7,6 +7,7 @@ if (typeof window === 'undefined') {
     var webgme = require('webgme');
     var requirejs = require('../../../test-conf.js').requirejs;
     var config = require('../../../test-conf.js').config;
+    var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
 }
@@ -21,6 +22,9 @@ describe('TestTesting', function () {
     var Artifact;
     var acmTemplates;
     var admTemplates;
+
+    testConf.useServer(before, after);
+
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/functional/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {
             BlobClient = BlobClient_;
