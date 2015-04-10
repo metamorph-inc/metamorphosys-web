@@ -12,6 +12,7 @@ var PATH = require('path');
 
 var CONFIG = require('./config.js');
 exports.config = CONFIG;
+CONFIG.server.port = 49049;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
 CONFIG.mongo.options.server = CONFIG.mongo.options.server || {};
 CONFIG.mongo.options.server.socketOptions = {connectTimeoutMS: 500};
