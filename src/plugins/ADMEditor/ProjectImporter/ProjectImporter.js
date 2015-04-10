@@ -7,7 +7,7 @@ define(['plugin/PluginConfig',
     'common/LogManager',
     'jszip',
     'xmljsonconverter',
-    '/extlib/node_modules/q/q.js',
+    'q',
     '/plugin/AcmImporter/AcmImporter/AcmImporter',
     '/plugin/AdmImporter/AdmImporter/AdmImporter',
     'plugin/PluginContext'
