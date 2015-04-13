@@ -66,15 +66,12 @@ DiagramDropHandler._onDragenterFromOutside = function() {
     if (!this.dndService.getDragged()) {
 
         this._draggingFromOutside = true;
-        console.log('simulating dragging');
         this.dndService.startDrag(null, 'component');
     }
 
 };
 
 DiagramDropHandler._onDragleaveFromOutside = function() {
-
-    console.log('_onDragleaveFromOutside');
 
     if (this._draggingFromOutside) {
         this.dndService.stopDrag();

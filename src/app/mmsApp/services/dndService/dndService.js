@@ -16,13 +16,13 @@ DnDService.prototype._onDragOverEnterLeave = function(e) {
 
 DnDService.prototype.findInDroptargets = function(element) {
 
-    var i, l, 
+    var i, l,
         found = false,
         position = -1;
 
     l = this._dropTargets.length;
 
-    for ( i = 0; i < l && !found; i++) {
+    for (i = 0; i < l && !found; i++) {
 
         if (this._dropTargets[i].targetElement === element) {
             position = i;
@@ -46,9 +46,20 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
         dropTarget = {
             targetElement: element,
             onDrop: function(e) {
-                if (e.target === element) {                
+
+                var classNames;
+
+                if (e.target === element) {
+
+                    classNames = element.getAttribute('class');
+
                     dropHandler(e, self._dragged);
-                    self.stopDrag(); 
+                    self.stopDrag();
+
+                    if (classNames) {
+                        element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
+                    }
+
                 }
             },
             onDragOver: function(e) {
@@ -75,8 +86,8 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames = element.getAttribute('class');
 
-                if (classNames) {       
-                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));                
+                if (classNames) {
+                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
                 }
 
                 self._onDragOverEnterLeave(e);
@@ -106,7 +117,7 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
         }
 
-        this._dropTargets.push(dropTarget);        
+        this._dropTargets.push(dropTarget);
 
     }
 
@@ -159,8 +170,10 @@ DnDService.prototype._deactivateDropTargets = function() {
 
         if (classNames) {
 
-            this._activeDropTargets[i].setAttribute('class', 
-                classNames.replace(/ drop-target/g, '').replace(/ drag-entered/g, '')
+            this._activeDropTargets[i].setAttribute('class',
+                classNames
+                .replace(/ drop-target/g, '')
+                .replace(/ drag-entered/g, '')
             );
 
         }
@@ -175,7 +188,7 @@ DnDService.prototype.startDrag = function(channel, data) {
 
     this._dragged = {
         channel: channel,
-        data: data        
+        data: data
     };
 
     this._deactivateDropTargets();
@@ -202,17 +215,18 @@ DnDService.prototype.startDrag = function(channel, data) {
 DnDService.prototype.stopDrag = function() {
 
     var classNames = document.documentElement.getAttribute('class');
-    
+
     this._dragged = null;
     this._deactivateDropTargets();
-    
+
 
     if (classNames) {
-        document.documentElement.setAttribute('class', classNames.replace(/ dragging/g, ''));
+        document.documentElement.setAttribute('class',
+            classNames.replace(/ dragging/g, '')
+        );
     }
 
 };
 
 angular.module('mms.dndService', [])
-    .service( 'dndService', DnDService
-);
+    .service('dndService', DnDService);
