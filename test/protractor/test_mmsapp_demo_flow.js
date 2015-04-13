@@ -341,7 +341,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 browser.driver.executeScript(function (componentTitle) {
 
                     $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
-                        dropTarget: $('.diagram-container')
+                        dropTarget: $('.svg-diagram')
                     });
 
                 }, componentToDrag).then(function () {
