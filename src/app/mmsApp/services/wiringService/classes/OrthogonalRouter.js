@@ -827,7 +827,7 @@ var OrthogonalRouter = function () {
             else if (wireAngle === 270 || wireAngle === -90) {wireAngle = 0;}
             else if (wireAngle === 0 || wireAngle === 360 || wireAngle === -360) {wireAngle = 3;}
 
-            var result = this.findOptimalRoute( visibilityGrid.vertices,
+            var result = this.findOptimalRouteSimple( visibilityGrid.vertices,
                                                 wires[i].end1.port.getGridPosition(),
                                                 wires[i].end2.port.getGridPosition(),
                                                 wireAngle,
@@ -845,6 +845,109 @@ var OrthogonalRouter = function () {
 
     };
 
+    this.findOptimalRouteSimple = function ( visibilityGrid, startPt, endPt, startWireAngle, searchedNodes ) {
+        // A* Search
+        // cost = cost of this partial path from the start node to the current node, plus current number of bends.
+        // heuristic = estimated guess for the cost of the remaining path from the current node to end node, plus
+        //             the estimated number of remaining bends.
+        // score = cost + heuristic
+
+        var openHeap = [],
+            destinationNode = visibilityGrid[endPt.x][endPt.y],
+            closestNode = visibilityGrid[startPt.x][startPt.y];
+
+        // For the case where multiple connections are being checked, need to erase computed values from last run.
+        searchedNodes = resetSearchedNodes(searchedNodes);
+
+        closestNode.dir = startWireAngle;
+        closestNode.remBends = estimateRemainingBends(closestNode.v, destinationNode.v, startWireAngle);
+        closestNode.heuristic = manhattanDistance(closestNode.v, destinationNode.v) + closestNode.remBends;
+        closestNode.distance = 0;
+        closestNode.bends = 0;
+        closestNode.cost = 0;
+        closestNode.score = closestNode.cost + closestNode.heuristic;
+        closestNode.parent = null;
+        searchedNodes.push(closestNode);
+
+        openHeap.push(closestNode);
+
+        while ( openHeap.length > 0 ) {
+            // Get lowest f(x) scored node
+            var currentNode = openHeap.shift();
+
+            // Check if goal node has been reached, retrace path.
+            if (compareX(destinationNode, currentNode) === 0 && compareY(destinationNode, currentNode) === 0) {
+                return { "path": returnPath(visibilityGrid, currentNode, startPt),
+                         "dirtyNodes": searchedNodes };
+            }
+
+            // Otherwise, move to closed and inspect neighbors
+            currentNode.closed = true;
+
+            // Check the forward, right, and left neighbors. No need to check reverse, as it will be closed.
+            var neighbors = getNeighbors(currentNode);
+            for (var j = 0; j < 3; j++ ) {
+                var neighbor = neighbors.neighbors[j];
+
+                if ( isNaN(neighbor) && !visibilityGrid[neighbor.x][neighbor.y].closed ) {
+
+                    // Point to neighbor's entry in visibilityGrid as this has more information than just node neighbor
+                    var n = visibilityGrid[neighbor.x][neighbor.y];
+
+                    // Get g(x), shortest distance from start node to current node
+                    var distance = manhattanDistance(currentNode.v, n.v),
+                        bends = (j !== 0 && j !== 3) ? 5000 : 0,  // Neighbors are sorted in straight, R, L, reverse order
+                        cost = currentNode.cost + distance + bends,
+                        remBends = estimateRemainingBends(currentNode.v, destinationNode.v, neighbors.map[j]),
+                        visited = n.visited;
+
+                    if ((typeof n.cost === "undefined" || n.cost === null) ||
+                        (!visited && (cost + remBends) < (n.cost + n.remBends))) {
+                        // So far, a possible optimal route has been found
+                        n.visited = true;
+                        n.parent = currentNode;
+                        n.dir = neighbors.map[j];
+                        n.bends = bends;
+                        n.remBends = remBends;
+                        n.heuristic = manhattanDistance(n.v, destinationNode.v) + n.remBends;
+                        n.cost = cost;
+                        n.score = n.cost + n.heuristic;
+                    }
+
+                    // Update closest node if the partial cost and estimated remaining cost is better than the closest.
+                    // If they are tied, go with the one which has a better partial cost.
+                    if (((n.score) < (closestNode.score)) || (n.score === closestNode.score &&
+                        n.cost < closestNode.cost)) {
+                        closestNode = n;
+                    }
+
+                    // If this node has not yet been encountered, add it to the priority queue. If it has,
+                    // then its score needs to be re-checked against the other nodes in the queue.
+                    if (!visited) {
+                        insert(n, openHeap, compareScore);
+                        searchedNodes.push(n);  // Mark the node as searched.
+                    }
+                    else {
+                        // Remove element from array and re-check it.
+                        for (var i = 0; openHeap.length-1; i++) {
+                            if (compareX(n, openHeap[i]) === 0 && compareY(n, openHeap[i]) === 0) {
+                                openHeap.splice(i, 1);
+                                break;
+                            }
+                        }
+                        insert(n, openHeap, compareScore);
+                    }
+                }
+            }
+
+        }
+    };
+
+    function compareScore(a, b) {
+        return a.score - b.score;
+    }
+
+    ///////
     this.findOptimalRoute = function ( visibilityGrid, startPt, endPt, startWireAngle, searchedNodes ) {
         // A* Search
         // cost = cost of this partial path from the start node to the current node, plus current number of bends.
@@ -878,7 +981,7 @@ var OrthogonalRouter = function () {
             // Check if goal node has been reached, retrace path.
             if (compareX(destinationNode, currentNode) === 0 && compareY(destinationNode, currentNode) === 0) {
                 return { "path": returnPath(visibilityGrid, currentNode, startPt),
-                         "dirtyNodes": searchedNodes };
+                    "dirtyNodes": searchedNodes };
             }
 
             // Otherwise, move to closed and inspect neighbors
@@ -935,6 +1038,7 @@ var OrthogonalRouter = function () {
 
         }
     };
+    ///////
 
     function getNeighbors(node) {
         // Return neighbors in a sorted order, with preference to neighbor in same direction,
