@@ -1550,7 +1550,7 @@ angular.module(
             NodeLabelController.prototype._onDragStart = function(e) {
 
                 e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('node', this.node);
+                e.dataTransfer.setData('text', this.node.id);
 
                 if (this.labelEl) {
                     this.labelEl.classList.add('dragged');

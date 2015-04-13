@@ -196,8 +196,9 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
         },
 
         nodeDragStart: function(e, node) {
-            e.dataTransfer.setData('component_id', node.id);
-            dndService.startDrag(node, 'component');
+            dndService.startDrag('component', {
+                componentId: node.id
+            });
         },
 
         nodeDragEnd: function() {

@@ -15,10 +15,9 @@ DiagramDropHandler.prototype.apply = function(object) {
     object._onDragleaveFromOutside = DiagramDropHandler._onDragleaveFromOutside;    
 };
 
-DiagramDropHandler._onDrop = function(e) {
+DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
-        componentId,
         component,
         position;
 
@@ -30,13 +29,12 @@ DiagramDropHandler._onDrop = function(e) {
     // this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     // return false;
 
-    componentId = e.dataTransfer.getData('component_id');
 
-    if (componentId) {
+    if (dragged && dragged.data && dragged.data.componentId) {
 
-        console.log('Dropped component id: ', componentId);
+        console.log('Dropped component id: ', dragged.data.componentId);
 
-        component = this.componentBrowserService.getComponentById(componentId);
+        component = this.componentBrowserService.getComponentById(dragged.data.componentId);
 
         if (component) {
 
@@ -57,7 +55,7 @@ DiagramDropHandler._onDrop = function(e) {
                 self.$rootScope.$emit('componentInstantiationMustBeDone', url, position);
             })
             .catch(function(err) {
-                self.$log.error("Error creating drag-n-drop component: " + err);
+                self.$log.error('Error creating drag-n-drop component: ' + err);
             });
 
     }

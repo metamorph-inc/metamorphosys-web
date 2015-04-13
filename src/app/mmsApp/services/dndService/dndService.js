@@ -47,22 +47,38 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             targetElement: element,
             onDrop: function(e) {
                 if (e.target === element) {                
-                    self.stopDrag();
-                    dropHandler(e);
+                    dropHandler(e, self._dragged);
+                    self.stopDrag(); 
                 }
             },
             onDragOver: function(e) {
-                if (e.target === element && !element.classList.contains('drag-enter')) {
-                    element.classList.add('drag-entered');                
+
+                var classNames = element.getAttribute('class');
+
+                if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
+                    element.setAttribute('class', classNames + ' drag-entered');
                 }
+
                 self._onDragOverEnterLeave(e);
             },
             onDragenter: function(e) {
-                element.classList.add('drag-entered');                
+
+                var classNames = element.getAttribute('class');
+
+                if (classNames && classNames.indexOf('drag-enter') === -1) {
+                    element.setAttribute('class', classNames + ' drag-entered');
+                }
+
                 self._onDragOverEnterLeave(e);
             },
             onDragleave: function(e) {
-                element.classList.remove('drag-entered');                                
+
+                var classNames = element.getAttribute('class');
+
+                if (classNames) {       
+                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));                
+                }
+
                 self._onDragOverEnterLeave(e);
 
             }
@@ -134,23 +150,32 @@ DnDService.prototype.getDragged = function() {
 
 DnDService.prototype._deactivateDropTargets = function() {
 
-    var i;
+    var i,
+        classNames;
 
     for (i = 0; i < this._activeDropTargets.length; i++) {
-        this._activeDropTargets[i].classList.remove('drop-target');
-        this._activeDropTargets[i].classList.remove('drag-entered');        
+
+        classNames = this._activeDropTargets[i].getAttribute('class');
+
+        if (classNames) {
+
+            this._activeDropTargets[i].setAttribute('class', 
+                classNames.replace(/ drop-target/g, '').replace(/ drag-entered/g, '')
+            );
+
+        }
     }
 
 };
 
-DnDService.prototype.startDrag = function(data, channel) {
+DnDService.prototype.startDrag = function(channel, data) {
 
     var i, l,
         targetEl;
 
     this._dragged = {
-        data: data,
-        channel: channel
+        channel: channel,
+        data: data        
     };
 
     this._deactivateDropTargets();
@@ -162,23 +187,29 @@ DnDService.prototype.startDrag = function(data, channel) {
         for (i = 0; i < l; i++) {
 
             targetEl = this._channels[channel][i];
-            targetEl.classList.add('drop-target');
+            targetEl.setAttribute('class', targetEl.getAttribute('class') + ' drop-target');
             this._activeDropTargets.push(targetEl);
 
         }
 
     }
 
-    document.documentElement.classList.add('dragging');
+
+    document.documentElement.setAttribute('class', document.documentElement.getAttribute('class') + ' dragging');
 
 };
 
 DnDService.prototype.stopDrag = function() {
 
+    var classNames = document.documentElement.getAttribute('class');
+    
     this._dragged = null;
     this._deactivateDropTargets();
+    
 
-    document.documentElement.classList.remove('dragging');
+    if (classNames) {
+        document.documentElement.setAttribute('class', classNames.replace(/ dragging/g, ''));
+    }
 
 };
 
