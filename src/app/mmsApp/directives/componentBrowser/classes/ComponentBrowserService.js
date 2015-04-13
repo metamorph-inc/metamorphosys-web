@@ -200,7 +200,7 @@ module.exports = function (symbolManager, $log, $rootScope, $q, componentLibrary
             dndService.startDrag(node, 'component');
         },
 
-        nodeDragEnd: function(e) {
+        nodeDragEnd: function() {
             dndService.stopDrag();            
         }        
 

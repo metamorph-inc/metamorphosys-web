@@ -46,8 +46,16 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
         dropTarget = {
             targetElement: element,
             onDrop: function(e) {
-                self.stopDrag();
-                dropHandler(e);
+                if (e.target === element) {                
+                    self.stopDrag();
+                    dropHandler(e);
+                }
+            },
+            onDragOver: function(e) {
+                if (e.target === element && !element.classList.contains('drag-enter')) {
+                    element.classList.add('drag-entered');                
+                }
+                self._onDragOverEnterLeave(e);
             },
             onDragenter: function(e) {
                 element.classList.add('drag-entered');                
@@ -56,11 +64,12 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             onDragleave: function(e) {
                 element.classList.remove('drag-entered');                                
                 self._onDragOverEnterLeave(e);
+
             }
         };
 
         element.addEventListener('drop', dropTarget.onDrop, false);
-        element.addEventListener('dragover', this._onDragOverEnterLeave, false);
+        element.addEventListener('dragover', dropTarget.onDragOver, false);
         element.addEventListener('dragenter', dropTarget.onDragenter, false);
         element.addEventListener('dragleave', dropTarget.onDragleave, false);
 
@@ -99,11 +108,11 @@ DnDService.prototype.unregisterDropTarget = function(element) {
         dropTarget = this._dropTargets[index];
 
         element.removeEventListener('drop', dropTarget.onDrop);
-        element.removeEventListener('dragover', this._onDragOverEnterLeave);
+        element.removeEventListener('dragover', dropTarget.onDragOver);
         element.removeEventListener('dragenter', dropTarget.onDragenter);
         element.removeEventListener('dragleave', dropTarget.onDragleave);
 
-        while (dropTarget.channelArray.length && dropTarget.channelArray.length > 0) {
+        while (dropTarget.channelArray && dropTarget.channelArray.length && dropTarget.channelArray.length > 0) {
 
             channel = channelArray.shift();
 
@@ -129,6 +138,7 @@ DnDService.prototype._deactivateDropTargets = function() {
 
     for (i = 0; i < this._activeDropTargets.length; i++) {
         this._activeDropTargets[i].classList.remove('drop-target');
+        this._activeDropTargets[i].classList.remove('drag-entered');        
     }
 
 };

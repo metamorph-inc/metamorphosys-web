@@ -513,7 +513,7 @@ angular.module('mms.svgDiagram', [
                     dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
 
                     dndService.registerDropTarget(
-                        element[0], 
+                        element[0].querySelector('svg'), 
                         'component subscircuit',
                         dropHandler
                     );
@@ -529,7 +529,7 @@ angular.module('mms.svgDiagram', [
                         $(document).unbind('keydown', keyDownHandler);
                         $element.unbind('contextmenu', killContextMenu);
 
-                        dndService.unregisterDropTarget( element[0] );
+                        dndService.unregisterDropTarget( element[0].querySelector('svg') );
 
                         // document.documentElement.removeEventListener('dragenter', dragenterFromOutsideHandler);
                         // document.documentElement.removeEventListener('dragenter', dragleaveFromOutsideHandler);                    
