@@ -388,8 +388,50 @@ var OrthogonalRouter = function () {
                                   nodes[i].direction === -180 || nodes[i].direction === 0 ));
 
             // If port is on left/right and inside of the component bounding box, a vertical segment needs to be made.
+            var specialCasePort = false,
+                skipLeft = false,
+                skipRight = false;
+
+            // If yc is in range of an open object, and x > open object x (inside bb).
+            // If prevNode defined and x < prevNode x (inside bb on right).
+            for (var k = 0; k < openObjects.length; k++) {
+                if (nodes[i].y < openObjects[k].y2 && nodes[i].y > openObjects[k].y1) {
+                    if ((prevNode === null && nodes[i].x > openObjects[k].x) ||
+                        (prevNode !== null && nodes[i].x < prevNode.x)) {
+
+                        if (!isInvalidPort) {
+                            // If valid port, but inside bb, we know both end points. Valid segment should
+                            // only go in one of the two directions however. Need to find which endpoint
+                            // the port is closer to so we know to skip the other side.
+                            var distEnd1 = Math.abs(nodes[i].y - openObjects[k].y1),
+                                distEnd2 = Math.abs(nodes[i].y - openObjects[k].y2);
+
+                            skipLeft = distEnd1 > distEnd2;
+                            skipRight = !skipLeft;
+                        }
+
+
+                        specialCasePort = true;
+                        break;  // We've found the port we're looking for, no need to loop through the others.
+                    }
+                }
+            }
+
             if (isInvalidPort) {
-                continue;
+                //// If yc is in range of an open object, and x > open object x (inside bb).
+                //// If prevNode defined and x < prevNode x (inside bb on right).
+                //for (var k = 0; k < openObjects.length; k++) {
+                //    if (nodes[i].y < openObjects[k].y2 && nodes[i].y > openObjects[k].y1) {
+                //        if ((prevNode === null && nodes[i].x > openObjects[k].x) ||
+                //            (prevNode !== null && nodes[i].x < prevNode.x)) {
+                //
+                //            ignoreSkip = true;
+                //        }
+                //    }
+                //}
+                if (!specialCasePort) {
+                    continue;
+                }
             }
 
             if (binTree.find(nodes[i].y).node === null) {
@@ -398,8 +440,8 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // top
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 270 ||
-                                                          nodes[i].direction === -90) {
+            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 270 ||
+                                                          nodes[i].direction === -90 || specialCasePort) && !skipLeft) {
                 var left, leftIter = binTree.lt(nodes[i].y);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are collinear, skip.
@@ -410,14 +452,14 @@ var OrthogonalRouter = function () {
                         }
                         continue;
                     }
-                    else if ( prevNode !== null ) {
+                    else if ( prevNode !== null && !specialCasePort ) {
                         // prevNode is defined, so previous entry was the left hand side of the closing segment.
                         // Both left and right segments were defined for prevNode, and this point is in the same line
                         // as that, so it can be skipped. Also, remove these two points from the binary tree and
                         // remove the line defined by them from the openObjects list.
-                        binTree = binTree.remove(prevNode);
+                        binTree = binTree.remove(prevNode.y);
                         binTree = binTree.remove(nodes[i].y);
-                        openObjects.splice(myIndexOfY({ y1: prevNode, y2: nodes[i].y }, openObjects), 1);
+                        openObjects.splice(myIndexOfY({ y1: prevNode.y, y2: nodes[i].y }, openObjects), 1);
                         prevNode = null;
                         continue;
                     }
@@ -452,8 +494,8 @@ var OrthogonalRouter = function () {
                 segments.push(leftSegment);
             }
             // bottom
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 ||
-                                                          nodes[i].direction === -270) {
+            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 ||
+                                                          nodes[i].direction === -270 || specialCasePort) && !skipRight) {
                 var right = findNextValidRightNeighbor ( nodes[i], "y", binTree, openObjects, sweepLength);
 
                 var rightSegment = { y1: nodes[i].y, x1: nodes[i].x, y2: right, x2: nodes[i].x };
@@ -462,9 +504,12 @@ var OrthogonalRouter = function () {
             if (checkRemove ) {
                 if (typeof nodes[i].isPort === "undefined") {
                     if (prevNode === null) {
-                        prevNode = nodes[i].y;
+                        prevNode = {y: nodes[i].y, x: nodes[i].x};
                     }
                 }
+            }
+            if (specialCasePort) {
+                binTree = binTree.remove(nodes[i].y);
             }
         }
         return segments;
@@ -489,8 +534,50 @@ var OrthogonalRouter = function () {
                                   nodes[i].direction === -270 || nodes[i].direction === -90));
 
             // If port is on top/bottom and inside of the component bounding box, a horz segment needs to be made.
+            var specialCasePort = false,
+                skipLeft = false,
+                skipRight = false;
+
+            // A valid port may also be inside a bb. Check for both valid/invalid cases.
+            for (var k = 0; k < openObjects.length; k++) {
+                if (nodes[i].x < openObjects[k].x2 && nodes[i].x > openObjects[k].x1) {
+                    if ((prevNode === null && nodes[i].y > openObjects[k].y) ||
+                        (prevNode !== null && nodes[i].y < prevNode.y)) {
+
+                        if (!isInvalidPort) {
+                            // If valid port, but inside bb, we know both end points. Valid segment should
+                            // only go in one of the two directions however. Need to find which endpoint
+                            // the port is closer to so we know to skip the other side.
+                            var distEnd1 = Math.abs(nodes[i].x - openObjects[k].x1),
+                                distEnd2 = Math.abs(nodes[i].x - openObjects[k].x2);
+
+                            skipLeft = distEnd1 > distEnd2;
+                            skipRight = !skipLeft;
+                        }
+
+                        specialCasePort = true;
+                        break;  // We've found the port we're looking for, no need to loop through the others.
+                    }
+                }
+            }
+
+
+
             if (isInvalidPort) {
-                continue;
+                // If yc is in range of an open object, and x > open object x (inside bb).
+                // If prevNode defined and x < prevNode x (inside bb on right).
+                //for (var k = 0; k < openObjects.length; k++) {
+                //    if (nodes[i].x < openObjects[k].x2 && nodes[i].x > openObjects[k].x1) {
+                //        if ((prevNode === null && nodes[i].y > openObjects[k].y) ||
+                //            (prevNode !== null && nodes[i].y < prevNode.y)) {
+                //
+                //            ignoreSkip = true;
+                //        }
+                //    }
+                //}
+                if (!specialCasePort) {
+                    continue;
+                }
             }
 
             if (binTree.find(nodes[i].x).node === null) {
@@ -499,8 +586,8 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // left
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 180 ||
-                                                          nodes[i].direction === -180) {
+            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 180 ||
+                                                          nodes[i].direction === -180 || specialCasePort) && !skipLeft) {
                 var left, leftIter = binTree.lt(nodes[i].x);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are colinear, skip.
@@ -511,14 +598,14 @@ var OrthogonalRouter = function () {
                         }
                         continue;
                     }
-                    else if ( prevNode !== null ) {
+                    else if ( prevNode !== null && !specialCasePort) {
                         // prevNode is defined, so previous entry was the left hand side of the closing segment.
                         // Both left and right segments were defined for prevNode, and this point is in the same line
                         // as that, so it can be skipped. Also, remove these two points from the binary tree and
                         // remove the line defined by them from the openObjects list.
-                        binTree = binTree.remove(prevNode);
+                        binTree = binTree.remove(prevNode.x);
                         binTree = binTree.remove(nodes[i].x);
-                        openObjects.splice(myIndexOfX({ x1: prevNode, x2: nodes[i].x }, openObjects), 1);
+                        openObjects.splice(myIndexOfX({ x1: prevNode.x, x2: nodes[i].x }, openObjects), 1);
                         prevNode = null;
                         continue;
                     }
@@ -554,8 +641,8 @@ var OrthogonalRouter = function () {
                 segments.push(leftSegment);
             }
             // right
-            if (typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 ||
-                                                          nodes[i].direction === 360) {
+            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 ||
+                                                          nodes[i].direction === 360 || specialCasePort) && !skipRight) {
                 var right = findNextValidRightNeighbor(nodes[i], "x", binTree, openObjects, sweepLength);
 
                 var rightSegment = { x1: nodes[i].x, y1: nodes[i].y, x2: right, y2: nodes[i].y };
@@ -564,9 +651,12 @@ var OrthogonalRouter = function () {
             if (checkRemove ) {
                 if (typeof nodes[i].isPort === "undefined") {
                     if (prevNode === null) {
-                        prevNode = nodes[i].x;
+                        prevNode = {x: nodes[i].x, y: nodes[i].y};
                     }
                 }
+            }
+            if (specialCasePort) {
+                binTree = binTree.remove(nodes[i].x);
             }
 
         }
