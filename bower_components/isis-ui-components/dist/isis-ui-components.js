@@ -1324,13 +1324,12 @@ directive('isisSglclick', ['$parse',
 require('./treeNavigator.node.label.js');
 
 angular.module(
-        'isis.ui.treeNavigator.node', [
-            'isis.ui.treeNavigator.node.label'
-        ]
-    )
+    'isis.ui.treeNavigator.node', [
+        'isis.ui.treeNavigator.node.label'
+    ]
+)
     .directive(
-        'treeNavigatorNode',
-        function() {
+        'treeNavigatorNode', function () {
 
             function NodeController() {
 
@@ -1339,16 +1338,16 @@ angular.module(
                 self = this;
 
 
-                self.isExpanded = function() {
+                self.isExpanded = function () {
                     return (self.treeCtrl.config.state.expandedNodes.indexOf(self.node.id) > -1);
                 };
 
-                self.isSelected = function() {
+                self.isSelected = function () {
                     return (self.treeCtrl.config.state.selectedNodes.indexOf(self.node.id) > -1);
                 };
 
 
-                this.getClass = function() {
+                this.getClass = function () {
                     var cssClassStr = '';
 
                     if (self.isExpanded()) {
@@ -1387,7 +1386,7 @@ angular.module(
                 restrict: 'E',
                 replace: true,
                 templateUrl: '/isis-ui-components/templates/treeNavigator.node.html',
-                link: function(scope, element, attributes, controllers) {
+                link: function (scope, element, attributes, controllers) {
 
                     var nodeCtrl,
                         nodeListCtrl,
@@ -1404,8 +1403,7 @@ angular.module(
                 }
             };
         }
-    );
-
+);
 },{"./treeNavigator.node.label.js":22}],22:[function(require,module,exports){
 /*globals angular*/
 
@@ -1423,8 +1421,11 @@ angular.module(
 
             function NodeLabelController() {
 
-                this.loading = false;
-                this._labelElement = null;
+                var self;
+
+                self = this;
+
+                self.loading = false;
 
             }
 
@@ -1547,32 +1548,6 @@ angular.module(
                 return (self.node.expandedIconClass || self.treeCtrl.config.expandedIconClass);
             };
 
-            NodeLabelController.prototype._onDragStart = function(e) {
-
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text', this.node.id);
-
-                if (this.labelEl) {
-                    this.labelEl.classList.add('dragged');
-                }
-
-                if (angular.isFunction(this.treeCtrl.config.nodeDragStart)) {
-                    this.treeCtrl.config.nodeDragStart(e, this.node);
-                }
-
-            };
-
-            NodeLabelController.prototype._onDragEnd = function(e) {
-
-                if (this.labelEl) {
-                    this.labelEl.classList.remove('dragged');
-                }
-
-                if (angular.isFunction(this.treeCtrl.config.nodeDragEnd)) {
-                    this.treeCtrl.config.nodeDragEnd(e, this.node);
-                }
-
-            };
 
             return {
                 scope: {
@@ -1587,34 +1562,13 @@ angular.module(
                 templateUrl: '/isis-ui-components/templates/treeNavigator.node.label.html',
                 link: function (scope, element, attribures, controllers) {
 
-                    var treeCtrl = controllers[0],
-                        labelCtrl = controllers[1],
-                        labelEl;
+                    var treeCtrl,
+                        labelCtrl;
 
+                    treeCtrl = controllers[0];
+                    labelCtrl = controllers[1];
 
                     labelCtrl.treeCtrl = treeCtrl;
-
-                    labelEl = element[0].getElementsByClassName('label-and-extra-info')[0];
-                    labelCtrl._labelElement = labelEl;
-
-                    if (labelCtrl.node.draggable) {
-
-                        labelEl.addEventListener('dragstart', labelCtrl._onDragStart.bind(labelCtrl));
-                        labelEl.addEventListener('dragend', labelCtrl._onDragEnd.bind(labelCtrl));
-
-                    }
-
-                    scope.$on('$destroy', function() {
-
-                        if (labelCtrl.node.draggable) {
-        
-                            labelEl.removeEventListener('dragstart', labelCtrl._onDragStart.bind(labelCtrl));
-                            labelEl.removeEventListener('dragend', labelCtrl._onDragEnd.bind(labelCtrl));
-
-                        }
-
-                    });
-
                 }
             };
         }

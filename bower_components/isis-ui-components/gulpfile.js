@@ -71,7 +71,7 @@ buildPaths = {
 },
 
 gulp = require( 'gulp' ),
-eslint = require('gulp-eslint'),
+jshint = require( 'gulp-jshint' ),
 browserify = require( 'browserify' ),
 source = require( 'vinyl-source-stream' ),
 concat = require( 'gulp-concat' ),
@@ -105,8 +105,8 @@ gulp.task( 'lint-docs', function () {
   console.log( 'Linting docs...' );
 
   gulp.src( sourcePaths.docsScripts )
-    .pipe(eslint())
-    .pipe(eslint.format());
+  .pipe( jshint() )
+  .pipe( jshint.reporter( 'default' ) );
 
 } );
 
@@ -177,8 +177,8 @@ gulp.task( 'lint-library', function () {
   console.log( 'Linting library...' );
 
   gulp.src( sourcePaths.libraryScripts )
-    .pipe(eslint())
-    .pipe(eslint.format());
+  .pipe( jshint() )
+  .pipe( jshint.reporter( 'default' ) );
 
 } );
 
