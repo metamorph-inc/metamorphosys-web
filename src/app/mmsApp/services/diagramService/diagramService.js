@@ -7,13 +7,7 @@ angular.module('mms.designVisualization.diagramService', [
         'mms.designVisualization.operationsManager',
         'mms.utils'
     ])
-    .service('diagramService', [
-        '$q',
-        '$timeout',
-        'symbolManager',
-        '$stateParams',
-        'wiringService',
-        'operationsManager',
+    .service('diagramService', 
         function($q, $timeout, symbolManager, $stateParams, wiringService, mmsUtils ) {
 
             var
@@ -177,4 +171,4 @@ angular.module('mms.designVisualization.diagramService', [
             };
 
         }
-    ]);
+    );
