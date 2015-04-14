@@ -283,6 +283,10 @@
               "Same",
               "Opposite"
             ]
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
           }
         },
         "pointers": {
@@ -644,6 +648,10 @@
           },
           "name": {
             "type": "string"
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
           }
         }
       },
@@ -1868,6 +1876,10 @@
               "Inclusion",
               "Exclusion"
             ]
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
           }
         }
       },
@@ -1888,6 +1900,7 @@
     },
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
       "attributes": {
+        "Notes": "",
         "name": "LayoutConstraint"
       },
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
@@ -1895,6 +1908,10 @@
         "attributes": {
           "name": {
             "type": "string"
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
           }
         },
         "pointers": {
@@ -3000,6 +3017,10 @@
               "Same",
               "Opposite"
             ]
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
           }
         },
         "pointers": {

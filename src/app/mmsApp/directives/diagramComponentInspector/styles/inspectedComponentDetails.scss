@@ -1,0 +1,35 @@
+.inspected-component-details {
+
+	min-width: 900px;
+
+    .property-list {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .icon {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 1em;
+        border: 1px solid #ddd;
+
+        img {
+			max-height: 115px;
+        }
+    }
+
+    .documentation {
+    	display: inline-block;
+    	margin-left: 1em;
+  		max-height: 100px;
+  		overflow: auto;
+  		min-width: 200px;
+  		max-width: 500px;
+    }
+
+	.component-datasheet-button {
+		display: block;
+		position: absolute;
+		top: 1em;
+		right: 10px;		
+	}
+}

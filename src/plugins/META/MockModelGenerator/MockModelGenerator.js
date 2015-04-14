@@ -141,7 +141,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'ejs', 'plugin/MockModelGene
                     callback(err, self.result);
                     return;
                 }
-                self.logger.warning(hashes.toString());
+                self.logger.warn(hashes.toString());
                 artifact.save(function (err, hash) {
                     if (err) {
                         callback(err, self.result);
@@ -241,7 +241,7 @@ define(['plugin/PluginConfig', 'plugin/PluginBase', 'ejs', 'plugin/MockModelGene
                 if (pointsTo) {
                     pointerData.pointsTo = self.getUniqueID(pointsTo);
                 } else {
-                    self.logger.warning(nodeData.attr.name + "'s pointer '" + pointerName + "' is a null pointer.");
+                    self.logger.warn(nodeData.attr.name + "'s pointer '" + pointerName + "' is a null pointer.");
                 }
                 self.pointers.push(pointerData);
                 counterCallback(null);

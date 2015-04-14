@@ -1,24 +1,30 @@
-.svg-diagram {
+.svg-diagram-wrapper {
 
-//    * {
-//        -webkit-user-select: none; /* Chrome/Safari */
-//        -moz-user-select: none; /* Firefox */
-//        -ms-user-select: none; /* IE10+ */
-//
-//        /* Rules below not implemented in browsers yet */
-//        -o-user-select: none;
-//        user-select: none;
-//    }
+	.svg-diagram {
 
-    &.pannable {
-        cursor: url(../images/openhand.cur) 4 4, move !important;
-    }
+		width: 100%;
+		height: 100%;
 
-    &.panning {
-        cursor: url(../images/closedhand.cur) 4 4, move !important;
-    }
+		&.drop-target {
+			background-color: rgba(33,150,243,.15);
 
-    &.dragging * {
-        cursor: move !important;
-    }
+		}
+
+		&.drag-entered {
+			background-color: rgba(33,150,243,.25);			
+			cursor: copy;
+		}
+
+	    &.pannable {
+	        cursor: url(../images/openhand.cur) 4 4, move !important;
+	    }
+
+	    &.panning {
+	        cursor: url(../images/closedhand.cur) 4 4, move !important;
+	    }
+
+	    &.dragging * {
+	        cursor: move !important;
+	    }
+	}
 }

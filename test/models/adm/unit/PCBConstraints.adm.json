@@ -6270,7 +6270,8 @@
             "name": "RelativeLayoutConstraint",
             "XOffset": "-5.1",
             "YOffset": "-10.2",
-            "RelativeLayer": "Same"
+            "RelativeLayer": "Same",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6303,7 +6304,8 @@
             "name": "RelativeLayoutConstraint",
             "XOffset": "5.1",
             "YOffset": "10.2",
-            "RelativeLayer": "Opposite"
+            "RelativeLayer": "Opposite",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6369,7 +6371,8 @@
             "X": "1.1",
             "Y": "2.2",
             "Layer": "Bottom",
-            "Rotation": "90"
+            "Rotation": "90",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6402,7 +6405,8 @@
             "X": "1.1",
             "Y": "2.2",
             "Layer": "Bottom",
-            "Rotation": "270"
+            "Rotation": "270",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6499,7 +6503,8 @@
             "name": "RangeLayoutConstraint",
             "LayerRange": "Bottom",
             "Type": "Exclusion",
-            "YRange": "5.5:10.1"
+            "YRange": "5.5:10.1",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6531,7 +6536,8 @@
             "name": "RangeLayoutConstraint",
             "LayerRange": "Top",
             "Type": "Inclusion",
-            "XRange": "1.1:5.5"
+            "XRange": "1.1:5.5",
+            "Notes": "TestNotes"
         },
         "registry": {
             "DisplayFormat": "",

@@ -1,0 +1,38 @@
+.diagram-component-inspector {
+	
+
+	.no-inspectable-message {
+		text-align: center;
+  		height: 140px;
+  		line-height: 140px;
+  		font-style: italic;
+	}
+
+	.editable-error {
+		position: absolute;
+	}
+
+	.classification-tags {
+		display: inline-block;
+		margin-left: 1ex;
+		vertical-align: top;
+
+		.taxonomy-term {
+			cursor: default;
+			opacity: 1;
+			background-color: #0D47A1;
+		}
+	}
+
+	.original-name {
+		vertical-align: top;		
+  		display: inline-block;
+  		margin-left: 1ex;		
+  		color: #aaa;  		
+	}
+
+	.inspectable-details {
+		margin-top: 1.5em;
+	}
+
+}

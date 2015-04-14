@@ -6,6 +6,8 @@ var glMatrix = require('glMatrix');
 
 var DiagramComponent = function(descriptor) {
 
+    this.classificationTags = [];
+
     if (!angular.isObject(descriptor.symbol)) {
         throw new Error('No symbol found for component ' + this.id);
     }
@@ -204,20 +206,36 @@ DiagramComponent.prototype.getPosition = function() {
 
     return {
         x: this.x,
-        y: this.y
+        y: this.y,
+        z: this.z
     };
 
 };
 
 
-DiagramComponent.prototype.setPosition = function(x, y) {
+DiagramComponent.prototype.setPosition = function(x, y, z) {
 
     if (angular.isNumber(x) && angular.isNumber(y)) {
 
         this.x = x;
         this.y = y;
 
+        if (!isNaN(z)) {
+            this.z = z;
+        }
+
         this.updateTransformationMatrix();
+
+    } else {
+        throw new Error('Coordinates must be numbers!');
+    }
+};
+
+DiagramComponent.prototype.setPositionZ = function(z) {
+
+    if (angular.isNumber(z)) {
+
+        this.z = z;
 
     } else {
         throw new Error('Coordinates must be numbers!');
@@ -273,8 +291,17 @@ DiagramComponent.prototype.localToGlobal = function() {
     if (!this.transformationMatrix) {
         this.transformationMatrix = this.getTransformationMatrix();
     }
+};
 
+DiagramComponent.prototype.getLabel = function() {
 
+    return this.label;
+
+};
+
+DiagramComponent.prototype.setLabel = function(newLabel) {
+
+    this.label = newLabel;
 
 };
 

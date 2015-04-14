@@ -1,7 +1,7 @@
 "use strict";
 
-define( [ 'logManager',
-    'clientUtil',
+define( [ 'js/logger',
+    'js/util',
     'js/Utils/METAAspectHelper',
     'js/Constants',
     'js/Utils/GMEConcepts',

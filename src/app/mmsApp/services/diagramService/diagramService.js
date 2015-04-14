@@ -4,7 +4,8 @@
 
 angular.module('mms.designVisualization.diagramService', [
         'mms.designVisualization.symbolServices',
-        'mms.designVisualization.operationsManager'
+        'mms.designVisualization.operationsManager',
+        'mms.utils'
     ])
     .service('diagramService', [
         '$q',
@@ -13,7 +14,7 @@ angular.module('mms.designVisualization.diagramService', [
         '$stateParams',
         'wiringService',
         'operationsManager',
-        function($q, $timeout, symbolManager, $stateParams, wiringService /*, operationsManager*/ ) {
+        function($q, $timeout, symbolManager, $stateParams, wiringService, mmsUtils ) {
 
             var
                 self = this,
@@ -39,22 +40,8 @@ angular.module('mms.designVisualization.diagramService', [
             ComponentPort = require('./classes/ComponentPort');
             Wire = require('./classes/Wire.js');
 
-            dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService);
+            dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService, mmsUtils);
             cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService);
-
-            this.addComponent = function(diagramId, aDiagramComponent) {
-
-                var diagram;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    diagram.addComponent(aDiagramComponent);
-
-                }
-
-            };
 
             this.updateComponentsAndItsWiresPosition = function(diagramId, componentId, newPosition) {
 
@@ -67,7 +54,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagram.updateComponentPosition(componentId, newPosition);
 
-                    setOfWires = diagram.wiresByComponentId[componentId];
+                    setOfWires = diagram.getWiresByComponentId(componentId);
 
                     angular.forEach(setOfWires, function(wire) {
 
@@ -77,6 +64,8 @@ angular.module('mms.designVisualization.diagramService', [
 
 
                 }
+
+                diagram.sortComponentsByZ();
 
             };
 
@@ -91,7 +80,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     diagram.updateComponentRotation(componentId, newRotation);
 
-                    setOfWires = diagram.wiresByComponentId[componentId];
+                    setOfWires = diagram.getWiresByComponentId(componentId);
 
                     angular.forEach(setOfWires, function(wire) {
 
@@ -101,60 +90,6 @@ angular.module('mms.designVisualization.diagramService', [
 
 
                 }
-
-            };
-
-            this.updateWireSegments = function(diagramId, wireId, newSegments) {
-
-                var diagram,
-                    wire;
-
-                console.log(newSegments);
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    wire = diagram.wiresById[wireId];
-
-                    if (angular.isObject(wire)) {
-
-                        wire.segments = newSegments;
-
-                    }
-
-                }
-
-            };
-
-            this.addWire = function(diagramId, aWire) {
-
-                var diagram;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    diagram.addWire(aWire);
-
-                }
-
-            };
-
-            this.getWiresForComponents = function(diagramId, components) {
-
-                var diagram,
-                    wires;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    wires = diagram.getWiresForComponents(components);
-
-                }
-
-                return wires || [];
 
             };
 
@@ -186,7 +121,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     newDiagramStuff = cyPhyDiagramParser.getDiagramElement(
                         diagramElementDescriptor,
-                        self.getHighestZ() + 1,
+                        diagram.getHighestZ() + 1,
                         diagram
                     );
 
@@ -217,25 +152,6 @@ angular.module('mms.designVisualization.diagramService', [
 
             };
 
-            this.deleteComponentOrWireById = function(diagramId, elementId) {
-
-                var diagram,
-                    result;
-
-                result = false;
-
-                diagram = diagrams[diagramId];
-
-                if (diagram) {
-
-                    result = diagram.deleteComponentOrWireById(elementId);
-
-                }
-
-                return result;
-
-            };
-
             this.generateDummyDiagram = function(diagramId, countOfBoxes, countOfWires, canvasWidth, canvasHeight) {
 
                 var dummyDiagram,
@@ -259,65 +175,6 @@ angular.module('mms.designVisualization.diagramService', [
                 return dummyDiagram;
 
             };
-
-            this.getHighestZ = function(diagramId) {
-
-                var i,
-                    component,
-                    z;
-
-                var diagram;
-
-                diagram = diagrams[diagramId];
-
-                if (angular.isObject(diagram)) {
-
-                    for (i = 0; i < diagram.components.length; i++) {
-
-                        component = diagram.components[i];
-
-                        if (!isNaN(component.z)) {
-
-                            if (isNaN(z)) {
-                                z = component.z;
-                            } else {
-
-                                if (z < component.z) {
-                                    z = component.z;
-                                }
-
-                            }
-
-                        }
-                    }
-
-                    if (isNaN(z)) {
-                        z = -1;
-                    }
-
-                }
-
-                return z;
-
-            };
-
-            //            operationsManager.registerOperation({
-            //                id: 'setComponentPosition',
-            //                commit: function (component, x, y) {
-            //
-            //                    if (angular.isObject(component)) {
-            //                        component.setPosition(x, y);
-            //                    }
-            //
-            //                }
-            //
-            //            });
-
-
-            //this.generateDummyDiagram(1000, 200, 5000, 5000);
-            //this.generateDummyDiagram(1000, 2000, 10000, 10000);
-            //this.generateDummyDiagram(10, 5, 1200, 1200);
-            //this.generateDummyDiagram( 100, 50, 3000, 3000 );
 
         }
     ]);

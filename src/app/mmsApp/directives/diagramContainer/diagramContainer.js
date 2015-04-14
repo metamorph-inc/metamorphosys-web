@@ -6,11 +6,11 @@
 
 require('../drawingGrid/drawingGrid.js');
 
-angular.module('mms.designVisualization.diagramContainer', [
-        'mms.designVisualization.drawingGrid',
+angular.module('mms.diagramContainer', [
+        'mms.drawingGrid',
         'isis.ui.contextmenu'
 
-])
+    ])
     .controller('DiagramContainerController', [
         '$scope',
         '$timeout',
@@ -20,47 +20,21 @@ angular.module('mms.designVisualization.diagramContainer', [
         '$rootScope',
         'componentServerUrl',
         'acmImportService',
-        function ($scope, $timeout, $log, $window, componentBrowserService, $rootScope, componentServerUrl, acmImportService) {
+        function($scope, $timeout, $log, $window, componentBrowserService, $rootScope) {
 
             var self = this,
-
-                $windowElement,
 
                 compiledDirectives,
 
                 ScrollHandler,
-                scrollHandler,
-                getPositionFromEvent = function($event) {
-                    var position,
-                        x,
-                        y;
-                    if ($event && $event.originalEvent) {
-
-                        x = $event.originalEvent.offsetX || $event.originalEvent.layerX || 100;
-                        y = $event.originalEvent.offsetY || $event.originalEvent.layerY || 100;
-
-                        position = {
-                            x: x - 20,
-                            y: y - 20
-                        };
-
-                    }
-
-                    return position;
-                };
+                scrollHandler;
 
             compiledDirectives = {};
 
             ScrollHandler = require('./classes/ScrollHandler');
-            scrollHandler = new ScrollHandler($scope, $timeout, $log);
+            this.scrollHandler = scrollHandler = new ScrollHandler($scope, $timeout, $log);
 
-            $windowElement = angular.element($window);
-
-            $windowElement.bind(
-                'resize', scrollHandler.onWindowResize
-            );
-
-            $scope.getCssClass = function () {
+            $scope.getCssClass = function() {
 
                 var classString;
 
@@ -73,50 +47,15 @@ angular.module('mms.designVisualization.diagramContainer', [
                 return classString;
             };
 
-
-
-            $scope.aFileWasDroppedOnMe = function(file, $event) {
-                var position = getPositionFromEvent($event);
-
-                acmImportService.storeDroppedAcm(file)
-                    .then(function (url) {
-                        $rootScope.$emit('componentInstantiationMustBeDone', url, position);
-                    })
-                    .catch(function (err) {
-                        $log.error("Error creating drag-n-drop component: " + err);
-                    });
-            };
-
-            $scope.somethingWasDroppedOnMe = function($event, $data) {
-
-                var component,
-                    position,
-                    x,
-                    y;
-
-                component = componentBrowserService.getComponentById($data);
-
-                if (component) {
-
-                    position = getPositionFromEvent($event);
-
-                    ga('send', 'event', 'avmComponent', 'dropped', component.id);
-
-                    $rootScope.$emit('componentInstantiationMustBeDone',
-                        componentServerUrl + '/getcomponent/download/' + component.id, position);
-                }
-
-            };
-
             $scope.getInitializedClass = function() {
                 return $scope.initialized ? 'initialized' : 'not-initialized';
             };
 
-            this.getVisibleArea = function () {
+            this.getVisibleArea = function() {
                 return $scope.visibleArea;
             };
 
-            this.getId = function () {
+            this.getId = function() {
 
                 var diagramId;
 
@@ -127,23 +66,23 @@ angular.module('mms.designVisualization.diagramContainer', [
                 return diagramId;
             };
 
-            this.getDiagram = function () {
+            this.getDiagram = function() {
                 return $scope.diagram;
             };
 
-            this.getZoomLevel = function () {
+            this.getZoomLevel = function() {
                 return $scope.zoomLevel;
             };
 
-            this.getCompiledDirective = function (directive) {
+            this.getCompiledDirective = function(directive) {
                 return compiledDirectives[directive];
             };
 
-            this.setCompiledDirective = function (directive, compiledDirective) {
+            this.setCompiledDirective = function(directive, compiledDirective) {
                 compiledDirectives[directive] = compiledDirective;
             };
 
-            this.isEditable = function () {
+            this.isEditable = function() {
 
                 if (angular.isObject($scope.diagram)) {
 
@@ -155,7 +94,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             };
 
-            this.isComponentSelected = function (component) {
+            this.isComponentSelected = function(component) {
 
                 if (angular.isObject($scope.diagram)) {
 
@@ -165,7 +104,7 @@ angular.module('mms.designVisualization.diagramContainer', [
 
             };
 
-            this.getConfig = function () {
+            this.getConfig = function() {
                 return $scope.config;
             };
 
@@ -176,8 +115,8 @@ angular.module('mms.designVisualization.diagramContainer', [
         }
     ])
     .directive('diagramContainer', [
-        '$rootScope', 'diagramService', '$log', '$timeout',
-        function ($rootScope, diagramService, $log, $timeout) {
+        '$rootScope', 'diagramService', '$log', '$timeout', '$window',
+        function($rootScope, diagramService, $log, $timeout, $window) {
 
             return {
                 controller: 'DiagramContainerController',
@@ -189,12 +128,16 @@ angular.module('mms.designVisualization.diagramContainer', [
                 replace: true,
                 transclude: true,
                 templateUrl: '/mmsApp/templates/diagramContainer.html',
-                link: function (scope, element) {
+                require: ['diagramContainer', '?^designEditor'],
+                link: function(scope, element, attributes, controllers) {
 
                     var $element,
-                        $contentPane,
                         processDropHandler,
-                        processDragOverOrEnter;
+                        processDragOverOrEnter,
+                        $windowElement,
+
+                        ctrl = controllers[0],
+                        designEditorCtrl = controllers[1];
 
                     $log.debug('In diagram container', scope.visibleArea);
 
@@ -202,16 +145,14 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     $element = scope.$element = $(element);
 
-                    $contentPane = $element.find('.diagram-content-pane');
-
                     scope.$contentPane = element.find('>.diagram-content-pane');
 
-                    $element.keyup(function (e) {
-                        $timeout(function () {
+                    $element.keyup(function(e) {
+                        $timeout(function() {
 
                             scope.pressedKey = null;
 
-                            $timeout(function () {
+                            $timeout(function() {
 
                                 scope.$broadcast('keyupOnDiagram', e);
 
@@ -220,10 +161,10 @@ angular.module('mms.designVisualization.diagramContainer', [
                         });
                     });
 
-                    $element.keydown(function (e) {
+                    $element.keydown(function(e) {
 
 
-                        $timeout(function () {
+                        $timeout(function() {
 
                             scope.pressedKey = e.keyCode;
 
@@ -233,41 +174,41 @@ angular.module('mms.designVisualization.diagramContainer', [
 
                     });
 
-                    processDragOverOrEnter = function(event) {
+                    // processDragOverOrEnter = function(event) {
 
-                        if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
-                            return;
-                        }
-                        event.preventDefault();
-                        if (event.dataTransfer.items[0].type === 'application/x-zip-compressed') {
-                            event.dataTransfer.effectAllowed = 'copy';
-                        } else {
-                            event.dataTransfer.effectAllowed = 'none';
-                        }
-                        return false;
+                    //     console.log(event.dataTransfer.getData('componentId'));
 
-                    };
+                    //     debugger;
 
-                    processDropHandler = function(event) {
+                    //     if (!event || !event.dataTransfer.items || event.dataTransfer.items.length === 0 || event.dataTransfer.items[0].kind !== 'file') {
+                    //         return false;
+                    //     }
+                    //     event.preventDefault();
+                    //     if (event.dataTransfer.items[0].type === 'application/x-zip-compressed') {
+                    //         event.dataTransfer.effectAllowed = 'copy';
+                    //     } else {
+                    //         event.dataTransfer.effectAllowed = 'none';
+                    //     }
+                    //     return false;
 
-                        if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
-                            return;
-                        }
-                        event.preventDefault();
-                        scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
-                        return false;
+                    // };
 
-                    };
+                    // processDropHandler = function(event) {
 
-                    element.bind('dragover', processDragOverOrEnter);
-                    element.bind('dragenter', processDragOverOrEnter);
-                    element.bind('drop', processDropHandler);
+                    //     if (!event || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
+                    //         return false;
+                    //     }
+                    //     event.preventDefault();
+                    //     scope.aFileWasDroppedOnMe(event.dataTransfer.files[0], event);
+                    //     return false;
+
+                    // };
 
                     $timeout(function() {
                         scope.$broadcast('DiagramContainerInitialized');
                     });
 
-                    $rootScope.$on('containerMustBeOpened', function(ev, container){
+                    $rootScope.$on('containerMustBeOpened', function(ev, container) {
 
                         var jsp;
 
@@ -278,12 +219,12 @@ angular.module('mms.designVisualization.diagramContainer', [
                         jsp = scope.$contentPane.data('jsp');
 
                         if (angular.isObject(jsp)) {
-                            jsp.scrollTo(0,0);
+                            jsp.scrollTo(0, 0);
                         }
 
                     });
 
-                    $rootScope.$on('designMustBeOpened', function(/*ev, container*/){
+                    $rootScope.$on('designMustBeOpened', function( /*ev, container*/ ) {
 
                         var jsp;
 
@@ -292,18 +233,37 @@ angular.module('mms.designVisualization.diagramContainer', [
                         jsp = scope.$contentPane.data('jsp');
 
                         if (angular.isObject(jsp)) {
-                            jsp.scrollTo(0,0);
+                            jsp.scrollTo(0, 0);
                         }
 
                     });
 
-                    scope.$on('$destroy', function(){
+                    $windowElement = angular.element($window);
+
+                    $windowElement.bind(
+                        'resize', ctrl.scrollHandler.onWindowResize
+                    );
+
+
+                    if (designEditorCtrl) {
+                        designEditorCtrl.addEventListener('resize', ctrl.scrollHandler.onWindowResize);
+                    }
+
+
+                    scope.$on('$destroy', function() {
+
+                        if (designEditorCtrl) {
+                            designEditorCtrl.removeEventListener('resize', ctrl.scrollHandler.onWindowResize);
+                        }
+
+                        $windowElement.unbind('resize', ctrl.scrollHandler.onWindowResize);
+
                         element.off();
                     });
+
 
                 }
 
             };
         }
     ]);
-

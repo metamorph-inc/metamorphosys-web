@@ -1,0 +1,22 @@
+<div class="inspected-component-details">
+    <property-list properties="ctrl.component.details.properties"></property-list>
+    <div class="icon" ng-if="ctrl.component.details.acmInfo.icon">
+        <img ng-src="{{ctrl.component.details.acmInfo.icon}}">
+    </div>
+    <div class="documentation" ng-if="ctrl.component.details.acmInfo.documentation" ng-bind-html="ctrl.component.details.acmInfo.documentation">
+        <!-- 		<h3>Lorem Ipsum</h3>
+		<p>NPN Silicon Phototransistor</p>
+		<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+		<h3>Connectors</h3>
+		<ul>
+			<li>B* [StdPin]:** Base</li>
+			<li>C* [StdPin]:** Collector</li>
+			<li>E* [StdPin]:** Emitter</li>
+		</ul>
+ --></div>
+    <div class="component-datasheet-button" ng-if="ctrl.component.details.acmInfo.datasheet">
+        <md-button aria-label="Download datasheet" ng-href="{{ctrl.component.details.acmInfo.datasheet}}">
+            <i class="glyphicon glyphicon-download-alt"></i> Datasheet
+        </md-button>
+    </div>
+</div>

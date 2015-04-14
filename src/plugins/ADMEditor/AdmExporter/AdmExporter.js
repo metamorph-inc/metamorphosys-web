@@ -726,6 +726,7 @@ define([
                 });
                 copyAttrIfSet('Layer');
             }
+            copyAttrIfSet('Notes');
 
             data['@ConstraintTarget'] = targetNodes
                 .filter(function (node) {
@@ -1035,7 +1036,7 @@ define([
                     };
                 };
                 if (valueFlows.length === 0) {
-                    self.logger.warning('Formula "' + formulaName + '" did not have any incoming value flows.');
+                    self.logger.warn('Formula "' + formulaName + '" did not have any incoming value flows.');
                     addFormulaData([], error);
                     return;
                 }
@@ -1237,7 +1238,7 @@ define([
 
                             if (self.admData.DomainFeature) {
                                 // TODO: Append the selection here when format updated.
-                                self.logger.warning(
+                                self.logger.warn(
                                     'Only one AssemblyRoot can be exported, an arbitrary selection will be made!'
                                 );
                                 self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.core.getGuid(
@@ -1255,7 +1256,7 @@ define([
                                 componentNode) + '".');
                         }
                     } else {
-                        self.logger.warning('AssemblyRoot selection is not within design, see path "' +
+                        self.logger.warn('AssemblyRoot selection is not within design, see path "' +
                         componentIds[i] + '".');
                     }
                 }

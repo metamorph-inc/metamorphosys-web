@@ -393,11 +393,11 @@ define( [ 'plugin/PluginConfig',
             if ( self.deleteExisting ) {
                 self.core.deleteNode( existingAcmNodeWithSameId );
                 msg = "Deleted existing AVMComponent with ID '" + id + "'";
-                self.logger.warning( msg );
+                self.logger.warn( msg );
                 self.createMessage( existingAcmParentFolder, msg, 'debug' );
             } else {
                 msg = "Found existing AVMComponent with ID '" + id + "' (" + self.core.getAttribute(existingAcmNodeWithSameId, 'name') + ")";
-                self.logger.warning( msg );
+                self.logger.warn( msg );
                 self.createMessage( existingAcmNodeWithSameId, msg, 'warning' );
             }
         }
@@ -965,7 +965,8 @@ define( [ 'plugin/PluginConfig',
                     Role: true,
                     Formula: true,
                     Operand: true,
-                    Port: true
+                    Port: true,
+                    ResourceDependency: true
                 }
             } );
 

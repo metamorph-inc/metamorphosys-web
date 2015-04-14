@@ -7,14 +7,13 @@ var operationsManagerModule = angular.module(
 
 operationsManagerModule.provider('operationsManager', function OperationsManagerProvider() {
     var self,
-        availableOperations,
+        availableOperations = {},
+        commitHandlers = {},
         journal;
 
     self = this;
 
     journal = [];
-
-    availableOperations = {};
 
     this.registerOperation = function (operationDescriptor) {
 
@@ -26,15 +25,10 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
 
     this.registerCommitHandler = function (operationType, commitHandler) {
 
-        var operation;
+        if (angular.isFunction(commitHandler)) {
 
-        operation = availableOperations[operationType];
-
-        if (angular.isObject(operation) &&
-            angular.isFunction(commitHandler)) {
-
-            operation.commitHandlers = operation.commitHandlers || [];
-            operation.commitHandlers.push(commitHandler);
+            commitHandlers[operationType] = commitHandlers[operationType] || [];
+            commitHandlers[operationType].push(commitHandler);
 
         }
     };
@@ -64,9 +58,9 @@ operationsManagerModule.provider('operationsManager', function OperationsManager
                     handlerPromises = [];
                     operation = availableOperations[operationType];
 
-                    if (angular.isObject(operation) && angular.isArray(operation.commitHandlers)) {
+                    if (angular.isObject(operation) && angular.isArray(commitHandlers[operationType])) {
 
-                        angular.forEach(operation.commitHandlers, function(commitHandler) {
+                        angular.forEach(commitHandlers[operationType], function(commitHandler) {
                             handlerPromises.push(commitHandler(footPrint));
                         });
 

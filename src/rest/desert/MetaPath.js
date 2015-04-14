@@ -5,8 +5,7 @@
 
 
 // list autostart programs
-define( [], function () {
-    'use strict';
+
     var Winreg = require( 'winreg' ),
         MetaPath = function () {
             this.regKey = new Winreg( {
@@ -35,5 +34,4 @@ define( [], function () {
         } );
     };
 
-    return MetaPath;
-} );
+module.exports = MetaPath;

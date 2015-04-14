@@ -59,16 +59,17 @@ var main = function () {
 
         for ( i = 0; i < results.length; i += 1 ) {
             fileName = results[ i ];
-            console.info( fileName );
+            //console.info( fileName );
             if ( isEjsFile( fileName ) ) {
-                console.info( 'Was ejs -> added!' );
+                //console.info( 'Was ejs -> added' );
+                console.info( 'Added ' + fileName );
                 content[ fileName.substring( 2 ) ] = fs.readFileSync( fileName, {
                     'encoding': 'utf-8'
                 } );
             }
         }
 
-        console.info( content );
+        // console.info( content );
         templateContent = '';
         templateContent += '/* global define,require */\r\n';
         templateContent += '/* Generated file based on ejs templates */\r\n';

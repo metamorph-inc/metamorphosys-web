@@ -1,0 +1,22 @@
+<div class="diagram-component-inspector">
+    <div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
+    <div ng-if="ctrl.inspectable">
+        <div class="inspectable-name">
+            <a href="#" editable-text="ctrl.inspectable.label" onbeforesave="ctrl.isNameValid($data)" onaftersave="ctrl.commitName()">
+  				{{ ctrl.inspectable.label || "empty" }}
+  			</a>
+            <div class="original-name" ng-if="ctrl.inspectable.details.acmInfo.name">
+            ({{ctrl.inspectable.details.acmInfo.name}})
+            </div>
+            <div class="taxonomy-terms classification-tags">
+                <div class="taxonomy-term" ng-repeat="term in ctrl.inspectable.classificationTags" ng-class="term.id">{{::term.name}}
+                </div>
+            </div>
+        </div>
+        <div class="inspectable-details">
+            <inspected-component-details ng-if="ctrl.inspectable.details.acmInfo"
+            	component="ctrl.inspectable" 
+            ></inspected-component-details>
+        </div>
+    </div>
+</div>

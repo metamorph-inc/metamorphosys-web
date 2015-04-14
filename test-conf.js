@@ -1,3 +1,4 @@
+/* global require,module,exports,console*/
 /*
  * Copyright (C) 2014 Vanderbilt University, All rights reserved.
  *
@@ -5,44 +6,59 @@
  *
  * Configuration for server-side mocha tests.
  */
+'use strict';
 
 var PATH = require('path');
 
 var CONFIG = require('./config.js');
 exports.config = CONFIG;
+CONFIG.server.port = 49049;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
 CONFIG.mongo.options.server = CONFIG.mongo.options.server || {};
 CONFIG.mongo.options.server.socketOptions = {connectTimeoutMS: 500};
-CONFIG.log.level = 0;
+CONFIG.executor.enable = false; // fails until https://github.com/webgme/webgme/issues/323 is fixed
 var webgme = require('webgme');
 var requirejs = webgme.requirejs;
 webgme.addToRequireJsPaths(CONFIG);
 var requirejsBase = webgme.requirejs.s.contexts._.config.baseUrl;
-requirejs.define('gmeConfig', function () { return CONFIG; });
+requirejs.define('gmeConfig', function () {
+    return CONFIG;
+});
+requirejs.define('test-conf', function () {
+    return exports;
+});
+
 
 // specifies all test specific requirejs paths for server side tests
 // read it from the config file
 var testPaths = {
-        "mocks": "./test/mocks",
-        "test/models": "./test/models",
-        "test/lib": "./test/lib"
-    };
+    "mocks": "./test/mocks",
+    "test/models": "./test/models",
+    "test/lib": "./test/lib"
+};
 if (testPaths) {
     var paths = {};
     var keys = Object.keys(testPaths);
     for (var i = 0; i < keys.length; i += 1) {
-        paths[keys[i]] = PATH.relative(requirejsBase,PATH.resolve(testPaths[keys[i]]));
+        paths[keys[i]] = PATH.relative(requirejsBase, PATH.resolve(testPaths[keys[i]]));
     }
     requirejs.config({
-        paths:paths
+        paths: paths
     });
 }
-requirejs(['logManager'], function (LogManager) {
-    LogManager.setLogLevel(0);
-});
 
 exports.requirejs = requirejs;
 
-if (require.main === module) {
+exports.useServer = function useServer(before, after) {
+    var server = webgme.standaloneServer(CONFIG);
+    after(function stopServer(done) {
+        server.stop(done);
+    });
+    before(function startServer(done) {
+        server.start(done);
+    });
+};
 
+if (require.main === module) {
+    console.log(JSON.stringify(CONFIG, null, 4));
 }

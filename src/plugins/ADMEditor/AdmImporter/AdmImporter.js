@@ -435,7 +435,7 @@ define([
                     } else if (self.componentID2Acm[componentID] === undefined) {
                         self.logger.info('ACM "' + childName + '" is not part of the design.');
                     } else {
-                        self.logger.warning('Found duplicate ACM ID "' + componentID + '". "' + childName +
+                        self.logger.warn('Found duplicate ACM ID "' + componentID + '". "' + childName +
                         '" at "' +
                         self.core.getPath(children[i]) + '" will not be used.');
                     }
@@ -643,8 +643,8 @@ define([
                 portIdInModel2ID: portIdInModel2ID
             });
         } else {
-            self.logger.warning('Could not find ACM for ComponentInstance : ' + componentData['@Name']);
-            self.logger.warning('Will create an empty shell model in design from avaliable data.');
+            self.logger.warn('Could not find ACM for ComponentInstance : ' + componentData['@Name']);
+            self.logger.warn('Will create an empty shell model in design from avaliable data.');
             component = self.core.createNode({
                 parent: parentNode,
                 base: self.meta.AVMComponentModel
@@ -778,6 +778,7 @@ define([
                 copyAttrIfSet('Type');
                 setRangeValues('Range');
             }
+            copyAttrIfSet('Notes');
             self.core.setAttribute(feature, 'name', type);
             constraintTargets.forEach(function (componentInstance) {
                 self.core.addMember(feature, 'ConstraintTarget', componentInstance.node);

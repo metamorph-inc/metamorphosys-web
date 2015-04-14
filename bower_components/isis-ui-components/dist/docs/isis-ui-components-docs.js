@@ -11385,7 +11385,7 @@ var demoApp = angular.module('isis.ui.treeNavigator.demo', [
     'ang-drag-drop'
 ]);
 
-demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $timeout) {
+demoApp.controller('TreeNavigatorDemoController', function($scope, $log, $q, $timeout) {
 
     var config,
         treeNodes = {},
@@ -11396,7 +11396,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
         dummyTreeDataGenerator,
         sortChildren;
 
-    getNodeContextmenu = function (node) {
+    getNodeContextmenu = function(node) {
 
         var defaultNodeContextmenu = [{
             items: [{
@@ -11411,7 +11411,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
 
                 actionData: node,
 
-                action: function (data) {
+                action: function(data) {
                     $log.log('testing ', data);
                 }
 
@@ -11425,7 +11425,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
                 actionData: {
                     id: node.id
                 },
-                action: function (data) {
+                action: function(data) {
                     removeNode(data.id);
                 }
             }, {
@@ -11438,7 +11438,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
                     }, {
                         id: 'sub_preferences 2',
                         label: 'Sub preferences 2',
-                        action: function (data) {
+                        action: function(data) {
                             $log.log('testing2 ', data);
                         }
                     }]
@@ -11450,7 +11450,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
 
     };
 
-    dummyTreeDataGenerator = function (treeNode, name, maxCount, levels, idOffset) {
+    dummyTreeDataGenerator = function(treeNode, name, maxCount, levels, idOffset) {
         var i,
             id,
             count,
@@ -11474,7 +11474,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
 
     };
 
-    addNode = function (parentTreeNode, id, i) {
+    addNode = function(parentTreeNode, id, i) {
         var newTreeNode,
             children = [];
 
@@ -11531,9 +11531,9 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
         return newTreeNode;
     };
 
-    removeNode = function (id) {
+    removeNode = function(id) {
         var
-        parentNode,
+            parentNode,
             nodeToDelete = treeNodes[id];
 
         $log.debug('Removing a node ' + id);
@@ -11545,7 +11545,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
                 parentNode = treeNodes[nodeToDelete.parentId];
 
                 // remove nodeToDelete from parent node's children
-                parentNode.children = parentNode.children.filter(function (el) {
+                parentNode.children = parentNode.children.filter(function(el) {
                     return el.id !== id;
                 });
 
@@ -11561,10 +11561,10 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
 
     };
 
-    sortChildren = function (values) {
+    sortChildren = function(values) {
         var orderBy = ['label', 'id'];
 
-        values.sort(function (a, b) {
+        values.sort(function(a, b) {
             var i,
                 key,
                 result;
@@ -11595,14 +11595,14 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
                 items: [{
                     id: 'project',
                     label: 'Project Hierarchy',
-                    action: function () {
+                    action: function() {
                         $scope.config.state.activeScope = 'project';
                         $scope.config.selectedScope = $scope.config.scopeMenu[0].items[0];
                     }
                 }, {
                     id: 'composition',
                     label: 'Composition',
-                    action: function () {
+                    action: function() {
                         $scope.config.state.activeScope = 'composition';
                         $scope.config.selectedScope = $scope.config.scopeMenu[0].items[1];
                     }
@@ -11632,7 +11632,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
                         }, {
                             id: 'sub_preferences 2',
                             label: 'Sub preferences 2',
-                            action: function (data) {
+                            action: function(data) {
                                 $log.log(data);
                             }
                         }]
@@ -11645,22 +11645,30 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
 
         // Tree Event callbacks
 
-        nodeClick: function (e, node) {
+        nodeClick: function(e, node) {
             console.log('Node was clicked:', node);
         },
 
-        nodeDblclick: function (e, node) {
+        nodeDragStart: function(e, node) {
+            console.log('Node is beibg dragged:', node);
+        },
+
+        nodeDragEnd: function(e, node) {
+            console.log('Node is not dragged anymore:', node);
+        },
+
+        nodeDblclick: function(e, node) {
             console.log('Node was double-clicked:', node);
         },
 
-        nodeContextmenuRenderer: function (e, node) {
+        nodeContextmenuRenderer: function(e, node) {
             console.log('Contextmenu was triggered for node:', node);
 
             return getNodeContextmenu(node);
 
         },
 
-        nodeExpanderClick: function (e, node, isExpand) {
+        nodeExpanderClick: function(e, node, isExpand) {
             console.log('Expander was clicked for node:', node, isExpand);
         },
 
@@ -11668,16 +11676,16 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
             itemsPerPage: 10
         },
 
-        loadChildren: function (e, node, count, isBackpaging) {
+        loadChildren: function(e, node, count, isBackpaging) {
             var deferred = $q.defer();
 
             console.log('--loading children');
 
-            $timeout(function () {
+            $timeout(function() {
 
                     var dummyParent = {
-                        children: []
-                    },
+                            children: []
+                        },
                         newChildren,
                         offset;
 
@@ -11710,7 +11718,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
     $scope.config = config;
     //$scope.config.disableManualSelection = true;
     $scope.config.selectedScope = $scope.config.scopeMenu[0].items[0];
-    $scope.config.nodeClassGetter = function (node) {
+    $scope.config.nodeClassGetter = function(node) {
         var nodeCssClass = '';
 
         if (node.order % 2 === 0) {
@@ -11738,6 +11746,7 @@ demoApp.controller('TreeNavigatorDemoController', function ($scope, $log, $q, $t
     dummyTreeDataGenerator($scope.treeData, 'Node item ', 1, 1);
 
 });
+
 },{"ngDragDrop":2}],18:[function(require,module,exports){
 (function (global){
 ;__browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {

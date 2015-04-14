@@ -1,24 +1,28 @@
+/*globals requireJS, require*/
+
+//N.B. WebGME defines requireJS
 /**
  * Created by pmeijer on 6/23/2014.
  */
 
-define( [ 'logManager',
-    'blob/BlobRunPluginClient',
-    'blob/BlobFSBackend',
-    'fs',
-    'path',
-    'child_process',
-    'desert/MetaPath'
-], function ( logManager, BlobRunPluginClient, BlobFSBackend, fs, path, child_process, MetaPath ) {
+
     'use strict';
-    var logger = logManager.create( 'REST-DESERT' ),
+    var logger,
+        fs = require('fs'),
+        child_process = require('child_process'),
+        MetaPath = require('./MetaPath'),
+        path = require('path'),
         DesertBackEnd,
         dbe,
         DesertRest,
         desertRestCreate,
         desertRestInfo,
         desertRestCancel,
-        running = {};
+        running = {},
+        Logger = require('../../../node_modules/webgme/src/server/logger'),
+        BlobRunPluginClient = require('../../../node_modules/webgme/src/server/middleware/blob/BlobRunPluginClient'),
+        BlobFSBackend = require('../../../node_modules/webgme/src/server/middleware/blob/BlobFSBackend'),
+        setup;
 
     DesertBackEnd = function ( logger ) {
         var blobBackend = new BlobFSBackend();
@@ -253,7 +257,10 @@ define( [ 'logManager',
         }
     };
 
-    return function (gmeConfig) {
+    setup = function (_gmeConfig /*, _authentication*/) {
+        logger = Logger.create('web-cyphy:server:middleware:Desert', _gmeConfig.server.log);
+        logger.debug('serverInfoRest setup done');
         return DesertRest;
     };
-} );
+
+module.exports = setup;

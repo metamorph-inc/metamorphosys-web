@@ -236,7 +236,7 @@ angular.module('mms.projectHandling', [])
                     $rootScope.loading = true;
 
                     this.leaveProject();
-
+                    
                     connectionHandling.establishMainGMEConnection()
                         .then(function (connectionId) {
 

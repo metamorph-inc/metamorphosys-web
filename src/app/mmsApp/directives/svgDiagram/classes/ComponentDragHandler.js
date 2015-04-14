@@ -178,7 +178,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
                     if (component.id !== selectedComponentId) {
 
-                        selectedComponent = $scope.diagram.componentsById[selectedComponentId];
+                        selectedComponent = $scope.diagram.getComponentById(selectedComponentId);
 
                         possibbleDragTargetsDescriptor.targets.push(getDragDescriptor(
                             selectedComponent));

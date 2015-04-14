@@ -1,19 +1,22 @@
-/* global WebGMEGlobal */
+/* global WebGMEGlobal, __dirname */
 var Q = require('q');
 var exportsDeferred = Q.defer();
 var PATH = require('path');
 var fs = require('fs');
 
-if (typeof module !== 'undefined' && require.main === module) {
+if (typeof module !== 'undefined') {
     module.exports = exportsDeferred.promise;
 
     var cyphyRootDir = PATH.resolve(__dirname, '..');
     var webGme = require('webgme');
     var CONFIG = require('../config');
+    requirejs.define('gmeConfig', function () { return CONFIG; });
     webGme.addToRequireJsPaths(CONFIG);
     var define = require(PATH.resolve(cyphyRootDir, 'test-conf.js')).requirejs;
     require(PATH.resolve(__dirname, 'JSON2_ordered'));
+}
 
+if (typeof module !== 'undefined' && require.main === module) {
     var fatal = function fatal(msg) {
         console.log(msg);
         throw Error(msg);
@@ -39,17 +42,27 @@ if (typeof module !== 'undefined' && require.main === module) {
     }).catch(fatal);
 }
 
-define([
-    'core/core',
-    'storage/serveruserstorage',
-    'coreclient/serialization',
+var Storage = require('webgme').serverUserStorage;
+var Logger = require('webgme').Logger;
+var webgme = require('webgme');
+
+define(
+    [
+    'common/core/core',
     'blob/BlobClient',
-    'logManager'
-], function (Core, Storage, Serialization, BlobClient, LogManager) {
+    'gmeConfig'
+], function (Core, BlobClient, CONFIG) {
     'use strict';
 
+    var Serialization = webgme.serializer,
+        logger = Logger.create('update_meta', CONFIG.bin.log, false);
+
     function withProject(CONFIG, projectName, fn) {
-        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
+        var storage = new Storage({
+                logger: logger.fork('storage'),
+                log: logger.fork('storage'), // This will be deprecated by 0.9.0
+                globConf: CONFIG}
+            ),
             args = Array.prototype.slice.call(arguments, 3),
             self = this,
             project;
@@ -71,7 +84,10 @@ define([
     }
 
     function importLibrary(CONFIG, projectName, branch, metaJson, project) {
-        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
+        var storage = new Storage({
+                logger: logger.fork('storage'),
+                log: logger.fork('storage'), // This will be deprecated by 0.9.0
+                globConf: CONFIG}),
             core,
             deferred = Q.defer(),
             root;
@@ -123,7 +139,11 @@ define([
     }
 
     function writeMetaLib(callback) {
-        var storage = new Storage({log: LogManager.create('storage'), globConf: CONFIG}),
+        var storage = new Storage({
+                log: logger.fork('storage'),
+                logger: logger.fork('storage'),
+                globConf: CONFIG
+            }),
             project,
             core,
             projectName = 'TmpProject';
@@ -168,7 +188,7 @@ define([
         pluginConfig.activeNode = undefined;
         pluginConfig.activeSelection = undefined;
         pluginConfig.pluginConfig = {};
-        webGme.runPlugin.main(CONFIG, pluginConfig, function (err, result) {
+        webGme.runPlugin.main(null, CONFIG, pluginConfig, pluginConfig.pluginConfig, function (err, result) {
             if (err) {
                 fatal(err);
             }
@@ -208,7 +228,7 @@ define([
         pluginConfig.activeNode = "/1";
         pluginConfig.activeSelection = undefined;
         pluginConfig.pluginConfig = { timeOut: 0};
-        webGme.runPlugin.main(CONFIG, pluginConfig, function (err, result) {
+        webGme.runPlugin.main(null, CONFIG, pluginConfig, pluginConfig.pluginConfig, function (err, result) {
             if (err) {
                 fatal(err);
             }
@@ -244,4 +264,6 @@ define([
     };
     exportsDeferred.resolve(exp);
     return exp;
+}, function (err) {
+    exportsDeferred.reject(err);
 });

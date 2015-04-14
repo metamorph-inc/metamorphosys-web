@@ -1,4 +1,8 @@
 {
+    "globals": {
+        "angular": true
+    },
+
     // I want to use babel-eslint for parsing!
     "parser": "babel-eslint",
     "env": {
@@ -13,6 +17,7 @@
         "eol-last": [0],
         "no-mixed-requires": [0],
         "no-underscore-dangle": [0],
-        "no-trailing-spaces": false
+        "no-trailing-spaces": false,
+        "no-extra-strict": false
     }
 }

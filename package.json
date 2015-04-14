@@ -8,8 +8,10 @@
   "license": "MIT",
   "dependencies": {
     "bson-stream": "0.0.4",
+    "commonmark": "^0.18.1",
     "content-disposition": "^0.5.0",
-    "webgme": "https://github.com/webgme/webgme/tarball/perf_investigation",
+    "mongodb": "=1.4.34",
+    "webgme": "https://github.com/webgme/webgme/tarball/9960ca36ec801c3b5848b473e59ff8d6bd401ea7",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
     "ng-gme": "=0.1.1"
@@ -29,6 +31,7 @@
     "cssify": "~0.6.0",
     "express": "^4.8.6",
     "fs-extra": "^0.16.5",
+    "functional-red-black-tree": "^1.0.1",
     "gulp": "^3.8.7",
     "gulp-angular-templatecache": "^1.3.0",
     "gulp-buffer": "0.0.2",
@@ -87,7 +90,6 @@
     "chance": "./bower_components/chance/chance.js",
     "Array.prototype.find": "./bower_components/Array.prototype.find/index.js",
     "glMatrix": "./bower_components/gl-matrix/dist/gl-matrix-min.js",
-    "ngDragDrop": "./bower_components/angular-native-dragdrop/draganddrop.js",
     "ngTouch": "./bower_components/angular-touch/angular-touch.min.js",
     "hamster": "./bower_components/hamsterjs/hamster.js",
     "angular-panhandler": "./bower_components/angular-panhandler/dist/angular-panhandler.min.js",

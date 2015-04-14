@@ -1,0 +1,15 @@
+<div class="footer-drawer">
+	<header
+		ng-dblclick="::ctrl.toggle()">
+		<ul class="drawer-main-navigator">
+			<li><i class="fa fa-search inspector-icon"></i> Inspector</li>
+		</ul>
+		<div class="drawer-expander" ng-switch on="ctrl._expanded">
+			<a hrer="#" ng-switch-when="false" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-up"></i></a>
+			<a hrer="#" ng-switch-when="true" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-down"></i></a>				
+		</div>		
+	</header>
+	<div class="drawer-content">
+		<ng-transclude></ng-transclude>
+	</div>
+</div>

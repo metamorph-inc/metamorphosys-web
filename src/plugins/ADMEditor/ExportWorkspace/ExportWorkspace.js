@@ -154,7 +154,7 @@ define( [ 'plugin/PluginConfig',
                 callback( null );
             } );
         } else {
-            self.logger.warning( 'Acm did not have a resource' );
+            self.logger.warn( 'Acm did not have a resource' );
         }
     };
 
@@ -191,7 +191,7 @@ define( [ 'plugin/PluginConfig',
                         Design: self.admExporter.admData
                     } );
                     if ( self.addedAdms[ filename ] ) {
-                        self.logger.warning( designName +
+                        self.logger.warn( designName +
                             ' occurs more than once, appending its guid to filename.' );
                         filename = 'adms/' + designName + '__' +
                             self.core.getGuid( self.designNodes[ counter ] )
@@ -211,7 +211,7 @@ define( [ 'plugin/PluginConfig',
 
     ExportWorkspace.prototype.addAtm = function ( node, callback ) {
         var self = this;
-        self.logger.warning( 'TODO: Export ATMs...' );
+        self.logger.warn( 'TODO: Export ATMs...' );
         callback( null );
     };
 
