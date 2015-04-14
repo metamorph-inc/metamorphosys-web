@@ -210,11 +210,7 @@ angular.module('mms.designEditor', [
                                         }
 
                                         nodeService.completeTransaction(layoutContext);
-
-                                        wire.id = node.id;
-                                        diagramService.addWire(selectedContainerId, wire);
                                         gridService.invalidateVisibleDiagramComponents(selectedContainerId);
-
 
                                         $rootScope.stopProcessing();
 
