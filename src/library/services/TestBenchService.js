@@ -245,7 +245,8 @@ angular.module( 'cyphy.services' )
                         description: node.getAttribute( 'INFO' ),
                         path: node.getAttribute( 'ID' ),
                         results: node.getAttribute( 'Results' ),
-                        files: node.getAttribute( 'TestBenchFiles' )
+                        files: node.getAttribute( 'TestBenchFiles' ),
+                        design: node.getPointer('TopLevelSystemUnderTest').to
                     };
                     node.onUnload( onUnload );
                     node.onUpdate( onUpdate );
