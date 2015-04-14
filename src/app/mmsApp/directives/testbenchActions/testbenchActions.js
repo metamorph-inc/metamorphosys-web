@@ -52,7 +52,7 @@ angular.module('mms.testbenchActions', [
                 selectedDesign = projectHandling.getSelectedDesign();
 
                 angular.forEach(availableTestbenches, function(tb) {
-                    if (tb.name === selectedDesign.name) {
+                    if (tb.name === selectedDesign.name /* TODO: use tb.design === selectedDesign.id instead*/) {
                         $scope.testbench = tb;
                     }
                 });
