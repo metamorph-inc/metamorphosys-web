@@ -14,10 +14,13 @@
         ng-class="getCssClass()"
         >
 
-        <g class="wire-container">
+        <component-wires-container-react wires="visibleObjects.wires">
+        </component-wires-container-react >
+
+<!--         <g class="wire-container">
             <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
         </g>
-        <g class="component-container">
+ -->        <g class="component-container">
             <component-symbol ng-repeat="component in visibleObjects.components track by component.id" component="component"></component-symbol>
         </g>
 

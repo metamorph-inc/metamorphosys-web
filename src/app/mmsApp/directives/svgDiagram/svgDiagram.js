@@ -6,6 +6,8 @@
 
 require('../componentWire/componentWire.js');
 
+require('../componentWiresContainer/componentWiresContainer.jsx');
+
 require('./operations/moveComponents.js');
 require('./operations/rotateComponents.js');
 require('./operations/reorderComponent.js');
@@ -23,6 +25,8 @@ angular.module('mms.svgDiagram', [
         'mms.designVisualization.operations.relabelComponent',
         'mms.designVisualization.operations.moveWire',
         'monospaced.mousewheel',
+
+        'mms.designEditor.componentWiresContainer.react',
 
         'isis.ui.contextmenu'
     ])
