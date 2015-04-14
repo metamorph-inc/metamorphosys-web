@@ -339,7 +339,7 @@ registerAppTasks = function (appName) {
     var appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
         appBuildRoot = buildRoot + 'apps/' + appName + '/',
 
-        appSources = [appSourceRoot + '**/*.js'],
+        appSources = [appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx'],
         appModuleScript = appSourceRoot + 'app.js',
 
         appIndexFile = appSourceRoot + 'index.html',
@@ -688,7 +688,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         var
             appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
 
-            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js' ],
+            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx' ],
 
             appHtmls = [ appSourceRoot + '**/*.html'],
 
