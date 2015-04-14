@@ -32,6 +32,7 @@
     "be02d298-2892-180a-ed1a-138dc589dd5c": "1299690106",
     "cb92c02d-84cf-f104-938b-b7de6641f8e5": "1998840078",
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
+    "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": "1226873745",
     "d5fc3678-2722-5112-c0bb-fa758f113246": "1328879441",
     "dd35b139-3346-08f0-013c-1e3a8a522f7f": "794302266",
     "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": "206008088",
@@ -41,6 +42,7 @@
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": "91705197",
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": "126974487",
     "f26a44de-edb5-57c8-fd0f-242811b7816c": "24011457",
+    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": "1118537161",
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": "488584186",
     "f9f20885-6316-a7b6-2196-8299f45692ff": "1474284259"
   },
@@ -70,6 +72,7 @@
       "ab281360-2719-c4e0-c3c6-4eea03401141": {},
       "be02d298-2892-180a-ed1a-138dc589dd5c": {},
       "cb92c02d-84cf-f104-938b-b7de6641f8e5": {},
+      "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {},
       "d5fc3678-2722-5112-c0bb-fa758f113246": {},
       "dd35b139-3346-08f0-013c-1e3a8a522f7f": {},
       "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {},
@@ -82,7 +85,8 @@
       "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {},
       "f9f20885-6316-a7b6-2196-8299f45692ff": {}
     },
-    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {}
+    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {},
+    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": {}
   },
   "nodes": {
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
@@ -1079,6 +1083,16 @@
           },
           {
             "attributes": {},
+            "guid": "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28",
+            "registry": {
+              "position": {
+                "x": 1319,
+                "y": 502
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "d5fc3678-2722-5112-c0bb-fa758f113246",
             "registry": {
               "position": {
@@ -1328,6 +1342,16 @@
               "position": {
                 "x": 577,
                 "y": 105
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28",
+            "registry": {
+              "position": {
+                "x": 1294,
+                "y": 490
               }
             }
           },
@@ -2568,6 +2592,46 @@
         }
       }
     },
+    "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {
+      "attributes": {
+        "Constraint": "Board Edge Spacing",
+        "name": "GlobalLayoutConstraintException"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
+          },
+          "Constraint": {
+            "type": "string",
+            "default": "Board Edge Spacing",
+            "enum": [
+              "Board Edge Spacing",
+              "Inter-Chip Spacing"
+            ]
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 936,
+          "y": 672
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      },
+      "constraints": {}
+    },
     "d5fc3678-2722-5112-c0bb-fa758f113246": {
       "attributes": {
         "INFO": "Metric value of an executed experiment.",
@@ -3053,6 +3117,31 @@
       "sets": {
         "ConstraintTarget": []
       },
+      "constraints": {}
+    },
+    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": {
+      "attributes": {
+        "name": "GlobalLayoutConstraintException"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "parent": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 1311,
+          "y": 501
+        }
+      },
+      "sets": {},
       "constraints": {}
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
