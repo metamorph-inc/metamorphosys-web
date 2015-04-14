@@ -24,7 +24,7 @@ var OrthogonalRouter = function () {
         var end = performance.now();
         console.log("Graph time: " + (end - start));
         start = performance.now();
-        var optimalConnections = self.autoRouteWithGraph(this.visibilityGraph, diagram.wires);
+        var optimalConnections = self.autoRouteWithGraph(this.visibilityGraph, diagram.getWires());
 
         var nudgedConnections = nudgeConnections(this.visibilityGraph, optimalConnections);
         var tempSegs = nudgedConnections.reduce(function(a,b) {
@@ -50,7 +50,7 @@ var OrthogonalRouter = function () {
             vertices = [];
 
         // Get interesting points from components.
-        var points = this.getNodes( diagram.components );
+        var points = this.getNodes( diagram.getComponents() );
 
         // We will first get the interesting horizontal line segment, so sort by Y coordinate
         var sortedY = [].concat(points);
