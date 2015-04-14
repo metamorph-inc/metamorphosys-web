@@ -408,11 +408,12 @@ registerAppTasks = function (appName) {
 
         bundle = function () {
             return bundler
-//                .transform(babelify)
+                .transform(babelify)
                 .bundle()
                 .on('error', swallowError)
                 .pipe(source(appSourceRoot + 'app.js'))
                 .pipe(buffer())
+//                .pipe(babel())
                 .pipe(sourcemaps.init({loadMaps: true}))
                 .pipe(rename(function (path) {
                     path.dirname = '';

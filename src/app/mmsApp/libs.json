@@ -1,7 +1,9 @@
 {
     "scripts": [
         "./bower_components/jquery/dist/jquery.min.js",
+        "./bower_components/jquery-ui/jquery-ui.min.js",        
         "./bower_components/angular/angular.js",
+        "./bower_components/angular-material/angular-material.min.js",
         "./node_modules/ng-gme/dist/ng-gme.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
