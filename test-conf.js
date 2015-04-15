@@ -11,6 +11,13 @@
 var PATH = require('path');
 
 var CONFIG = require('./config.js');
+CONFIG.server.log.transports.forEach(function (transport) {
+    transport.options.handleExceptions = false;
+    if (transport.transportType === 'Console') {
+        transport.options.level = 'error';
+    }
+});
+
 exports.config = CONFIG;
 CONFIG.server.port = 49049;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
