@@ -643,13 +643,13 @@ var OrthogonalRouter = function () {
     function findNextValidRightNeighbor ( node, axis, binTree, openObjects, sweepLength) {
         var right, rightIter = binTree.gt(node[axis]);
         if (rightIter.valid) {
-            var seg = {};
+            var seg = new OrthogonalGridSegment();
             seg[axis+1] = node[axis];
             seg[axis+2] = rightIter.key;  // {y1: node[axis], y2: rightIter.key}
 
             // TODO: This can't use OGSegment because the [axis+1] can be either x1 or y1...
 
-            var ltoe = inSetAndLessThanOrEqual(seg, openObjects, axis+1, axis+2);
+            var ltoe = seg.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
             // X-coords will be the same, need to see if y2 coord of seg is equal or less than open object y2
             if (ltoe !== -1) {
                 // Means this segment is in the list of open segments, grab the closest node from rightIter that
@@ -662,7 +662,7 @@ var OrthogonalRouter = function () {
                 while ( ltoe.equal === false ) {
                     rightIter = binTree.gt(rightIter.key);
                     seg[axis+2] = rightIter.key;
-                    ltoe = inSetAndLessThanOrEqual(seg, openObjects, axis+1, axis+2);
+                    ltoe = seg.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
                 }
 
                 // At this point the line is defined along the object, but this segment's visibility will continue
@@ -706,28 +706,6 @@ var OrthogonalRouter = function () {
         return right;
     }
 
-    function inSetAndLessThanOrEqual(o, arr, min, max) {
-        // Checks if segments with same starting point have same ending point. If segments do not have
-        // matching starting points, return -1.
-        for (var i = 0; i < arr.length; i++) {
-            if (o[max] < arr[i][max] && o[min] === arr[i][min]) {
-                return {"idx": i, "equal": false};
-            }
-            if (o[max] === arr[i][max] && o[min] === arr[i][min]) {
-                return {"idx": i, "equal": true};
-            }
-        }
-        return -1;
-    }
-
-    function myIndexOfPoint(pt, arr) {
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i].x === pt.x && arr[i].y === pt.y) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     ////////////////////////////////////////////////////////////////////////////
     /*                              Route Finder                              */
