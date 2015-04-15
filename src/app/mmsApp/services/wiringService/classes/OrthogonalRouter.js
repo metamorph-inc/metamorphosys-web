@@ -68,7 +68,7 @@ var OrthogonalRouter = function () {
         var nodes = [],
             incompleteNodes = [];
         for ( var s = 0; s < vertSegments.length; s++ ) {
-            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes, nodes,  diagram.config.height);
+            vertices = this.getSegmentIntersections(vertSegments[s], horzSegments, vertices, incompleteNodes, nodes, diagram.config.height);
         }
 
         // NOTE:

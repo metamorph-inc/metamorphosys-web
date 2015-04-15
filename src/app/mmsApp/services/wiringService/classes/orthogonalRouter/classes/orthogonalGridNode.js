@@ -39,15 +39,27 @@ OrthogonalGridNode.prototype.resetNode = function() {
 
 };
 
-OrthogonalGridNode.prototype.compareY = function ( otherNode ) {
+OrthogonalGridNode.compareY = function ( nodeA, nodeB ) {
 
-    return this.v.y - otherNode.v.y;
+    return nodeA.v.y - nodeB.v.y;
 
 };
 
-OrthogonalGridNode.prototype.compareX = function ( otherNode ) {
+OrthogonalGridNode.compareX = function ( nodeA, nodeB ) {
 
-    return this.v.x - otherNode.v.x;
+    return nodeA.v.x - nodeB.v.x;
+
+};
+
+OrthogonalGridNode.prototype.compareYToOthers = function ( otherNode ) {
+
+    return OrthogonalGridNode.compareY(this, otherNode);
+
+};
+
+OrthogonalGridNode.prototype.compareXToOthers = function ( otherNode ) {
+
+    return OrthogonalGridNode.compareX(this, otherNode);
 
 };
 
