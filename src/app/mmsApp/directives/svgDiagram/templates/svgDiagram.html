@@ -36,11 +36,11 @@
                   ng-attr-y2="{{segment.y2}}"/>
         </g>
         <g class="sweepPoint-container">
-            <circle style="stroke-width: 1; stroke: #FF0505;"
+            <circle style="stroke-width: 1; stroke: #FF0623;"
                   ng-repeat="point in diagram.sweepPoints"
                   ng-attr-cx="{{point.x}}"
                   ng-attr-cy="{{point.y}}"
-                  ng-attr-r="{{5}}"/>
+                  ng-attr-r="{{3}}"/>
         </g>
         <g class="optimalConnections-container">
             <line style="stroke-width: 1; stroke: #0000FF;"
@@ -49,6 +49,6 @@
                   ng-attr-y1="{{segment.y1}}"
                   ng-attr-x2="{{segment.x2}}"
                   ng-attr-y2="{{segment.y2}}"/>
-        </g>        
+        </g>
     </svg>
 </div>

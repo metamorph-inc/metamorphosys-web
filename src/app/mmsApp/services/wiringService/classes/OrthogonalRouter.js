@@ -1,6 +1,9 @@
 'use strict';
 
-var insert = require("../../mmsUtils/classes/simpleInsert.js");
+var insert = require("../../mmsUtils/classes/simpleInsert.js"),
+    Point = require("./orthogonalRouter/classes/Point.js"),
+    OrthogonalGridNode = require("./orthogonalRouter/classes/OrthogonalGridNode.js"),
+    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js");
 
 
 var OrthogonalRouter = function () {
@@ -22,6 +25,7 @@ var OrthogonalRouter = function () {
         var start = performance.now();
         self.generateVisibilityGraph(diagram);
         var end = performance.now();
+
         console.log("Graph time: " + (end - start));
         start = performance.now();
         var optimalConnections = self.autoRouteWithGraph(this.visibilityGraph, diagram.getWires());
@@ -50,13 +54,13 @@ var OrthogonalRouter = function () {
             vertices = [];
 
         // Get interesting points from components.
-        var points = this.getNodes( diagram.getComponents() );
+        var points = this.getBoundingBoxAndPortPointsFromComponents( diagram.getComponents() );
 
         // We will first get the interesting horizontal line segment, so sort by Y coordinate
-        var sortedY = [].concat(points);
-        sortedY.sort(function ( a, b ) { return self.compare(a, b, 0); });
-        var sortedX = [].concat(points);
-        sortedX.sort(function ( a, b ) { return self.compare(a, b, 1); });
+        var sortedY = points.slice();
+        sortedY.sort(function ( a, b ) { return a.comparePointsByXorY(b, 0); });
+        var sortedX = points.slice();
+        sortedX.sort(function ( a, b ) { return a.comparePointsByXorY(b, 1); });
 
         var horzSegments = this.verticalLineSweep(sortedY, diagram.config.width);
         var vertSegments = this.horizontalLineSweep(sortedX, diagram.config.height);
@@ -79,11 +83,13 @@ var OrthogonalRouter = function () {
             if ( incNode.v.x in nodes === false ) {
                 nodes[incNode.v.x] = { };
             }
-            nodes[incNode.v.x][incNode.v.y] = { v: incNode.v,
-                                                north: incNode.north,
-                                                south: typeof incNode.south === "undefined" ? diagram.config.height : incNode.south,
-                                                west: incNode.west,
-                                                east: typeof incNode.east === "undefined" ? diagram.config.width : incNode.east };
+
+            nodes[incNode.v.x][incNode.v.y] = new OrthogonalGridNode( incNode.v,
+                                                                      incNode.north,
+                                                                      incNode.south ? incNode.south : diagram.config.height,
+                                                                      incNode.west,
+                                                                      incNode.east ? incNode.east : diagram.config.width );
+
             incompleteNodes.splice(j, 1);
         }
 
@@ -119,8 +125,8 @@ var OrthogonalRouter = function () {
             // Collinear if denominator = 0
             if ( denominator !== 0 ) {
                 // Check if an intersection between segments occurs at one of the end points.
-                var share = this.doShareEndPoint(segment, segmentSet[i]);
-                if ( share !== null && myIndexOfPoint(share, intersections) === -1 ) {
+                var share = segment.getSharedEndPoint(segmentSet[i]);
+                if ( share !== null && share.myIndexOfPoint(intersections) === -1 ) {
                     intersections.push(share);
                     populateNode(share, segment, segmentSet[i], nodes, incompleteNodes, gh);
                 }
@@ -135,10 +141,10 @@ var OrthogonalRouter = function () {
 
                     if ( !collinear && !noIntersect ) {
                         var t = numerator2 / denominator,
-                            intersection = {x: segment.x1 + (t * segX), y: segment.y1 + (t * segY)};
+                            intersection = new Point( segment.x1 + (t * segX), segment.y1 + (t * segY) );
 
                         // Check intersection wasn't previously found
-                        if ( myIndexOfPoint(intersection, intersections) === -1 ) {
+                        if ( intersection.myIndexOfPoint(intersections) === -1 ) {
                             intersections.push(intersection);
 
                             // There is an intersection, so need to store the vertex's neighbors
@@ -147,11 +153,11 @@ var OrthogonalRouter = function () {
                     }
                 }
             }
-            if (segment.port !== null && myIndexOfPoint(segment.port, intersections) === -1) {
+            if (segment.port !== null && segment.port.myIndexOfPoint(intersections) === -1) {
                 intersections.push(segment.port);
                 populateNode(segment.port, segment, segmentSet[i], nodes, incompleteNodes, gh);
             }
-            if ( segmentSet[i].port !== null && myIndexOfPoint(segmentSet[i].port, intersections) === -1 ) {
+            if ( segmentSet[i].port !== null && segmentSet[i].port.myIndexOfPoint(intersections) === -1 ) {
                 intersections.push(segmentSet[i].port);
                 populateNode(segmentSet[i].port, segment, segmentSet[i], nodes, incompleteNodes, gh);
             }
@@ -160,8 +166,9 @@ var OrthogonalRouter = function () {
     };
 
     function populateNode( vertex, vertSeg, horzSeg, nodes, incompleteNodes, gh ) {
-        var node = new PathNode( vertex );
-        node.vertSeg = vertSeg;
+        //var node = new PathNode( vertex );
+        var node = new OrthogonalGridNode( vertex );
+        node.vertSeg = vertSeg;  // should be OrthogonalGridSegment
         node.horzSeg = horzSeg;
 
         /*
@@ -200,12 +207,12 @@ var OrthogonalRouter = function () {
         if ( incompleteNodes.length === 0 ) {
             node.north = 0;
             node.west = 0;
-            insert(node, incompleteNodes, compareY);
+            insert(node, incompleteNodes, compareY);  //TODO
             return node;
         }
 
         // Add new node to list
-        var idx = insert(node, incompleteNodes, compareY) - 1,
+        var idx = insert(node, incompleteNodes, compareY) - 1,  // TODO
             matchNode = null,
             smallNeighbor = null,
             checkComplete = false;
@@ -213,7 +220,7 @@ var OrthogonalRouter = function () {
         node = incompleteNodes[idx];
 
         // Check if Y value is duplicated. If it is, new node will be added directly after the existing one.
-        if (idx !== 0 && compareY(incompleteNodes[idx], incompleteNodes[idx-1]) === 0) {
+        if (idx !== 0 && node.compareY(incompleteNodes[idx-1]) === 0) {
 
             checkComplete = true;
             matchNode = incompleteNodes[idx-1];
@@ -224,7 +231,7 @@ var OrthogonalRouter = function () {
             ///// Horizontal segments
             // See if the horizontal segments of each node overlap at all. If so, there is a segment between them.
             // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
-            if (self.isPointOnLine(matchNode.horzSeg, {x:horzSeg.x1, y:horzSeg.y1})) {
+            if (matchNode.horzSeg.isPointOnLine({x:horzSeg.x1, y:horzSeg.y1})) {
                 node.west = matchNode.v;
                 matchNode.east = node.v;
             }
@@ -254,7 +261,7 @@ var OrthogonalRouter = function () {
             var i = idx - 1;
 
             smallNeighbor = incompleteNodes[i];
-            while (compareX(node, smallNeighbor) !== 0 && manhattanDistance(node.v, smallNeighbor.v) !== 0) {
+            while (node.compareX(smallNeighbor) !== 0 && node.manhattanDistance(smallNeighbor) !== 0) {
                 i -= 1;
                 if (i < 0) {
                     node.north = 0;
@@ -276,7 +283,7 @@ var OrthogonalRouter = function () {
             if (node.north !== 0) {
                 // See if the vertical segments of each node overlap at all. If so, there is a segment between them.
                 // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
-                if (self.isPointOnLine(smallNeighbor.vertSeg, {x: vertSeg.x1, y: vertSeg.y1})) {
+                if (smallNeighbor.vertSeg.isPointOnLine({x: vertSeg.x1, y: vertSeg.y1})) {
                     node.north = smallNeighbor.v;
                     smallNeighbor.south = node.v;
                 }
@@ -292,80 +299,39 @@ var OrthogonalRouter = function () {
 
         if (checkComplete) {
             // Only nodes that can be completed are ones where a matchNode has been found and filled out.
-            if (matchNode.hasOwnProperty('north') && matchNode.hasOwnProperty('south') &&
-                matchNode.hasOwnProperty('west') && matchNode.hasOwnProperty('east')) {
+            if (matchNode.areAllNeighborsDefined()) {
                 // Node is now completely defined
                 if ( matchNode.v.x in nodes === false ) {
                     nodes[matchNode.v.x] =  { };
                 }
-                nodes[matchNode.v.x][matchNode.v.y] = { v: matchNode.v,
-                                                        north: matchNode.north,
-                                                        south: matchNode.south,
-                                                        west: matchNode.west,
-                                                        east: matchNode.east };
 
-
+                nodes[matchNode.v.x][matchNode.v.y] = new OrthogonalGridNode( matchNode.v,
+                                                                              matchNode.north,
+                                                                              matchNode.south,
+                                                                              matchNode.west,
+                                                                              matchNode.east );
                 incompleteNodes.splice(idx-1, 1);
             }
         }
-
-
     }
 
-
-    this.doShareEndPoint = function ( seg1, seg2 ) {
-        if ( this.isPointOnLine(seg1, {x: seg2.x1, y: seg2.y1}) ) {
-            return {x: seg2.x1, y: seg2.y1};
-        }
-        else if ( this.isPointOnLine(seg1, {x: seg2.x2, y: seg2.y2}) ) {
-            return {x: seg2.x2, y: seg2.y2};
-        }
-        else if ( this.isPointOnLine(seg2, {x: seg1.x1, y: seg1.y1}) ) {
-            return {x: seg1.x1, y: seg1.y1};
-        }
-        else if ( this.isPointOnLine(seg2, {x: seg1.x2, y: seg1.y2}) ) {
-            return {x: seg1.x2, y: seg1.y2};
-        }
-        else {
-            return null;
-        }
-    };
-
-    this.isPointOnLine = function ( seg, pt ) {
-        var slope = ( seg.y2 - seg.y1 ) / (seg.x2 - seg.x1 );
-        if (slope === Number.POSITIVE_INFINITY) {
-            if (pt.y < seg.y1 || pt.y > seg.y2) {
-                // Out of range
-                return false;
-            }
-            return (pt.x === seg.x1);
-        }
-        else if (slope === 0) {
-            if (pt.x < seg.x1 || pt.x > seg.x2) {
-                // Out of range
-                return false;
-            }
-            return (pt.y === seg.y1);
-        }
-        return ((pt.y - seg.y1) === (pt.x - seg.x1));
-    };
-
-    this.getNodes = function ( components ) {
-        var nodes = [];
+    this.getBoundingBoxAndPortPointsFromComponents = function ( components ) {
+        var points = [];
         for ( var i = 0; i < components.length; i++ ) {
-            this.getNodesFromComponent(components[i], nodes);
+            this.getBBAndPortPointsFromComponent(components[i], points);
         }
-        return nodes;
+        return points;
     };
 
-    this.getNodesFromComponent = function ( component, nodes ) {
+    this.getBBAndPortPointsFromComponent = function ( component, points ) {
         var boundBox = component.getGridBoundingBox();
 
         // Nodes from bounding box
-        nodes.push( { x: boundBox.x - 10, y: boundBox.y - 10} );
-        nodes.push( { x: boundBox.x - 10, y: boundBox.y + boundBox.height + 10} );
-        nodes.push( { x: boundBox.x + boundBox.width + 10, y: boundBox.y - 10} );
-        nodes.push( { x: boundBox.x + boundBox.width + 10, y: boundBox.y + boundBox.height + 10} );
+        points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );
+        points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 10 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y - 10 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y + boundBox.height + 10 ) );
+
 
         // Nodes from ports
         for ( var k = 0; k < component.portInstances.length; k++ ) {
@@ -387,10 +353,7 @@ var OrthogonalRouter = function () {
             //    x += component.portInstances[k].portSymbol.wireLeadIn; // E port
             //}
 
-            nodes.push( { x: x,
-                          y: y,
-                          isPort: true,
-                          direction: portWireAngle } );
+            points.push( new Point( x, y, true, portWireAngle ) );
         }
     };
 
@@ -401,13 +364,14 @@ var OrthogonalRouter = function () {
             openObjects = [],
             i,
             binTree = createTree(),
-            prevNode = null;
+            prevNode = null,
+            tmpSeg;
 
         for ( i = 0; i < nodes.length; i++ ) {
             var checkRemove = true;
 
             // If node is a port that is on left or right, ignore and skip this node.
-            var isInvalidPort = (typeof nodes[i].isPort !== "undefined" &&
+            var isInvalidPort = ( nodes[i].isPort &&
                                 ( nodes[i].direction === 180 || nodes[i].direction === 360 ||
                                   nodes[i].direction === -180 || nodes[i].direction === 0 ));
 
@@ -420,7 +384,7 @@ var OrthogonalRouter = function () {
             // If prevNode defined and x < prevNode x (inside bb on right).
             for (var k = 0; k < openObjects.length; k++) {
                 if (nodes[i].y < openObjects[k].y2 && nodes[i].y > openObjects[k].y1) {
-                    if ((prevNode === null && nodes[i].x > openObjects[k].x) ||
+                    if ((prevNode === null && nodes[i].x > openObjects[k].x1) ||
                         (prevNode !== null && nodes[i].x < prevNode.x)) {
 
                         if (!isInvalidPort) {
@@ -452,15 +416,18 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // top
-            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 270 ||
-                                                          nodes[i].direction === -90 || specialCasePort) && !skipLeft) {
+            if ((!nodes[i].isPort || nodes[i].direction === 270 ||
+                                     nodes[i].direction === -90 || specialCasePort) && !skipLeft) {
                 var left, leftIter = binTree.lt(nodes[i].y);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are collinear, skip.
                     if (leftIter.value === nodes[i].x) {
-                        if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
+                        if (binTree.length % 2 === 0 && !nodes[i].isPort) {
                             // even number of keys, therefore this is part of an object segment.
-                            openObjects.push({y1: leftIter.key, y2: nodes[i].y, x: nodes[i].x});
+                            //openObjects.push({y1: leftIter.key, y2: nodes[i].y, x: nodes[i].x});
+                            openObjects.push( new OrthogonalGridSegment( nodes[i].x, leftIter.key,
+                                                                         nodes[i].x, nodes[i].y) );
+
                         }
                         continue;
                     }
@@ -471,12 +438,13 @@ var OrthogonalRouter = function () {
                         // remove the line defined by them from the openObjects list.
                         binTree = binTree.remove(prevNode.y);
                         binTree = binTree.remove(nodes[i].y);
-                        openObjects.splice(myIndexOfY({ y1: prevNode.y, y2: nodes[i].y }, openObjects), 1);
+                        tmpSeg = new OrthogonalGridSegment(null, prevNode.y, null, nodes[i].y);
+                        openObjects.splice(tmpSeg.getIndexUsingY(openObjects), 1);
                         prevNode = null;
                         continue;
                     }
                     left = leftIter.key;
-                    if (typeof nodes[i].direction !== "undefined" && nodes[i].y > leftIter.key) {
+                    if (nodes[i].direction && nodes[i].y > leftIter.key) {
                         var keyIsMin = false;
                         for (var n = 0; n < openObjects.length; n++) {
                             if ( openObjects[n].y1 === leftIter.key ) {
@@ -502,23 +470,24 @@ var OrthogonalRouter = function () {
                 else {
                     left = 0;
                 }
-                var port = typeof nodes[i].isPort === "undefined" ? null : {x: nodes[i].x, y: nodes[i].y};
-                var leftSegment = { y1: left, x1: nodes[i].x, y2: nodes[i].y, x2: nodes[i].x, port: port };
+                var port = nodes[i].isPort ? new Point( nodes[i].x, nodes[i].y ) : null,
+                    leftSegment = new OrthogonalGridSegment(nodes[i].x, left, nodes[i].x, nodes[i].y, port);
+
                 segments.push(leftSegment);
             }
             // bottom
-            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 90 ||
-                                                          nodes[i].direction === -270 || specialCasePort) && !skipRight) {
+            if ((!nodes[i].isPort || nodes[i].direction === 90 ||
+                                     nodes[i].direction === -270 || specialCasePort) && !skipRight) {
                 var right = findNextValidRightNeighbor ( nodes[i], "y", binTree, openObjects, sweepLength);
 
-                var port = typeof nodes[i].isPort === "undefined" ? null : {x: nodes[i].x, y: nodes[i].y};
-                var rightSegment = { y1: nodes[i].y, x1: nodes[i].x, y2: right, x2: nodes[i].x, port: port };
+                var port = nodes[i].isPort ? new Point( nodes[i].x, nodes[i].y) : null,
+                    rightSegment = new OrthogonalGridSegment( nodes[i].x, nodes[i].y, nodes[i].x, right, port );
                 segments.push(rightSegment);
             }
             if (checkRemove ) {
-                if (typeof nodes[i].isPort === "undefined") {
+                if (!nodes[i].isPort) {
                     if (prevNode === null) {
-                        prevNode = {y: nodes[i].y, x: nodes[i].x};
+                        prevNode = new Point( nodes[i].x, nodes[i].y );
                     }
                 }
             }
@@ -537,14 +506,15 @@ var OrthogonalRouter = function () {
             i,
             binTree = createTree(),
             prevNode = null,
-            prevPort = null;
+            prevPort = null,
+            tmpSeg;
 
         for ( i = 0; i < nodes.length; i++ ) {
             var checkRemove = true;
 
 
             // If node is a port that is on bottom or top, ignore and skip this node.
-            var isInvalidPort = (typeof nodes[i].isPort !== "undefined" &&
+            var isInvalidPort = ( nodes[i].isPort &&
                                 ( nodes[i].direction === 270 || nodes[i].direction === 90 ||
                                   nodes[i].direction === -270 || nodes[i].direction === -90));
 
@@ -557,7 +527,7 @@ var OrthogonalRouter = function () {
             // A valid port may also be inside a bb. Check for both valid/invalid cases.
             for (var k = 0; k < openObjects.length; k++) {
                 if (nodes[i].x < openObjects[k].x2 && nodes[i].x > openObjects[k].x1) {
-                    if ((prevNode === null && nodes[i].y > openObjects[k].y) ||
+                    if ((prevNode === null && nodes[i].y > openObjects[k].y1) ||
                         (prevNode !== null && nodes[i].y < prevNode.y)) {
 
                         if (!isInvalidPort) {
@@ -589,15 +559,16 @@ var OrthogonalRouter = function () {
                 checkRemove = false;
             }
             // left
-            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 180 ||
-                                                          nodes[i].direction === -180 || specialCasePort) && !skipLeft) {
+            if ((!nodes[i].isPort || nodes[i].direction === 180 ||
+                                     nodes[i].direction === -180 || specialCasePort) && !skipLeft) {
                 var left, leftIter = binTree.lt(nodes[i].x);
                 if (leftIter.valid) {
                     // If closest left node has the same Y-coord as current node's Y-coord, lines are colinear, skip.
                     if (leftIter.value === nodes[i].y) {
-                        if (binTree.length % 2 === 0 && typeof nodes[i].isPort === "undefined") {
+                        if (binTree.length % 2 === 0 && !nodes[i].isPort) {
                             // even number of keys, therefore this is part of an object segment.
-                            openObjects.push({x1: leftIter.key, x2: nodes[i].x, y: nodes[i].y});
+                            openObjects.push( new OrthogonalGridSegment( leftIter.key, nodes[i].y,
+                                                                         nodes[i].x, nodes[i].y) );
                         }
                         continue;
                     }
@@ -608,12 +579,13 @@ var OrthogonalRouter = function () {
                         // remove the line defined by them from the openObjects list.
                         binTree = binTree.remove(prevNode.x);
                         binTree = binTree.remove(nodes[i].x);
-                        openObjects.splice(myIndexOfX({ x1: prevNode.x, x2: nodes[i].x }, openObjects), 1);
+                        tmpSeg = new OrthogonalGridSegment( prevNode.x, null, nodes[i].x, null );
+                        openObjects.splice(tmpSeg.getIndexUsingX(openObjects), 1);
                         prevNode = null;
                         continue;
                     }
                     left = leftIter.key;
-                    if (typeof nodes[i].direction !== "undefined" && nodes[i].x > leftIter.key) {
+                    if (nodes[i].direction && nodes[i].x > leftIter.key) {
                         // Check that leftIter.key is actually a part of the openObject that the port belongs to
                         var keyIsMin = false;
                         for (var n = 0; n < openObjects.length; n++) {
@@ -640,23 +612,23 @@ var OrthogonalRouter = function () {
                 else {
                     left = 0;
                 }
-                var port = typeof nodes[i].isPort === "undefined" ? null : {x: nodes[i].x, y: nodes[i].y};
-                var leftSegment = { x1: left, y1: nodes[i].y, x2: nodes[i].x, y2: nodes[i].y, port: port };
+                var port = nodes[i].isPort ? new Point( nodes[i].x, nodes[i].y) : null,
+                    leftSegment = new OrthogonalGridSegment( left, nodes[i].y, nodes[i].x, nodes[i].y, port );
                 segments.push(leftSegment);
             }
             // right
-            if ((typeof nodes[i].isPort === "undefined" || nodes[i].direction === 0 ||
-                                                          nodes[i].direction === 360 || specialCasePort) && !skipRight) {
+            if ((!nodes[i].isPort || nodes[i].direction === 0 ||
+                                     nodes[i].direction === 360 || specialCasePort) && !skipRight) {
                 var right = findNextValidRightNeighbor(nodes[i], "x", binTree, openObjects, sweepLength);
 
-                var port = typeof nodes[i].isPort === "undefined" ? null : {x: nodes[i].x, y: nodes[i].y};
-                var rightSegment = { x1: nodes[i].x, y1: nodes[i].y, x2: right, y2: nodes[i].y, port: port };
+                var port = nodes[i].isPort ? new Point( nodes[i].x, nodes[i].y) : null,
+                    rightSegment = new OrthogonalGridSegment( nodes[i].x, nodes[i].y, right, nodes[i].y, port );
                 segments.push(rightSegment);
             }
             if (checkRemove ) {
-                if (typeof nodes[i].isPort === "undefined") {
+                if (!nodes[i].isPort) {
                     if (prevNode === null) {
-                        prevNode = {x: nodes[i].x, y: nodes[i].y};
+                        prevNode = new Point( nodes[i].x, nodes[i].y );
                     }
                 }
             }
@@ -674,6 +646,8 @@ var OrthogonalRouter = function () {
             var seg = {};
             seg[axis+1] = node[axis];
             seg[axis+2] = rightIter.key;  // {y1: node[axis], y2: rightIter.key}
+
+            // TODO: This can't use OGSegment because the [axis+1] can be either x1 or y1...
 
             var ltoe = inSetAndLessThanOrEqual(seg, openObjects, axis+1, axis+2);
             // X-coords will be the same, need to see if y2 coord of seg is equal or less than open object y2
@@ -704,7 +678,7 @@ var OrthogonalRouter = function () {
             }
             else {
                 right = rightIter.key;
-                if (typeof node.direction !== "undefined" && node[axis] < rightIter.key) {
+                if (node.direction && node[axis] < rightIter.key) {
                     var keyIsMin = false;
                     for (var n = 0; n < openObjects.length; n++) {
                         if ( openObjects[n][axis+2] === rightIter.key ) {
@@ -732,24 +706,6 @@ var OrthogonalRouter = function () {
         return right;
     }
 
-    function myIndexOfX(o, arr) {
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i].x1 === o.x1 && arr[i].x2 === o.x2) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    function myIndexOfY(o, arr) {
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i].y1 === o.y1 && arr[i].y2 === o.y2) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     function inSetAndLessThanOrEqual(o, arr, min, max) {
         // Checks if segments with same starting point have same ending point. If segments do not have
         // matching starting points, return -1.
@@ -772,43 +728,6 @@ var OrthogonalRouter = function () {
         }
         return -1;
     }
-
-    // Sorts points based on <X,Y> position, and whether you want preference given to X or Y.
-    this.compare = function ( node, compareNode, order ) {
-        if ( order === 1 ) {
-            // Sort by X then Y (Vertical line sweep)
-            if  ( node.x > compareNode.x ) {
-                return 1;
-            }
-            if ( node.x < compareNode.x ) {
-                return -1;
-            }
-            if (node.y > compareNode.y ) {
-                return 1;
-            }
-            if (node.y < compareNode.y ) {
-                return -1;
-            }
-        }
-        else {
-            // Sort by Y then X (Horizontal line sweep)
-            if (node.y > compareNode.y ) {
-                return 1;
-            }
-            if (node.y < compareNode.y ) {
-                return -1;
-            }
-            if ( node.x > compareNode.x ) {
-                return 1;
-            }
-            if ( node.x < compareNode.x ) {
-                return -1;
-            }
-        }
-        return 0; // Same point
-    };
-
-
 
     ////////////////////////////////////////////////////////////////////////////
     /*                              Route Finder                              */
@@ -877,7 +796,7 @@ var OrthogonalRouter = function () {
 
         closestNode.dir = startWireAngle;
         closestNode.remBends = estimateRemainingBends(closestNode.v, destinationNode.v, startWireAngle);
-        closestNode.heuristic = manhattanDistance(closestNode.v, destinationNode.v) + closestNode.remBends;
+        closestNode.heuristic = closestNode.manhattanDistance(destinationNode) + closestNode.remBends;
         closestNode.distance = 0;
         closestNode.bends = 0;
         closestNode.cost = 0;
@@ -892,7 +811,7 @@ var OrthogonalRouter = function () {
             var currentNode = openHeap.shift();
 
             // Check if goal node has been reached, retrace path.
-            if (compareX(destinationNode, currentNode) === 0 && compareY(destinationNode, currentNode) === 0) {
+            if (destinationNode.compareX(currentNode) === 0 && destinationNode.compareY(currentNode) === 0) {
                 return { "path": returnPath(visibilityGrid, currentNode, startPt, startLeadIn,
                                             endLeadIn, endWireAngle, startWireAngle),
                          "dirtyNodes": searchedNodes };
@@ -902,7 +821,7 @@ var OrthogonalRouter = function () {
             currentNode.closed = true;
 
             // Check the forward, right, and left neighbors. No need to check reverse, as it will be closed.
-            var neighbors = getNeighbors(currentNode);
+            var neighbors = currentNode.getNeighbors();
             for (var j = 0; j < 3; j++ ) {
                 var neighbor = neighbors.neighbors[j];
 
@@ -912,7 +831,7 @@ var OrthogonalRouter = function () {
                     var n = visibilityGrid[neighbor.x][neighbor.y];
 
                     // Get g(x), shortest distance from start node to current node
-                    var distance = manhattanDistance(currentNode.v, n.v),
+                    var distance = currentNode.manhattanDistance(n),
                         bends = (j !== 0 && j !== 3) ? 5000 : 0,  // Neighbors are sorted in straight, R, L, reverse order
                         cost = currentNode.cost + distance + bends,
                         remBends = estimateRemainingBends(currentNode.v, destinationNode.v, neighbors.map[j]),
@@ -926,7 +845,7 @@ var OrthogonalRouter = function () {
                         n.dir = neighbors.map[j];
                         n.bends = bends;
                         n.remBends = remBends;
-                        n.heuristic = manhattanDistance(n.v, destinationNode.v) + n.remBends;
+                        n.heuristic = n.manhattanDistance(destinationNode) + n.remBends;
                         n.cost = cost;
                         n.score = n.cost + n.heuristic;
                     }
@@ -941,18 +860,18 @@ var OrthogonalRouter = function () {
                     // If this node has not yet been encountered, add it to the priority queue. If it has,
                     // then its score needs to be re-checked against the other nodes in the queue.
                     if (!visited) {
-                        insert(n, openHeap, compareScore);
+                        insert(n, openHeap, compareScore);  // TODO
                         searchedNodes.push(n);  // Mark the node as searched.
                     }
                     else {
                         // Remove element from array and re-check it.
                         for (var i = 0; openHeap.length-1; i++) {
-                            if (compareX(n, openHeap[i]) === 0 && compareY(n, openHeap[i]) === 0) {
+                            if (n.compareX(openHeap[i]) === 0 && n.compareY(openHeap[i]) === 0) {
                                 openHeap.splice(i, 1);
                                 break;
                             }
                         }
-                        insert(n, openHeap, compareScore);
+                        insert(n, openHeap, compareScore);  //TODO
                     }
                 }
             }
@@ -964,50 +883,11 @@ var OrthogonalRouter = function () {
         return a.score - b.score;
     }
 
-
-    function getNeighbors(node) {
-        // Return neighbors in a sorted order, with preference to neighbor in same direction,
-        //  followed by the right neighbor, left neighbor, and reverse neighbor.
-
-        // Since order of neighbors is based on [N, S, W, E] index, need to return index map so that
-        // when currentNode is updated, the direction can be updated correctly, rather than relying
-        // on the index of the for loop.
-
-        if ( node.dir === 0 ) {
-            // Going North
-            return { "neighbors": [node.north, node.east, node.west, node.south], "map": [0, 3, 2, 1] };
-        }
-        if ( node.dir === 1 ) {
-            // Going South
-            return { "neighbors": [node.south, node.west, node.east, node.north], "map": [1, 2, 3, 0] };
-        }
-        if ( node.dir === 2 ) {
-            // Going West
-            return { "neighbors": [node.west, node.north, node.south, node.east], "map": [2, 0, 1, 3] };
-        }
-        if ( node.dir === 3 ) {
-            // Going East
-            return { "neighbors": [node.east, node.south, node.north, node.west], "map": [3, 1, 0, 2] };
-        }
-    }
-
     function resetSearchedNodes(searchedNodes) {
         for ( var i = 0; i < searchedNodes.length; i++ ) {
-            resetNode(searchedNodes[i]);
+            searchedNodes[i].resetNode();
         }
         return [];
-    }
-
-    function resetNode(node) {
-        node.heuristic = 0;
-        node.bends = 0;
-        node.remBends = 0;
-        node.score = 0;
-        node.dir = 0;
-        node.visited = false;
-        node.closed = false;
-        node.cost = null;
-        node.parent = null;
     }
 
     function returnPath(visibilityGrid, currentNode, startPt, startLeadIn, endLeadIn, endWireAngle, startWireAngle) {
@@ -1048,14 +928,14 @@ var OrthogonalRouter = function () {
                 segment.orientation = "vertical";
 
                 // Find furthest distance you can travel west before hitting object.
-                leftNeighborEnd1 = findClosestObject(currentNode, "west");
-                leftNeighborEnd2 = findClosestObject(currentNode.parent, "west");
+                leftNeighborEnd1 = currentNode.findClosestObject("west");
+                leftNeighborEnd2 = currentNode.parent.findClosestObject("west");
                 segment.objectLeft = Math.min(Math.abs(segment.x1 - leftNeighborEnd1),
                                               Math.abs(segment.x1 - leftNeighborEnd2));
 
                 // Find furthest distance you can travel east before hitting object.
-                rightNeighborEnd1 = findClosestObject(currentNode, "east");
-                rightNeighborEnd2 = findClosestObject(currentNode.parent, "east");
+                rightNeighborEnd1 = currentNode.findClosestObject("east");
+                rightNeighborEnd2 = currentNode.parent.findClosestObject("east");
                 segment.objectRight = Math.min(Math.abs(segment.x1 - rightNeighborEnd1),
                                                Math.abs(segment.x1 - rightNeighborEnd2));
             }
@@ -1063,14 +943,14 @@ var OrthogonalRouter = function () {
                 segment.orientation = "horizontal";
 
                 // Find furthest distance you can travel north before hitting object.
-                leftNeighborEnd1 = findClosestObject(currentNode, "north");
-                leftNeighborEnd2 = findClosestObject(currentNode.parent, "north");
+                leftNeighborEnd1 = currentNode.findClosestObject("north");
+                leftNeighborEnd2 = currentNode.parent.findClosestObject("north");
                 segment.objectLeft = Math.min(Math.abs(segment.y1 - leftNeighborEnd1),
                                               Math.abs(segment.y1 - leftNeighborEnd2));
 
                 // Find furthest distance you can travel south before hitting object.
-                rightNeighborEnd1 = findClosestObject(currentNode, "south");
-                rightNeighborEnd2 = findClosestObject(currentNode.parent, "south");
+                rightNeighborEnd1 = currentNode.findClosestObject("south");
+                rightNeighborEnd2 = currentNode.parent.findClosestObject("south");
                 segment.objectRight = Math.min(Math.abs(segment.y1 - rightNeighborEnd1),
                                                Math.abs(segment.y1 - rightNeighborEnd2));
 
@@ -1109,23 +989,6 @@ var OrthogonalRouter = function () {
         return segments;
 
     }
-
-    function findClosestObject(node, direction) {
-        while ( typeof node[direction] === "object" ) {
-            node = node[direction];
-        }
-
-        if ( typeof node[direction] === "undefined" && (direction === "west" || direction === "east")) {
-            return node.x;
-        }
-        if ( typeof node[direction] === "undefined" && (direction === "north" || direction === "south")) {
-            return node.y;
-        }
-        else {
-            return node[direction];  // Node neighbor in this direction is a number, aka wall.
-        }
-    }
-
 
     function estimateRemainingBends(start, end, dir) {
         // Dir is known from index in neighbors: [N, S, W, E]
@@ -1171,18 +1034,6 @@ var OrthogonalRouter = function () {
     var compareY = function (a, b) {
         return a.v.y - b.v.y;
     };
-
-    var compareX = function (a, b) {
-        return a.v.x - b.v.x;
-    };
-
-    function PathNode( v ) {
-        this.v = {x: v.x, y: v.y};
-    }
-
-    function manhattanDistance( pt1, pt2 ) {
-        return Math.abs(pt2.x - pt1.x) + Math.abs(pt2.y - pt1.y);
-    }
 
 
     function nudgeConnections(visibilityGraph, connections) {
@@ -1412,137 +1263,6 @@ var OrthogonalRouter = function () {
 
     }
 
-    //function correctPortLeadIns(connections) {
-    //    for ( var i = 0 ; i < connections.length; i++ ) {
-    //        for ( var j = 0; j < connections[i].length; j++ ) {
-    //            var wire = connections[i][j],
-    //                d;
-    //
-    //            if ( typeof wire.port !== "undefined" ) {
-    //                if ( wire.orientation === "horizontal" ) {
-    //                    if ( wire.portAngle === 0 ) {
-    //                        if (j === 0) {
-    //                            connections[i].unshift({
-    //                                y1: wire.port.y, y2: wire.port.y - wire.leadIn,
-    //                                x1: wire.port.x, x2: wire.port.x,
-    //                                port: wire.port, orientation: "vertical"
-    //                            });
-    //                            d = connections[i][2].x1 === wire.port.x ? "x1" : "x2";
-    //                            connections[i][2][d] -= wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                        else if (j === connections[i].length - 1) {
-    //                            connections[i].push({
-    //                                y1: wire.port.y, y2: wire.port.y - wire.leadIn,
-    //                                x1: wire.port.x, x2: wire.port.x,
-    //                                port: wire.port, orientation: "vertical"
-    //                            });
-    //                            d = connections[i][connections[i].length - 3].x1 === wire.port.x ? "x1" : "x2";
-    //                            connections[i][connections[i].length - 3][d] -= wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                    }
-    //                    if ( wire.portAngle === 1 ) {
-    //                        if ( j === 0 ) {
-    //                            connections[i].unshift({
-    //                                y1: wire.port.y, y2: wire.port.y + wire.leadIn,
-    //                                x1: wire.port.x, x2: wire.port.x,
-    //                                port: wire.port, orientation: "vertical"
-    //                            });
-    //                            d = connections[i][2].x1 === wire.port.x ? "x1" : "x2";
-    //                            connections[i][2][d] += wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                        else if ( j === connections[i].length - 1) {
-    //                            connections[i].push({
-    //                                y1: wire.port.y, y2: wire.port.y + wire.leadIn,
-    //                                x1: wire.port.x, x2: wire.port.x,
-    //                                port: wire.port, orientation: "vertical"
-    //                            });
-    //                            d = connections[i][connections[i].length - 3].x1 === wire.port.x ? "x1" : "x2";
-    //                            connections[i][connections[i].length - 3][d] += wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //                else if ( wire.orientation === "vertical" ) {
-    //                    if ( wire.portAngle === 2 ) {
-    //                        if (j === 0) {
-    //                            connections[i].unshift({
-    //                                y1: wire.port.y, y2: wire.port.y,
-    //                                x1: wire.port.x, x2: wire.port.x - wire.leadIn,
-    //                                port: wire.port, orientation: "horizontal"
-    //                            });
-    //                            d = connections[i][2].y1 === wire.port.y ? "y1" : "y2";
-    //                            connections[i][2][d] -= wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                        if (j === connections[i].length - 1) {
-    //                            connections[i].push({
-    //                                y1: wire.port.y, y2: wire.port.y,
-    //                                x1: wire.port.x, x2: wire.port.x - wire.leadIn,
-    //                                port: wire.port, orientation: "horizontal"
-    //                            });
-    //                            d = connections[i][connections[i].length - 3].y1 === wire.port.y ? "y1" : "y2";
-    //                            connections[i][connections[i].length - 3][d] -= wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                    }
-    //                    if ( wire.portAngle === 3 ) {
-    //                        if ( j === 0 ) {
-    //                            connections[i].unshift({
-    //                                y1: wire.port.y, y2: wire.port.y,
-    //                                x1: wire.port.x, x2: wire.port.x + wire.leadIn,
-    //                                port: wire.port, orientation: "horizontal"
-    //                            });
-    //                            d = connections[i][2].y1 === wire.port.y ? "y1" : "y2";
-    //                            connections[i][2][d] += wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                        if ( j === connections[i].length - 1) {
-    //                            connections[i].push({
-    //                                y1: wire.port.y, y2: wire.port.y,
-    //                                x1: wire.port.x, x2: wire.port.x + wire.leadIn,
-    //                                port: wire.port, orientation: "horizontal"
-    //                            });
-    //                            d = connections[i][connections[i].length - 3].y1 === wire.port.y ? "y1" : "y2";
-    //                            connections[i][connections[i].length - 3][d] += wire.leadIn;
-    //                            // reorder segment idx
-    //                            for (var jj = 0; jj < connections[i].length - 1; jj++) {
-    //                                connections[i][jj].idx = jj;
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    //
-    //            }
-    //        }
-    //    }
-    //    return connections;
-    //}
-
-
 
     function getSharedEdges(connections) {
         /*
@@ -1617,55 +1337,6 @@ var OrthogonalRouter = function () {
         return sharedEdges;
     }
 
-
-    // NOT USED
-    function GridNode(position) {
-        this.x = position.x;
-        this.y = position.y;
-
-        this.resetNode = function() {
-            this.heuristic = 0;
-            this.bends = 0;
-            this.remBends = 0;
-            this.score = 0;
-            this.dir = 0;
-            this.visited = false;
-            this.closed = false;
-            this.cost = null;
-            this.parent = null;
-        };
-
-        this.manhattanDistance = function ( otherNode ) {
-            return Math.abs(this.v.x - otherNode.v.x) + Math.abs(this.v.y - otherNode.v.y);
-        };
-
-        this.getNeighbors = function getNeighbors(node) {
-            // Return neighbors in a sorted order, with preference to neighbor in same direction,
-            //  followed by the right neighbor, left neighbor, and reverse neighbor.
-
-            // Since order of neighbors is based on [N, S, W, E] index, need to return index map so that
-            // when currentNode is updated, the direction can be updated correctly, rather than relying
-            // on the index of the for loop.
-
-            if ( node.dir === 0 ) {
-                // Going North
-                return { "neighbors": [node.north, node.east, node.west, node.south], "map": [0, 3, 2, 1] };
-            }
-            if ( node.dir === 1 ) {
-                // Going South
-                return { "neighbors": [node.south, node.west, node.east, node.north], "map": [1, 2, 3, 0] };
-            }
-            if ( node.dir === 2 ) {
-                // Going West
-                return { "neighbors": [node.west, node.north, node.south, node.east], "map": [2, 0, 1, 3] };
-            }
-            if ( node.dir === 3 ) {
-                // Going East
-                return { "neighbors": [node.east, node.south, node.north, node.west], "map": [3, 1, 0, 2] };
-            }
-        };
-
-    }
 
 };
 
