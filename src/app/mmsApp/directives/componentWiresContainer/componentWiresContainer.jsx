@@ -23,6 +23,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
                 link: function(scope, element, attr, controllers) {
 
                     var ctrl = controllers[0],
+                        svgDiagramCtrl = controllers[1],
                         diagram,
                         grid;
 
@@ -42,8 +43,8 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                     function render() {
                         var wires = grid.visibleWires;
-                        //console.log('rendering');
-                        React.render(<ComponentWiresContainer wires={wires}/>, element[0]);    
+                        console.log('rendering');
+                        React.render(<ComponentWiresContainer wires={wires} diagramCtrl={svgDiagramCtrl}/>, element[0]);    
                     }
 
                     scope.$watch(function() {
@@ -80,10 +81,12 @@ var ComponentWiresContainer = React.createClass({
 
 	render: function() {
 
+        var self = this;
+
 		var childWires = this.props.wires.map(function(wire){
 
             return (
-                <ComponentWire key={wire.id} wire={wire}/>
+                <ComponentWire key={wire.id} wire={wire} diagramCtrl={self.props.diagramCtrl}/>
             );
 
         });
@@ -103,10 +106,12 @@ var ComponentWiresContainer = React.createClass({
 var ComponentWire = React.createClass({
 	render: function(){
 
+        var self = this;
+
         var childSegments = this.props.wire.segments.map(function(wireSegment, index) {
 
             return (
-                <ComponentWireSegment key={index} segment={wireSegment}/>
+                <ComponentWireSegment key={index} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
             );
 
         });
@@ -131,12 +136,24 @@ var ComponentWireSegment = React.createClass({
         );
     },
 
+    onMouseDown: function(e) {
+        console.log('onMouseDown ()', e); 
+        this.props.diagramCtrl.onWireMouseDown(this.props.wire, this.props.segment, e);
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    },
+
+    onMouseUp: function(e) {
+        console.log('onMouseUp', e);        
+        this.props.diagramCtrl.onWireMouseUp(this.props.wire, this.props.segment, e);        
+    },
+
     render: function(){
 
         return (
             <g className="component-wire-segment"
-               // ng-mousedown="onMouseDown(segment, $event)"
-               // ng-mouseup="onMouseUp(segment, $event)"
+               onMouseDown={this.onMouseDown}
+               onMouseUp={this.onMouseUp}
                >
                   <line className="component-wire-segment-under"
                         x1={this.props.segment.x1}

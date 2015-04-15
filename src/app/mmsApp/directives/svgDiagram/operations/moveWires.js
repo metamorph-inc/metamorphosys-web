@@ -133,6 +133,8 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                             }
                         }
 
+                        diagram.emitWireChange();
+
                     }
 
 

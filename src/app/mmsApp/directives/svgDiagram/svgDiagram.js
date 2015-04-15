@@ -148,6 +148,8 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseDown = function($event) {
 
+                    console.log('onDiagramMouseDown', $event);
+
                     if ($event.which === 3) {
                         contextMenuHandler.onDiagramContextmenu($event);
                     } else {
@@ -301,6 +303,8 @@ angular.module('mms.svgDiagram', [
                 };
 
                 this.onWireMouseDown = function(wire, segment, $event) {
+
+                    console.log('onWireMouseDown');
 
                     if ($event.which === 3) {
 
