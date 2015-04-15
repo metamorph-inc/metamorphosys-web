@@ -16,24 +16,12 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                 var dragTargetsDescriptor,
                     dragTargetsWiresUpdate,
-//                    wireUpdateWait,
-//                    dragTargetsWiresUpdatePromises,
-
                     diagram;
-
-//                wireUpdateWait = 20;
-//                dragTargetsWiresUpdatePromises = {};
 
                 dragTargetsWiresUpdate = function (affectedWires) {
 
                     angular.forEach(affectedWires, function (wire) {
-
-//                        $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
-
-//                        dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
-                            wiringService.adjustWireEndSegments(wire);
-//                        }, wireUpdateWait);
-
+                        wiringService.adjustWireEndSegments(wire);
                     });
 
                 };
@@ -68,6 +56,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     }
 
                     dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
+                    diagram.emitWireChange();                    
 
                 };
 

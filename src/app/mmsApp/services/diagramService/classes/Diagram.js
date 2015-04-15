@@ -113,6 +113,8 @@ Diagram.prototype.addWire = function(aWire) {
 
         registerWireForEnds(aWire);
 
+        this.emitWireChange(aWire);
+
     }
 
 };
@@ -154,6 +156,8 @@ Diagram.prototype.deleteWireById = function(anId) {
         self._wires.splice(index, 1);
 
         delete self._wiresById[wire.id];
+
+        this.emitWireChange(wire);
 
     }
 
@@ -281,6 +285,8 @@ Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
         wire.segments = newSegments;
 
+        this.emitWireChange(wire);
+
     }
 
 };
@@ -295,6 +301,8 @@ Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
     if (angular.isObject(component)) {
 
         component.setPosition(newPosition.x, newPosition.y, newPosition.z);
+
+        this.emitWireChange();
 
     }
 
@@ -312,7 +320,8 @@ Diagram.prototype.updateComponentRotation = function(componentId, newRotation) {
 
         component.setRotation(newRotation);
 
-    }
+        this.emitWireChange();
+    }    
 
 };
 
@@ -526,9 +535,20 @@ Diagram.prototype.clearSelection = function(silent) {
                 message: this.state.selectedComponentIds
             });
 
+            this.emitWireChange();
+
         }
 
     }
+
+};
+
+Diagram.prototype.emitWireChange = function(wire) {
+
+    this.dispatchEvent({
+        type: 'wireChange',
+        message: wire
+    });           
 
 };
 

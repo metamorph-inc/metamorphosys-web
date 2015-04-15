@@ -1,13 +1,10 @@
 'use strict';
 
 angular.module('mms.designEditor.componentWiresContainer.react', [])
-    .directive('componentWiresContainerReact', [
-        function() {
+    .directive('componentWiresContainerReact', 
+        function(diagramService, gridService) {
 
             function ComponentWiresContainerController() {
-
-                this.wires = [];
-
             }
 
             return {
@@ -20,34 +17,64 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
                 template: '<g class="wire-container"></g>',
                 templateNamespace: 'SVG',
                 scope: {
-					wires: '='
+                    diagramId: '='
                 },
                 require: ['componentWiresContainerReact', '^svgDiagram'],
                 link: function(scope, element, attr, controllers) {
 
-                    var ctrl = controllers[0];
+                    var ctrl = controllers[0],
+                        diagram,
+                        grid;
 
-                    function renderMyReactComponent(wires) {
+                    function cleanup() {
+
+                      React.unmountComponentAtNode(element[0]);
+
+                      if (diagram) {
+                        diagram.removeEventListener('wireChange', render);
+                      }
+
+                      if (grid) {
+                        gridService.addEventListener('visibleComponentsChanged', render);
+                      }
+
+                    }
+
+                    function render() {
+                        var wires = grid.visibleWires;
+                        //console.log('rendering');
                         React.render(<ComponentWiresContainer wires={wires}/>, element[0]);    
                     }
 
-                    
                     scope.$watch(function() {
-                        return ctrl.wires;
-                    }, function(newWires, oldWires){
-                        if (!angular.equals(newWires, oldWires)) {
-                            renderMyReactComponent(newWires);
+                        return ctrl.diagramId;
+                    }, function(newId, oldId){
+
+                        if (oldId !== newId && newId != null) {
+
+                            cleanup();
+
+                            diagram = diagramService.getDiagram(newId);
+                            grid = gridService.getGrid(newId);
+
+                            if (diagram) {
+                                diagram.addEventListener('wireChange', render);
+                            }
+
+                            if (grid) {
+                                gridService.addEventListener('visibleComponentsChanged', render);
+                            }
+
+                            render();
                         }
                     });
 
-                    // cleanup when scope is destroyed
-                    scope.$on('$destroy', function() {
-                      React.unmountComponentAtNode(element[0]);
-                    });
+                    scope.$on('$destroy', cleanup());
+
                 }
             };
         }
-    ]);
+    );
 
 var ComponentWiresContainer = React.createClass({
 
@@ -87,7 +114,6 @@ var ComponentWire = React.createClass({
         return (
             <g className="component-wire" id={this.props.wire.id}>
                 {{childSegments}}
-                // <component-wire-corner ng-repeat="segment in wire.segments"></component-wire-corner>
             </g>
         );
     }
