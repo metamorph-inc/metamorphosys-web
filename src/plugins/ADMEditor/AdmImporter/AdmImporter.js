@@ -706,6 +706,7 @@ define([
     };
 
     AdmImporter.prototype.createContainerFeature = function (featureData, container) {
+
         function setOriginForRelativeConstraint() {
             var origin = self.componentInstances.filter(function (ci) {
                 return ci.id === featureData['@Origin'];
@@ -716,6 +717,7 @@ define([
                 self.createMessage(container, 'Could not find Origin ' + featureData['@Origin'], 'error');
             }
         }
+
         function setRangeValues(attrSuffix) {
             if (featureData['@X' + attrSuffix + 'Min'] && featureData['@X' + attrSuffix + 'Max']) {
                 self.core.setAttribute(feature, 'X' + attrSuffix, featureData['@X' + attrSuffix + 'Min'] + ":" + featureData[
@@ -726,11 +728,20 @@ define([
                     '@Y' + attrSuffix + 'Max']);
             }
         }
+
         var self = this;
         var feature;
 
-        if (['eda:RelativeLayoutConstraint', 'eda:ExactLayoutConstraint', 'eda:RangeLayoutConstraint', 'eda:RelativeRangeLayoutConstraint'].indexOf(
-                featureData['@xsi:type']) !== -1) {
+        var constraintTypes = [
+            'eda:RelativeLayoutConstraint',
+            'eda:ExactLayoutConstraint',
+            'eda:RangeLayoutConstraint',
+            'eda:RelativeRangeLayoutConstraint',
+            'eda:GlobalLayoutConstraintException'
+        ];
+
+        if (constraintTypes.indexOf(featureData['@xsi:type']) !== -1) {
+
             var type = featureData['@xsi:type'].substr(4);
             var ids = ( featureData['@ConstraintTarget'] || '' )
                 .split(' ');
@@ -752,19 +763,20 @@ define([
                     self.core.setAttribute(feature, attrName, xform(featureData['@' + attrName]));
                 }
             };
+
             if (type === 'RelativeLayoutConstraint') {
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 copyAttrIfSet('RelativeLayer');
                 setOriginForRelativeConstraint();
             }
-            if (type === 'RelativeRangeLayoutConstraint') {
+            else if (type === 'RelativeRangeLayoutConstraint') {
                 self.core.setAttribute(feature, 'RelativeLayer', 'No Restriction');
                 copyAttrIfSet('RelativeLayer');
                 setRangeValues('RelativeRange');
                 setOriginForRelativeConstraint();
             }
-            if (type === 'ExactLayoutConstraint') {
+            else if (type === 'ExactLayoutConstraint') {
                 copyAttrIfSet('X');
                 copyAttrIfSet('Y');
                 copyAttrIfSet('Layer');
@@ -772,17 +784,34 @@ define([
                     return val.substr(1);
                 });
             }
-            if (type === 'RangeLayoutConstraint') {
+            else if (type === 'RangeLayoutConstraint') {
                 self.core.setAttribute(feature, 'LayerRange', 'Either');
                 copyAttrIfSet('LayerRange');
                 copyAttrIfSet('Type');
                 setRangeValues('Range');
             }
+            else if (type === 'GlobalLayoutConstraintException') {
+                var constraintVal = featureData['@Constraint'];
+                var val;
+
+                if (constraintVal === 'BoardEdgeSpacing') {
+                    val = 'Board Edge Spacing';
+                }
+                else if (constraintVal === 'InterChipSpacing') {
+                    val = 'Inter-Chip Spacing';
+                }
+
+                if (val !== undefined) {
+                    self.core.setAttribute(feature, 'Constraint', val);
+                }
+            }
+
             copyAttrIfSet('Notes');
             self.core.setAttribute(feature, 'name', type);
             constraintTargets.forEach(function (componentInstance) {
                 self.core.addMember(feature, 'ConstraintTarget', componentInstance.node);
             });
+
         } else {
             self.createMessage(container, 'Unknown ContainerFeature type ' + featureData['@xsi:type'], 'error');
             return;

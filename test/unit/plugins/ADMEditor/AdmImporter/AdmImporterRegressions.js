@@ -149,6 +149,10 @@ describe('AdmImporterRegressions', function () {
         expect(componentInstances[constrained.C3a1['@Origin']]['@Name']).to.equal('C3a2');
         expect(componentInstances[constrained.C3b1['@Origin']]['@Name']).to.equal('C3b2');
 
+        // Global Layout Constarint Exceptions
+        expect(constrained.Global1['@Constraint']).to.equal('InterChipSpacing');
+        expect(constrained.Global2['@Constraint']).to.equal('BoardEdgeSpacing');
+
         // Check Notes export
         expect(constrained.C1b['@Notes']).to.be.equal('TestNotes');
         expect(constrained.C1d['@Notes']).to.be.equal('TestNotes');

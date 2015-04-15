@@ -12,6 +12,10 @@
     <ComponentInstance XPosition="161" YPosition="56" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{5f2aea49-1ca5-4635-884d-37d542799ba2}" Name="C1a"/>
     <ComponentInstance XPosition="161" YPosition="931" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{26b60538-fc95-420e-bd2a-a6a3c44b5651}" Name="C3a2"/>
     <ComponentInstance XPosition="371" YPosition="1253" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="{2846e659-9868-49eb-8048-b531e7f69086}" Name="C3b1"/>
+    <ComponentInstance XPosition="161" YPosition="56" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="g1" Name="Global1"/>
+    <ComponentInstance XPosition="161" YPosition="56" ComponentID="c4f5a9cb-85ca-4db0-a98c-d37d02408b0a" ID="g2" Name="Global2"/>
+    <ContainerFeature xmlns:q2="eda" xsi:type="q2:GlobalLayoutConstraintException" XPosition="791" YPosition="1407" Notes="Note" ConstraintTarget="g1" Constraint="InterChipSpacing" />
+    <ContainerFeature xmlns:q3="eda" xsi:type="q3:GlobalLayoutConstraintException" XPosition="791" YPosition="1295" Notes="Note" ConstraintTarget="g2" Constraint="BoardEdgeSpacing" />
     <ContainerFeature xmlns:q2="eda" xsi:type="q2:RelativeLayoutConstraint" XPosition="364" YPosition="1050" XOffset="-5.1" YOffset="-10.2" ConstraintTarget="{2846e659-9868-49eb-8048-b531e7f69086}" Origin="{a2c993dd-ac29-448a-a9c6-69fa653a3f91}" ContainerConstraintTarget="" RelativeLayer="Same" Notes="TestNotes"/>
     <ContainerFeature xmlns:q3="eda" xsi:type="q3:RelativeLayoutConstraint" XPosition="364" YPosition="840" XOffset="5.1" YOffset="10.2" ConstraintTarget="{b4d3c661-d195-4668-ab87-72fe77d80ca6}" Origin="{26b60538-fc95-420e-bd2a-a6a3c44b5651}" ContainerConstraintTarget="" RelativeLayer="Opposite" Notes="TestNotes" />
     <ContainerFeature xmlns:q4="eda" xsi:type="q4:RelativeLayoutConstraint" XPosition="364" YPosition="945" XOffset="-5.1" YOffset="-10.2" ConstraintTarget="{26b60538-fc95-420e-bd2a-a6a3c44b5651}" Origin="{2846e659-9868-49eb-8048-b531e7f69086}" ContainerConstraintTarget="" />
