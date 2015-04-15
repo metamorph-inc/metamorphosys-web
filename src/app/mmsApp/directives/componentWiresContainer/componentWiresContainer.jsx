@@ -121,6 +121,16 @@ var ComponentWire = React.createClass({
 
 
 var ComponentWireSegment = React.createClass({
+
+    shouldComponentUpdate: function(nextProps) {
+      return (
+        nextProps.segment.x1 !== this.props.segment.x1 ||
+        nextProps.segment.x2 !== this.props.segment.x2 ||
+        nextProps.segment.y1 !== this.props.segment.y1 ||
+        nextProps.segment.y2 !== this.props.segment.y2
+        );
+    },
+
     render: function(){
 
         return (
