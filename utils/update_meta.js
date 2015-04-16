@@ -10,6 +10,7 @@ if (typeof module !== 'undefined') {
     var cyphyRootDir = PATH.resolve(__dirname, '..');
     var webGme = require('webgme');
     var CONFIG = require('../config');
+    var requirejs = webGme.requirejs;
     requirejs.define('gmeConfig', function () { return CONFIG; });
     webGme.addToRequireJsPaths(CONFIG);
     var define = require(PATH.resolve(cyphyRootDir, 'test-conf.js')).requirejs;

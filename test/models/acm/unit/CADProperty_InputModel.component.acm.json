@@ -1,6 +1,6 @@
 {
-    "/1/40": {
-        "ID": 40,
+    "/1/41": {
+        "ID": 41,
         "attributes": {
             "name": "bolt_hex__generic__m14x2p0x60_10p9_blo",
             "Classifications": "Bolt_Hex",
@@ -25,14 +25,14 @@
             "base": "/7"
         },
         "collection": {},
-        "path": "/1/40",
+        "path": "/1/41",
         "parent": "/1",
         "children": [
-            "/1/40/41"
+            "/1/41/42"
         ]
     },
-    "/1/40/41": {
-        "ID": 41,
+    "/1/41/42": {
+        "ID": 42,
         "attributes": {
             "name": "CADModel",
             "Type": "CAD"
@@ -53,8 +53,8 @@
             "base": "/15"
         },
         "collection": {},
-        "path": "/1/40/41",
-        "parent": "/1/40",
+        "path": "/1/41/42",
+        "parent": "/1/41",
         "children": []
     }
 }
