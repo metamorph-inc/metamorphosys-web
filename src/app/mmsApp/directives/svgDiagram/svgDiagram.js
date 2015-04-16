@@ -146,17 +146,23 @@ angular.module('mms.svgDiagram', [
 
                 $scope.selectedRouter = $scope.routerTypes[0];
 
-                $scope.onDiagramMouseDown = function($event) {
+                $scope.onDiagramMouseDown = function(event) {
 
-                    console.log('onDiagramMouseDown', $event);
+                    var target;
 
-                    if ($event.which === 3) {
-                        contextMenuHandler.onDiagramContextmenu($event);
-                    } else {
+                    //console.log('onDiagramMouseDown', event);
 
-                        contextMenuHandler.onDiagramMouseDown($event);
-                        panHandler.onDiagramMouseDown($event);
+                    target = event.srcElement || event.target;
 
+                    if (target === $scope.svgContainer) {
+                        if (event.which === 3) {
+                            contextMenuHandler.onDiagramContextmenu(event);
+                        } else {
+
+                            contextMenuHandler.onDiagramMouseDown(event);
+                            panHandler.onDiagramMouseDown(event);
+
+                        }
                     }
 
                 };
@@ -213,7 +219,7 @@ angular.module('mms.svgDiagram', [
                 };
 
                 $scope.onDiagramMouseWheel = function( /*$event, $delta, $deltaX, $deltaY*/ ) {
-                    //            console.log($event, $delta, $deltaX, $deltaY);
+                    //console.log($event, $delta, $deltaX, $deltaY);
                 };
 
                 $scope.onDiagramMouseLeave = function($event) {
@@ -302,18 +308,18 @@ angular.module('mms.svgDiagram', [
 
                 };
 
-                this.onWireMouseDown = function(wire, segment, $event) {
+                this.onWireMouseDown = function(wire, segment, event) {
 
-                    console.log('onWireMouseDown');
+                    //console.log('onWireMouseDown', event);
 
-                    if ($event.which === 3) {
+                    if (event.button === 2) {
 
-                        contextMenuHandler.onWireContextmenu(wire, segment, $event);
+                        contextMenuHandler.onWireContextmenu(wire, segment, event);
 
 
                     } else {
 
-                        wireDragHandler.onWireMouseDown(wire, segment, $event);
+                        wireDragHandler.onWireMouseDown(wire, segment, event);
 
                     }
                 };
@@ -333,16 +339,16 @@ angular.module('mms.svgDiagram', [
 
                 };
 
-                this.onWireCornerMouseDown = function(wire, segment, $event) {
+                this.onWireCornerMouseDown = function(wire, segment, event) {
 
-                    if ($event.which === 3) {
+                    if (event.button === 2) {
 
-                        contextMenuHandler.onWireContextmenu(wire, segment, $event, true);
+                        contextMenuHandler.onWireContextmenu(wire, segment, event, true);
 
 
                     } else {
 
-                        wireDragHandler.onWireMouseDown(wire, segment, $event, true);
+                        wireDragHandler.onWireMouseDown(wire, segment, event, true);
 
                     }
                 };
@@ -433,6 +439,7 @@ angular.module('mms.svgDiagram', [
                             currentDiagramId = newDiagramId;
 
                             scope.$element = $element;
+                            scope.svgContainer = $element[0].querySelector('svg.svg-diagram');
 
                             $element.outerWidth(scope.diagram.config.width);
                             $element.outerHeight(scope.diagram.config.width);

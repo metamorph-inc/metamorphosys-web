@@ -43,7 +43,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                     function render() {
                         var wires = grid.visibleWires;
-                        console.log('rendering');
+                        //console.log('rendering');
                         React.render(<ComponentWiresContainer wires={wires} diagramCtrl={svgDiagramCtrl}/>, element[0]);    
                     }
 
@@ -93,7 +93,6 @@ var ComponentWiresContainer = React.createClass({
 
         return (
             <g>
-              <circle cx="50" cy="50" r="40" stroke="black" strokeWidth="3" fill="red" />
                 {childWires}
             </g>
         );
@@ -106,19 +105,34 @@ var ComponentWiresContainer = React.createClass({
 var ComponentWire = React.createClass({
 	render: function(){
 
-        var self = this;
+        var self = this,
+            childSegments = [],
+            childCorners = [],
 
-        var childSegments = this.props.wire.segments.map(function(wireSegment, index) {
+            wireSegment,
+            l, i;
 
-            return (
-                <ComponentWireSegment key={index} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
+        l = this.props.wire.segments.length;
+
+        for (i = 0; i < l; i++) {
+
+            wireSegment = this.props.wire.segments[i];
+
+            childSegments.push(
+                <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
             );
 
-        });
+            if (i !== l - 1) {
+                childCorners.push(
+                    <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
+                );
+            }
+        }
 
         return (
             <g className="component-wire" id={this.props.wire.id}>
-                {{childSegments}}
+                {childSegments}
+                {childCorners}
             </g>
         );
     }
@@ -137,14 +151,14 @@ var ComponentWireSegment = React.createClass({
     },
 
     onMouseDown: function(e) {
-        console.log('onMouseDown ()', e); 
+        //console.log('onMouseDown ()', e); 
         this.props.diagramCtrl.onWireMouseDown(this.props.wire, this.props.segment, e);
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     },
 
     onMouseUp: function(e) {
-        console.log('onMouseUp', e);        
+        //console.log('onMouseUp', e);        
         this.props.diagramCtrl.onWireMouseUp(this.props.wire, this.props.segment, e);        
     },
 
@@ -168,6 +182,41 @@ var ComponentWireSegment = React.createClass({
                         y2={this.props.segment.y2}/>
             </g>
         );
+
+    }
+});
+
+var ComponentWireCorner = React.createClass({
+
+    shouldComponentUpdate: function(nextProps) {
+      return (
+        nextProps.segment.x2 !== this.props.segment.x2 ||
+        nextProps.segment.y2 !== this.props.segment.y2
+        );
+    },
+
+    onMouseDown: function(e) {
+        //console.log('onMouseDown ()', e); 
+        this.props.diagramCtrl.onWireCornerMouseDown(this.props.wire, this.props.segment, e);
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    },
+
+    onMouseUp: function(e) {
+        //console.log('onMouseUp', e);        
+        this.props.diagramCtrl.onWireCornerMouseUp(this.props.wire, this.props.segment, e);        
+    },
+
+    render: function(){
+
+        return (
+            <rect className="component-wire-corner"
+                onMouseDown={this.onMouseDown}
+                onMouseUp={this.onMouseUp}
+                x={this.props.segment.x2 - 3}
+                y={this.props.segment.y2 - 3}
+                width="6" height="6" fill="black" strokeWidth="1"/>
+              );
 
     }
 });

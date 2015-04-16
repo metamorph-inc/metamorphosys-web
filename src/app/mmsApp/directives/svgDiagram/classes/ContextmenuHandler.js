@@ -31,25 +31,26 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
     openMenu = function($event) {
 
+        var openContextMenuEvent;
+
         contextmenuService.close();
+
+        openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
+            clientX: $event.clientX + 2,
+            clientY: $event.clientY + 2,
+            pageX: $event.pageX + 2,
+            pageY: $event.pageY + 2,
+            screenX: $event.screenX + 2,
+            screenY: $event.screenY + 2,
+            target: $event.target
+        });
+
 
         $timeout(function() {
 
-            var openContextMenuEvent;
-
-            openContextMenuEvent = angular.extend($.Event('openContextMenu'), {
-                clientX: $event.clientX + 2,
-                clientY: $event.clientY + 2,
-                pageX: $event.pageX + 2,
-                pageY: $event.pageY + 2,
-                screenX: $event.screenX + 2,
-                screenY: $event.screenY + 2,
-                target: $event.target
-            });
-
             $scope.$element.find('>svg').triggerHandler(openContextMenuEvent);
 
-        });
+        }, 1, false);
 
     };
 
