@@ -12,7 +12,8 @@
         "./public/cyphy-library/cyphy-components.js",
         "./public/cyphy-library/cyphy-components-templates.js",
         "./bower_components/angular-xeditable/dist/js/xeditable.js",
-        "./bower_components/react/react.js"
+        "./bower_components/react/react.js",
+        "./vendor/stats/stats.min.js"
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",
