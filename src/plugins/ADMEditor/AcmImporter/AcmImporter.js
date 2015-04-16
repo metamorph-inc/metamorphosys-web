@@ -382,9 +382,7 @@ define( [ 'plugin/PluginConfig',
             i,
             msg;
 
-        if ( typeof self.metaTypes.ACMFolder !== 'object' ) {
-            self.updateMETA( self.metaTypes );
-        }
+        self.updateMETA(self.metaTypes);
 
         if ( self.id2ComponentMap.hasOwnProperty( id ) ) {
             existingAcmNodeWithSameId = self.id2ComponentMap[ id ];

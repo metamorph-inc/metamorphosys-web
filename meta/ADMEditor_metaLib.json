@@ -27,6 +27,7 @@
         "ab281360-2719-c4e0-c3c6-4eea03401141": {},
         "be02d298-2892-180a-ed1a-138dc589dd5c": {},
         "cb92c02d-84cf-f104-938b-b7de6641f8e5": {},
+        "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {},
         "d5fc3678-2722-5112-c0bb-fa758f113246": {},
         "dd35b139-3346-08f0-013c-1e3a8a522f7f": {},
         "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {},
@@ -275,6 +276,15 @@
                     }
                 }
             },
+            "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 1319,
+                        "y": 502
+                    }
+                }
+            },
             "d5fc3678-2722-5112-c0bb-fa758f113246": {
                 "attributes": {},
                 "registry": {
@@ -506,6 +516,15 @@
                     "position": {
                         "x": 577,
                         "y": 105
+                    }
+                }
+            },
+            "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {
+                "attributes": {},
+                "registry": {
+                    "position": {
+                        "x": 1294,
+                        "y": 490
                     }
                 }
             },
@@ -2347,6 +2366,46 @@
             },
             "sets": {}
         },
+        "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {
+            "attributes": {
+                "Constraint": "Board Edge Spacing",
+                "name": "GlobalLayoutConstraintException"
+            },
+            "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+            "constraints": {},
+            "meta": {
+                "attributes": {
+                    "Constraint": {
+                        "default": "Board Edge Spacing",
+                        "enum": [
+                            "Board Edge Spacing",
+                            "Inter-Chip Spacing"
+                        ],
+                        "type": "string"
+                    },
+                    "Notes": {
+                        "default": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+            "pointers": {
+                "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+            },
+            "registry": {
+                "position": {
+                    "x": 936,
+                    "y": 672
+                }
+            },
+            "sets": {
+                "ConstraintTarget": []
+            }
+        },
         "d5fc3678-2722-5112-c0bb-fa758f113246": {
             "attributes": {
                 "INFO": "Metric value of an executed experiment.",
@@ -2976,6 +3035,7 @@
         "ab281360-2719-c4e0-c3c6-4eea03401141": "1220837843",
         "be02d298-2892-180a-ed1a-138dc589dd5c": "1299690106",
         "cb92c02d-84cf-f104-938b-b7de6641f8e5": "1998840078",
+        "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": "1226873745",
         "d5fc3678-2722-5112-c0bb-fa758f113246": "1328879441",
         "dd35b139-3346-08f0-013c-1e3a8a522f7f": "794302266",
         "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": "206008088",

@@ -116,7 +116,7 @@ angular.module('mms.designEditor', [
 
                     randomSymbolGenerator.generateSymbols(5);
 
-                    self.diagram = diagramService.generateDummyDiagram('dummy', 1, 0, 1500, 1500);
+                    self.diagram = diagramService.generateDummyDiagram('dummy', 10, 10, 1500, 1500);
 
                     self.diagram.addEventListener('selectionChange', selectionHandler);
 

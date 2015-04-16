@@ -123,7 +123,7 @@ module.exports = function(symbolManager, diagramService, wiringService, mmsUtils
 
             component1 = mmsUtils.getRandomElementFromArray(components);
 
-            port1 = component1.portInstances.getRandomElement();
+            port1 =  mmsUtils.getRandomElementFromArray(component1.portInstances);
             port2 = undefined;
 
             while (!angular.isDefined(port2) || port1 === port2) {
