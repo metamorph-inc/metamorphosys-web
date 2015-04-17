@@ -17,7 +17,7 @@
         sax: './vendor/sax/sax',
         jszip: './node_modules/webgme/src/client/lib/jszip/jszip',
         ejs: './node_modules/webgme/src/common/util/ejs',
-        superagent: './node_modules/webgme/node_modules/superagent/superagent',
+        superagent: './node_modules/webgme/src/client/lib/superagent/superagent-1.1.0',
         'plugin/AdmExporter': './src/plugins/ADMEditor',
         'plugin/TestBenchRunner': './src/plugins/ADMEditor',
         'plugin/AtmExporter': './src/plugins/ADMEditor',
