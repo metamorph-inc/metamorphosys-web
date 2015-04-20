@@ -58,6 +58,7 @@ angular.module( 'cyphy.components' )
                     return;
                 }
                 console.info( 'TestBenchDetailsController - initialize event raised' );
+                debugger; // FIXME watchTestBenchDetails was rewritten and has a different API
                 testBenchService.watchTestBenchDetails( context, $scope.testBenchId, function ( updatedObj ) {
                     console.warn( 'watchTestBenchDetails updates', updatedObj );
                 } )

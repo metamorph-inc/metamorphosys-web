@@ -6,7 +6,7 @@
  */
 
 angular.module('cyphy.services')
-    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService) {
+    .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService) {
         'use strict';
         var self = this,
             watchers = {};
@@ -354,62 +354,11 @@ angular.module('cyphy.services')
          * @param updateListener - invoked when there are (filtered) changes in data.
          */
         this.watchTestBenchDetails = function (parentContext, testBenchId, updateListener) {
-            var deferred = $q.defer(),
-                regionId = parentContext.regionId + '_watchTestBenchDetails_' + testBenchId,
-                context = {
-                    db: parentContext.db,
-                    regionId: regionId
-                },
-                data = {
-                    regionId: regionId,
-                    containerIds: [],
-                    tlsut: null
-                },
-                onUnload = function (id) {
-                    var index = data.containerIds.indexOf(id);
-                    if (index > -1) {
-                        data.containerIds.splice(index, 1);
-                        $timeout(function () {
-                            updateListener({
-                                id: id,
-                                type: 'unload',
-                                data: data
-                            });
-                        });
-                    }
-                };
-            watchers[parentContext.regionId] = watchers[parentContext.regionId] || {};
-            watchers[parentContext.regionId][context.regionId] = context;
-            nodeService.getMetaNodes(context)
-                .then(function (meta) {
-                    nodeService.loadNode(context, testBenchId)
-                        .then(function (testBenchNode) {
-                            testBenchNode.loadChildren()
-                                .then(function (children) {
-                                    var i;
-                                    for (i = 0; i < children.length; i += 1) {
-                                        if (children[i].isMetaTypeOf(meta.byName.Container)) {
-                                            data.containerIds.push(children[i].getId());
-                                            children[i].onUnload(onUnload);
-                                        }
-                                    }
-                                    testBenchNode.onNewChildLoaded(function (newChild) {
-                                        data.containerIds.push(newChild.getId());
-                                        newChild.onUnload(onUnload);
-                                        $timeout(function () {
-                                            updateListener({
-                                                id: newChild.getId(),
-                                                type: 'load',
-                                                data: data
-                                            });
-                                        });
-                                    });
-                                    deferred.resolve(data);
-                                });
-                        });
-                });
-
-            return deferred.promise;
+            return gmeMapService.mapGmeNode(parentContext, testBenchId, {
+                'Property': {
+                    attributes: {name: 'label', Value: 'value'}
+                }
+            });
         };
 
         this.checkForAttributeUpdates = function (data, node, keyToAttr) {
