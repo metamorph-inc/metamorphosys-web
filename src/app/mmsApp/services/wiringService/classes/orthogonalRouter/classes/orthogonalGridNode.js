@@ -4,12 +4,11 @@
 
 'use strict';
 
-var OrthogonalGridNode = function ( position, north, south, west, east ) {
+var OrthogonalGridNode = function ( x, y, north, south, west, east ) {
 
-    this.v = {
-        x: position.x,
-        y: position.y
-    };
+    this.x = x;
+    this.y = y;
+
     if ( north !== undefined ) {
         this.north = north;
     }
@@ -39,19 +38,37 @@ OrthogonalGridNode.prototype.resetNode = function() {
 
 };
 
-OrthogonalGridNode.prototype.compareY = function ( otherNode ) {
+OrthogonalGridNode.compareY = function ( nodeA, nodeB ) {
 
-    return this.v.y - otherNode.v.y;
-
-};
-
-OrthogonalGridNode.prototype.compareX = function ( otherNode ) {
-
-    return this.v.x - otherNode.v.x;
+    return nodeA.compareYTo(nodeB);
 
 };
 
-OrthogonalGridNode.prototype.compareScore = function ( otherNode ) {
+OrthogonalGridNode.prototype.compareYTo = function ( otherNode ) {
+
+    return this.y - otherNode.y;
+
+};
+
+OrthogonalGridNode.compareX = function ( nodeA, nodeB ) {
+
+    return nodeA.compareXTo(nodeB);
+
+};
+
+OrthogonalGridNode.prototype.compareXTo = function ( otherNode ) {
+
+    return this.x - otherNode.x;
+
+};
+
+OrthogonalGridNode.compareScore = function ( nodeA, nodeB ) {
+
+    return nodeA.compareScoreTo(nodeB);
+
+};
+
+OrthogonalGridNode.prototype.compareScoreTo = function ( otherNode ) {
 
     return this.score - otherNode.score;
 
@@ -59,7 +76,7 @@ OrthogonalGridNode.prototype.compareScore = function ( otherNode ) {
 
 OrthogonalGridNode.prototype.manhattanDistance = function ( otherNode ) {
 
-    return Math.abs(this.v.x - otherNode.v.x) + Math.abs(this.v.y - otherNode.v.y);
+    return Math.abs(this.x - otherNode.x) + Math.abs(this.y - otherNode.y);
 
 };
 
@@ -121,7 +138,7 @@ OrthogonalGridNode.prototype.findClosestObject = function( direction ) {
     // If to do above was done..
     //var dirNode = node[direction];
     //
-    //if ( node.compareX(this, dirNode) === 0 && node.compareY(this, dirNode) === 0 ) {
+    //if ( node.compareXTo(dirNode) === 0 && node.compareYTo(dirNode) === 0 ) {
     //    // Same node
     //    return dirNode;
     //}

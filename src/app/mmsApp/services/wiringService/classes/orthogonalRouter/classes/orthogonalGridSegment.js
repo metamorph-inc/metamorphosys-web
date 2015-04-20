@@ -57,8 +57,12 @@ OrthogonalGridSegment.prototype.inSetAndLessThanOrEqual = function ( arr, min, m
     for (var i = 0; i < arr.length; i++) {
 
         if (this[max] < arr[i][max] && this[min] === arr[i][min]) {
-            return {"idx": i, "equal": false};
+            return {"idx": i, "equal": false, "end": 2};
         }
+
+        //if (this[max] === arr[i][max] && this[min] > arr[i][min]) {
+        //    return {"idx": i, "equal": false, "end": 1};
+        //}
 
         if (this[max] === arr[i][max] && this[min] === arr[i][min]) {
             return {"idx": i, "equal": true};
