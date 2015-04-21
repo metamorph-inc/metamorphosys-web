@@ -5,6 +5,7 @@
  */
 
 angular.module( 'cyphy.services', [ 'gme.services' ] );
+require( './gmeMapService' );
 require( './BaseCyPhyService' );
 require( './PluginService' );
 require( './FileService' );
