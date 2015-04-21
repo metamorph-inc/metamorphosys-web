@@ -4,7 +4,7 @@
 
 'use strict';
 
-var OrthogonalGridNode = function ( x, y, north, south, west, east, actualPortLocation ) {
+var OrthogonalGridNode = function ( x, y, north, south, west, east ) {
 
     this.x = x;
     this.y = y;
@@ -20,9 +20,6 @@ var OrthogonalGridNode = function ( x, y, north, south, west, east, actualPortLo
     }
     if ( west !== undefined ) {
         this.west = west;
-    }
-    if ( actualPortLocation !== undefined ) {
-        this.actualPortLocation = actualPortLocation;
     }
 
 };
@@ -83,14 +80,18 @@ OrthogonalGridNode.prototype.manhattanDistance = function ( otherNode ) {
 
 };
 
+
+/**
+ * Return neighbors in a sorted order, with preference to neighbor in same direction,
+ *   followed by the right neighbor, left neighbor, and reverse neighbor.
+ *
+ *   Since order of neighbors is based on [N, S, W, E] index, need to return index map so that
+ *   when currentNode is updated, the direction can be updated correctly, rather than relying
+ *   on the index of the for loop.
+ *
+ * @returns {{neighbors: *[], map: number[]}}
+ */
 OrthogonalGridNode.prototype.getNeighbors = function () {
-
-    // Return neighbors in a sorted order, with preference to neighbor in same direction,
-    //  followed by the right neighbor, left neighbor, and reverse neighbor.
-
-    // Since order of neighbors is based on [N, S, W, E] index, need to return index map so that
-    // when currentNode is updated, the direction can be updated correctly, rather than relying
-    // on the index of the for loop.
 
     if ( this.dir === 0 ) {
         // Going North
@@ -115,10 +116,19 @@ OrthogonalGridNode.prototype.getNeighbors = function () {
 };
 
 OrthogonalGridNode.prototype.areAllNeighborsDefined = function () {
+
     return this.hasOwnProperty('north') && this.hasOwnProperty('south') &&
             this.hasOwnProperty('west') && this.hasOwnProperty('east');
+
 };
 
+
+/**
+ * For a given node location, determine how far you can move in "direction" before you
+ * come across another object (component wall or boundary edge).
+ * @param direction - north, south, east, west.
+ * @returns {*} - Coordinate of object in either X or Y (depending on direction).
+ */
 OrthogonalGridNode.prototype.findClosestObject = function( direction ) {
 
     var node = this,

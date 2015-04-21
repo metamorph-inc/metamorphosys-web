@@ -6,9 +6,7 @@
 
 var Point = require("./Point.js");
 
-var OrthogonalGridSegment = function(x1, y1, x2, y2, port) {
-
-    // If one endpoint of segment is at a component port, store the port location in "port".
+var OrthogonalGridSegment = function( x1, y1, x2, y2 ) {
 
     if ( x1 !== null ) {
         this.x1 = x1;
@@ -22,12 +20,16 @@ var OrthogonalGridSegment = function(x1, y1, x2, y2, port) {
     if ( y2 !== null ) {
         this.y2 = y2;
     }
-    if ( port !== undefined ) {
-        this.port = port;
-    }
 
 };
 
+
+/**
+ * Compare a segment's X-endpoint values against those in an array.
+ * Return the matching index if one, of -1 if none.
+ * @param arr - segments to compare against.
+ * @returns {number} - index of matching segment
+ */
 OrthogonalGridSegment.prototype.getIndexUsingX = function( arr ) {
 
     for ( var i = 0; i < arr.length; i++ ) {
@@ -39,6 +41,13 @@ OrthogonalGridSegment.prototype.getIndexUsingX = function( arr ) {
 
 };
 
+
+/**
+ * Compare a segment's Y-endpoint values against those in an array.
+ * Return the matching index if one, of -1 if none.
+ * @param arr - segments to compare against.
+ * @returns {number} - index of matching segment
+ */
 OrthogonalGridSegment.prototype.getIndexUsingY = function( arr ) {
 
     for (var i = 0; i < arr.length; i++) {
@@ -50,19 +59,25 @@ OrthogonalGridSegment.prototype.getIndexUsingY = function( arr ) {
 
 };
 
+
+/**
+ * Check if segments with same starting point have same ending point.
+ * If both segment's endpoints match one of the segments in the list, set equal to true.
+ * If segment starting point does not match any in the list, return -1.
+ *
+ * Generalizing min/max removes the need for two similar functions, one for X, and one for Y.
+ * @param arr - Array of segments to compare against.
+ * @param min - x1/y1 of segments
+ * @param max - x2/y2 of segments
+ * @returns {*}
+ */
 OrthogonalGridSegment.prototype.inSetAndLessThanOrEqual = function ( arr, min, max ) {
 
-    // Checks if segments with same starting point have same ending point. If segments do not have
-    // matching starting points, return -1.
     for (var i = 0; i < arr.length; i++) {
 
         if (this[max] < arr[i][max] && this[min] === arr[i][min]) {
             return {"idx": i, "equal": false, "end": 2};
         }
-
-        //if (this[max] === arr[i][max] && this[min] > arr[i][min]) {
-        //    return {"idx": i, "equal": false, "end": 1};
-        //}
 
         if (this[max] === arr[i][max] && this[min] === arr[i][min]) {
             return {"idx": i, "equal": true};
@@ -73,23 +88,29 @@ OrthogonalGridSegment.prototype.inSetAndLessThanOrEqual = function ( arr, min, m
 
 };
 
-OrthogonalGridSegment.prototype.getSharedEndPoint = function ( seg2 ) {
+
+/**
+ * If a common endpoint exists, return this point. Otherwise, return null.
+ * @param segment2
+ * @returns {*}
+ */
+OrthogonalGridSegment.prototype.getSharedEndPoint = function ( segment2 ) {
 
     // If and endpoint is shared, return this point. Otherwise, return null.
 
-    if ( this.isPointOnLine( {x: seg2.x1, y: seg2.y1} ) ) {
-        return new Point( seg2.x1, seg2.y1 );
+    if ( this.isPointOnLine( {x: segment2.x1, y: segment2.y1} ) ) {
+        return new Point( segment2.x1, segment2.y1 );
     }
 
-    else if ( this.isPointOnLine( {x: seg2.x2, y: seg2.y2} ) ) {
-        return new Point( seg2.x2, seg2.y2 );
+    else if ( this.isPointOnLine( {x: segment2.x2, y: segment2.y2} ) ) {
+        return new Point( segment2.x2, segment2.y2 );
     }
 
-    else if ( seg2.isPointOnLine( {x: this.x1, y: this.y1} ) ) {
+    else if ( segment2.isPointOnLine( {x: this.x1, y: this.y1} ) ) {
         return new Point( this.x1, this.y1 );
     }
 
-    else if ( seg2.isPointOnLine( {x: this.x2, y: this.y2} ) ) {
+    else if ( segment2.isPointOnLine( {x: this.x2, y: this.y2} ) ) {
         return new Point( this.x2, this.y2 );
     }
 
@@ -99,30 +120,36 @@ OrthogonalGridSegment.prototype.getSharedEndPoint = function ( seg2 ) {
 
 };
 
-OrthogonalGridSegment.prototype.isPointOnLine = function ( pt ) {
+
+/**
+ * Return true if a point lies on a grid segment, endpoints included.
+ * @param point
+ * @returns {boolean}
+ */
+OrthogonalGridSegment.prototype.isPointOnLine = function ( point ) {
 
     var slope = ( this.y2 - this.y1 ) / (this.x2 - this.x1 );
 
     if (slope === Number.POSITIVE_INFINITY) {
 
-        if (pt.y < this.y1 || pt.y > this.y2) {
+        if (point.y < this.y1 || point.y > this.y2) {
             // Out of range
             return false;
         }
 
-        return (pt.x === this.x1);
+        return (point.x === this.x1);
     }
     else if (slope === 0) {
 
-        if (pt.x < this.x1 || pt.x > this.x2) {
+        if (point.x < this.x1 || point.x > this.x2) {
             // Out of range
             return false;
         }
 
-        return (pt.y === this.y1);
+        return (point.y === this.y1);
     }
 
-    return ((pt.y - this.y1) === (pt.x - this.x1));
+    return ((point.y - this.y1) === (point.x - this.x1));
 };
 
 

@@ -124,11 +124,12 @@ var OrthogonalRouter = function () {
             else if (wireAngle2 === 0 || wireAngle2 === 360 || wireAngle2 === -360) {wireAngle2 = 3;}
 
             var j,
+                numberOfPoints = points.length,
                 wire1Position = null,
                 wire2Position = null,
                 actualPos1 = wires[i].end1.port.getGridPosition(),
                 actualPos2 = wires[i].end2.port.getGridPosition();
-            for (j = 0; j < points.length; j++) {
+            for (j = 0; j < numberOfPoints; j++) {
                 if ( points[j].portLocation ) {
                     if (points[j].portLocation.x === actualPos1.x &&
                         points[j].portLocation.y === actualPos1.y) {
@@ -143,22 +144,19 @@ var OrthogonalRouter = function () {
                     }
                 }
             }
-
-
+            
             var result = this.findOptimalRouteSimple( visibilityGrid.nodes,
-                                                wire1Position,
-                                                wire2Position,
-                                                wires[i].end1.port.portSymbol.wireLeadIn,
-                                                wires[i].end2.port.portSymbol.wireLeadIn,
-                                                wireAngle,
-                                                wireAngle2,
-                                                searchedNodes);
+                                                     wire1Position,
+                                                     wire2Position,
+                                                     wireAngle,
+                                                     wireAngle2,
+                                                     searchedNodes);
 
             optimalConnections.push(result.path);
             searchedNodes = result.dirtyNodes;
 
 
-            // overwrite the wires 'segments' field with the optimal route.
+            // Overwrite the wires 'segments' field with the optimal route.
             wires[i].segments = [];
             wires[i].segments = result.path;
 
@@ -167,8 +165,8 @@ var OrthogonalRouter = function () {
 
     };
 
-    this.findOptimalRouteSimple = function ( visibilityGrid, startPt, endPt, startLeadIn,
-                                            endLeadIn, startWireAngle, endWireAngle, searchedNodes ) {
+    this.findOptimalRouteSimple = function ( visibilityGrid, startPt, endPt,
+                                            startWireAngle, endWireAngle, searchedNodes ) {
         // A* Search
         // cost = cost of this partial path from the start node to the current node, plus current number of bends.
         // heuristic = estimated guess for the cost of the remaining path from the current node to end node, plus

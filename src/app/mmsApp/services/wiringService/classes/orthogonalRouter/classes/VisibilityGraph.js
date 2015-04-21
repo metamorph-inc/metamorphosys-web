@@ -26,6 +26,7 @@ var VisibilityGraph = function () {
  * @param gridHeight - Max height
  */
 VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight ) {
+
     var sortedY = points.slice();
     sortedY.sort(function ( a, b ) { return a.comparePointsByXorY(b, 0); });
 
@@ -177,9 +178,7 @@ VisibilityGraph.prototype.verticalLineSweep = function ( points, gridWidth ) {
                 else {
                     left = 0;
                 }
-                //var port = points[i].isPort ? new Point(points[i].x, points[i].y) : null;
-                var port = points[i].isPort ? new Point(points[i].portLocation.x, points[i].portLocation.y) : null;
-                var leftSegment = new OrthogonalGridSegment(left, points[i].y, points[i].x, points[i].y, port);
+                var leftSegment = new OrthogonalGridSegment(left, points[i].y, points[i].x, points[i].y);
                 segments.push(leftSegment);
             }
             // right
@@ -187,9 +186,7 @@ VisibilityGraph.prototype.verticalLineSweep = function ( points, gridWidth ) {
                 points[i].direction === 360 || specialCasePort) && !skipRight) {
                 var right = this.findNextValidRightNeighbor(points[i], "x", binTree, openObjects, gridWidth);
 
-                //var port = points[i].isPort ? new Point(points[i].x, points[i].y) : null;
-                var port = points[i].isPort ? new Point(points[i].portLocation.x, points[i].portLocation.y) : null;
-                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, right, points[i].y, port);
+                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, right, points[i].y);
                 segments.push(rightSegment);
             }
             if (checkRemoveFromOpen) {
@@ -325,9 +322,7 @@ VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) 
                 else {
                     left = 0;
                 }
-                //var port = points[i].isPort ? new Point(points[i].x, points[i].y) : null,
-                var port = points[i].isPort ? new Point(points[i].portLocation.x, points[i].portLocation.y) : null;
-                var leftSegment = new OrthogonalGridSegment(points[i].x, left, points[i].x, points[i].y, port);
+                var leftSegment = new OrthogonalGridSegment(points[i].x, left, points[i].x, points[i].y);
 
                 segments.push(leftSegment);
             }
@@ -336,9 +331,7 @@ VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) 
                 points[i].direction === -270 || specialCasePort) && !skipRight) {
                 var right = this.findNextValidRightNeighbor(points[i], "y", binTree, openObjects, gridHeight);
 
-                //var port = points[i].isPort ? new Point(points[i].x, points[i].y) : null,
-                var port = points[i].isPort ? new Point(points[i].portLocation.x, points[i].portLocation.y) : null;
-                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, points[i].x, right, port);
+                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, points[i].x, right);
                 segments.push(rightSegment);
             }
             if (checkRemove) {
@@ -358,15 +351,18 @@ VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) 
 };
 
 
+// TODO: Ports are now projected onto the bounding box edge. This may make needing to check that
+// TODO: the neighbor being returned by binTree is valid unnecessary... investigate.
 VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, binTree, openObjects, sweepLength) {
     var right, rightIter = binTree.gt(node[axis]);
     if (rightIter.valid) {
-        var seg = new OrthogonalGridSegment();
-        seg[axis+1] = node[axis];
-        seg[axis+2] = rightIter.key;  // {y1: node[axis], y2: rightIter.key}
+        var segment = new OrthogonalGridSegment();
+        segment[axis+1] = node[axis];
+        segment[axis+2] = rightIter.key;
 
-        var ltoe = seg.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
         // X-coords will be the same, need to see if y2 coord of seg is equal or less than open object y2
+        var ltoe = segment.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
+
         if (ltoe !== -1) {
             // Means this segment is in the list of open segments, grab the closest node from rightIter that
             // isn't a part of the open segment. The object may have many ports so...
@@ -377,8 +373,8 @@ VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, bi
 
             while ( ltoe.equal === false ) {
                 rightIter = binTree.gt(rightIter.key);
-                seg[axis+2] = rightIter.key;
-                ltoe = seg.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
+                segment[axis+2] = rightIter.key;
+                ltoe = segment.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
             }
 
             // At this point the line is defined along the object, but this segment's visibility will continue
@@ -394,6 +390,7 @@ VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, bi
         }
         else {
             right = rightIter.key;
+
             if (node.hasOwnProperty("direction") && node[axis] < rightIter.key) {
                 var keyIsMin = false;
                 for (var n = 0; n < openObjects.length; n++) {
@@ -403,7 +400,7 @@ VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, bi
                     }
                 }
                 if (keyIsMin) {
-                    // Means the port is not in line with the bounding box (inside of it). Grab the next left iter.
+                    // Means the port is not in line with the bounding box (inside of it). Grab the next right iter.
                     rightIter = binTree.gt(rightIter.key);
                     if (rightIter.valid) {
                         right = rightIter.key;
@@ -432,7 +429,6 @@ VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, bi
 VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentSet, gridHeight ) {
 
     var intersections = this.vertices,
-
         segmentX = segment.x2 - segment.x1,
         segmentY = segment.y2 - segment.y1,
         totalSegments = segmentSet.length;
@@ -442,7 +438,7 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
             checkSegmentY = segmentSet[i].y2 - segmentSet[i].y1,
             denominator = segmentX * checkSegmentY - checkSegmentX * segmentY,
             posDenominator = denominator > 0,
-            intersection = null;
+            intersection;
 
         // Collinear if denominator = 0
         if ( denominator !== 0 ) {
@@ -455,13 +451,14 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
                 }
             }
             else {
+                // See if intersection occurs elsewhere between the two segments.
                 var newSegmentX = segment.x1 - segmentSet[i].x1,
                     newSegmentY = segment.y1 - segmentSet[i].y1,
                     numerator1 = segmentX * newSegmentY - segmentY * newSegmentX,
                     numerator2 = checkSegmentX * newSegmentY - checkSegmentY * newSegmentX,
                     collinear = ( (numerator1 < 0) === posDenominator ) || ( (numerator2 < 0) === posDenominator ),
                     noIntersect = ( (numerator1 > denominator) === posDenominator ||
-                    (numerator2 > denominator) === posDenominator );
+                                    (numerator2 > denominator) === posDenominator );
 
                 if ( !collinear && !noIntersect ) {
                     var t = numerator2 / denominator;
@@ -474,32 +471,14 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
                         this.populateNode(intersection, segment, segmentSet[i], gridHeight);
                     }
                 }
-
-                // Only populate a port if there is an intersection betweeen the two segments.
-                // Otherwise you could try and populate the segmentSet[i] port without yet having
-                // populated the port directly West.
-                //if ( !noIntersect && ( segmentSet[i].port !== null &&
-                //                       segmentSet[i].port.myIndexOfPoint(intersections) === -1 ) ) {
-                //    intersections.push(segmentSet[i].port);
-                //    this.populateNode(segmentSet[i].port, segment, segmentSet[i], gridHeight);
-                //}
             }
         }
-
-        //if (segment.port !== null && segment.port.myIndexOfPoint(intersections) === -1) {
-        //    intersection = segment.port;
-        //}
-
-        //if ( intersection !== null ) {
-        //    intersections.push(intersection);
-        //    this.populateNode(intersection, segment, segmentSet[i], gridHeight);
-        //}
     }
 
 };
 
 /**
-     Nodes will be created in order, sorted by X then Y, so (10, 70) comes before (10, 80).
+ *   Nodes will be created in order, sorted by X then Y, so (10, 70) comes before (10, 80).
      Need to determine the N, S, W, E neighbors for each node. Only the N and W neighbors
      can be determined when the node is created based on previous nodes and/or the upper
      left boundary. The default value for N, S, W, E is null, and means there is no valid
@@ -514,28 +493,29 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
      that remaining cardinal directions can be determined using the new node. The previously
      incomplete node is now added to the 'nodes' list, and removed from incompleteNodes. The newly
      created node now takes its place in the list.
+ * @param vertex  - Coordinate location of node being populated
+ * @param verticalSegment   - Vertical segment defining the node
+ * @param horizontalSegment - Horizontal segment definind the node
+ * @param gridHeight  - Max height of diagram
  */
 VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, horizontalSegment, gridHeight ) {
-    //var node = new PathNode( vertex );
     var node = new OrthogonalGridNode( vertex.x, vertex.y );
-    node.vertSeg = verticalSegment;  // should be OrthogonalGridSegment
-    node.horzSeg = horizontalSegment;
+
+    node.verticalSegment = verticalSegment;
+    node.horizontalSegment = horizontalSegment;
 
     if ( this.incompleteNodes.length === 0 ) {
         node.north = 0;
         node.west = 0;
         insert(node, this.incompleteNodes, OrthogonalGridNode.compareY);
-        return node;
+        return;
     }
 
-    // Add new node to list
     var idx = insert(node, this.incompleteNodes, OrthogonalGridNode.compareY) - 1,
         matchNode,
         smallNeighbor,
         largeNeighbor,
         checkComplete = false;
-
-    node = this.incompleteNodes[idx];
 
     // Check if Y value is duplicated. If it is, new node will be added directly after the existing one.
     if (idx !== 0 && node.compareYTo(this.incompleteNodes[idx-1]) === 0) {
@@ -545,9 +525,9 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
         smallNeighbor = idx-1 === 0 ? null : idx - 2;
         largeNeighbor = idx === this.incompleteNodes.length - 1 ? null : idx + 1;
 
-        // See if the horizontal segments of each node overlap at all. If so, there is a segment between them.
+        // Do the horizontal segments of each node overlap at all? If so, there is a segment between them.
         // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
-        if (matchNode.horzSeg.isPointOnLine({x:horizontalSegment.x1, y:horizontalSegment.y1})) {
+        if (matchNode.horizontalSegment.isPointOnLine({x:horizontalSegment.x1, y:horizontalSegment.y1})) {
             node.west = matchNode;
             matchNode.east = node;
         }
@@ -558,7 +538,7 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
 
         if (smallNeighbor === null) {
             // This node is at the top of the grid. Since points are sorted, we know previous point was
-            // the largest Y value for that X, so the previous node's S is null and this node's N is null.
+            // the largest Y value at that X, so the previous node's S is gridHeight and this node's N is 0.
             node.north = 0;
             this.incompleteNodes[this.incompleteNodes.length - 1].south = gridHeight;
         }
@@ -583,23 +563,14 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
                 node.north = 0;
                 break;
             }
-            else {
-                // If here, you have a node who is closer to current node, but to the left on a different line.
-                // If this happens, it means that this 'close' node is a port who will not have an E neighbor.
-                // smallNeighbor.east = null;
-
-                // Check if providing this direction completed that node.
-
-                smallNeighbor = this.incompleteNodes[i];
-            }
+            smallNeighbor = this.incompleteNodes[i];
         }
-
 
         // Make sure smallNeighbor was found
         if (node.north !== 0) {
             // See if the vertical segments of each node overlap at all. If so, there is a segment between them.
             // Otherwise there is not (eg, the nodes are ports on opposite sides of component).
-            if (smallNeighbor.vertSeg.isPointOnLine({x: verticalSegment.x1, y: verticalSegment.y1})) {
+            if (smallNeighbor.verticalSegment.isPointOnLine({x: verticalSegment.x1, y: verticalSegment.y1})) {
                 node.north = smallNeighbor;
                 smallNeighbor.south = node;
             }
@@ -616,7 +587,6 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
     if (checkComplete) {
         // Only nodes that can be completed are ones where a matchNode has been found and filled out.
         if (matchNode.areAllNeighborsDefined()) {
-            // Node is now completely defined
             if ( matchNode.x in this.nodes === false ) {
                 this.nodes[matchNode.x] =  { };
             }
@@ -632,5 +602,6 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
     }
 
 };
+
 
 module.exports = VisibilityGraph;

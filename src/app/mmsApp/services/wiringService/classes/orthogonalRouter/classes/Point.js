@@ -4,6 +4,16 @@
 
 'use strict';
 
+/**
+ *
+ * @param x
+ * @param y
+ * @param port  - True if point represents a component port
+ * @param direction - N/S/W/E direction of port
+ * @param portLocation  - Ports are either on or inside a component bounding box. The  "Point"
+ *                        coordinate is the location of the port projected onto the bounding box edge.
+ *                        portLocation stores the actual <X,Y> location.
+ */
 var Point = function ( x, y, port, direction, portLocation ) {
 
     this.x = x;
