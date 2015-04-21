@@ -13,7 +13,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
                 controllerAs: 'ctrl',
                 bindToController: true,
                 replace: true,
-                transclude: true,
+                transclude: false,
                 template: '<g class="wire-container"></g>',
                 templateNamespace: 'SVG',
                 scope: {
@@ -43,7 +43,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                     function render() {
                         var wires = grid.visibleWires;
-                        //console.log('rendering');
+                        //element[0].parentNode.innerHTML = '';
                         React.render(<ComponentWiresContainer wires={wires} diagramCtrl={svgDiagramCtrl}/>, element[0]);    
                     }
 
@@ -51,7 +51,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
                         return ctrl.diagramId;
                     }, function(newId, oldId){
 
-                        if (oldId !== newId && newId != null) {
+                        if ((oldId !== newId || oldId != null) && newId != null) {
 
                             cleanup();
 
