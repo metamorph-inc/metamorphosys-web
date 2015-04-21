@@ -275,7 +275,7 @@ function GridService( $log, $rootScope, $timeout ) {
             y = 0;
 
             if (isNaN(gridSize)) {
-                gridSize  = 1;
+                gridSize = 1;
             }
 
             if (angular.isObject(position)) {

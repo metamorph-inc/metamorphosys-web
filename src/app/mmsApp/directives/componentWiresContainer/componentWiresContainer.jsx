@@ -43,7 +43,9 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                     function render() {
                         var wires = grid.visibleWires;
-                        //element[0].parentNode.innerHTML = '';
+
+                        console.log('Visible wires');
+                        
                         React.render(<ComponentWiresContainer wires={wires} diagramCtrl={svgDiagramCtrl}/>, element[0]);    
                     }
 
@@ -110,13 +112,16 @@ var ComponentWire = React.createClass({
             childCorners = [],
 
             wireSegment,
-            l, i;
+            l, i,
+            segments = this.props.wire.getSegments();
 
-        l = this.props.wire.segments.length;
+        l = segments.length;
+
+        console.log(segments);
 
         for (i = 0; i < l; i++) {
 
-            wireSegment = this.props.wire.segments[i];
+            wireSegment = segments[i];
 
             childSegments.push(
                 <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>

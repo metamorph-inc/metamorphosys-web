@@ -6,7 +6,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     var self = this,
 
-        Wire = require( '../../../services/diagramService/classes/Wire.js' ),
+        Wire = require('../../../services/diagramService/classes/Wire.js'),
 
         wireStart,
 
@@ -23,26 +23,26 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
 
 
-    startWire = function (component, port) {
+    startWire = function(component, port) {
 
         wireStart = {
             component: component,
             port: port
         };
 
-        $log.debug( 'Starting wire', wireStart );
+        $log.debug('Starting wire', wireStart);
 
         self.wiring = true;
 
     };
 
-    addCornerToNewWireLine = function () {
+    addCornerToNewWireLine = function() {
 
         var lastSegment;
 
         $scope.newWireLine.lockedSegments = $scope.newWireLine.segments;
 
-        lastSegment = $scope.newWireLine.lockedSegments[ $scope.newWireLine.lockedSegments.length - 1 ];
+        lastSegment = $scope.newWireLine.lockedSegments[$scope.newWireLine.lockedSegments.length - 1];
 
         $scope.newWireLine.activeSegmentStartPosition = {
             x: lastSegment.x2,
@@ -51,34 +51,34 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     };
 
-    finishWire = function ( component, port ) {
+    finishWire = function(component, port) {
 
-        var wire = new Wire( {
-            id: 'new-wire-' + Math.round( Math.random() * 10000 ),
-            end1: {
+        var wire = new Wire(
+            'new-wire-' + Math.round(Math.random() * 10000), {
                 component: wireStart.component,
                 port: wireStart.port
-            },
-            end2: {
+            }, {
                 component: component,
                 port: port
-            }
-        } );
 
-        wire.segments = angular.copy(
-            $scope.newWireLine.lockedSegments.concat(
-                wiringService.getSegmentsBetweenPositions( {
-                        end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: port.getGridPosition()
-                    },
-                    $scope.selectedRouter.type,
-                    $scope.selectedRouter.params
+            },
+            $scope.selectedRouter,
+            angular.copy(
+                $scope.newWireLine.lockedSegments.concat(
+                    wiringService.getSegmentsBetweenPositions({
+                            end1: $scope.newWireLine.activeSegmentStartPosition,
+                            end2: port.getGridPosition()
+                        },
+                        $scope.selectedRouter.type,
+                        $scope.selectedRouter.params
+                    )
                 )
-            ) );
+            )
+        );
 
         $rootScope.$emit('wireCreationMustBeDone', wire);
 
-        $log.debug( 'Finish wire', wire );
+        $log.debug('Finish wire', wire);
 
         ga('send', 'event', 'wire', 'newWire', {
             end1: wireStart.component.id,
@@ -92,7 +92,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     };
 
-    cancelWire = function () {
+    cancelWire = function() {
         $scope.newWireLine = null;
         wireStart = null;
         self.wiring = false;
@@ -105,7 +105,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         var snappedPosition;
 
-        if ( wireStart ) {
+        if (wireStart) {
 
 
             $scope.newWireLine = $scope.newWireLine || {};
@@ -113,16 +113,14 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
             $scope.newWireLine.activeSegmentStartPosition =
                 $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
 
-            snappedPosition = gridService.getSnappedPosition(
-                {
-                    x: $event.pageX - $scope.elementOffset.left - 3,
-                    y: $event.pageY - $scope.elementOffset.top - 3
-                }
-            );
+            snappedPosition = gridService.getSnappedPosition({
+                x: $event.pageX - $scope.elementOffset.left - 3,
+                y: $event.pageY - $scope.elementOffset.top - 3
+            });
 
 
             $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
-                wiringService.getSegmentsBetweenPositions( {
+                wiringService.getSegmentsBetweenPositions({
                         end1: $scope.newWireLine.activeSegmentStartPosition,
                         end2: snappedPosition
                     },
@@ -137,20 +135,20 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseUp = function() {
 
-        if ( wireStart ) {
+        if (wireStart) {
             addCornerToNewWireLine();
         }
 
     };
 
-    onPortMouseDown = function( component, port, $event ) {
+    onPortMouseDown = function(component, port, $event) {
 
-        if ( wireStart ) {
+        if (wireStart) {
 
             $event.stopPropagation();
 
-            if ( wireStart.port !== port ) {
-                finishWire( component, port );
+            if (wireStart.port !== port) {
+                finishWire(component, port);
             } else {
                 cancelWire();
             }
@@ -164,13 +162,13 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     };
 
-    onDiagramMouseLeave = function(/*$event*/) {
+    onDiagramMouseLeave = function( /*$event*/ ) {
         if (self.wiring) {
             cancelWire();
         }
     };
 
-    onWindowBlur = function(/*$event*/) {
+    onWindowBlur = function( /*$event*/ ) {
         if (self.wiring) {
             cancelWire();
         }

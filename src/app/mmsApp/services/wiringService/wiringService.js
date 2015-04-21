@@ -125,7 +125,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     ], params);
 
 
-                    wire.segments = s1.concat(s2).concat(s3);
+                    wire.setSegments(s1.concat(s2).concat(s3));
 
                 }
 
@@ -139,26 +139,25 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 secondSegment,
                 secondToLastSegment,
                 lastSegment,
-                endPositions,
+                endPositions = wire.getEndPositions(),
+                segments = wire.getSegments(),
                 newSegments,
                 pos;
 
-            endPositions = wire.getEndPositions();
+            if (Array.isArray(segments) && segments.length > 1) {
 
-            if (angular.isArray(wire.segments) && wire.segments.length > 1) {
-
-                firstSegment = wire.segments[0];
+                firstSegment = segments[0];
 
                 if (firstSegment.router && firstSegment.router.type === 'ElbowRouter') {
 
-                    secondSegment = wire.segments[1];
+                    secondSegment = segments[1];
 
                     pos = {
                         x: secondSegment.x2,
                         y: secondSegment.y2
                     };
 
-                    wire.segments.splice(0, 2);
+                    segments.splice(0, 2);
 
                 } else {
 
@@ -169,7 +168,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                         y: firstSegment.y2
                     };
 
-                    wire.segments.splice(0, 1);
+                    segments.splice(0, 1);
                 }
 
                 newSegments = self.getSegmentsBetweenPositions({
@@ -177,20 +176,20 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     end2: pos
                 }, firstSegment.router.type, firstSegment.router.params);
 
-                wire.segments = newSegments.concat(wire.segments);
+                wire.setSegments(newSegments.concat(segments));
 
-                lastSegment = wire.segments[wire.segments.length - 1];
+                lastSegment = segments[segments.length - 1];
 
                 if (lastSegment.router && lastSegment.router.type === 'ElbowRouter') {
 
-                    secondToLastSegment = wire.segments[wire.segments.length - 2];
+                    secondToLastSegment = segments[segments.length - 2];
 
                     pos = {
                         x: secondToLastSegment.x1,
                         y: secondToLastSegment.y1
                     };
 
-                    wire.segments.splice(wire.segments.length - 2, 2);
+                    segments.splice(segments.length - 2, 2);
 
                 } else {
 
@@ -199,7 +198,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                         y: lastSegment.y1
                     };
 
-                    wire.segments.splice(wire.segments.length - 1, 1);
+                    segments.splice(segments.length - 1, 1);
                 }
 
                 newSegments = self.getSegmentsBetweenPositions({
@@ -207,7 +206,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     end2: endPositions.end2
                 }, lastSegment.router.type, lastSegment.router.params);
 
-                wire.segments = wire.segments.concat(newSegments);
+                wire.setSegments(segments.concat(newSegments));
 
             } else {
 

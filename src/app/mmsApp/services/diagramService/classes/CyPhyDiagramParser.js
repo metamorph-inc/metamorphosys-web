@@ -158,21 +158,21 @@ module.exports = function(symbolManager, diagramService, wiringService) {
 
             if (sourcePort && destinationPort) {
 
-                wire = new Wire({
-                    id: element.id,
-                    end1: {
+                wire = new Wire(
+                    element.id,
+                    {
                         component: sourcePort.parentComponent,
                         port: sourcePort
                     },
-                    end2: {
+                    {
                         component: destinationPort.parentComponent,
                         port: destinationPort
                     }
-                });
+                );
 
                 if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
 
-                    wire.segments = angular.copy(element.details.wireSegments);
+                    wire.setSegments(angular.copy(element.details.wireSegments));
                     wiringService.adjustWireEndSegments(wire);
 
                 } else {

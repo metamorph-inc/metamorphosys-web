@@ -123,7 +123,7 @@ module.exports = function(symbolManager, diagramService, wiringService, mmsUtils
 
             component1 = mmsUtils.getRandomElementFromArray(components);
 
-            port1 =  mmsUtils.getRandomElementFromArray(component1.portInstances);
+            port1 = mmsUtils.getRandomElementFromArray(component1.portInstances);
             port2 = undefined;
 
             while (!angular.isDefined(port2) || port1 === port2) {
@@ -132,17 +132,17 @@ module.exports = function(symbolManager, diagramService, wiringService, mmsUtils
                 port2 = mmsUtils.getRandomElementFromArray(component2.portInstances);
             }
 
-            wire = new Wire({
-                id: id,
-                end1: {
+            wire = new Wire(
+                id,
+                {
                     component: component1,
                     port: port1
                 },
-                end2: {
+                {
                     component: component2,
                     port: port2
                 }
-            });
+            );
 
             wiringService.routeWire(wire, 'ElbowRouter');
 
