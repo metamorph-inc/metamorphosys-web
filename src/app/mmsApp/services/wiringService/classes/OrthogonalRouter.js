@@ -32,18 +32,16 @@ var OrthogonalRouter = function () {
 
         visibilityGraph.generate( points, diagram.config.width, diagram.config.height );
 
-        diagram.sweepLines = visibilityGraph.edges;
-        diagram.sweepPoints = visibilityGraph.v;
-
-        //self.generateVisibilityGraph(diagram);
+        //diagram.sweepLines = visibilityGraph.edges;
+        //diagram.sweepPoints = visibilityGraph.vertices;
         var end = performance.now();
 
         console.log("Graph time: " + (end - start));
         start = performance.now();
-        var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires());
+        var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
-        var nudgedConnections = nudgeConnections(visibilityGraph, optimalConnections);
-        var tempSegs = nudgedConnections.reduce(function(a,b) {
+        //var nudgedConnections = nudgeConnections(visibilityGraph, optimalConnections);
+        var tempSegs = optimalConnections.reduce(function(a,b) {
             return a.concat(b);
         });
         diagram.optimalConnections = tempSegs;
@@ -75,22 +73,24 @@ var OrthogonalRouter = function () {
             var portPos = component.portInstances[k].getGridPosition(),
                 portWireAngle = component.portInstances[k].getGridWireAngle(),
                 x = portPos.x,
-                y = portPos.y;
+                y = portPos.y,
+                actualX = x,
+                actualY = y;
 
-            //if ([90, -270].indexOf(portWireAngle) !== -1) {
-            //    y += component.portInstances[k].portSymbol.wireLeadIn; // S port
-            //}
-            //else if ([-90, 270].indexOf(portWireAngle) !== -1) {
-            //    y -= component.portInstances[k].portSymbol.wireLeadIn; // N port
-            //}
-            //else if ([180, -180].indexOf(portWireAngle) !== -1) {
-            //    x -= component.portInstances[k].portSymbol.wireLeadIn; // W port
-            //}
-            //else {
-            //    x += component.portInstances[k].portSymbol.wireLeadIn; // E port
-            //}
+            if ([90, -270].indexOf(portWireAngle) !== -1) {
+                y += boundBox.y + boundBox.height + 10 - y;  // S port
+            }
+            else if ([-90, 270].indexOf(portWireAngle) !== -1) {
+                y -= y - (boundBox.y - 10);  // N port
+            }
+            else if ([180, -180].indexOf(portWireAngle) !== -1) {
+                x -= x - (boundBox.x - 10);  // W port
+            }
+            else {
+                x += boundBox.x + boundBox.width + 10 - x;  // E port
+            }
 
-            points.push( new Point( x, y, true, portWireAngle ) );
+            points.push( new Point( x, y, true, portWireAngle, {x:actualX, y:actualY} ) );
         }
     };
 
@@ -99,7 +99,7 @@ var OrthogonalRouter = function () {
     ////////////////////////////////////////////////////////////////////////////
 
 
-    this.autoRouteWithGraph = function ( visibilityGrid, wires ) {
+    this.autoRouteWithGraph = function ( visibilityGrid, wires, points ) {
         // Loop through connections to determine the optimal route of each one using orthogonal graph.
 
         var optimalConnections = [],  // Each element will be an array of wires
@@ -123,9 +123,31 @@ var OrthogonalRouter = function () {
             else if (wireAngle2 === 270 || wireAngle2 === -90) {wireAngle2 = 0;}
             else if (wireAngle2 === 0 || wireAngle2 === 360 || wireAngle2 === -360) {wireAngle2 = 3;}
 
-            var result = this.findOptimalRouteSimple( visibilityGrid.vertices,
-                                                wires[i].end1.port.getGridPosition(),
-                                                wires[i].end2.port.getGridPosition(),
+            var j,
+                wire1Position = null,
+                wire2Position = null,
+                actualPos1 = wires[i].end1.port.getGridPosition(),
+                actualPos2 = wires[i].end2.port.getGridPosition();
+            for (j = 0; j < points.length; j++) {
+                if ( points[j].portLocation ) {
+                    if (points[j].portLocation.x === actualPos1.x &&
+                        points[j].portLocation.y === actualPos1.y) {
+                        wire1Position = points[j];
+                    }
+                    if (points[j].portLocation.x === actualPos2.x &&
+                        points[j].portLocation.y === actualPos2.y) {
+                        wire2Position = points[j];
+                    }
+                    if (wire1Position && wire2Position) {
+                        break;
+                    }
+                }
+            }
+
+
+            var result = this.findOptimalRouteSimple( visibilityGrid.nodes,
+                                                wire1Position,
+                                                wire2Position,
                                                 wires[i].end1.port.portSymbol.wireLeadIn,
                                                 wires[i].end2.port.portSymbol.wireLeadIn,
                                                 wireAngle,
@@ -137,7 +159,8 @@ var OrthogonalRouter = function () {
 
 
             // overwrite the wires 'segments' field with the optimal route.
-
+            wires[i].segments = [];
+            wires[i].segments = result.path;
 
         }
         return optimalConnections;
@@ -177,8 +200,8 @@ var OrthogonalRouter = function () {
 
             // Check if goal node has been reached, retrace path.
             if (destinationNode.compareXTo(currentNode) === 0 && destinationNode.compareYTo(currentNode) === 0) {
-                return { "path": returnPath(visibilityGrid, currentNode, startPt, startLeadIn,
-                                            endLeadIn, endWireAngle, startWireAngle),
+                return { "path": returnPath(visibilityGrid, currentNode, startPt, endPt,
+                                            endWireAngle, startWireAngle),
                          "dirtyNodes": searchedNodes };
             }
 
@@ -255,25 +278,32 @@ var OrthogonalRouter = function () {
         return [];
     }
 
-    function returnPath(visibilityGrid, currentNode, startPt, startLeadIn, endLeadIn, endWireAngle, startWireAngle) {
+    function returnPath(visibilityGrid, currentNode, startPt, endPt, endWireAngle, startWireAngle) {
         var segments = [],
-            segment,
-            port = true;
+            segment;
+
+        segment = {};
+        segment.x1 = endPt.portLocation.x;
+        segment.y1 = endPt.portLocation.y;
+        segment.x2 = endPt.x;
+        segment.y2 = endPt.y;
+        if (segment.x1 === segment.x2) {
+            segment.orientation = "vertical";
+        }
+        else {
+            segment.orientation = "horizontal";
+        }
+        segments.push(segment);
+        segment = {};
 
         while ( currentNode.parent !== null ) {
-            segment = {};
             segment.x1 = currentNode.x;
             segment.y1 = currentNode.y;
             segment.x2 = currentNode.parent.x;
             segment.y2 = currentNode.parent.y;
             segment.objectLeft = null;   // How far to left/top can you go before hitting object/boundary?
             segment.objectRight = null;  // " " to right/bottom
-            if (port) {
-                segment.port = currentNode;  // Port end location
-                segment.leadIn = endLeadIn;
-                segment.portAngle = endWireAngle;
-                port = false;
-            }
+
 
             // Sort coordinates.
             if (segment.x2 < segment.x1) {
@@ -323,36 +353,69 @@ var OrthogonalRouter = function () {
 
             var prevSeg = segments[segments.length - 1];
             if (segments.length !== 0 && prevSeg.orientation === segment.orientation) {
-                if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
-                    prevSeg.x1 = segment.x1;
-                }
-                else if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
-                    prevSeg.x1 = segment.x1;
-                }
-
-                prevSeg.x1 = segment.x2 === prevSeg.x1 ? segment.x1 : prevSeg.x1;
-                prevSeg.x2 = segment.x1 === prevSeg.x2 ? segment.x2 : prevSeg.x2;
-                prevSeg.y1 = segment.y2 === prevSeg.y1 ? segment.y1 : prevSeg.y1;
-                prevSeg.y2 = segment.y1 === prevSeg.y2 ? segment.y2 : prevSeg.y2;
-
-                prevSeg.objectLeft = segment.ObjectLeft < prevSeg.objectLeft ? segment.ObjectLeft : prevSeg.objectLeft;
-                prevSeg.objectRight = segment.ObjectRight < prevSeg.objectRight ? segment.ObjectRight : prevSeg.objectRight;
-
+                extendWireSegment(segment, prevSeg);
             }
             else {
                 segments.push(segment);
             }
 
             currentNode = visibilityGrid[currentNode.parent.x][currentNode.parent.y];
-
+            segment = {};
 
         }
-        segments[segments.length - 1].port = startPt;
-        segments[segments.length - 1].leadIn = startLeadIn;
-        segments[segments.length - 1].portAngle = startWireAngle;
+
+        var lastSegment = segments[segments.length - 1];
+        segment = {};
+        segment.x1 = startPt.portLocation.x;
+        segment.y1 = startPt.portLocation.y;
+        segment.x2 = startPt.x;
+        segment.y2 = startPt.y;
+        if (segment.x1 === segment.x2) {
+            segment.orientation = "vertical";
+        }
+        else {
+            segment.orientation = "horizontal";
+        }
+
+        // Sort coordinates.
+        if (segment.x2 < segment.x1) {
+            var tmpx = segment.x2;
+            segment.x2 = segment.x1;
+            segment.x1 = tmpx;
+        }
+        if (segment.y2 < segment.y1) {
+            var tmpy = segment.y2;
+            segment.y2 = segment.y1;
+            segment.y1 = tmpy;
+        }
+
+        if (lastSegment.orientation === segment.orientation) {
+            extendWireSegment(segment, lastSegment);
+        }
+        else {
+            segments.push(segment);
+        }
+
 
         return segments;
 
+    }
+
+    function extendWireSegment(segment, prevSeg) {
+        if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
+            prevSeg.x1 = segment.x1;
+        }
+        else if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
+            prevSeg.x1 = segment.x1;
+        }
+
+        prevSeg.x1 = segment.x2 === prevSeg.x1 ? segment.x1 : prevSeg.x1;
+        prevSeg.x2 = segment.x1 === prevSeg.x2 ? segment.x2 : prevSeg.x2;
+        prevSeg.y1 = segment.y2 === prevSeg.y1 ? segment.y1 : prevSeg.y1;
+        prevSeg.y2 = segment.y1 === prevSeg.y2 ? segment.y2 : prevSeg.y2;
+
+        prevSeg.objectLeft = segment.ObjectLeft < prevSeg.objectLeft ? segment.ObjectLeft : prevSeg.objectLeft;
+        prevSeg.objectRight = segment.ObjectRight < prevSeg.objectRight ? segment.ObjectRight : prevSeg.objectRight;
     }
 
     function estimateRemainingBends(start, end, dir) {
@@ -697,7 +760,6 @@ var OrthogonalRouter = function () {
         }
         return sharedEdges;
     }
-
 
 };
 

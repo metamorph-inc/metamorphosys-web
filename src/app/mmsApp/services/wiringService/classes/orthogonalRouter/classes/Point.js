@@ -4,7 +4,7 @@
 
 'use strict';
 
-var Point = function ( x, y, port, direction ) {
+var Point = function ( x, y, port, direction, portLocation ) {
 
     this.x = x;
     this.y = y;
@@ -15,6 +15,10 @@ var Point = function ( x, y, port, direction ) {
 
     if ( direction !== undefined ) {
         this.direction = direction;
+    }
+
+    if ( portLocation !== undefined ) {
+        this.portLocation = portLocation;
     }
 
 };

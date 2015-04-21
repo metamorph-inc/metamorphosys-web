@@ -94,7 +94,7 @@ angular.module('mms.designEditor', [
             destroy = function() {
 
                 self.inspectableComponent = null;
-                
+
                 removeAllRootScopeEventListeners();
 
                 if (self.diagram) {
