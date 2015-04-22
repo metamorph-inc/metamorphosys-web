@@ -198,13 +198,13 @@ angular.module('mms.designEditor', [
 
                                         if (diagram) {
 
-                                            node.setRegistry('wireSegments', angular.copy(wire.segments));
+                                            node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
                                             node.makePointer('src', wire.end1.port.id);
                                             node.makePointer('dst', wire.end2.port.id);
 
                                             nodeService.completeTransaction(layoutContext);
 
-                                            wire.id = node.id;
+                                            wire.setId(node.id);
                                             diagram.addWire(wire);
                                             gridService.invalidateVisibleDiagramComponents(selectedContainerId);
 
@@ -222,12 +222,12 @@ angular.module('mms.designEditor', [
                     });
 
                     addRootScopeEventListener('wireSegmentsMustBeSaved', function($event, wire, message) {
-                        designLayoutService.setWireSegments(layoutContext, wire.id, angular.copy(wire.segments), message || 'Updating wire');
+                        designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
                     });
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
-                        nodeService.destroyNode(layoutContext, wire.id, message || 'Deleting wire');
+                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
                     });
 
                     addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
@@ -255,7 +255,7 @@ angular.module('mms.designEditor', [
                                     deleteMessage += ' with wires';
 
                                     nodeIdsToDelete = wires.map(function(wire) {
-                                        return wire.id;
+                                        return wire.getId();
                                     });
 
                                 }

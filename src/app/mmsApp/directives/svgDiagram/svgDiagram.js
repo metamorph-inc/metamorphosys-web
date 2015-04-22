@@ -4,8 +4,6 @@
 
 // Move this to GME eventually
 
-require('../componentWire/componentWire.js');
-
 require('../componentWiresContainer/componentWiresContainer.jsx');
 
 require('./operations/moveComponents.js');
@@ -16,7 +14,6 @@ require('./operations/moveWires.js');
 
 angular.module('mms.svgDiagram', [
         'mms.designVisualization.gridService',
-        'mms.designVisualization.componentWire',
 
         'mms.designVisualization.operationsManager',
         'mms.designVisualization.operations.moveComponents',

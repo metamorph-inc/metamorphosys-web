@@ -50,6 +50,10 @@ var Diagram = function() {
 
 };
 
+Diagram.prototype.updateWireSegments = function(wire) {
+    console.log('TODO: updateWireSegmentsForMe', wire );
+};
+
 Diagram.prototype.sortComponentsByZ = function() {
     sortComponentsByZ(this._components);
 };
@@ -86,8 +90,6 @@ Diagram.prototype.addWire = function(aWire) {
             end1 = wire.getEnd1(),
             end2 = wire.getEnd2();
 
-        console.log(end1, end2);
-
         if (angular.isObject(end1.component) && angular.isObject(end2.component)) {
 
             componentId = end1.component.id;
@@ -110,15 +112,29 @@ Diagram.prototype.addWire = function(aWire) {
 
     };
 
+    if (aWire != null) {
 
-    if (angular.isObject(aWire) && !angular.isDefined(this._wiresById[aWire.id])) {
+        var wireId = aWire.getId();
 
-        this._wiresById[aWire.id] = aWire;
-        this._wires.push(aWire);
+        if (wireId != null) {
 
-        registerWireForEnds(aWire);
+            if (!this._wiresById[wireId]) {
 
-        this.emitWireChange(aWire);
+                this._wiresById[wireId] = aWire;
+                this._wires.push(aWire);
+
+                registerWireForEnds(aWire);
+
+                this.emitWireChange(aWire);
+
+
+            } else {
+                console.error('Wire was already added.', wireId);
+            }
+
+        } else {
+            console.error('Wire id is null!');
+        }
 
     }
 
@@ -160,7 +176,7 @@ Diagram.prototype.deleteWireById = function(anId) {
         index = self._wires.indexOf(wire);
         self._wires.splice(index, 1);
 
-        delete self._wiresById[wire.id];
+        delete self._wiresById[wire.getId()];
 
         this.emitWireChange(wire);
 
@@ -183,7 +199,7 @@ Diagram.prototype.deleteComponentById = function(anId) {
 
 
         angular.forEach(self._wiresByComponentId[component.id], function(wire) {
-            self.deleteWireById(wire.id);
+            self.deleteWireById(wire.getId());
         });
 
         index = self.state.selectedComponentIds.indexOf(component.id);
@@ -279,7 +295,6 @@ Diagram.prototype.getComponents = function() {
 };
 
 Diagram.prototype.getWires = function() {
-    console.log('Diagram wires:', this._wires);
     return this._wires;
 };
 
@@ -289,7 +304,7 @@ Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
     if (angular.isObject(wire)) {
 
-        wire.setSegments(newSegments);
+        wire.makeSegmentsFromParameters(newSegments);
 
         this.emitWireChange(wire);
 

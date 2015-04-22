@@ -4,7 +4,7 @@
 
 angular.module('mms.designVisualization.operations.moveWire', [])
 
-    .run(function (operationsManager, $rootScope, wiringService, gridService, $timeout) {
+    .run(function (operationsManager, $rootScope, wiringService, gridService) {
 
         var type;
 
@@ -15,28 +15,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
             operationClass: function () {
 
                 var dragTargetsDescriptor,
-                    dragTargetsWiresUpdate,
-                    wireUpdateWait,
-                    dragTargetsWiresUpdatePromises,
-
                     diagram;
-
-                wireUpdateWait = 20;
-                dragTargetsWiresUpdatePromises = {};
-
-                dragTargetsWiresUpdate = function (affectedWires) {
-
-                    angular.forEach(affectedWires, function (wire) {
-
-                        $timeout.cancel(dragTargetsWiresUpdatePromises[wire.id]);
-
-                        dragTargetsWiresUpdatePromises[wire.id] = $timeout(function () {
-                            wiringService.adjustWireEndSegments(wire);
-                        }, wireUpdateWait);
-
-                    });
-
-                };
 
 
                 this.init = function (aDiagram, possibleDragTargetDescriptor) {
@@ -49,7 +28,9 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                     var i,
                         target,
                         snappedPosition1,
-                        snappedPosition2;
+                        snappedPosition2,
+                        segments,
+                        segmentParameters;
 
                     if (dragTargetsDescriptor) {
 
@@ -57,6 +38,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
 
                             target = dragTargetsDescriptor.targets[i];
 
+                            segments = target.wire.getSegments();
 
                             if (!target.wasCorner) {
 
@@ -72,35 +54,44 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                         y: offset.y + target.deltaToCursor2.y
                                     });
 
+                                segmentParameters = segments[target.segmentIndex - 1].getParameters();
 
-                                target.wire.segments[target.segmentIndex - 1] =
+                                target.wire.replaceSegmentFromProperties(
+                                    target.segmentIndex - 1,
                                     wiringService.getSegmentsBetweenPositions(
                                         {
                                             end1: {
-                                                x: target.wire.segments[target.segmentIndex - 1].x1,
-                                                y: target.wire.segments[target.segmentIndex - 1].y1
+                                                x: segmentParameters.x1,
+                                                y: segmentParameters.y1
                                             },
                                             end2: snappedPosition1
                                         },
-                                        'SimpleRouter')[0];
+                                        'SimpleRouter')[0]
+                                    );
 
-                                target.wire.segments[target.segmentIndex] =
+                                target.wire.replaceSegmentFromProperties(
+                                    target.segmentIndex,
                                     wiringService.getSegmentsBetweenPositions(
                                         {
                                             end1: snappedPosition1,
                                             end2: snappedPosition2
-                                        }, 'SimpleRouter')[0];
+                                        }, 'SimpleRouter')[0]
+                                    );
 
-                                target.wire.segments[target.segmentIndex + 1] =
+                                segmentParameters = segments[target.segmentIndex + 1].getParameters();
+
+                                target.wire.replaceSegmentFromProperties(
+                                    target.segmentIndex + 1,
                                     wiringService.getSegmentsBetweenPositions(
                                         {
                                             end1: snappedPosition2,
                                             end2: {
-                                                x: target.wire.segments[target.segmentIndex + 1].x2,
-                                                y: target.wire.segments[target.segmentIndex + 1].y2
+                                                x: segmentParameters.x2,
+                                                y: segmentParameters.y2
                                             }
                                         },
-                                        'SimpleRouter')[0];
+                                        'SimpleRouter')[0]
+                                    );
                             } else {
 
                                 snappedPosition2 = gridService.getSnappedPosition(
@@ -109,26 +100,34 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                         y: offset.y + target.deltaToCursor2.y
                                     });
 
-                                target.wire.segments[target.segmentIndex] =
+                                segmentParameters = segments[target.segmentIndex].getParameters();                                
+
+                                target.wire.replaceSegmentFromProperties(
+                                    target.segmentIndex,
                                     wiringService.getSegmentsBetweenPositions(
                                         {
                                             end1: {
-                                                x: target.wire.segments[target.segmentIndex].x1,
-                                                y: target.wire.segments[target.segmentIndex].y1
+                                                x: segmentParameters.x1,
+                                                y: segmentParameters.y1
                                             },
                                             end2: snappedPosition2
-                                        }, 'SimpleRouter')[0];
+                                        }, 'SimpleRouter')[0]
+                                    );
 
-                                target.wire.segments[target.segmentIndex + 1] =
+                                segmentParameters = segments[target.segmentIndex + 1].getParameters();
+
+                                target.wire.replaceSegmentFromProperties(
+                                    target.segmentIndex + 1,
                                     wiringService.getSegmentsBetweenPositions(
                                         {
                                             end1: snappedPosition2,
                                             end2: {
-                                                x: target.wire.segments[target.segmentIndex + 1].x2,
-                                                y: target.wire.segments[target.segmentIndex + 1].y2
+                                                x: segmentParameters.x2,
+                                                y: segmentParameters.y2
                                             }
                                         },
-                                        'SimpleRouter')[0];
+                                        'SimpleRouter')[0]
+                                    );
 
                             }
                         }
@@ -147,7 +146,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
 
                         angular.forEach(dragTargetsDescriptor.targets, function (target) {
 
-                            target.wire.segments = target.originalSegments;
+                            target.wire.makeSegmentsFromParameters(target.originalSegmentsParameters);
 
                         });
 

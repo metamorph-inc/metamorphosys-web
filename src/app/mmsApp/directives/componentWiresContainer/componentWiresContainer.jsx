@@ -43,9 +43,6 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                     function render() {
                         var wires = grid.visibleWires;
-
-                        console.log('Visible wires');
-                        
                         React.render(<ComponentWiresContainer wires={wires} diagramCtrl={svgDiagramCtrl}/>, element[0]);    
                     }
 
@@ -88,7 +85,7 @@ var ComponentWiresContainer = React.createClass({
 		var childWires = this.props.wires.map(function(wire){
 
             return (
-                <ComponentWire key={wire.id} wire={wire} diagramCtrl={self.props.diagramCtrl}/>
+                <ComponentWire key={wire.getId()} wire={wire} diagramCtrl={self.props.diagramCtrl}/>
             );
 
         });
@@ -117,8 +114,6 @@ var ComponentWire = React.createClass({
 
         l = segments.length;
 
-        console.log(segments);
-
         for (i = 0; i < l; i++) {
 
             wireSegment = segments[i];
@@ -135,7 +130,7 @@ var ComponentWire = React.createClass({
         }
 
         return (
-            <g className="component-wire" id={this.props.wire.id}>
+            <g className="component-wire" id={this.props.wire.getId()}>
                 {childSegments}
                 {childCorners}
             </g>
@@ -147,11 +142,15 @@ var ComponentWire = React.createClass({
 var ComponentWireSegment = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
+
+        var nextParameters = nextProps.segment.getParameters(),
+            parameters = this.props.segment.getParameters();
+
       return (
-        nextProps.segment.x1 !== this.props.segment.x1 ||
-        nextProps.segment.x2 !== this.props.segment.x2 ||
-        nextProps.segment.y1 !== this.props.segment.y1 ||
-        nextProps.segment.y2 !== this.props.segment.y2
+        nextParameters.x1 !== parameters.x1 ||
+        nextParameters.x2 !== parameters.x2 ||
+        nextParameters.y1 !== parameters.y1 ||
+        nextParameters.y2 !== parameters.y2
         );
     },
 
@@ -169,22 +168,24 @@ var ComponentWireSegment = React.createClass({
 
     render: function(){
 
+        var parameters = this.props.segment.getParameters();
+
         return (
             <g className="component-wire-segment"
                onMouseDown={this.onMouseDown}
                onMouseUp={this.onMouseUp}
                >
                   <line className="component-wire-segment-under"
-                        x1={this.props.segment.x1}
-                        y1={this.props.segment.y1}
-                        x2={this.props.segment.x2}
-                        y2={this.props.segment.y2}/>
+                        x1={parameters.x1}
+                        y1={parameters.y1}
+                        x2={parameters.x2}
+                        y2={parameters.y2}/>
 
                   <line className="component-wire-segment-segment"
-                        x1={this.props.segment.x1}
-                        y1={this.props.segment.y1}
-                        x2={this.props.segment.x2}
-                        y2={this.props.segment.y2}/>
+                        x1={parameters.x1}
+                        y1={parameters.y1}
+                        x2={parameters.x2}
+                        y2={parameters.y2}/>
             </g>
         );
 
@@ -194,10 +195,15 @@ var ComponentWireSegment = React.createClass({
 var ComponentWireCorner = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
-      return (
-        nextProps.segment.x2 !== this.props.segment.x2 ||
-        nextProps.segment.y2 !== this.props.segment.y2
-        );
+
+        var nextParameters = nextProps.segment.getParameters(),
+            parameters = this.props.segment.getParameters();
+
+
+          return (
+            nextParameters.x2 !== parameters.x2 ||
+            nextParameters.y2 !== parameters.y2
+            );
     },
 
     onMouseDown: function(e) {
@@ -214,12 +220,14 @@ var ComponentWireCorner = React.createClass({
 
     render: function(){
 
+        var parameters = this.props.segment.getParameters();
+
         return (
             <rect className="component-wire-corner"
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
-                x={this.props.segment.x2 - 3}
-                y={this.props.segment.y2 - 3}
+                x={parameters.x2 - 3}
+                y={parameters.y2 - 3}
                 width="6" height="6" fill="black" strokeWidth="1"/>
               );
 

@@ -4,6 +4,8 @@
 
 module.exports = function($scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
 
+    var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
+
     var
         onComponentContextmenu,
         onWireContextmenu,
@@ -101,7 +103,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                     iconClass: 'fa fa-trash-o',
                     action: function() {
 
-                        ga('send', 'event', 'wire', 'destroy', wire.id);
+                        ga('send', 'event', 'wire', 'destroy', wire.getId());
 
                         $rootScope.$emit('wireDeletionMustBeDone', wire);
                     }
@@ -124,24 +126,27 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                         var sIndex,
                             nextSegment;
 
-                        sIndex = wire.segments.indexOf(segment);
+                        sIndex = wire.getSegments().indexOf(segment);
 
-                        nextSegment = wire.segments[sIndex + 1];
+                        nextSegment = wire.getSegments()[sIndex + 1];
 
-                        wire.segments[sIndex + 1] = wiringService.getSegmentsBetweenPositions({
+                        var properties = segment.getProperties();
+                        var nextProperties = nextSegment.getProperties();
+
+                        wire.getSegments()[sIndex + 1] = wiringService.getSegmentsBetweenPositions({
                             end1: {
-                                x: segment.x1,
-                                y: segment.y1
+                                x: properties.x1,
+                                y: properties.y1
                             },
                             end2: {
-                                x: nextSegment.x2,
-                                y: nextSegment.y2
+                                x: nextProperties.x2,
+                                y: nextProperties.y2
                             }
                         }, 'SimpleRouter')[0];
 
-                        wire.segments.splice(sIndex, 1);
+                        wire.getSegments().splice(sIndex, 1);
 
-                        ga('send', 'event', 'corner', 'destroy', wire.id, sIndex);
+                        ga('send', 'event', 'corner', 'destroy', wire.getId(), sIndex);
 
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
@@ -160,30 +165,21 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                     action: function() {
 
                         var sIndex,
-                            newSegment,
-                            newPosition;
+                            newSegmentParameters1,
+                            newSegmentParameters2,
+                            newPosition,
+                            segmentParameters;
 
-                        sIndex = wire.segments.indexOf(segment);
+                        sIndex = wire.getSegments().indexOf(segment);
 
                         newPosition = getOffsetToMouse($event);
 
-                        newSegment = wiringService.getSegmentsBetweenPositions({
+                        segmentParameters = segment.getParameters();
+
+                        newSegmentParameters1 = wiringService.getSegmentsBetweenPositions({
                             end1: {
-                                x: newPosition.x,
-                                y: newPosition.y
-                            },
-
-                            end2: {
-                                x: segment.x2,
-                                y: segment.y2
-                            }
-                        }, 'SimpleRouter')[0];
-
-
-                        wire.segments[sIndex] = wiringService.getSegmentsBetweenPositions({
-                            end1: {
-                                x: segment.x1,
-                                y: segment.y1
+                                x: segmentParameters.x1,
+                                y: segmentParameters.y1
                             },
 
                             end2: {
@@ -192,9 +188,27 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                             }
                         }, 'SimpleRouter')[0];
 
-                        wire.segments.splice(sIndex + 1, 0, newSegment);
 
-                        ga('send', 'event', 'corner', 'add', wire.id, sIndex);
+                        newSegmentParameters2 = wiringService.getSegmentsBetweenPositions({
+                            end1: {
+                                x: newPosition.x,
+                                y: newPosition.y
+                            },
+
+                            end2: {
+                                x: segmentParameters.x2,
+                                y: segmentParameters.y2
+                            }
+                        }, 'SimpleRouter')[0];
+
+
+                        wire.deleteSegment(sIndex);
+                        wire.insertSegment(sIndex, new WireSegment(newSegmentParameters1, wire));
+                        wire.insertSegment(sIndex + 1, new WireSegment(newSegmentParameters2, wire));
+
+                        $scope.diagram.updateWireSegments(wire);
+
+                        ga('send', 'event', 'corner', 'add', wire.getId(), sIndex);
 
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
@@ -232,7 +246,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
                     angular.forEach(wires, function(wire) {
 
-                        ga('send', 'event', 'wire', 'redraw', wire.id);
+                        ga('send', 'event', 'wire', 'redraw', wire.getId());
 
                         wiringService.routeWire(wire, routerType.type, routerType.params);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);

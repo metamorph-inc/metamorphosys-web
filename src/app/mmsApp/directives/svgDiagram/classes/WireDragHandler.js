@@ -64,17 +64,6 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
     finishDrag = function () {
 
-        //angular.forEach(dragTargetsDescriptor.targets, function (target) {
-        //    $rootScope.$emit('wireSegmentsMustBeSaved', target.wire);
-        //
-        //    if (target.wasCorner) {
-        //        ga('send', 'event', 'corner', 'drag', target.wire.id);
-        //    } else {
-        //        ga('send', 'event', 'wire', 'drag', target.wire.id);
-        //    }
-        //
-        //});
-
         possibbleDragTargetsDescriptor = null;
 
         if (angular.isObject(moveOperation)) {
@@ -142,23 +131,24 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
             indexOfSegment,
             primartyTargetDescriptor;
 
-        getDragDescriptor = function (wire, segment, sIndex) {
+        getDragDescriptor = function (aWire, aSegment, sIndex) {
 
-            var offset = getOffsetToMouse($event);
+            var offset = getOffsetToMouse($event),
+                parameters = aSegment.getParameters();
 
             return {
-                wire: wire,
-                segment: segment,
+                wire: aWire,
+                segment: aSegment,
                 segmentIndex: sIndex,
-                originalSegments: angular.copy(wire.segments),
+                originalSegmentsParameters: aWire.getCopyOfSegmentsParameters(),
                 wasCorner: wasCorner,
                 deltaToCursor1: {
-                    x: segment.x1 - offset.x,
-                    y: segment.y1 - offset.y
+                    x: parameters.x1 - offset.x,
+                    y: parameters.y1 - offset.y
                 },
                 deltaToCursor2: {
-                    x: segment.x2 - offset.x,
-                    y: segment.y2 - offset.y
+                    x: parameters.x2 - offset.x,
+                    y: parameters.y2 - offset.y
                 }
 
             };
@@ -168,9 +158,11 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         if (angular.isObject(wire) && angular.isObject(segment)) {
 
-            indexOfSegment = wire.segments.indexOf(segment);
+            var segments = wire.getSegments();
 
-            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < wire.segments.length - 1) {
+            indexOfSegment = segments.indexOf(segment);
+
+            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < segments.length - 1) {
 
                 $scope.diagram.config = $scope.diagram.config || {};
 

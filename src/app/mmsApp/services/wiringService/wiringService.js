@@ -124,8 +124,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                         p2
                     ], params);
 
-
-                    wire.setSegments(s1.concat(s2).concat(s3));
+                    wire.makeSegmentsFromParameters(s1.concat(s2).concat(s3));
 
                 }
 
@@ -141,72 +140,91 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 lastSegment,
                 endPositions = wire.getEndPositions(),
                 segments = wire.getSegments(),
-                newSegments,
+                newSegmentParameters,
+                segmentParams,
+                router,
                 pos;
 
             if (Array.isArray(segments) && segments.length > 1) {
+                
+                // If this wire has more than one segments
+
+                // Creating new begining for wire
 
                 firstSegment = segments[0];
+                segmentParams = firstSegment.getParameters();
+                router = segmentParams.router;                
 
-                if (firstSegment.router && firstSegment.router.type === 'ElbowRouter') {
+                if (router && router.type === 'ElbowRouter') {
 
                     secondSegment = segments[1];
+                    segmentParams = secondSegment.getParameters();
 
                     pos = {
-                        x: secondSegment.x2,
-                        y: secondSegment.y2
+                        x: segmentParams.x2,
+                        y: segmentParams.y2
                     };
-
-                    segments.splice(0, 2);
 
                 } else {
 
-                    // SimpleRouter
+                    // Use SimpleRouter
 
                     pos = {
-                        x: firstSegment.x2,
-                        y: firstSegment.y2
+                        x: segmentParams.x2,
+                        y: segmentParams.y2
                     };
 
-                    segments.splice(0, 1);
                 }
 
-                newSegments = self.getSegmentsBetweenPositions({
-                    end1: endPositions.end1,
-                    end2: pos
-                }, firstSegment.router.type, firstSegment.router.params);
+                newSegmentParameters = self.getSegmentsBetweenPositions(
+                    {
+                        end1: endPositions.end1,
+                        end2: pos
+                    }, 
+                    router.type, 
+                    router.params
+                );
 
-                wire.setSegments(newSegments.concat(segments));
+                wire.replaceSegmentsFromPropertiesArray(0, newSegmentParameters);
+
+
+                // Creating new end for wire
 
                 lastSegment = segments[segments.length - 1];
+                segmentParams = lastSegment.getParameters();
+                router = segmentParams.router;
 
-                if (lastSegment.router && lastSegment.router.type === 'ElbowRouter') {
+                if (router && router.type === 'ElbowRouter') {
 
                     secondToLastSegment = segments[segments.length - 2];
+                    segmentParams = secondToLastSegment.getParameters();
 
                     pos = {
-                        x: secondToLastSegment.x1,
-                        y: secondToLastSegment.y1
+                        x: segmentParams.x1,
+                        y: segmentParams.y1
                     };
-
-                    segments.splice(segments.length - 2, 2);
 
                 } else {
 
+                    // Use SimpleRouter                    
+
                     pos = {
-                        x: lastSegment.x1,
-                        y: lastSegment.y1
+                        x: segmentParams.x1,
+                        y: segmentParams.y1
                     };
 
-                    segments.splice(segments.length - 1, 1);
                 }
 
-                newSegments = self.getSegmentsBetweenPositions({
-                    end1: pos,
-                    end2: endPositions.end2
-                }, lastSegment.router.type, lastSegment.router.params);
+                newSegmentParameters = self.getSegmentsBetweenPositions(
+                    {
+                        end1: pos,
+                        end2: endPositions.end2
+                    }, 
+                    router.type, 
+                    router.params
+                );
 
-                wire.setSegments(segments.concat(newSegments));
+                wire.replaceSegmentsFromPropertiesArray(segments.length - newSegmentParameters.length, newSegmentParameters);
 
             } else {
 

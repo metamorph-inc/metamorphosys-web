@@ -170,9 +170,9 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                     }
                 );
 
-                if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
-
-                    wire.setSegments(angular.copy(element.details.wireSegments));
+                if (Array.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+                    
+                    wire.makeSegmentsFromParameters(angular.copy(element.details.wireSegments));
                     wiringService.adjustWireEndSegments(wire);
 
                 } else {
