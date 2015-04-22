@@ -149,6 +149,8 @@ Diagram.prototype.deleteWireById = function(anId) {
 
     self = this;
 
+
+
     wire = self._wiresById[anId];
 
     if (angular.isObject(wire)) {
@@ -242,7 +244,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         this.deselectComponent(anId);
 
-        self.deleteComponentById(element.id);
+        self.deleteComponentById(anId);
         success = true;
 
     } else {
@@ -251,7 +253,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         if (angular.isObject(element)) {
 
-            self.deleteWireById(element.id);
+            self.deleteWireById(anId);
             success = true;
 
         }
