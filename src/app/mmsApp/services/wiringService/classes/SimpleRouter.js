@@ -8,18 +8,16 @@ var SimpleRouter = function () {
 
         var i,
             point1, point2,
-            segments;
+            segment;
 
         if ( angular.isArray( points ) && points.length >= 2 ) {
-
-            segments = [];
 
             for ( i = 0; i < points.length - 1; i++ ) {
 
                 point1 = points[ i ];
                 point2 = points[ i + 1 ];
 
-                segments.push( {
+                segment = {
 
                     router: {
                         type: 'SimpleRouter'
@@ -33,13 +31,19 @@ var SimpleRouter = function () {
                     x2: point2.x,
                     y2: point2.y
 
-                } );
+                };
+
+                if ( point1.x1 === point2.x1 ) {
+                    segment.orientation = 'vertical';
+                } else if ( point1.y1 === point2.y2 ) {
+                    segment.orientation = 'horizontal';
+                }
 
             }
 
         }
 
-        return segments;
+        return [ segment ];
 
     };
 
