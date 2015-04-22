@@ -168,6 +168,7 @@ define( [ 'plugin/PluginConfig',
                 for ( var hash in hash2acmJsonMap ) {
                     acmJson = hash2acmJsonMap[ hash ];
                     newAcm = self.createNewAcm( acmFolderNode, hash, acmJson );
+                    self.createMessage(newAcm, 'Added ACM', 'debug');
 
                     xPosition = xOffset + xSpacing * ( numExisting % componentsPerRow );
                     yPosition = yOffset + ySpacing * ( Math.floor( numExisting / componentsPerRow ) );
