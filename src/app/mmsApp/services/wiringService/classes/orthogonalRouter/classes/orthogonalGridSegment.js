@@ -153,6 +153,84 @@ OrthogonalGridSegment.prototype.isPointOnLine = function ( point ) {
 };
 
 
+/**
+ * Sort the segment end points so that x1/y1 are less than x2/y2.
+ */
+OrthogonalGridSegment.prototype.sortSegmentEndPoints = function () {
+    if (this.x2 < this.x1) {
+        var tmpx = this.x2;
+        this.x2 = this.x1;
+        this.x1 = tmpx;
+    }
+
+    if (this.y2 < this.y1) {
+        var tmpy = this.y2;
+        this.y2 = this.y1;
+        this.y1 = tmpy;
+    }
+};
+
+
+/**
+ * Concatenate two segments of similar orientation together.
+ * @param segmentB
+ */
+OrthogonalGridSegment.prototype.extend = function ( segmentB ) {
+    if (this.orientation === "horizontal" && this.x1 < segmentB.x1 && this.x1 < segmentB.x2) {
+        segmentB.x1 = this.x1;
+    }
+    else if (this.orientation === "horizontal" && this.x1 < segmentB.x1 && this.x1 < segmentB.x2) {
+        segmentB.x1 = this.x1;
+    }
+
+    segmentB.x1 = this.x2 === segmentB.x1 ? this.x1 : segmentB.x1;
+    segmentB.x2 = this.x1 === segmentB.x2 ? this.x2 : segmentB.x2;
+    segmentB.y1 = this.y2 === segmentB.y1 ? this.y1 : segmentB.y1;
+    segmentB.y2 = this.y1 === segmentB.y2 ? this.y2 : segmentB.y2;
+
+    segmentB.objectLeft = this.ObjectLeft < segmentB.objectLeft ? this.ObjectLeft : segmentB.objectLeft;
+    segmentB.objectRight = this.ObjectRight < segmentB.objectRight ? this.ObjectRight : segmentB.objectRight;
+};
+
+
+OrthogonalGridSegment.prototype.findClosestObjects = function ( nodeA, nodeB ) {
+    var leftNeighborEnd1, leftNeighborEnd2,
+        rightNeighborEnd1, rightNeighborEnd2;
+
+    if (this.x1 === this.x2) {
+        this.orientation = "vertical";
+
+        // Find furthest distance you can travel west before hitting object.
+        leftNeighborEnd1 = nodeA.findClosestObject("west");
+        leftNeighborEnd2 = nodeB.findClosestObject("west");
+        this.objectLeft = Math.min(Math.abs(this.x1 - leftNeighborEnd1),
+                                   Math.abs(this.x1 - leftNeighborEnd2));
+
+        // Find furthest distance you can travel east before hitting object.
+        rightNeighborEnd1 = nodeA.findClosestObject("east");
+        rightNeighborEnd2 = nodeB.findClosestObject("east");
+        this.objectRight = Math.min(Math.abs(this.x1 - rightNeighborEnd1),
+                                    Math.abs(this.x1 - rightNeighborEnd2));
+    }
+    else {
+        this.orientation = "horizontal";
+
+        // Find furthest distance you can travel north before hitting object.
+        leftNeighborEnd1 = nodeA.findClosestObject("north");
+        leftNeighborEnd2 = nodeB.findClosestObject("north");
+        this.objectLeft = Math.min(Math.abs(this.y1 - leftNeighborEnd1),
+                                   Math.abs(this.y1 - leftNeighborEnd2));
+
+        // Find furthest distance you can travel south before hitting object.
+        rightNeighborEnd1 = nodeA.findClosestObject("south");
+        rightNeighborEnd2 = nodeB.findClosestObject("south");
+        this.objectRight = Math.min(Math.abs(this.y1 - rightNeighborEnd1),
+                                    Math.abs(this.y1 - rightNeighborEnd2));
+
+    }
+};
+
+
 module.exports = OrthogonalGridSegment;
 
 

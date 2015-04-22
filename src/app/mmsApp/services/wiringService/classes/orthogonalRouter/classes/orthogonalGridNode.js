@@ -166,5 +166,10 @@ OrthogonalGridNode.prototype.findClosestObject = function( direction ) {
 
 };
 
+
+
+
+
+
 module.exports = OrthogonalGridNode;
 

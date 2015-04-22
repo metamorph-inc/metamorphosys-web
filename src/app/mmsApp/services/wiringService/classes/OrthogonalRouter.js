@@ -3,8 +3,7 @@
 var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     Point = require("./orthogonalRouter/classes/Point.js"),
     OrthogonalGridNode = require("./orthogonalRouter/classes/OrthogonalGridNode.js"),
-    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js"),
-    VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js");
+    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js");
 
 
 var OrthogonalRouter = function () {
@@ -21,33 +20,40 @@ var OrthogonalRouter = function () {
         // Step 4: deleteOldRoutes
         // Step 5: drawConnections <-- Is this done here or somewhere else??
 
-        console.log('------ This is the entry point', diagram);
+        var validDiagram = this.validDiagramForAutoRoute ( diagram.getComponents(),
+                                                           diagram.config.height,
+                                                           diagram.config.width );
 
-        var start = performance.now();
-        // Get interesting points from components.
-        var points = this.getBoundingBoxAndPortPointsFromComponents( diagram.getComponents() );
+        if ( validDiagram ) {
+            var start = performance.now();
 
-        var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
-            visibilityGraph = new VisibilityGraph();
+            var points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents());
 
-        visibilityGraph.generate( points, diagram.config.width, diagram.config.height );
+            var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
+                visibilityGraph = new VisibilityGraph();
 
-        //diagram.sweepLines = visibilityGraph.edges;
-        //diagram.sweepPoints = visibilityGraph.vertices;
-        var end = performance.now();
+            visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
-        console.log("Graph time: " + (end - start));
-        start = performance.now();
-        var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
-        //var nudgedConnections = nudgeConnections(visibilityGraph, optimalConnections);
-        var tempSegs = optimalConnections.reduce(function(a,b) {
-            return a.concat(b);
-        });
-        diagram.optimalConnections = tempSegs;
-        end = performance.now();
-        console.log("Route time: " + (end - start));
+            var end = performance.now();
 
+            console.log("Graph time: " + (end - start));
+            start = performance.now();
+            var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
+
+            var nudgedConnections = nudgeConnections(optimalConnections);
+
+            end = performance.now();
+            console.log("Route time: " + (end - start));
+
+
+            //diagram.sweepLines = visibilityGraph.edges;
+            //diagram.sweepPoints = visibilityGraph.vertices;
+            //var tempSegments = nudgedConnections.reduce(function (a, b) {
+            //    return a.concat(b);
+            //});
+            //diagram.optimalConnections = tempSegments;
+        }
     };
 
     this.getBoundingBoxAndPortPointsFromComponents = function ( components ) {
@@ -108,20 +114,13 @@ var OrthogonalRouter = function () {
 
         for ( var i = 0; i < wires.length; i++ ) {
 
-            var wireAngle = wires[i].end1.port.getGridWireAngle(),
-                wireAngle2 = wires[i].end2.port.getGridWireAngle();
+            var wireAngle = wires[i].end1.port.getGridWireAngle();
 
             // Convert from getGridWireAngle() output to array index.
             if (wireAngle === 90 || wireAngle === -270) {wireAngle = 1;}
             else if (wireAngle === 180 || wireAngle === -180) {wireAngle = 2;}
             else if (wireAngle === 270 || wireAngle === -90) {wireAngle = 0;}
             else if (wireAngle === 0 || wireAngle === 360 || wireAngle === -360) {wireAngle = 3;}
-
-            // Convert from getGridWireAngle() output to array index.
-            if (wireAngle2 === 90 || wireAngle2 === -270) {wireAngle2 = 1;}
-            else if (wireAngle2 === 180 || wireAngle2 === -180) {wireAngle2 = 2;}
-            else if (wireAngle2 === 270 || wireAngle2 === -90) {wireAngle2 = 0;}
-            else if (wireAngle2 === 0 || wireAngle2 === 360 || wireAngle2 === -360) {wireAngle2 = 3;}
 
             var j,
                 numberOfPoints = points.length,
@@ -144,13 +143,12 @@ var OrthogonalRouter = function () {
                     }
                 }
             }
-            
-            var result = this.findOptimalRouteSimple( visibilityGrid.nodes,
-                                                     wire1Position,
-                                                     wire2Position,
-                                                     wireAngle,
-                                                     wireAngle2,
-                                                     searchedNodes);
+
+            var result = findOptimalRouteSimple( visibilityGrid.nodes,
+                                                 wire1Position,
+                                                 wire2Position,
+                                                 wireAngle,
+                                                 searchedNodes);
 
             optimalConnections.push(result.path);
             searchedNodes = result.dirtyNodes;
@@ -165,8 +163,8 @@ var OrthogonalRouter = function () {
 
     };
 
-    this.findOptimalRouteSimple = function ( visibilityGrid, startPt, endPt,
-                                            startWireAngle, endWireAngle, searchedNodes ) {
+
+    function findOptimalRouteSimple ( visibilityGrid, startPt, endPt, startWireAngle, searchedNodes ) {
         // A* Search
         // cost = cost of this partial path from the start node to the current node, plus current number of bends.
         // heuristic = estimated guess for the cost of the remaining path from the current node to end node, plus
@@ -198,8 +196,7 @@ var OrthogonalRouter = function () {
 
             // Check if goal node has been reached, retrace path.
             if (destinationNode.compareXTo(currentNode) === 0 && destinationNode.compareYTo(currentNode) === 0) {
-                return { "path": returnPath(visibilityGrid, currentNode, startPt, endPt,
-                                            endWireAngle, startWireAngle),
+                return { "path": returnPath(visibilityGrid, currentNode, startPt, endPt),
                          "dirtyNodes": searchedNodes };
             }
 
@@ -246,7 +243,7 @@ var OrthogonalRouter = function () {
                     // If this node has not yet been encountered, add it to the priority queue. If it has,
                     // then its score needs to be re-checked against the other nodes in the queue.
                     if (!visited) {
-                        insert(n, openHeap, compareScore);  // TODO
+                        insert(n, openHeap, OrthogonalGridNode.compareScore);
                         searchedNodes.push(n);  // Mark the node as searched.
                     }
                     else {
@@ -257,16 +254,12 @@ var OrthogonalRouter = function () {
                                 break;
                             }
                         }
-                        insert(n, openHeap, compareScore);  //TODO
+                        insert(n, openHeap, OrthogonalGridNode.compareScore);
                     }
                 }
             }
 
         }
-    };
-
-    function compareScore(a, b) {
-        return a.score - b.score;
     }
 
     function resetSearchedNodes(searchedNodes) {
@@ -276,98 +269,54 @@ var OrthogonalRouter = function () {
         return [];
     }
 
-    function returnPath(visibilityGrid, currentNode, startPt, endPt, endWireAngle, startWireAngle) {
+    function returnPath(visibilityGrid, currentNode, startPt, endPt) {
         var segments = [],
             segment;
 
-        segment = {};
-        segment.x1 = endPt.portLocation.x;
-        segment.y1 = endPt.portLocation.y;
-        segment.x2 = endPt.x;
-        segment.y2 = endPt.y;
+        segment = new OrthogonalGridSegment(endPt.portLocation.x,
+                                            endPt.portLocation.y,
+                                            endPt.x,
+                                            endPt.y);
         if (segment.x1 === segment.x2) {
             segment.orientation = "vertical";
         }
         else {
             segment.orientation = "horizontal";
         }
+        segment.sortSegmentEndPoints();
+        segment.objectLeft = 0;
+        segment.objectRight = 0;
         segments.push(segment);
-        segment = {};
 
         while ( currentNode.parent !== null ) {
-            segment.x1 = currentNode.x;
-            segment.y1 = currentNode.y;
-            segment.x2 = currentNode.parent.x;
-            segment.y2 = currentNode.parent.y;
+            segment = new OrthogonalGridSegment(currentNode.x,
+                                                currentNode.y,
+                                                currentNode.parent.x,
+                                                currentNode.parent.y);
             segment.objectLeft = null;   // How far to left/top can you go before hitting object/boundary?
             segment.objectRight = null;  // " " to right/bottom
 
 
-            // Sort coordinates.
-            if (segment.x2 < segment.x1) {
-                var tmpx = segment.x2;
-                segment.x2 = segment.x1;
-                segment.x1 = tmpx;
-            }
-            if (segment.y2 < segment.y1) {
-                var tmpy = segment.y2;
-                segment.y2 = segment.y1;
-                segment.y1 = tmpy;
-            }
+            segment.sortSegmentEndPoints();
 
-            var leftNeighborEnd1, leftNeighborEnd2,
-                rightNeighborEnd1, rightNeighborEnd2;
-            if (segment.x1 === segment.x2) {
-                segment.orientation = "vertical";
-
-                // Find furthest distance you can travel west before hitting object.
-                leftNeighborEnd1 = currentNode.findClosestObject("west");
-                leftNeighborEnd2 = currentNode.parent.findClosestObject("west");
-                segment.objectLeft = Math.min(Math.abs(segment.x1 - leftNeighborEnd1),
-                                              Math.abs(segment.x1 - leftNeighborEnd2));
-
-                // Find furthest distance you can travel east before hitting object.
-                rightNeighborEnd1 = currentNode.findClosestObject("east");
-                rightNeighborEnd2 = currentNode.parent.findClosestObject("east");
-                segment.objectRight = Math.min(Math.abs(segment.x1 - rightNeighborEnd1),
-                                               Math.abs(segment.x1 - rightNeighborEnd2));
-            }
-            else {
-                segment.orientation = "horizontal";
-
-                // Find furthest distance you can travel north before hitting object.
-                leftNeighborEnd1 = currentNode.findClosestObject("north");
-                leftNeighborEnd2 = currentNode.parent.findClosestObject("north");
-                segment.objectLeft = Math.min(Math.abs(segment.y1 - leftNeighborEnd1),
-                                              Math.abs(segment.y1 - leftNeighborEnd2));
-
-                // Find furthest distance you can travel south before hitting object.
-                rightNeighborEnd1 = currentNode.findClosestObject("south");
-                rightNeighborEnd2 = currentNode.parent.findClosestObject("south");
-                segment.objectRight = Math.min(Math.abs(segment.y1 - rightNeighborEnd1),
-                                               Math.abs(segment.y1 - rightNeighborEnd2));
-
-            }
+            segment.findClosestObjects( currentNode, currentNode.parent );
 
             var prevSeg = segments[segments.length - 1];
             if (segments.length !== 0 && prevSeg.orientation === segment.orientation) {
-                extendWireSegment(segment, prevSeg);
+                segment.extend(prevSeg);
             }
             else {
                 segments.push(segment);
             }
 
             currentNode = visibilityGrid[currentNode.parent.x][currentNode.parent.y];
-            segment = {};
-
         }
 
         var lastSegment = segments[segments.length - 1];
-        segment = {};
-        segment.x1 = startPt.portLocation.x;
-        segment.y1 = startPt.portLocation.y;
-        segment.x2 = startPt.x;
-        segment.y2 = startPt.y;
+        segment = new OrthogonalGridSegment(startPt.portLocation.x,
+                                            startPt.portLocation.y,
+                                            startPt.x,
+                                            startPt.y);
         if (segment.x1 === segment.x2) {
             segment.orientation = "vertical";
         }
@@ -375,45 +324,19 @@ var OrthogonalRouter = function () {
             segment.orientation = "horizontal";
         }
 
-        // Sort coordinates.
-        if (segment.x2 < segment.x1) {
-            var tmpx = segment.x2;
-            segment.x2 = segment.x1;
-            segment.x1 = tmpx;
-        }
-        if (segment.y2 < segment.y1) {
-            var tmpy = segment.y2;
-            segment.y2 = segment.y1;
-            segment.y1 = tmpy;
-        }
+        segment.sortSegmentEndPoints();
+        segment.objectLeft = 0;
+        segment.objectRight = 0;
 
         if (lastSegment.orientation === segment.orientation) {
-            extendWireSegment(segment, lastSegment);
+            segment.extend(lastSegment);
         }
         else {
             segments.push(segment);
         }
 
-
         return segments;
 
-    }
-
-    function extendWireSegment(segment, prevSeg) {
-        if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
-            prevSeg.x1 = segment.x1;
-        }
-        else if (segment.orientation === "horizontal" && segment.x1 < prevSeg.x1 && segment.x1 < prevSeg.x2) {
-            prevSeg.x1 = segment.x1;
-        }
-
-        prevSeg.x1 = segment.x2 === prevSeg.x1 ? segment.x1 : prevSeg.x1;
-        prevSeg.x2 = segment.x1 === prevSeg.x2 ? segment.x2 : prevSeg.x2;
-        prevSeg.y1 = segment.y2 === prevSeg.y1 ? segment.y1 : prevSeg.y1;
-        prevSeg.y2 = segment.y1 === prevSeg.y2 ? segment.y2 : prevSeg.y2;
-
-        prevSeg.objectLeft = segment.ObjectLeft < prevSeg.objectLeft ? segment.ObjectLeft : prevSeg.objectLeft;
-        prevSeg.objectRight = segment.ObjectRight < prevSeg.objectRight ? segment.ObjectRight : prevSeg.objectRight;
     }
 
     function estimateRemainingBends(start, end, dir) {
@@ -458,231 +381,129 @@ var OrthogonalRouter = function () {
     }
 
 
-    function nudgeConnections(visibilityGraph, connections) {
-        // Step 0: Add in any necessary port lead in segments
-        // var updatedConnections = correctPortLeadIns(connections);
-
-        // Step 1: Gather list of shared edges
-        var sharedEdges = getSharedEdges(connections);
+    ////////////////////////////////////////////////////////////////////////////
+    /*                              Wire Nudger                               */
+    ////////////////////////////////////////////////////////////////////////////
 
 
+    function nudgeConnections( connections ) {
 
-        // Step 2: While list of shared edges is populated...
+        var sharedEdges = getSharedEdges(connections),
+            xyDirection;
+
         while (sharedEdges.vertical.length > 0 || sharedEdges.horizontal.length > 0) {
 
-            var sharedEdge,
-                edge,
-                e,
-                seg,
-                moveLeft,
-                maxMove,
-                spacing,
-                edgeSep = null;
-            // Preference to nudging vertical routes
-            if (sharedEdges.vertical.length > 0) {
+            var sharedEdge;
+
+            if ( sharedEdges.vertical.length > 0 ) {
                 sharedEdge = sharedEdges.vertical.pop();
-
-                for (e in sharedEdge) {
-                    seg = sharedEdge[e];
-                    edge = connections[e][seg.idx];
-                    var oldEdge = edge.x1;
-                    if (true ) { //! edge.hasOwnProperty("port") ) {
-                        moveLeft = edge.objectLeft > edge.objectRight;
-                        maxMove = moveLeft ? edge.objectLeft : edge.objectRight;
-                        spacing = maxMove / Object.keys(sharedEdge).length;
-                        if (edgeSep === null) {
-                            edgeSep = spacing > 10 ? 10 : spacing;
-                        }
-
-                        if (moveLeft) {
-                            edge.x1 -= edgeSep;
-                            edge.x2 -= edgeSep;
-
-                            if ( seg.idx === 0 ) {
-                                // find which x is the vertex
-                                var x = connections[e][1].x1 === oldEdge ? "x1" : "x2";
-                                connections[e][1][x] -= edgeSep;
-                                connections[e].unshift({x1: connections[e][1][x], x2: oldEdge, y1: edge.port.y, y2: edge.port.y, orientation: "horizontal"});
-                                //reindex segments
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else if (seg.idx === connections[e].length - 1) {
-                                var x = connections[e][connections[e].length -2].x1 === oldEdge ? "x1" : "x2";
-                                connections[e][connections[e].length -2][x] -= edgeSep;
-                                connections[e].push({x1: connections[e][connections[e].length -2][x], x2: oldEdge, y1: edge.port.y, y2: edge.port.y, orientation: "horizontal"});
-                                // reorder segment idx
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else {
-                                var seg1 = connections[e][seg.idx - 1],
-                                    seg2 = connections[e][seg.idx + 1];
-
-                                var seg1X = seg1.x1 === edge.x1 ? "x1" : "x2",
-                                    seg2X = seg1.x2 === edge.x1 ? "x2" : "x1";
-
-                                seg1[seg1X] -= edgeSep;
-                                seg2[seg2X] -= edgeSep;
-
-                                connections[e][seg.idx - 1] = seg1;
-                                connections[e][seg.idx + 1] = seg2;
-                            }
-                        }
-                        else {
-                            edge.x1 += edgeSep;
-                            edge.x2 += edgeSep;
-
-                            if ( seg.idx === 0 ) {
-                                // find which x is the vertex
-                                var x = connections[e][1].x1 === oldEdge ? "x1" : "x2";
-                                connections[e][1][x] += edgeSep;
-                                connections[e].unshift({x1: connections[e][1][x], x2: oldEdge, y1: edge.port.y, y2: edge.port.y, orientation: "horizontal"});
-                                //reindex segments
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else if (seg.idx === connections[e].length - 1) {
-                                var x = connections[e][connections[e].length -2].x1 === oldEdge ? "x1" : "x2";
-                                connections[e][connections[e].length -2][x] += edgeSep;
-                                connections[e].push({x1: connections[e][connections[e].length -2][x], x2: oldEdge, y1: edge.port.y, y2: edge.port.y, orientation: "horizontal"});
-                                // reorder segment idx
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else {
-                                var seg1 = connections[e][seg.idx - 1],
-                                    seg2 = connections[e][seg.idx + 1];
-
-                                var seg1X = seg1.x1 === oldEdge ? "x1" : "x2",
-                                    seg2X = seg1.x2 === oldEdge ? "x2" : "x1";
-
-                                seg1[seg1X] += edgeSep;
-                                seg2[seg2X] += edgeSep;
-
-                                connections[e][seg.idx - 1] = seg1;
-                                connections[e][seg.idx + 1] = seg2;
-                            }
-                        }
-                        edgeSep += edgeSep;
-                    }
-                    connections[e][seg.idx] = edge;  // update connection
-
-                }
+                xyDirection = "x";
             }
             else {
                 sharedEdge = sharedEdges.horizontal.pop();
-
-                for (e in sharedEdge) {
-                    seg = sharedEdge[e];
-                    edge = connections[e][seg.idx];
-                    var oldEdge = edge.y1;
-                    if (true ) { //! edge.hasOwnProperty("port") ) {
-                        moveLeft = edge.objectLeft > edge.objectRight;
-                        maxMove = moveLeft ? edge.objectLeft : edge.objectRight;
-                        spacing = maxMove / Object.keys(sharedEdge).length;
-                        if (edgeSep === null) {
-                            edgeSep = spacing > 10 ? 10 : spacing;
-                        }
-                        if (moveLeft) {
-                            edge.y1 -= edgeSep;
-                            edge.y2 -= edgeSep;
-
-                            if ( seg.idx === 0 ) {
-                                // find which x is the vertex
-                                var x = connections[e][1].y1 === oldEdge ? "y1" : "y2";
-                                connections[e][1][x] -= edgeSep;
-                                connections[e].unshift({y1: connections[e][1][x], y2: oldEdge, x1: edge.port.x, x2: edge.port.x, orientation: "vertical"});
-                                //reindex segments
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else if (seg.idx === connections[e].length - 1) {
-                                var x = connections[e][connections[e].length -2].y1 === oldEdge ? "y1" : "y2";
-                                connections[e][connections[e].length -2][x] -= edgeSep;
-                                connections[e].push({y1: connections[e][connections[e].length -2][x], y2: oldEdge, x1: edge.port.x, x2: edge.port.x, orientation: "vertical"});
-                                // reorder segment idx
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else {
-                                var seg1 = connections[e][seg.idx - 1],
-                                    seg2 = connections[e][seg.idx + 1];
-
-                                var seg1X = seg1.y1 === edge.y1 ? "y1" : "y2",
-                                    seg2X = seg1.y2 === edge.y1 ? "y2" : "y1";
-
-                                seg1[seg1X] -= edgeSep;
-                                seg2[seg2X] -= edgeSep;
-
-                                connections[e][seg.idx - 1] = seg1;
-                                connections[e][seg.idx + 1] = seg2;
-                            }
-                        }
-                        else {
-                            edge.y1 += edgeSep;
-                            edge.y2 += edgeSep;
-
-                            if ( seg.idx === 0 ) {
-                                // find which x is the vertex
-                                var x = connections[e][1].y1 === oldEdge ? "y1" : "y2";
-                                connections[e][1][x] += edgeSep;
-                                connections[e].unshift({y1: connections[e][1][x], y2: oldEdge, x1: edge.port.x, x2: edge.port.x, orientation: "vertical"});
-                                //reindex segments
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else if (seg.idx === connections[e].length - 1) {
-                                var x = connections[e][connections[e].length -2].y1 === oldEdge ? "y1" : "y2";
-                                connections[e][connections[e].length -2][x] += edgeSep;
-                                connections[e].push({y1: connections[e][connections[e].length -2][x], y2: oldEdge, x1: edge.port.x, x2: edge.port.x, orientation: "vertical"});
-                                // reorder segment idx
-                                for (var jj = 0; jj < connections[e].length - 1; jj++) {
-                                    connections[e][jj].idx = jj;
-                                }
-                            }
-                            else {
-                                var seg1 = connections[e][seg.idx - 1],
-                                    seg2 = connections[e][seg.idx + 1];
-
-                                var seg1X = seg1.y1 === oldEdge ? "y1" : "y2",
-                                    seg2X = seg1.y2 === oldEdge ? "y2" : "y1";
-
-                                seg1[seg1X] += edgeSep;
-                                seg2[seg2X] += edgeSep;
-
-                                connections[e][seg.idx - 1] = seg1;
-                                connections[e][seg.idx + 1] = seg2;
-                            }
-                        }
-                        edgeSep += edgeSep;
-                    }
-                    connections[e][seg.idx] = edge;  // update connection
-
-                }
-
+                xyDirection = "y";
             }
 
-            // Step 3: Nudge routes along one shared edge (requires shared edge in question and wires, nodes being shared).
+            attemptToNudgeSharedEdges( sharedEdge, connections, xyDirection );
 
-
-            // Step 4: Update the wire segments based on the nudging
-            // modify elements of connections that were involved in step 3
-
-
-            // Step 5: Update list of shared edges to see if nudging of previous edge caused any new shared edges.
-            sharedEdges = getSharedEdges(connections);
+            // Update list of shared edges to see if nudging of previous edge caused any new shared edges.
+            // ^^ No longer do this as we only want to improve the graph, not make it perfect.
+            //    If ports share segments it is ok as it is valid in the electric sense.
+            // sharedEdges = getSharedEdges(connections);
         }
+
         return connections;
+    }
 
 
+    function attemptToNudgeSharedEdges ( sharedEdge, connections, xyDirection ) {
+        var edge,
+            wireIndex,
+            adjustLeft,
+            maxAdjust,
+            spacing,
+            edgeSeparation = 10;
+
+        for (var e in sharedEdge) {
+
+            wireIndex = sharedEdge[e].idx;
+            edge = connections[e][wireIndex];
+
+            // Do not adjust segments that are directly connected to ports.
+            if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
+
+                adjustLeft = edge.objectLeft > edge.objectRight;
+                maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
+
+                spacing = maxAdjust / Object.keys(sharedEdge).length;
+                spacing = spacing > 10 ? 10 : spacing;
+
+                edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
+
+                if (adjustLeft) {
+                    adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
+                }
+                else {
+                    adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
+                }
+            }
+        }
+    }
+
+
+    function adjustWireLeftOrRight ( edge, connection, wireIndex, edgeSeparation, xy, leftright ) {
+
+        var segmentAtEnd1,
+            segmentAtEnd2,
+            segment1X,
+            segment2X;
+
+        segmentAtEnd1 = connection[wireIndex - 1];
+        segmentAtEnd2 = connection[wireIndex + 1];
+
+        if ( xy == "x" ) {
+            // For the two attached segments, need to know which endpoint is connected to edge
+            //   as this is the endpoint we are modifying.
+            segment1X = segmentAtEnd1.x1 === edge.x1 ? "x1" : "x2";
+            segment2X = segmentAtEnd2.x2 === edge.x1 ? "x2" : "x1";
+
+            if (leftright === "left") {
+
+                edge.x1 -= edgeSeparation;
+                edge.x2 -= edgeSeparation;
+
+                segmentAtEnd1[segment1X] -= edgeSeparation;
+                segmentAtEnd2[segment2X] -= edgeSeparation;
+            }
+            else {
+                edge.x1 += edgeSeparation;
+                edge.x2 += edgeSeparation;
+
+                segmentAtEnd1[segment1X] += edgeSeparation;
+                segmentAtEnd2[segment2X] += edgeSeparation;
+            }
+        }
+        else {
+
+            segment1X = segmentAtEnd1.y1 === edge.y1 ? "y1" : "y2";
+            segment2X = segmentAtEnd2.y2 === edge.y1 ? "y2" : "y1";
+
+            if (leftright === "left") {
+
+                edge.y1 -= edgeSeparation;
+                edge.y2 -= edgeSeparation;
+
+                segmentAtEnd1[segment1X] -= edgeSeparation;
+                segmentAtEnd2[segment2X] -= edgeSeparation;
+            }
+            else {
+                edge.y1 += edgeSeparation;
+                edge.y2 += edgeSeparation;
+
+                segmentAtEnd1[segment1X] += edgeSeparation;
+                segmentAtEnd2[segment2X] += edgeSeparation;
+            }
+        }
     }
 
 
@@ -757,6 +578,61 @@ var OrthogonalRouter = function () {
             }
         }
         return sharedEdges;
+    }
+
+
+    this.validDiagramForAutoRoute = function ( components, gridHeight, gridWidth ) {
+        var boundBox,
+            invalidConditions,
+            boundBoxes = [],
+            componentOffGrid = false,
+            overlap = false,
+            overlappingComponents = false;
+
+        for ( var c = 0; c < components.length; c++ ) {
+            boundBox = components[c].getGridBoundingBox();
+
+            boundBox.x -= 10;
+            boundBox.y -= 10;
+            boundBox.height += 10;
+            boundBox.width += 10;
+
+            invalidConditions = [ boundBox.x < 0,
+                                  boundBox.y < 0,
+                                  boundBox.x > gridWidth,
+                                  boundBox.y > gridHeight,
+                                  boundBox.x + boundBox.width > gridWidth,
+                                  boundBox.y + boundBox.height > gridHeight ];
+
+            if ( invalidConditions.some(function(elem) { return !!elem; }) ) {
+                componentOffGrid = true;
+
+            }
+
+            var numberOfBoundBoxes = boundBoxes.length;
+            if ( numberOfBoundBoxes > 0 ) {
+                for ( var b = 0; b < numberOfBoundBoxes; b++ ) {
+
+                    overlap = ( (boundBox.x < (boundBoxes[b].x + boundBoxes[b].width) &&
+                                (boundBox.x + boundBox.width) > boundBoxes[b].x) &&
+                                ((boundBox.y < (boundBoxes[b].y + boundBoxes[b].height)) &&
+                                ((boundBox.y + boundBox.height) > boundBoxes[b].y)) );
+
+                    overlappingComponents = !!overlap;
+                }
+            }
+
+            boundBoxes.push(boundBox);
+        }
+
+        if ( componentOffGrid ) {
+            alert("A component is off the diagram grid. Adjust components to auto-route.");
+        }
+        if ( overlap ) {
+            alert("Two or more components are overlapping. Adjust components to auto-route.");
+        }
+
+        return !(componentOffGrid || overlap);
     }
 
 };
