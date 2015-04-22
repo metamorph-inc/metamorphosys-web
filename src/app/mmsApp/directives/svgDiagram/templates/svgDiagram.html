@@ -21,11 +21,10 @@
 
         <g class="new-wire-line" ng-if="newWireLine">
             <line ng-repeat="segment in newWireLine.segments"
-                  ng-init="parameters = segment.getParameters()"
-                  ng-attr-x1="{{parameters.x1}}"
-                  ng-attr-y1="{{parameters.y1}}"
-                  ng-attr-x2="{{parameters.x2}}"
-                  ng-attr-y2="{{parameters.y2}}"/>
+                  ng-attr-x1="{{segment.x1}}"
+                  ng-attr-y1="{{segment.y1}}"
+                  ng-attr-x2="{{segment.x2}}"
+                  ng-attr-y2="{{segment.y2}}"/>
         </g>
     </svg>
 </div>

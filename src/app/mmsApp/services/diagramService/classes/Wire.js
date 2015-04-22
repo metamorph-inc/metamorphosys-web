@@ -4,12 +4,11 @@
 
 var WireSegment = require('./WireSegment.js');
 
-var Wire = function(id, end1, end2, router, segments) {
+var Wire = function(id, end1, end2, segments) {
 
     this._id = id;
     this._end1 = end1;
     this._end2 = end2;
-    this._router = router;
     this._segments = segments || [];
 
 };
@@ -44,7 +43,7 @@ Wire.prototype.getCopyOfSegmentsParameters = function() {
         l = this._segments.length;
 
         for (i = 0; i < l; i++) {
-            results.push(this._segments[i].getParameters());
+            results.push(angular.copy(this._segments[i].getParameters()));
         }
 
     }

@@ -129,7 +129,7 @@ Diagram.prototype.addWire = function(aWire) {
 
 
             } else {
-                console.error('Wire was already added.', wireId);
+                console.warn('Wire was already added.', wireId);
             }
 
         } else {
