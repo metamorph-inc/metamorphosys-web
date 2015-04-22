@@ -56,7 +56,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     }
 
                     dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
-                    diagram.emitWireChange();                    
+                    diagram.afterWireChange(dragTargetsDescriptor.affectedWires);                    
 
                 };
 

@@ -31,7 +31,8 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                         snappedPosition2,
                         segments,
                         segmentParameters,
-                        affectedSegmentParameters;
+                        affectedSegmentParameters,
+                        changedWires = [];
 
                     if (dragTargetsDescriptor) {
 
@@ -201,9 +202,12 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                 }
 
                             }
+
+                            changedWires.push(target.wire);
+
                         }
 
-                        diagram.emitWireChange();
+                        diagram.afterWireChange(changedWires);
 
                     }
 

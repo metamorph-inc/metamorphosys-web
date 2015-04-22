@@ -57,7 +57,7 @@ angular.module('mms.designVisualization.diagramService', [
                     });
 
                     diagram.sortComponentsByZ();
-                    diagram.emitWireChange();
+                    diagram.afterWireChange(setOfWires);
 
                 }
 
@@ -82,7 +82,7 @@ angular.module('mms.designVisualization.diagramService', [
 
                     });
                     
-                    diagram.emitWireChange();
+                    diagram.afterWireChange(setOfWires);
 
                 }
 

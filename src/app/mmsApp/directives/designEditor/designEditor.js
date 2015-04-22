@@ -126,7 +126,7 @@ angular.module('mms.designEditor', [
                     $rootScope.unCover();
                     $rootScope.stopProcessing();
 
-                    self.diagram.emitWireChange();
+                    self.diagram.afterWireChange();
 
                 } else if (selectedContainerId) {
 
