@@ -56,7 +56,8 @@ var ElbowRouter = function () {
                         params: method
                     },
 
-                    orientation: ( method === 'verticalFirst' ) ? 'vertical' : 'horizontal'
+                    orientation: ( method === 'verticalFirst' ) ? 'vertical' : 'horizontal',
+                    elbowPartOrder: 0
 
                 }, {
 
@@ -73,7 +74,8 @@ var ElbowRouter = function () {
                         params: method
                     },
 
-                    orientation: ( method === 'verticalFirst' ) ? 'horizontal' : 'vertical'
+                    orientation: ( method === 'verticalFirst' ) ? 'horizontal' : 'vertical',
+                    elbowPartOrder: 1
 
                 } );
 

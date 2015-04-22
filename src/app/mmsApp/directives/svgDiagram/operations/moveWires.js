@@ -30,7 +30,8 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                         snappedPosition1,
                         snappedPosition2,
                         segments,
-                        segmentParameters;
+                        segmentParameters,
+                        affectedSegmentParameters;
 
                     if (dragTargetsDescriptor) {
 
@@ -55,6 +56,23 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                     });
 
                                 segmentParameters = segments[target.segmentIndex - 1].getParameters();
+
+                                if (target.segmentIndex - 1 > 0 &&
+                                    segmentParameters.router && 
+                                    segmentParameters.router.type === 'ElbowRouter' &&
+                                    segmentParameters.elbowPartOrder === 1) {
+
+                                    // If it was part of an Elbow routed segment set, set the other part to
+                                    // simple-routed
+
+                                    affectedSegmentParameters = segments[target.segmentIndex - 2].getParameters();
+                                    affectedSegmentParameters.router = {
+                                        type: 'SimpleRouter'
+                                    };
+
+                                    delete affectedSegmentParameters.elbowPartOrder;
+
+                                }
 
                                 target.wire.replaceSegmentFromProperties(
                                     target.segmentIndex - 1,
@@ -91,7 +109,25 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                             }
                                         },
                                         'SimpleRouter')[0]
-                                    );
+                                    );                                
+
+                                if (target.segmentIndex + 2 < segments.length &&
+                                    segmentParameters.router && 
+                                    segmentParameters.router.type === 'ElbowRouter' &&
+                                    segmentParameters.elbowPartOrder === 0) {
+
+                                    // If it was part of an Elbow routed segment set, set the other part to
+                                    // simple-routed
+
+                                    affectedSegmentParameters = segments[target.segmentIndex + 2].getParameters();
+                                    affectedSegmentParameters.router = {
+                                        type: 'SimpleRouter'
+                                    };
+
+                                    delete affectedSegmentParameters.elbowPartOrder;
+
+                                }
+
                             } else {
 
                                 snappedPosition2 = gridService.getSnappedPosition(
@@ -114,6 +150,24 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                         }, 'SimpleRouter')[0]
                                     );
 
+                                if (target.segmentIndex > 0 &&
+                                    segmentParameters.router && 
+                                    segmentParameters.router.type === 'ElbowRouter' &&
+                                    segmentParameters.elbowPartOrder === 1) {
+
+                                    // If it was part of an Elbow routed segment set, set the other part to
+                                    // simple-routed
+
+                                    affectedSegmentParameters = segments[target.segmentIndex - 1].getParameters();
+                                    affectedSegmentParameters.router = {
+                                        type: 'SimpleRouter'
+                                    };
+
+                                    delete affectedSegmentParameters.elbowPartOrder;
+
+                                }
+
+
                                 segmentParameters = segments[target.segmentIndex + 1].getParameters();
 
                                 target.wire.replaceSegmentFromProperties(
@@ -128,6 +182,23 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                                         },
                                         'SimpleRouter')[0]
                                     );
+
+                                if (target.segmentIndex + 2 < segments.length &&
+                                    segmentParameters.router && 
+                                    segmentParameters.router.type === 'ElbowRouter' &&
+                                    segmentParameters.elbowPartOrder === 0) {
+
+                                    // If it was part of an Elbow routed segment set, set the other part to
+                                    // simple-routed
+
+                                    affectedSegmentParameters = segments[target.segmentIndex + 2].getParameters();
+                                    affectedSegmentParameters.router = {
+                                        type: 'SimpleRouter'
+                                    };
+
+                                    delete affectedSegmentParameters.elbowPartOrder;
+
+                                }
 
                             }
                         }
