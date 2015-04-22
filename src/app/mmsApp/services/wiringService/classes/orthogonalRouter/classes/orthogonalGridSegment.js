@@ -153,6 +153,12 @@ OrthogonalGridSegment.prototype.isPointOnLine = function ( point ) {
 };
 
 
+OrthogonalGridSegment.prototype.isPointOnEndPoint = function ( point ) {
+
+    return ((point.y - this.y1) === (point.x - this.x1));
+};
+
+
 /**
  * Sort the segment end points so that x1/y1 are less than x2/y2.
  */
@@ -188,8 +194,8 @@ OrthogonalGridSegment.prototype.extend = function ( segmentB ) {
     segmentB.y1 = this.y2 === segmentB.y1 ? this.y1 : segmentB.y1;
     segmentB.y2 = this.y1 === segmentB.y2 ? this.y2 : segmentB.y2;
 
-    segmentB.objectLeft = this.ObjectLeft < segmentB.objectLeft ? this.ObjectLeft : segmentB.objectLeft;
-    segmentB.objectRight = this.ObjectRight < segmentB.objectRight ? this.ObjectRight : segmentB.objectRight;
+    segmentB.objectLeft = this.objectLeft < segmentB.objectLeft ? this.objectLeft : segmentB.objectLeft;
+    segmentB.objectRight = this.objectRight < segmentB.objectRight ? this.objectRight : segmentB.objectRight;
 };
 
 

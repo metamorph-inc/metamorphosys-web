@@ -15,6 +15,7 @@ var VisibilityGraph = function () {
     this.incompleteNodes = [];
     this.edges = [];
     this.vertices = [];
+    this.boundingBoxes = [];
 
     };
 
@@ -532,8 +533,8 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
             matchNode.east = node;
         }
         else {
-            matchNode.east = matchNode;
-            node.west = node;
+            matchNode.east = matchNode.x;
+            node.west = node.x;
         }
 
         if (smallNeighbor === null) {
@@ -575,14 +576,16 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
                 smallNeighbor.south = node;
             }
             else {
-                smallNeighbor.south = smallNeighbor;
-                node.north = node;
+                smallNeighbor.south = smallNeighbor.y;
+                node.north = node.y;
             }
         }
     }
     else {
         node.north = 0;
     }
+
+    this.updateNodeIfOnBoundingBox( node );
 
     if (checkComplete) {
         // Only nodes that can be completed are ones where a matchNode has been found and filled out.
@@ -598,6 +601,56 @@ VisibilityGraph.prototype.populateNode = function ( vertex, verticalSegment, hor
                                                                            matchNode.west,
                                                                            matchNode.east );
             this.incompleteNodes.splice(idx-1, 1);
+        }
+    }
+
+};
+
+
+VisibilityGraph.prototype.updateNodeIfOnBoundingBox = function ( node ) {
+    var c,
+        boundBox,
+        numberBoundBoxes = this.boundingBoxes.length,
+        segmentTop,
+        segmentBottom,
+        segmentLeft,
+        segmentRight;
+
+    for (c = 0; c < numberBoundBoxes; c++ ) {
+        boundBox = this.boundingBoxes[c];
+
+        segmentTop = new OrthogonalGridSegment( boundBox.x,
+                                                boundBox.y,
+                                                boundBox.x + boundBox.width,
+                                                boundBox.y );
+        segmentBottom = new OrthogonalGridSegment( boundBox.x,
+                                                   boundBox.y + boundBox.height,
+                                                   boundBox.x + boundBox.width,
+                                                   boundBox.y + boundBox.height );
+        segmentLeft = new OrthogonalGridSegment( boundBox.x,
+                                                 boundBox.y,
+                                                 boundBox.x,
+                                                 boundBox.y + boundBox.height );
+        segmentRight = new OrthogonalGridSegment( boundBox.x + boundBox.width,
+                                                  boundBox.y,
+                                                  boundBox.x + boundBox.width,
+                                                  boundBox.y + boundBox.height );
+
+        if ( segmentTop.isPointOnLine( node ) && !segmentTop.isPointOnEndPoint( node ) ) {
+            node.south = node.y;
+            break;
+        }
+        if ( segmentBottom.isPointOnLine( node ) && !segmentTop.isPointOnEndPoint( node ) ) {
+            node.north = node.y;
+            break;
+        }
+        if ( segmentLeft.isPointOnLine( node ) && !segmentTop.isPointOnEndPoint( node ) ) {
+            node.east = node.x;
+            break;
+        }
+        if ( segmentRight.isPointOnLine( node ) && !segmentTop.isPointOnEndPoint( node ) ) {
+            node.west = node.x;
+            break;
         }
     }
 

@@ -27,10 +27,10 @@ var OrthogonalRouter = function () {
         if ( validDiagram ) {
             var start = performance.now();
 
-            var points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents());
-
             var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
                 visibilityGraph = new VisibilityGraph();
+
+            var points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
 
             visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
@@ -42,29 +42,35 @@ var OrthogonalRouter = function () {
             var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
             var nudgedConnections = nudgeConnections(optimalConnections);
-
-            end = performance.now();
-            console.log("Route time: " + (end - start));
-
-
+            var wires = diagram.getWires();
+            //
+            for ( var w = 0; w < wires.length; w++ ) {
+                wires[w].segments = [];
+                wires[w].segments = nudgedConnections[w];
+            }
+            //
+            //end = performance.now();
+            //console.log("Route time: " + (end - start));
+            //
+            //
             //diagram.sweepLines = visibilityGraph.edges;
             //diagram.sweepPoints = visibilityGraph.vertices;
-            //var tempSegments = nudgedConnections.reduce(function (a, b) {
-            //    return a.concat(b);
-            //});
-            //diagram.optimalConnections = tempSegments;
+            var tempSegments = optimalConnections.reduce(function (a, b) {
+                return a.concat(b);
+            });
+            diagram.optimalConnections = tempSegments;
         }
     };
 
-    this.getBoundingBoxAndPortPointsFromComponents = function ( components ) {
+    this.getBoundingBoxAndPortPointsFromComponents = function ( components, visibilityGraph ) {
         var points = [];
         for ( var i = 0; i < components.length; i++ ) {
-            this.getBBAndPortPointsFromComponent(components[i], points);
+            this.getBBAndPortPointsFromComponent(components[i], points, visibilityGraph);
         }
         return points;
     };
 
-    this.getBBAndPortPointsFromComponent = function ( component, points ) {
+    this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
 
         // Nodes from bounding box
@@ -72,7 +78,10 @@ var OrthogonalRouter = function () {
         points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 10 ) );
         points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y - 10 ) );
         points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y + boundBox.height + 10 ) );
-
+        visibilityGraph.boundingBoxes.push({ x: boundBox.x - 10,
+                                             y: boundBox.y - 10,
+                                             width: boundBox.x + 10,
+                                             height: boundBox.y + 10} );
 
         // Nodes from ports
         for ( var k = 0; k < component.portInstances.length; k++ ) {
@@ -155,8 +164,8 @@ var OrthogonalRouter = function () {
 
 
             // Overwrite the wires 'segments' field with the optimal route.
-            wires[i].segments = [];
-            wires[i].segments = result.path;
+            //wires[i].segments = [];
+            //wires[i].segments = result.path;
 
         }
         return optimalConnections;
@@ -389,7 +398,8 @@ var OrthogonalRouter = function () {
     function nudgeConnections( connections ) {
 
         var sharedEdges = getSharedEdges(connections),
-            xyDirection;
+            xyDirection,
+            edgeSeparation = 5;
 
         while (sharedEdges.vertical.length > 0 || sharedEdges.horizontal.length > 0) {
 
@@ -404,25 +414,25 @@ var OrthogonalRouter = function () {
                 xyDirection = "y";
             }
 
-            attemptToNudgeSharedEdges( sharedEdge, connections, xyDirection );
-
+            attemptToNudgeSharedEdges( sharedEdge, connections, xyDirection, edgeSeparation );
+            //break;
             // Update list of shared edges to see if nudging of previous edge caused any new shared edges.
             // ^^ No longer do this as we only want to improve the graph, not make it perfect.
             //    If ports share segments it is ok as it is valid in the electric sense.
-            // sharedEdges = getSharedEdges(connections);
+            //sharedEdges = getSharedEdges(connections);
         }
 
         return connections;
     }
 
 
-    function attemptToNudgeSharedEdges ( sharedEdge, connections, xyDirection ) {
+    function attemptToNudgeSharedEdges ( sharedEdge, connections, xyDirection, edgeSeparation ) {
         var edge,
             wireIndex,
             adjustLeft,
             maxAdjust,
-            spacing,
-            edgeSeparation = 10;
+            spacing;
+            //edgeSeparation = 10;
 
         for (var e in sharedEdge) {
 
@@ -436,7 +446,7 @@ var OrthogonalRouter = function () {
                 maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
 
                 spacing = maxAdjust / Object.keys(sharedEdge).length;
-                spacing = spacing > 10 ? 10 : spacing;
+                //spacing = spacing > 10 ? 10 : spacing;
 
                 edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
 
@@ -446,6 +456,8 @@ var OrthogonalRouter = function () {
                 else {
                     adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
                 }
+
+                edgeSeparation += 10;
             }
         }
     }
@@ -528,25 +540,19 @@ var OrthogonalRouter = function () {
                         if ( wire1.orientation === "horizontal" && wire2.orientation === wire1.orientation ) {
                             // Do the lines intersect each other at any point? (where not important)
                             if ( wire2.y1 === wire1.y1 ) {
-                                if (wire1.x1 <= wire2.x1 && wire2.x1 < wire1.x2) {
+                                wire1.sortSegmentEndPoints();
+                                wire2.sortSegmentEndPoints();
+                                if ( !(wire2.x2 < wire1.x1) && !(wire1.x2 < wire2.x1) ) {
                                     share = true;
-                                }
-                                else {
-                                    if ((wire1.x1 >= wire2.x1 && wire2.x1 > wire1.x2)) {
-                                        share = true;
-                                    }
                                 }
                             }
                         }
                         if (wire1.orientation === "vertical" && wire2.orientation === wire1.orientation ) {
                             if ( wire2.x1 === wire1.x1 ) {
-                                if (wire1.y1 <= wire2.y1 && wire2.y1 < wire1.y2) {
+                                wire1.sortSegmentEndPoints();
+                                wire2.sortSegmentEndPoints();
+                                if ( !(wire2.y2 < wire1.y1) && !(wire1.y2 < wire2.y1) ) {
                                     share = true;
-                                }
-                                else {
-                                    if ((wire1.y1 >= wire2.y1 && wire2.y1 > wire1.y2)) {
-                                        share = true;
-                                    }
                                 }
                             }
                         }
@@ -586,8 +592,7 @@ var OrthogonalRouter = function () {
             invalidConditions,
             boundBoxes = [],
             componentOffGrid = false,
-            overlap = false,
-            overlappingComponents = false;
+            overlap = false;
 
         for ( var c = 0; c < components.length; c++ ) {
             boundBox = components[c].getGridBoundingBox();
@@ -606,30 +611,28 @@ var OrthogonalRouter = function () {
 
             if ( invalidConditions.some(function(elem) { return !!elem; }) ) {
                 componentOffGrid = true;
-
-            }
-
-            var numberOfBoundBoxes = boundBoxes.length;
-            if ( numberOfBoundBoxes > 0 ) {
-                for ( var b = 0; b < numberOfBoundBoxes; b++ ) {
-
-                    overlap = ( (boundBox.x < (boundBoxes[b].x + boundBoxes[b].width) &&
-                                (boundBox.x + boundBox.width) > boundBoxes[b].x) &&
-                                ((boundBox.y < (boundBoxes[b].y + boundBoxes[b].height)) &&
-                                ((boundBox.y + boundBox.height) > boundBoxes[b].y)) );
-
-                    overlappingComponents = !!overlap;
+                if ( componentOffGrid ) {
+                    alert("A component is off the diagram grid. Adjust components to auto-route.");
                 }
+                break;
             }
 
             boundBoxes.push(boundBox);
         }
 
-        if ( componentOffGrid ) {
-            alert("A component is off the diagram grid. Adjust components to auto-route.");
-        }
-        if ( overlap ) {
-            alert("Two or more components are overlapping. Adjust components to auto-route.");
+        var numberOfBoundBoxes = boundBoxes.length;
+        for ( var b = 1; b < numberOfBoundBoxes; b++ ) {
+            boundBox = boundBoxes[b-1];
+
+            overlap = ( (boundBox.x < (boundBoxes[b].x + boundBoxes[b].width) &&
+            (boundBox.x + boundBox.width) > boundBoxes[b].x) &&
+            ((boundBox.y < (boundBoxes[b].y + boundBoxes[b].height)) &&
+            ((boundBox.y + boundBox.height) > boundBoxes[b].y)) );
+
+            if ( overlap ) {
+                alert("Two or more components are overlapping. Adjust components to auto-route.");
+                break;
+            }
         }
 
         return !(componentOffGrid || overlap);
