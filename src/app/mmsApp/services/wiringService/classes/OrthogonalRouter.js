@@ -400,7 +400,7 @@ var OrthogonalRouter = function () {
         var sharedEdges = getSharedEdges(connections),
             xyDirection,
             edgeSeparation = 5,
-            portSeparator = 2;
+            portSeparator = 2.5;
 
         while (sharedEdges.vertical.length > 0 || sharedEdges.horizontal.length > 0) {
 
@@ -439,6 +439,7 @@ var OrthogonalRouter = function () {
             edge = connections[e][wireIndex];
 
             if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
+
                 adjustLeft = edge.objectLeft > edge.objectRight;
                 maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
 
@@ -447,20 +448,20 @@ var OrthogonalRouter = function () {
                 edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
 
                 if (adjustLeft) {
-                    adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
+                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
                 }
                 else {
-                    adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
+                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
                 }
 
                 edgeSeparation += 10;
             }
             else {
                 if ( wireIndex === 0 ) {
-                    adjustAndCreateWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "first");
+                    adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "first");
                 }
                 else {
-                    adjustAndCreateWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "last");
+                    adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "last");
                 }
                 // Reindex segments to account for additionally created segments.
                 for (jj = 0; jj < connections[e].length; jj++) {
@@ -488,7 +489,7 @@ var OrthogonalRouter = function () {
      * @param xy  - Principal axis that wire segment will be adjusted along.
      * @param leftright - Direction segment will be adjusted (if xy = X, left is west, if xy = Y, left is North)
      */
-    function adjustWireLeftOrRight ( edge, connection, wireIndex, edgeSeparation, xy, leftright ) {
+    function adjustMiddleWire ( edge, connection, wireIndex, edgeSeparation, xy, leftright ) {
 
         var segmentAtEnd1,
             segmentAtEnd2,
@@ -548,7 +549,7 @@ var OrthogonalRouter = function () {
      * Adjust an end-point wire segment (one that is directly connected to a port).
      * Adjusting an end-point wire segment requires creating a new segment from the port to the new end-point.
      */
-    function adjustAndCreateWire ( edge, connection, wireIndex, edgeSeparation, xy, firstOrLast ) {
+    function adjustPortWire ( edge, connection, wireIndex, edgeSeparation, xy, firstOrLast ) {
 
         var segment,
             segmentX,
@@ -564,8 +565,10 @@ var OrthogonalRouter = function () {
             // push = true; TODO: Causing segments to mess up... why??? look into nudgeConnections call
         }
 
+        segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
+        segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
+
         if ( xy == "x" ) {
-            segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
 
             edge.x1 -= edgeSeparation;
             edge.x2 -= edgeSeparation;
@@ -573,19 +576,11 @@ var OrthogonalRouter = function () {
             segment[segmentX] -= edgeSeparation;
             newSegment = { x1: segment[segmentX],
                            x2: segment[segmentX] + edgeSeparation,
-                           y1: edge.y1,
-                           y2: edge.y1,
+                           y1: edge[segmentY],
+                           y2: edge[segmentY],
                            orientation: "horizontal" };
-
-            if ( push ) {
-                connection.push( newSegment );
-            }
-            else {
-                connection.unshift( newSegment );
-            }
         }
         else {
-            segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
 
             edge.y1 -= edgeSeparation;
             edge.y2 -= edgeSeparation;
@@ -593,16 +588,16 @@ var OrthogonalRouter = function () {
             segment[segmentY] -= edgeSeparation;
             newSegment = { y1: segment[segmentY],
                            y2: segment[segmentY] + edgeSeparation,
-                           x1: edge.x1,
-                           x2: edge.x1,
+                           x1: edge[segmentX],
+                           x2: edge[segmentX],
                            orientation: "vertical" };
+        }
 
-            if ( push ) {
-                connection.push( newSegment );
-            }
-            else {
-                connection.unshift( newSegment );
-            }
+        if ( push ) {
+            connection.push( newSegment );
+        }
+        else {
+            connection.unshift( newSegment );
         }
     }
 
@@ -620,6 +615,7 @@ var OrthogonalRouter = function () {
 
         sharedEdges.horizontal = [];
         sharedEdges.vertical = [];
+
         for ( var i = 0; i < connections.length; i++ ) {
 
             for ( var k = 0; k < connections[i].length; k++ ) {
