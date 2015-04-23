@@ -54,24 +54,24 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
     finishWire = function(component, port) {
 
         var wire = new Wire(
-            'new-wire-' + Math.round(Math.random() * 10000), {
+            'new-wire-' + Date.now(), {
                 component: wireStart.component,
                 port: wireStart.port
             }, {
                 component: component,
                 port: port
 
-            },
-            $scope.selectedRouter,
-            angular.copy(
-                $scope.newWireLine.lockedSegments.concat(
-                    wiringService.getSegmentsBetweenPositions({
-                            end1: $scope.newWireLine.activeSegmentStartPosition,
-                            end2: port.getGridPosition()
-                        },
-                        $scope.selectedRouter.type,
-                        $scope.selectedRouter.params
-                    )
+            }
+        );
+
+        wire.makeSegmentsFromParameters(
+            $scope.newWireLine.lockedSegments.concat(
+                wiringService.getSegmentsBetweenPositions({
+                        end1: $scope.newWireLine.activeSegmentStartPosition,
+                        end2: port.getGridPosition()
+                    },
+                    $scope.selectedRouter.type,
+                    $scope.selectedRouter.params
                 )
             )
         );

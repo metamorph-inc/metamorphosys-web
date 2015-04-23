@@ -2,7 +2,8 @@
 
 'use strict';
 
-module.exports = function($scope, $rootScope, diagramService, $timeout, contextmenuService, operationsManager, wiringService, $log) {
+module.exports = function($scope, $rootScope, diagramService, $timeout, 
+    contextmenuService, operationsManager, wiringService, $log, gridService) {
 
     var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
 
@@ -62,7 +63,8 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
     onWireContextmenu = function(wire, segment, $event, wasCorner) {
 
-        var wiringMenu;
+        var wiringMenu,
+            offsetToMouse = getOffsetToMouse($event);
 
 
         if (wasCorner) {
@@ -124,31 +126,76 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                     action: function() {
 
                         var sIndex,
-                            nextSegment;
+                            nextSegment,
+                            affectedSegmentParameters,
+                            segments = wire.getSegments();
 
-                        sIndex = wire.getSegments().indexOf(segment);
+                        sIndex = segments.indexOf(segment);
 
-                        nextSegment = wire.getSegments()[sIndex + 1];
+                        nextSegment = segments[sIndex + 1];
 
-                        var properties = segment.getProperties();
-                        var nextProperties = nextSegment.getProperties();
+                        var parameters = segment.getParameters();
+                        var nextParameters = nextSegment.getParameters();
 
-                        wire.getSegments()[sIndex + 1] = wiringService.getSegmentsBetweenPositions({
+                        wire.deleteSegment(sIndex);
+
+                        var newSegments = wiringService.getSegmentsBetweenPositions({
                             end1: {
-                                x: properties.x1,
-                                y: properties.y1
+                                x: parameters.x1,
+                                y: parameters.y1
                             },
                             end2: {
-                                x: nextProperties.x2,
-                                y: nextProperties.y2
+                                x: nextParameters.x2,
+                                y: nextParameters.y2
                             }
-                        }, 'SimpleRouter')[0];
+                        }, 'SimpleRouter');
 
-                        wire.getSegments().splice(sIndex, 1);
+                        wire.replaceSegmentsFromPropertiesArray(
+                            sIndex,
+                            newSegments
+                        );
+
+                        if (sIndex > 0 &&
+                            parameters.router &&
+                            parameters.router.type === 'ElbowRouter' &&
+                            parameters.elbowPartOrder === 1) {
+
+                            // If it was part of an Elbow routed segment set, set the other part to
+                            // simple-routed
+
+                            affectedSegmentParameters = segments[sIndex - 1].getParameters();
+                            affectedSegmentParameters.router = {
+                                type: 'SimpleRouter'
+                            };
+
+                            delete affectedSegmentParameters.elbowPartOrder;
+
+                        }
+
+
+                        if (sIndex + 1 < segments.length &&
+                            nextParameters.router &&
+                            nextParameters.router.type === 'ElbowRouter' &&
+                            nextParameters.elbowPartOrder === 0) {
+
+                            // If it was part of an Elbow routed segment set, set the other part to
+                            // simple-routed
+
+                            affectedSegmentParameters = segments[sIndex + 1].getParameters();
+                            affectedSegmentParameters.router = {
+                                type: 'SimpleRouter'
+                            };
+
+                            delete affectedSegmentParameters.elbowPartOrder;
+
+                        }
+
+                        $scope.diagram.updateWireSegments(wire);
 
                         ga('send', 'event', 'corner', 'destroy', wire.getId(), sIndex);
 
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+
                     }
                 }]
             });
@@ -168,13 +215,18 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                             newSegmentParameters1,
                             newSegmentParameters2,
                             newPosition,
-                            segmentParameters;
+                            segmentParameters,
+                            nextParameters,
+                            segments = wire.getSegments(),
+                            affectedSegmentParameters;
 
-                        sIndex = wire.getSegments().indexOf(segment);
+                        sIndex = segments.indexOf(segment);
 
-                        newPosition = getOffsetToMouse($event);
+                        newPosition = offsetToMouse;
 
                         segmentParameters = segment.getParameters();
+
+                        newPosition = gridService.getSnappedPosition(newPosition);
 
                         newSegmentParameters1 = wiringService.getSegmentsBetweenPositions({
                             end1: {
@@ -201,10 +253,47 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
                             }
                         }, 'SimpleRouter')[0];
 
-
                         wire.deleteSegment(sIndex);
                         wire.insertSegment(sIndex, new WireSegment(newSegmentParameters1, wire));
                         wire.insertSegment(sIndex + 1, new WireSegment(newSegmentParameters2, wire));
+
+                        if (sIndex > 0 &&
+                            segmentParameters.router &&
+                            segmentParameters.router.type === 'ElbowRouter' &&
+                            segmentParameters.elbowPartOrder === 1) {
+
+                            // If it was part of an Elbow routed segment set, set the other part to
+                            // simple-routed
+
+                            affectedSegmentParameters = segments[sIndex - 1].getParameters();
+                            affectedSegmentParameters.router = {
+                                type: 'SimpleRouter'
+                            };
+
+                            delete affectedSegmentParameters.elbowPartOrder;
+
+                        }
+
+
+                        nextParameters = segments[sIndex + 2];
+
+                        if (sIndex + 2 < segments.length &&
+                            nextParameters.router &&
+                            nextParameters.router.type === 'ElbowRouter' &&
+                            nextParameters.elbowPartOrder === 0) {
+
+                            // If it was part of an Elbow routed segment set, set the other part to
+                            // simple-routed
+
+                            affectedSegmentParameters = segments[sIndex + 2].getParameters();
+                            affectedSegmentParameters.router = {
+                                type: 'SimpleRouter'
+                            };
+
+                            delete affectedSegmentParameters.elbowPartOrder;
+
+                        }
+
 
                         $scope.diagram.updateWireSegments(wire);
 
@@ -315,7 +404,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
                         operation.set($scope.diagram.getHighestZ() + 1);
                         operation.finish();
-                    }                    
+                    }
                 }, {
                     id: 'sendToBack',
                     label: 'Send to back',
@@ -332,7 +421,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
 
                         operation.set($scope.diagram.getLowestZ() - 1);
                         operation.finish();
-                    }                    
+                    }
                 }]
             }, {
                 id: 'adjust',
@@ -442,7 +531,6 @@ module.exports = function($scope, $rootScope, diagramService, $timeout, contextm
             });
 
         });
-
 
         $scope.contextMenuData = [{
             id: 'testbenches',

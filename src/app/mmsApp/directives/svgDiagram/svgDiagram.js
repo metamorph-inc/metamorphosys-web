@@ -121,7 +121,8 @@ angular.module('mms.svgDiagram', [
                     contextmenuService,
                     operationsManager,
                     wiringService,
-                    $log
+                    $log,
+                    gridService
                 );
 
 

@@ -126,7 +126,7 @@ angular.module('mms.designEditor', [
                     $rootScope.unCover();
                     $rootScope.stopProcessing();
 
-                    self.diagram.emitWireChange();
+                    self.diagram.afterWireChange();
 
                 } else if (selectedContainerId) {
 
@@ -199,14 +199,12 @@ angular.module('mms.designEditor', [
                                         if (diagram) {
 
                                             node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
-                                            node.makePointer('src', wire.end1.port.id);
-                                            node.makePointer('dst', wire.end2.port.id);
-
-                                            nodeService.completeTransaction(layoutContext);
+                                            node.makePointer('src', wire.getEnd1().port.id);
+                                            node.makePointer('dst', wire.getEnd2().port.id);
 
                                             wire.setId(node.id);
                                             diagram.addWire(wire);
-                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
 
                                         }
 

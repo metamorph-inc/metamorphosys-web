@@ -34,6 +34,10 @@ var Diagram = function() {
     this._wiresByComponentId = {};
     this._portsById = {};
 
+    this._horizontalWireSegmentsByLoX = {};
+    this._verticalWireSegments = [];
+    this._wireCrossovers = [];
+
     this.config = {
         editable: true,
         disallowSelection: false,
@@ -51,7 +55,7 @@ var Diagram = function() {
 };
 
 Diagram.prototype.updateWireSegments = function(wire) {
-    console.log('TODO: updateWireSegmentsForMe', wire );
+    console.log('TODO: updateWireSegmentsForMe', wire);
 };
 
 Diagram.prototype.sortComponentsByZ = function() {
@@ -125,11 +129,11 @@ Diagram.prototype.addWire = function(aWire) {
 
                 registerWireForEnds(aWire);
 
-                this.emitWireChange(aWire);
+                this.afterWireChange([aWire]);
 
 
             } else {
-                console.error('Wire was already added.', wireId);
+                console.warn('Wire was already added.', wireId);
             }
 
         } else {
@@ -148,6 +152,8 @@ Diagram.prototype.deleteWireById = function(anId) {
         index;
 
     self = this;
+
+
 
     wire = self._wiresById[anId];
 
@@ -178,7 +184,7 @@ Diagram.prototype.deleteWireById = function(anId) {
 
         delete self._wiresById[wire.getId()];
 
-        this.emitWireChange(wire);
+        this.afterWireChange([wire]);
 
     }
 
@@ -242,7 +248,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         this.deselectComponent(anId);
 
-        self.deleteComponentById(element.id);
+        self.deleteComponentById(anId);
         success = true;
 
     } else {
@@ -251,7 +257,7 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
         if (angular.isObject(element)) {
 
-            self.deleteWireById(element.id);
+            self.deleteWireById(anId);
             success = true;
 
         }
@@ -306,7 +312,7 @@ Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
         wire.makeSegmentsFromParameters(newSegments);
 
-        this.emitWireChange(wire);
+        this.afterWireChange([wire]);
 
     }
 
@@ -323,7 +329,7 @@ Diagram.prototype.updateComponentPosition = function(componentId, newPosition) {
 
         component.setPosition(newPosition.x, newPosition.y, newPosition.z);
 
-        this.emitWireChange();
+        this.afterWireChange(this._wiresByComponentId[componentId]);
 
     }
 
@@ -341,8 +347,8 @@ Diagram.prototype.updateComponentRotation = function(componentId, newRotation) {
 
         component.setRotation(newRotation);
 
-        this.emitWireChange();
-    }    
+        this.afterWireChange(this._wiresByComponentId[componentId]);
+    }
 
 };
 
@@ -361,9 +367,9 @@ Diagram.prototype.getHighestZ = function() {
     l = this._components.length;
 
     if (l) {
-        z = this._components[l-1].z;
+        z = this._components[l - 1].z;
     }
-    
+
     if (isNaN(z)) {
         z = -1;
     }
@@ -382,7 +388,7 @@ Diagram.prototype.getLowestZ = function() {
     if (l) {
         z = this._components[0].z;
     }
-    
+
     if (isNaN(z)) {
         z = -1;
     }
@@ -556,7 +562,7 @@ Diagram.prototype.clearSelection = function(silent) {
                 message: this.state.selectedComponentIds
             });
 
-            this.emitWireChange();
+            //this.emitWireChange();
 
         }
 
@@ -564,12 +570,145 @@ Diagram.prototype.clearSelection = function(silent) {
 
 };
 
-Diagram.prototype.emitWireChange = function(wire) {
+Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
+
+    var self = this,
+        indexer = function() {
+
+            var i, j, k,
+                wl = self._wires.length,
+                sl,
+                wire,
+                hSegment,
+                vSegment,
+                segments,
+                segment,
+                parameters;
+
+            self._horizontalWireSegmentsByLoX = {};
+            self._verticalWireSegments = [];
+            self._wireCrossovers = [];
+
+            for (i = 0; i < wl; i++) {
+
+                wire = self._wires[i];
+                segments = wire.getSegments();
+
+                sl = segments.length;
+
+                for (j = 0; j < sl; j++) {
+
+                    segment = segments[j];
+                    parameters = segment.getParameters();
+
+                    if (parameters) {
+
+                        if (parameters.orientation === 'horizontal') {
+
+                            if (parameters.x2 - parameters.x1 > 0) {
+
+                                self._horizontalWireSegmentsByLoX[parameters.x1] =
+                                    self._horizontalWireSegmentsByLoX[parameters.x1] || [];
+                                self._horizontalWireSegmentsByLoX[parameters.x1].push(segment);
+
+                                segment.loX = parameters.x1;
+                                segment.hiX = parameters.x2;
+
+                            } else {
+
+                                self._horizontalWireSegmentsByLoX[parameters.x2] =
+                                    self._horizontalWireSegmentsByLoX[parameters.x2] || [];
+                                self._horizontalWireSegmentsByLoX[parameters.x2].push(segment);
+
+                                segment.loX = parameters.x2;
+                                segment.hiX = parameters.x1;
+
+                            }
+
+                        } else if (parameters.orientation === 'vertical') {
+
+                            self._verticalWireSegments.push(segment);
+
+                            if (parameters.y2 - parameters.y1 > 0) {
+
+                                segment.loY = parameters.y1;
+                                segment.hiY = parameters.y2;
+
+                            } else {
+
+                                segment.loY = parameters.y2;
+                                segment.hiY = parameters.y1;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            console.log('horiozontal lines', self._horizontalWireSegmentsByLoX);
+            console.log('vertical lines', self._verticalWireSegments);
+
+            for (i = 0; i < self._verticalWireSegments.length; i++) {
+
+                vSegment = self._verticalWireSegments[i];
+
+                for (j in self._horizontalWireSegmentsByLoX) {
+
+                    if (j < vSegment._parameters.x1) {
+
+                        segments = self._horizontalWireSegmentsByLoX[j];
+
+                        for (k = 0; k < segments.length; k++) {
+
+                            hSegment = segments[k];
+
+                            if (
+                                hSegment.hiX > vSegment._parameters.x1 &&
+                                vSegment.loY < hSegment._parameters.y1 &&
+                                vSegment.hY > hSegment._parameters.y1
+                            ) {
+                                self._wireCrossovers.push(hSegment, vSegment);
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            console.log('Crossing wires:', self._wireCrossovers);
+
+            self.dispatchEvent({
+                type: 'wireChange',
+                message: null
+            });
+
+            self._indexerTimeout = null;
+        };
+
+    if (this._indexerTimeout) {
+        clearTimeout(this._indexerTimeout);
+        this._indexerTimeout = null;
+    }
+
+    this._indexerTimeout = setTimeout(indexer, 200);
+
+};
+
+Diagram.prototype.afterWireChange = function(wires) {
+
+    this._updateWireSegmentsIndex(wires);
 
     this.dispatchEvent({
         type: 'wireChange',
-        message: wire
-    });           
+        message: wires
+    });
 
 };
 
