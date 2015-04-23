@@ -592,8 +592,10 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                 crossOversByX;
 
             self._horizontalWireSegments = [];
-            self._verticalWireSegmentsByLoY = {};
+            self._verticalWireSegmentsByLoY = [{}];
             self._wireCrossovers = [];
+
+            var startTime = Date.now();
 
             for (i = 0; i < wl; i++) {
 
@@ -609,7 +611,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
 
                     if (segment._crossOvers) { 
                         segment._crossOvers = null;
-                        segment._crossOversTimeStamp = Date.now().toString();
+                        segment._crossOversTimeStamp = null;
                     }
 
                     if (parameters) {
@@ -623,12 +625,20 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                                 segment._loX = parameters.x1;
                                 segment._hiX = parameters.x2;
 
+                                loVal = parameters.x1;
+
                             } else {
 
                                 segment._loX = parameters.x2;
                                 segment._hiX = parameters.x1;
 
+                                loVal = parameters.x2;                                
+
                             }
+
+                            // self._verticalWireSegmentsByLoY[loVal] =
+                            //     self._verticalWireSegmentsByLoY[loVal] || [];
+                            // self._verticalWireSegmentsByLoY[loVal].push(segment);
 
                             self._horizontalWireSegments.push(segment);
 
@@ -729,6 +739,8 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
             //console.log('Crossing wires:', self._wireCrossovers);
 
             self._indexerTimeout = null;
+
+            console.log('Time needed to index:', Date.now() - startTime);
 
             self.dispatchEvent({
                 type: 'wireChange',
