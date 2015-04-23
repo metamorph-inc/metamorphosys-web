@@ -33,9 +33,9 @@ var SimpleRouter = function () {
 
                 };
 
-                if ( point1.x1 === point2.x1 ) {
+                if ( point1.x === point2.x ) {
                     segment.orientation = 'vertical';
-                } else if ( point1.y1 === point2.y2 ) {
+                } else if ( point1.y === point2.y ) {
                     segment.orientation = 'horizontal';
                 }
 

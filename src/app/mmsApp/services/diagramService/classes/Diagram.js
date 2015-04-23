@@ -25,6 +25,10 @@ function zDiffer(a, b) {
     return a.z - b.z;
 }
 
+function crossOverSorter(a, b) {
+    return a.x - b.x;
+}
+
 var Diagram = function() {
 
     this._components = [];
@@ -34,8 +38,8 @@ var Diagram = function() {
     this._wiresByComponentId = {};
     this._portsById = {};
 
-    this._horizontalWireSegmentsByLoX = {};
-    this._verticalWireSegments = [];
+    this._horizontalWireSegments = [];
+    this._verticalWireSegmentsByLoY = {};
     this._wireCrossovers = [];
 
     this.config = {
@@ -583,10 +587,12 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                 vSegment,
                 segments,
                 segment,
-                parameters;
+                parameters,
+                loVal,
+                crossOversByX;
 
-            self._horizontalWireSegmentsByLoX = {};
-            self._verticalWireSegments = [];
+            self._horizontalWireSegments = [];
+            self._verticalWireSegmentsByLoY = {};
             self._wireCrossovers = [];
 
             for (i = 0; i < wl; i++) {
@@ -601,45 +607,55 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                     segment = segments[j];
                     parameters = segment.getParameters();
 
-                    if (parameters) {
+                    if (segment._crossOvers) { 
+                        segment._crossOvers = null;
+                        segment._crossOversTimeStamp = Date.now().toString();
+                    }
 
-                        if (parameters.orientation === 'horizontal') {
+                    if (parameters) {
+                        
+                        if (parameters.y1 === parameters.y2) {
+
+                            // Horizontal
 
                             if (parameters.x2 - parameters.x1 > 0) {
 
-                                self._horizontalWireSegmentsByLoX[parameters.x1] =
-                                    self._horizontalWireSegmentsByLoX[parameters.x1] || [];
-                                self._horizontalWireSegmentsByLoX[parameters.x1].push(segment);
-
-                                segment.loX = parameters.x1;
-                                segment.hiX = parameters.x2;
+                                segment._loX = parameters.x1;
+                                segment._hiX = parameters.x2;
 
                             } else {
 
-                                self._horizontalWireSegmentsByLoX[parameters.x2] =
-                                    self._horizontalWireSegmentsByLoX[parameters.x2] || [];
-                                self._horizontalWireSegmentsByLoX[parameters.x2].push(segment);
-
-                                segment.loX = parameters.x2;
-                                segment.hiX = parameters.x1;
+                                segment._loX = parameters.x2;
+                                segment._hiX = parameters.x1;
 
                             }
 
-                        } else if (parameters.orientation === 'vertical') {
+                            self._horizontalWireSegments.push(segment);
 
-                            self._verticalWireSegments.push(segment);
+
+                        } else if (parameters.x1 === parameters.x2) {
 
                             if (parameters.y2 - parameters.y1 > 0) {
 
-                                segment.loY = parameters.y1;
-                                segment.hiY = parameters.y2;
+                                // Vertical
+
+                                segment._loY = parameters.y1;
+                                segment._hiY = parameters.y2;
+
+                                loVal = parameters.y1;
 
                             } else {
 
-                                segment.loY = parameters.y2;
-                                segment.hiY = parameters.y1;
+                                segment._loY = parameters.y2;
+                                segment._hiY = parameters.y1;
+
+                                loVal = parameters.y2;                                
 
                             }
+
+                            self._verticalWireSegmentsByLoY[loVal] =
+                                self._verticalWireSegmentsByLoY[loVal] || [];
+                            self._verticalWireSegmentsByLoY[loVal].push(segment);
 
                         }
 
@@ -649,47 +665,76 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
 
             }
 
-            console.log('horiozontal lines', self._horizontalWireSegmentsByLoX);
-            console.log('vertical lines', self._verticalWireSegments);
+            //console.log('horiozontal lines', self._verticalWireSegmentsByLoY);
+            //console.log('vertical lines', self._horizontalWireSegments);
 
-            for (i = 0; i < self._verticalWireSegments.length; i++) {
+            for (i = 0; i < self._horizontalWireSegments.length; i++) {
 
-                vSegment = self._verticalWireSegments[i];
+                hSegment = self._horizontalWireSegments[i];
+                crossOversByX = {};
 
-                for (j in self._horizontalWireSegmentsByLoX) {
+                for (j in self._verticalWireSegmentsByLoY) {
 
-                    if (j < vSegment._parameters.x1) {
+                    if (j < hSegment._parameters.y1) {
 
-                        segments = self._horizontalWireSegmentsByLoX[j];
+                        segments = self._verticalWireSegmentsByLoY[j];
 
                         for (k = 0; k < segments.length; k++) {
 
-                            hSegment = segments[k];
+                            vSegment = segments[k];
+
+                            // console.log('Comparables:');
+                            // console.log(hSegment._hiX, vSegment._parameters.x1);
+                            // console.log(vSegment._loY, hSegment._parameters.y1);
+                            // console.log(vSegment._hiY, hSegment._parameters.y1);
 
                             if (
-                                hSegment.hiX > vSegment._parameters.x1 &&
-                                vSegment.loY < hSegment._parameters.y1 &&
-                                vSegment.hY > hSegment._parameters.y1
+                                vSegment._hiY > hSegment._parameters.y1 &&
+                                hSegment._loX < vSegment._parameters.x1 &&
+                                hSegment._hiX > vSegment._parameters.x1
                             ) {
                                 self._wireCrossovers.push(hSegment, vSegment);
+                                hSegment._crossOvers = hSegment._crossOvers || [];
+
+                                if (!crossOversByX[vSegment._parameters.x1]) {
+                                    
+                                    hSegment._crossOvers.push({
+                                        type: 'horizontal',
+                                        crossingSegment: vSegment,
+                                        x: vSegment._parameters.x1,
+                                        y: hSegment._parameters.y1
+                                    });
+
+                                    crossOversByX[vSegment._parameters.x1] = true;
+
+                                }
+
+                                //hSegment._crossOversHash += vSegment._parameters.x1 + ',' + hSegment._parameters.y1;
+                                //console.log(hSegment._crossOversHash);
                             }
 
                         }
 
                     }
-
                 }
+
+                if (Array.isArray(hSegment._crossOvers)) {
+                    hSegment._crossOvers.sort(crossOverSorter);
+                    hSegment._crossOversTimeStamp = Date.now().toString(); 
+                }
+
 
             }
 
-            console.log('Crossing wires:', self._wireCrossovers);
+            //console.log('Crossing wires:', self._wireCrossovers);
+
+            self._indexerTimeout = null;
 
             self.dispatchEvent({
                 type: 'wireChange',
                 message: null
             });
 
-            self._indexerTimeout = null;
         };
 
     if (this._indexerTimeout) {
@@ -697,7 +742,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
         this._indexerTimeout = null;
     }
 
-    this._indexerTimeout = setTimeout(indexer, 200);
+    this._indexerTimeout = setTimeout(indexer, 500);
 
 };
 

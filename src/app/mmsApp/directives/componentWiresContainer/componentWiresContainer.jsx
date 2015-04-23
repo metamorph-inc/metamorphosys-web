@@ -119,7 +119,7 @@ var ComponentWire = React.createClass({
             wireSegment = segments[i];
 
             childSegments.push(
-                <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
+                <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} crossOversTimeStamp={wireSegment._crossOversTimeStamp}/>
             );
 
             if (i !== l - 1) {
@@ -138,19 +138,23 @@ var ComponentWire = React.createClass({
     }
 });
 
+var crossOverArc = 'c0 -6, 7 -6, 7 0';
 
 var ComponentWireSegment = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
 
-        var nextParameters = nextProps.segment.getParameters(),
-            parameters = this.props.segment.getParameters();
+        var nextParameters = nextProps.segment._parameters,
+            parameters = this.props.segment._parameters;
+
+            //console.log(nextProps.crossOversTimeStamp, this.props.crossOversTimeStamp);
 
       return (
-        nextParameters.x1 !== parameters.x1 ||
-        nextParameters.x2 !== parameters.x2 ||
-        nextParameters.y1 !== parameters.y1 ||
-        nextParameters.y2 !== parameters.y2
+            nextParameters.x1 !== parameters.x1 ||
+            nextParameters.x2 !== parameters.x2 ||
+            nextParameters.y1 !== parameters.y1 ||
+            nextParameters.y2 !== parameters.y2 ||
+            nextProps.crossOversTimeStamp !== this.props.crossOversTimeStamp
         );
     },
 
@@ -168,24 +172,73 @@ var ComponentWireSegment = React.createClass({
 
     render: function(){
 
-        var parameters = this.props.segment.getParameters();
+        var parameters = this.props.segment._parameters,
+            crossOver,
+            lines,
+            d,
+            i;
+
+            // if (Array.isArray(this.props.segment._crossOvers)) {
+
+            //     crossOverArcs = [];
+
+            //     for (i = 0; i < this.props.segment._crossOvers.length; i++) {
+
+            //         crossOver = this.props.segment._crossOvers[i];
+
+            //         transform = 
+            //             'translate(' + 
+            //             (crossOver.crossingSegment._parameters.x1 - 3) + ',' + 
+            //             (parameters.y1 - 6) + ')';
+
+            //         crossOverArcs.push(<path key={i} className="component-wire-segment-segment cross-over" transform={transform} d="M0 6 C 0 0, 7 0, 7 6"/>);
+
+                    
+            //     }
+
+            // } 
+
+              lines = [<line className="component-wire-segment-under"
+                                        key={0}
+                                        x1={parameters.x1}
+                                        y1={parameters.y1}
+                                        x2={parameters.x2}
+                                        y2={parameters.y2}/>];
+
+           if (Array.isArray(this.props.segment._crossOvers)) {
+
+                d = 'M' + this.props.segment._loX + ' ' + parameters.y1;
+
+                for (i = 0; i < this.props.segment._crossOvers.length; i++) {
+
+                    crossOver = this.props.segment._crossOvers[i];
+
+                    d += 'L' + (crossOver.crossingSegment._parameters.x1 - 4) + ' ' + parameters.y1 + crossOverArc;
+                    
+                }
+
+                d += 'L' + this.props.segment._hiX + ' ' + parameters.y2;
+
+                lines.push(<path key={1} className="component-wire-segment-segment" d={d}/>);
+
+            } else {
+
+                lines.push(
+                        <line className="component-wire-segment-segment"
+                            key={1}                    
+                            x1={parameters.x1}
+                            y1={parameters.y1}
+                            x2={parameters.x2}
+                            y2={parameters.y2}/>
+                            );
+            }
 
         return (
             <g className="component-wire-segment"
                onMouseDown={this.onMouseDown}
                onMouseUp={this.onMouseUp}
                >
-                  <line className="component-wire-segment-under"
-                        x1={parameters.x1}
-                        y1={parameters.y1}
-                        x2={parameters.x2}
-                        y2={parameters.y2}/>
-
-                  <line className="component-wire-segment-segment"
-                        x1={parameters.x1}
-                        y1={parameters.y1}
-                        x2={parameters.x2}
-                        y2={parameters.y2}/>
+                {lines}
             </g>
         );
 
