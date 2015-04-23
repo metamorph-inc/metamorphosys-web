@@ -416,10 +416,7 @@ var OrthogonalRouter = function () {
             }
 
             attemptToNudgeSharedEdges( sharedEdge, connections, xyDirection, edgeSeparation, portSeparator );
-            //break;
-            // Update list of shared edges to see if nudging of previous edge caused any new shared edges.
-            // ^^ No longer do this as we only want to improve the graph, not make it perfect.
-            //    If ports share segments it is ok as it is valid in the electric sense.
+
             //sharedEdges = getSharedEdges(connections);
         }
 
@@ -441,25 +438,6 @@ var OrthogonalRouter = function () {
             wireIndex = sharedEdge[e].idx;
             edge = connections[e][wireIndex];
 
-            // Do not adjust segments that are directly connected to ports.
-            //if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
-            //
-            //    adjustLeft = edge.objectLeft > edge.objectRight;
-            //    maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
-            //
-            //    spacing = maxAdjust / Object.keys(sharedEdge).length;
-            //
-            //    edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
-            //
-            //    if (adjustLeft) {
-            //        adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
-            //    }
-            //    else {
-            //        adjustWireLeftOrRight(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
-            //    }
-            //
-            //    edgeSeparation += 10;
-            //}
             if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
                 adjustLeft = edge.objectLeft > edge.objectRight;
                 maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
@@ -477,23 +455,14 @@ var OrthogonalRouter = function () {
 
                 edgeSeparation += 10;
             }
-            else if ( wireIndex === 0 ) {
-                adjustAndCreateWireLeftOrRight(edge, connections[e], wireIndex, portSeparator, xyDirection, "left", "first");
-                //reindex segments
-                for (jj = 0; jj < connections[e].length; jj++) {
-                    connections[e][jj].idx = jj;
-                }
-
-                if ( count & 1 ) {
-                    portSeparator *= -1;
+            else {
+                if ( wireIndex === 0 ) {
+                    adjustAndCreateWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "first");
                 }
                 else {
-                    portSeparator = -1 * portSeparator + 2;
+                    adjustAndCreateWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "last");
                 }
-                count += -1;
-            }
-            else {
-                adjustAndCreateWireLeftOrRight(edge, connections[e], wireIndex, portSeparator, xyDirection, "left", "last");
+                // Reindex segments to account for additionally created segments.
                 for (jj = 0; jj < connections[e].length; jj++) {
                     connections[e][jj].idx = jj;
                 }
@@ -511,13 +480,13 @@ var OrthogonalRouter = function () {
 
 
     /**
-     * Adjust a wire segment to eliminate connections sharing segments.
+     * Adjust a middle wire segment to eliminate connections sharing segments.
      * @param edge  - segment of a wire that will be adjusted.
      * @param connection  - Wire that edge is a member of.
      * @param wireIndex  - index of edge within the connection.
      * @param edgeSeparation  - How much the segment will be adjusted
-     * @param xy  - Wil
-     * @param leftright
+     * @param xy  - Principal axis that wire segment will be adjusted along.
+     * @param leftright - Direction segment will be adjusted (if xy = X, left is west, if xy = Y, left is North)
      */
     function adjustWireLeftOrRight ( edge, connection, wireIndex, edgeSeparation, xy, leftright ) {
 
@@ -575,140 +544,74 @@ var OrthogonalRouter = function () {
     }
 
 
-    function adjustAndCreateWireLeftOrRight ( edge, connection, wireIndex, edgeSeparation, xy, leftright, firstOrLast ) {
+    /**
+     * Adjust an end-point wire segment (one that is directly connected to a port).
+     * Adjusting an end-point wire segment requires creating a new segment from the port to the new end-point.
+     */
+    function adjustAndCreateWire ( edge, connection, wireIndex, edgeSeparation, xy, firstOrLast ) {
 
         var segment,
             segmentX,
-            segmentY;
+            segmentY,
+            newSegment,
+            push = false;
 
         if ( firstOrLast === "first" ) {
             segment = connection[wireIndex + 1];
-
-            if ( xy == "x" ) {
-                segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
-
-                if (leftright === "left") {
-
-                    edge.x1 -= edgeSeparation;
-                    edge.x2 -= edgeSeparation;
-
-                    // find which x is the vertex
-                    segment[segmentX] -= edgeSeparation;
-                    connection.unshift({x1: segment[segmentX],
-                                        x2: segment[segmentX] + edgeSeparation,
-                                        y1: edge.y1,
-                                        y2: edge.y1,
-                                        orientation: "horizontal"});
-                }
-                else {
-                    edge.x1 += edgeSeparation;
-                    edge.x2 += edgeSeparation;
-
-                    segment[segmentX] += edgeSeparation;
-                    connection.push({x1: segment[segmentX] - edgeSeparation,
-                                     x2: segment[segmentX],
-                                     y1: edge.y1,
-                                     y2: edge.y1,
-                                     orientation: "horizontal"});
-                }
-            }
-            else {
-                segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
-
-                if (leftright === "left") {
-
-                    edge.y1 -= edgeSeparation;
-                    edge.y2 -= edgeSeparation;
-
-                    segment[segmentY] -= edgeSeparation;
-                    connection.unshift({y1: segment[segmentY],
-                        y2: segment[segmentY] + edgeSeparation,
-                        x1: edge.x1,
-                        x2: edge.x1,
-                        orientation: "vertical"});
-                }
-                else {
-                    edge.y1 += edgeSeparation;
-                    edge.y2 += edgeSeparation;
-
-                    segment[segmentY] += edgeSeparation;
-                    connection.push({y1: segment[segmentY] - edgeSeparation,
-                        y2: segment[segmentY],
-                        x1: edge.x1,
-                        x2: edge.x1,
-                        orientation: "vertical"});
-                }
-            }
         }
         else {
             segment = connection[wireIndex - 1];
+            // push = true; TODO: Causing segments to mess up... why??? look into nudgeConnections call
+        }
 
-            if ( xy == "x" ) {
-                segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
+        if ( xy == "x" ) {
+            segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
 
-                if (leftright === "left") {
+            edge.x1 -= edgeSeparation;
+            edge.x2 -= edgeSeparation;
 
-                    edge.x1 -= edgeSeparation;
-                    edge.x2 -= edgeSeparation;
+            segment[segmentX] -= edgeSeparation;
+            newSegment = { x1: segment[segmentX],
+                           x2: segment[segmentX] + edgeSeparation,
+                           y1: edge.y1,
+                           y2: edge.y1,
+                           orientation: "horizontal" };
 
-                    segment[segmentX] -= edgeSeparation;
-                    connection.unshift({
-                        x1: segment[segmentX],
-                        x2: segment[segmentX] + edgeSeparation,
-                        y1: edge.y1,
-                        y2: edge.y1,
-                        orientation: "horizontal"
-                    });
-                }
-                else {
-                    edge.x1 += edgeSeparation;
-                    edge.x2 += edgeSeparation;
-
-                    segment[segmentX] += edgeSeparation;
-                    connection.push({
-                        x1: segment[segmentX] - edgeSeparation,
-                        x2: segment[segmentX],
-                        y1: edge.y1,
-                        y2: edge.y1,
-                        orientation: "horizontal"
-                    });
-                }
+            if ( push ) {
+                connection.push( newSegment );
             }
             else {
-                segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
+                connection.unshift( newSegment );
+            }
+        }
+        else {
+            segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
 
-                if (leftright === "left") {
+            edge.y1 -= edgeSeparation;
+            edge.y2 -= edgeSeparation;
 
-                    edge.y1 -= edgeSeparation;
-                    edge.y2 -= edgeSeparation;
+            segment[segmentY] -= edgeSeparation;
+            newSegment = { y1: segment[segmentY],
+                           y2: segment[segmentY] + edgeSeparation,
+                           x1: edge.x1,
+                           x2: edge.x1,
+                           orientation: "vertical" };
 
-                    segment[segmentY] -= edgeSeparation;
-                    connection.unshift({y1: segment[segmentY],
-                                        y2: segment[segmentY] + edgeSeparation,
-                                        x1: edge.x1,
-                                        x2: edge.x1,
-                                        orientation: "vertical"});
-                }
-                else {
-                    edge.y1 += edgeSeparation;
-                    edge.y2 += edgeSeparation;
-
-                    segment[segmentY] += edgeSeparation;
-                    connection.push({y1: segment[segmentY] - edgeSeparation,
-                                     y2: segment[segmentY],
-                                     x1: edge.x1,
-                                     x2: edge.x1,
-                                     orientation: "vertical"});
-                }
+            if ( push ) {
+                connection.push( newSegment );
+            }
+            else {
+                connection.unshift( newSegment );
             }
         }
     }
+
 
     /**
      * For each connection A, iterate over all other connections (B) that are not A.
      * Compare each wire in A to each wire in B, checking for overlap, if they have similar orientation.
      */
-    function getSharedEdges_notworking(connections) {
+    function getSharedEdges(connections) {
         var sharedEdges = {},
             sharedEdge,
             wire1,
@@ -733,65 +636,6 @@ var OrthogonalRouter = function () {
 
                         if ( wire1.orientation === "horizontal" && wire2.orientation === wire1.orientation ) {
                             // Do the lines intersect each other at any point? (where not important)
-                            wire1.sortSegmentEndPoints();
-                            wire2.sortSegmentEndPoints();
-                            if ( !(wire2.x2 < wire1.x1) && !(wire1.x2 < wire2.x1) ) {
-                                share = true;
-                            }
-                        }
-                        if (wire1.orientation === "vertical" && wire2.orientation === wire1.orientation ) {
-                            wire1.sortSegmentEndPoints();
-                            wire2.sortSegmentEndPoints();
-                            if ( !(wire2.y2 < wire1.y1) && !(wire1.y2 < wire2.y1) ) {
-                                share = true;
-                            }
-                        }
-                        if (share) {
-                            if (i in sharedEdge === false) {
-                                wire1.idx = k;
-                                sharedEdge[i] = wire1;
-                            }
-                            if (j in sharedEdge === false) {
-                                wire2.idx = m;
-                                sharedEdge[j] = wire2;
-                            }
-                        }
-                    }
-                }
-
-                // Only push if sharedEdge is populated
-                if (Object.keys(sharedEdge).length > 0 ) {
-                    sharedEdges[wire1.orientation].push(sharedEdge);
-                }
-            }
-        }
-        return sharedEdges;
-    }
-
-
-
-
-    function getSharedEdges(connections) {
-        /*
-         For each connection A, iterate over all other connections (B) that are not A.
-         Compare each wire in A to each wire in B, checking for overlap, if they have similar orientation.
-         */
-        var sharedEdges = {};
-
-        sharedEdges.horizontal = [];
-        sharedEdges.vertical = [];
-        for ( var i = 0; i < connections.length; i++ ) {
-            for ( var k = 0; k < connections[i].length; k++ ) {
-                var sharedEdge = {};
-                for ( var j = i+1; j < connections.length; j++ ) {
-
-                    for ( var m = 0; m < connections[j].length; m++ ) {
-                        var wire1 = connections[i][k],
-                            wire2 = connections[j][m],
-                            share = false;
-
-                        if ( wire1.orientation === "horizontal" && wire2.orientation === wire1.orientation ) {
-                            // Do the lines intersect each other at any point? (where not important)
                             if ( wire2.y1 === wire1.y1 ) {
                                 wire1.sortSegmentEndPoints();
                                 wire2.sortSegmentEndPoints();
@@ -810,14 +654,8 @@ var OrthogonalRouter = function () {
                             }
                         }
                         if (share) {
-                            // Each element in shared Edges will be an object containing all of the
-                            // wire segments that interfere. These segments contain the closest left/right
-                            // each may move for nudging. The key is the element in connections that the wire
-                            // belongs to. This is needed so that when a wire is nudged, the other wires in
-                            // the same connection can also be modified.
-
-                            // Since the wires in each connection have been condensed, a wire should only
-                            // interfere with any other connection only once, for each vert or horz direction
+                            // The key is the element in connections that the wire belongs to. This is needed so that
+                            // when a wire is nudged, the other wires in the same connection can also be modified.
 
                             if (i in sharedEdge === false) {
                                 wire1.idx = k;
@@ -829,9 +667,8 @@ var OrthogonalRouter = function () {
                             }
                         }
                     }
-
                 }
-                // Only push if sharedEdge is populated
+
                 if (Object.keys(sharedEdge).length > 0 ) {
                     sharedEdges[wire1.orientation].push(sharedEdge);
                 }
@@ -841,22 +678,19 @@ var OrthogonalRouter = function () {
     }
 
 
-
-
-
-
     /**
      * Check that no components are off of the grid or overlapping one another, prior to executing router.
      */
     this.validDiagramForAutoRoute = function ( components, gridHeight, gridWidth ) {
-        var boundBox,
+        var i,
+            boundBox,
             invalidConditions,
             boundBoxes = [],
             componentOffGrid = false,
             overlap = false;
 
-        for ( var c = 0; c < components.length; c++ ) {
-            boundBox = components[c].getGridBoundingBox();
+        for ( i = 0; i < components.length; i++ ) {
+            boundBox = components[i].getGridBoundingBox();
 
             boundBox.x -= 10;
             boundBox.y -= 10;
@@ -883,13 +717,13 @@ var OrthogonalRouter = function () {
 
         var numberOfBoundBoxes = boundBoxes.length;
 
-        for ( var b = 1; b < numberOfBoundBoxes; b++ ) {
-            boundBox = boundBoxes[b-1];
+        for ( i = 1; i < numberOfBoundBoxes; i++ ) {
+            boundBox = boundBoxes[i-1];
 
-            overlap = ( (boundBox.x < (boundBoxes[b].x + boundBoxes[b].width) &&
-            (boundBox.x + boundBox.width) > boundBoxes[b].x) &&
-            ((boundBox.y < (boundBoxes[b].y + boundBoxes[b].height)) &&
-            ((boundBox.y + boundBox.height) > boundBoxes[b].y)) );
+            overlap = ( (boundBox.x < (boundBoxes[i].x + boundBoxes[i].width) &&
+            (boundBox.x + boundBox.width) > boundBoxes[i].x) &&
+            ((boundBox.y < (boundBoxes[i].y + boundBoxes[i].height)) &&
+            ((boundBox.y + boundBox.height) > boundBoxes[i].y)) );
 
             if ( overlap ) {
                 alert("Two or more components are overlapping. Adjust components to auto-route.");
