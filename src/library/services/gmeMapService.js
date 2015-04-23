@@ -33,7 +33,18 @@ angular.module('cyphy.services')
                     });
             };
             GmeMapping.prototype.update = function GmeMappingUpdate() {
-                var self = this;
+                var self = this,
+                    setNodeAttributes = function (node, data) {
+                        var attrs = (self.map[node.getMetaTypeName(self.meta)] || {}).attributes;
+                        for (var attr in attrs || {}) {
+                            // data.name = node.getAttribute('name');
+                            if (node.getAttribute(attr) !== data[attrs[attr]]) {
+                                // TODO inherit from meta if data[attrs[attr]]===undefined
+                                node.setAttribute(attr, data[attrs[attr]]);
+                            }
+                        }
+                    };
+
                 for (var nodeId in self.nodes) {
                     var node = self.nodes[nodeId];
                     var data = self._getNodeData(node);
@@ -41,16 +52,31 @@ angular.module('cyphy.services')
                         // TODO: delete in gme
                         continue;
                     }
-                    var attrs = (self.map[node.getMetaTypeName(self.meta)] || {}).attributes;
-                    for (var attr in attrs || {}) {
-                        // data.name = node.getAttribute('name');
-                        if (node.getAttribute(attr) !== data[attrs[attr]]) {
-                            // TODO inherit from meta if data[attrs[attr]]===undefined
-                            node.setAttribute(attr, data[attrs[attr]]);
+                    setNodeAttributes(node, data);
+                }
+                (function addNewGmeNodes() {
+                    var q = [self.data, undefined],
+                        getEnqueueFn = function (kind) {
+                            return function (childData) {
+                                q.push([childData, kind]);
+                            };
+                        };
+                    while (q.length) {
+                        var popped = q.pop(),
+                            data = popped[0],
+                            kind = popped[1];
+                        if (!data._id) {
+                            var newNode = nodeService.createNode(self.context, data._id, self.meta.byName[kind]);
+                            data._id = newNode.getId();
+                            setNodeAttributes(newNode, data);
+                        }
+                        for (var attr in data) {
+                            if (angular.isArray(data[attr])) {
+                                data[attr].forEach(getEnqueueFn(attr));
+                            }
                         }
                     }
-                }
-                // TODO: need to crawl self.data and look for new nodes
+                })();
             };
             // TODO GmeMapping.prototype.destroy: unregister watchers, unload nodes
             GmeMapping.prototype._onUnload = function GmeMappingOnUnload(id) {
