@@ -34,12 +34,16 @@ var OrthogonalRouter = function () {
 
             visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
-
             var end = performance.now();
-
             console.log("Graph time: " + (end - start));
+
             start = performance.now();
             var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
+
+            var tempSegments = optimalConnections.reduce(function (a, b) {
+                return a.concat(b);
+            });
+            diagram.optimalConnections = tempSegments;
 
             var nudgedConnections = nudgeConnections(optimalConnections);
             var wires = diagram.getWires();
@@ -48,11 +52,9 @@ var OrthogonalRouter = function () {
                 wires[w].segments = [];
                 wires[w].segments = nudgedConnections[w];
             }
-            //
-            //end = performance.now();
-            //console.log("Route time: " + (end - start));
-            //
-            //
+            end = performance.now();
+            console.log("Route time: " + (end - start));
+
             //diagram.sweepLines = visibilityGraph.edges;
             //diagram.sweepPoints = visibilityGraph.vertices;
             //var tempSegments = optimalConnections.reduce(function (a, b) {
@@ -73,15 +75,16 @@ var OrthogonalRouter = function () {
     this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
 
-        // Nodes from bounding box
+        // Nodes from bounding box  TODO: should be 10??
         points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );
-        points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 10 ) );
-        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y - 10 ) );
-        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y + boundBox.height + 10 ) );
+        points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 20 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 10 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y + boundBox.height + 20 ) );
+
         visibilityGraph.boundingBoxes.push({ x: boundBox.x - 10,
                                              y: boundBox.y - 10,
-                                             width: boundBox.x + 10,
-                                             height: boundBox.y + 10} );
+                                             width: boundBox.width + 20,
+                                             height: boundBox.height + 20} );
 
         // Nodes from ports
         for ( var k = 0; k < component.portInstances.length; k++ ) {
@@ -93,7 +96,7 @@ var OrthogonalRouter = function () {
                 actualY = y;
 
             if ([90, -270].indexOf(portWireAngle) !== -1) {
-                y += boundBox.y + boundBox.height + 10 - y;  // S port
+                y += boundBox.y + boundBox.height + 20 - y;  // S port
             }
             else if ([-90, 270].indexOf(portWireAngle) !== -1) {
                 y -= y - (boundBox.y - 10);  // N port
@@ -102,7 +105,7 @@ var OrthogonalRouter = function () {
                 x -= x - (boundBox.x - 10);  // W port
             }
             else {
-                x += boundBox.x + boundBox.width + 10 - x;  // E port
+                x += boundBox.x + boundBox.width + 20 - x;  // E port
             }
 
             points.push( new Point( x, y, true, portWireAngle, {x:actualX, y:actualY} ) );
@@ -678,23 +681,24 @@ var OrthogonalRouter = function () {
      * Check that no components are off of the grid or overlapping one another, prior to executing router.
      */
     this.validDiagramForAutoRoute = function ( components, gridHeight, gridWidth ) {
-        var i,
+        var i, j,
             boundBox,
             invalidConditions,
             boundBoxes = [],
             componentOffGrid = false,
-            overlap = false;
+            overlap = false,
+            message;
 
         for ( i = 0; i < components.length; i++ ) {
             boundBox = components[i].getGridBoundingBox();
 
             boundBox.x -= 10;
             boundBox.y -= 10;
-            boundBox.height += 10;
-            boundBox.width += 10;
+            boundBox.height += 20;
+            boundBox.width += 20;
 
-            invalidConditions = [ boundBox.x < 0,
-                                  boundBox.y < 0,
+            invalidConditions = [ boundBox.x <= 0,
+                                  boundBox.y <= 0,
                                   boundBox.x > gridWidth,
                                   boundBox.y > gridHeight,
                                   boundBox.x + boundBox.width > gridWidth,
@@ -703,7 +707,9 @@ var OrthogonalRouter = function () {
             if ( invalidConditions.some(function(elem) { return !!elem; }) ) {
                 componentOffGrid = true;
                 if ( componentOffGrid ) {
-                    alert("A component is off the diagram grid. Adjust components to auto-route.");
+                    message = "Component " + components[i].label + " is off or on the edge of the diagram. " +
+                              "Adjust the component in order to auto-route the design.";
+                    alert(message);
                 }
                 break;
             }
@@ -713,16 +719,28 @@ var OrthogonalRouter = function () {
 
         var numberOfBoundBoxes = boundBoxes.length;
 
-        for ( i = 1; i < numberOfBoundBoxes; i++ ) {
-            boundBox = boundBoxes[i-1];
+        for ( i = 0; i < numberOfBoundBoxes; i++ ) {
+            boundBox = boundBoxes[i];
 
-            overlap = ( (boundBox.x < (boundBoxes[i].x + boundBoxes[i].width) &&
-            (boundBox.x + boundBox.width) > boundBoxes[i].x) &&
-            ((boundBox.y < (boundBoxes[i].y + boundBoxes[i].height)) &&
-            ((boundBox.y + boundBox.height) > boundBoxes[i].y)) );
+            for ( j = 0; j < numberOfBoundBoxes; j++ ) {
+
+                if ( j != i ) {
+
+                    overlap = ( (boundBox.x < (boundBoxes[j].x + boundBoxes[j].width) &&
+                    (boundBox.x + boundBox.width) > boundBoxes[j].x) &&
+                    ((boundBox.y < (boundBoxes[j].y + boundBoxes[j].height)) &&
+                    ((boundBox.y + boundBox.height) > boundBoxes[j].y)) );
+
+                    if (overlap) {
+                        message = "The bounding boxes for components " + components[i].label + " and " +
+                                  components[j].label + " are overlapping. Adjust components to auto-route.";
+                        alert(message);
+                        break;
+                    }
+                }
+            }
 
             if ( overlap ) {
-                alert("Two or more components are overlapping. Adjust components to auto-route.");
                 break;
             }
         }

@@ -199,6 +199,9 @@ OrthogonalGridSegment.prototype.extend = function ( segmentB ) {
 };
 
 
+/**
+ * Find furthest distance you can travel in a direction before hitting object.
+ */
 OrthogonalGridSegment.prototype.findClosestObjects = function ( nodeA, nodeB ) {
     var leftNeighborEnd1, leftNeighborEnd2,
         rightNeighborEnd1, rightNeighborEnd2;
@@ -206,13 +209,11 @@ OrthogonalGridSegment.prototype.findClosestObjects = function ( nodeA, nodeB ) {
     if (this.x1 === this.x2) {
         this.orientation = "vertical";
 
-        // Find furthest distance you can travel west before hitting object.
         leftNeighborEnd1 = nodeA.findClosestObject("west");
         leftNeighborEnd2 = nodeB.findClosestObject("west");
         this.objectLeft = Math.min(Math.abs(this.x1 - leftNeighborEnd1),
                                    Math.abs(this.x1 - leftNeighborEnd2));
 
-        // Find furthest distance you can travel east before hitting object.
         rightNeighborEnd1 = nodeA.findClosestObject("east");
         rightNeighborEnd2 = nodeB.findClosestObject("east");
         this.objectRight = Math.min(Math.abs(this.x1 - rightNeighborEnd1),
@@ -221,18 +222,15 @@ OrthogonalGridSegment.prototype.findClosestObjects = function ( nodeA, nodeB ) {
     else {
         this.orientation = "horizontal";
 
-        // Find furthest distance you can travel north before hitting object.
         leftNeighborEnd1 = nodeA.findClosestObject("north");
         leftNeighborEnd2 = nodeB.findClosestObject("north");
         this.objectLeft = Math.min(Math.abs(this.y1 - leftNeighborEnd1),
                                    Math.abs(this.y1 - leftNeighborEnd2));
 
-        // Find furthest distance you can travel south before hitting object.
         rightNeighborEnd1 = nodeA.findClosestObject("south");
         rightNeighborEnd2 = nodeB.findClosestObject("south");
         this.objectRight = Math.min(Math.abs(this.y1 - rightNeighborEnd1),
                                     Math.abs(this.y1 - rightNeighborEnd2));
-
     }
 };
 
