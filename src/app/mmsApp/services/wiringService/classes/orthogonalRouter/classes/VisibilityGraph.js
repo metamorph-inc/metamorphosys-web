@@ -45,7 +45,6 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight ) 
     // NOTE:
     // At this point, all nodes and neighbors are determined except for far East and bottom right South nodes,
     // and nodes who are a port on the left-hand side of a component.
-    // The E neighbor never would have been found for these. Handle this during A* search.
     while (this.incompleteNodes.length !== 0) {
         var node = this.incompleteNodes[0];
 
@@ -53,12 +52,25 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight ) 
             this.nodes[node.x] = {};
         }
 
+        var east,
+            nodeXKeys = Object.keys(this.nodes),
+            nodeXValues = [];
+        for (var e in nodeXKeys) {
+            nodeXValues.push(Number(nodeXKeys[e]));
+        }
+        if ( node.east ) {
+            east = node.east;
+        }
+        else {
+
+            east = node.x === Math.max.apply(null, nodeXValues) ? gridWidth : node.x;
+        }
         this.nodes[node.x][node.y] = new OrthogonalGridNode( node.x,
                                                              node.y,
                                                              node.north,
                                                              node.south ? node.south : gridHeight,
                                                              node.west,
-                                                             node.east ? node.east : gridWidth );
+                                                             east );
         this.incompleteNodes.splice(0, 1);
     }
 
