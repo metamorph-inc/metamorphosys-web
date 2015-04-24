@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, $rootScope, diagramService, $timeout, 
+module.exports = function($scope, $rootScope, diagramService, $timeout,
     contextmenuService, operationsManager, wiringService, $log, gridService) {
 
     var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
@@ -570,6 +570,17 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
             id: 'wiringMethods',
             label: 'Wiring method',
             items: wiringMenu
+        }, {
+            id: 'projectMenu',
+            label: 'Project',
+            items: [{
+                id: 'exportToGME',
+                label: 'Export to desktop tools',
+                iconClass: 'glyphicon glyphicon-floppy-save',
+                action: function() {
+                    console.warn('Exporter should be called from here.');
+                }
+            }]
         }, {
             id: 'printMenu',
             items: [{
