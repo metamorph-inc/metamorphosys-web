@@ -30,7 +30,7 @@ angular.module('mms.svgDiagram', [
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService, componentBrowserService, componentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 
-            acmImportService) {
+            acmImportService, testBenchService, projectHandling) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
 
@@ -122,7 +122,9 @@ angular.module('mms.svgDiagram', [
                     operationsManager,
                     wiringService,
                     $log,
-                    gridService
+                    gridService,
+                    testBenchService,
+                    projectHandling
                 );
 
 

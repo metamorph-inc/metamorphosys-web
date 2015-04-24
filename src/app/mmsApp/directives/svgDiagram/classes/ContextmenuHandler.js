@@ -3,7 +3,8 @@
 'use strict';
 
 module.exports = function($scope, $rootScope, diagramService, $timeout,
-    contextmenuService, operationsManager, wiringService, $log, gridService) {
+    contextmenuService, operationsManager, wiringService, $log, gridService, 
+    testBenchService, projectHandling) {
 
     var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
 
@@ -579,8 +580,39 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 iconClass: 'glyphicon glyphicon-floppy-save',
                 action: function() {
                     console.warn('Exporter should be called from here.');
-                }
-            }]
+
+                testBenchService.runTestBench(projectHandling.getWorkspaceContext(), projectHandling.getSelectedDesignId())
+                    .then(function (resultData) {
+
+                        var newResult,
+                            visualUrl,
+                            downloadUrl,
+                            timestamp,
+                            hash,
+                            id;
+
+                        debugger;
+
+                        if (resultData && resultData.success === true) {
+
+                            $log.debug('testbench result', resultData);
+
+                            hash = resultData.artifacts['all.zip'].hash;
+
+                            visualUrl = '/rest/blob/view/' + hash + '/results/eagle-board.png';
+                            downloadUrl = '/rest/blob/download/' + hash + '/results/eagle-board.brd';
+
+
+                        } else {
+                            console.error('Project export failed.');
+                        }
+
+                    }).
+                    catch(function () {
+                            console.error('Project export failed.');
+                    });                    
+                    }
+                }]
         }, {
             id: 'printMenu',
             items: [{
