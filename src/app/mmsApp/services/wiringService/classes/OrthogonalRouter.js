@@ -17,8 +17,6 @@ var OrthogonalRouter = function () {
         // Step 1: generateVisibilityGraph
         // Step 2: AutoRouteWithGraph
         // Step 3: nudgeRoutes
-        // Step 4: deleteOldRoutes
-        // Step 5: drawConnections <-- Is this done here or somewhere else??
 
         var validDiagram = this.validDiagramForAutoRoute ( diagram.getComponents(),
                                                            diagram.config.height,
@@ -40,14 +38,14 @@ var OrthogonalRouter = function () {
             start = performance.now();
             var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
-            var tempSegments = optimalConnections.reduce(function (a, b) {
-                return a.concat(b);
-            });
-            diagram.optimalConnections = tempSegments;
+            if ( optimalConnections === null ) {
+                return null;
+            }
 
             var nudgedConnections = nudgeConnections(optimalConnections);
+
+            // Update diagram Wires
             var wires = diagram.getWires();
-            //
             for ( var w = 0; w < wires.length; w++ ) {
                 wires[w].segments = [];
                 wires[w].segments = nudgedConnections[w];
@@ -55,8 +53,8 @@ var OrthogonalRouter = function () {
             end = performance.now();
             console.log("Route time: " + (end - start));
 
-            //diagram.sweepLines = visibilityGraph.edges;
-            //diagram.sweepPoints = visibilityGraph.vertices;
+            // diagram.sweepLines = visibilityGraph.edges;
+            // diagram.sweepPoints = visibilityGraph.vertices;
             //var tempSegments = optimalConnections.reduce(function (a, b) {
             //    return a.concat(b);
             //});
@@ -72,19 +70,22 @@ var OrthogonalRouter = function () {
         return points;
     };
 
+    /**
+     * Bounding boxes have a 20-pixel padding added to reduce odds of nudging across components.
+     */
     this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
 
-        // Nodes from bounding box  TODO: should be 10??
-        points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );
-        points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 20 ) );
-        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 10 ) );
+        // Nodes from bounding box
+        points.push( new Point( boundBox.x - 20, boundBox.y - 20 ) );
+        points.push( new Point( boundBox.x - 20, boundBox.y + boundBox.height + 20 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 20 ) );
         points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y + boundBox.height + 20 ) );
 
-        visibilityGraph.boundingBoxes.push({ x: boundBox.x - 10,
-                                             y: boundBox.y - 10,
-                                             width: boundBox.width + 20,
-                                             height: boundBox.height + 20} );
+        visibilityGraph.boundingBoxes.push({ x: boundBox.x - 20,
+                                             y: boundBox.y - 20,
+                                             width: boundBox.width + 40,
+                                             height: boundBox.height + 40} );
 
         // Nodes from ports
         for ( var k = 0; k < component.portInstances.length; k++ ) {
@@ -99,10 +100,10 @@ var OrthogonalRouter = function () {
                 y += boundBox.y + boundBox.height + 20 - y;  // S port
             }
             else if ([-90, 270].indexOf(portWireAngle) !== -1) {
-                y -= y - (boundBox.y - 10);  // N port
+                y -= y - (boundBox.y - 20);  // N port
             }
             else if ([180, -180].indexOf(portWireAngle) !== -1) {
-                x -= x - (boundBox.x - 10);  // W port
+                x -= x - (boundBox.x - 20);  // W port
             }
             else {
                 x += boundBox.x + boundBox.width + 20 - x;  // E port
@@ -162,13 +163,12 @@ var OrthogonalRouter = function () {
                                                  wireAngle,
                                                  searchedNodes);
 
+            if ( !result ) {
+                alert("No path was found for one or more connections! Try moving components around.");
+                return null;
+            }
             optimalConnections.push(result.path);
             searchedNodes = result.dirtyNodes;
-
-
-            // Overwrite the wires 'segments' field with the optimal route.
-            //wires[i].segments = [];
-            //wires[i].segments = result.path;
 
         }
         return optimalConnections;
@@ -443,21 +443,23 @@ var OrthogonalRouter = function () {
 
             if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
 
-                adjustLeft = edge.objectLeft > edge.objectRight;
-                maxAdjust = adjustLeft ? edge.objectLeft : edge.objectRight;
+                if ( edge.objectLeft > 0 && edge.objectRight > 0 ) {
+                    adjustLeft = edge.objectLeft > edge.objectRight;
+                    maxAdjust = adjustLeft ? edge.objectLeft - 1 : edge.objectRight - 1;  // Avoid wire on border
 
-                spacing = maxAdjust / Object.keys(sharedEdge).length;
+                    spacing = maxAdjust / Object.keys(sharedEdge).length;
 
-                edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
+                    edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
 
-                if (adjustLeft) {
-                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
+                    if (adjustLeft) {
+                        adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
+                    }
+                    else {
+                        adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
+                    }
+
+                    edgeSeparation += 5;
                 }
-                else {
-                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
-                }
-
-                edgeSeparation += 10;
             }
             else {
                 if ( wireIndex === 0 ) {
@@ -692,10 +694,10 @@ var OrthogonalRouter = function () {
         for ( i = 0; i < components.length; i++ ) {
             boundBox = components[i].getGridBoundingBox();
 
-            boundBox.x -= 10;
-            boundBox.y -= 10;
-            boundBox.height += 20;
-            boundBox.width += 20;
+            boundBox.x -= 20;
+            boundBox.y -= 20;
+            boundBox.height += 40;
+            boundBox.width += 40;
 
             invalidConditions = [ boundBox.x <= 0,
                                   boundBox.y <= 0,
