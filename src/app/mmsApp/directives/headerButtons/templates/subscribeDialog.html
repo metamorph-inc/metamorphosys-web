@@ -6,10 +6,16 @@
         <form name="contactForm" class="contact-form">
             <div class="row">
                 <span></span>
-                <md-text-float label="Name" ng-model="user.name"></md-text-float>
-                <md-text-float label="eMail" ng-model="user.email" name="email" class="long"
-                               type="email"></md-text-float>
 
+                <md-input-container>
+                    <label>Name</label>
+                    <input ng-model="user.name">
+                </md-input-container>
+
+                <md-input-container>
+                    <label>eMail</label>
+                    <input ng-model="user.email" name="email" class="long" type="email">
+                </md-input-container>
                     <!--<span class="error" ng-show="contactForm.email.$error.email">-->
                       <!--Not valid email!</span>-->
 
