@@ -35,6 +35,9 @@ var OrthogonalRouter = function () {
             var end = performance.now();
             console.log("Graph time: " + (end - start));
 
+            //diagram.sweepLines = visibilityGraph.edges;
+            //diagram.sweepPoints = visibilityGraph.vertices;
+
             start = performance.now();
             var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
@@ -53,12 +56,6 @@ var OrthogonalRouter = function () {
             end = performance.now();
             console.log("Route time: " + (end - start));
 
-            // diagram.sweepLines = visibilityGraph.edges;
-            // diagram.sweepPoints = visibilityGraph.vertices;
-            //var tempSegments = optimalConnections.reduce(function (a, b) {
-            //    return a.concat(b);
-            //});
-            //diagram.optimalConnections = tempSegments;
         }
     };
 
@@ -186,6 +183,12 @@ var OrthogonalRouter = function () {
         var openHeap = [],
             destinationNode = visibilityGrid[endPt.x][endPt.y],
             closestNode = visibilityGrid[startPt.x][startPt.y];
+
+        if ( !destinationNode || !closestNode ) {
+            alert( "An error occurred when looking at route for port X: " +
+                    endPt.x + ", Y: " + endPt.y );
+            return null;
+        }
 
         // For the case where multiple connections are being checked, need to erase computed values from last run.
         searchedNodes = resetSearchedNodes(searchedNodes);
@@ -419,8 +422,6 @@ var OrthogonalRouter = function () {
             }
 
             attemptToNudgeSharedEdges( sharedEdge, connections, xyDirection, edgeSeparation, portSeparator );
-
-            //sharedEdges = getSharedEdges(connections);
         }
 
         return connections;
@@ -443,23 +444,23 @@ var OrthogonalRouter = function () {
 
             if (wireIndex !== 0 && wireIndex !== connections[e].length - 1) {
 
-                if ( edge.objectLeft > 0 && edge.objectRight > 0 ) {
-                    adjustLeft = edge.objectLeft > edge.objectRight;
-                    maxAdjust = adjustLeft ? edge.objectLeft - 1 : edge.objectRight - 1;  // Avoid wire on border
+                //if ( edge.objectLeft > 0 && edge.objectRight > 0 ) {
+                adjustLeft = edge.objectLeft > edge.objectRight;
+                maxAdjust = adjustLeft ? edge.objectLeft - 1 : edge.objectRight - 1;  // Avoid wire on border
 
-                    spacing = maxAdjust / Object.keys(sharedEdge).length;
+                spacing = maxAdjust / Object.keys(sharedEdge).length;
 
-                    edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
+                edgeSeparation = spacing < edgeSeparation ? spacing : edgeSeparation;
 
-                    if (adjustLeft) {
-                        adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
-                    }
-                    else {
-                        adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
-                    }
-
-                    edgeSeparation += 5;
+                if (adjustLeft) {
+                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "left");
                 }
+                else {
+                    adjustMiddleWire(edge, connections[e], wireIndex, edgeSeparation, xyDirection, "right");
+                }
+
+                edgeSeparation += 5;
+                //}
             }
             else {
                 if ( wireIndex === 0 ) {
@@ -728,14 +729,15 @@ var OrthogonalRouter = function () {
 
                 if ( j != i ) {
 
-                    overlap = ( (boundBox.x < (boundBoxes[j].x + boundBoxes[j].width) &&
-                    (boundBox.x + boundBox.width) > boundBoxes[j].x) &&
-                    ((boundBox.y < (boundBoxes[j].y + boundBoxes[j].height)) &&
-                    ((boundBox.y + boundBox.height) > boundBoxes[j].y)) );
+                    overlap = ( (boundBox.x <= (boundBoxes[j].x + boundBoxes[j].width) &&
+                    (boundBox.x + boundBox.width) >= boundBoxes[j].x) &&
+                    ((boundBox.y <= (boundBoxes[j].y + boundBoxes[j].height)) &&
+                    ((boundBox.y + boundBox.height) >= boundBoxes[j].y)) );
 
                     if (overlap) {
-                        message = "The bounding boxes for components " + components[i].label + " and " +
-                                  components[j].label + " are overlapping. Adjust components to auto-route.";
+                        message = "The (padded) bounding boxes for components " + components[i].label + " and " +
+                                  components[j].label + " are overlapping or share a border. " +
+                                  "Adjust components to auto-route.";
                         alert(message);
                         break;
                     }

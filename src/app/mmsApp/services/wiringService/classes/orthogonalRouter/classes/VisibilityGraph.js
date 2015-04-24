@@ -99,7 +99,7 @@ VisibilityGraph.prototype.verticalLineSweep = function ( points, gridWidth ) {
 
 
         // If node is a port that is on bottom or top, ignore and skip this node.
-        var isInvalidPort = ( points[i].isPort &&
+        var isInvalidPort = ( !!points[i].isPort &&
                                 ( points[i].direction === 270 || points[i].direction === 90 ||
                                   points[i].direction === -270 || points[i].direction === -90 ) );
 
@@ -240,7 +240,7 @@ VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) 
         var checkRemove = true;
 
         // If node is a port that is on left or right, ignore and skip this node.
-        var isInvalidPort = ( points[i].isPort &&
+        var isInvalidPort = ( !!points[i].isPort &&
         ( points[i].direction === 180 || points[i].direction === 360 ||
         points[i].direction === -180 || points[i].direction === 0 ));
 
