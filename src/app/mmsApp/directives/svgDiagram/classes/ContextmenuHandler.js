@@ -584,12 +584,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 testBenchService.runTestBench(projectHandling.getWorkspaceContext(), projectHandling.getSelectedDesignId())
                     .then(function (resultData) {
 
-                        var newResult,
-                            visualUrl,
-                            downloadUrl,
-                            timestamp,
-                            hash,
-                            id;
+                        var hash,
 
                         debugger;
 
