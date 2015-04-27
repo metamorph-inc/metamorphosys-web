@@ -33,6 +33,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                       if (diagram) {
                         diagram.removeEventListener('wireChange', render);
+                        diagram.removeEventListener('selectionChange', render);                        
                       }
 
                       if (grid) {
@@ -59,6 +60,7 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
 
                             if (diagram) {
                                 diagram.addEventListener('wireChange', render);
+                                diagram.addEventListener('selectionChange', render);                                
                             }
 
                             if (grid) {
@@ -108,6 +110,8 @@ var ComponentWire = React.createClass({
             childSegments = [],
             childCorners = [],
 
+            className = 'component-wire',
+
             wireSegment,
             l, i,
             segments = this.props.wire.getSegments();
@@ -122,15 +126,23 @@ var ComponentWire = React.createClass({
                 <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} crossOversTimeStamp={wireSegment._crossOversTimeStamp}/>
             );
 
-            if (i !== l - 1) {
-                childCorners.push(
-                    <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
-                );
+            if (self.props.wire.selected) {
+
+                if (i !== l - 1) {
+                    childCorners.push(
+                        <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
+                    );
+                }
+
             }
         }
 
+        if (this.props.wire.selected) {
+            className += ' selected';
+        }
+
         return (
-            <g className="component-wire" id={this.props.wire.getId()}>
+            <g className={className} id={this.props.wire.getId()}>
                 {childSegments}
                 {childCorners}
             </g>
@@ -159,7 +171,7 @@ var ComponentWireSegment = React.createClass({
     },
 
     onMouseDown: function(e) {
-        //console.log('onMouseDown ()', e); 
+       // console.log('onMouseDown ()', e); 
         this.props.diagramCtrl.onWireMouseDown(this.props.wire, this.props.segment, e);
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
@@ -178,27 +190,7 @@ var ComponentWireSegment = React.createClass({
             d,
             i;
 
-            // if (Array.isArray(this.props.segment._crossOvers)) {
-
-            //     crossOverArcs = [];
-
-            //     for (i = 0; i < this.props.segment._crossOvers.length; i++) {
-
-            //         crossOver = this.props.segment._crossOvers[i];
-
-            //         transform = 
-            //             'translate(' + 
-            //             (crossOver.crossingSegment._parameters.x1 - 3) + ',' + 
-            //             (parameters.y1 - 6) + ')';
-
-            //         crossOverArcs.push(<path key={i} className="component-wire-segment-segment cross-over" transform={transform} d="M0 6 C 0 0, 7 0, 7 6"/>);
-
-                    
-            //     }
-
-            // } 
-
-              lines = [<line className="component-wire-segment-under"
+           lines = [<line className="component-wire-segment-under"
                                         key={0}
                                         x1={parameters.x1}
                                         y1={parameters.y1}

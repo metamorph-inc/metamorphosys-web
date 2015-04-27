@@ -1,3 +1,5 @@
+$wire-selected-color: rgb(30,136,229);
+
 .new-wire-line {
   stroke-width: 1;
   stroke: #000066;
@@ -20,14 +22,21 @@
       stroke-width: 5;
       stroke: rgba(0, 0, 0, 0);
 
+    }
 
+  }
+
+  &.selected {
+
+    .component-wire-segment-segment {
+      stroke: $wire-selected-color;
     }
 
   }
 
 
   .component-wire-corner {
-    display: none;
+    fill: wire-selected-color;
   }
 
   &:hover {

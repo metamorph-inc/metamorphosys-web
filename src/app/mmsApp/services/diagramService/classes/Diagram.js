@@ -257,6 +257,8 @@ Diagram.prototype.deleteComponentOrWireById = function(anId) {
 
     } else {
 
+        this.deselectWire(anId);
+
         element = self._wiresById[anId];
 
         if (angular.isObject(element)) {
@@ -293,6 +295,11 @@ Diagram.prototype.getWiresForComponents = function(components) {
 
 };
 
+Diagram.prototype.getWireById = function(wireId) {
+
+    return this._wiresById[wireId];
+
+};
 
 Diagram.prototype.getWiresByComponentId = function(componentId) {
 
@@ -472,30 +479,6 @@ Diagram.prototype.selectComponent = function(componentId) {
     var component = this.getComponentById(componentId),
         index;
 
-    if (!this.config.disallowSelection !== true && component && component.nonSelectable !== true) {
-
-        index = this.state.selectedComponentIds.indexOf(component.id);
-
-        if (index === -1) {
-
-            this.state.selectedComponentIds.push(componentId);
-
-            this.dispatchEvent({
-                type: 'selectionChange',
-                message: this.state.selectedComponentIds
-            });
-
-        }
-
-    }
-
-};
-
-Diagram.prototype.selectComponent = function(componentId) {
-
-    var component = this.getComponentById(componentId),
-        index;
-
     if (this.config.disallowSelection !== true && component && component.nonSelectable !== true) {
 
         index = this.state.selectedComponentIds.indexOf(component.id);
@@ -504,12 +487,30 @@ Diagram.prototype.selectComponent = function(componentId) {
 
             this.state.selectedComponentIds.push(componentId);
 
-            component.selected = true;
+            this.afterSelectionChange();
 
-            this.dispatchEvent({
-                type: 'selectionChange',
-                message: this.state.selectedComponentIds
-            });
+        }
+
+    }
+
+};
+
+Diagram.prototype.selectWire = function(wireId) {
+
+    var wire = this.getWireById(wireId),
+        index;
+
+    if (this.config.disallowSelection !== true && wire && wire.nonSelectable !== true) {
+
+        index = this.state.selectedWireIds.indexOf(wire.id);
+
+        if (index === -1) {
+
+            this.state.selectedWireIds.push(wireId);
+
+            wire.selected = true;
+
+            this.afterSelectionChange();
 
         }
 
@@ -532,10 +533,31 @@ Diagram.prototype.deselectComponent = function(componentId) {
 
             component.selected = false;
 
-            this.dispatchEvent({
-                type: 'selectionChange',
-                message: this.state.selectedComponentIds
-            });
+            this.afterSelectionChange();
+
+        }
+
+    }
+
+};
+
+
+Diagram.prototype.deselectWire = function(wireId) {
+
+    var wire = this.getWireById(wireId),
+        index;
+
+    if (this.config.disallowSelection !== true && wire && wire.nonSelectable !== true) {
+
+        index = this.state.selectedWireIds.indexOf(wireId);
+
+        if (index > -1) {
+
+            this.state.selectedWireIds.splice(index, 1);
+
+            wire.selected = false;
+
+            this.afterSelectionChange();
 
         }
 
@@ -561,12 +583,27 @@ Diagram.prototype.clearSelection = function(silent) {
 
         if (silent !== true) {
 
-            this.dispatchEvent({
-                type: 'selectionChange',
-                message: this.state.selectedComponentIds
-            });
+            this.afterSelectionChange();
 
-            //this.emitWireChange();
+        }
+
+    }
+
+    if (this.state.selectedWireIds.length) {
+
+        this.state.selectedWireIds.forEach(function(wId) {
+
+            var wire = self.getWireById(wId);
+
+            wire.selected = false;
+
+        });
+
+        this.state.selectedWireIds = [];
+
+        if (silent !== true) {
+
+            this.afterSelectionChange();
 
         }
 
@@ -765,6 +802,22 @@ Diagram.prototype.afterWireChange = function(wires) {
     this.dispatchEvent({
         type: 'wireChange',
         message: wires
+    });
+
+};
+
+Diagram.prototype.afterSelectionChange = function() {
+
+    var messageObj = {
+            selectedComponentIds: this.state.selectedComponentIds,
+            selectedWireIds: this.state.selectedWireIds
+        };
+
+    //console.log(messageObj);
+
+    this.dispatchEvent({
+        type: 'selectionChange',
+        message: messageObj
     });
 
 };

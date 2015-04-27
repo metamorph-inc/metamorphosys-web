@@ -2,9 +2,11 @@
 
 'use strict';
 
-module.exports = function($scope, diagramService, gridService) {
+module.exports = function($scope, diagramService) {
 
     var onComponentMouseUp,
+        toggleWireSelected,
+        onWireMouseUp,
         toggleComponentSelected;
 
     toggleComponentSelected = function(component, $event) {
@@ -30,13 +32,43 @@ module.exports = function($scope, diagramService, gridService) {
 
     };
 
+    toggleWireSelected = function(wire, $event) {
+
+        var wireId = wire.getId();
+
+        if (wire.selected) {
+
+            $scope.diagram.deselectWire(wireId);
+
+        } else {
+
+            if (!$scope.diagram.config.singleSelect && $event.shiftKey) {
+
+                $scope.diagram.selectWire(wireId);
+
+            } else {
+
+                $scope.diagram.clearSelection(true);
+                $scope.diagram.selectWire(wireId);
+
+            }
+
+        }
+
+    };
 
     onComponentMouseUp = function(component, $event) {
         toggleComponentSelected(component, $event);
 
     };
 
+    onWireMouseUp = function(wire, $event) {
+        toggleWireSelected(wire, $event);
+
+    };
+
     this.onComponentMouseUp = onComponentMouseUp;
+    this.onWireMouseUp = onWireMouseUp;
 
     return this;
 

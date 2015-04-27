@@ -37,8 +37,8 @@ angular.module('mms.svgDiagram', [
             function SVGDiagramController($scope) {
 
                 var
-                    ComponentSelectionHandler = require('./classes/ComponentSelectionHandler'),
-                    componentSelectionHandler,
+                    SelectionHandler = require('./classes/SelectionHandler'),
+                    selectionHandler,
 
                     ComponentDragHandler = require('./classes/ComponentDragHandler'),
                     componentDragHandler,
@@ -95,7 +95,7 @@ angular.module('mms.svgDiagram', [
                     $log
                 );
 
-                componentSelectionHandler = new ComponentSelectionHandler(
+                selectionHandler = new SelectionHandler(
                     $scope,
                     diagramService,
                     gridService,
@@ -146,11 +146,7 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseDown = function(event) {
 
-                    var target;
-
-                    //console.log('onDiagramMouseDown', event);
-
-                    target = event.srcElement || event.target;
+                    var target = event.srcElement || event.target;
 
                     if (target === $scope.svgContainer) {
                         if (event.which === 3) {
@@ -165,21 +161,28 @@ angular.module('mms.svgDiagram', [
 
                 };
 
-                $scope.onDiagramMouseUp = function($event) {
+                $scope.onDiagramMouseUp = function(event) {
+
+                    var target = event.srcElement || event.target;
+                    
+                    console.log('diagram mouse up');
+
+                    if (target === $scope.svgContainer) {
 
 
-                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                        $event.which !== 3) {
+                        if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                            event.which !== 3) {
 
-                        $scope.diagram.clearSelection();
+                            $scope.diagram.clearSelection();
+
+                        }
+
+                        componentDragHandler.onDiagramMouseUp(event);
+                        wireDragHandler.onDiagramMouseUp(event);
+                        wireDrawHandler.onDiagramMouseUp(event);
+                        panHandler.onDiagramMouseUp(event);
 
                     }
-
-                    componentDragHandler.onDiagramMouseUp($event);
-                    wireDragHandler.onDiagramMouseUp($event);
-                    wireDrawHandler.onDiagramMouseUp($event);
-                    panHandler.onDiagramMouseUp($event);
-
                 };
 
                 $scope.onDiagramClick = function( /*$event*/ ) {
@@ -247,7 +250,7 @@ angular.module('mms.svgDiagram', [
                     if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                         $event.which !== 3) {
 
-                        componentSelectionHandler.onComponentMouseUp(component, $event);
+                        selectionHandler.onComponentMouseUp(component, $event);
                         $event.stopPropagation();
 
                         componentDragHandler.onComponentMouseUp(component, $event);
@@ -301,8 +304,20 @@ angular.module('mms.svgDiagram', [
 
                 this.onWireMouseUp = function(wire, segment, $event) {
 
-                    wireDragHandler.onWireMouseUp(wire, segment, $event);
-                    $event.stopPropagation();
+
+                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                        $event.which !== 3) {
+
+                        selectionHandler.onWireMouseUp(wire, $event);
+                        $event.stopPropagation();
+
+                        wireDragHandler.onWireMouseUp(wire, segment, $event);
+
+                    } else {
+                        wireDragHandler.onWireMouseUp(wire, segment, $event);
+                        $event.stopPropagation();
+                    }
+
 
                 };
 
