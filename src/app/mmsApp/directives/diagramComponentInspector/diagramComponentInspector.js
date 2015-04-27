@@ -19,7 +19,7 @@ angular.module('mms.diagramComponentInspector', [
                 this.$rootScope = $rootScope;
 
                 this.config = this.config || {
-                    noInspectableMessage: 'Select a single diagram element to inspect.'
+                    noInspectableMessage: 'Select a single diagram element or wire to inspect.'
                 };
 
                 this.classificationTags = [];
