@@ -589,7 +589,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
                             $log.debug('testbench result', resultData);
 
-                            hash = resultData.artifacts['all.zip'].hash;
+                            hash = resultData.artifacts['mga.zip'].hash;
 
                             var downloadUrl = '/rest/blob/download/' + hash;
                             window.location = downloadUrl;
