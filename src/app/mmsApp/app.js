@@ -18,6 +18,7 @@ require('./services/diagramService/diagramService.js');
 require('./services/gridService/gridService.js');
 require('./services/wiringService/wiringService.js');
 require('./services/dndService/dndService.js');
+require('./services/pcbService/pcbService.js');
 
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');
@@ -245,7 +246,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
         step = function() {
             stats.end();
             stats.begin();
-            window.requestAnimationFrame(step);            
+            window.requestAnimationFrame(step);
         };
 
         stats.setMode(0);
@@ -257,7 +258,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     if ($injector.has('showStats') && $injector.get('showStats') === true) {
         initStats();
-    } 
+    }
 
     ga('send', 'event', 'appInitialized', 'dev.0.2.0');
 

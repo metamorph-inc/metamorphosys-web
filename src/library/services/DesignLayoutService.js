@@ -158,7 +158,8 @@ angular.module('cyphy.services')
             getComponentDetails = function (componentNode) {
 
                 return {
-                    resource: componentNode.getAttribute('Resource')
+                    resource: componentNode.getAttribute('Resource'),
+                    classifications: componentNode.getAttribute('Classifications')
                 };
             };
 

@@ -2,8 +2,9 @@
 
 'use strict';
 
-module.exports = function($scope, $rootScope, diagramService, $timeout, 
-    contextmenuService, operationsManager, wiringService, $log, gridService) {
+module.exports = function($scope, $rootScope, diagramService, $timeout,
+    contextmenuService, operationsManager, wiringService, $log, gridService,
+    testBenchService, projectHandling) {
 
     var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
 
@@ -570,6 +571,39 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
             id: 'wiringMethods',
             label: 'Wiring method',
             items: wiringMenu
+        }, {
+            id: 'projectMenu',
+            label: 'Project',
+            items: [{
+                id: 'exportToGME',
+                label: 'Export to desktop tools',
+                iconClass: 'glyphicon glyphicon-floppy-save',
+                action: function() {
+
+                testBenchService.runTestBench(projectHandling.getWorkspaceContext(), projectHandling.getSelectedDesignId())
+                    .then(function (resultData) {
+
+                        var hash;
+
+                        if (resultData && resultData.success === true) {
+
+                            $log.debug('testbench result', resultData);
+
+                            hash = resultData.artifacts['mga.zip'].hash;
+
+                            var downloadUrl = '/rest/blob/download/' + hash;
+                            window.location = downloadUrl;
+
+                        } else {
+                            console.error('Project export failed.');
+                        }
+
+                    }).
+                    catch(function () {
+                            console.error('Project export failed.');
+                    });
+                    }
+                }]
         }, {
             id: 'printMenu',
             items: [{
