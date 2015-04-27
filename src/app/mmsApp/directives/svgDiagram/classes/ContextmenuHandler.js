@@ -579,7 +579,6 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 label: 'Export to desktop tools',
                 iconClass: 'glyphicon glyphicon-floppy-save',
                 action: function() {
-                    console.warn('Exporter should be called from here.');
 
                 testBenchService.runTestBench(projectHandling.getWorkspaceContext(), projectHandling.getSelectedDesignId())
                     .then(function (resultData) {
