@@ -364,8 +364,6 @@ VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) 
 };
 
 
-// TODO: Ports are now projected onto the bounding box edge. This may make needing to check that
-// TODO: the neighbor being returned by binTree is valid unnecessary... investigate.
 VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, binTree, openObjects, sweepLength) {
     var right, rightIter = binTree.gt(node[axis]);
     if (rightIter.valid) {

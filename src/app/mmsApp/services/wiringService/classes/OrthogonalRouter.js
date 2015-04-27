@@ -23,38 +23,33 @@ var OrthogonalRouter = function () {
                                                            diagram.config.width );
 
         if ( validDiagram ) {
-            var start = performance.now();
 
             var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
-                visibilityGraph = new VisibilityGraph();
+                visibilityGraph = new VisibilityGraph(),
+                points,
+                optimalConnections,
+                nudgedConnections,
+                wires;
 
-            var points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
+            points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
 
             visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
-            var end = performance.now();
-            console.log("Graph time: " + (end - start));
-
-            //diagram.sweepLines = visibilityGraph.edges;
-            //diagram.sweepPoints = visibilityGraph.vertices;
-
-            start = performance.now();
-            var optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
+            optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
             if ( optimalConnections === null ) {
-                return null;
+                alert("No valid path was found. Adjust components and try again.");
+                return null;  // No path found
             }
 
-            var nudgedConnections = nudgeConnections(optimalConnections);
+            nudgedConnections = nudgeConnections(optimalConnections);
 
             // Update diagram Wires
-            var wires = diagram.getWires();
+            wires = diagram.getWires();
             for ( var w = 0; w < wires.length; w++ ) {
                 wires[w].segments = [];
                 wires[w].segments = nudgedConnections[w];
             }
-            end = performance.now();
-            console.log("Route time: " + (end - start));
 
         }
     };

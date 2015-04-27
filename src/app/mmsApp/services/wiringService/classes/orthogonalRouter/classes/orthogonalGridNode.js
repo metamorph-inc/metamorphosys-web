@@ -134,7 +134,6 @@ OrthogonalGridNode.prototype.findClosestObject = function( direction ) {
     var node = this,
         sameNode = false;
 
-    // TODO: Should invalid neighbors take same object as current node? Have function to check, no need to check type
     while ( typeof node[direction] === "object" ) {
         if ( node.compareXTo(node[direction]) === 0 && node.compareYTo(node[direction]) === 0 ) {
             sameNode = true;
@@ -152,17 +151,6 @@ OrthogonalGridNode.prototype.findClosestObject = function( direction ) {
     else {
         return node[direction];  // Node neighbor in this direction is a number, aka wall.
     }
-
-    // If to do above was done..
-    //var dirNode = node[direction];
-    //
-    //if ( node.compareXTo(dirNode) === 0 && node.compareYTo(dirNode) === 0 ) {
-    //    // Same node
-    //    return dirNode;
-    //}
-    //else {
-    //    return dirNode.findClosestNeighbor( direction );
-    //}
 
 };
 
