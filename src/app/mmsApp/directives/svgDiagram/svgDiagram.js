@@ -55,6 +55,9 @@ angular.module('mms.svgDiagram', [
                     PanHandler = require('./classes/PanHandler'),
                     panHandler,
 
+                    DrawSelectionHandler = require('./classes/DrawSelectionHandler'),
+                    drawSelectionHandler,
+
                     ComponentKeyboardOperationsHandler = require('./classes/ComponentKeyboardOperationsHandler'),
                     componentKeyboardOperationsHandler,
 
@@ -156,7 +159,12 @@ angular.module('mms.svgDiagram', [
                         } else {
 
                             contextMenuHandler.onDiagramMouseDown(event);
-                            panHandler.onDiagramMouseDown(event);
+
+                            if (event.shiftKey) {
+                                drawSelectionHandler.onDiagramMouseDown(event);
+                            } else {
+                                panHandler.onDiagramMouseDown(event);
+                            }
 
                         }
                     }
@@ -167,7 +175,7 @@ angular.module('mms.svgDiagram', [
 
                     var target = event.srcElement || event.target;
                     
-                    console.log('diagram mouse up');
+                    //console.log('diagram mouse up');
 
                     if (target === $scope.svgContainer) {
 
