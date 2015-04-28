@@ -1,4 +1,4 @@
-/*globals angular, ga, encodeURIComponent*/
+/*globals angular, ga, encodeURIComponent, Stats*/
 
 'use strict';
 
@@ -18,6 +18,7 @@ require('./services/diagramService/diagramService.js');
 require('./services/gridService/gridService.js');
 require('./services/wiringService/wiringService.js');
 require('./services/dndService/dndService.js');
+require('./services/pcbService/pcbService.js');
 
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');
@@ -90,7 +91,7 @@ CyPhyApp.run(function(editableOptions, editableThemes) {
 });
 
 CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
-                                               $timeout, projectHandling, $animate) {
+                                               $timeout, projectHandling, $animate, $injector) {
 
     var stateBeforeWentWrong;
 
@@ -236,6 +237,28 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
     });
 
     $animate.enabled(false);
+
+    function initStats() {
+
+        var stats = new Stats(),
+            step;
+
+        step = function() {
+            stats.end();
+            stats.begin();
+            window.requestAnimationFrame(step);
+        };
+
+        stats.setMode(0);
+        document.body.appendChild(stats.domElement);
+
+        window.requestAnimationFrame(step);
+
+    }
+
+    if ($injector.has('showStats') && $injector.get('showStats') === true) {
+        initStats();
+    }
 
     ga('send', 'event', 'appInitialized', 'dev.0.2.0');
 

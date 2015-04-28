@@ -1,0 +1,30 @@
+<div class="diagram-wire-inspector">
+    <div ng-if="!ctrl.inspectableWireId" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
+    <div ng-if="ctrl.inspectableWireId">
+    <div class="inspectable-name">
+        Connection between:
+    </div>
+<!--     <div class="wire-id">
+        {{ctrl.inspectableWireId}}
+    </div>
+ --> 
+
+    <div class="component-a">
+        <md-button md-no-ink class="md-primary" ng-click="ctrl.selectComponent(ctrl.componentA.id)" title="Click to inspect">{{ctrl.componentA.label}}</md-button>
+        <div class="taxonomy-terms classification-tags">
+            <div class="taxonomy-term" ng-repeat="term in ctrl.componentA.classificationTags" ng-class="term.id">{{::term.name}}</div>
+        </div>        
+        <div class="details">
+            <div class="port-info"><label>Connector:</label> {{ctrl.componentA.portLabel}}</div>
+        </div>
+    </div>
+     <div class="component-b">
+        <md-button md-no-ink class="md-primary" ng-click="ctrl.selectComponent(ctrl.componentB.id)" title="Click to inspect">{{ctrl.componentB.label}}</md-button>
+        <div class="taxonomy-terms classification-tags">
+            <div class="taxonomy-term" ng-repeat="term in ctrl.componentB.classificationTags" ng-class="term.id">{{::term.name}}</div>
+        </div>     
+        <div class="details">
+            <div class="port-info"><label>Connector:</label> {{ctrl.componentB.portLabel}}</div>        
+        </div>
+    </div> 
+</div>

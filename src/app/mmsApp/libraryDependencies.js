@@ -1,6 +1,5 @@
 var $ = window.$;
 
-require('jquery-ui');
 require('bootstrap');
 
 require('ui-router');
@@ -9,7 +8,6 @@ require('ng-grid');
 require('hammerjs');
 require('angular-animate');
 require('angular-aria');
-require('angular-material');
 require('angular-cookies');
 require('angucomplete-alt');
 require('angular-socialshare');

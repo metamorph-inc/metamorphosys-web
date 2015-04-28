@@ -1,0 +1,50 @@
+.diagram-wire-inspector {
+
+	.inspectable-name {
+		font-weight: bold;
+	}
+
+    .no-inspectable-message {
+        text-align: center;
+        height: 140px;
+        line-height: 140px;
+        font-style: italic;
+    }
+    .editable-error {
+        position: absolute;
+    }
+    .classification-tags {
+        display: inline-block;
+        margin-left: 1ex;
+        vertical-align: baseline;
+        .taxonomy-term {
+            cursor: default;
+            opacity: 1;
+            background-color: #0D47A1;
+        }
+    }
+    .wire-id {
+        vertical-align: top;
+        display: inline-block;
+        margin-left: 1ex;
+        color: #aaa;
+    }
+    .inspectable-details {
+        margin-top: 1.5em;
+    }
+
+    .component-a,
+    .component-b {
+    	display: inline-block;
+    	width: 45%;
+    	height: 120px;
+    }
+
+    .component-a {
+    	border-right: 1px dotted #ccc;
+    }
+
+    .details {
+    	margin-left: 2ex;
+    }
+}

@@ -2,11 +2,11 @@
 
 'use strict';
 
-var gridServicesModule = angular.module(
+var EventDispatcher = require('../../classes/EventDispatcher'),
+    gridServicesModule = angular.module(
     'mms.designVisualization.gridService', [] );
 
-gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
-    function ( $log, $rootScope, $timeout ) {
+function GridService( $log, $rootScope, $timeout ) {
 
         var self = this,
 
@@ -77,7 +77,8 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                         _recalculateVisibleDiagramComponents(grid, startIndex);
                     },
 
-                    recalculateCycleDelay
+                    recalculateCycleDelay,
+                    false
                 );
             }
         };
@@ -160,7 +161,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
                         recalculateVisibleDiagramComponents(grid);
 
-                    });
+                    }, 1, false);
 
                 } else {
 
@@ -255,6 +256,10 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
                 } );
             }
 
+            this.dispatchEvent({
+                type: 'visibleComponentsChanged'
+            });
+
         };
 
         this.getSnappedPosition = function(position) {
@@ -270,7 +275,7 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
             y = 0;
 
             if (isNaN(gridSize)) {
-                gridSize  = 1;
+                gridSize = 1;
             }
 
             if (angular.isObject(position)) {
@@ -293,5 +298,12 @@ gridServicesModule.service( 'gridService', [ '$log', '$rootScope', '$timeout',
 
         };
 
+        this.getGrid = function(id) {
+            return grids[id];
+        };
+
     }
-] );
+
+EventDispatcher.prototype.apply(GridService.prototype);
+
+gridServicesModule.service( 'gridService', GridService);

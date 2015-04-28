@@ -12,12 +12,14 @@ angular.module('mms.diagramComponentInspector', [
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController($scope, $http) {
+            function DiagramComponentInspectorController($scope, $rootScope, $http) {
 
                 var self = this;
 
+                this.$rootScope = $rootScope;
+
                 this.config = this.config || {
-                    noInspectableMessage: 'Select a single diagram element to inspect.'
+                    noInspectableMessage: 'Select a single diagram element or wire to inspect.'
                 };
 
                 this.classificationTags = [];
@@ -103,6 +105,12 @@ angular.module('mms.diagramComponentInspector', [
                 if (data.length < 1 || data.length > 20) {
                     return 'Name should be between 1 and 20 characters long!';
                 }
+
+            };
+
+            DiagramComponentInspectorController.prototype.commitName = function() {
+
+                this.$rootScope.$emit('componentLabelMustBeSaved', this.inspectable);
 
             };
 

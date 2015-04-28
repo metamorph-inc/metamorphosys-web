@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function(symbolManager, diagramService, wiringService) {
+module.exports = function(symbolManager, diagramService, wiringService, pcbService) {
 
     var getDiagram,
         getDiagramElement,
@@ -158,21 +158,21 @@ module.exports = function(symbolManager, diagramService, wiringService) {
 
             if (sourcePort && destinationPort) {
 
-                wire = new Wire({
-                    id: element.id,
-                    end1: {
+                wire = new Wire(
+                    element.id,
+                    {
                         component: sourcePort.parentComponent,
                         port: sourcePort
                     },
-                    end2: {
+                    {
                         component: destinationPort.parentComponent,
                         port: destinationPort
                     }
-                });
+                );
 
-                if (angular.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
+                if (Array.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {
 
-                    wire.segments = angular.copy(element.details.wireSegments);
+                    wire.makeSegmentsFromParameters(angular.copy(element.details.wireSegments));
                     wiringService.adjustWireEndSegments(wire);
 
                 } else {
@@ -208,7 +208,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
             nonSelectable: false,
             locationLocked: false,
             draggable: true,
-            metaType: 'Connector'                        
+            metaType: 'Connector'
         });
 
         newDiagramComponent.classificationTags.push({
@@ -355,7 +355,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 readonly: false,
                 locationLocked: false,
                 draggable: true,
-                metaType: 'AVMComponent'                
+                metaType: 'AVMComponent'
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -397,7 +397,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 readonly: false,
                 locationLocked: false,
                 draggable: true,
-                metaType: 'AVMComponent'                
+                metaType: 'AVMComponent'
             });
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
@@ -456,7 +456,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
         //}
         else {
 
-            if (element.name !== 'pcb') {
+            if (!pcbService.isPcbClassification(element.details.classifications)) {
                 symbol = symbolManager.makeBoxSymbol(
                     'box',
                     element.name, {
@@ -480,7 +480,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                     nonSelectable: false,
                     locationLocked: false,
                     draggable: true,
-                    metaType: 'AVMComponent'                    
+                    metaType: 'AVMComponent'
                 });
 
 
@@ -497,7 +497,7 @@ module.exports = function(symbolManager, diagramService, wiringService) {
                 id: 'component',
                 name: 'Component'
             });
-            
+
         }
 
         return newModelComponent;

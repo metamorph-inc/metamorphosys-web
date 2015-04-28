@@ -3,7 +3,8 @@
 var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     Point = require("./orthogonalRouter/classes/Point.js"),
     OrthogonalGridNode = require("./orthogonalRouter/classes/OrthogonalGridNode.js"),
-    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js");
+    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js"),
+    WireSegment = require("../../diagramService/classes/WireSegment.js");
 
 
 var OrthogonalRouter = function () {
@@ -29,7 +30,9 @@ var OrthogonalRouter = function () {
                 points,
                 optimalConnections,
                 nudgedConnections,
-                wires;
+                wires,
+                replaceParent,
+                replaceWire = [];
 
             points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
 
@@ -47,8 +50,15 @@ var OrthogonalRouter = function () {
             // Update diagram Wires
             wires = diagram.getWires();
             for ( var w = 0; w < wires.length; w++ ) {
-                wires[w].segments = [];
-                wires[w].segments = nudgedConnections[w];
+
+                replaceParent = new WireSegment(nudgedConnections[w][0]);
+                replaceWire.push(replaceParent);
+
+                for ( var s = 1; s < nudgedConnections[w].length; s++ ) {
+                    replaceWire.push(new WireSegment(nudgedConnections[w][s], replaceParent));
+                }
+
+                wires[w].replaceSegments(0, replaceWire);
             }
 
         }
@@ -119,7 +129,9 @@ var OrthogonalRouter = function () {
 
         for ( var i = 0; i < wires.length; i++ ) {
 
-            var wireAngle = wires[i].end1.port.getGridWireAngle();
+            var end1 = wires[i].getEnd1(),
+                end2 = wires[i].getEnd2(),
+                wireAngle = end1.port.getGridWireAngle();
 
             // Convert from getGridWireAngle() output to array index.
             if (wireAngle === 90 || wireAngle === -270) {wireAngle = 1;}
@@ -131,8 +143,8 @@ var OrthogonalRouter = function () {
                 numberOfPoints = points.length,
                 wire1Position = null,
                 wire2Position = null,
-                actualPos1 = wires[i].end1.port.getGridPosition(),
-                actualPos2 = wires[i].end2.port.getGridPosition();
+                actualPos1 = end1.port.getGridPosition(),
+                actualPos2 = end2.port.getGridPosition();
             for (j = 0; j < numberOfPoints; j++) {
                 if ( points[j].portLocation ) {
                     if (points[j].portLocation.x === actualPos1.x &&

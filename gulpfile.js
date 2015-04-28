@@ -2,8 +2,6 @@
 'use strict';
 
 var argv = require('yargs').argv,
-    livereloadport = 35729,
-    serverport = 5000,
 
     debug = !argv.production,
     debugShim = false, //this is for toggling browserify shim debug
@@ -96,7 +94,8 @@ var argv = require('yargs').argv,
     path = require('path'),
 
     svgstore = require('gulp-svgstore'),
-    svgmin = require('gulp-svgmin');
+    svgmin = require('gulp-svgmin'),
+    through2 = require('through2');
 
 
 // Utility tasks
@@ -339,7 +338,7 @@ registerAppTasks = function (appName) {
     var appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
         appBuildRoot = buildRoot + 'apps/' + appName + '/',
 
-        appSources = [appSourceRoot + '**/*.js'],
+        appSources = [appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx'],
         appModuleScript = appSourceRoot + 'app.js',
 
         appIndexFile = appSourceRoot + 'index.html',
@@ -395,37 +394,49 @@ registerAppTasks = function (appName) {
 
     gulp.task('browserify-' + appName, function () {
 
-        var bundler, bundle;
+        var bundler, bundle,
+            onlyRe = new RegExp(appSourceRoot, 'g');
+
+
         console.log('Browserifying ' + appName + '-app...');
 
         if (debugShim) {
             process.env.BROWSERIFYSHIM_DIAGNOSTICS = 1;
         }
+
         bundler = browserify({
             entries: [appModuleScript],
             debug: true
         });
 
-        bundle = function () {
-            return bundler
-//                .transform(babelify)
-                .bundle()
-                .on('error', swallowError)
-                .pipe(source(appSourceRoot + 'app.js'))
-                .pipe(buffer())
-                .pipe(sourcemaps.init({loadMaps: true}))
-                .pipe(rename(function (path) {
-                    path.dirname = '';
-                    path.basename = appName + '-app';
-                    path.extname = '.js';
-                }))
-                // Add transformation tasks to the pipeline here.
-                //.pipe(uglify())
-                .pipe(sourcemaps.write('./'))
-                .pipe(gulp.dest(appBuildRoot + 'scripts/'));
-        };
+        return gulp.src(appSourceRoot + 'app.js')
+            .pipe(through2.obj(function (file, enc, next) {
+                browserify(file.path, { debug: process.env.NODE_ENV === 'development' })
+                .transform(babelify.configure({
+                    //whitelist: ['es6', 'react'],
+                    extensions: ['.jsx'],
+                    only: onlyRe
 
-        return bundle();
+                }))
+                .bundle(function (err, res) {
+                    if (err) { return next(err); }
+ 
+                    file.contents = res;
+                    next(null, file);
+                });
+            }))
+            .on('error', swallowError)
+            .pipe(sourcemaps.init({loadMaps: true}))
+            .pipe(rename(function (path) {
+                path.dirname = '';
+                path.basename = appName + '-app';
+                path.extname = '.js';
+            }))
+            // Add transformation tasks to the pipeline here.
+            //.pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest(appBuildRoot + 'scripts/'));
+
     });
 
     gulp.task('copy-' + appName + '-libs', function () {
@@ -687,7 +698,7 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
         var
             appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
 
-            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js' ],
+            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx' ],
 
             appHtmls = [ appSourceRoot + '**/*.html'],
 

@@ -726,6 +726,15 @@ define([
                 });
                 copyAttrIfSet('Layer');
             }
+            if (type === 'GlobalLayoutConstraintException') {
+                var constraintVal = self.core.getAttribute(node, 'Constraint');
+                if (constraintVal === 'Board Edge Spacing') {
+                    data['@Constraint'] = 'BoardEdgeSpacing';
+                }
+                else if (constraintVal === 'Inter-Chip Spacing') {
+                    data['@Constraint'] = 'InterChipSpacing';
+                }
+            }
             copyAttrIfSet('Notes');
 
             data['@ConstraintTarget'] = targetNodes

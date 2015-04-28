@@ -7,6 +7,7 @@ var EventDispatcher = require('../../classes/EventDispatcher');
 require('../testbenchActions/testbenchActions.js');
 require('../keyboardMap/keyboardMap.js');
 require('../diagramComponentInspector/diagramComponentInspector.js');
+require('../diagramWireInspector/diagramWireInspector.js');
 require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
 require('../diagramContainer/diagramContainer.js');
@@ -18,6 +19,7 @@ angular.module('mms.designEditor', [
         'mms.designVisualization.operations.gmeCommitHandlers',
         'mms.keyboardMap',
         'mms.diagramComponentInspector',
+        'mms.diagramWireInspector',
         'mms.svgDiagram',
         'mms.diagramContainer',
         'mms.utils'
@@ -46,6 +48,7 @@ angular.module('mms.designEditor', [
                 self = this;
 
             self.inspectableComponent = null;
+            self.inspectableWire = null;
 
             self._drawerHeight = 0;
             self._element = null;
@@ -61,19 +64,26 @@ angular.module('mms.designEditor', [
 
             selectionHandler = function(event) {
 
-                var selection = event.message;
+                var selectedComponentIds = event.message.selectedComponentIds,
+                    selectedWireIds = event.message.selectedWireIds;
 
-                if (selection.length === 1) {
+                self.inspectableComponent = null;
+                self.inspectableWire = null;
 
-                    self.inspectableComponent = self.diagram.getComponentById(selection[0]);
+                if (selectedComponentIds.length === 1) {
+
+                    self.inspectableComponent = self.diagram.getComponentById(selectedComponentIds[0]);
 
                     $log.debug('inspectableComponent', self.inspectableComponent);
 
-                } else {
+                } else if (selectedWireIds.length === 1) {
 
-                    self.inspectableComponent = null;
+                    self.inspectableWire = self.diagram.getWireById(selectedWireIds[0]);
+
+                    $log.debug('inspectableWire', self.inspectableWire);
 
                 }
+
             };
 
             addRootScopeEventListener = function(event, fn) {
@@ -94,6 +104,7 @@ angular.module('mms.designEditor', [
             destroy = function() {
 
                 self.inspectableComponent = null;
+                self.inspectableWire = null;
 
                 removeAllRootScopeEventListeners();
 
@@ -126,6 +137,7 @@ angular.module('mms.designEditor', [
                     $rootScope.unCover();
                     $rootScope.stopProcessing();
 
+                    self.diagram.afterWireChange();
 
                 } else if (selectedContainerId) {
 
@@ -197,15 +209,13 @@ angular.module('mms.designEditor', [
 
                                         if (diagram) {
 
-                                            node.setRegistry('wireSegments', angular.copy(wire.segments));
-                                            node.makePointer('src', wire.end1.port.id);
-                                            node.makePointer('dst', wire.end2.port.id);
+                                            node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
+                                            node.makePointer('src', wire.getEnd1().port.id);
+                                            node.makePointer('dst', wire.getEnd2().port.id);
 
-                                            nodeService.completeTransaction(layoutContext);
-
-                                            wire.id = node.id;
+                                            wire.setId(node.id);
                                             diagram.addWire(wire);
-                                            gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
 
                                         }
 
@@ -221,12 +231,12 @@ angular.module('mms.designEditor', [
                     });
 
                     addRootScopeEventListener('wireSegmentsMustBeSaved', function($event, wire, message) {
-                        designLayoutService.setWireSegments(layoutContext, wire.id, angular.copy(wire.segments), message || 'Updating wire');
+                        designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
                     });
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
-                        nodeService.destroyNode(layoutContext, wire.id, message || 'Deleting wire');
+                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
                     });
 
                     addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
@@ -254,7 +264,7 @@ angular.module('mms.designEditor', [
                                     deleteMessage += ' with wires';
 
                                     nodeIdsToDelete = wires.map(function(wire) {
-                                        return wire.id;
+                                        return wire.getId();
                                     });
 
                                 }

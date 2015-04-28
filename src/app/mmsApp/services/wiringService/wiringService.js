@@ -136,8 +136,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                         p2
                     ], params);
 
-
-                    wire.segments = s1.concat(s2).concat(s3);
+                    wire.makeSegmentsFromParameters(s1.concat(s2).concat(s3));
 
                 }
 
@@ -151,75 +150,93 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 secondSegment,
                 secondToLastSegment,
                 lastSegment,
-                endPositions,
-                newSegments,
+                endPositions = wire.getEndPositions(),
+                segments = wire.getSegments(),
+                newSegmentParameters,
+                segmentParams,
+                router,
                 pos;
 
-            endPositions = wire.getEndPositions();
+            if (Array.isArray(segments) && segments.length > 1) {
+                
+                // If this wire has more than one segments
 
-            if (angular.isArray(wire.segments) && wire.segments.length > 1) {
+                // Creating new begining for wire
 
-                firstSegment = wire.segments[0];
+                firstSegment = segments[0];
+                segmentParams = firstSegment.getParameters();
+                router = segmentParams.router;                
 
-                if (firstSegment.router && firstSegment.router.type === 'ElbowRouter') {
+                if (router && router.type === 'ElbowRouter') {
 
-                    secondSegment = wire.segments[1];
+                    secondSegment = segments[1];
+                    segmentParams = secondSegment.getParameters();
 
                     pos = {
-                        x: secondSegment.x2,
-                        y: secondSegment.y2
+                        x: segmentParams.x2,
+                        y: segmentParams.y2
                     };
-
-                    wire.segments.splice(0, 2);
 
                 } else {
 
-                    // SimpleRouter
+                    // Use SimpleRouter
 
                     pos = {
-                        x: firstSegment.x2,
-                        y: firstSegment.y2
+                        x: segmentParams.x2,
+                        y: segmentParams.y2
                     };
 
-                    wire.segments.splice(0, 1);
                 }
 
-                newSegments = self.getSegmentsBetweenPositions({
-                    end1: endPositions.end1,
-                    end2: pos
-                }, firstSegment.router.type, firstSegment.router.params);
+                newSegmentParameters = self.getSegmentsBetweenPositions(
+                    {
+                        end1: endPositions.end1,
+                        end2: pos
+                    }, 
+                    router.type, 
+                    router.params
+                );
 
-                wire.segments = newSegments.concat(wire.segments);
+                wire.replaceSegmentsFromPropertiesArray(0, newSegmentParameters);
 
-                lastSegment = wire.segments[wire.segments.length - 1];
 
-                if (lastSegment.router && lastSegment.router.type === 'ElbowRouter') {
+                // Creating new end for wire
 
-                    secondToLastSegment = wire.segments[wire.segments.length - 2];
+                lastSegment = segments[segments.length - 1];
+                segmentParams = lastSegment.getParameters();
+                router = segmentParams.router;
+
+                if (router && router.type === 'ElbowRouter') {
+
+                    secondToLastSegment = segments[segments.length - 2];
+                    segmentParams = secondToLastSegment.getParameters();
 
                     pos = {
-                        x: secondToLastSegment.x1,
-                        y: secondToLastSegment.y1
+                        x: segmentParams.x1,
+                        y: segmentParams.y1
                     };
-
-                    wire.segments.splice(wire.segments.length - 2, 2);
 
                 } else {
 
+                    // Use SimpleRouter                    
+
                     pos = {
-                        x: lastSegment.x1,
-                        y: lastSegment.y1
+                        x: segmentParams.x1,
+                        y: segmentParams.y1
                     };
 
-                    wire.segments.splice(wire.segments.length - 1, 1);
                 }
 
-                newSegments = self.getSegmentsBetweenPositions({
-                    end1: pos,
-                    end2: endPositions.end2
-                }, lastSegment.router.type, lastSegment.router.params);
+                newSegmentParameters = self.getSegmentsBetweenPositions(
+                    {
+                        end1: pos,
+                        end2: endPositions.end2
+                    }, 
+                    router.type, 
+                    router.params
+                );
 
-                wire.segments = wire.segments.concat(newSegments);
+                wire.replaceSegmentsFromPropertiesArray(segments.length - newSegmentParameters.length, newSegmentParameters);
 
             } else {
 

@@ -10,6 +10,7 @@ if (typeof module !== 'undefined') {
     var cyphyRootDir = PATH.resolve(__dirname, '..');
     var webGme = require('webgme');
     var CONFIG = require('../config');
+    var requirejs = webGme.requirejs;
     requirejs.define('gmeConfig', function () { return CONFIG; });
     webGme.addToRequireJsPaths(CONFIG);
     var define = require(PATH.resolve(cyphyRootDir, 'test-conf.js')).requirejs;
@@ -91,7 +92,7 @@ define(
             core,
             deferred = Q.defer(),
             root;
-        core = new Core(project, {globConf: CONFIG});
+        core = new Core(project, {globConf: CONFIG, logger: logger});
         root = core.createNode({parent: null, base: null});
         Q.ninvoke(fs, 'readFile', metaJson, {encoding: 'utf-8'})
             .then(function (metaJson) {

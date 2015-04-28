@@ -1,7 +1,10 @@
 {
     "scripts": [
+        "./vendor/innersvg/innersvg.js",
         "./bower_components/jquery/dist/jquery.min.js",
+        "./bower_components/jquery-ui/jquery-ui.min.js",        
         "./bower_components/angular/angular.js",
+        "./bower_components/angular-material/angular-material.min.js",
         "./node_modules/ng-gme/dist/ng-gme.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
@@ -9,7 +12,9 @@
         "./public/gme_plugins_for_cyphy/webcyphy.plugins.build.js",
         "./public/cyphy-library/cyphy-components.js",
         "./public/cyphy-library/cyphy-components-templates.js",
-        "./bower_components/angular-xeditable/dist/js/xeditable.js"
+        "./bower_components/angular-xeditable/dist/js/xeditable.js",
+        "./bower_components/react/react.js",
+        "./vendor/stats/stats.min.js"
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",

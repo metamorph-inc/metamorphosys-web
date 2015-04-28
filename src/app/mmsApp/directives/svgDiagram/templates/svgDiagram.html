@@ -13,9 +13,8 @@
         contextmenu-config="{ triggerEvent: 'openContextMenu' }"
         ng-class="getCssClass()"
         >
-        <g class="wire-container">
-            <component-wire ng-repeat="wire in visibleObjects.wires track by wire.id" wire="wire"></component-wire>
-        </g>
+
+        <component-wires-container-react diagram-id="diagram.id"></component-wires-container-react >
         <g class="component-container">
             <component-symbol ng-repeat="component in visibleObjects.components track by component.id" component="component"></component-symbol>
         </g>

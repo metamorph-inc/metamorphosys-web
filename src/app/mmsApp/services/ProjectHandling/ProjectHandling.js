@@ -387,40 +387,8 @@ angular.module('mms.projectHandling', [])
                 //TODO: eventually this has to be implemented
             }).then(function (testbenchesData) {
                 availableTestBenches = testbenchesData.testBenches;
-            });
-
-            $q.all([designsPromise, testbenchesPromise])
-                .then(function () {
-                    deferred.resolve();
-                })
-                .catch(function () {
-                    deferred.reject('Could not get designs and testbenches');
-                });
-
-            return deferred.promise;
-
-        };
-
-        setupWorkspaceInternalsWatcher = function () {
-
-            var designsPromise,
-                testbenchesPromise,
-                deferred;
-
-            deferred = $q.defer();
-
-            cleanWorkspaceInternalsWatcher();
-
-            designsPromise = designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
-                //TODO: eventually this has to be implemented
-            }).then(function (designsData) {
-                availableDesigns = designsData.designs;
-            });
-
-            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function () {
-                //TODO: eventually this has to be implemented
-            }).then(function (testbenchesData) {
-                availableTestBenches = testbenchesData.testBenches;
+		// TODO: hook this up to something
+                testBenchService.watchTestBenchDetails(wsContext, testbenchesData.testBenches[Object.getOwnPropertyNames(testbenchesData.testBenches)[0]].id);
             });
 
             $q.all([designsPromise, testbenchesPromise])
