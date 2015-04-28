@@ -88,6 +88,16 @@ Wire.prototype.appendSegmentsFromParameters = function(parametersArray) {
 
 };
 
+Wire.prototype.appendSegmentFromParameters = function(parameters) {
+    
+    var i,
+        segment;
+
+    segment = new WireSegment(parameters, this);
+    this._segments.push(segment);
+
+};
+
 Wire.prototype.prependSegmentsFromParameters = function(parametersArray) {
     
     var i,
@@ -152,14 +162,14 @@ Wire.prototype.replaceSegments = function(startPosition, setOfSegments) {
 
 };
 
-Wire.prototype.replaceSegmentsFromPropertiesArray = function(startPosition, propertiesArray) {
+Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, parametersArray) {
 
     var i,
         l = this._segments.length;
 
-    for (i = 0; i < propertiesArray.length; i++) {
+    for (i = 0; i < parametersArray.length; i++) {
 
-        this._segments[Math.min(l, startPosition + i)] = new WireSegment(propertiesArray[i], this);
+        this._segments[Math.min(l, startPosition + i)] = new WireSegment(parametersArray[i], this);
 
     }
 

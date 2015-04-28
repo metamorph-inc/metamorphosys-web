@@ -151,7 +151,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                             }
                         }, 'SimpleRouter');
 
-                        wire.replaceSegmentsFromPropertiesArray(
+                        wire.replaceSegmentsFromParametersArray(
                             sIndex,
                             newSegments
                         );

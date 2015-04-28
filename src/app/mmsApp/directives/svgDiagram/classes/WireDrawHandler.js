@@ -71,7 +71,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                         end2: port.getGridPosition()
                     },
                     $scope.selectedRouter.type,
-                    $scope.selectedRouter.params
+                    $scope.selectedRouter.params,
+                    true
                 )
             )
         );

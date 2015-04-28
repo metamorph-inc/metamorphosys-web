@@ -6,7 +6,10 @@
 
 var Point = require("./Point.js");
 
-var OrthogonalGridSegment = function( x1, y1, x2, y2 ) {
+var OrthogonalGridSegment = function( x1, y1, x2, y2, orientation ) {
+
+    this._xFlipped = false;
+    this._yFlipped = false;
 
     if ( x1 !== null ) {
         this.x1 = x1;
@@ -20,6 +23,8 @@ var OrthogonalGridSegment = function( x1, y1, x2, y2 ) {
     if ( y2 !== null ) {
         this.y2 = y2;
     }
+
+    this.orientation = orientation || null;
 
 };
 
@@ -164,18 +169,86 @@ OrthogonalGridSegment.prototype.isPointOnEndPoint = function ( point ) {
  */
 OrthogonalGridSegment.prototype.sortSegmentEndPoints = function () {
     if (this.x2 < this.x1) {
-        var tmpx = this.x2;
-        this.x2 = this.x1;
-        this.x1 = tmpx;
+        this.flipX();
     }
 
     if (this.y2 < this.y1) {
-        var tmpy = this.y2;
-        this.y2 = this.y1;
-        this.y1 = tmpy;
+        this.flipY();
     }
 };
 
+OrthogonalGridSegment.prototype.flipX = function() {
+    var tmpx = this.x2;
+    this.x2 = this.x1;
+    this.x1 = tmpx;
+    this._xFlipped = !this._xFlipped;
+};
+
+OrthogonalGridSegment.prototype.flipY = function() {
+    var tmpy = this.y2;
+    this.y2 = this.y1;
+    this.y1 = tmpy;
+    this._yFlipped = !this._yFlipped; 
+};
+
+OrthogonalGridSegment.prototype.resetDirection = function() {
+    
+    if (this._xFlipped) {
+        this.flipX();
+    }
+
+    if (this._yFlipped) {
+        this.flipY();
+    }
+
+};
+
+OrthogonalGridSegment.prototype.toString = function() {
+
+    var result = '',
+        i;
+
+    for (i in this) {
+        if (this.hasOwnProperty(i)) {
+            result += i +': ' + this[i] + '; ';
+        }
+    }
+
+    return result;
+
+};
+
+OrthogonalGridSegment.prototype.setFipped = function(flipX, flipY) {
+    
+    if (flipX === true) {
+
+        if (!this._xFlipped) {
+            this.flipX();
+        }
+
+    } else {
+
+        if (this._xFlipped) {
+            this.flipX();
+        }
+
+    }
+
+    if (flipY === true) {
+
+        if (!this._yFlipped) {
+            this.flipY();
+        }
+
+    } else {
+
+        if (this._yFlipped) {
+            this.flipY();
+        }
+
+    }
+
+};
 
 /**
  * Concatenate two segments of similar orientation together.

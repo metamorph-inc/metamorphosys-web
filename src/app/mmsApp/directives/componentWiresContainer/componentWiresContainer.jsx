@@ -225,12 +225,17 @@ var ComponentWireSegment = React.createClass({
                             );
             }
 
+            var t1 = parameters.x1 + ', ' + parameters.y1;
+            var t2 = parameters.x2 + ', ' + parameters.y2;            
+
         return (
             <g className="component-wire-segment"
                onMouseDown={this.onMouseDown}
                onMouseUp={this.onMouseUp}
                >
                 {lines}
+                <text className="small" x={parameters.x1} y={parameters.y1}>{t1}</text>
+                <text className="small" x={parameters.x2} y={parameters.y2}>{t2}</text>
             </g>
         );
 

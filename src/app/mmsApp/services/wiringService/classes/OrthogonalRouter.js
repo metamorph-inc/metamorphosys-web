@@ -31,6 +31,8 @@ var OrthogonalRouter = function () {
                 optimalConnections,
                 nudgedConnections,
                 wires,
+                wire,
+                segment,
                 replaceParent,
                 replaceWire = [];
 
@@ -48,18 +50,33 @@ var OrthogonalRouter = function () {
             nudgedConnections = nudgeConnections(optimalConnections);
 
             // Update diagram Wires
+            
             wires = diagram.getWires();
+
             for ( var w = 0; w < wires.length; w++ ) {
 
-                replaceParent = new WireSegment(nudgedConnections[w][0]);
-                replaceWire.push(replaceParent);
+                wire = wires[w];
 
-                for ( var s = 1; s < nudgedConnections[w].length; s++ ) {
-                    replaceWire.push(new WireSegment(nudgedConnections[w][s], replaceParent));
+                wire.removeSegments();
+
+
+                for (var i = nudgedConnections[w].length - 1; i >= 0; i--) {
+
+                    segment = nudgedConnections[w][i];
+
+                    console.log(segment.toString());
+
+                    segment.setFipped(true, true);
+                    wire.appendSegmentFromParameters(segment);                    
+
                 }
 
-                wires[w].replaceSegments(0, replaceWire);
+                console.log(wire.getSegments());
+
+
             }
+
+            diagram.afterWireChange();
 
         }
     };
@@ -335,10 +352,10 @@ var OrthogonalRouter = function () {
         }
 
         var lastSegment = segments[segments.length - 1];
-        segment = new OrthogonalGridSegment(startPt.portLocation.x,
-                                            startPt.portLocation.y,
-                                            startPt.x,
-                                            startPt.y);
+        segment = new OrthogonalGridSegment(startPt.x,
+                                            startPt.y,
+                                            startPt.portLocation.x,
+                                            startPt.portLocation.y);
         if (segment.x1 === segment.x2) {
             segment.orientation = "vertical";
         }
@@ -587,11 +604,14 @@ var OrthogonalRouter = function () {
             edge.x2 -= edgeSeparation;
 
             segment[segmentX] -= edgeSeparation;
-            newSegment = { x1: segment[segmentX],
-                           x2: segment[segmentX] + edgeSeparation,
-                           y1: edge[segmentY],
-                           y2: edge[segmentY],
-                           orientation: "horizontal" };
+
+            newSegment = new OrthogonalGridSegment(
+                segment[segmentX], 
+                edge[segmentY],
+                segment[segmentX] + edgeSeparation, 
+                edge[segmentY],
+                "horizontal");
+
         }
         else {
 
@@ -599,11 +619,14 @@ var OrthogonalRouter = function () {
             edge.y2 -= edgeSeparation;
 
             segment[segmentY] -= edgeSeparation;
-            newSegment = { y1: segment[segmentY],
-                           y2: segment[segmentY] + edgeSeparation,
-                           x1: edge[segmentX],
-                           x2: edge[segmentX],
-                           orientation: "vertical" };
+
+            newSegment = new OrthogonalGridSegment(
+                edge[segmentX], 
+                edge[segmentY],
+                edge[segmentX], 
+                segment[segmentY] + edgeSeparation,
+                "vertical");
+
         }
 
         if ( push ) {

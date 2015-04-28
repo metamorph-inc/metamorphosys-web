@@ -8,7 +8,7 @@ var ElbowRouter = function () {
 
     this.name = 'ElbowRouter';
 
-    this.makeSegments = function ( points, method ) {
+    this.makeSegments = function ( points, method, simplify ) {
 
         var i,
             point1, elbow, point2,
@@ -25,7 +25,7 @@ var ElbowRouter = function () {
                 point1 = points[ i ];
                 point2 = points[ i + 1 ];
 
-                if (point1.x === point2.x) {
+                if (simplify && point1.x === point2.x) {
 
                     // only drwaing straight line if elbow is not needed
                     
@@ -47,7 +47,7 @@ var ElbowRouter = function () {
 
                     });
 
-                } else if (point1.y === point2.y) {
+                } else if (simplify && point1.y === point2.y) {
 
                     // only drwaing straight line if elbow is not needed                    
 

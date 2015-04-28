@@ -18,6 +18,11 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 ElbowRouter: new ElbowRouter(),
                 OrthogonalRouter: new OrthogonalRouter()                
 
+            },
+
+            DEFAULT_ROUTER = {
+                type: 'SimpleRouter',
+                params: null
             };
 
         this.getRouterTypes = function () {
@@ -49,7 +54,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         };
 
-        this.getSegmentsBetweenPositions = function (endPositions, routerType, params) {
+        this.getSegmentsBetweenPositions = function (endPositions, routerType, params, simplify) {
 
             var segments,
                 router;
@@ -59,9 +64,12 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
             if (angular.isObject(router) && angular.isFunction(router.makeSegments)) {
                 segments = router.makeSegments(
                     [endPositions.end1, endPositions.end2],
-                    params
+                    params,
+                    simplify
                 );
             }
+
+            console.log(segments);
 
             return segments;
 
@@ -165,7 +173,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 firstSegment = segments[0];
                 segmentParams = firstSegment.getParameters();
-                router = segmentParams.router;                
+                router = segmentParams.router || DEFAULT_ROUTER;                
 
                 if (router && router.type === 'ElbowRouter') {
 
@@ -197,14 +205,14 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.params
                 );
 
-                wire.replaceSegmentsFromPropertiesArray(0, newSegmentParameters);
+                wire.replaceSegmentsFromParametersArray(0, newSegmentParameters);
 
 
                 // Creating new end for wire
 
                 lastSegment = segments[segments.length - 1];
                 segmentParams = lastSegment.getParameters();
-                router = segmentParams.router;
+                router = segmentParams.router || DEFAULT_ROUTER;                
 
                 if (router && router.type === 'ElbowRouter') {
 
@@ -236,7 +244,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.params
                 );
 
-                wire.replaceSegmentsFromPropertiesArray(segments.length - newSegmentParameters.length, newSegmentParameters);
+                wire.replaceSegmentsFromParametersArray(segments.length - newSegmentParameters.length, newSegmentParameters);
 
             } else {
 
