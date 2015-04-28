@@ -150,7 +150,7 @@ var ComponentWire = React.createClass({
     }
 });
 
-var crossOverArc = 'c0 -6, 7 -6, 7 0';
+var crossOverArc = 'c0 -4, 5 -4, 5 0';
 
 var ComponentWireSegment = React.createClass({
 
@@ -205,7 +205,7 @@ var ComponentWireSegment = React.createClass({
 
                     crossOver = this.props.segment._crossOvers[i];
 
-                    d += 'L' + (crossOver.crossingSegment._parameters.x1 - 4) + ' ' + parameters.y1 + crossOverArc;
+                    d += 'L' + (crossOver.crossingSegment._parameters.x1 - 3) + ' ' + parameters.y1 + crossOverArc;
                     
                 }
 
@@ -225,17 +225,12 @@ var ComponentWireSegment = React.createClass({
                             );
             }
 
-            var t1 = parameters.x1 + ', ' + parameters.y1;
-            var t2 = parameters.x2 + ', ' + parameters.y2;            
-
         return (
             <g className="component-wire-segment"
                onMouseDown={this.onMouseDown}
                onMouseUp={this.onMouseUp}
                >
                 {lines}
-                <text className="small" x={parameters.x1} y={parameters.y1}>{t1}</text>
-                <text className="small" x={parameters.x2} y={parameters.y2}>{t2}</text>
             </g>
         );
 

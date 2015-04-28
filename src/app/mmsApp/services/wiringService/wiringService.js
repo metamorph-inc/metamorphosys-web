@@ -69,8 +69,6 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 );
             }
 
-            console.log(segments);
-
             return segments;
 
         };

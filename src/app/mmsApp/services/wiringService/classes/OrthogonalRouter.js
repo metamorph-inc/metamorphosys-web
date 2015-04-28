@@ -64,14 +64,14 @@ var OrthogonalRouter = function () {
 
                     segment = nudgedConnections[w][i];
 
-                    console.log(segment.toString());
+                    //console.log(segment.toString());
 
                     segment.setFipped(true, true);
                     wire.appendSegmentFromParameters(segment);                    
 
                 }
 
-                console.log(wire.getSegments());
+                //console.log(wire.getSegments());
 
 
             }
@@ -516,10 +516,10 @@ var OrthogonalRouter = function () {
      * @param connection  - Wire that edge is a member of.
      * @param wireIndex  - index of edge within the connection.
      * @param edgeSeparation  - How much the segment will be adjusted
-     * @param xy  - Principal axis that wire segment will be adjusted along.
-     * @param leftright - Direction segment will be adjusted (if xy = X, left is west, if xy = Y, left is North)
+     * @param xOrY  - Principal axis that wire segment will be adjusted along.
+     * @param leftright - Direction segment will be adjusted (if xOrY = X, left is west, if xOrY = Y, left is North)
      */
-    function adjustMiddleWire ( edge, connection, wireIndex, edgeSeparation, xy, leftright ) {
+    function adjustMiddleWire ( edge, connection, wireIndex, edgeSeparation, xOrY, leftright ) {
 
         var segmentAtEnd1,
             segmentAtEnd2,
@@ -529,7 +529,7 @@ var OrthogonalRouter = function () {
         segmentAtEnd1 = connection[wireIndex - 1];
         segmentAtEnd2 = connection[wireIndex + 1];
 
-        if ( xy == "x" ) {
+        if ( xOrY == "x" ) {
             // For the two attached segments, need to know which endpoint is connected to edge
             //   as this is the endpoint we are modifying.
             segment1X = segmentAtEnd1.x1 === edge.x1 ? "x1" : "x2";
@@ -579,38 +579,51 @@ var OrthogonalRouter = function () {
      * Adjust an end-point wire segment (one that is directly connected to a port).
      * Adjusting an end-point wire segment requires creating a new segment from the port to the new end-point.
      */
-    function adjustPortWire ( edge, connection, wireIndex, edgeSeparation, xy, firstOrLast ) {
+    function adjustPortWire ( edge, connection, wireIndex, edgeSeparation, xOrY, firstOrLast ) {
 
         var segment,
             segmentX,
             segmentY,
-            newSegment,
-            push = false;
+            newSegment;
 
         if ( firstOrLast === "first" ) {
             segment = connection[wireIndex + 1];
         }
         else {
             segment = connection[wireIndex - 1];
-            // push = true; TODO: Causing segments to mess up... why??? look into nudgeConnections call
         }
 
         segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
         segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
 
-        if ( xy == "x" ) {
+        debugger;
+
+        if ( xOrY == "x" ) {
 
             edge.x1 -= edgeSeparation;
             edge.x2 -= edgeSeparation;
 
             segment[segmentX] -= edgeSeparation;
 
-            newSegment = new OrthogonalGridSegment(
-                segment[segmentX], 
-                edge[segmentY],
-                segment[segmentX] + edgeSeparation, 
-                edge[segmentY],
-                "horizontal");
+            if ( firstOrLast !== "first" ) {
+
+                newSegment = new OrthogonalGridSegment(
+                    segment[segmentX], 
+                    edge[segmentY],
+                    segment[segmentX] + edgeSeparation, 
+                    edge[segmentY],
+                    "horizontal");
+
+            } else {
+
+                newSegment = new OrthogonalGridSegment(
+                    segment[segmentX] + edgeSeparation, 
+                    edge[segmentY],
+                    segment[segmentX], 
+                    edge[segmentY],                    
+                    "horizontal");
+
+            }
 
         }
         else {
@@ -620,16 +633,29 @@ var OrthogonalRouter = function () {
 
             segment[segmentY] -= edgeSeparation;
 
-            newSegment = new OrthogonalGridSegment(
-                edge[segmentX], 
-                edge[segmentY],
-                edge[segmentX], 
-                segment[segmentY] + edgeSeparation,
-                "vertical");
+            if ( firstOrLast !== "first" ) {
+
+                newSegment = new OrthogonalGridSegment(
+                    edge[segmentX], 
+                    edge[segmentY],
+                    edge[segmentX], 
+                    segment[segmentY] + edgeSeparation,
+                    "vertical");
+
+            } else {
+
+                newSegment = new OrthogonalGridSegment(
+                    edge[segmentX], 
+                    segment[segmentY] + edgeSeparation,
+                    edge[segmentX], 
+                    edge[segmentY],                    
+                    "vertical");
+
+            }
 
         }
 
-        if ( push ) {
+        if ( firstOrLast !== "first" ) {
             connection.push( newSegment );
         }
         else {
