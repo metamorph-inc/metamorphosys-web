@@ -25,7 +25,7 @@ WireSegment.prototype.setParameters = function() {
 	return this._parameters;
 };
 
-WireSegment.prototype.isInViewPort = function(viewPort, padding) {
+WireSegment.prototype.isInViewport = function(viewPort, padding) {
 
 	var result = true;
 

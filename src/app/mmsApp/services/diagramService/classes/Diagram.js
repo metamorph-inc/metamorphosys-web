@@ -822,6 +822,26 @@ Diagram.prototype.afterSelectionChange = function() {
 
 };
 
+Diagram.prototype.getComponentsInViewport = function(viewport, padding) {
+
+    var i,
+        component,
+        result =[];
+
+    for (i = 0; i < this._components.length; i++) {
+
+        component = this._components[i];
+
+        if (component.isInViewport(viewport, padding)) {
+            result.push(component);
+        }
+
+    }
+
+    return result;
+
+};
+
 EventDispatcher.prototype.apply(Diagram.prototype);
 
 module.exports = Diagram;

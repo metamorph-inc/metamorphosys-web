@@ -194,7 +194,7 @@ Wire.prototype.insertSegment = function(atPosition, segment) {
 
 };
 
-Wire.prototype.isInViewPort = function(viewPort, padding) {
+Wire.prototype.isInViewport = function(viewPort, padding) {
 
     var j,
         shouldBeVisible = false,
@@ -213,7 +213,7 @@ Wire.prototype.isInViewPort = function(viewPort, padding) {
 
         for (j = 0; j < l && !shouldBeVisible; j++) {
 
-            shouldBeVisible = this._segments[j].isInViewPort(viewPort, padding);
+            shouldBeVisible = this._segments[j].isInViewport(viewPort, padding);
 
         }
 

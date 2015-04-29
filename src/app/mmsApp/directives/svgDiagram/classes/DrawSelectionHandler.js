@@ -10,15 +10,24 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         onDiagramMouseDown,
         onDiagramMouseUp,        
         onDiagramMouseMove,
-        onDiagramMouseLeave,
-        onWindowBlur,
-        onWireMouseUp,
-        onWireMouseDown,
+
+        updateSelectionRect,
 
         startDraw,
         finishDraw,
-        cancelDraw;
+        cancel,
 
+        startCorner = null,
+        endCorner = null,
+
+        VIEWPORT_PADDING = {
+            x: -20,
+            y: -20
+        };
+
+    this.drawing = false;
+
+    $scope.drawnSelection = null;
 
     getOffsetToMouse = function ($event) {
 
@@ -34,162 +43,144 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
     };
 
 
-    startDrag = function () {
+    updateSelectionRect = function() {
 
-        self.dragging = true;
+        var viewport = {};
 
-        moveOperation = operationsManager.initNew('MoveWires', $scope.diagram, possibbleDragTargetsDescriptor);
+        if (startCorner && endCorner) {
 
-        $log.debug('Dragging wire', possibbleDragTargetsDescriptor);
-        possibbleDragTargetsDescriptor = null;
+            $scope.diagram.clearSelection();
 
-    };
+            $scope.drawnSelection = {};
 
-    cancelDrag = function () {
+            if (startCorner.x <= endCorner.x) {
 
-        possibbleDragTargetsDescriptor = null;
+                $scope.drawnSelection.x = startCorner.x;
+                $scope.drawnSelection.width = endCorner.x - startCorner.x;
 
-        if (angular.isObject(moveOperation)) {
+                viewport.left = startCorner.x;
+                viewport.right = endCorner.x;
 
-            moveOperation.cancel();
-            moveOperation = null;
+            } else {
+                
+                $scope.drawnSelection.x = endCorner.x;
+                $scope.drawnSelection.width = startCorner.x - endCorner.x;
+
+                viewport.left = endCorner.x;
+                viewport.right = startCorner.x;
+
+            }
+
+            if (startCorner.y <= endCorner.y) {
+
+                $scope.drawnSelection.y = startCorner.y;
+                $scope.drawnSelection.height = endCorner.y - startCorner.y;
+
+                viewport.top = startCorner.y;
+                viewport.bottom = endCorner.y;
+
+            } else {
+
+                $scope.drawnSelection.y = endCorner.y;
+                $scope.drawnSelection.height = startCorner.y - endCorner.y;
+
+                viewport.top = endCorner.y;
+                viewport.bottom = startCorner.y;
+
+            }
+
+
+            var components = $scope.diagram.getComponents();
+
+            for (var i = 0; i < components.length; i++) {
+
+                var component = components[i];
+
+                if (component.isInViewport(viewport, VIEWPORT_PADDING)) {
+                    $scope.diagram.selectComponent(component.id);
+                }
+
+            }
+
 
         }
 
-        self.dragging = false;
+    };
+
+    startDraw = function ($event) {
+
+        var o = getOffsetToMouse($event);
+
+        startCorner = o;
+        endCorner = o;
+
+        updateSelectionRect();
+
+        $scope.diagram.clearSelection();
+
+        self.drawing = true;
 
     };
 
-    finishDrag = function () {
-
-        possibbleDragTargetsDescriptor = null;
-
-        if (angular.isObject(moveOperation)) {
-
-            moveOperation.finish();
-            moveOperation = null;
-
-            self.dragging = false;
-
-            $log.debug('Finish wire dragging');
-
+    cancel = function () {
+        
+        if (self.drawing) {
+            $scope.diagram.clearSelection();        
+            self.drawing = false;
+            $scope.drawnSelection = null;        
         }
 
+    };
+
+    finishDraw = function () {
+        self.drawing = false; 
+        $scope.drawnSelection = null;        
     };
 
     onDiagramMouseMove = function ($event) {
 
-        var offset;
+        if (self.drawing) {
 
-        if (possibbleDragTargetsDescriptor) {
-            startDrag();
-        }
-
-        if (moveOperation) {
-
-            offset = getOffsetToMouse($event);
-
-            moveOperation.set(offset);
+            endCorner = getOffsetToMouse($event);
+            updateSelectionRect();
 
         }
 
     };
 
+    onDiagramMouseDown = function ($event) {
+
+        startDraw($event);
+        $event.stopPropagation();
+
+    };
+  
     onDiagramMouseUp = function ($event) {
 
-        finishDrag();
-        $event.stopPropagation();
+        finishDraw();
 
     };
 
-    onDiagramMouseLeave = function (/*$event*/) {
+    $scope.$on('keyupOnDiagram', function($event, e) {
 
-        finishDrag();
+        //console.log(e.keyCode);
 
-    };
-
-    onWindowBlur = function (/*$event*/) {
-
-        finishDrag();
-
-    };
-
-    onWireMouseUp = function (wire, segment, $event) {
-
-        possibbleDragTargetsDescriptor = null;
-
-        finishDrag();
-        $event.stopPropagation();
-
-    };
-
-    onWireMouseDown = function (wire, segment, $event, wasCorner) {
-
-        var getDragDescriptor,
-            indexOfSegment,
-            primartyTargetDescriptor;
-
-        getDragDescriptor = function (aWire, aSegment, sIndex) {
-
-            var offset = getOffsetToMouse($event),
-                parameters = aSegment.getParameters();
-
-            return {
-                wire: aWire,
-                segment: aSegment,
-                segmentIndex: sIndex,
-                originalSegmentsParameters: aWire.getCopyOfSegmentsParameters(),
-                wasCorner: wasCorner,
-                deltaToCursor1: {
-                    x: parameters.x1 - offset.x,
-                    y: parameters.y1 - offset.y
-                },
-                deltaToCursor2: {
-                    x: parameters.x2 - offset.x,
-                    y: parameters.y2 - offset.y
-                }
-
-            };
-
-
-        };
-
-        if (angular.isObject(wire) && angular.isObject(segment)) {
-
-            var segments = wire.getSegments();
-
-            indexOfSegment = segments.indexOf(segment);
-
-            if ( (indexOfSegment > 0 || wasCorner) && indexOfSegment < segments.length - 1) {
-
-                $scope.diagram.config = $scope.diagram.config || {};
-
-                if ($scope.diagram.config.editable === true &&
-                    wire.nonSelectable !== true &&
-                    wire.locationLocked !== true) {
-
-                    $event.stopPropagation();
-
-                    primartyTargetDescriptor = getDragDescriptor(wire, segment, indexOfSegment);
-
-                    possibbleDragTargetsDescriptor = {
-                        primaryTarget: primartyTargetDescriptor,
-                        targets: [ primartyTargetDescriptor ]
-                    };
-
-                }
-
-            }
+        if (e.keyCode === 16) { // Esc
+            cancel();
         }
-    };
+
+        if (e.keyCode === 27) { // Esc
+            cancel();
+        }
+
+    });
+
 
     this.onDiagramMouseDown = onDiagramMouseDown;
     this.onDiagramMouseUp = onDiagramMouseUp;
     this.onDiagramMouseMove = onDiagramMouseMove;
-    this.onDiagramMouseLeave = onDiagramMouseLeave;
-    this.onWindowBlur = onWindowBlur;
-    this.onWireMouseUp = onWireMouseUp;
-    this.onWireMouseDown = onWireMouseDown;
+
+    this.cancel = cancel;
 
     return this;
 

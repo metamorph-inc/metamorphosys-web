@@ -98,6 +98,17 @@ angular.module('mms.svgDiagram', [
                     $log
                 );
 
+                drawSelectionHandler = new DrawSelectionHandler(
+                    $scope,
+                    $rootScope,
+                    diagramService,
+                    wiringService,
+                    operationsManager,
+                    $timeout,
+                    gridService,
+                    $log
+                );
+
                 selectionHandler = new SelectionHandler(
                     $scope,
                     diagramService,
@@ -151,6 +162,8 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseDown = function(event) {
 
+                    drawSelectionHandler.cancel();
+
                     var target = event.srcElement || event.target;
 
                     if (target === $scope.svgContainer) {
@@ -177,6 +190,8 @@ angular.module('mms.svgDiagram', [
                     
                     //console.log('diagram mouse up');
 
+                    drawSelectionHandler.onDiagramMouseUp(event);
+
                     if (target === $scope.svgContainer) {
 
 
@@ -202,6 +217,7 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseMove = function($event) {
 
+                    drawSelectionHandler.onDiagramMouseMove($event);
                     componentDragHandler.onDiagramMouseMove($event);
                     wireDragHandler.onDiagramMouseMove($event);
                     wireDrawHandler.onDiagramMouseMove($event);
@@ -239,6 +255,7 @@ angular.module('mms.svgDiagram', [
                     wireDragHandler.onDiagramMouseLeave($event);
                     wireDrawHandler.onDiagramMouseLeave($event);
                     panHandler.onDiagramMouseLeave($event);
+                    drawSelectionHandler.cancel();                    
 
                 };
 
@@ -248,6 +265,7 @@ angular.module('mms.svgDiagram', [
                     wireDrawHandler.onWindowBlur($event);
                     panHandler.onWindowBlur($event);
                     dndService.stopDrag();
+                    drawSelectionHandler.cancel();
                 }
 
                 $$window.on('blur', onWindowBlur);

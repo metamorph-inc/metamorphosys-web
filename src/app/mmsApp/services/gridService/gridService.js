@@ -25,7 +25,7 @@ function GridService( $log, $rootScope, $timeout ) {
             _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
 
-        gridSize = 2.5;
+        gridSize = 5;
 
         recalculateVisibleWires = function ( grid ) {
 
@@ -40,7 +40,7 @@ function GridService( $log, $rootScope, $timeout ) {
 
                 index = grid.visibleWires.indexOf(wire);
 
-                if (wire.isInViewPort(grid.viewPort, viewPortPadding)) {
+                if (wire.isInViewport(grid.viewPort, viewPortPadding)) {
 
                     if (index === -1) {
                         grid.visibleWires.push(wire);
@@ -107,7 +107,7 @@ function GridService( $log, $rootScope, $timeout ) {
 
                 index = grid.visibleDiagramComponents.indexOf( component );
 
-                if ( component.isInViewPort( grid.viewPort, viewPortPadding ) ) {
+                if ( component.isInViewport( grid.viewPort, viewPortPadding ) ) {
 
                     if ( index === -1 ) {
                         grid.visibleDiagramComponents.push( component );

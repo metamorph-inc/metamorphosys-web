@@ -26,7 +26,15 @@
                   ng-attr-x2="{{segment.x2}}"
                   ng-attr-y2="{{segment.y2}}"/>
         </g>
-        <g class="sweepLine-container">
+        <g ng-if="drawnSelection">
+          <rect 
+            class="drawn-selection"
+            ng-attr-x="{{drawnSelection.x}}"  
+            ng-attr-y="{{drawnSelection.y}}" 
+            ng-attr-width="{{drawnSelection.width}}"  
+            ng-attr-height="{{drawnSelection.height}}" />
+        </g>        
+<!--         <g class="sweepLine-container">
             <line style="stroke-width: 1; stroke: #07D34F;"
                   ng-repeat="segment in diagram.sweepLines"
                   ng-attr-x1="{{segment.x1}}"
@@ -49,5 +57,5 @@
                   ng-attr-x2="{{segment.x2}}"
                   ng-attr-y2="{{segment.y2}}"/>
         </g>
-    </svg>
+ -->    </svg>
 </div>

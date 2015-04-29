@@ -19,7 +19,7 @@ var DiagramComponent = function(descriptor) {
 
 };
 
-DiagramComponent.prototype.isInViewPort = function(viewPort, padding) {
+DiagramComponent.prototype.isInViewport = function(viewPort, padding) {
 
     //TODO: count width and height for orientation
     padding = padding || {
