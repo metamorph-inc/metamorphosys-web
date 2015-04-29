@@ -2,8 +2,8 @@
 
 var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     Point = require("./orthogonalRouter/classes/Point.js"),
-    OrthogonalGridNode = require("./orthogonalRouter/classes/OrthogonalGridNode.js"),
-    OrthogonalGridSegment = require("./orthogonalRouter/classes/OrthogonalGridSegment.js"),
+    OrthogonalGridNode = require("./orthogonalRouter/classes/orthogonalGridNode.js"),
+    OrthogonalGridSegment = require("./orthogonalRouter/classes/orthogonalGridSegment.js"),
     WireSegment = require("../../diagramService/classes/WireSegment.js");
 
 
