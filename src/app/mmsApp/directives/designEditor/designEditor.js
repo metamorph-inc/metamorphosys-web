@@ -234,6 +234,16 @@ angular.module('mms.designEditor', [
                         designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
                     });
 
+                    addRootScopeEventListener('wiresMustBeSaved', function($event, wires, message) {
+						nodeService.startTransaction(layoutContext, message || 'Saving wires');
+
+						wires.forEach(function(wire) {
+                        	designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+						});
+
+						nodeService.completeTransaction(layoutContext);                        
+                    });
+
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
                         nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');

@@ -430,7 +430,7 @@ var OrthogonalRouter = function () {
         var sharedEdges = getSharedEdges(connections),
             xyDirection,
             edgeSeparation = 5,
-            portSeparator = 2.5;
+            portSeparator = 5;
 
         while (sharedEdges.vertical.length > 0 || sharedEdges.horizontal.length > 0) {
 
@@ -595,8 +595,6 @@ var OrthogonalRouter = function () {
 
         segmentX = segment.x2 === edge.x1 ? "x2" : "x1";
         segmentY = segment.y2 === edge.y1 ? "y2" : "y1";
-
-        debugger;
 
         if ( xOrY == "x" ) {
 
