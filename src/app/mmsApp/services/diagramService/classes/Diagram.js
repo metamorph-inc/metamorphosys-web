@@ -39,6 +39,7 @@ var Diagram = function() {
     this._portsById = {};
 
     this._horizontalWireSegments = [];
+    this._horizontalWireSegmentsByLoX = {};
     this._verticalWireSegmentsByLoY = {};
     this._wireCrossovers = [];
 
@@ -629,7 +630,8 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                 crossOversByX;
 
             self._horizontalWireSegments = [];
-            self._verticalWireSegmentsByLoY = [{}];
+            self._horizontalWireSegmentsByLoX = {};
+            self._verticalWireSegmentsByLoY = {};
             self._wireCrossovers = [];
 
             var startTime = Date.now();
@@ -673,9 +675,9 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
 
                             }
 
-                            // self._verticalWireSegmentsByLoY[loVal] =
-                            //     self._verticalWireSegmentsByLoY[loVal] || [];
-                            // self._verticalWireSegmentsByLoY[loVal].push(segment);
+                            self._horizontalWireSegmentsByLoX [loVal] =
+                                self._horizontalWireSegmentsByLoX[loVal] || [];
+                            self._horizontalWireSegmentsByLoX[loVal].push(segment);
 
                             self._horizontalWireSegments.push(segment);
 
