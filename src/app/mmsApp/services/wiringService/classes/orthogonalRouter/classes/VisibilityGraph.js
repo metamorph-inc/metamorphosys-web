@@ -6,8 +6,8 @@
 
 var insert = require("../../../../mmsUtils/classes/simpleInsert.js"),
     Point = require("./Point.js"),
-    OrthogonalGridNode = require("./OrthogonalGridNode.js"),
-    OrthogonalGridSegment = require("./OrthogonalGridSegment.js");
+    OrthogonalGridNode = require("./orthogonalGridNode.js"),
+    OrthogonalGridSegment = require("./orthogonalGridSegment.js");
 
 var VisibilityGraph = function () {
 
