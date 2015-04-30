@@ -102,6 +102,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             }
 
+            
+
 
         }
 

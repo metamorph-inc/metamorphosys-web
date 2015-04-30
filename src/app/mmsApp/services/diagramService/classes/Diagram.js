@@ -38,9 +38,13 @@ var Diagram = function() {
     this._wiresByComponentId = {};
     this._portsById = {};
 
+    this._diagonalWireSegmentsByLoX = {};
+
     this._horizontalWireSegments = [];
     this._horizontalWireSegmentsByLoX = {};
+
     this._verticalWireSegmentsByLoY = {};
+
     this._wireCrossovers = [];
 
     this.config = {
@@ -629,9 +633,13 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                 loVal,
                 crossOversByX;
 
+            self._diagonalWireSegmentsByLoX = {};
+
             self._horizontalWireSegments = [];
             self._horizontalWireSegmentsByLoX = {};
+
             self._verticalWireSegmentsByLoY = {};
+
             self._wireCrossovers = [];
 
             var startTime = Date.now();
@@ -684,9 +692,9 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
 
                         } else if (parameters.x1 === parameters.x2) {
 
-                            if (parameters.y2 - parameters.y1 > 0) {
+                            // Vertical
 
-                                // Vertical
+                            if (parameters.y2 - parameters.y1 > 0) {
 
                                 segment._loY = parameters.y1;
                                 segment._hiY = parameters.y2;
@@ -705,6 +713,46 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                             self._verticalWireSegmentsByLoY[loVal] =
                                 self._verticalWireSegmentsByLoY[loVal] || [];
                             self._verticalWireSegmentsByLoY[loVal].push(segment);
+
+                        } else {
+
+                            // Diagonal
+
+                            if (parameters.x2 - parameters.x1 > 0) {
+
+                                segment._loX = parameters.x1;
+                                segment._hiX = parameters.x2;
+
+                                loVal = parameters.x1;
+
+                            } else {
+
+                                segment._loX = parameters.x2;
+                                segment._hiX = parameters.x1;
+
+                                loVal = parameters.x2;                                
+
+                            }
+
+                            self._diagonalWireSegmentsByLoX[loVal] =
+                                self._diagonalWireSegmentsByLoX[loVal] || [];
+                            self._diagonalWireSegmentsByLoX[loVal].push(segment);
+                            self._diagonalWireSegmentsByLoX[loVal].push(segment);
+
+
+                            if (parameters.y2 - parameters.y1 > 0) {
+
+                                // Vertical
+
+                                segment._loY = parameters.y1;
+                                segment._hiY = parameters.y2;
+
+                             } else {
+
+                                segment._loY = parameters.y2;
+                                segment._hiY = parameters.y1;
+
+                             }
 
                         }
 
@@ -772,14 +820,12 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                     hSegment._crossOversTimeStamp = Date.now().toString(); 
                 }
 
-
             }
-
-            //console.log('Crossing wires:', self._wireCrossovers);
 
             self._indexerTimeout = null;
 
-            console.log('Time needed to index:', Date.now() - startTime);
+            //console.log('Diagonal lines', self._diagonalWireSegmentsByLoX);
+            //console.log('Time needed to index:', Date.now() - startTime);
 
             self.dispatchEvent({
                 type: 'wireChange',
