@@ -89,21 +89,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             }
 
-
-            var components = $scope.diagram.getComponents();
-
-            for (var i = 0; i < components.length; i++) {
-
-                var component = components[i];
-
-                if (component.isInViewport(viewport, VIEWPORT_PADDING)) {
-                    $scope.diagram.selectComponent(component.id);
-                }
-
-            }
-
-            
-
+            $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING);
 
         }
 

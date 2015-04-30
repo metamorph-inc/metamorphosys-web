@@ -890,6 +890,21 @@ Diagram.prototype.getComponentsInViewport = function(viewport, padding) {
 
 };
 
+Diagram.prototype.selectComponentsInViewport = function(viewport, padding) {
+
+    var components = this._components;
+
+        for (var i = 0; i < components.length; i++) {
+
+            var component = components[i];
+
+            if (component.isInViewport(viewport, padding)) {
+                this.selectComponent(component.id);
+            }
+
+        }    
+};
+
 EventDispatcher.prototype.apply(Diagram.prototype);
 
 module.exports = Diagram;
