@@ -1,5 +1,6 @@
 <div class="footer-drawer">
 	<header
+		ng-mousedown="::ctrl.headerMouseDown($event)"
 		ng-dblclick="::ctrl.toggle()">
 		<ul class="drawer-main-navigator">
 			<li><i class="fa fa-search inspector-icon"></i> Inspector</li>
