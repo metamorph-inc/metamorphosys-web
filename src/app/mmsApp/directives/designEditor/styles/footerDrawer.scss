@@ -30,7 +30,7 @@
 
 			> li {
 				color: #555;
-				cursor: pointer;
+				cursor: row-resize;
 
 				i {
 					font-size: 85%;
@@ -55,5 +55,6 @@
     .drawer-content {
     	padding: 10px;
         position: relative;
+        height: 100%;
     }
 }

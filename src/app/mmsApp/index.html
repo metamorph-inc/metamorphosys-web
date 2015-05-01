@@ -21,7 +21,9 @@
 </head>
 <body class="mms-app ng-cloak" data-ng-controller="AppController" on-gme-init="angular.bootstrap(document, ['CyPhyApp']);">
 <div growl></div>
-<main-navigator></main-navigator>
+<header id="screen-header">
+    <main-navigator></main-navigator>
+</header>
 <div ui-view="mainView" class="main-view-container" resize-to-window height-is-less-with="51"></div>
 
 <header-buttons></header-buttons>
