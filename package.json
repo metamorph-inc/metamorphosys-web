@@ -11,7 +11,7 @@
     "commonmark": "^0.18.1",
     "content-disposition": "^0.5.0",
     "mongodb": "=1.4.34",
-    "webgme": "https://github.com/metamorph-inc/webgme/tarball/451ecc3092c921bb8cc0d1f88539ab3378d546e0",
+    "webgme": "https://github.com/metamorph-inc/webgme/tarball/2b75f11196e0474086ad7d537c8ae9e8eb3c755d",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
     "ng-gme": "=0.1.1"
