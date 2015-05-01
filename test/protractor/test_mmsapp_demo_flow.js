@@ -73,7 +73,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
-        var diagramContainer;
+        var diagramContainer,
+            componentLabel;
 
         diagramContainer = element(by.css('div.diagram-container'));
 
@@ -92,6 +93,13 @@ describe('Metamorphosys Tech Demo Flow', function () {
             });
 
         expect(browser.isElementPresent(diagramContainer)).toEqual(true);
+        componentLabel = element(by.css('text.component-label'));
+
+        browser.wait(function () {
+                return componentLabel.isPresent();
+            },
+            gmeEventTimeLimit,
+            'components not found');
         expect(element.all(by.css('text.component-label')).count()).toEqual(4);
 
 
@@ -175,7 +183,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 browser.wait(function () {
                         return searchDropdown.isDisplayed();
                     },
-                    1000,
+                    3000,
                     'search results not displayed')
                     .then(function () {
                         expect(searchResults.count()).toBeGreaterThan(0);
@@ -195,7 +203,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                                         browser.wait(function () {
                                                 return searchDropdown.isDisplayed();
                                             },
-                                            1000,
+                                            3000,
                                             'search results not displayed')
                                             .then(function () {
                                                 expect(searchResults.count()).toEqual(0);
@@ -236,7 +244,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 browser.wait(function () {
                         return childrenList.isDisplayed();
                     },
-                    2000,
+                    3000,
                     'no items in category')
                     .then(function () {
                         items = childrenList.all(by.css('li'));
@@ -274,7 +282,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                 browser.wait(function () {
                         return childrenList.isDisplayed();
                     },
-                    1000,
+                    3000,
                     'no items in category')
                     .then(function () {
                         items = childrenList.all(by.css('li'));
