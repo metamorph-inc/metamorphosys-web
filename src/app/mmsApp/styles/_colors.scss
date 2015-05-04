@@ -17,3 +17,51 @@ $mmsVeryDark: #00235B;
     @include gradient($mmsBlueLight, $mmsBlueDark, 100%);
 }
 
+
+/* Color Variables
+   =========================================== */
+
+/* Grey Scale (Dark) Colors
+   =========================================== */
+
+$c-black:                 #000;
+$c-off-black:             #111;
+$c-darker:                #222;
+$c-dark:                  #333;
+
+
+/* Grey Scale (Medium) Colors
+   =========================================== */
+
+$c-grey:                  #ccc;
+$c-dark-grey:             #999;
+$c-light-grey:            #ddd;
+
+
+
+/* Grey Scale (Lighter) Colors
+   =========================================== */
+$c-white:                 #fff;
+$c-off-white:             #fdfdfd;
+$c-off-whiter:            #f0f0f0;
+$c-light:                 #e0e0e0;
+
+
+/* Theme Specific Colors
+   =========================================== */
+
+$c-text-light: #FFF;
+$c-text-medium: #999999;
+$c-text-dark: #575E67;
+
+$c-background-light: #F0F4F6;
+$c-background-dark: #3F4A59;
+$c-background-darker: #394250;
+$c-background-highlight: #45B99C;
+
+$c-border-light: #E5E9EA;
+$c-border-medium: #999999;
+$c-border-dark: #DEE2E2;
+
+$c-theme: #3894FD;
+

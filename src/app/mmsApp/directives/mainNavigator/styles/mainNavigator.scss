@@ -7,7 +7,7 @@
         padding-bottom: 2px;
         margin-bottom: 0;
 
-        @include mmsBlueGradient();
+        background-color: $c-background-dark;
 
         color: #f0f0f0;
 
@@ -29,7 +29,7 @@
         }
 
         > li:not(.separator):not(.cyphy-root):hover {
-            background-color: rgba(0,0,20,.13);
+            background-color: $c-background-darker;
         }
 
         li.cyphy-root {
