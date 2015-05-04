@@ -1,6 +1,6 @@
 /*global describe,it,browser,expect,by,before,beforeAll,element, afterAll, $, angular, protractor*/
 
-describe('Metamorphosys Tech Demo Flow', function () {
+describe('Metamorphosys Tech Demo Flow', function() {
 
     var q = require('q'),
         url = require('url'),
@@ -21,7 +21,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         // For component library interactions
 
-        searchTerm  = '12',
+        searchTerm = '12',
         searchTermX = 'xy',
         categoryToUnfold = 'Optoelectronics',
         subCategoryToUnfold = 'Optocouplers-optoisolators',
@@ -44,16 +44,16 @@ describe('Metamorphosys Tech Demo Flow', function () {
             projectName = 'Test_79838';
             done();
         } else {
-            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function (res) {
+            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function(res) {
                 if (res.statusCode > 399) {
                     done(res.statusCode);
                 }
                 res.setEncoding('utf8');
                 projectName = '';
-                res.on('data', function (chunk) {
+                res.on('data', function(chunk) {
                     projectName += chunk;
                 });
-                res.on('end', function () {
+                res.on('end', function() {
                     done();
                 });
             });
@@ -61,14 +61,14 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    afterAll(function (done) {
+    afterAll(function(done) {
         // Calling quit will remove the browser.
         // You can choose to not quit the browser, and protractor will quit all of
         // them for you when it exits (i.e. if you need a static number of browsers
         // throughout all of your tests). However, I'm forking browsers in my tests
         // and don't want to pile up my browser count.
         if (browser2) {
-            browser2.quit().then(function () {
+            browser2.quit().then(function() {
                 done();
             });
         } else {
@@ -76,7 +76,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         }
     });
 
-    it('Should create and load new design', function () {
+    it('Should create and load new design', function() {
 
         browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
@@ -86,25 +86,23 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         expect(browser.getTitle()).toEqual('Metamorphosys');
 
-        browser.wait(function () {
+        browser.wait(function() {
 
                 return diagramContainer.isPresent();
             },
             gmeEventTimeLimit,
             'diagramContainer not found'
-        ).then(function () {
+        ).then(function() {
 
-                //$rootScope1 = angular.element(document).scope();
+            expect(browser.isElementPresent(diagramContainer)).toEqual(true);
+            expect(element.all(by.css('text.component-label')).count()).toEqual(4);
 
-            });
 
-        expect(browser.isElementPresent(diagramContainer)).toEqual(true);
-        expect(element.all(by.css('text.component-label')).count()).toEqual(4);
-
+        });
 
     }, gmeEventTimeLimit);
 
-    it('Should have about dialog open', function () {
+    it('Should have about dialog open', function() {
 
         var aboutDialog,
             closeButton;
@@ -112,13 +110,13 @@ describe('Metamorphosys Tech Demo Flow', function () {
         aboutDialog = element(by.css('.about-dialog'));
         closeButton = element(by.css('.about-dialog .md-actions button.md-primary'));
 
-        browser.wait(function () {
-                return aboutDialog.isDisplayed();
-            },
-            2000,
-            'aboutDialog not found'
-        )
-            .then(function () {
+        browser.wait(function() {
+                    return aboutDialog.isDisplayed();
+                },
+                2000,
+                'aboutDialog not found'
+            )
+            .then(function() {
 
                 expect(browser.isElementPresent(aboutDialog)).toEqual(true);
                 expect(closeButton.isDisplayed()).toBeTruthy();
@@ -153,7 +151,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
     //});
 
 
-    it('Should have component browser', function () {
+    it('Should have component browser', function() {
 
         var componentBrowser,
             componentSearchInput;
@@ -560,65 +558,58 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     // });
 
-    it('Should be able to move between component containers by double-clicking component', function() {
-        var componentBox,
-            designPath,
-            pathString = "";
+    // it('Should be able to move between component containers by double-clicking component', function() {
+    //     var componentBox,
+    //         designPath,
+    //         pathString = "";
 
-        componentBox = element(by.diagramComponentLabel(targetContainerLabel));
+    //     componentBox = element(by.diagramComponentLabel(targetContainerLabel));
 
-        browser.actions().doubleClick(componentBox).perform();
+    //     browser.actions().doubleClick(componentBox).perform();
 
-        browser.sleep(2000);
+    //     browser.sleep(2000);
 
-        //designPath = hierarchy.getHierarchy();
-        designPath = by.getHierarchy();
+    //     browser.element.all(by.css('span.item-label.ng-binding')).getText()
+    //         .then(function(elementTexts) {
 
+    //             var designPath = elementTexts
+    //                 .join('/')
+    //                 .slice(1);
 
-        //browser.pause();
-
-        for (var i = 1; i < designPath.length; i++) {
-
-            pathString += "/" + designPath[i];
-
-        }
-
-        console.log(designPath);
-        //browser.pause();
-
-        //expect(designPath.length - 1).toEqual(2);
-        //expect(pathString).toEqual("/Template Module 1x2/" + targetContainerLabel);
-
-    });
-
-    it('Should be able to move between component containers by using menu buttons', function() {
-        var designPath,
-            mainLevel,
-            secondLevel,
-            pathString = "";
-
-        mainLevel = element(by.getVisibleHierarchyComponent_by_labelText(mainContainerLabel));
-        browser.actions().mouseMove(mainLevel).perform();
-        browser.sleep(2000);
-        secondLevel = element(by.getHiddenHierarchyComponent_by_labelText(targetContainerLabel));
-
-        secondLevel.click();
-
-        // expect hierarchy to return mainlevel/secondLevel
+    //             expect(designPath).toEqual("Template Module 1x2/" + targetContainerLabel);
+    //         });
 
 
-        mainLevel.click();
+    // });
 
-        // expect hierarchy to return mainLevel
+    // it('Should be able to move between component containers by using menu buttons', function() {
+    //     var designPath,
+    //         mainLevel,
+    //         secondLevel,
+    //         pathString = "";
 
-    });
+    //     mainLevel = element(by.getVisibleHierarchyComponent_by_labelText(mainContainerLabel));
+    //     browser.actions().mouseMove(mainLevel).perform();
+    //     browser.sleep(2000);
+    //     secondLevel = element(by.getHiddenHierarchyComponent_by_labelText(targetContainerLabel));
+
+    //     secondLevel.click();
+
+    //     // expect hierarchy to return mainlevel/secondLevel
+
+
+    //     mainLevel.click();
+
+    //     // expect hierarchy to return mainLevel
+
+    // });
 
     it('Inspector should load wire details if selected, and remove if unselected', function() {
         var wire,
             inspector,
             expander;
 
-        wire = element(by.getWire());
+        wire = element(by.css('g.component-wire-segment .component-wire-segment-segment'));
         console.log('hi');
         browser.sleep(2000);
 
@@ -635,12 +626,14 @@ describe('Metamorphosys Tech Demo Flow', function () {
         browser.sleep(2000);
         expect(inspector.getAttribute("ng-if")).toEqual("!designEditorCtrl.inspectableWire");
         console.log('wire click');
-        wire.click();
+        browser.actions().mouseMove(wire).perform();
+        browser.actions().mouseDown().perform();
+        browser.actions().mouseUp().perform();        
         console.log('wire click2');
         browser.sleep(2000);
         expect(inspector.getAttribute("ng-if")).toEqual("designEditorCtrl.inspectableWire");
         console.log('wire click');
-        wire.click();
+        browser.actions().mouseDown(wire).mouseUp(wire).perform();
         console.log('wire click2');
         browser.sleep(2000);
         expect(inspector.getAttribute("ng-if")).toEqual("!designEditorCtrl.inspectableWire");

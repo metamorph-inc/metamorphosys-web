@@ -11,8 +11,6 @@ by.addLocator('getHierarchy',
 
     function () {
 
-        var hierarchyItems = document.querySelectorAll('span.item-label.ng-binding');
-
         //    hierarchy = {
         //        levels: hierarchyItems.length,
         //        string: ""
@@ -26,14 +24,12 @@ by.addLocator('getHierarchy',
         //
         //}
 
-        return Array.prototype.filter.call(hierarchyItems, function (hierarchy) {
-
-            var label;
-
-            label = hierarchy;
-
-            return label && label.TextContent !== "";
-        });
+        return Array.prototype.map.call(
+            document.querySelectorAll('span.item-label.ng-binding'), 
+            function(e) { return e.textContent; }
+        )
+        .join('/')
+        .slice(1);
 
     });
 
