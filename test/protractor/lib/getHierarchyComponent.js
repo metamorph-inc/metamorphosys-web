@@ -1,40 +1,9 @@
-/**
- * Created by robertboyles on 5/1/15.
- */
-
 /*globals by*/
 
 'use strict';
 
 // Add the custom locator.
-by.addLocator('getHierarchy',
-
-    function () {
-
-        //    hierarchy = {
-        //        levels: hierarchyItems.length,
-        //        string: ""
-        //    },
-        //
-        //    i;
-        //
-        //for (i = 1; i < hierarchy.levels; i++) {
-        //
-        //    hierarchy.string += "/" + hierarchyItems[i];
-        //
-        //}
-
-        return Array.prototype.map.call(
-            document.querySelectorAll('span.item-label.ng-binding'), 
-            function(e) { return e.textContent; }
-        )
-        .join('/')
-        .slice(1);
-
-    });
-
-
-by.addLocator('getVisibleHierarchyComponent_by_labelText',
+by.addLocator('getHierarchyByVisibleDropdownLabel',
 
     function (labelText, optParentElement) {
 
@@ -53,8 +22,11 @@ by.addLocator('getVisibleHierarchyComponent_by_labelText',
         });
     });
 
-
-by.addLocator('getHiddenHierarchyComponent_by_labelText',
+/**
+ * Levels of hierarchy that are visible once the mouse moves over one of the 
+ * hierarchies which are exposed in the header.
+ */
+by.addLocator('getHierarchyByHiddenDropdownLabel',
 
     function (labelText, optParentElement) {
 

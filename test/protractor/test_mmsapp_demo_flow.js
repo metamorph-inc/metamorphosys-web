@@ -36,10 +36,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
 
     require('./lib/find_diagramComponent_by_labelText.js');
-    //var hierarchy = require('./lib/hierarchy.js');
     require('./lib/getHierarchyComponent.js');
-    require('./lib/getWire.js');
-    require('./lib/getInspector.js');
 
     beforeAll(function loadTestProject(done) {
         if (false) {
@@ -129,29 +126,29 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     }, gmeEventTimeLimit);
 
-    //it('Should be able to drag-pan', function () {
-    //
-    //    var diagramContainer;
-    //
-    //    diagramContainer = browser.element(by.css('div.diagram-container'));
-    //
-    //    browser.actions()
-    //        .mouseMove({x: 300, y: 300})
-    //        .mouseDown()
-    //        .perform();
-    //
-    //
-    //    browser.sleep(uiEventTimeLimit);
-    //
-    //    browser.actions().mouseMove({x: 250, y: 250}).perform();
-    //
-    //    browser.sleep(uiEventTimeLimit);
-    //
-    //    browser.actions().mouseUp().perform();
-    //
-    //    browser.sleep(5000);
-    //
-    //});
+    it('Should be able to drag-pan', function () {
+    
+       var diagramContainer;
+    
+       diagramContainer = browser.element(by.css('div.diagram-container'));
+    
+       browser.actions()
+           .mouseMove({x: 300, y: 300})
+           .mouseDown()
+           .perform();
+    
+    
+       browser.sleep(uiEventTimeLimit);
+    
+       browser.actions().mouseMove({x: 250, y: 250}).perform();
+    
+       browser.sleep(uiEventTimeLimit);
+    
+       browser.actions().mouseUp().perform();
+    
+       browser.sleep(5000);
+    
+    });
 
 
     it('Should have component browser', function() {
@@ -167,476 +164,403 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     });
 
-    // it('Component search should return search results', function () {
+    it('Component search should return search results', function () {
 
-    //     var componentSearchInput,
-    //         searchDropdown,
-    //         searchResults;
+        var componentSearchInput,
+            searchDropdown,
+            searchResults;
 
-    //     componentSearchInput = element(by.css('.component-search-input'));
-    //     searchDropdown = element(by.css('.component-search .angucomplete-dropdown'));
-    //     searchResults = element.all(by.css('.component-search .angucomplete-row'));
+        componentSearchInput = element(by.css('.component-search-input'));
+        searchDropdown = element(by.css('.component-search .angucomplete-dropdown'));
+        searchResults = element.all(by.css('.component-search .angucomplete-row'));
 
-    //     componentSearchInput.sendKeys(searchTerm)
-    //         .then(function () {
+        componentSearchInput.sendKeys(searchTerm)
+            .then(function () {
 
-    //             browser.wait(function () {
-    //                     return searchDropdown.isDisplayed();
-    //                 },
-    //                 1000,
-    //                 'search results not displayed')
-    //                 .then(function () {
-    //                     expect(searchResults.count()).toBeGreaterThan(0);
+                browser.wait(function () {
+                        return searchDropdown.isDisplayed();
+                    },
+                    1000,
+                    'search results not displayed')
+                    .then(function () {
+                        expect(searchResults.count()).toBeGreaterThan(0);
 
 
-    //                     componentSearchInput.sendKeys(searchTermX)
-    //                         .then(function () {
+                        componentSearchInput.sendKeys(searchTermX)
+                            .then(function () {
 
-    //                             // Making sure back-space/delete works in input field
-    //                             componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
-    //                                 .then(function () {
+                                // Making sure back-space/delete works in input field
+                                componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
+                                    .then(function () {
 
-    //                                     var term = searchTerm + searchTermX;
+                                        var term = searchTerm + searchTermX;
 
-    //                                     expect(componentSearchInput.getAttribute('value')).toEqual( term.substring(0, term.length - 1));
+                                        expect(componentSearchInput.getAttribute('value')).toEqual( term.substring(0, term.length - 1));
 
-    //                                     browser.wait(function () {
-    //                                             return searchDropdown.isDisplayed();
-    //                                         },
-    //                                         1000,
-    //                                         'search results not displayed')
-    //                                         .then(function () {
-    //                                             expect(searchResults.count()).toEqual(0);
-    //                                         });
-    //                                 });
-    //                         });
+                                        browser.wait(function () {
+                                                return searchDropdown.isDisplayed();
+                                            },
+                                            1000,
+                                            'search results not displayed')
+                                            .then(function () {
+                                                expect(searchResults.count()).toEqual(0);
+                                            });
+                                    });
+                            });
 
-    //                 });
+                    });
 
-    //         });
+            });
 
-    // });
+    });
 
-    // it('Shoud display ' + categoryToUnfold + ' category', function () {
+    it('Shoud display ' + categoryToUnfold + ' category', function () {
 
-    //     var sensorCategoryItem;
+        var sensorCategoryItem;
 
-    //     sensorCategoryItem = element(by.css('.component-browser li[title=' + categoryToUnfold + ']'));
-    //     expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
+        sensorCategoryItem = element(by.css('.component-browser li[title=' + categoryToUnfold + ']'));
+        expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
 
-    // });
+    });
 
-    // it( categoryToUnfold + ' category should expand', function () {
+    it( categoryToUnfold + ' category should expand', function () {
 
-    //     var categoryExpander,
-    //         childrenList,
-    //         items;
+        var categoryExpander,
+            childrenList,
+            items;
 
-    //     categoryExpander = element(by.css('.component-browser li[title=' + categoryToUnfold + '] .node-expander'));
+        categoryExpander = element(by.css('.component-browser li[title=' + categoryToUnfold + '] .node-expander'));
 
-    //     categoryExpander.click()
-    //         .then(function () {
+        categoryExpander.click()
+            .then(function () {
 
-    //             browser.sleep(componentLibraryQueryTimeLimit);
+                browser.sleep(componentLibraryQueryTimeLimit);
 
-    //             childrenList = element(by.css('.component-browser li[title=' + categoryToUnfold + '] > .node-list'));
+                childrenList = element(by.css('.component-browser li[title=' + categoryToUnfold + '] > .node-list'));
 
-    //             browser.wait(function () {
-    //                     return childrenList.isDisplayed();
-    //                 },
-    //                 2000,
-    //                 'no items in category')
-    //                 .then(function () {
-    //                     items = childrenList.all(by.css('li'));
-    //                     expect(items.count()).toBeGreaterThan(0);
-    //                 });
+                browser.wait(function () {
+                        return childrenList.isDisplayed();
+                    },
+                    2000,
+                    'no items in category')
+                    .then(function () {
+                        items = childrenList.all(by.css('li'));
+                        expect(items.count()).toBeGreaterThan(0);
+                    });
 
-    //         });
+            });
 
-    // });
+    });
 
-    // it('Shoud display ' + subCategoryToUnfold + ' subcategory', function () {
+    it('Shoud display ' + subCategoryToUnfold + ' subcategory', function () {
 
-    //     var sensorCategoryItem;
+        var sensorCategoryItem;
 
-    //     sensorCategoryItem = element(by.css('.component-browser li[title=' + subCategoryToUnfold + ']'));
-    //     expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
+        sensorCategoryItem = element(by.css('.component-browser li[title=' + subCategoryToUnfold + ']'));
+        expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
 
-    // });
+    });
 
-    // it( subCategoryToUnfold + ' category should expand', function () {
+    it( subCategoryToUnfold + ' category should expand', function () {
 
-    //     var categoryExpander,
-    //         childrenList,
-    //         items;
+        var categoryExpander,
+            childrenList,
+            items;
 
-    //     categoryExpander = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] .node-expander'));
+        categoryExpander = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] .node-expander'));
 
-    //     categoryExpander.click()
-    //         .then(function () {
+        categoryExpander.click()
+            .then(function () {
 
-    //             browser.sleep(componentLibraryQueryTimeLimit);
+                browser.sleep(componentLibraryQueryTimeLimit);
 
-    //             childrenList = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] > .node-list'));
+                childrenList = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] > .node-list'));
 
-    //             browser.wait(function () {
-    //                     return childrenList.isDisplayed();
-    //                 },
-    //                 1000,
-    //                 'no items in category')
-    //                 .then(function () {
-    //                     items = childrenList.all(by.css('li'));
-    //                     expect(items.count()).toBeGreaterThan(0);
-    //                 });
+                browser.wait(function () {
+                        return childrenList.isDisplayed();
+                    },
+                    1000,
+                    'no items in category')
+                    .then(function () {
+                        items = childrenList.all(by.css('li'));
+                        expect(items.count()).toBeGreaterThan(0);
+                    });
 
-    //         });
+            });
 
-    // });
+    });
 
 
-    // it('Should be able to navigate to same project and design in other browser', function () {
+    it('Should be able to navigate to same project and design in other browser', function () {
 
-    //     var diagramContainer,
-    //         closeButton;
+        var diagramContainer,
+            closeButton;
 
-    //     browser2 = browser.forkNewDriverInstance(true);
+        browser2 = browser.forkNewDriverInstance(true);
 
-    //     expect(browser2).not.toEqual(browser);
-    //     expect(browser2.driver).not.toEqual(browser.driver);
+        expect(browser2).not.toEqual(browser);
+        expect(browser2.driver).not.toEqual(browser.driver);
 
-    //     browser.driver.getCurrentUrl().then(function (currentUrl) {
+        browser.driver.getCurrentUrl().then(function (currentUrl) {
 
-    //         expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
+            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
 
-    //     });
+        });
 
-    //     diagramContainer = browser2.element(by.css('div.diagram-container'));
+        diagramContainer = browser2.element(by.css('div.diagram-container'));
 
-    //     expect(browser2.getTitle()).toEqual('Metamorphosys');
+        expect(browser2.getTitle()).toEqual('Metamorphosys');
 
-    //     browser2.wait(function () {
+        browser2.wait(function () {
 
-    //             return diagramContainer.isPresent();
-    //         },
-    //         5000,
-    //         'diagramContainer not found'
-    //     ).then(function () {
+                return diagramContainer.isPresent();
+            },
+            5000,
+            'diagramContainer not found'
+        ).then(function () {
 
 
-    //         });
+            });
 
-    //     expect(browser2.isElementPresent(diagramContainer)).toEqual(true);
-    //     expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(4);
+        expect(browser2.isElementPresent(diagramContainer)).toEqual(true);
+        expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(4);
 
-    //     closeButton = browser2.element(by.css('.about-dialog .md-actions button.md-primary'));
+        closeButton = browser2.element(by.css('.about-dialog .md-actions button.md-primary'));
 
-    //     browser.sleep(2000);
+        browser.sleep(2000);
 
-    //     closeButton.click();
+        closeButton.click();
 
-    // });
+    });
 
-    // it('Should be able to create component instance by dragging', function () {
+    it('Should be able to create component instance by dragging', function () {
 
-    //     var componentBox,
-    //         otherComponentBox;
+        var componentBox,
+            otherComponentBox;
 
-    //     componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-    //     otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
 
-    //     browser.driver.executeScript(dragAndDropHelper)
-    //         .then(function () {
-    //             browser.driver.executeScript(function (componentTitle) {
+        browser.driver.executeScript(dragAndDropHelper)
+            .then(function () {
+                browser.driver.executeScript(function (componentTitle) {
 
-    //                 $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
-    //                     dropTarget: $('.svg-diagram')
-    //                 });
+                    $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
+                        dropTarget: $('.svg-diagram')
+                    });
 
-    //             }, componentToDrag).then(function () {
+                }, componentToDrag).then(function () {
 
-    //                 //browser.sleep(5000);
+                    //browser.sleep(5000);
 
-    //                 browser.wait(function () {
-    //                         return componentBox.isPresent();
-    //                     },
-    //                     gmeEventTimeLimit,
-    //                     'New component not created'
-    //                 );
+                    browser.wait(function () {
+                            return componentBox.isPresent();
+                        },
+                        gmeEventTimeLimit,
+                        'New component not created'
+                    );
 
-    //                 browser2.wait(function () {
-    //                         return otherComponentBox.isPresent();
-    //                     },
-    //                     gmeEventTimeLimit,
-    //                     'New component not created in other window'
-    //                 );
+                    browser2.wait(function () {
+                            return otherComponentBox.isPresent();
+                        },
+                        gmeEventTimeLimit,
+                        'New component not created in other window'
+                    );
 
-    //             });
-    //         });
+                });
+            });
 
-    // });
+    });
 
-    // it('Should be able to rotate new component box from  context menu', function () {
+    it('Should be able to rotate new component box from  context menu', function () {
 
-    //     var componentBox,
-    //         otherComponentBox,
-    //         rotateCWButton,
-    //         rotateCCWButton,
-    //         checkComponentRotation = function (browser, componentLabel, expectedAngle) {
-    //             browser.driver.executeScript(function (componentLabel) {
+        var componentBox,
+            otherComponentBox,
+            rotateCWButton,
+            rotateCCWButton,
+            checkComponentRotation = function (browser, componentLabel, expectedAngle) {
+                browser.driver.executeScript(function (componentLabel) {
 
-    //                 return Math.acos(window.componentBoxByLabel(componentLabel)[0].getCTM().a) / Math.PI * 180;
+                    return Math.acos(window.componentBoxByLabel(componentLabel)[0].getCTM().a) / Math.PI * 180;
 
-    //             }, targetComponentLabel).then(function (angle) {
-    //                 expect(angle).toEqual(expectedAngle);
-    //             });
-    //         };
+                }, targetComponentLabel).then(function (angle) {
+                    expect(angle).toEqual(expectedAngle);
+                });
+            };
 
-    //     componentBox = browser.findElement(by.diagramComponentLabel(targetComponentLabel));
-    //     rotateCWButton = element(by.css('.contextmenu .action-rotateCW'));
-
-    //     otherComponentBox = browser2.findElement(by.diagramComponentLabel(targetComponentLabel));
-    //     rotateCCWButton = browser2.element(by.css('.contextmenu .action-rotateCCW'));
-
-    //     browser.actions().mouseMove(componentBox).perform();
-    //     browser.actions().click(protractor.Button.RIGHT).perform();
-
-    //     browser.sleep(uiEventTimeLimit);
-
-    //     browser.actions().click(rotateCWButton).perform();
-
-    //     browser.sleep(gmeEventTimeLimit);
-
-    //     checkComponentRotation(browser, targetComponentLabel, 90);
-    //     checkComponentRotation(browser2, targetComponentLabel, 90);
-
-    //     browser2.actions().mouseMove(otherComponentBox).perform();
-    //     browser2.actions().click(protractor.Button.RIGHT).perform();
-
-    //     browser2.sleep(uiEventTimeLimit);
-
-    //     browser2.actions().click(rotateCCWButton).perform();
-
-    //     browser.sleep(gmeEventTimeLimit);
-
-    //     checkComponentRotation(browser2, targetComponentLabel, 0);
-    //     checkComponentRotation(browser, targetComponentLabel, 0);
-
-    // });
-
-
-    // it('Should be able to move component box', function () {
-
-    //     var componentBox,
-    //         otherComponentBox,
-    //         moveBy;
-
-    //     moveBy = {
-    //         x: 500,
-    //         y: 0
-    //     };
-
-    //     componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-    //     otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
-
-    //     browser.driver.executeScript(function (componentLabel) {
-
-    //         var m;
-
-    //         m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-
-    //         return {
-    //             x: m.e,
-    //             y: m.f
-    //         };
-
-    //     }, targetComponentLabel).then(function (originalPosition) {
-
-    //         browser.actions().mouseMove(componentBox).perform();
-    //         browser.actions().mouseDown().perform();
-
-    //         browser.sleep(uiEventTimeLimit);
-
-    //         browser.actions().mouseMove({
-    //             x: originalPosition.x + 1,
-    //             y: 0
-    //         }).perform();
-
-    //         browser.sleep(uiEventTimeLimit);
-
-    //         browser.actions().mouseMove({
-    //             x: originalPosition.x + moveBy.x,
-    //             y: originalPosition.y + moveBy.y
-    //         }).perform();
-
-    //         browser.sleep(uiEventTimeLimit);
-
-    //         browser.actions().mouseUp().perform();
-
-    //         browser.sleep(gmeEventTimeLimit);
-
-    //         browser.driver.executeScript(function (componentLabel) {
-
-    //             var m;
-
-    //             m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-
-    //             return {
-    //                 x: m.e,
-    //                 y: m.f
-    //             };
-
-    //         }, targetComponentLabel).then(function (newPosition1) {
-
-
-    //             browser2.driver.executeScript(function (componentLabel) {
-
-    //                 var m;
-
-    //                 m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-
-    //                 return {
-    //                     x: m.e,
-    //                     y: m.f
-    //                 };
-
-    //             }, targetComponentLabel).then(function (newPosition2) {
-
-    //                 expect(newPosition1).toEqual(newPosition2);
-
-    //             });
-    //         });
-    //     });
-
-    // });
-
-    // it('Should be able to selected component clickin on it', function () {
-
-    //     var componentBox;
-
-    //     componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-
-    //     componentBox.click();
-
-    //     browser.wait(function () {
-
-    //             return hasClass(componentBox, 'selected');
-    //         },
-    //         gmeEventTimeLimit,
-    //         'element did not get selected'
-    //     );
-
-    //     browser.sleep(5000);
-
-    // });
-
-    // it('Should be able to trash selected component box by hitting DELETE key', function () {
-
-    //     var componentBox,
-    //         otherComponentBox;
-
-    //     browser.driver.getCurrentUrl().then(function (currentUrl) {
-
-    //         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
-    //         otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
-
-    //         browser.driver.executeScript(function (componentLabel) {
-
-    //             var e;
-
-    //             e = jQuery.Event("keydown");
-    //             e.keyCode = 8;
-
-    //             $(document).trigger(e);
-
-    //         });
-
-    //         browser.sleep(gmeEventTimeLimit);
-
-    //         expect(browser.isElementPresent(componentBox)).toEqual(false);
-    //         expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
-
-    //         expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
-
-    //     });
-
-    // });
-
-    // it('Should be able to move between component containers by double-clicking component', function() {
-    //     var componentBox,
-    //         designPath,
-    //         pathString = "";
-
-    //     componentBox = element(by.diagramComponentLabel(targetContainerLabel));
-
-    //     browser.actions().doubleClick(componentBox).perform();
-
-    //     browser.sleep(2000);
-
-    //     browser.element.all(by.css('span.item-label.ng-binding')).getText()
-    //         .then(function(elementTexts) {
-
-    //             var designPath = elementTexts
-    //                 .join('/')
-    //                 .slice(1);
-
-    //             expect(designPath).toEqual("Template Module 1x2/" + targetContainerLabel);
-    //         });
-
-
-    // });
-
-    // it('Should be able to move between component containers by using menu buttons', function() {
-    //     var designPath,
-    //         mainLevel,
-    //         secondLevel,
-    //         pathString = "";
-
-    //     mainLevel = element(by.getVisibleHierarchyComponent_by_labelText(mainContainerLabel));
-    //     browser.actions().mouseMove(mainLevel).perform();
-    //     browser.sleep(2000);
-    //     secondLevel = element(by.getHiddenHierarchyComponent_by_labelText(targetContainerLabel));
-
-    //     secondLevel.click();
-
-    //     // expect hierarchy to return mainlevel/secondLevel
-
-
-    //     mainLevel.click();
-
-    //     // expect hierarchy to return mainLevel
-
-    // });
+        componentBox = browser.findElement(by.diagramComponentLabel(targetComponentLabel));
+        rotateCWButton = element(by.css('.contextmenu .action-rotateCW'));
+
+        otherComponentBox = browser2.findElement(by.diagramComponentLabel(targetComponentLabel));
+        rotateCCWButton = browser2.element(by.css('.contextmenu .action-rotateCCW'));
+
+        browser.actions().mouseMove(componentBox).perform();
+        browser.actions().click(protractor.Button.RIGHT).perform();
+
+        browser.sleep(uiEventTimeLimit);
+
+        browser.actions().click(rotateCWButton).perform();
+
+        browser.sleep(gmeEventTimeLimit);
+
+        checkComponentRotation(browser, targetComponentLabel, 90);
+        checkComponentRotation(browser2, targetComponentLabel, 90);
+
+        browser2.actions().mouseMove(otherComponentBox).perform();
+        browser2.actions().click(protractor.Button.RIGHT).perform();
+
+        browser2.sleep(uiEventTimeLimit);
+
+        browser2.actions().click(rotateCCWButton).perform();
+
+        browser.sleep(gmeEventTimeLimit);
+
+        checkComponentRotation(browser2, targetComponentLabel, 0);
+        checkComponentRotation(browser, targetComponentLabel, 0);
+
+    });
+
+
+    it('Should be able to move component box', function () {
+    
+        var componentBox,
+            otherComponentBox,
+            moveBy;
+    
+        moveBy = {
+            x: 500,
+            y: 0
+        };
+    
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+        otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
+    
+        browser.driver.executeScript(function (componentLabel) {
+    
+            var m;
+    
+            m = window.componentBoxByLabel(componentLabel)[0].getCTM();
+    
+            return {
+                x: m.e,
+                y: m.f
+            };
+    
+        }, targetComponentLabel).then(function (originalPosition) {
+    
+            browser.actions().mouseMove(componentBox).perform();
+            browser.actions().mouseDown().perform();
+    
+            browser.sleep(uiEventTimeLimit);
+    
+            browser.actions().mouseMove({
+                x: originalPosition.x + 1,
+                y: 0
+            }).perform();
+    
+            browser.sleep(uiEventTimeLimit);
+    
+            browser.actions().mouseMove({
+                x: originalPosition.x + moveBy.x,
+                y: originalPosition.y + moveBy.y
+            }).perform();
+    
+            browser.sleep(uiEventTimeLimit);
+    
+            browser.actions().mouseUp().perform();
+    
+            browser.sleep(gmeEventTimeLimit);
+    
+            browser.driver.executeScript(function (componentLabel) {
+    
+                var m;
+    
+                m = window.componentBoxByLabel(componentLabel)[0].getCTM();
+    
+                return {
+                    x: m.e,
+                    y: m.f
+                };
+    
+            }, targetComponentLabel).then(function (newPosition1) {
+    
+    
+                browser2.driver.executeScript(function (componentLabel) {
+    
+                    var m;
+    
+                    m = window.componentBoxByLabel(componentLabel)[0].getCTM();
+    
+                    return {
+                        x: m.e,
+                        y: m.f
+                    };
+    
+                }, targetComponentLabel).then(function (newPosition2) {
+    
+                    expect(newPosition1).toEqual(newPosition2);
+    
+                });
+            });
+        });
+    
+    });
+
+    it('Should be able to selected component clickin on it', function () {
+
+        var componentBox;
+
+        componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+
+        componentBox.click();
+
+        browser.wait(function () {
+
+                return hasClass(componentBox, 'selected');
+            },
+            gmeEventTimeLimit,
+            'element did not get selected'
+        );
+
+        browser.sleep(5000);
+
+    });
+
+    it('Should be able to trash selected component box by hitting DELETE key', function () {
+    
+        var componentBox,
+            otherComponentBox;
+    
+        browser.driver.getCurrentUrl().then(function (currentUrl) {
+    
+            componentBox = element(by.diagramComponentLabel(targetComponentLabel));
+            otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
+    
+            browser.driver.executeScript(function (componentLabel) {
+    
+                var e;
+    
+                e = jQuery.Event("keydown");
+                e.keyCode = 8;
+    
+                $(document).trigger(e);
+    
+            });
+    
+            browser.sleep(gmeEventTimeLimit);
+    
+            expect(browser.isElementPresent(componentBox)).toEqual(false);
+            expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
+    
+            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
+    
+        });
+    
+    });
 
     it('Inspector should load wire details if selected, and remove if unselected', function() {
-        var inspector,
-            expander;
 
-        inspector = element(by.getInspector());
-        expander = element(by.getInspectorExpander());
-
-        // Make expander visible
-
-        if (expander.getAttribute("ng-switch-when") === "false") {
-            expander.click();
-            console.log('clicked');
-        }
-        
-        browser.sleep(2000);
-        
-        // expect(inspector.getAttribute("ng-if")).toEqual("!designEditorCtrl.inspectableWire");
-        // console.log('wire click');
-        // browser.actions().mouseMove(wire).perform();
-        // browser.actions().mouseDown().perform();
-        // browser.actions().mouseUp().perform();        
-        // console.log('wire click2');
-        // browser.sleep(2000);
-        // expect(inspector.getAttribute("ng-if")).toEqual("designEditorCtrl.inspectableWire");
-        // console.log('wire click');
-        // browser.actions().mouseDown(wire).mouseUp(wire).perform();
-        // console.log('wire click2');
-        // browser.sleep(2000);
-        // expect(inspector.getAttribute("ng-if")).toEqual("!designEditorCtrl.inspectableWire");
-
+        // Select Wire
         browser.driver.executeScript(function (wireId, segmentIndex) {
 
             var wireEl = document.getElementById(wireId),
@@ -647,9 +571,109 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         }, wireIdToSelect, segmentIndexToSelect).then(function () {
 
-            browser.sleep(2000);
+            browser.driver.executeScript(function () {
+
+                return document.querySelector('div.diagram-wire-inspector');
+
+            }).then(function (wireInspectorEl) {
+
+                expect(wireInspectorEl.isDisplayed()).toBe(true);
+
+            });
 
         });
+
+        // Deselect Wire
+        browser.driver.executeScript(function (wireId, segmentIndex) {
+
+            var wireEl = document.getElementById(wireId),
+                wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
+                mouseEvent = new Event('mouseup', { bubbles: true, cancelable: false});
+
+            wireSegmentEl.dispatchEvent(mouseEvent);
+
+        }, wireIdToSelect, segmentIndexToSelect).then(function () {
+
+            browser.driver.executeScript(function () {
+
+                return document.querySelector('div.diagram-wire-inspector');
+
+            }).then(function (wireInspectorEl) {
+
+                // If no wire selected, inspector class is diagram-component-inspector
+                expect(wireInspectorEl).toBe(null);
+
+            });
+
+        });
+
+    });
+
+    it('Should be able to move between component containers by double-clicking component', function() {
+         var componentBox;
+
+         componentBox = element(by.diagramComponentLabel(targetContainerLabel));
+
+         browser.actions().doubleClick(componentBox).perform();
+
+         browser.sleep(1000);
+
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel + "/" + targetContainerLabel);
+             });
+
+
+    });
+
+    it('Should be able to move between component containers by using menu buttons', function() {
+
+         var mainLevel,
+             secondLevel;
+         
+         mainLevel = element(by.getHierarchyByVisibleDropdownLabel(mainContainerLabel));
+
+         browser.actions().mouseMove(mainLevel).perform();
+
+         secondLevel = element(by.getHierarchyByHiddenDropdownLabel(targetContainerLabel));
+         
+         secondLevel.click();
+
+         browser.sleep(1000);
+         
+         // Expect hierarchy to be mainLevel / secondLevel
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel + "/" + targetContainerLabel);
+
+             });
+         
+         
+         mainLevel.click();
+
+         browser.sleep(1000);
+         
+         // Expect hierarchy to return mainLevel
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel);
+
+             });
 
     });
 
