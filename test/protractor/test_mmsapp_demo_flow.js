@@ -80,7 +80,8 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
-        var diagramContainer;
+        var diagramContainer,
+            componentLabel;
 
         diagramContainer = element(by.css('div.diagram-container'));
 
@@ -95,8 +96,14 @@ describe('Metamorphosys Tech Demo Flow', function() {
         ).then(function() {
 
             expect(browser.isElementPresent(diagramContainer)).toEqual(true);
-            expect(element.all(by.css('text.component-label')).count()).toEqual(4);
+            componentLabel = element(by.css('text.component-label'));
 
+            browser.wait(function () {
+                    return componentLabel.isPresent();
+                },
+                gmeEventTimeLimit,
+                'components not found');
+            expect(element.all(by.css('text.component-label')).count()).toEqual(4);
 
         });
 
@@ -127,27 +134,27 @@ describe('Metamorphosys Tech Demo Flow', function() {
     }, gmeEventTimeLimit);
 
     it('Should be able to drag-pan', function () {
-    
+
        var diagramContainer;
-    
+
        diagramContainer = browser.element(by.css('div.diagram-container'));
-    
+
        browser.actions()
            .mouseMove({x: 300, y: 300})
            .mouseDown()
            .perform();
-    
-    
+
+
        browser.sleep(uiEventTimeLimit);
-    
+
        browser.actions().mouseMove({x: 250, y: 250}).perform();
-    
+
        browser.sleep(uiEventTimeLimit);
-    
+
        browser.actions().mouseUp().perform();
-    
+
        browser.sleep(5000);
-    
+
     });
 
 
@@ -180,7 +187,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 browser.wait(function () {
                         return searchDropdown.isDisplayed();
                     },
-                    1000,
+                    3000,
                     'search results not displayed')
                     .then(function () {
                         expect(searchResults.count()).toBeGreaterThan(0);
@@ -200,7 +207,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                                         browser.wait(function () {
                                                 return searchDropdown.isDisplayed();
                                             },
-                                            1000,
+                                            3000,
                                             'search results not displayed')
                                             .then(function () {
                                                 expect(searchResults.count()).toEqual(0);
@@ -241,7 +248,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 browser.wait(function () {
                         return childrenList.isDisplayed();
                     },
-                    2000,
+                    3000,
                     'no items in category')
                     .then(function () {
                         items = childrenList.all(by.css('li'));
@@ -279,7 +286,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 browser.wait(function () {
                         return childrenList.isDisplayed();
                     },
-                    1000,
+                    3000,
                     'no items in category')
                     .then(function () {
                         items = childrenList.all(by.css('li'));
@@ -422,88 +429,88 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
 
     it('Should be able to move component box', function () {
-    
+
         var componentBox,
             otherComponentBox,
             moveBy;
-    
+
         moveBy = {
             x: 500,
             y: 0
         };
-    
+
         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
         otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
-    
+
         browser.driver.executeScript(function (componentLabel) {
-    
+
             var m;
-    
+
             m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-    
+
             return {
                 x: m.e,
                 y: m.f
             };
-    
+
         }, targetComponentLabel).then(function (originalPosition) {
-    
+
             browser.actions().mouseMove(componentBox).perform();
             browser.actions().mouseDown().perform();
-    
+
             browser.sleep(uiEventTimeLimit);
-    
+
             browser.actions().mouseMove({
                 x: originalPosition.x + 1,
                 y: 0
             }).perform();
-    
+
             browser.sleep(uiEventTimeLimit);
-    
+
             browser.actions().mouseMove({
                 x: originalPosition.x + moveBy.x,
                 y: originalPosition.y + moveBy.y
             }).perform();
-    
+
             browser.sleep(uiEventTimeLimit);
-    
+
             browser.actions().mouseUp().perform();
-    
+
             browser.sleep(gmeEventTimeLimit);
-    
+
             browser.driver.executeScript(function (componentLabel) {
-    
+
                 var m;
-    
+
                 m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-    
+
                 return {
                     x: m.e,
                     y: m.f
                 };
-    
+
             }, targetComponentLabel).then(function (newPosition1) {
-    
-    
+
+
                 browser2.driver.executeScript(function (componentLabel) {
-    
+
                     var m;
-    
+
                     m = window.componentBoxByLabel(componentLabel)[0].getCTM();
-    
+
                     return {
                         x: m.e,
                         y: m.f
                     };
-    
+
                 }, targetComponentLabel).then(function (newPosition2) {
-    
+
                     expect(newPosition1).toEqual(newPosition2);
-    
+
                 });
             });
         });
-    
+
     });
 
     it('Should be able to selected component clickin on it', function () {
@@ -527,35 +534,35 @@ describe('Metamorphosys Tech Demo Flow', function() {
     });
 
     it('Should be able to trash selected component box by hitting DELETE key', function () {
-    
+
         var componentBox,
             otherComponentBox;
-    
+
         browser.driver.getCurrentUrl().then(function (currentUrl) {
-    
+
             componentBox = element(by.diagramComponentLabel(targetComponentLabel));
             otherComponentBox = browser2.element(by.diagramComponentLabel(targetComponentLabel));
-    
+
             browser.driver.executeScript(function (componentLabel) {
-    
+
                 var e;
-    
+
                 e = jQuery.Event("keydown");
                 e.keyCode = 8;
-    
+
                 $(document).trigger(e);
-    
+
             });
-    
+
             browser.sleep(gmeEventTimeLimit);
-    
+
             expect(browser.isElementPresent(componentBox)).toEqual(false);
             expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
-    
+
             expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
-    
+
         });
-    
+
     });
 
     it('Inspector should load wire details if selected, and remove if unselected', function() {
@@ -635,17 +642,17 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
          var mainLevel,
              secondLevel;
-         
+
          mainLevel = element(by.getHierarchyByVisibleDropdownLabel(mainContainerLabel));
 
          browser.actions().mouseMove(mainLevel).perform();
 
          secondLevel = element(by.getHierarchyByHiddenDropdownLabel(targetContainerLabel));
-         
+
          secondLevel.click();
 
          browser.sleep(1000);
-         
+
          // Expect hierarchy to be mainLevel / secondLevel
          browser.element.all(by.css('span.item-label.ng-binding')).getText()
              .then(function(elementTexts) {
@@ -657,12 +664,12 @@ describe('Metamorphosys Tech Demo Flow', function() {
                  expect(designPath).toEqual(mainContainerLabel + "/" + targetContainerLabel);
 
              });
-         
-         
+
+
          mainLevel.click();
 
          browser.sleep(1000);
-         
+
          // Expect hierarchy to return mainLevel
          browser.element.all(by.css('span.item-label.ng-binding')).getText()
              .then(function(elementTexts) {
