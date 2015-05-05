@@ -1,0 +1,45 @@
+
+
+/* Button Styles Override 
+   =========================================== */
+
+.md-button {
+	color: rgba(255,255,255,.87);
+	padding: 6px 22px;
+
+	&:active,
+	&:hover {
+		color: rgba(255,255,255,.87);		
+	}
+}
+
+.md-button.md-default-theme.md-primary.md-raised {
+	background-color: $c-theme;
+}
+
+.md-button.md-default-theme.md-primary {
+	background-color: $c-theme;
+
+	text-align: center;
+	vertical-align: middle;
+	color: $c-text-light;
+	box-shadow: 0px 2px 0px 0px darken($c-theme, 10%);
+
+	&:hover {
+		background-color: darken( $c-theme, 10% );	}
+	box-shadow: 0px 2px 0px 0px darken($c-theme, 10%);
+
+	&:focus {
+		background-color: $c-theme;
+	}	
+}
+
+/* Project Button Styles
+   =========================================== */
+
+.button-bordered {
+	border: 1px solid $c-border-medium;
+	background-color: darken( $c-background-dark, 5% );
+}
+
+.btn-position { margin-top: -12px;}

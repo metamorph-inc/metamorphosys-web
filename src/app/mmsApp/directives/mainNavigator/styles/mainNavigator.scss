@@ -29,12 +29,12 @@
         }
 
         > li:not(.separator):not(.cyphy-root):hover {
-            background-color: $c-background-darker;
+            background-color: darken( $c-background-dark, 10% );
         }
 
         li.cyphy-root {
 
-            background-color: rgba(0,0,68,.2);
+            background-color: darken( $c-background-dark, 5% );
 
             .label-container {
                 background-image: url(../images/mms-icon-bright.png);
@@ -49,6 +49,10 @@
                     font-style: italic;
                 }
 
+            }
+
+            &:hover {
+                background-color: darken( $c-background-dark, 13% );
             }
 
         }

@@ -1,9 +1,9 @@
 @import 'colors';
+@import '_typography.scss';
 @import '_bootstrap_overrides.scss';
 @import '_material_overrides.scss';
 @import 'print';
 .mms-app {
-    font-family: 'Titillium Web', sans-serif;
     overflow: hidden;
 }
 

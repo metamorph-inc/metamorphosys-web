@@ -1,0 +1,17 @@
+
+/* Site typography
+   =========================================== */
+
+body  { 
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    color: $c-text-medium;
+}
+
+html  {   
+    font: 100%/1.5 'Roboto', sans-serif;      
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: $c-text-dark;
+}
