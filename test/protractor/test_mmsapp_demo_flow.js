@@ -34,7 +34,6 @@ describe('Metamorphosys Tech Demo Flow', function() {
         wireIdToSelect = '/1922727130/1620862711/1365227561/865811917',
         segmentIndexToSelect = 4;
 
-
     require('./lib/find_diagramComponent_by_labelText.js');
     require('./lib/getHierarchyComponent.js');
 
@@ -567,52 +566,47 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     it('Inspector should load wire details if selected, and remove if unselected', function() {
 
+        var checkWireSelection = function (browser, wireIdToSelect, segmentIndexToSelect, expectedResult) {
+                browser.driver.executeScript(function (wireId, segmentIndex) {
+
+                    var wireEl = document.getElementById(wireId),
+                        wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
+                        mouseEvent = new Event('mouseup', {bubbles: true, cancelable: false});
+
+                    wireSegmentEl.dispatchEvent(mouseEvent);
+
+                }, wireIdToSelect, segmentIndexToSelect).then(function () {
+
+                    browser.driver.executeScript(function () {
+
+                        return document.querySelector('div.diagram-wire-inspector');
+
+                    }).then(function (wireInspectorEl) {
+
+                        if( expectedResult === null ) {
+
+                            expect(wireInspectorEl).toBe(expectedResult);
+
+                        }
+                        else {
+
+                            expect(wireInspectorEl.isDisplayed()).toBe(expectedResult);
+
+                        }
+
+                    });
+
+                });
+
+            };
+
         // Select Wire
-        browser.driver.executeScript(function (wireId, segmentIndex) {
+        checkWireSelection(browser, wireIdToSelect, segmentIndexToSelect, true);
 
-            var wireEl = document.getElementById(wireId),
-                wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
-                mouseEvent = new Event('mouseup', { bubbles: true, cancelable: false});
-
-            wireSegmentEl.dispatchEvent(mouseEvent);
-
-        }, wireIdToSelect, segmentIndexToSelect).then(function () {
-
-            browser.driver.executeScript(function () {
-
-                return document.querySelector('div.diagram-wire-inspector');
-
-            }).then(function (wireInspectorEl) {
-
-                expect(wireInspectorEl.isDisplayed()).toBe(true);
-
-            });
-
-        });
+        browser.sleep(1000);
 
         // Deselect Wire
-        browser.driver.executeScript(function (wireId, segmentIndex) {
-
-            var wireEl = document.getElementById(wireId),
-                wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
-                mouseEvent = new Event('mouseup', { bubbles: true, cancelable: false});
-
-            wireSegmentEl.dispatchEvent(mouseEvent);
-
-        }, wireIdToSelect, segmentIndexToSelect).then(function () {
-
-            browser.driver.executeScript(function () {
-
-                return document.querySelector('div.diagram-wire-inspector');
-
-            }).then(function (wireInspectorEl) {
-
-                // If no wire selected, inspector class is diagram-component-inspector
-                expect(wireInspectorEl).toBe(null);
-
-            });
-
-        });
+        checkWireSelection(browser, wireIdToSelect, segmentIndexToSelect, null);
 
     });
 
