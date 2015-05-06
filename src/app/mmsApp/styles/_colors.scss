@@ -1,21 +1,17 @@
 @import 'mixins';
 
+$baseBGColor: #455160;
+$baseFrontColor: #0D47A1;
+$accentColor: #3894fd;
+
+/* All stuff below this needs to be cleaned out */
+
 $mmsGreen: #2ABE53;
 $mmsRed: #D25261;
 $light-blue: #03a9f4;
 
 
 $mmsAccent: #ff7100;
-
-$mmsBlueLight: #0c6cb8;
-$mmsBlueDark: #073f96;
-
-$mmsVeryDark: #00235B;
-
-
-@mixin mmsBlueGradient() {
-    @include gradient($mmsBlueLight, $mmsBlueDark, 100%);
-}
 
 
 /* Color Variables
@@ -65,3 +61,6 @@ $c-border-dark: #DEE2E2;
 
 $c-theme: #3894FD;
 
+@mixin mmsGreyGradient() {
+    @include gradient($c-background-dark, $c-background-darker, 100%);
+}

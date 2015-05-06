@@ -13,7 +13,6 @@
     padding-bottom: 0.6em;
     padding-left: 24px;
     padding-right: 24px;
-    color: $mmsVeryDark;
     min-height: 45px;
 }
 
@@ -31,7 +30,6 @@ h1.main-view-header {
 
 .header-extra {
     font-size: 60%;
-    color: $mmsBlueLight;
 }
 
 .main-view-container {
@@ -88,7 +86,6 @@ md-toast.failure {
 }
 
 md-tabs.md-default-theme .md-header {
-    @include mmsBlueGradient();
 }
 
 md-tab {

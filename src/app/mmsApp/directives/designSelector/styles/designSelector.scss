@@ -1,3 +1,5 @@
+@import '../../../styles/_colors';
+
 .design-selector-dialog {
     width: 675px;
     min-width: 675px;
@@ -13,8 +15,12 @@
 
         md-grid-tile-header {
             transition: all 400ms ease-out 50ms;
-            background-color: #0D47A1;
+            background-color: $baseFrontColor;
             color: #fff;
+
+            h3 {
+                color: #fff;                
+            }
         }
 
         border-left: 1px solid transparent;
@@ -26,7 +32,7 @@
             right: 40px;
             margin-top: 20px;
             text-align: center;
-            color: #ff7100;
+            color: $accentColor;
 
             opacity: 0;
             transition: opacity 400ms ease-out 50ms;
@@ -42,10 +48,10 @@
 
         &:hover {
 
-            border-color:  #ff7100;
+            border-color: $accentColor;
 
              md-grid-tile-header {
-                 background-color: #ff7100;
+                 background-color: $accentColor;
                  color: #fff;
              }
 

@@ -114,17 +114,17 @@ angular.module('CyPhyApp').config(function(
 
     $urlRouterProvider.otherwise('/');
 
-  function NotFoundController($rootScope, $log) {
+    function NotFoundController($rootScope, $log) {
 
         var self = this;
 
         $log.debug('in NotFoundController');
 
-        this.clickRetry = function () {
+        this.clickRetry = function() {
 
             self.leftBehind = true;
             $rootScope.retry()
-                .catch(function () {
+                .catch(function() {
                     self.leftBehind = false;
                 });
 
@@ -152,7 +152,7 @@ angular.module('CyPhyApp').config(function(
                             url = 'http://mmsapp.metamorphsoftware.com/dispatch/mmsapp';
                         }
 
-                        $timeout(function(){
+                        $timeout(function() {
                             $window.location.href = url;
                         }, 200, false);
                     }
@@ -361,9 +361,49 @@ angular.module('CyPhyApp').config(function(
         });
     }
 
+    // Adopted from: 
+    // http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+
+    function shadeColor(color, percent) {   
+        var f = parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF,
+            color = '#' + (0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+
+        //console.log(color);
+
+        return color;
+    }
+
+    var baseBGColor = '#455160',
+        baseFrontColor = '#0D47A1',
+        accentColor = '3894fd';
+
+    $mdThemingProvider.definePalette('mmsPalette', {
+        '50': shadeColor(baseFrontColor, 0.9),
+        '100': shadeColor(baseFrontColor, 0.8),
+        '200': shadeColor(baseFrontColor, 0.6),
+        '300': shadeColor(baseFrontColor, 0.4),
+        '400': shadeColor(baseFrontColor, 0.4),
+
+        '500': baseFrontColor,
+
+        '600': accentColor,
+        '700': shadeColor(baseBGColor, -0.2),
+        '800': shadeColor(baseBGColor, -0.3),
+        '900': shadeColor(baseBGColor, -0.4),
+        'A100': 'ff7100',
+        'A200': '428bca',                
+        'A400': '3894fd',
+        'A700': '0D47A1',        
+        'contrastDefaultColor': 'light', // whether, by default, text (contrast)
+        // on this palette should be dark or light
+        'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
+            '200', '300', '400', 'A100'
+        ],
+        'contrastLightColors': undefined // could also specify this if default was 'dark'
+    });
+
 
     $mdThemingProvider.theme('default')
-        .primaryPalette('blue')
-        .accentPalette('orange');
+        .primaryPalette('mmsPalette');
 
 });

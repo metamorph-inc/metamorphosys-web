@@ -57,8 +57,6 @@
             bottom: 7px;
         }
 
-        background: linear-gradient(to bottom, #fff, #eee);
-
     }
 
 
@@ -89,9 +87,7 @@
             font-size: 90%;
         }
 
-        background-color: #3894FD;
-
-        @include mmsBlueGradient();
+        @include mmsGreyGradient();
 
         .header {
             font-size: 200%;
