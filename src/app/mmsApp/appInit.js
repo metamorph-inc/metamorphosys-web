@@ -368,7 +368,7 @@ angular.module('CyPhyApp').config(function(
         var f = parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF,
             color = '#' + (0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 
-        //console.log(color);
+        console.log(color);
 
         return color;
     }
@@ -378,11 +378,11 @@ angular.module('CyPhyApp').config(function(
         accentColor = '3894fd';
 
     $mdThemingProvider.definePalette('mmsPalette', {
-        '50': shadeColor(baseFrontColor, 0.9),
+        '50': shadeColor(baseBGColor, 0.9),
         '100': shadeColor(baseFrontColor, 0.8),
-        '200': shadeColor(baseFrontColor, 0.6),
-        '300': shadeColor(baseFrontColor, 0.4),
-        '400': shadeColor(baseFrontColor, 0.4),
+        '200': shadeColor(baseFrontColor, 0.7),
+        '300': shadeColor(baseBGColor, 0.6),
+        '400': shadeColor(baseBGColor, 0.4),
 
         '500': baseFrontColor,
 

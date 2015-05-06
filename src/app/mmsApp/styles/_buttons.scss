@@ -4,6 +4,7 @@
    =========================================== */
 
 .md-button {
+	text-transform: capitalize;
 	color: rgba(255,255,255,.87);
 	padding: 6px 22px;
 
@@ -24,6 +25,7 @@
 .button-bordered {
 	border: 1px solid $c-border-medium;
 	background-color: darken( $c-background-dark, 5% );
+	text-transform: uppercase;
 }
 
 .btn-position { margin-top: -12px;}
