@@ -84,6 +84,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
         var offset;
 
         if (possibbleDragTargetsDescriptor) {
+            console.log('onDiagramMouseMove - starting drag', $event);            
             startDrag();
         }
 
@@ -132,6 +133,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
             primaryTargetDescriptor;
 
         componentsToDrag = [];
+
+        console.log('onComponentMouseDown', $event);
 
         getDragDescriptor = function (component) {
 
