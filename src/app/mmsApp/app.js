@@ -32,7 +32,7 @@ require('./directives/busyCover/busyCover.js');
 require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
-require('./directives/componentBrowser/componentBrowser' );
+require('./directives/componentBrowser/componentBrowser');
 
 require('./directives/mainNavigator/mainNavigator');
 
@@ -90,14 +90,14 @@ CyPhyApp.run(function(editableOptions, editableThemes) {
     editableOptions.theme = 'bs3';
 });
 
-CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q, $log,
-                                               $timeout, projectHandling, $animate, $injector) {
+CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, $log,
+    $timeout, projectHandling, $animate, $injector) {
 
     var stateBeforeWentWrong;
 
     $rootScope.busy = true;
 
-    $rootScope.retry = function () {
+    $rootScope.retry = function() {
 
         var deferred;
 
@@ -107,10 +107,10 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
             if (stateBeforeWentWrong && stateBeforeWentWrong.name !== '') {
 
                 $state.go(stateBeforeWentWrong.name, stateBeforeWentWrong.params).then(
-                    function () {
+                    function() {
                         deferred.resolve();
                     },
-                    function () {
+                    function() {
                         deferred.reject();
                     }
                 );
@@ -137,7 +137,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
     //    evt.dataTransfer.dropEffect = 'copy';
     //};
 
-    $rootScope.$watch('disconnected', function (disconnected) {
+    $rootScope.$watch('disconnected', function(disconnected) {
 
 
         if (disconnected === true) {
@@ -152,7 +152,7 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
 
     });
 
-    $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+    $rootScope.$on('$stateChangeSuccess', function(ev, to, toParams, from, fromParams) {
 
         if (to.name === 'disconnected') {
 
@@ -168,42 +168,42 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
     });
 
 
-    $rootScope.$on('$stateChangeStart', function (ev, to) {
+    $rootScope.$on('$stateChangeStart', function(ev, to) {
 
         $log.debug('stateChangeStart', to);
 
     });
 
-    $rootScope.$on('$stateChangeError', function (ev, to) {
+    $rootScope.$on('$stateChangeError', function(ev, to) {
 
         $log.error('stateChangeError', to);
 
     });
 
-    $rootScope.$on('$stateNotFound', function (ev, to) {
+    $rootScope.$on('$stateNotFound', function(ev, to) {
 
         $log.error('stateNotFound', to);
 
     });
 
-    $rootScope.$on('containerMustBeOpened', function (ev, container) {
+    $rootScope.$on('containerMustBeOpened', function(ev, container) {
 
         console.log('Go to container', container.id);
 
-        if ( container && container.id !== projectHandling.getSelectedContainerId()) {
+        if (container && container.id !== projectHandling.getSelectedContainerId()) {
 
             $rootScope.setProcessing();
 
-            $timeout(function () {
+            $timeout(function() {
 
                 $state.go('editor.design', {
-                    projectId: $state.params.projectId,
-                    branchId: $state.params.branchId,
-                    workspaceId: $state.params.workspaceId,
-                    designId: $state.params.designId,
-                    containerId: encodeURIComponent(container.id)
-                })
-                    .catch(function (e) {
+                        projectId: $state.params.projectId,
+                        branchId: $state.params.branchId,
+                        workspaceId: $state.params.workspaceId,
+                        designId: $state.params.designId,
+                        containerId: encodeURIComponent(container.id)
+                    })
+                    .catch(function(e) {
                         $log.error(e);
                     });
             });
@@ -211,24 +211,23 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
         }
     });
 
-    $rootScope.$on('designMustBeOpened', function (ev, design) {
+    $rootScope.$on('designMustBeOpened', function(ev, design) {
 
         console.log('Go to design', design.id);
 
-        if ( design && design.id !== projectHandling.getSelectedContainerId()) {
+        if (design && design.id !== projectHandling.getSelectedContainerId()) {
 
             $rootScope.setProcessing();
-
-            $timeout(function () {
+            $timeout(function() {
 
                 $state.go('editor.design', {
-                    projectId: $state.params.projectId,
-                    branchId: $state.params.branchId,
-                    workspaceId: $state.params.workspaceId,
-                    designId: encodeURIComponent(design.id),
-                    containerId: null
-                })
-                    .catch(function (e) {
+                        projectId: $state.params.projectId,
+                        branchId: $state.params.branchId,
+                        workspaceId: $state.params.workspaceId,
+                        designId: encodeURIComponent(design.id),
+                        containerId: null
+                    })
+                    .catch(function(e) {
                         $log.error(e);
                     });
             });
@@ -260,21 +259,26 @@ CyPhyApp.controller('AppController', function ($rootScope, $cookies, $state, $q,
         initStats();
     }
 
-    ga('send', 'event', 'appInitialized', 'dev.0.2.0');
+    if ($injector.has('buildHash')) {
+        $rootScope.buildHash = $injector.get('buildHash');
+    }
+
+
+    ga('send', 'event', 'appInitialized', $rootScope.buildHash);
 
 });
 
 
 
-CyPhyApp.controller('DisconnectedController', function ($rootScope) {
+CyPhyApp.controller('DisconnectedController', function($rootScope) {
 
     var self = this;
 
-    this.clickRetry = function () {
+    this.clickRetry = function() {
 
         self.leftBehind = true;
         $rootScope.retry()
-            .catch(function () {
+            .catch(function() {
                 self.leftBehind = false;
             });
 

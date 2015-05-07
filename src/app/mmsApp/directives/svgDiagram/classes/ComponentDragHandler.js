@@ -158,7 +158,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         $scope.diagram.config = $scope.diagram.config || {};
 
-        if ($scope.diagram.config.editable === true &&
+        if ($scope.diagram.config.editable === true &&            
             component.nonSelectable !== true &&
             component.locationLocked !== true) {
 

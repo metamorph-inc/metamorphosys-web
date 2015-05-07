@@ -5,7 +5,12 @@
 // Move this to GME eventually
 
 angular.module('mms.headerButtons', [])
-    .controller('HeaderButtonsController', function ($scope, $rootScope, $mdDialog, $log, $http, $mdToast, $cookies) {
+    .controller('HeaderButtonsController', function (
+        $scope, $rootScope, $mdDialog, $log, $http, $mdToast, $cookies, $injector) {
+
+        if ( $injector.has('showBuildHash') && $injector.get('showBuildHash') === true ) {
+            $scope.showBuildHash = true;
+        }
 
         $scope.openSubscribeDialog = function (ev) {
 
@@ -72,6 +77,9 @@ angular.module('mms.headerButtons', [])
             function DialogController($scope, $mdDialog) {
 
                 $scope.user = {};
+
+                $scope.buildHash = $rootScope.buildHash;
+
 
                 $scope.hide = function () {
                     $mdDialog.hide();

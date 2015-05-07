@@ -69,6 +69,8 @@ var argv = require('yargs').argv,
 
     buildRoot = 'public/',
 
+    buildHash,
+
     cyphyLibraryRoot = buildRoot + '/cyphy-library/',
     docsRoot = buildRoot + '/docs/',
 
@@ -95,7 +97,10 @@ var argv = require('yargs').argv,
 
     svgstore = require('gulp-svgstore'),
     svgmin = require('gulp-svgmin'),
-    through2 = require('through2');
+    through2 = require('through2'),
+
+    git = require('gulp-git'),
+    Q = require('q');
 
 
 // Utility tasks
@@ -114,7 +119,7 @@ function loadAppLibs(appName) {
     var appLibs,
         appLibsJSON;
 
-    appLibsJSON = sourcePaths.appSourcesFolders + appName  + '/libs.json';
+    appLibsJSON = sourcePaths.appSourcesFolders + appName + '/libs.json';
 
     if (fs.existsSync(appLibsJSON)) {
 
@@ -131,14 +136,14 @@ function getDirectories(srcpath) {
     });
 }
 
-gulp.task('clean-build', function () {
+gulp.task('clean-build', function() {
     return gulp.src(buildRoot).pipe(clean());
 });
 
 
 // Docs tasks
 
-gulp.task('lint-docs', function () {
+gulp.task('lint-docs', function() {
 
     console.log('Linting docs...');
 
@@ -148,7 +153,7 @@ gulp.task('lint-docs', function () {
 
 });
 
-gulp.task('browserify-docs', function () {
+gulp.task('browserify-docs', function() {
     var bundler, bundle;
     console.log('Browserifying docs...');
 
@@ -160,14 +165,16 @@ gulp.task('browserify-docs', function () {
         debug: true
     });
 
-    bundle = function () {
+    bundle = function() {
         return bundler
             .transform(babelify)
             .bundle()
             .on('error', swallowError)
             .pipe(source(libraryName + '-docs.js'))
             .pipe(buffer())
-            .pipe(sourcemaps.init({loadMaps: true}))
+            .pipe(sourcemaps.init({
+                loadMaps: true
+            }))
             // Add transformation tasks to the pipeline here.
             //.pipe(uglify())
             .pipe(sourcemaps.write('./'))
@@ -176,7 +183,7 @@ gulp.task('browserify-docs', function () {
     return bundle();
 });
 
-gulp.task('compile-docs-templates', function () {
+gulp.task('compile-docs-templates', function() {
 
     console.log('Compiling docs templates...');
 
@@ -190,8 +197,8 @@ gulp.task('compile-docs-templates', function () {
 });
 
 
-gulp.task('compile-docs-styles', function () {
-    var processWinPath = function (file) {
+gulp.task('compile-docs-styles', function() {
+    var processWinPath = function(file) {
         var path = require('path');
         if (process.platform === 'win32') {
             file.path = path.relative('.', file.path);
@@ -207,16 +214,15 @@ gulp.task('compile-docs-styles', function () {
             errLogToConsole: true,
             sourceComments: 'map'
         }))
-        .pipe(rename(function (path) {
+        .pipe(rename(function(path) {
             path.dirname = '';
         }))
         .pipe(concat(libraryName + '-docs.css'))
         .pipe(gulp.dest(docsRoot));
 });
 
-gulp.task('compile-docs',
-    ['lint-docs', 'browserify-docs', 'compile-docs-templates', 'compile-docs-styles'],
-    function () {
+gulp.task('compile-docs', ['lint-docs', 'browserify-docs', 'compile-docs-templates', 'compile-docs-styles'],
+    function() {
 
         console.log('Compiling docs...');
 
@@ -229,7 +235,7 @@ gulp.task('compile-docs',
 
 // Library tasks
 
-gulp.task('lint-library', function () {
+gulp.task('lint-library', function() {
 
     console.log('Linting library...');
 
@@ -239,7 +245,7 @@ gulp.task('lint-library', function () {
 
 });
 
-gulp.task('browserify-library', function () {
+gulp.task('browserify-library', function() {
     var bundler, bundle;
     console.log('Browserifying library...');
 
@@ -251,14 +257,16 @@ gulp.task('browserify-library', function () {
         debug: true
     });
 
-    bundle = function () {
+    bundle = function() {
         return bundler
-//            .transform(babelify)
+            //            .transform(babelify)
             .bundle()
             .on('error', swallowError)
             .pipe(source(libraryName + '.js'))
             .pipe(buffer())
-            .pipe(sourcemaps.init({loadMaps: true}))
+            .pipe(sourcemaps.init({
+                loadMaps: true
+            }))
             // Add transformation tasks to the pipeline here.
             //.pipe(uglify())
             .pipe(sourcemaps.write('./'))
@@ -268,12 +276,12 @@ gulp.task('browserify-library', function () {
     return bundle();
 });
 
-gulp.task('compile-library-templates', function () {
+gulp.task('compile-library-templates', function() {
 
     console.log('Compiling templates...');
 
     gulp.src(sourcePaths.libraryTemplates)
-        .pipe(rename(function (path) {
+        .pipe(rename(function(path) {
             path.dirname = 'templates';
         }))
         .pipe(templateCache(libraryName + '-templates.js', {
@@ -285,7 +293,7 @@ gulp.task('compile-library-templates', function () {
 });
 
 
-gulp.task('compile-library-styles', function () {
+gulp.task('compile-library-styles', function() {
 
     console.log('Compiling styles...');
 
@@ -295,28 +303,27 @@ gulp.task('compile-library-styles', function () {
             errLogToConsole: true,
             sourceComments: 'map'
         }))
-        .pipe(rename(function (path) {
+        .pipe(rename(function(path) {
             path.dirname = '';
         }))
         .pipe(concat(libraryName + '.css'))
         .pipe(gulp.dest(cyphyLibraryRoot));
 });
 
-gulp.task('compile-library-images', function () {
+gulp.task('compile-library-images', function() {
 
     console.log('Compiling images...');
 
     gulp.src(sourcePaths.libraryImages)
-        .pipe(rename(function (path) {
+        .pipe(rename(function(path) {
             path.dirname = '';
         }))
         .pipe(gulp.dest(cyphyLibraryRoot + '/images'));
 });
 
 
-gulp.task('compile-library',
-    ['lint-library', 'browserify-library', 'compile-library-templates', 'compile-library-styles', 'compile-library-images'],
-    function () {
+gulp.task('compile-library', ['lint-library', 'browserify-library', 'compile-library-templates', 'compile-library-styles', 'compile-library-images'],
+    function() {
         console.log('Compiling scripts...');
     });
 
@@ -327,13 +334,13 @@ var applications,
     registerAppTasks,
     gulpAppTaskNames = [];
 
-applications = getDirectories( sourcePaths.appSourcesFolders ).filter(
+applications = getDirectories(sourcePaths.appSourcesFolders).filter(
     function(folder) {
         return doNotCompileApps.indexOf(folder) === -1;
     }
 );
 
-registerAppTasks = function (appName) {
+registerAppTasks = function(appName) {
 
     var appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
         appBuildRoot = buildRoot + 'apps/' + appName + '/',
@@ -350,7 +357,7 @@ registerAppTasks = function (appName) {
 
         appSvgSymbols = [appSourceRoot + '**/symbols/**/*.svg'],
 
-        appImages = sourcePaths.appImagePatterns.map(function (imageType) {
+        appImages = sourcePaths.appImagePatterns.map(function(imageType) {
             return appSourceRoot + imageType;
         }),
 
@@ -366,23 +373,32 @@ registerAppTasks = function (appName) {
 
     }
 
-    gulp.src(appSourceRoot + 'config.client.json')
-        .pipe(gulpNgConfig('mms.' + appName + '.config'))
-        .pipe(rename(function (path) {
-            path.basename = 'appConfig';
-            path.extname = '.js';
-        }))
-        .pipe(gulp.dest(appSourceRoot));
+    gulp.task('generate-config-' + appName, function() {
 
-
-    gulp.task('generate-svg-map-' + appName, function () {
-        return gulp.src( appSvgSymbols )
-            .pipe(svgmin())
-            .pipe(svgstore({ fileName: 'symbols.svg', prefix: 'icon-' }))
-            .pipe(gulp.dest( appBuildRoot + 'images/' ));
+        gulp.src(appSourceRoot + 'config.client.json')
+            .pipe(gulpNgConfig('mms.' + appName + '.config', {
+                constants: {
+                    buildHash: buildHash
+                }
+            }))
+            .pipe(rename(function(path) {
+                path.basename = 'appConfig';
+                path.extname = '.js';
+            }))
+            .pipe(gulp.dest(appSourceRoot));
     });
 
-    gulp.task('lint-' + appName, function () {
+    gulp.task('generate-svg-map-' + appName, function() {
+        return gulp.src(appSvgSymbols)
+            .pipe(svgmin())
+            .pipe(svgstore({
+                fileName: 'symbols.svg',
+                prefix: 'icon-'
+            }))
+            .pipe(gulp.dest(appBuildRoot + 'images/'));
+    });
+
+    gulp.task('lint-' + appName, function() {
 
         console.log('Linting ' + appName + '-app...');
 
@@ -392,7 +408,7 @@ registerAppTasks = function (appName) {
 
     });
 
-    gulp.task('browserify-' + appName, function () {
+    gulp.task('browserify-' + appName, function() {
 
         var bundler, bundle,
             onlyRe = new RegExp(appSourceRoot, 'g');
@@ -410,24 +426,30 @@ registerAppTasks = function (appName) {
         });
 
         return gulp.src(appSourceRoot + 'app.js')
-            .pipe(through2.obj(function (file, enc, next) {
-                browserify(file.path, { debug: process.env.NODE_ENV === 'development' })
-                .transform(babelify.configure({
-                    //whitelist: ['es6', 'react'],
-                    extensions: ['.jsx'],
-                    only: onlyRe
+            .pipe(through2.obj(function(file, enc, next) {
+                browserify(file.path, {
+                        debug: process.env.NODE_ENV === 'development'
+                    })
+                    .transform(babelify.configure({
+                        //whitelist: ['es6', 'react'],
+                        extensions: ['.jsx'],
+                        only: onlyRe
 
-                }))
-                .bundle(function (err, res) {
-                    if (err) { return next(err); }
- 
-                    file.contents = res;
-                    next(null, file);
-                });
+                    }))
+                    .bundle(function(err, res) {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        file.contents = res;
+                        next(null, file);
+                    });
             }))
             .on('error', swallowError)
-            .pipe(sourcemaps.init({loadMaps: true}))
-            .pipe(rename(function (path) {
+            .pipe(sourcemaps.init({
+                loadMaps: true
+            }))
+            .pipe(rename(function(path) {
                 path.dirname = '';
                 path.basename = appName + '-app';
                 path.extname = '.js';
@@ -439,7 +461,7 @@ registerAppTasks = function (appName) {
 
     });
 
-    gulp.task('copy-' + appName + '-libs', function () {
+    gulp.task('copy-' + appName + '-libs', function() {
 
         var styleMapFileNames,
             scriptMapFileNames,
@@ -452,21 +474,21 @@ registerAppTasks = function (appName) {
 
             console.log('Copying ' + appName + '-libs...');
 
-            styleMapFileNames = appLibs.styles.map(function (fileName) {
+            styleMapFileNames = appLibs.styles.map(function(fileName) {
                 return path.join(
                     path.dirname(fileName),
                     path.basename(fileName, '.css') + '.map'
                 );
             });
 
-            scriptMapFileNames = appLibs.scripts.map(function (fileName) {
+            scriptMapFileNames = appLibs.scripts.map(function(fileName) {
                 return path.join(
                     path.dirname(fileName),
                     path.basename(fileName, '.js') + '.map'
                 );
             });
 
-            scriptMapMapFileNames = appLibs.scripts.map(function (fileName) {
+            scriptMapMapFileNames = appLibs.scripts.map(function(fileName) {
                 return path.join(
                     path.dirname(fileName),
                     path.basename(fileName) + '.map'
@@ -474,38 +496,38 @@ registerAppTasks = function (appName) {
             });
 
             gulp.src(appLibs.styles)
-                .pipe(rename(function (path) {
+                .pipe(rename(function(path) {
                     path.dirname = 'libs';
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
             gulp.src(appLibs.scripts)
-                .pipe(rename(function (path) {
+                .pipe(rename(function(path) {
                     path.dirname = 'libs';
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
             gulp.src(styleMapFileNames)
-                .pipe(rename(function (path) {
+                .pipe(rename(function(path) {
                     path.dirname = 'libs';
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
             gulp.src(scriptMapFileNames)
-                .pipe(rename(function (path) {
+                .pipe(rename(function(path) {
                     path.dirname = 'libs';
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
             gulp.src(scriptMapMapFileNames)
-                .pipe(rename(function (path) {
+                .pipe(rename(function(path) {
                     path.dirname = 'libs';
                 }))
                 .pipe(gulp.dest(appBuildRoot));
 
             if (appLibs.fonts) {
                 gulp.src(appLibs.fonts)
-                    .pipe(rename(function (path) {
+                    .pipe(rename(function(path) {
                         path.dirname = 'fonts';
                     }))
                     .pipe(gulp.dest(appBuildRoot));
@@ -513,7 +535,7 @@ registerAppTasks = function (appName) {
 
             if (appLibs.misc) {
                 gulp.src(appLibs.misc)
-                    .pipe(rename(function (path) {
+                    .pipe(rename(function(path) {
                         path.dirname = 'libs';
                     }))
                     .pipe(gulp.dest(appBuildRoot));
@@ -523,7 +545,7 @@ registerAppTasks = function (appName) {
 
     });
 
-    gulp.task('compile-' + appName + '-templates', function () {
+    gulp.task('compile-' + appName + '-templates', function() {
 
         var scriptFileNames,
             styleFileNames,
@@ -534,7 +556,7 @@ registerAppTasks = function (appName) {
         appLibs = loadAppLibs(appName);
 
         gulp.src(appTemplates)
-            .pipe(rename(function (path) {
+            .pipe(rename(function(path) {
                 path.dirname = 'templates';
             }))
             .pipe(templateCache(appName + '-app-templates.js', {
@@ -546,7 +568,7 @@ registerAppTasks = function (appName) {
 
         if (appLibs && appLibs.scripts) {
 
-            scriptFileNames = appLibs.scripts.map(function (fileName) {
+            scriptFileNames = appLibs.scripts.map(function(fileName) {
                 return 'libs/' + path.basename(fileName);
             });
 
@@ -556,7 +578,7 @@ registerAppTasks = function (appName) {
 
         if (appLibs && appLibs.styles) {
 
-            styleFileNames = appLibs.styles.map(function (fileName) {
+            styleFileNames = appLibs.styles.map(function(fileName) {
                 return 'libs/' + path.basename(fileName);
             });
 
@@ -575,19 +597,19 @@ registerAppTasks = function (appName) {
             .pipe(gulp.dest(appBuildRoot));
     });
 
-    gulp.task('compile-' + appName + '-images', function () {
+    gulp.task('compile-' + appName + '-images', function() {
 
         console.log('Compiling images...');
 
         gulp.src(appImages)
-            .pipe(rename(function (path) {
+            .pipe(rename(function(path) {
                 path.dirname = '';
             }))
             .pipe(gulp.dest(appBuildRoot + 'images/'));
     });
 
 
-    gulp.task('compile-' + appName + '-styles', function () {
+    gulp.task('compile-' + appName + '-styles', function() {
 
         console.log('Compiling ' + appName + '-app styles...');
 
@@ -597,7 +619,7 @@ registerAppTasks = function (appName) {
                 errLogToConsole: true,
                 sourceComments: 'map'
             }))
-            .pipe(rename(function (path) {
+            .pipe(rename(function(path) {
                 path.dirname = '';
             }))
             .pipe(concat(appName + '-app.css'))
@@ -605,15 +627,21 @@ registerAppTasks = function (appName) {
     });
 
     gulp.task('compile-' + appName + '-scripts',
-        ['lint-' + appName,
-            'browserify-' + appName],
-        function () {
+        function() {
             console.log('Compiling ' + appName + ' scripts');
+
+            runSequence(
+                'get-git-hash',
+                [                    
+                    'generate-config-' + appName,
+                    'lint-' + appName,
+                    'browserify-' + appName,
+                ]
+            );
         }
     );
 
-    gulp.task('compile-' + appName,
-        [
+    gulp.task('compile-' + appName, [
             'compile-' + appName + '-scripts',
             'generate-svg-map-' + appName,
             'compile-' + appName + '-templates',
@@ -621,7 +649,7 @@ registerAppTasks = function (appName) {
             'compile-' + appName + '-images',
             'copy-' + appName + '-libs'
         ],
-        function () {
+        function() {
             console.log('Compiling ' + appName);
         });
 
@@ -636,10 +664,9 @@ for (i = 0; i < applications.length; i += 1) {
 
 gulp.task('build-plugins', shell.task(['node ./node_modules/requirejs/bin/r.js -o ./utils/build/webcyphy.plugins/cbuild.js']));
 
-gulp.task('compile-all', function (cb) {
+gulp.task('compile-all', function(cb) {
     runSequence(
-        'clean-build',
-        [
+        'clean-build', [
             'compile-docs',
             'compile-library'
         ],
@@ -650,7 +677,7 @@ gulp.task('compile-all', function (cb) {
 
 
 // Prettifying
-gulp.task('prettify', function () {
+gulp.task('prettify', function() {
     gulp.src('./src/**/*.js')
         .pipe(prettify({
             'indent_size': 4,
@@ -674,7 +701,7 @@ gulp.task('prettify', function () {
 });
 
 
-gulp.task('register-watchers', ['compile-all'], function (cb) {
+gulp.task('register-watchers', ['compile-all'], function(cb) {
     var i,
         registerAppWatchers;
 
@@ -693,18 +720,18 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
     gulp.watch(sourcePaths.libraryImages, ['compile-library-images']);
 
 
-    registerAppWatchers = function (appName) {
+    registerAppWatchers = function(appName) {
 
         var
             appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
 
-            appSources = [ appSourceRoot + '*.js', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx' ],
+            appSources = [appSourceRoot + '*.js', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx', '!appConfig.js'],
 
-            appHtmls = [ appSourceRoot + '**/*.html'],
+            appHtmls = [appSourceRoot + '**/*.html'],
 
             appLibsJSON = appSourceRoot + 'libs.json',
 
-            appStyles = [ appSourceRoot + '/**/*.scss'],
+            appStyles = [appSourceRoot + '/**/*.scss'],
 
             appImages = sourcePaths.appImagePatterns.map(function(imageType) {
                 return appSourceRoot + imageType;
@@ -716,11 +743,11 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
             // appSources = appSources.concat(appLibs.scripts);
             gulp.watch(appLibs.scripts, ['copy-' + appName + '-libs']);
         }
-        gulp.watch(appSources, [ 'compile-' + appName + '-scripts' ]);
-        gulp.watch(appHtmls, [ 'compile-' + appName + '-templates' ]);
-        gulp.watch(appStyles, [ 'compile-' + appName + '-styles' ]);
-        gulp.watch(appImages, [ 'compile-' + appName + '-images' ]);
-        gulp.watch(appLibsJSON, [ 'compile-' + appName ]);
+        gulp.watch(appSources, ['compile-' + appName + '-scripts']);
+        gulp.watch(appHtmls, ['compile-' + appName + '-templates']);
+        gulp.watch(appStyles, ['compile-' + appName + '-styles']);
+        gulp.watch(appImages, ['compile-' + appName + '-images']);
+        gulp.watch(appLibsJSON, ['compile-' + appName]);
     };
 
     for (i = 0; i < applications.length; i += 1) {
@@ -729,4 +756,20 @@ gulp.task('register-watchers', ['compile-all'], function (cb) {
 
     gulp.watch('src/plugins/**', ['build-plugins']);
     return cb;
+});
+
+gulp.task('get-git-hash', function() {
+
+    var deferred = Q.defer();
+
+    git.revParse({
+        args: '--short HEAD'
+    }, function(err, hash) {
+        console.log('Current build (git) hash: ' + hash);
+        buildHash = hash;
+        deferred.resolve();        
+    });
+
+    return deferred.promise;
+
 });
