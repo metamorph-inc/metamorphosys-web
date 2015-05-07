@@ -19,7 +19,7 @@ $header-height: 38px;
         top: 0;
         width: 100%;
         left: 0;
-        padding: 2px 10px;
+        padding: 3px 10px;
         
         cursor: row-resize;
 
@@ -43,8 +43,14 @@ $header-height: 38px;
 
             button {
                 border-radius: 0;
-                border-top-left-radius: 3px;
-                border-top-right-radius: 3px;                
+            }
+
+            .active-panel {
+
+                button {
+                    border-bottom: 3px solid #3894fd;
+                }
+
             }
 		}
 
@@ -72,15 +78,16 @@ $header-height: 38px;
         .md-button {
             color: #fff;
             font-weight: bold;
+
+            &:active,
+            &:hover {
+                color: $linkHoverColorOnDark;       
+            }            
         }
     }
 
-    a {
-        color: $linkColorOnDark;
-
-        &:hover {
-            color: $linkHoverColorOnDark;
-        }
+    img {
+        background-color: #fff;
     }
 
 }

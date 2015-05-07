@@ -1,0 +1,51 @@
+@import 'colors';
+
+
+.md-button {
+	cursor: pointer;
+	text-transform: uppercase;
+	color: $linkColorOnDark;
+	padding: .75ex 1em;
+
+	border-radius: 5px;
+
+	color: #0D47A1;
+
+}
+
+.md-button:not([disabled]):not(.button-bordered):hover {
+	background-color: #F5F5E8;
+}
+
+.btn-position { margin-top: -12px;}
+
+.dark-bg {
+
+	.md-button {
+
+		color: $linkColorOnDark;
+
+	}
+
+	.md-button:not([disabled]):hover,
+	.md-button:not([disabled]):active {
+		color: $linkHoverColorOnDark;		
+		background-color: rgba(158,158,158,0.2);
+	}
+
+
+	.button-bordered {
+		border: 1px solid rgba(158,158,158,0.6);
+		background-color: darken( $c-background-dark, 5% );
+	}
+
+    a {
+        color: $linkColorOnDark;
+
+        &:hover {
+            color: $linkHoverColorOnDark;
+        }
+    }
+
+
+}
