@@ -35,6 +35,7 @@
 
     .component-a,
     .component-b {
+        padding: 10px;
     	display: inline-block;
     	width: 45%;
     	height: 120px;
@@ -45,6 +46,7 @@
     }
 
     .details {
-    	margin-left: 2ex;
+    	padding-top: 1em;
+        margin-left: 0;
     }
 }

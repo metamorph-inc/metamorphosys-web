@@ -10,7 +10,7 @@
  --> 
 
     <div class="component-a">
-        <md-button md-no-ink class="md-primary" ng-click="ctrl.selectComponent(ctrl.componentA.id)" title="Click to inspect">{{ctrl.componentA.label}}</md-button>
+        <md-button md-no-ink class="md-primary button-bordered" ng-click="ctrl.selectComponent(ctrl.componentA.id)" title="Click to inspect"><i class="glyphicon glyphicon-share-alt"></i> {{ctrl.componentA.label}}</md-button>
         <div class="taxonomy-terms classification-tags">
             <div class="taxonomy-term" ng-repeat="term in ctrl.componentA.classificationTags" ng-class="term.id">{{::term.name}}</div>
         </div>        
@@ -19,7 +19,7 @@
         </div>
     </div>
      <div class="component-b">
-        <md-button md-no-ink class="md-primary" ng-click="ctrl.selectComponent(ctrl.componentB.id)" title="Click to inspect">{{ctrl.componentB.label}}</md-button>
+        <md-button md-no-ink class="md-primary button-bordered" ng-click="ctrl.selectComponent(ctrl.componentB.id)" title="Click to inspect"><i class="glyphicon glyphicon-share-alt"></i> {{ctrl.componentB.label}}</md-button>
         <div class="taxonomy-terms classification-tags">
             <div class="taxonomy-term" ng-repeat="term in ctrl.componentB.classificationTags" ng-class="term.id">{{::term.name}}</div>
         </div>     

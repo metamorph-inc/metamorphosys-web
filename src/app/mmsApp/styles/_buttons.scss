@@ -4,13 +4,16 @@
    =========================================== */
 
 .md-button {
+	cursor: pointer;
 	text-transform: capitalize;
-	color: rgba(255,255,255,.87);
-	padding: 6px 22px;
+	color: #D4D4C9;
+	padding: 1ex 1em;
+
+	border-radius: 4px;
 
 	&:active,
 	&:hover {
-		color: rgba(255,255,255,.87);		
+		color: #ffe;		
 	}
 }
 
@@ -23,9 +26,8 @@
    =========================================== */
 
 .button-bordered {
-	border: 1px solid $c-border-medium;
+	border: 1px solid #D4D4C9;
 	background-color: darken( $c-background-dark, 5% );
-	text-transform: uppercase;
 }
 
 .btn-position { margin-top: -12px;}

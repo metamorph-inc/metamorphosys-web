@@ -1,5 +1,10 @@
+@import '../../../styles/_colors';
+
 .diagram-component-inspector {
 	
+	.editable-click, a.editable-click {
+		color: $linkColorOnDark;
+	}
 
 	.no-inspectable-message {
 		text-align: center;

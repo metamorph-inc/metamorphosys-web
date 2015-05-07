@@ -3,7 +3,7 @@
 		ng-mousedown="::ctrl.headerMouseDown($event)"
 		ng-dblclick="::ctrl.toggle()">
 		<ul class="drawer-main-navigator">
-			<li><i class="fa fa-search inspector-icon"></i> Inspector</li>
+			<li><md-button><i class="fa fa-search inspector-icon"></i> Inspector</li></md-button>
 		</ul>
 		<div class="drawer-expander" ng-switch on="ctrl._expanded">
 			<a hrer="#" ng-switch-when="false" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-up"></i></a>

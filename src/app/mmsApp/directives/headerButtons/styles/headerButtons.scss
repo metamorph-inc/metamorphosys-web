@@ -3,15 +3,17 @@
   position: absolute;
   right: 10px;
   top: 5px;
-  padding-top: .3ex;
+  padding-top: .25ex;
 
   button {
-    margin-left: 1ex;
+    margin-left: 1em;
+  }
+
+  .button-bordered {
+    text-transform: uppercase;
   }
 
   button.md-raised.md-primary.md-button.md-default-theme {
-    background-color: #E7EBF6;
-    color: #666;
 
     &.help {
 
@@ -23,6 +25,7 @@
 
       &:hover {
         background-color: rgba(255,255,255,.13);
+        color: #ffe;
       }
 
       i {
