@@ -70,10 +70,6 @@ module.exports = function ($scope, $log) {
 
         if (angular.isObject(earlierPosition)) {
 
-            if (!self.panning) {
-                startDrag();
-            }
-
             currentPosition = {
                 x: $event.pageX,
                 y: $event.pageY
@@ -83,6 +79,14 @@ module.exports = function ($scope, $log) {
                 x: currentPosition.x - earlierPosition.x,
                 y: currentPosition.y - earlierPosition.y
             };
+
+            if (!self.panning && ( 
+                    translation.x !== 0 ||
+                    translation.y !== 0                    
+                )) 
+            {
+                startDrag();
+            }
 
             earlierPosition = currentPosition;
 

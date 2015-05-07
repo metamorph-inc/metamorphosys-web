@@ -83,7 +83,10 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         var offset;
 
-        if (possibbleDragTargetsDescriptor) {
+        if (possibbleDragTargetsDescriptor && (
+                $event.pageX !== possibbleDragTargetsDescriptor.mousePosition.x ||
+                $event.pageY !== possibbleDragTargetsDescriptor.mousePosition.y
+            )) {
             startDrag();
         }
 
@@ -175,6 +178,10 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
                     primartyTargetDescriptor = getDragDescriptor(wire, segment, indexOfSegment);
 
                     possibbleDragTargetsDescriptor = {
+                        mousePosition: {
+                            x: $event.pageX,
+                            y: $event.pageY
+                        },                                        
                         primaryTarget: primartyTargetDescriptor,
                         targets: [ primartyTargetDescriptor ]
                     };
