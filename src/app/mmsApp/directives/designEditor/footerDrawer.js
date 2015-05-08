@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('mms.designEditor.footerDrawer', [
-        'mms.utils'
+        'mms.utils',
+        'ngCookies'
     ])
     .directive('footerDrawer', 
-        function(mmsUtils) {
+        function(mmsUtils, $cookies) {
 
             function DrawerController() {
 
@@ -27,6 +28,14 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
+                
+                if ($cookies.footerDrawerUserPreferences) {
+                    this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
+                } else {
+                    this._userPreferences = null;
+                }
+
+                console.log('User preferences:', this._userPreferences);
 
                 this.toggle();                
 
@@ -88,7 +97,20 @@ angular.module('mms.designEditor.footerDrawer', [
                     }
 
                     if (this._height > this._COLLAPSED_HEIGHT) {
+
                         this._expanded = true;
+
+                        if (this._activePanel) {
+
+                            this._userPreferences.panels = this._userPreferences.panels || {};
+
+                            this._userPreferences.panels[this._activePanel.name] = this._userPreferences.panels[this._activePanel.name] || {};
+                            this._userPreferences.panels[this._activePanel.name].height = this._height;
+
+                            $cookies.footerDrawerUserPreferences = JSON.stringify(this._userPreferences);
+
+                        }
+
                     } else {
                         this._expanded = false;
                     }
@@ -204,6 +226,21 @@ angular.module('mms.designEditor.footerDrawer', [
                     panel.active = true;
                     this._activePanel = panel;
 
+                    if (this._userPreferences.panels && this._userPreferences.panels[panel.name]) {
+
+                        var height = this._userPreferences.panels[panel.name].height;
+
+                        if (!isNaN(height)) {
+                            panel.height = height;
+                        }
+
+                    } 
+
+                    if (this._expanded) {
+                        this.setHeight(panel.height);
+                    }
+
+
                 }
 
             };
@@ -279,6 +316,10 @@ angular.module('mms.designEditor.footerDrawer', [
                     } else {
                         ctrl.active = false;
                     }
+
+                    if (attributes.hasOwnProperty('height') && !isNaN(attributes.height)) {
+                        ctrl.height = attributes.height;
+                    } 
 
                     footerDrawerCtrl.registerPanel(ctrl);
 

@@ -12,11 +12,11 @@
         <keyboard-map class="design-editor-keyboard-map"></keyboard-map>
     </div>
     <footer-drawer>
-        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" active>
+        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" active height="200">
             <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
-        <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right">
+        <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right" height="300">
             Components!
         </drawer-panel>
     </footer-drawer>
