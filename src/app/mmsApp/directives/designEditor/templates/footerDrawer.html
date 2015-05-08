@@ -4,7 +4,7 @@
 		ng-dblclick="::ctrl.toggle()">
 		<ul class="drawer-main-navigator">
 			<li ng-repeat="panel in ctrl._panels" ng-class="{'active-panel': panel.active}">
-				<md-button><i ng-class="::panel.iconClass"></i> {{::panel.name}}</li></md-button>
+				<md-button ng-disabled="panel.active" ng-click="ctrl.activatePanel(panel)"><i ng-class="::panel.iconClass"></i> {{::panel.name}}</li></md-button>
 			</li>			
 		</ul>
 		<div class="drawer-expander" ng-switch on="ctrl._expanded">

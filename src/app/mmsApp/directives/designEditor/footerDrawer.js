@@ -25,7 +25,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._heightAllowance = null;
 
-                this._panels = {};
+                this._panels = [];
+                this._activePanel = null;
 
                 this.toggle();                
 
@@ -180,17 +181,28 @@ angular.module('mms.designEditor.footerDrawer', [
 
             DrawerController.prototype.registerPanel = function(panelCtrl) {
 
-                if (panelCtrl && panelCtrl.name && panelCtrl.name && !this._panels[panelCtrl.name]) {
+                if (panelCtrl && panelCtrl.name) {
 
-                    console.log(panelCtrl);
+                    this._panels.push(panelCtrl);
 
-                    this._panels[panelCtrl.name] = {
+                    if (panelCtrl.active) {
+                        this.activatePanel(panelCtrl);
+                    }
 
-                        name: panelCtrl.name,
-                        iconClass: panelCtrl.iconClass,
-                        active: panelCtrl.active
+                }
 
-                    };
+            };
+
+            DrawerController.prototype.activatePanel = function(panel) {
+
+                if (panel) {
+
+                    if (this._activePanel && this._activePanel !== panel) {
+                        this._activePanel.active = false;
+                    }
+
+                    panel.active = true;
+                    this._activePanel = panel;
 
                 }
 
@@ -251,7 +263,8 @@ angular.module('mms.designEditor.footerDrawer', [
                 bindToController: true,
                 replace: true,
                 transclude: true,
-                template: '<div class="drawer-panel"><ng-transclude></ng-transclude></div>',
+                scope: true,
+                template: '<div class="drawer-panel"><ng-transclude ng-if="ctrl.active"></ng-transclude></div>',
                 require: ['drawerPanel', '^footerDrawer'],
                 link: function(scope, element, attributes, controllers) {
 

@@ -41,19 +41,29 @@ $header-height: 38px;
 					font-size: 85%;
 				}
                 margin-right: 0.5ex;
-			}
 
-            button {
-                border-radius: 0;
-            }
-
-            .active-panel {
 
                 button {
-                    border-bottom: 3px solid #3894fd;
+                    border-radius: 0;
+                }
+
+                .md-button.md-default-theme[disabled], 
+                .md-button.md-default-theme.md-raised[disabled], 
+                .md-button.md-default-theme.md-fab[disabled] {
+                    cursor: default;
+                    color: $linkColorOnDark;
                 }
 
             }
+
+                .active-panel {
+
+                    button {
+                        border-bottom: 3px solid #3894fd;
+                    }
+
+                }
+            
 		}
 
         .drawer-expander {
