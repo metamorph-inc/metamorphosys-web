@@ -3,8 +3,9 @@
 		ng-mousedown="::ctrl.headerMouseDown($event)"
 		ng-dblclick="::ctrl.toggle()">
 		<ul class="drawer-main-navigator">
-			<li class="active-panel"><md-button><i class="fa fa-search inspector-icon"></i> Inspector</li></md-button>
-			<li><md-button><i class="glyphicon glyphicon-chevron-right"></i> Components</li></md-button>			
+			<li ng-repeat="panel in ctrl._panels" ng-class="{'active-panel': panel.active}">
+				<md-button><i ng-class="::panel.iconClass"></i> {{::panel.name}}</li></md-button>
+			</li>			
 		</ul>
 		<div class="drawer-expander" ng-switch on="ctrl._expanded">
 			<a hrer="#" ng-switch-when="false" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-up"></i></a>

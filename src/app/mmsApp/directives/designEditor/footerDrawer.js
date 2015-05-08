@@ -25,6 +25,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._heightAllowance = null;
 
+                this._panels = {};
+
                 this.toggle();                
 
             }
@@ -176,9 +178,30 @@ angular.module('mms.designEditor.footerDrawer', [
 
             };
 
+            DrawerController.prototype.registerPanel = function(panelCtrl) {
+
+                if (panelCtrl && panelCtrl.name && panelCtrl.name && !this._panels[panelCtrl.name]) {
+
+                    console.log(panelCtrl);
+
+                    this._panels[panelCtrl.name] = {
+
+                        name: panelCtrl.name,
+                        iconClass: panelCtrl.iconClass,
+                        active: panelCtrl.active
+
+                    };
+
+                }
+
+            };
+
             return {
                 restrict: 'E',
                 controller: DrawerController,
+                scope: {
+                    activePanel: '='
+                },
                 controllerAs: 'ctrl',
                 bindToController: true,
                 replace: true,
@@ -211,4 +234,43 @@ angular.module('mms.designEditor.footerDrawer', [
                 }
             };
         }
+    )
+    .directive('drawerPanel', 
+        function() {
+
+            function DrawerPanelController() {
+                this.name = null;
+                this.iconClass = null;
+            }
+
+
+            return {
+                restrict: 'E',
+                controller: DrawerPanelController,
+                controllerAs: 'ctrl',
+                bindToController: true,
+                replace: true,
+                transclude: true,
+                template: '<div class="drawer-panel"><ng-transclude></ng-transclude></div>',
+                require: ['drawerPanel', '^footerDrawer'],
+                link: function(scope, element, attributes, controllers) {
+
+                    var ctrl = controllers[0],
+                        footerDrawerCtrl = controllers[1];
+
+                    ctrl.name = attributes.name;
+                    ctrl.iconClass = attributes.iconClass;
+
+                    if (attributes.hasOwnProperty('active')) {
+                        ctrl.active = true;
+                    } else {
+                        ctrl.active = false;
+                    }
+
+                    footerDrawerCtrl.registerPanel(ctrl);
+
+                }
+            };
+        }
     );
+

@@ -12,7 +12,12 @@
         <keyboard-map class="design-editor-keyboard-map"></keyboard-map>
     </div>
     <footer-drawer>
-        <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
-        <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
+        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" active>
+            <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
+            <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
+        </drawer-panel>
+        <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right">
+            Components!
+        </drawer-panel>
     </footer-drawer>
 </div>
