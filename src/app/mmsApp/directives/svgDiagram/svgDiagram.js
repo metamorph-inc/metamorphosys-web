@@ -28,7 +28,7 @@ angular.module('mms.svgDiagram', [
         'isis.ui.contextmenu'
     ])
     .directive('svgDiagram',
-        function($rootScope, $log, diagramService, wiringService, componentBrowserService, componentServerUrl,
+        function($rootScope, $log, diagramService, wiringService, componentLibrary, componentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 
             acmImportService, testBenchService, projectHandling) {
 
@@ -68,7 +68,7 @@ angular.module('mms.svgDiagram', [
                 $$window = $($window);
 
                 this.$rootScope = $rootScope;
-                this.componentBrowserService = componentBrowserService;
+                this.componentLibrary = componentLibrary;
                 this.mmsUtils = mmsUtils;
                 this.componentServerUrl = componentServerUrl;                
                 this.$log = $log;

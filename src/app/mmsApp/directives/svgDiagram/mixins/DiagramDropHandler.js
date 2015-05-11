@@ -34,7 +34,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         console.log('Dropped component id: ', dragged.data.componentId);
 
-        component = this.componentBrowserService.getComponentById(dragged.data.componentId);
+        component = this.componentLibrary.getComponentById(dragged.data.componentId);
 
         if (component) {
 

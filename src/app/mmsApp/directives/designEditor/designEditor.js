@@ -55,13 +55,6 @@ angular.module('mms.designEditor', [
 
             self.isDummy = $state.current.name === 'dummyEditor';
 
-            if (self.isDummy) {
-                self.editorWidth = 100;
-            } else {
-                self.editorWidth = 75;
-            }
-
-
             selectionHandler = function(event) {
 
                 var selectedComponentIds = event.message.selectedComponentIds,

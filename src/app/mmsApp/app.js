@@ -32,9 +32,9 @@ require('./directives/busyCover/busyCover.js');
 require('./directives/processingCover/processingCover.js');
 
 require('./directives/designEditor/designEditor');
-require('./directives/componentBrowser/componentBrowser');
 
 require('./directives/mainNavigator/mainNavigator');
+
 
 var CyPhyApp = angular.module('CyPhyApp', [
 
@@ -70,8 +70,6 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.designEditor',
     'mms.mainNavigator',
 
-    'mms.mmsApp.componentBrowser',
-
     'mms.dndService',
 
     'angucomplete-alt',
@@ -79,7 +77,13 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'ngMaterial',
     'ngCookies',
 
-    'xeditable'
+    'xeditable',
+
+    // Component Browser
+
+    'mms.componentBrowser',
+    'mms.componentBrowser.componentLibrary',    
+
 ]);
 
 require('./appInit');

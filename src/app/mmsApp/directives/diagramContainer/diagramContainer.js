@@ -16,11 +16,10 @@ angular.module('mms.diagramContainer', [
         '$timeout',
         '$log',
         '$window',
-        'componentBrowserService',
         '$rootScope',
         'componentServerUrl',
         'acmImportService',
-        function($scope, $timeout, $log, $window, componentBrowserService, $rootScope) {
+        function($scope, $timeout, $log, $window, $rootScope) {
 
             var self = this,
 
