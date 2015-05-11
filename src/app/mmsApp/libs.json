@@ -14,7 +14,12 @@
         "./public/cyphy-library/cyphy-components-templates.js",
         "./bower_components/angular-xeditable/dist/js/xeditable.js",
         "./bower_components/react/react.js",
-        "./vendor/stats/stats.min.js"
+        "./vendor/stats/stats.min.js",
+
+        "../component-server/public/componentBrowser/scripts/componentBrowser.js",
+        "../component-server/public/componentBrowser/scripts/componentBrowser-templates.js",
+        "../component-server/public/componentBrowser/libs/ui-grid.js",       
+        "../component-server/public/componentBrowser/libs/numeral.js"  
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",
@@ -30,11 +35,18 @@
         "./node_modules/ng-gme/dist/ng-gme.css",
         "./bower_components/isis-ui-components/dist/isis-ui-components.css",
         "./public/cyphy-library/cyphy-components.css",
-        "./bower_components/angular-xeditable/dist/css/xeditable.css"        
+        "./bower_components/angular-xeditable/dist/css/xeditable.css",
+
+        "../component-server/public/componentBrowser/styles/componentBrowser-app.css",
+        "../component-server/public/componentBrowser/libs/ui-grid.css"        
+
     ],
     "fonts": [
         "./bower_components/bootstrap/dist/fonts/*",
-        "./bower_components/font-awesome/fonts/*"
+        "./bower_components/font-awesome/fonts/*",
+
+        "../component-server/public/componentBrowser/libs/ui-grid.ttf",
+        "../component-server/public/componentBrowser/libs/ui-grid.woff"  
     ],
     "misc": [
         "./bower_components/angular-moment/angular-moment.min.js.map"
