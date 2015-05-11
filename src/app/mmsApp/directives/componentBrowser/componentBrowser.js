@@ -34,7 +34,6 @@ angular.module( 'mms.mmsApp.componentBrowser', [
                 $scope.adjustTreeNavigatorSize();
             }, 20);
 
-
             // Getting the data
 
             componentLibrary.getClassificationTree()
