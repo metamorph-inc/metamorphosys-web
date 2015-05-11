@@ -4,12 +4,17 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 
 .footer-drawer {
 
+	.component-browser .tree-navigator .selected-node > .node-label {
+	    background-color: rgba(165, 185, 202, 0.4);
+	    color: #fff;
+	}	
+
 	i.info-icon.glyphicon.glyphicon-info-sign {
-		color: $baseFrontColor;
+		color: #fff;
 	}
 
 	.component-browser .no-components-to-list {
-		background-color: rgba(255,255,255,.3);
+		background-color: $baseFrontColor;
 	}
 
 	.component-browser {
@@ -85,6 +90,53 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 					border-top-color: #fff;
 				}
 			}
+		}
+
+		.top-component-search {
+			width: auto;
+			padding-right: 0;
+		}
+
+		.download-button {
+
+		}
+
+		.ui-grid {
+			border: 1px solid transparent;
+		}
+
+		.ui-grid-header {
+			border-bottom: 1px solid rgba(143, 156, 166, .2);
+		}
+
+		.ui-grid-top-panel {
+			background: transparent;
+		}
+
+		.ui-grid-row:nth-child(odd) .ui-grid-cell {
+			background-color: transparent;
+		}
+
+		.ui-grid-row:nth-child(even) .ui-grid-cell {
+			background: rgba(236, 238, 239, .1);
+		}
+
+		.ui-grid-cell {
+		    border-top-color: rgba(143, 156, 166, .2);
+		    border-right-color: rgba(143, 156, 166, .2);
+		    border-bottom-color: rgba(143, 156, 166, .2);
+		    border-left-color: rgba(143, 156, 166, .2);
+		}
+
+		.ui-grid-header-cell {
+		    border-top-color: rgba(143, 156, 166, .2);
+		    border-right-color: rgba(143, 156, 166, .2);
+		    border-bottom-color: rgba(143, 156, 166, .2);
+		    border-left-color: rgba(143, 156, 166, .2);
+		}
+
+		.count-display {
+			margin-right: 0;
 		}
 
 	}

@@ -3,6 +3,20 @@
 $header-height: 38px;
 
 .footer-drawer {
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #eceeef;
+    }
+
+    .list-group-item {
+        border: 1px solid rgba(143, 156, 166, .2);
+    }
+
+    .item-list ul.list-group li.item-list-item {
+        padding: 0 1em;
+        background-color: transparent;
+    }
+
     background: $baseBGColor;
     border-top: 1px solid rgba(0, 0, 0, .12);
     height: 0;
@@ -12,7 +26,7 @@ $header-height: 38px;
     z-index: 10;
     left: 0;
     padding-top: $header-height;
-    header {
+    > header {
         height: $header-height;
         border-bottom: 1px solid #4e5a68;
         position: absolute;
@@ -81,6 +95,7 @@ $header-height: 38px;
     }
 
     .drawer-content {
+        overflow: auto;
         position: relative;
         height: 100%;
 
