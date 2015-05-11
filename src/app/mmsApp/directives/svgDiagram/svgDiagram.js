@@ -25,8 +25,13 @@ angular.module('mms.svgDiagram', [
 
         'mms.designEditor.componentWiresContainer.react',
 
-        'isis.ui.contextmenu'
+        'isis.ui.contextmenu',
+
+        'mms.componentBrowser.componentLibrary'
     ])
+    .config(function(componentLibraryProvider, componentServerUrl) {
+        componentLibraryProvider.setServerUrl(componentServerUrl);
+    })
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService, componentLibrary, componentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 

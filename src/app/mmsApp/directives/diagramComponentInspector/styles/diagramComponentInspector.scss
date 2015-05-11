@@ -1,6 +1,8 @@
 @import '../../../styles/_colors';
 
 .diagram-component-inspector {
+
+	padding: 10px;
 	
 	.editable-click, a.editable-click {
 		color: $linkColorOnDark;

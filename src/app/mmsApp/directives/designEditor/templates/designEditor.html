@@ -9,12 +9,12 @@
         <testbench-actions></testbench-actions>                    
     </div>
     <footer-drawer>
-        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" active height="200">
+        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" height="200">
             <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
-        <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right" height="300">
-            <component-browser></component-browser>
+        <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right" active height="300">
+            <component-browser no-header></component-browser>
         </drawer-panel>
     </footer-drawer>
 </div>

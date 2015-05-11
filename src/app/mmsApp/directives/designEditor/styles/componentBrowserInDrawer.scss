@@ -1,0 +1,46 @@
+$border-styles: 1px solid rgba(143, 156, 166, .2);
+
+.footer-drawer {
+
+	.component-browser .no-components-to-list {
+		background-color: transparent;
+	}
+
+	.component-browser {
+
+		.left-panel {
+
+			border-right: $border-styles;
+
+			.component-categories {
+
+				h4 {
+					display: none;
+				}
+
+			}
+
+			.tree-navigator {
+				
+				margin-top: 0;
+				border-top: 0;
+
+				.tree-navigator-nodes {
+					padding: 0;
+				}
+
+				ul.node-list  {
+
+					margin-bottom: 0;
+
+					> li {
+				 	   border-bottom: $border-styles;
+					}			
+
+				}
+			}
+		}
+
+	}
+
+}
