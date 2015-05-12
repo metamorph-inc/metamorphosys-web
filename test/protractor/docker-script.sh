@@ -3,7 +3,7 @@ set -e
 set -v
 
 # Done in Dockerfile:
-# npm install -g protractor@1.6.1
+# npm install -g protractor
 # webdriver-manager update --standalone
 
 which firefox
@@ -13,6 +13,7 @@ which npm
 
 node --version
 npm --version
+protractor --version
 
 export DISPLAY=:99.0
 Xvfb :99 -ac -screen 0 1280x1024x16 1>xvfb1.log 2>xvfb2.log &
