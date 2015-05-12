@@ -38,15 +38,14 @@
         "./bower_components/angular-xeditable/dist/css/xeditable.css",
 
         "../component-server/public/componentBrowser/styles/componentBrowser-app.css",
-        "../component-server/public/componentBrowser/libs/ui-grid.css"        
+        "../component-server/public/componentBrowser/libs/ui-grid.css",
+        "../component-server/public/componentBrowser/libs/ui-grid.ttf",
+        "../component-server/public/componentBrowser/libs/ui-grid.woff"         
 
     ],
     "fonts": [
         "./bower_components/bootstrap/dist/fonts/*",
-        "./bower_components/font-awesome/fonts/*",
-
-        "../component-server/public/componentBrowser/libs/ui-grid.ttf",
-        "../component-server/public/componentBrowser/libs/ui-grid.woff"  
+        "./bower_components/font-awesome/fonts/*"
     ],
     "misc": [
         "./bower_components/angular-moment/angular-moment.min.js.map"

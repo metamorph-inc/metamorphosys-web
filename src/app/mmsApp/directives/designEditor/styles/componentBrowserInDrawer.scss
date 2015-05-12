@@ -139,6 +139,13 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 			margin-right: 0;
 		}
 
+		// Context-menu
+
+		.ui-grid-menu .ui-grid-menu-inner {
+			color: #000;
+			background-color: #fff;
+		}
+
 	}
 
 }
