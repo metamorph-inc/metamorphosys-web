@@ -10,12 +10,12 @@ describe('perfTest', function() {
         (function (i) {
             browser.wait(function(){
                 return element(by.id('progress_'+i)).isPresent();
-            });
+            }, 5000);
         })(i);
     }
     browser.wait(function(){
         return element(by.id('result')).isPresent();
-    });
+    }, 5000);
     element(by.id('result')).getText().then(function(text) {
         expect(text).toEqual('SUCCESS');
     });
