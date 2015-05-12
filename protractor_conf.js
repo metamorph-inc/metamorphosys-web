@@ -9,7 +9,9 @@ exports.config = {
     defaultTimeoutInterval: 60000
   },
   onPrepare: function() {
-    browser.driver.manage().window().setSize(1024, 768);
+    return browser.driver.manage().window().getSize().then(function (size) {
+      browser.driver.manage().window().setSize(Math.max(1024, size.width), Math.max(768, size.height));
+    });
   },
   rootElement: 'body',
   baseUrl: 'http://localhost:8855'
