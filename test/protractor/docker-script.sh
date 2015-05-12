@@ -21,8 +21,9 @@ nohup bash -c "webdriver-manager start 2>&1 &"
 sleep 5
 #npm run test_all
 cat protractor_conf.js | sed s@http://localhost:8855@http://$MMS_WEBCYPHY_PORT_8855_TCP_ADDR:$MMS_WEBCYPHY_PORT_8855_TCP_PORT@ > protractor_conf_docker.js
+set +e
 protractor --browser firefox "$@" protractor_conf_docker.js
 protractor_exit=$?
+set -e
 cat nohup.out
 exit $protractor_exit
-
