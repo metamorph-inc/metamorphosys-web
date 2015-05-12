@@ -535,8 +535,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
             'element did not get selected'
         );
 
-        browser.sleep(5000);
-
     });
 
     it('Should be able to trash selected component box by hitting DELETE key', function () {
