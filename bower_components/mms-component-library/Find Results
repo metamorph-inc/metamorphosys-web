@@ -1,0 +1,318 @@
+Searching 48 files for "iconClass"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentCategories/componentCategories.js:
+   63                          childComponentsCount: e === undefined ? 0 : e.childComponentsCount
+   64                      },
+   65:                     iconClass: 'fa fa-file-o',
+   66  
+   67                      draggable: false,
+   ..
+   77                  if (parentTreeNode) {
+   78                      // if a parent was given add the new node as a child node
+   79:                     parentTreeNode.iconClass = undefined;
+   80                      parentTreeNode.children.push(newTreeNode);
+   81  
+   ..
+   84  
+   85                      if (newTreeNode.childrenCount) {
+   86:                         newTreeNode.iconClass = undefined;
+   87                      }
+   88  
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/listView/listView.js:
+   78                                  },
+   79                                  actionData: item,
+   80:                                 iconClass: 'fa fa-plus'
+   81                              }
+   82                          ]
+
+4 matches across 2 files
+
+
+Searching 48 files for "$rootScope"
+
+0 matches
+
+Searching 48 files for "selectedCategory"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/componentBrowser.js:
+   32              this.showHeader = false;
+   33  
+   34:             this.selectedCategory = null;
+   35  
+   36              this.errorMessage = null;
+   ..
+  123              this.getSearchResults = function () {
+  124                  componentLibrary.searchComponents(
+  125:                     self.selectedCategory && self.selectedCategory.path || '!',
+  126                      self.searchText,
+  127                      self.pagingParameters.itemsPerPage,
+  ...
+  147                  self.errorMessage = null;
+  148  
+  149:                 if (self.selectedCategory || self.filtered) {
+  150  
+  151                      if (!self.filtered) {
+  ...
+  156                              toNumber: Math.min(
+  157                                  self.pagingParameters.cursor + self.pagingParameters.itemsPerPage,
+  158:                                 self.selectedCategory.childComponentsCount
+  159                              ),
+  160:                             totalCount: self.selectedCategory.childComponentsCount
+  161  
+  162                          });
+  163  
+  164                          componentLibrary.getListOfComponents(
+  165:                             self.selectedCategory.path,
+  166                              self.pagingParameters.itemsPerPage,
+  167                              self.pagingParameters.cursor
+  ...
+  191  
+  192                          componentLibrary.searchComponents(
+  193:                             self.selectedCategory && self.selectedCategory.path || '!',
+  194                              self.searchText,
+  195                              self.pagingParameters.itemsPerPage,
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/templates/componentBrowser.html:
+   13      <div class="left-panel">
+   14          <component-categories
+   15:             selected-category="ctrl.selectedCategory"
+   16              on-selection-change="ctrl.onCategorySelectionChange"
+   17              lock-grid-columns="ctrl.lockGridColumns"
+   ..
+   24  
+   25              <div ng-if="!ctrl.filtered">
+   26:                 <h5>Components in <i>{{ctrl.selectedCategory.label}}:</i></h5>
+   27              </div>
+   28  
+   ..
+   38                  get-prev-page="ctrl.getPrevPage"
+   39                  on-page="ctrl.onPage"
+   40:                 selected-category="ctrl.selectedCategory"
+   41                  search-text="ctrl.searchText"
+   42                  column-search-text="ctrl.columnSearchText"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentCategories/componentCategories.js:
+  133                      self.lockGridColumns = false;
+  134  
+  135:                     if (!self.selectedCategory ||
+  136:                         self.selectedCategory.path !== node.nodeData.path) {
+  137  
+  138:                         self.selectedCategory = node.nodeData;
+  139  
+  140                          if (angular.isFunction(self.onSelectionChange)) {
+  ...
+  208              templateUrl: '/componentBrowser/templates/componentCategories.html',
+  209              scope: {
+  210:                 selectedCategory: '=',
+  211                  onSelectionChange: '=',
+  212                  lockGridColumns: '='
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/componentListing.js:
+   43                  getNextPage: '=',
+   44                  getPrevPage: '=',
+   45:                 selectedCategory: '=',
+   46                  searchText: '=',
+   47                  columnSearchText: '=',
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/templates/componentListing.html:
+   33                  ng-if="ctrl.selectedView === 'GridView'"
+   34                  components="ctrl.componentsToList"
+   35:                 selected-category="ctrl.selectedCategory"
+   36                  search-text="ctrl.searchText"
+   37                  column-search-text="ctrl.columnSearchText"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/gridView/gridView.js:
+  215                          // cols has the search string
+  216                          var st = self.searchText;
+  217:                         componentLibrary.searchComponents(self.selectedCategory.path, st, self.pagingParameters.itemsPerPage, 0, self.columnSearchText)
+  218                              .then(function (results) {
+  219                                  self.facetedSearch = self.columnSearchText;
+  ...
+  258              scope: {
+  259                  components: '=',
+  260:                 selectedCategory: '=',
+  261                  searchText: '=',
+  262                  columnSearchText: '=',
+
+20 matches across 6 files
+
+
+Searching 48 files for "onCategorySelectionChange "
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/componentBrowser.js:
+   54              };
+   55  
+   56:             this.onCategorySelectionChange = function() {
+   57  
+   58                  self.searchText = null;
+
+1 match in 1 file
+
+
+Searching 48 files for "onCategorySelectionChange "
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/componentBrowser.js:
+   54              };
+   55  
+   56:             this.onCategorySelectionChange = function() {
+   57  
+   58                  self.searchText = null;
+
+1 match in 1 file
+
+
+Searching 48 files for "setFacetedSearch"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/componentBrowser.js:
+   50              this.lockGridColumns = false;  // faceted search locks grid columns so they don't jump around while you are searching
+   51  
+   52:             this.setFacetedSearch = function (fs) {
+   53                  self.facetedSearch = fs;
+   54              };
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/templates/componentBrowser.html:
+   43                  new-data="ctrl.newData"
+   44                  faceted-search="ctrl.facetedSearch"
+   45:                 set-faceted-search="ctrl.setFacetedSearch"
+   46                  lock-grid-columns="ctrl.lockGridColumns"
+   47                  >
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/componentListing.js:
+   48                  newData: '=',
+   49                  facetedSearch: '=',
+   50:                 setFacetedSearch: '=',
+   51                  lockGridColumns: '='
+   52              },
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/templates/componentListing.html:
+   39                  new-data="ctrl.newData"
+   40                  faceted-search="ctrl.facetedSearch"
+   41:                 set-faceted-search="ctrl.setFacetedSearch"
+   42                  lock-grid-columns="ctrl.lockGridColumns"
+   43                  ></grid-view>
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/gridView/gridView.js:
+  218                              .then(function (results) {
+  219                                  self.facetedSearch = self.columnSearchText;
+  220:                                 self.setFacetedSearch(self.columnSearchText);
+  221                                  self.newData(results);
+  222                              })
+  ...
+  264                  newData: '=',
+  265                  facetedSearch: '=',
+  266:                 setFacetedSearch: '=',
+  267                  lockGridColumns: '='
+  268              }
+
+6 matches across 5 files
+
+
+Searching 48 files for "componentsToList"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/componentBrowser.js:
+   40              this.resultsForSearchText = null;
+   41  
+   42:             this.componentsToList = null;
+   43  
+   44              this.searchText = null;
+   ..
+  106                      return;
+  107                  }
+  108:                 self.componentsToList = results.component;
+  109  
+  110                  self.pagingParameters.cursor = 0;
+  ...
+  131                      .catch(function(e) {
+  132                          $log.warn('No results:', e);
+  133:                         self.componentsToList = null;
+  134                          noSearchResults();
+  135                      });
+  ...
+  139                  self.pagingParameters.cursor = 0;
+  140                  self.filtered = false;
+  141:                 self.componentsToList = null;
+  142                  self.errorMessage = 'No search results for \"' + self.searchText + '\"';
+  143              };
+  ...
+  168                          )
+  169                              .then(function (data) {
+  170:                                 self.componentsToList = data.component;
+  171                                  self.pagingParameters.totalCount = data.total;
+  172                                  self.pagingParameters.toNumber = Math.min(
+  ...
+  204                                  }
+  205  
+  206:                                 self.componentsToList = results.component;
+  207  
+  208                                  self.pagingParameters.toNumber = Math.min(
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/templates/componentBrowser.html:
+    5      </div>
+    6      <component-search
+    7:         ng-if="ctrl.componentsToList"
+    8          search-text="ctrl.searchText"
+    9          class="top-component-search"
+   ..
+   21      <div class="main-container-panel">
+   22  
+   23:         <div ng-if="ctrl.componentsToList" class="not-empty-list-content">
+   24  
+   25              <div ng-if="!ctrl.filtered">
+   ..
+   33  
+   34              <component-listing
+   35:                 components-to-list="ctrl.componentsToList"
+   36                  paging-parameters="ctrl.pagingParameters"
+   37                  get-next-page="ctrl.getNextPage"
+   ..
+   52  
+   53          <div class="text-center empty-list-content"
+   54:              ng-if="!ctrl.componentsToList"
+   55              >
+   56  
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/componentListing.js:
+   39              bindToController: true,
+   40              scope: {
+   41:                 componentsToList: '=',
+   42                  pagingParameters: '=',
+   43                  getNextPage: '=',
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/templates/componentListing.html:
+    1  <div class="component-listing">
+    2  
+    3:     <div ng-if="ctrl.componentsToList" class="not-empty-list-content">
+    4  
+    5          <div class="paging-buttons upper">
+    .
+   15          <count-display from-number="ctrl.pagingParameters.fromNumber"
+   16                         to-number="ctrl.pagingParameters.toNumber"
+   17:                        ng-if="ctrl.componentsToList.length"
+   18                         total-count="ctrl.pagingParameters.totalCount"></count-display>
+   19  
+   ..
+   27              <list-view
+   28                  ng-if="ctrl.selectedView === 'ListView'"
+   29:                 components="ctrl.componentsToList"
+   30                  ></list-view>
+   31  
+   32              <grid-view
+   33                  ng-if="ctrl.selectedView === 'GridView'"
+   34:                 components="ctrl.componentsToList"
+   35                  selected-category="ctrl.selectedCategory"
+   36                  search-text="ctrl.searchText"
+
+15 matches across 4 files
+
+
+Searching 48 files for "z-index"
+
+/Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss:
+   20          position: absolute;
+   21          right: 10px;
+   22:         z-index: 10;
+   23          top: 4ex;
+   24      }
+
+1 match in 1 file

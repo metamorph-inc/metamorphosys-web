@@ -1,0 +1,44 @@
+Technical Nodes
+
+Web Services
+------------
+
+classification/tree/:fromRoot?/:count?
+
+	return list of categories
+
+
+components/list/:class?/:count?/:cursor?
+
+
+components/overview/:id
+
+
+components/search/:fromRoot?/:search/:count?/:cursor?
+
+	Returns a list of components starting from fromRoot that match the search criteria
+
+
+components/get/:type/:idd
+
+
+
+Component Hierarchy
+-------------------
+
+componentBrowser
+	componentSearch
+	componentCategories
+		treeNavigator (isis)
+	componentListing
+		Paging
+		countDisplay
+		viewSelection
+		listView
+			itemList (isis)
+			downloadButton
+			infoButton
+		gridView
+			uiGrid (Angular)
+			downloadButton
+			infoButton

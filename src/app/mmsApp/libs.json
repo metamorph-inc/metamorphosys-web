@@ -16,10 +16,11 @@
         "./bower_components/react/react.js",
         "./vendor/stats/stats.min.js",
 
-        "../component-server/public/componentBrowser/scripts/componentBrowser.js",
-        "../component-server/public/componentBrowser/scripts/componentBrowser-templates.js",
-        "../component-server/public/componentBrowser/libs/ui-grid.js",       
-        "../component-server/public/componentBrowser/libs/numeral.js"  
+        "./bower_components/mms-component-library/dist/componentBrowser.js",
+        "./bower_components/mms-component-library/dist/componentBrowser-templates.js",
+
+        "./bower_components/angular-ui-grid/ui-grid.min.js",       
+        "./bower_components/numeral/numeral.js"
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",
@@ -37,10 +38,11 @@
         "./public/cyphy-library/cyphy-components.css",
         "./bower_components/angular-xeditable/dist/css/xeditable.css",
 
-        "../component-server/public/componentBrowser/styles/componentBrowser-app.css",
-        "../component-server/public/componentBrowser/libs/ui-grid.css",
-        "../component-server/public/componentBrowser/libs/ui-grid.ttf",
-        "../component-server/public/componentBrowser/libs/ui-grid.woff"         
+        "./bower_components/mms-component-library/dist/componentBrowser-app.css",
+
+        "./bower_components/angular-ui-grid/ui-grid.css",
+        "./bower_components/angular-ui-grid/ui-grid.ttf",
+        "./bower_components/angular-ui-grid/ui-grid.woff"         
 
     ],
     "fonts": [

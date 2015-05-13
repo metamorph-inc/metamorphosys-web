@@ -21,6 +21,7 @@
     "react": "~0.13.1"
   },
   "resolutions": {
-    "angular": "~1.3.13"
+    "angular": "~1.3.12",
+    "isis-ui-components": "0.2.15"
   }
 }

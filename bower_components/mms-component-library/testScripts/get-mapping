@@ -1,0 +1,3 @@
+#
+curl -s -XGET 'http://localhost:9200/components/_mapping' |underscore pretty |sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'
+

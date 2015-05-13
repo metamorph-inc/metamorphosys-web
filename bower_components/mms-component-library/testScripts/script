@@ -1,0 +1,6 @@
+/Resistance/ {
+	getline;
+	getline;
+	print $2
+}
+
