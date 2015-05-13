@@ -121,6 +121,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         )
             .then(function () {
 
+                browser.sleep(1000); // wait for busy-cover to go away
                 expect(browser.isElementPresent(aboutDialog)).toEqual(true);
                 expect(closeButton.isDisplayed()).toBeTruthy();
                 closeButton.click();
@@ -397,6 +398,15 @@ describe('Metamorphosys Tech Demo Flow', function () {
         otherComponentBox = browser2.findElement(by.diagramComponentLabel(targetComponentLabel));
         rotateCCWButton = browser2.element(by.css('.contextmenu .action-rotateCCW'));
 
+
+        // monkey-patch https://github.com/SeleniumHQ/selenium/commit/017bdbf321329794bd23405b5e981fdb55417262
+        otherComponentBox.getRawId = componentBox.getRawId = function() {
+            return this.getId().then(function(value) {
+                return value['ELEMENT'];
+            });
+        };
+        // https://github.com/angular/protractor/issues/2036 makes this not work:
+        //   .mouseDown(componentBox, protractor.Button.RIGHT)
         browser.actions().mouseMove(componentBox).perform();
         browser.actions().click(protractor.Button.RIGHT).perform();
 
@@ -503,7 +513,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
                     expect(newPosition1).toEqual(newPosition2);
 
-                });
+});
             });
         });
 
@@ -524,8 +534,6 @@ describe('Metamorphosys Tech Demo Flow', function () {
             gmeEventTimeLimit,
             'element did not get selected'
         );
-
-        browser.sleep(5000);
 
     });
 

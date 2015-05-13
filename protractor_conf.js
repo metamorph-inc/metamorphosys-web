@@ -8,6 +8,11 @@ exports.config = {
   jasmineNodeOpts: {
     defaultTimeoutInterval: 60000
   },
+  onPrepare: function() {
+    return browser.driver.manage().window().getSize().then(function (size) {
+      browser.driver.manage().window().setSize(Math.max(1024, size.width), Math.max(768, size.height));
+    });
+  },
   rootElement: 'body',
   baseUrl: 'http://localhost:8855'
 };
