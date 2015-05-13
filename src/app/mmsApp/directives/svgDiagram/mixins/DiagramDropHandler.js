@@ -18,7 +18,6 @@ DiagramDropHandler.prototype.apply = function(object) {
 DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
-        component,
         position;
 
     e.preventDefault();
@@ -34,17 +33,12 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         console.log('Dropped component id: ', dragged.data.componentId);
 
-        component = this.componentLibrary.getComponentById(dragged.data.componentId);
+        position = this.mmsUtils.getPositionFromEvent(e);
 
-        if (component) {
+        ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
 
-            position = this.mmsUtils.getPositionFromEvent(e);
-
-            ga('send', 'event', 'avmComponent', 'dropped', component.id);
-
-            this.$rootScope.$emit('componentInstantiationMustBeDone',
-                this.componentServerUrl + '/getcomponent/download/' + component.id, position);
-        }
+        this.$rootScope.$emit('componentInstantiationMustBeDone',
+            this.componentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
 
     } else if (e.dataTransfer.files.length) {
 
