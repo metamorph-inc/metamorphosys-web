@@ -27,7 +27,7 @@
     "tests"
   ],
   "dependencies": {
-    "isis-ui-components": "0.2.13",
+    "isis-ui-components": "0.2.15",
     "jquery-ui": "~1.11.2",
     "ng-grid": "~2.0.14",
     "angular": "~1.3.12",
@@ -40,7 +40,12 @@
     "isis-ui-components": "0.2.15"
   },
   "description": "Metamorph Component Library client-side library",
-  "main": "dist/componentLibrary.js",
+  "main": [
+      "dist/componentLibrary.js",
+      "dist/componentBrowser-app.css",      
+      "dist/componentBrowser.js",
+      "dist/componentBrowser-templates.js"      
+    ],
   "keywords": [
     "Angular",
     "JS",

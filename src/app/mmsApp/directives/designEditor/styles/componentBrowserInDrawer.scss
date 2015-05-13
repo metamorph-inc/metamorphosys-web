@@ -20,6 +20,14 @@ $hover-color: rgba(158, 158, 158, 0.2);
 
 	.component-browser {
 
+		input {
+			color: #000;
+		}
+
+		.ui-grid-filter-container .ui-grid-filter-button [class^="ui-grid-icon"] {
+			color: #999;
+		}
+
 		height: 100%;		
 
     md-progress-circular {

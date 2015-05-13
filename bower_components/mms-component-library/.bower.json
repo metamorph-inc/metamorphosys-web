@@ -26,7 +26,7 @@
     "tests"
   ],
   "dependencies": {
-    "isis-ui-components": "0.2.13",
+    "isis-ui-components": "0.2.15",
     "jquery-ui": "~1.11.2",
     "ng-grid": "~2.0.14",
     "angular": "~1.3.12",
@@ -39,17 +39,22 @@
     "isis-ui-components": "0.2.15"
   },
   "description": "Metamorph Component Library client-side library",
-  "main": "dist/componentLibrary.js",
+  "main": [
+    "dist/componentLibrary.js",
+    "dist/componentBrowser-app.css",
+    "dist/componentBrowser.js",
+    "dist/componentBrowser-templates.js"
+  ],
   "keywords": [
     "Angular",
     "JS",
     "Metamorph"
   ],
-  "_release": "73f043bec3",
+  "_release": "ef3f49134c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "73f043bec3534bfb2061e65a7b02dfc23116263a"
+    "commit": "ef3f49134c9454ca7ee81bc10f1cbd512c802ea2"
   },
   "_source": "git@bitbucket.org:metamorphsoftwareinc/component-server.git",
   "_target": "*",
