@@ -226,6 +226,8 @@ angular.module('mms.designEditor.footerDrawer', [
                     panel.active = true;
                     this._activePanel = panel;
 
+                    this._userPreferences = this._userPreferences || {};
+
                     if (this._userPreferences.panels && this._userPreferences.panels[panel.name]) {
 
                         var height = this._userPreferences.panels[panel.name].height;

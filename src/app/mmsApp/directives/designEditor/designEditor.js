@@ -230,13 +230,13 @@ angular.module('mms.designEditor', [
                     });
 
                     addRootScopeEventListener('wiresMustBeSaved', function($event, wires, message) {
-						nodeService.startTransaction(layoutContext, message || 'Saving wires');
+                        nodeService.startTransaction(layoutContext, message || 'Saving wires');
 
-						wires.forEach(function(wire) {
-                        	designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
-						});
+                        wires.forEach(function(wire) {
+                            designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+                        });
 
-						nodeService.completeTransaction(layoutContext);                        
+                        nodeService.completeTransaction(layoutContext);
                     });
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
@@ -522,13 +522,20 @@ angular.module('mms.designEditor', [
 
 
         DesignEditorController.prototype.componentBrowserItemDragStart = function(e, item) {
+
+            var img = document.getElementById('ghost-component').cloneNode();
+
+            img.style.display = 'block';
+
+            e.dataTransfer.setDragImage(img, 0, 0);
+
             dndService.startDrag('component', {
                 componentId: item.id
-            });            
+            });
         };
 
         DesignEditorController.prototype.componentBrowserItemDragEnd = function(e, item) {
-            dndService.stopDrag();            
+            dndService.stopDrag();
         };
 
         EventDispatcher.prototype.apply(DesignEditorController.prototype);

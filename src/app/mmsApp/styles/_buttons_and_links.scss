@@ -1,15 +1,21 @@
 @import 'colors';
 
-
+button.btn,
 .md-button {
 	cursor: pointer;
 	text-transform: uppercase;
 	color: $linkColorOnDark;
 	padding: .75ex 1em;
 
-	border-radius: 5px;
+	font-weight: normal;
+
+	border-radius: 3px;
 
 	color: #0D47A1;
+
+}
+
+.btn {
 
 }
 
@@ -21,12 +27,29 @@
 
 .dark-bg {
 
+	.btn,
 	.md-button {
 
 		color: $linkColorOnDark;
 
 	}
 
+	button.btn {
+		background: none;
+		transition: background-color .25s;
+
+		&:hover {
+			background-color: rgba(158,158,158,0.2);				
+		}
+	}
+
+	.btn:not([disabled]) {
+		border: 1px solid rgba(158, 158, 158, 0.6);
+    	background-color: #343e4a;
+	}
+
+	.btn:not([disabled]):hover,
+	.btn:not([disabled]):active,
 	.md-button:not([disabled]):hover,
 	.md-button:not([disabled]):active {
 		color: $linkHoverColorOnDark;		

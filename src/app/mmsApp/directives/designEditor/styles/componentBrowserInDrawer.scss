@@ -1,6 +1,7 @@
 @import '../../../styles/colors';
 
 $border-styles: 1px solid rgba(143, 156, 166, .2);
+$hover-color: rgba(158, 158, 158, 0.2);
 
 .footer-drawer {
 
@@ -21,11 +22,211 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 
 		height: 100%;		
 
+    md-progress-circular {
+        margin-top: 2em;
+        display: inline-block;
+    }
+
+    .tree-navigator {
+
+        margin-top: -20px;
+
+        font-size: 95%;
+
+        > .tree-navigator-nodes {
+            overflow: auto;
+            position: relative;
+        }
+
+        li {
+            position: relative;
+
+            .context-menu-trigger {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        li.has-symbol {
+
+        }
+
+        li.parent-node > .node-label {
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+//        li.parent-node.selected-node > .node-label {
+//            color: #fff;
+//        }
+
+        li.leaf-node {
+
+            .label-and-extra-info {
+                display: block;
+                cursor: copy;
+            }
+
+            .node-extra-info {
+                display: block;
+           }
+        }
+
+        .node-label:hover,
+        .node-label:active {
+            background-color: $hover-color;
+        }
+
+        ul.node-list ul.node-list {
+            padding: 0 0 0 2ex;
+        }
+
+        ul.node-list > li {
+            border-bottom: 1px dotted #CDCDCD;
+        }
+
+        ul.node-list > li:last-child {
+            border-bottom: none;
+        }
+
+        ul.node-list > li.leaf-node:last-child {
+            margin-bottom: 1ex;
+        }
+
+        .selected-node > .node-label {
+            background-color: rgba(137, 201, 255, 0.3);
+        }
+
+
+        svg.component-symbol {
+            width: 60px;
+            height: 20px;
+            display: inline-block;
+            margin-left: 20px;
+            vertical-align: top;
+        }
+    }
+
+/*    .component-search {
+        padding-right: 3.5ex;
+        padding-left: 1ex;
+        width: 100%;
+
+        input {
+            width: 100%;
+        }
+
+    }
+*/
+    .preferences-menu {
+        margin-top: -6px;
+    }
+
+    .angucomplete-dropdown {
+        width: 100%;
+        box-shadow: 0 2px 3px rgba(0,0,0,.1);
+        margin-top: 2px;
+    }
+
+    .angucomplete-row {
+        border-bottom: 1px dotted #CDCDCD;
+        color: #555;
+        margin-bottom: none !important;
+    }
+
+    .angucomplete-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .angucomplete-selected-row,
+    .angucomplete-row:hover {
+        background-color: rgba(218, 226, 244, 0.6);
+    }
+
+    .total-children-count {
+        display: inline;
+        font-weight: normal;
+    }
+
+    .grand-total {
+        font-size: 50%;
+        float: right;
+        margin-top: 9px;
+    }
+
+    li.paging.page-down {
+        border-top: none;
+    }
+
 
 		.list-view {
-			 .item-list ul.list-group li.item-list-item.context-menu-trigger	{
-				cursor: copy;
+			 .item-list {
+			 	ul.list-group {
+
+			 		li.item-list-item.context-menu-trigger {
+
+			 			cursor: copy;
+
+						-webkit-user-select: none;  /* Chrome all / Safari all */
+						-moz-user-select: none;     /* Firefox all */
+						-ms-user-select: none;      /* IE 10+ */
+
+						/* No support for these yet, use at own risk */
+						-o-user-select: none;
+						user-select: none;   
+					}
+
+				    > li:hover {
+				      	background-color: $hover-color;
+				    }
+
+				}
 			}
+
+		}
+
+		.grid-view {
+			.grid-row {
+
+				transition: background-color .25s;				
+				cursor: copy;
+
+				&:hover {
+
+					.ui-grid-cell {
+						background-color: $hover-color;	
+					}
+					
+				}
+
+			}
+		}
+
+		.download-button,
+		.info-button {
+			color: $linkColorOnDark;
+		}
+
+		.download-button:hover,
+		.info-button:hover {
+			color: $linkHoverColorOnDark;
+		}
+
+		button {
+			font-size: 14px;
+		}
+
+		.paging {
+			.next-page {
+				width: 150px;
+			}
+
+			.previous-page {
+				width: 150px;
+			}
+
 		}
 
 		.left-panel {
@@ -125,7 +326,7 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 		}
 
 		.ui-grid-row:nth-child(even) .ui-grid-cell {
-			background: rgba(236, 238, 239, .1);
+			background: rgba(0, 0, 0, .08);
 		}
 
 		.ui-grid-cell {

@@ -101,6 +101,7 @@ $header-height: 38px;
 
         color: $drawerColor;
 
+        .btn,
         .md-button {
             color: #fff;
             font-weight: bold;
@@ -110,10 +111,11 @@ $header-height: 38px;
                 color: $linkHoverColorOnDark;       
             }            
         }
-    }
 
-    img {
-        background-color: #fff;
+        img {
+            background-color: #fff;
+        }
+
     }
 
 }
