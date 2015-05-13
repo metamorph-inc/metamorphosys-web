@@ -21,6 +21,13 @@ $border-styles: 1px solid rgba(143, 156, 166, .2);
 
 		height: 100%;		
 
+
+		.list-view {
+			 .item-list ul.list-group li.item-list-item.context-menu-trigger	{
+				cursor: copy;
+			}
+		}
+
 		.left-panel {
 
 			border-right: $border-styles;

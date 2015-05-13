@@ -22,9 +22,11 @@ angular.module('mms.designEditor', [
         'mms.diagramWireInspector',
         'mms.svgDiagram',
         'mms.diagramContainer',
-        'mms.utils'
+        'mms.utils',
+        'mms.dndService'
+
     ])
-    .directive('designEditor', function() {
+    .directive('designEditor', function(dndService) {
 
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
@@ -516,6 +518,17 @@ angular.module('mms.designEditor', [
             // }
 
             return result;
+        };
+
+
+        DesignEditorController.prototype.componentBrowserItemDragStart = function(e, item) {
+            dndService.startDrag('component', {
+                componentId: item.id
+            });            
+        };
+
+        DesignEditorController.prototype.componentBrowserItemDragEnd = function(e, item) {
+            dndService.stopDrag();            
         };
 
         EventDispatcher.prototype.apply(DesignEditorController.prototype);

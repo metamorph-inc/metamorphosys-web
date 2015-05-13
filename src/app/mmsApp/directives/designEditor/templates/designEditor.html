@@ -14,7 +14,13 @@
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
         <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right" active height="300">
-            <component-browser no-header persist-state></component-browser>
+        {{designEditorCtrl.componentBrowserItemDragStart}}
+            <component-browser 
+            no-header 
+            persist-state
+            on-item-drag-start="designEditorCtrl.componentBrowserItemDragStart"
+            on-item-drag-end="designEditorCtrl.componentBrowserItemDragEnd"  
+            ></component-browser>
         </drawer-panel>
     </footer-drawer>
 </div>
