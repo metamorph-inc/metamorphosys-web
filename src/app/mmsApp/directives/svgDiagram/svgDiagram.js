@@ -117,8 +117,6 @@ angular.module('mms.svgDiagram', [
                 selectionHandler = new SelectionHandler(
                     $scope,
                     diagramService,
-                    gridService,
-                    $log,
                     $timeout
                 );
 

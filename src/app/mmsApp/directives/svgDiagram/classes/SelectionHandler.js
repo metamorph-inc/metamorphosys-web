@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function($scope, diagramService) {
+module.exports = function($scope, diagramService, $timeout) {
 
     var onComponentMouseUp,
         toggleWireSelected,
@@ -63,7 +63,10 @@ module.exports = function($scope, diagramService) {
     };
 
     onWireMouseUp = function(wire, $event) {
-        toggleWireSelected(wire, $event);
+
+        $timeout(function() {
+            toggleWireSelected(wire, $event);
+        });
 
     };
 
