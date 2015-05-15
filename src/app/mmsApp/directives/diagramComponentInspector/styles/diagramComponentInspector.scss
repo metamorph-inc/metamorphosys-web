@@ -2,6 +2,12 @@
 
 .diagram-component-inspector {
 
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    -o-user-select: text;
+    user-select: text;
+
 	padding: 10px;
 	
 	.editable-click, a.editable-click {
