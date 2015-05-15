@@ -326,6 +326,12 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
                 ctrl.persistStateInUrl = false;
             }
 
+            if (attributes.hasOwnProperty("noDownload")) {
+                ctrl.noDownload = true;
+            } else {
+                ctrl.noDownload = false;
+            }
+
             ctrl.init();
         }
     };
@@ -587,7 +593,8 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.l
             selectedView: "=",
             onListingViewSelection: "&",
             onItemDragStart: "=",
-            onItemDragEnd: "="
+            onItemDragEnd: "=",
+            noDownload: "="
 
         },
         replace: true,
@@ -822,16 +829,29 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
             return undefined;
         };
 
+        var cellTemplate, cellWidth;
+
+        if (!this.noDownload) {
+
+            cellTemplate = "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\">" + "</download-button><info-button ng-if=\"row.entity.octopart!==undefined\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
+            cellWidth = 70;
+        } else {
+
+            cellTemplate = "<info-button ng-if=\"row.entity.octopart!==undefined\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
+            cellWidth = 30;
+        }
+
         var renderList = function renderList() {
             var grid = [];
             var columnDefs = { name: null };
             var fnames = [{
                 name: " ",
-                cellTemplate: "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\"></download-button><info-button ng-if=\"row.entity.octopart!==undefined\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>",
-                width: 70,
+                cellTemplate: cellTemplate,
+                width: cellWidth,
                 enableSorting: false,
                 enableColumnResizing: false,
-                enableFiltering: false
+                enableFiltering: false,
+                cellClass: "actions"
             }];
             var startsWith = function startsWith(s1, s2) {
                 return s1.indexOf(s2) === 0;
@@ -1024,7 +1044,8 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
             setFacetedSearch: "=",
             lockGridColumns: "=",
             onItemDragStart: "=",
-            onItemDragEnd: "="
+            onItemDragEnd: "=",
+            noDownload: "="
         }
     };
 });
@@ -1070,12 +1091,15 @@ angular.module("mms.componentBrowser.listView", ["isis.ui.itemList", "mms.compon
 
         self = this;
 
+        console.log(self.noDownload);
+
         config = {
             sortable: false,
             secondaryItemMenu: false,
             detailsCollapsible: false,
             showDetailsLabel: "Show details",
             hideDetailsLabel: "Hide details",
+            noDownload: self.noDownload,
 
             // Event handlers
 
@@ -1100,20 +1124,26 @@ angular.module("mms.componentBrowser.listView", ["isis.ui.itemList", "mms.compon
             },
 
             itemContextmenuRenderer: function itemContextmenuRenderer(e, item) {
-                console.log("Contextmenu was triggered for node:", item);
 
-                return [{
-                    items: [{
-                        id: "download",
-                        label: "Download component",
-                        disabled: false,
-                        action: function action() {
-                            componentLibrary.downloadComponent(item.id);
-                        },
-                        actionData: item,
-                        iconClass: "fa fa-plus"
-                    }]
-                }];
+                var menu;
+
+                if (!self.noDownload) {
+
+                    menu = [{
+                        items: [{
+                            id: "download",
+                            label: "Download component",
+                            disabled: false,
+                            action: function action() {
+                                componentLibrary.downloadComponent(item.id);
+                            },
+                            actionData: item,
+                            iconClass: "fa fa-plus"
+                        }]
+                    }];
+                }
+
+                return menu;
             },
 
             detailsRenderer: function detailsRenderer(item) {
@@ -1283,7 +1313,8 @@ angular.module("mms.componentBrowser.listView", ["isis.ui.itemList", "mms.compon
         scope: {
             components: "=",
             onItemDragStart: "=",
-            onItemDragEnd: "="
+            onItemDragEnd: "=",
+            noDownload: "="
         }
     };
 });

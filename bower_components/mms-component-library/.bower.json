@@ -50,11 +50,11 @@
     "JS",
     "Metamorph"
   ],
-  "_release": "ef3f49134c",
+  "_release": "87f02a786e",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "ef3f49134c9454ca7ee81bc10f1cbd512c802ea2"
+    "commit": "87f02a786e0267449e3855c3338157e223b6e794"
   },
   "_source": "git@bitbucket.org:metamorphsoftwareinc/component-server.git",
   "_target": "*",

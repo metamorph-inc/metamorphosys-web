@@ -110,9 +110,12 @@ body, html {
   /* line 5, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
   .component-listing .listing-views {
     margin-top: 10px; }
-  /* line 13, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .component-listing .download-button, .component-listing .info-button {
-    margin-left: 2px; }
+  /* line 12, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .component-listing .actions {
+    text-align: center; }
+    /* line 15, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+    .component-listing .actions .download-button + .info-button {
+      margin-left: 2px; }
 
 /* line 3, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/componentSearch/styles/component-search.scss */
 .component-search .search-button {
@@ -143,6 +146,15 @@ body, html {
 .grid-view .ui-grid {
   margin: 1em 0; }
 
+/* line 3, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
+.paging .previous-page {
+  width: 135px;
+  margin-right: 2ex; }
+/* line 8, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
+.paging .next-page {
+  width: 135px;
+  margin-left: 2ex; }
+
 /* line 1, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/infoButton/styles/infoButton.scss */
 .info-button {
   color: #1976D2;
@@ -160,15 +172,6 @@ body, html {
   /* line 7, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/listView/styles/listView.scss */
   .list-view .item-list ul.list-group li.item-list-item.context-menu-trigger {
     cursor: default; }
-
-/* line 3, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
-.paging .previous-page {
-  width: 135px;
-  margin-right: 2ex; }
-/* line 8, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
-.paging .next-page {
-  width: 135px;
-  margin-left: 2ex; }
 
 /* line 2, /Users/laszlojuracz/Projects/morph/component-server/client_apps/componentBrowser/directives/viewSelection/styles/viewSelection.scss */
 .view-selection button.selected {
