@@ -9,7 +9,7 @@ by.addLocator('diagramComponentLabel',
 
         var using = optParentElement || document,
 
-            componentBoxes = using.querySelectorAll('g.component-container .symbol.box');
+            componentBoxes = using.querySelectorAll('g.component-container .symbol');
 
         // Return an array of components with the text.
         return Array.prototype.filter.call(componentBoxes, function (box) {

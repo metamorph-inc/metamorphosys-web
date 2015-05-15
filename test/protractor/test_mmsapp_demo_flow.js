@@ -1,6 +1,6 @@
 /*global describe,it,browser,expect,by,before,beforeAll,element, afterAll, $, angular, protractor*/
 
-describe('Metamorphosys Tech Demo Flow', function () {
+describe('Metamorphosys Tech Demo Flow', function() {
 
     var q = require('q'),
         url = require('url'),
@@ -21,15 +21,21 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         // For component library interactions
 
-        searchTerm  = '12',
+        searchTerm = '12',
         searchTermX = 'xy',
         categoryToUnfold = 'Optoelectronics',
         subCategoryToUnfold = 'Optocouplers-optoisolators',
         componentToDrag = 'ILD213T',
-        targetComponentLabel = 'ILD213T';
+        targetComponentLabel = 'ILD213T',
 
+        targetContainerLabel = "Power System",
+        mainContainerLabel = "Template Module 1x2",
+
+        wireIdToSelect = '/1922727130/1620862711/1365227561/865811917',
+        segmentIndexToSelect = 4;
 
     require('./lib/find_diagramComponent_by_labelText.js');
+    require('./lib/getHierarchyComponent.js');
 
     beforeAll(function loadTestProject(done) {
         if (false) {
@@ -37,16 +43,16 @@ describe('Metamorphosys Tech Demo Flow', function () {
             projectName = 'Test_79838';
             done();
         } else {
-            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function (res) {
+            require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function(res) {
                 if (res.statusCode > 399) {
                     done(res.statusCode);
                 }
                 res.setEncoding('utf8');
                 projectName = '';
-                res.on('data', function (chunk) {
+                res.on('data', function(chunk) {
                     projectName += chunk;
                 });
-                res.on('end', function () {
+                res.on('end', function() {
                     done();
                 });
             });
@@ -54,14 +60,14 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     });
 
-    afterAll(function (done) {
+    afterAll(function(done) {
         // Calling quit will remove the browser.
         // You can choose to not quit the browser, and protractor will quit all of
         // them for you when it exits (i.e. if you need a static number of browsers
         // throughout all of your tests). However, I'm forking browsers in my tests
         // and don't want to pile up my browser count.
         if (browser2) {
-            browser2.quit().then(function () {
+            browser2.quit().then(function() {
                 done();
             });
         } else {
@@ -69,7 +75,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         }
     });
 
-    it('Should create and load new design', function () {
+    it('Should create and load new design', function() {
 
         browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
@@ -80,32 +86,29 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         expect(browser.getTitle()).toEqual('Metamorphosys');
 
-        browser.wait(function () {
+        browser.wait(function() {
 
                 return diagramContainer.isPresent();
             },
             gmeEventTimeLimit,
             'diagramContainer not found'
-        ).then(function () {
+        ).then(function() {
 
-                //$rootScope1 = angular.element(document).scope();
+            expect(browser.isElementPresent(diagramContainer)).toEqual(true);
+            componentLabel = element(by.css('text.component-label'));
 
-            });
+            browser.wait(function () {
+                    return componentLabel.isPresent();
+                },
+                gmeEventTimeLimit,
+                'components not found');
+            expect(element.all(by.css('text.component-label')).count()).toEqual(4);
 
-        expect(browser.isElementPresent(diagramContainer)).toEqual(true);
-        componentLabel = element(by.css('text.component-label'));
-
-        browser.wait(function () {
-                return componentLabel.isPresent();
-            },
-            gmeEventTimeLimit,
-            'components not found');
-        expect(element.all(by.css('text.component-label')).count()).toEqual(4);
-
+        });
 
     }, gmeEventTimeLimit);
 
-    it('Should have about dialog open', function () {
+    it('Should have about dialog open', function() {
 
         var aboutDialog,
             closeButton;
@@ -113,13 +116,13 @@ describe('Metamorphosys Tech Demo Flow', function () {
         aboutDialog = element(by.css('.about-dialog'));
         closeButton = element(by.css('.about-dialog .md-actions button.md-primary'));
 
-        browser.wait(function () {
-                return aboutDialog.isDisplayed();
-            },
-            2000,
-            'aboutDialog not found'
-        )
-            .then(function () {
+        browser.wait(function() {
+                    return aboutDialog.isDisplayed();
+                },
+                2000,
+                'aboutDialog not found'
+            )
+            .then(function() {
 
                 browser.sleep(1000); // wait for busy-cover to go away
                 expect(browser.isElementPresent(aboutDialog)).toEqual(true);
@@ -130,32 +133,32 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     }, gmeEventTimeLimit);
 
-    //it('Should be able to drag-pan', function () {
-    //
-    //    var diagramContainer;
-    //
-    //    diagramContainer = browser.element(by.css('div.diagram-container'));
-    //
-    //    browser.actions()
-    //        .mouseMove({x: 300, y: 300})
-    //        .mouseDown()
-    //        .perform();
-    //
-    //
-    //    browser.sleep(uiEventTimeLimit);
-    //
-    //    browser.actions().mouseMove({x: 250, y: 250}).perform();
-    //
-    //    browser.sleep(uiEventTimeLimit);
-    //
-    //    browser.actions().mouseUp().perform();
-    //
-    //    browser.sleep(5000);
-    //
-    //});
+    it('Should be able to drag-pan', function () {
+
+       var diagramContainer;
+
+       diagramContainer = browser.element(by.css('div.diagram-container'));
+
+       browser.actions()
+           .mouseMove({x: 300, y: 300})
+           .mouseDown()
+           .perform();
 
 
-    it('Should have component browser', function () {
+       browser.sleep(uiEventTimeLimit);
+
+       browser.actions().mouseMove({x: 250, y: 250}).perform();
+
+       browser.sleep(uiEventTimeLimit);
+
+       browser.actions().mouseUp().perform();
+
+       browser.sleep(5000);
+
+    });
+
+
+    it('Should have component browser', function() {
 
         var componentBrowser,
             componentSearchInput;
@@ -566,6 +569,120 @@ describe('Metamorphosys Tech Demo Flow', function () {
             expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
 
         });
+
+    });
+
+    it('Inspector should load wire details if selected, and remove if unselected', function() {
+
+        var checkWireSelection = function (browser, wireIdToSelect, segmentIndexToSelect, expectedResult) {
+                browser.driver.executeScript(function (wireId, segmentIndex) {
+
+                    var wireEl = document.getElementById(wireId),
+                        wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
+                        mouseEvent = new Event('mouseup', {bubbles: true, cancelable: false});
+
+                    wireSegmentEl.dispatchEvent(mouseEvent);
+
+                }, wireIdToSelect, segmentIndexToSelect).then(function () {
+
+                    browser.driver.executeScript(function () {
+
+                        return document.querySelector('div.diagram-wire-inspector');
+
+                    }).then(function (wireInspectorEl) {
+
+                        if( expectedResult === null ) {
+
+                            expect(wireInspectorEl).toBe(expectedResult);
+
+                        }
+                        else {
+
+                            expect(wireInspectorEl.isDisplayed()).toBe(expectedResult);
+
+                        }
+
+                    });
+
+                });
+
+            };
+
+        // Select Wire
+        checkWireSelection(browser, wireIdToSelect, segmentIndexToSelect, true);
+
+        browser.sleep(1000);
+
+        // Deselect Wire
+        checkWireSelection(browser, wireIdToSelect, segmentIndexToSelect, null);
+
+    });
+
+    it('Should be able to move between component containers by double-clicking component', function() {
+         var componentBox;
+
+         componentBox = element(by.diagramComponentLabel(targetContainerLabel));
+
+         browser.actions().doubleClick(componentBox).perform();
+
+         browser.sleep(1000);
+
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel + "/" + targetContainerLabel);
+             });
+
+
+    });
+
+    it('Should be able to move between component containers by using menu buttons', function() {
+
+         var mainLevel,
+             secondLevel;
+
+         mainLevel = element(by.getHierarchyByVisibleDropdownLabel(mainContainerLabel));
+
+         browser.actions().mouseMove(mainLevel).perform();
+
+         secondLevel = element(by.getHierarchyByHiddenDropdownLabel(targetContainerLabel));
+
+         secondLevel.click();
+
+         browser.sleep(1000);
+
+         // Expect hierarchy to be mainLevel / secondLevel
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel + "/" + targetContainerLabel);
+
+             });
+
+
+         mainLevel.click();
+
+         browser.sleep(1000);
+
+         // Expect hierarchy to return mainLevel
+         browser.element.all(by.css('span.item-label.ng-binding')).getText()
+             .then(function(elementTexts) {
+
+                 var designPath = elementTexts
+                     .join('/')
+                     .slice(1);
+
+                 expect(designPath).toEqual(mainContainerLabel);
+
+             });
 
     });
 
