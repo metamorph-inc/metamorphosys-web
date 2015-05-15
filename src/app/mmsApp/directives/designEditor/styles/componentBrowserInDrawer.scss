@@ -5,6 +5,17 @@ $hover-color: rgba(158, 158, 158, 0.2);
 
 .footer-drawer {
 
+	.download-button,
+	.info-button {
+		color: $linkColorOnDark;
+	}
+
+	.download-button:hover,
+	.info-button:hover {
+		color: $linkHoverColorOnDark;
+	}
+
+
 	.component-browser .tree-navigator .selected-node > .node-label {
 	    background-color: rgba(165, 185, 202, 0.4);
 	    color: #fff;
@@ -210,16 +221,6 @@ $hover-color: rgba(158, 158, 158, 0.2);
 				}
 
 			}
-		}
-
-		.download-button,
-		.info-button {
-			color: $linkColorOnDark;
-		}
-
-		.download-button:hover,
-		.info-button:hover {
-			color: $linkHoverColorOnDark;
 		}
 
 		button {

@@ -22,7 +22,7 @@
 	.classification-tags {
 		display: inline-block;
 		margin-left: 1ex;
-		vertical-align: top;
+		vertical-align: baseline;
 
 		.taxonomy-term {
 			cursor: default;
@@ -32,7 +32,7 @@
 	}
 
 	.original-name {
-		vertical-align: top;		
+		vertical-align: middle;		
   		display: inline-block;
   		margin-left: 1ex;		
   		color: #aaa;  		
@@ -40,6 +40,11 @@
 
 	.inspectable-details {
 		margin-top: 1.5em;
+	}
+
+	.info-button {
+		position: relative;
+		top: 2px;
 	}
 
 }

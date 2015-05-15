@@ -7,7 +7,8 @@ require('./inspectedComponentDetails.js');
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
-        'mms.contentEditable'
+        'mms.contentEditable',
+        'mms.componentBrowser.infoButton'
     ])
     .directive('diagramComponentInspector', [
         function() {
@@ -35,7 +36,7 @@ angular.module('mms.diagramComponentInspector', [
 
                         if (newInspectable) {
 
-                            if(newInspectable.metaType === 'AVMComponent') {
+                            if (newInspectable.metaType === 'AVMComponent') {
 
                                 if (newInspectable.details) {
 
@@ -44,45 +45,48 @@ angular.module('mms.diagramComponentInspector', [
                                         if (newInspectable.details.resource) {
 
                                             $http.get('/rest/external/acminfo/' + newInspectable.details.resource)
-                                            .then(function(response){
+                                                .then(function(response) {
 
-                                                if (response.data) {
+                                                    if (response.data) {
 
+                                                        console.log(response.data);
 
-                                                    console.log(response.data);
+                                                        if (angular.isString(response.data.classification)) {
 
-                                                    if (angular.isString(response.data.classification)) {
+                                                            response.data.classification.split('.').map(function(className) {
 
-                                                        response.data.classification.split('.').map(function(className) {
-
-                                                            newInspectable.classificationTags.push({
-                                                                id: className,
-                                                                name: className.replace(/_/g, ' ')
+                                                                newInspectable.classificationTags.push({
+                                                                    id: className,
+                                                                    name: className.replace(/_/g, ' ')
+                                                                });
                                                             });
+                                                        }
+
+                                                        newInspectable.details.properties = [];
+
+                                                        angular.forEach(response.data.properties, function(prop, propName) {
+
+                                                            newInspectable.details.properties.push({
+                                                                name: propName,
+                                                                value: prop.value,
+                                                                unit: prop.unit
+                                                            });
+
+                                                            if (propName === 'octopart_mpn') {
+                                                                newInspectable.infoUrl = 'http://octopart.com/search?q=' + prop.value + '&view=list';
+                                                            }
+
                                                         });
+
+                                                        if (angular.isString(response.data.name)) {
+                                                            response.data.name.replace(/_/g, ' ');
+                                                        }
+
+                                                        newInspectable.details.acmInfo = response.data;
+
                                                     }
 
-                                                    newInspectable.details.properties = [];
-
-                                                    angular.forEach(response.data.properties, function(prop, propName) {
-
-                                                        newInspectable.details.properties.push({
-                                                            name: propName,
-                                                            value: prop.value,
-                                                            unit: prop.unit
-                                                        });
-
-                                                    });
-
-                                                    if (angular.isString(response.data.name)) {
-                                                        response.data.name.replace(/_/g, ' ');
-                                                    }
-                                                    
-                                                    newInspectable.details.acmInfo = response.data;
-
-                                                }
-
-                                            });
+                                                });
 
                                         }
 
@@ -99,6 +103,17 @@ angular.module('mms.diagramComponentInspector', [
 
 
             }
+
+            DiagramComponentInspectorController.prototype.openInfo = function() {
+
+                if (this.inspectable.infoUrl) {
+
+                    var w = window.open(this.inspectable.infoUrl, '_blank');
+                    w.focus();
+
+                }
+
+            };
 
             DiagramComponentInspectorController.prototype.isNameValid = function(data) {
 

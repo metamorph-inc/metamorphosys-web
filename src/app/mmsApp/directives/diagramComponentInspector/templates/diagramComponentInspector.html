@@ -8,6 +8,7 @@
             <div class="original-name" ng-if="ctrl.inspectable.details.acmInfo.name">
             ({{ctrl.inspectable.details.acmInfo.name}})
             </div>
+            <info-button ng-if="ctrl.inspectable.infoUrl" ng-click="ctrl.openInfo()"></info-button>
             <div class="taxonomy-terms classification-tags">
                 <div class="taxonomy-term" ng-repeat="term in ctrl.inspectable.classificationTags" ng-class="term.id">{{::term.name}}
                 </div>
