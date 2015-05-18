@@ -11,7 +11,13 @@ module.exports = {
                 {
                     name: 'Draw-selection',
                     key: 'Shift + click'
+                },
+
+                {
+                    name: 'Undo',
+                    key: 'Cmd/Ctrl + Z'
                 }
+
             ]
         }, {
             title: 'Component Operations',
