@@ -3,8 +3,8 @@
 'use strict';
 
 angular.module('mms.projectHandling', [])
-    .service('projectHandling', function ($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
-                                          mmsUtils, designService, testBenchService, designLayoutService, $timeout) {
+    .service('projectHandling', function($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
+        mmsUtils, designService, testBenchService, designLayoutService, $timeout, dataStoreService) {
 
         var selectedProjectId,
             selectedBranchId,
@@ -38,7 +38,7 @@ angular.module('mms.projectHandling', [])
             cleanContainerInternalsWatcher;
 
 
-        this.leaveProject = function () {
+        this.leaveProject = function() {
 
             if (selectedProjectId) {
 
@@ -51,7 +51,7 @@ angular.module('mms.projectHandling', [])
         };
 
 
-        this.leaveBranch = function () {
+        this.leaveBranch = function() {
 
             if (selectedBranchId) {
 
@@ -68,7 +68,7 @@ angular.module('mms.projectHandling', [])
             }
         };
 
-        this.leaveWorkspace = function () {
+        this.leaveWorkspace = function() {
 
             if (selectedWorkspaceId) {
 
@@ -83,7 +83,7 @@ angular.module('mms.projectHandling', [])
             }
         };
 
-        this.leaveDesign = function () {
+        this.leaveDesign = function() {
 
             if (selectedDesignId) {
 
@@ -98,7 +98,7 @@ angular.module('mms.projectHandling', [])
             }
         };
 
-        this.leaveContainer = function () {
+        this.leaveContainer = function() {
 
             if (selectedContainerId) {
 
@@ -111,12 +111,12 @@ angular.module('mms.projectHandling', [])
             }
         };
 
-        this.copyProject = function () {
+        this.copyProject = function() {
             return $http.get('/rest/external/copyproject/noredirect');
 
         };
 
-        this.cloneMaster = function () {
+        this.cloneMaster = function() {
 
             var deferred;
 
@@ -125,10 +125,10 @@ angular.module('mms.projectHandling', [])
             $rootScope.loading = true;
 
             connectionHandling.establishMainGMEConnection()
-                .then(function (connectionId) {
+                .then(function(connectionId) {
 
                     branchService.getBranches(connectionId)
-                        .then(function (branches) {
+                        .then(function(branches) {
 
                             var newBranchId,
                                 hashId,
@@ -157,14 +157,14 @@ angular.module('mms.projectHandling', [])
                                 newBranchId = mmsUtils.randomString(6) + (new Date()).getTime();
 
                                 branchService.createBranch(
-                                    connectionId,
-                                    newBranchId,
-                                    hashId
-                                )
-                                    .then(function () {
+                                        connectionId,
+                                        newBranchId,
+                                        hashId
+                                    )
+                                    .then(function() {
                                         deferred.resolve(newBranchId);
                                     })
-                                    .catch(function (err) {
+                                    .catch(function(err) {
                                         deferred.reject(err);
                                     });
 
@@ -174,7 +174,7 @@ angular.module('mms.projectHandling', [])
                             $rootScope.loading = false;
 
                         })
-                        .catch(function (error) {
+                        .catch(function(error) {
                             deferred.reject(error);
                             $rootScope.loading = false;
                         });
@@ -186,7 +186,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.findFirstBranch = function () {
+        this.findFirstBranch = function() {
 
             var deferred,
                 connectionId;
@@ -196,7 +196,7 @@ angular.module('mms.projectHandling', [])
             connectionId = connectionHandling.getMainGMEConnectionId();
 
             branchService.getBranches(connectionId)
-                .then(function (branches) {
+                .then(function(branches) {
 
                     $log.debug('Available branches', branches);
 
@@ -217,11 +217,11 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getSelectedProjectId = function () {
+        this.getSelectedProjectId = function() {
             return selectedProjectId;
         };
 
-        this.selectProject = function (projectId) {
+        this.selectProject = function(projectId) {
 
             var deferred;
 
@@ -236,12 +236,12 @@ angular.module('mms.projectHandling', [])
                     $rootScope.loading = true;
 
                     this.leaveProject();
-                    
+
                     connectionHandling.establishMainGMEConnection()
-                        .then(function (connectionId) {
+                        .then(function(connectionId) {
 
                             projectService.selectProject(connectionId, projectId)
-                                .then(function (projectId) {
+                                .then(function(projectId) {
 
                                     selectedProjectId = projectId;
                                     $log.debug('Project selected', projectId);
@@ -249,7 +249,7 @@ angular.module('mms.projectHandling', [])
                                     deferred.resolve(projectId);
 
                                 })
-                                .catch(function (reason) {
+                                .catch(function(reason) {
                                     $rootScope.loading = false;
                                     $log.debug('Opening project errored', projectId, reason);
                                     deferred.reject('Opening project errored');
@@ -257,7 +257,7 @@ angular.module('mms.projectHandling', [])
                                 });
 
                         })
-                        .catch(function (reason) {
+                        .catch(function(reason) {
                             $rootScope.loading = false;
                             $log.debug('GME Connection could not be established', reason);
                             deferred.reject('GME Connection could not be established');
@@ -272,11 +272,11 @@ angular.module('mms.projectHandling', [])
             return deferred.promise;
         };
 
-        this.getSelectedBranchId = function () {
+        this.getSelectedBranchId = function() {
             return selectedBranchId;
         };
 
-        cleanWSWatcher = function () {
+        cleanWSWatcher = function() {
 
             if (wsContext) {
                 workspaceService.unregisterWatcher(wsContext);
@@ -287,7 +287,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        setupWSWatcher = function () {
+        setupWSWatcher = function() {
 
             var deferred;
 
@@ -296,17 +296,17 @@ angular.module('mms.projectHandling', [])
             cleanWSWatcher();
 
             connectionHandling.establishMainGMEConnection()
-                .then(function (connectionId) {
+                .then(function(connectionId) {
 
                     wsContext = $rootScope.wsContext = {
                         db: connectionId,
-                        regionId: 'WorkSpaces_' + ( new Date() )
+                        regionId: 'WorkSpaces_' + (new Date())
                             .toISOString()
                     };
 
                     $log.debug('WS context is set');
 
-                    workspaceService.registerWatcher(wsContext, function (destroyed) {
+                    workspaceService.registerWatcher(wsContext, function(destroyed) {
 
                         $log.debug('WorkSpace watcher initialized, destroyed:', destroyed);
 
@@ -314,7 +314,7 @@ angular.module('mms.projectHandling', [])
                         // TODO: this watchers is being called even if context was cleaned up. This will cause memory leaks.
                         if (wsContext !== null) {
                             if (destroyed !== true) {
-                                workspaceService.watchWorkspaces(wsContext, function (updateObject) {
+                                workspaceService.watchWorkspaces(wsContext, function(updateObject) {
 
 
                                     // TODO: creation/removal of new workapces are NOT done
@@ -329,7 +329,7 @@ angular.module('mms.projectHandling', [])
 
                                     }
 
-                                }).then(function (data) {
+                                }).then(function(data) {
                                     availableWorkspaces = data.workspaces;
 
                                     $log.debug('WSWatchers are set up');
@@ -344,7 +344,7 @@ angular.module('mms.projectHandling', [])
 
 
                 })
-                .catch(function (reason) {
+                .catch(function(reason) {
                     $rootScope.loading = false;
                     $log.debug('GME Connection could not be established', reason);
                     deferred.reject('GME Connection could not be established');
@@ -358,7 +358,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        cleanWorkspaceInternalsWatcher = function () {
+        cleanWorkspaceInternalsWatcher = function() {
 
             availableDesigns = null;
             availableTestBenches = null;
@@ -367,7 +367,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        setupWorkspaceInternalsWatcher = function () {
+        setupWorkspaceInternalsWatcher = function() {
 
             var designsPromise,
                 testbenchesPromise,
@@ -377,25 +377,25 @@ angular.module('mms.projectHandling', [])
 
             cleanWorkspaceInternalsWatcher();
 
-            designsPromise = designService.watchDesigns(wsContext, selectedWorkspaceId, function () {
+            designsPromise = designService.watchDesigns(wsContext, selectedWorkspaceId, function() {
                 //TODO: eventually this has to be implemented
-            }).then(function (designsData) {
+            }).then(function(designsData) {
                 availableDesigns = designsData.designs;
             });
 
-            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function () {
+            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function() {
                 //TODO: eventually this has to be implemented
-            }).then(function (testbenchesData) {
+            }).then(function(testbenchesData) {
                 availableTestBenches = testbenchesData.testBenches;
-		// TODO: hook this up to something
+                // TODO: hook this up to something
                 testBenchService.watchTestBenchDetails(wsContext, testbenchesData.testBenches[Object.getOwnPropertyNames(testbenchesData.testBenches)[0]].id);
             });
 
             $q.all([designsPromise, testbenchesPromise])
-                .then(function () {
+                .then(function() {
                     deferred.resolve();
                 })
-                .catch(function () {
+                .catch(function() {
                     deferred.reject('Could not get designs and testbenches');
                 });
 
@@ -403,7 +403,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        cleanDesignInternalsWatcher = function () {
+        cleanDesignInternalsWatcher = function() {
 
             if (designContext) {
                 //workspaceService.cleanUpAllRegions(wsContext);
@@ -416,8 +416,8 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        childContainerWatcher = function (collector) {
-            return function (designStructureUpdateObject) {
+        childContainerWatcher = function(collector) {
+            return function(designStructureUpdateObject) {
 
                 if (designStructureUpdateObject.data && designStructureUpdateObject.data.baseName === 'Container') {
 
@@ -425,7 +425,7 @@ angular.module('mms.projectHandling', [])
 
                         case 'load':
 
-                            $timeout(function () {
+                            $timeout(function() {
 
                                 availableContainers = availableContainers || {};
                                 availableContainers[designStructureUpdateObject.data.id] = designStructureUpdateObject.data;
@@ -450,7 +450,7 @@ angular.module('mms.projectHandling', [])
 
                             break;
 
-                        default :
+                        default:
                         case 'update':
 
                             if (designStructureUpdateObject.updateType === 'nameChange') {
@@ -469,8 +469,8 @@ angular.module('mms.projectHandling', [])
             };
         };
 
-        childContainerParser = function (collector) {
-            return function (cyPhyLayout) {
+        childContainerParser = function(collector) {
+            return function(cyPhyLayout) {
 
                 var newChildren;
 
@@ -480,7 +480,7 @@ angular.module('mms.projectHandling', [])
 
                 if (angular.isObject(cyPhyLayout.elements)) {
 
-                    angular.forEach(cyPhyLayout.elements.Container, function (container, cId) {
+                    angular.forEach(cyPhyLayout.elements.Container, function(container, cId) {
 
                         availableContainers[cId] = container;
                         newChildren[cId] = container;
@@ -497,7 +497,7 @@ angular.module('mms.projectHandling', [])
             };
         };
 
-        setupDesignInternalsWatcher = function (designId) {
+        setupDesignInternalsWatcher = function(designId) {
 
             var deferred = $q.defer(),
                 design;
@@ -509,11 +509,11 @@ angular.module('mms.projectHandling', [])
                 watchedContainers[designId] = true;
 
                 connectionHandling.establishMainGMEConnection()
-                    .then(function (connectionId) {
+                    .then(function(connectionId) {
 
                         designContext = designContext || {
                             db: connectionId,
-                            regionId: 'Design_' + ( new Date() ).toISOString()
+                            regionId: 'Design_' + (new Date()).toISOString()
                         };
 
                         design = availableDesigns[designId];
@@ -524,13 +524,13 @@ angular.module('mms.projectHandling', [])
                             designId,
                             childContainerWatcher(design.childContainers))
 
-                            .then(function (cyPhyLayout) {
-                                deferred.resolve(childContainerParser(design.childContainers)(cyPhyLayout));
-                            });
+                        .then(function(cyPhyLayout) {
+                            deferred.resolve(childContainerParser(design.childContainers)(cyPhyLayout));
+                        });
 
 
                     })
-                    .catch(function (reason) {
+                    .catch(function(reason) {
                         $rootScope.loading = false;
                         $log.debug('GME Connection could not be established', reason);
                         deferred.reject('GME Connection could not be established');
@@ -543,7 +543,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        setupContainerInternalsWatcher = function (containerId) {
+        setupContainerInternalsWatcher = function(containerId) {
 
             var deferred = $q.defer(),
                 container;
@@ -551,11 +551,11 @@ angular.module('mms.projectHandling', [])
             watchedContainers = watchedContainers || {};
 
             connectionHandling.establishMainGMEConnection()
-                .then(function (connectionId) {
+                .then(function(connectionId) {
 
                     containerLayoutContext = containerLayoutContext || {
                         db: connectionId,
-                        regionId: 'Container_' + ( new Date() ).toISOString()
+                        regionId: 'Container_' + (new Date()).toISOString()
                     };
 
                     if (!watchedContainers[containerId]) {
@@ -566,11 +566,11 @@ angular.module('mms.projectHandling', [])
                         container.childContainers = {};
 
                         designLayoutService.watchDiagramElements(
-                            designContext,
-                            containerId,
-                            childContainerWatcher(container.childContainers)
-                        )
-                            .then(function (cyPhyLayout) {
+                                designContext,
+                                containerId,
+                                childContainerWatcher(container.childContainers)
+                            )
+                            .then(function(cyPhyLayout) {
                                 deferred.resolve(childContainerParser(container.childContainers)(cyPhyLayout));
                             });
 
@@ -580,7 +580,7 @@ angular.module('mms.projectHandling', [])
 
 
                 })
-                .catch(function (reason) {
+                .catch(function(reason) {
                     $rootScope.loading = false;
                     $log.debug('GME Connection could not be established', reason);
                     deferred.reject('GME Connection could not be established');
@@ -591,7 +591,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.selectBranch = function (branchId) {
+        this.selectBranch = function(branchId) {
 
             var deferred;
 
@@ -608,28 +608,27 @@ angular.module('mms.projectHandling', [])
                     this.leaveBranch();
 
                     connectionHandling.establishMainGMEConnection()
-                        .then(function (connectionId) {
+                        .then(function(connectionId) {
 
                             branchService.selectBranch(connectionId, branchId)
-                                .then(function (branchId) {
+                                .then(function(branchId) {
 
                                     $rootScope.loading = false;
 
                                     selectedBranchId = branchId;
 
-                                    setupWSWatcher().then(function () {
+                                    setupWSWatcher().then(function() {
 
-                                        $log.debug('Branch selected', branchId);
+                                            $log.debug('Branch selected', branchId);
 
-                                        deferred.resolve(branchId);
-                                    })
-                                        .catch(function (e) {
+                                            deferred.resolve(branchId);
+                                        })
+                                        .catch(function(e) {
                                             deferred.reject(e);
                                         });
 
-                                }
-                            )
-                                .catch(function (reason) {
+                                })
+                                .catch(function(reason) {
                                     $rootScope.loading = false;
                                     $log.debug('Opening branch errored', branchId, reason);
                                     deferred.reject('Opening branch errored');
@@ -638,7 +637,7 @@ angular.module('mms.projectHandling', [])
 
 
                         })
-                        .catch(function (reason) {
+                        .catch(function(reason) {
                             $rootScope.loading = false;
                             $log.debug('GME Connection could not be established', reason);
                             deferred.reject('GME Connection could not be established');
@@ -653,11 +652,11 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getSelectedWorkspaceId = function () {
+        this.getSelectedWorkspaceId = function() {
             return selectedWorkspaceId;
         };
 
-        this.selectWorkspace = function (workspaceId) {
+        this.selectWorkspace = function(workspaceId) {
 
             var deferred;
 
@@ -673,7 +672,7 @@ angular.module('mms.projectHandling', [])
 
                     selectedWorkspaceId = workspaceId;
 
-                    setupWorkspaceInternalsWatcher().then(function () {
+                    setupWorkspaceInternalsWatcher().then(function() {
                         $log.debug('Workspace selected', workspaceId);
 
                         deferred.resolve(workspaceId);
@@ -690,11 +689,11 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getSelectedDesignId = function () {
+        this.getSelectedDesignId = function() {
             return selectedDesignId;
         };
 
-        this.getSelectedDesign = function () {
+        this.getSelectedDesign = function() {
 
             var result;
 
@@ -706,7 +705,7 @@ angular.module('mms.projectHandling', [])
             return result;
         };
 
-        this.selectDesign = function (designId) {
+        this.selectDesign = function(designId) {
 
             var deferred;
 
@@ -725,7 +724,7 @@ angular.module('mms.projectHandling', [])
                     availableContainers = availableContainers || {};
                     availableContainers[designId] = availableDesigns[designId];
 
-                    setupDesignInternalsWatcher(designId).then(function () {
+                    setupDesignInternalsWatcher(designId).then(function() {
 
                         $log.debug('Design selected', availableDesigns[designId]);
                         deferred.resolve(designId);
@@ -742,11 +741,11 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getSelectedContainerId = function () {
+        this.getSelectedContainerId = function() {
             return selectedContainerId;
         };
 
-        this.getSelectedContainer = function () {
+        this.getSelectedContainer = function() {
 
             if (availableContainers && selectedContainerId) {
                 return availableContainers[selectedContainerId];
@@ -754,7 +753,7 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.selectContainer = function (containerId) {
+        this.selectContainer = function(containerId) {
 
             var deferred;
 
@@ -770,7 +769,7 @@ angular.module('mms.projectHandling', [])
 
                     selectedContainerId = containerId;
 
-                    setupContainerInternalsWatcher(containerId).then(function () {
+                    setupContainerInternalsWatcher(containerId).then(function() {
 
                         $log.debug('Container selected', availableContainers[containerId]);
 
@@ -790,27 +789,27 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.getAvailableWorkspaces = function () {
+        this.getAvailableWorkspaces = function() {
             return availableWorkspaces;
         };
 
-        this.getAvailableDesigns = function () {
+        this.getAvailableDesigns = function() {
             return availableDesigns;
         };
 
-        this.getAvailableTestbenches = function () {
+        this.getAvailableTestbenches = function() {
             return availableTestBenches;
         };
 
-        this.getDesignContext = function () {
+        this.getDesignContext = function() {
             return designContext;
         };
 
-        this.getSelectedWorkspace = function () {
+        this.getSelectedWorkspace = function() {
             return availableWorkspaces[selectedWorkspaceId];
         };
 
-        this.getContainerLayoutContext = function () {
+        this.getContainerLayoutContext = function() {
 
             return containerLayoutContext;
         };
@@ -845,7 +844,7 @@ angular.module('mms.projectHandling', [])
 
                         diffArray.shift();
 
-                        angular.forEach(diffArray, function (bit) {
+                        angular.forEach(diffArray, function(bit) {
 
                             parentId = parentId + '/' + bit;
                             result.push(parentId);
@@ -875,6 +874,23 @@ angular.module('mms.projectHandling', [])
             });
 
             return result;
+        };
+
+        this.undo = function() {
+
+            var self = this;
+
+            connectionHandling.establishMainGMEConnection()
+                .then(function(connectionId) {
+
+                    var dbConn = dataStoreService.getDatabaseConnection(connectionId);
+                    
+                    dbConn.client.undo(self.getSelectedBranchId(), function() {
+                        console.log('Undo is done:', arguments);
+                    });
+
+                });
+
         };
 
     });

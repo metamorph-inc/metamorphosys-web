@@ -561,6 +561,10 @@ angular.module('mms.svgDiagram', [
 
                         killDelete(event);
 
+                        if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
+                            projectHandling.undo();
+                        }
+
                         $timeout(function() {
                             scope.$emit('keydownOnDocument', event);
                         });

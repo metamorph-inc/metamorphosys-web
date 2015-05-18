@@ -586,6 +586,14 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 id: 'projectMenu',
                 label: 'Project',
                 items: [{
+                    id: 'undo',
+                    label: 'Undo last change',
+                    iconClass: 'fa fa-reply',
+                    action: function() {
+                        projectHandling.undo();
+                    }
+                },
+                {
                     id: 'exportToGME',
                     label: 'Export to desktop tools',
                     iconClass: 'glyphicon glyphicon-floppy-save',
