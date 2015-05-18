@@ -111,6 +111,14 @@ angular.module('mms.diagramContainer', [
                 $scope.initialized = val;
             };
 
+            this.scrollSome = function(dx, dy) {
+
+                var jsp = $scope.$contentPane.data('jsp');
+
+                jsp.scrollTo(dx, dy, false);
+
+            };
+
         }
     ])
     .directive('diagramContainer', [
@@ -247,7 +255,6 @@ angular.module('mms.diagramContainer', [
                     if (designEditorCtrl) {
                         designEditorCtrl.addEventListener('resize', ctrl.scrollHandler.onWindowResize);
                     }
-
 
                     scope.$on('$destroy', function() {
 

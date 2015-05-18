@@ -81,7 +81,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
     onDiagramMouseMove = function ($event) {
 
-        var offset;
+        var offset,
+            scrollerTimeout;
 
         if (possibbleDragTargetsDescriptor && (
                 $event.pageX !== possibbleDragTargetsDescriptor.mousePosition.x ||
@@ -94,9 +95,47 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         if (moveOperation) {
 
+            var dx = 0, 
+                dy = 0, 
+                TOLERANCE = 100,
+                SCROLL_AMOUNT = 35;
+            
             offset = getOffsetToMouse($event);
 
-            moveOperation.set(offset);
+            if (offset.x - $scope.visibleArea.left <= TOLERANCE) {
+                dx = -SCROLL_AMOUNT;
+                offset.x -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.right - offset.x <= TOLERANCE) {
+                dx = SCROLL_AMOUNT;
+                offset.x += SCROLL_AMOUNT;                
+            }
+
+            if (offset.y - $scope.visibleArea.top <= TOLERANCE) {
+                dy = -SCROLL_AMOUNT;
+                offset.y -= SCROLL_AMOUNT;                
+            }
+
+            if ($scope.visibleArea.bottom - offset.y <= TOLERANCE) {
+                dy = SCROLL_AMOUNT;
+                offset.y += SCROLL_AMOUNT;                
+            }
+
+            if (dx !== 0 || dy !== 0) {
+                clearTimeout(scrollerTimeout);
+
+                $scope.diagramContainerController.scrollSome(
+                    $scope.visibleArea.left + dx, 
+                    $scope.visibleArea.top + dy
+                );
+                if (moveOperation) {
+                    moveOperation.set(offset);
+                }
+
+            } else {
+                moveOperation.set(offset);
+            }
 
         }
 

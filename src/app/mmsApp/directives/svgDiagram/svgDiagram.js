@@ -471,6 +471,8 @@ angular.module('mms.svgDiagram', [
 
                     $element = $(element);
 
+                    scope.diagramContainerController = diagramContainerController;
+
                     killContextMenu = function($event) {
 
                         $log.debug('Not showing default contextmenu');
@@ -519,6 +521,9 @@ angular.module('mms.svgDiagram', [
                         function(visibleArea) {
 
                             if (scope.$element) {
+                                
+                                scope.visibleArea = visibleArea;
+
                                 scope.elementOffset = scope.$element.offset();
                                 gridService.setVisibleArea(id, visibleArea);
                             }
