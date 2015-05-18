@@ -28,6 +28,10 @@ angular.module('mms.designEditor', [
     ])
     .directive('designEditor', function(dndService) {
 
+        var _ghostComponent = document.createElement('img');
+        _ghostComponent.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAaCAMAAADRyb8sAAAARVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgICAwMDBAQECAgIC/v7////8hdZNpAAAAEHRSTlMAECAwQFBgcICPn6+/z9/vIxqCigAAALpJREFUeNrt1E0PwiAMgOEWCiIrUD///081jMZkB5lVj74XLjzLMuhgk6N5Dl6WzpdZpwTbHPknvd1nXZ+UaN0uIsWbaGgiLUCQXrFQ1zppsMhapF7eoZl6x0GAx1q4V3doHbuUjkc0NLwwKcXSl2j6TLmTDIAHXsh4OHHhCJqFan/6PiU0U+/WM2oijCbqq0j1eqvYQvHzyUnfT04eq2VywiA68sn0mYr+WFxmjmCimJgT/u42ybwNfQDu5E5vKmPGHgAAAABJRU5ErkJggg=='
+
+
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
@@ -523,11 +527,7 @@ angular.module('mms.designEditor', [
 
         DesignEditorController.prototype.componentBrowserItemDragStart = function(e, item) {
 
-            var img = document.getElementById('ghost-component').cloneNode();
-
-            img.style.display = 'block';
-
-            e.dataTransfer.setDragImage(img, 0, 0);
+            e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
 
             dndService.startDrag('component', {
                 componentId: item.id
