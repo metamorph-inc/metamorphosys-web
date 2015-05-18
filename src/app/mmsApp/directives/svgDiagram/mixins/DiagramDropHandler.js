@@ -11,14 +11,15 @@ var DiagramDropHandler = function() {
 DiagramDropHandler.prototype.apply = function(object) {
 
     object._onDrop = DiagramDropHandler._onDrop;
-    object._onDragenterFromOutside = DiagramDropHandler._onDragenterFromOutside;    
-    object._onDragleaveFromOutside = DiagramDropHandler._onDragleaveFromOutside;    
+    object._onDragenterFromOutside = DiagramDropHandler._onDragenterFromOutside;
+    object._onDragleaveFromOutside = DiagramDropHandler._onDragleaveFromOutside;
 };
 
 DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
-        position;
+        position,
+        componentServerUrl = this.componentServerUrl;
 
     e.preventDefault();
     // if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
@@ -38,17 +39,23 @@ DiagramDropHandler._onDrop = function(e, dragged) {
         ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
 
         this.$rootScope.$emit('componentInstantiationMustBeDone',
-            this.componentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+            componentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
 
     } else if (e.dataTransfer.files.length) {
 
         position = this.mmsUtils.getPositionFromEvent(e);
 
+        var event = 'componentInstantiationMustBeDone';
+
+        if (/\.(adm|adp)$/.test(e.dataTransfer.files[0].name)) {
+            event = 'subcircuitInstantiationMustBeDone';
+        }
+
         this.acmImportService.storeDroppedAcm(e.dataTransfer.files[0])
-            .then(function(url) {
-                self.$rootScope.$emit('componentInstantiationMustBeDone', url, position);
+            .then(function (url) {
+                self.$rootScope.$emit(event, url, position, componentServerUrl);
             })
-            .catch(function(err) {
+            .catch(function (err) {
                 self.$log.error('Error creating drag-n-drop component: ' + err);
             });
 
