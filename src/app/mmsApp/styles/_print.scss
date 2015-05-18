@@ -13,13 +13,33 @@
         display: none;
     }
 
+    .dropdown-navigator-container {
+        border-bottom: 2px solid #777;
+    }
+
+    .dropdown-navigator > li.cyphy-root {
+        display: none;
+    }
+
     .diagram-content-pane,
     .jspContainer,
     .jspPane {
         width: 100% !important;
+        height: 100% !important;
+        overflow: visible !important;
+        position: fixed;
+        margin-top: 60px;
     }
 
     .testbench-actions {
+        display: none;
+    }
+
+    .footer-drawer {
+        display: none;
+    }
+
+    .design-editor-keyboard-map {
         display: none;
     }
 }
