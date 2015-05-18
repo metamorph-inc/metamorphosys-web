@@ -479,6 +479,24 @@ Diagram.prototype.getSelectedComponents = function() {
 
 };
 
+Diagram.prototype.getSelectedWires = function() {
+
+    var self,
+        selectedWires;
+
+    self = this;
+    selectedWires = [];
+
+    angular.forEach(this.state.selectedWireIds, function(wireId) {
+
+        selectedWires.push(self._wiresById[wireId]);
+
+    });
+
+    return selectedWires;
+
+};
+
 Diagram.prototype.selectComponent = function(componentId) {
 
     var component = this.getComponentById(componentId),

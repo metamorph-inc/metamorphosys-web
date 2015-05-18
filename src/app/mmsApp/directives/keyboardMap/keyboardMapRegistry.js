@@ -50,6 +50,17 @@ module.exports = {
                 }
 
             ]
+        }, {
+            title: 'Wire Operations',
+            subTitle: 'When wire(s) selected',
+            actions: [
+
+                {
+                    name: 'Destroy',
+                    key: 'Del/Backspace'
+                }
+
+            ]
         },
 
         {
