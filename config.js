@@ -14,6 +14,8 @@ config.storage.cache = 0;
 
 config.client.appDir = path.join(__dirname, 'public/apps/mmsApp');
 
+config.socketIO.reconnection = true;
+
 config.executor.enable = true;
 // config.executor.nonce = null;
 
