@@ -61,6 +61,9 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
             var root = core._rootNode;
             var META = model.META;
             runAdmImporter(Templates, admFilename, expect, core, root, admFolder, META, function (err, container) {
+                if (err) {
+                    return callback(err);
+                }
                 var nodes = {};
                 for (var key in core._nodes) {
                     if (core._nodes.hasOwnProperty(key) && key.indexOf(container.path) === 0) {
@@ -76,6 +79,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
                 var nodesWithoutUndefined = JSON.parse(JSON.stringify(nodes)); // FIXME: do this more efficiently
                 var expected = Templates[admFilename + ".json"];
                 expect(expected).to.not.equal(undefined, admFilename + ".json not found among Templates. To add it, uncomment writeRegressionJson, add to templates folder, and run combine_templates.js");
+                expect(Object.keys(nodesWithoutUndefined).length).to.deep.equal(Object.keys(JSON.parse(expected)).length);
                 expect(nodesWithoutUndefined).to.deep.equal(JSON.parse(expected));
 
                 callback(err, container);

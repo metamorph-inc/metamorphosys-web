@@ -9,9 +9,8 @@ define(['plugin/PluginConfig',
     'xmljsonconverter',
     'q',
     '/plugin/AcmImporter/AcmImporter/AcmImporter',
-    '/plugin/AdmImporter/AdmImporter/AdmImporter',
-    'plugin/PluginContext'
-], function (PluginConfig, PluginBase, MetaTypes, BlobClient, LogManager, JSZip, Xml2Json, Q, AcmImporter, AdmImporter, PluginContext) {
+    '/plugin/AdmImporter/AdmImporter/AdmImporter'
+], function (PluginConfig, PluginBase, MetaTypes, BlobClient, LogManager, JSZip, Xml2Json, Q, AcmImporter, AdmImporter) {
     'use strict';
 
     /**
@@ -161,7 +160,7 @@ define(['plugin/PluginConfig',
                     DeleteExisting: true
                 };
 
-                return self.runPlugin(AcmImporter, config, {activeNode: self.acmFolder});
+                return AdmImporter.prototype.runPlugin.call(self, AcmImporter, config, {activeNode: self.acmFolder});
             });
         }).then(function () {
             self.admFolder = self.core.createNode({
@@ -179,7 +178,7 @@ define(['plugin/PluginConfig',
                 var config = {
                     admFile: self.artifact.descriptor.content[adm].content
                 };
-                return self.runPlugin(AdmImporter, config, {activeNode: self.admFolder});
+                return AdmImporter.prototype.runPlugin.call(self, AdmImporter, config, {activeNode: self.admFolder});
             });
         }).then(function () {
             self.atmFolder = self.core.createNode({
@@ -248,48 +247,6 @@ define(['plugin/PluginConfig',
             self.createMessage(self.workSpace, (err.message || err), 'error');
             mainCallback(err, self.result);
         });
-    };
-
-    ProjectImporter.prototype.runPlugin = function (pluginClass, config, context) {
-        var self = this;
-
-        var pluginContext = new PluginContext();
-        pluginContext.activeNode = self.activeNode;
-        pluginContext.META = self.META;
-        pluginContext.project = self.project;
-        pluginContext.projectName = self.project.projectName;
-        pluginContext.core = self.core;
-        pluginContext.commitHash = self.commitHash;
-        pluginContext.activeSelection = []; // selected objects
-        pluginContext.rootNode = self.rootNode;
-
-        for (var key in context) {
-            if (context.hasOwnProperty(key)) {
-                pluginContext[key] = context[key];
-            }
-        }
-
-        var pluginLogger = LogManager.create('Plugin.' + name);
-        var plugin = new pluginClass();
-        plugin.save = function (message, callback) {
-            callback(null);
-        };
-        var startTime = (new Date()).toISOString();
-        plugin.initialize(pluginLogger, new BlobClient(), self.gmeConfig);
-
-        plugin.setCurrentConfig(config);
-
-        plugin.configure(pluginContext);
-        return Q.ninvoke(plugin, 'main')
-            .then(function (result) {
-                result.setFinishTime((new Date()).toISOString());
-                result.setStartTime(startTime);
-
-                if (!result.success) {
-                    return Q.reject(result.error || result.messages[0].message);
-                }
-                return result;
-            });
     };
 
     function throttle(input, fn) {

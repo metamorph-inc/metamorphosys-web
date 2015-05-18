@@ -174,6 +174,28 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('subcircuitInstantiationMustBeDone', function($event, subcircuitUrl, position, componentServerUrl) {
+
+                        $rootScope.setProcessing();
+
+                        if (!position) {
+                            position = gridService.getViewPortCenter(selectedContainerId);
+                        }
+
+                        if (!position) {
+                            position = {
+                                x: 0,
+                                y: 0
+                            };
+                        }
+
+                        if (subcircuitUrl) {
+                            acmImportService.importAdm(self.layoutContext, selectedContainerId,
+                                subcircuitUrl, position, componentServerUrl);
+                        }
+
+                    });
+
                     addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
                         var operation;
