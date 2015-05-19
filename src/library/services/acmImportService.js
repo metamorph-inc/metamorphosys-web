@@ -29,15 +29,12 @@ angular.module('cyphy.services')
                     }).map(function (m) {
                         return m.activeNode.id;
                     })[0];
-                })
-                .catch(function (reason) {
-                    $log.error('Something went terribly wrong, ' + reason);
                 });
         };
 
         this.swapAcm = function (context, originalId, acmUrl) {
             var self = this,
-                getNodeById = function(nodes, id) {
+                getNodeById = function (nodes, id) {
                     return nodes.filter(function (node) {
                         return node.getId() === id;
                     })[0];
@@ -79,7 +76,9 @@ angular.module('cyphy.services')
                                 srcConnections = originalChildren.map(connectionMapFn('src'));
 
                             $q.all([connectionsMaps,
-                                nodeService.loadNode(context, replacement).then(function (replacement) { return replacement.loadChildren(); }),
+                                nodeService.loadNode(context, replacement).then(function (replacement) {
+                                    return replacement.loadChildren();
+                                }),
                                 dstConnections,
                                 srcConnections])
                                 .then(function switchConnections(args) {
@@ -90,8 +89,8 @@ angular.module('cyphy.services')
                                             connectionsMaps[name][origChildId].forEach(function (conn) {
                                                 var origChildName = getNodeById(originalChildren, origChildId).getAttribute('name'),
                                                     replacement = replacementChildren.filter(function (child) {
-                                                    return child.getAttribute('name') === origChildName;
-                                                })[0];
+                                                        return child.getAttribute('name') === origChildName;
+                                                    })[0];
                                                 if (replacement) {
                                                     conn.makePointer(name, replacement.getId());
                                                 } else {
@@ -143,17 +142,32 @@ angular.module('cyphy.services')
             //console.log(JSON.stringify(config));
             return pluginService.runPlugin(context, 'AdmImporter', config)
                 .then(function (result) {
-                    if (result.error || !result.success) {
-                        return $q.reject(result.error || 'Plugin failed');
+                    if (result.error) {
+                        return $q.reject(result.error);
+                    }
+                    if (!result.success) {
+                        if (result.messages.filter(function (msg) {
+                                return /Could not GET [^/]*(\w+).*?503/.test(msg.message);
+                            }).length) {
+                            return $q.reject('Component server is unavailable.');
+                        }
+                        var missing = result.messages.map(function (msg) {
+                            return (/Could not GET .*\/([\w_-]*).*?404/.exec(msg.message) || [])[1];
+                        }).filter(function (msg) {
+                            return msg;
+                        });
+                        if (missing.length) {
+                            return $q.reject('Missing components: ' + missing.join(', '));
+                        }
+                        return $q.reject('Subcircuit import failed: ' + result.messages.map(function (msg) {
+                            return msg.message;
+                        }).join(', '));
                     }
                     return result.messages.filter(function (m) {
                         return m.message === 'Added ADM';
                     }).map(function (m) {
                         return m.activeNode.id;
                     })[0];
-                })
-                .catch(function (reason) {
-                    $log.error('Something went terribly wrong, ' + reason);
                 });
         };
 

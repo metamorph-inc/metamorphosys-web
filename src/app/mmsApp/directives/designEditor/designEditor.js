@@ -169,7 +169,11 @@ angular.module('mms.designEditor', [
 
                         if (componentUrl) {
                             acmImportService.importAcm(self.layoutContext, selectedContainerId,
-                                componentUrl, position);
+                                componentUrl, position)
+                                .catch(function (err) {
+                                    $log.error(err);
+                                    $rootScope.stopProcessing();
+                                });
                         }
 
                     });
@@ -191,7 +195,11 @@ angular.module('mms.designEditor', [
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
-                                subcircuitUrl, position, componentServerUrl);
+                                subcircuitUrl, position, componentServerUrl)
+                                .catch(function (err) {
+                                    $log.error(err);
+                                    $rootScope.stopProcessing();
+                                });
                         }
 
                     });
