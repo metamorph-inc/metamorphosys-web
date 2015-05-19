@@ -265,10 +265,15 @@ var ComponentWireCorner = React.createClass({
 
     render: function(){
 
-        var parameters = this.props.segment.getParameters();
+        var parameters = this.props.segment.getParameters(),
+        className = 'component-wire-corner';
+
+        // if (this.props.wire.selected) {
+        //     className += ' selected';
+        // }
 
         return (
-            <rect className="component-wire-corner"
+            <rect className={className}
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
                 x={parameters.x2 - 3}
