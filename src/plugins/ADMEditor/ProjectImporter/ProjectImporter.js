@@ -8,8 +8,8 @@ define(['plugin/PluginConfig',
     'jszip',
     'xmljsonconverter',
     'q',
-    '/plugin/AcmImporter/AcmImporter/AcmImporter',
-    '/plugin/AdmImporter/AdmImporter/AdmImporter'
+    'plugin/AcmImporter/AcmImporter/AcmImporter',
+    'plugin/AdmImporter/AdmImporter/AdmImporter'
 ], function (PluginConfig, PluginBase, MetaTypes, BlobClient, LogManager, JSZip, Xml2Json, Q, AcmImporter, AdmImporter) {
     'use strict';
 
@@ -176,7 +176,8 @@ define(['plugin/PluginConfig',
 
             return throttle(adms, function (adm) {
                 var config = {
-                    admFile: self.artifact.descriptor.content[adm].content
+                    admFile: self.artifact.descriptor.content[adm].content,
+                    useExistingComponents: true
                 };
                 return AdmImporter.prototype.runPlugin.call(self, AdmImporter, config, {activeNode: self.admFolder});
             });
@@ -210,6 +211,9 @@ define(['plugin/PluginConfig',
                 }).then(function () {
                     return Q.ninvoke(self.blobClient, 'getObject', self.artifact.descriptor.content[testbenches_json].content);
                 }).then(function(testBenches) {
+                    if (typeof Buffer !== 'undefined' && Buffer.isBuffer(testBenches)) {
+                        testBenches = JSON.parse(testBenches.toString());
+                    }
                     // {"/Testing/PlaceAndRoute_1x2": "Template_Module_1x2__few_bga_connections"}
                     var tbs = Object.getOwnPropertyNames(testBenches);
                     return throttle(tbs, function (tb) {

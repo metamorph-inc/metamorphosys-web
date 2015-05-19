@@ -51,6 +51,7 @@ config.requirejsPaths = {
     'xmljsonconverter': './utils/xmljsonconverter',
     'sax': './vendor/sax/sax',
     'q': './node_modules/q/q',
+    'js': './node_modules/webgme/src/client/js',
 
     'panels/ProjectAnalyzer': './src/panels/ProjectAnalyzer',
     'widgets/ProjectAnalyzer': './src/widgets/ProjectAnalyzer',
