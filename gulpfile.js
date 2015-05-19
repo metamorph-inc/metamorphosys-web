@@ -632,7 +632,7 @@ registerAppTasks = function(appName) {
 
             runSequence(
                 'get-git-hash',
-                [                    
+                [
                     'generate-config-' + appName,
                     'lint-' + appName,
                     'browserify-' + appName,
@@ -725,7 +725,7 @@ gulp.task('register-watchers', ['compile-all'], function(cb) {
         var
             appSourceRoot = sourcePaths.appSourcesFolders + appName + '/',
 
-            appSources = [appSourceRoot + '*.js', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx', '!appConfig.js'],
+            appSources = [appSourceRoot + '*.js', appSourceRoot + '*.json', appSourceRoot + '**/*.js', appSourceRoot + '**/*.jsx', '!appConfig.js'],
 
             appHtmls = [appSourceRoot + '**/*.html'],
 
@@ -767,7 +767,7 @@ gulp.task('get-git-hash', function() {
     }, function(err, hash) {
         console.log('Current build (git) hash: ' + hash);
         buildHash = hash;
-        deferred.resolve();        
+        deferred.resolve();
     });
 
     return deferred.promise;

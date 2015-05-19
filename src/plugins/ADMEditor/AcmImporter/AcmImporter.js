@@ -217,7 +217,7 @@ define( [ 'plugin/PluginConfig',
 
             self.findComponentsRecursive(self.getWorkspaceNode( acmFolderNode ), findComponentsCallback);
         } else if (currentConfig.AcmUrl) {
-            getZipFromUrl(currentConfig.AcmUrl, function (err, res, filename) {
+            self.getZipFromUrl(currentConfig.AcmUrl, function (err, res, filename) {
                 if (err) {
                     self.result.setSuccess(false);
                     mainCallback('Could not GET \'' + currentConfig.AcmUrl + '\': ' + err, self.result);
@@ -245,7 +245,7 @@ define( [ 'plugin/PluginConfig',
         }
     };
 
-    function getZipFromUrl(url, callback) {
+    AcmImporter.prototype.getZipFromUrl = function getZipFromUrl(url, callback) {
         superagent.parse['application/zip'] = function (obj, parseCallback) {
             if (parseCallback) {
                 // Running on node; this should be unreachable due to req.pipe() below
@@ -312,8 +312,7 @@ define( [ 'plugin/PluginConfig',
             });
             req.end(callback);
         }
-
-    }
+    };
 
     AcmImporter.prototype.getWorkspaceNode = function ( node ) {
         var self = this;
@@ -407,6 +406,7 @@ define( [ 'plugin/PluginConfig',
             base: MetaTypes.AVMComponentModel
         } );
         self.id2ComponentMap[ id ] = newAcmNode;
+        self.result.id2ComponentMap = self.id2ComponentMap;
         self.id2NodeMap = {};
 
         if ( avmComponent.hasOwnProperty( 'Classifications' ) && avmComponent[ 'Classifications' ][ '#text' ] ) {

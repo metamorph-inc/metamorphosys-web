@@ -14,6 +14,8 @@ config.storage.cache = 0;
 
 config.client.appDir = path.join(__dirname, 'public/apps/mmsApp');
 
+config.socketIO.reconnection = true;
+
 config.executor.enable = true;
 // config.executor.nonce = null;
 
@@ -49,6 +51,7 @@ config.requirejsPaths = {
     'xmljsonconverter': './utils/xmljsonconverter',
     'sax': './vendor/sax/sax',
     'q': './node_modules/q/q',
+    'js': './node_modules/webgme/src/client/js',
 
     'panels/ProjectAnalyzer': './src/panels/ProjectAnalyzer',
     'widgets/ProjectAnalyzer': './src/widgets/ProjectAnalyzer',

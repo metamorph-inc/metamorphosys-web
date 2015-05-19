@@ -4,6 +4,8 @@
     baseUrl: '../../../',
     paths: {
         'webcyphy.plugins': './utils/build/webcyphy.plugins/webcyphy.plugins',
+        js: './node_modules/webgme/src/client/js',
+        debug: './node_modules/webgme/src/client/lib/debug/debug',
         common: './node_modules/webgme/src/common',
         blob: './node_modules/webgme/src/common/blob',
         plugin: './node_modules/webgme/src/plugin',
@@ -11,6 +13,7 @@
         sax: './vendor/sax/sax',
         jszip: './node_modules/webgme/src/client/lib/jszip/jszip',
         ejs: './node_modules/webgme/src/common/util/ejs',
+        q: './node_modules/q/q',
         executor: './node_modules/webgme/src/common/executor',
         superagent: './node_modules/webgme/src/client/lib/superagent/superagent-1.1.0',
         'plugin/AdmExporter': './src/plugins/ADMEditor',

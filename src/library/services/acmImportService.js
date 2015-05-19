@@ -21,8 +21,8 @@ angular.module('cyphy.services')
             //console.log(JSON.stringify(config));
             return pluginService.runPlugin(context, 'AcmImporter', config)
                 .then(function (result) {
-                    if (result.error) {
-                        return $q.reject(result.error);
+                    if (result.error || !result.success) {
+                        return $q.reject(result.error || 'Plugin failed');
                     }
                     return result.messages.filter(function (m) {
                         return m.message === 'Added ACM';
@@ -31,7 +31,7 @@ angular.module('cyphy.services')
                     })[0];
                 })
                 .catch(function (reason) {
-                    $log('Something went terribly wrong, ' + reason);
+                    $log.error('Something went terribly wrong, ' + reason);
                 });
         };
 
@@ -126,6 +126,35 @@ angular.module('cyphy.services')
             });
 
             return deferred.promise;
+        };
+
+        this.importAdm = function (context, parentId, admUrl, position, componentServerUrl) {
+            var config = {
+                activeNode: parentId,
+                runOnServer: true,
+                pluginConfig: {
+                    admFile: '',
+                    admUrl: admUrl,
+                    useExistingComponents: false,
+                    componentServerUrl: componentServerUrl,
+                    position: position
+                }
+            };
+            //console.log(JSON.stringify(config));
+            return pluginService.runPlugin(context, 'AdmImporter', config)
+                .then(function (result) {
+                    if (result.error || !result.success) {
+                        return $q.reject(result.error || 'Plugin failed');
+                    }
+                    return result.messages.filter(function (m) {
+                        return m.message === 'Added ADM';
+                    }).map(function (m) {
+                        return m.activeNode.id;
+                    })[0];
+                })
+                .catch(function (reason) {
+                    $log.error('Something went terribly wrong, ' + reason);
+                });
         };
 
     });
