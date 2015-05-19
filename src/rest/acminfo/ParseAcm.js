@@ -12,7 +12,7 @@ var xmljsonconverter = requireJS('xmljsonconverter'),
     };
 
     function endsWith(input, suffix) {
-        return input.lastIndexOf(suffix) === (input.length - suffix.length);
+        return suffix.length <= input.length && input.lastIndexOf(suffix) === (input.length - suffix.length);
     }
 
     ParseAcm.prototype.getfile = function getfile(path) {
