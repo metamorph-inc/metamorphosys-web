@@ -19,8 +19,62 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         startDrag,
         finishDrag,
-        cancelDrag;
+        cancelDrag,
 
+        scrollWhenAlongTheEdge,
+        latestOffset,
+        scrollWhenAlongTheEdgeInterval;        
+
+    scrollWhenAlongTheEdge = function() {
+
+        var dx = 0,
+            dy = 0,
+            TOLERANCE = 50,
+            SCROLL_AMOUNT = 75,
+            offset,
+            didScroll;
+
+        if (latestOffset) {
+
+            if (latestOffset.x - $scope.visibleArea.left <= TOLERANCE) {
+                dx = -SCROLL_AMOUNT;
+                latestOffset.x -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.right - latestOffset.x <= TOLERANCE) {
+                dx = SCROLL_AMOUNT;
+                latestOffset.x += SCROLL_AMOUNT;
+            }
+
+            if (latestOffset.y - $scope.visibleArea.top <= TOLERANCE) {
+                dy = -SCROLL_AMOUNT;
+                latestOffset.y -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.bottom - latestOffset.y <= TOLERANCE) {
+                dy = SCROLL_AMOUNT;
+                latestOffset.y += SCROLL_AMOUNT;
+            }
+
+            if (dx !== 0 || dy !== 0) {
+
+                didScroll = $scope.diagramContainerController.scrollSome(
+                    $scope.visibleArea.left + dx,
+                    $scope.visibleArea.top + dy
+                );
+
+                if (didScroll && moveOperation) {
+                    moveOperation.set(latestOffset);
+                }
+
+            }
+        }
+
+        if (self.dragging) {
+            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);        
+        }
+
+    };
 
     getOffsetToMouse = function ($event) {
 
@@ -30,6 +84,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
             x: $event.pageX - $scope.elementOffset.left,
             y: $event.pageY - $scope.elementOffset.top
         };
+
+        latestOffset = offset;
 
         return offset;
 
@@ -44,6 +100,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         $log.debug('Dragging wire', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;
+
+        scrollWhenAlongTheEdge();
 
     };
 

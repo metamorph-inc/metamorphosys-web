@@ -19,7 +19,62 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         startDrag,
         finishDrag,
-        cancelDrag;
+        cancelDrag,
+
+        scrollWhenAlongTheEdge,
+        latestOffset,
+        scrollWhenAlongTheEdgeInterval;
+
+    scrollWhenAlongTheEdge = function() {
+
+        var dx = 0,
+            dy = 0,
+            TOLERANCE = 50,
+            SCROLL_AMOUNT = 75,
+            offset,
+            didScroll;
+
+        if (latestOffset) {
+
+            if (latestOffset.x - $scope.visibleArea.left <= TOLERANCE) {
+                dx = -SCROLL_AMOUNT;
+                latestOffset.x -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.right - latestOffset.x <= TOLERANCE) {
+                dx = SCROLL_AMOUNT;
+                latestOffset.x += SCROLL_AMOUNT;
+            }
+
+            if (latestOffset.y - $scope.visibleArea.top <= TOLERANCE) {
+                dy = -SCROLL_AMOUNT;
+                latestOffset.y -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.bottom - latestOffset.y <= TOLERANCE) {
+                dy = SCROLL_AMOUNT;
+                latestOffset.y += SCROLL_AMOUNT;
+            }
+
+            if (dx !== 0 || dy !== 0) {
+
+                didScroll = $scope.diagramContainerController.scrollSome(
+                    $scope.visibleArea.left + dx,
+                    $scope.visibleArea.top + dy
+                );
+
+                if (didScroll && moveOperation) {
+                    moveOperation.set(latestOffset);
+                }
+
+            }
+        }
+
+        if (self.dragging) {
+            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);        
+        }
+
+    };
 
 
     getOffsetToMouse = function ($event) {
@@ -30,6 +85,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
             x: $event.pageX - $scope.elementOffset.left,
             y: $event.pageY - $scope.elementOffset.top
         };
+
+        latestOffset = offset;
 
         return offset;
 
@@ -44,6 +101,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         $log.debug('Dragging', possibbleDragTargetsDescriptor);
         possibbleDragTargetsDescriptor = null;
+
+        scrollWhenAlongTheEdge();
 
     };
 
@@ -95,47 +154,9 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         if (moveOperation) {
 
-            var dx = 0, 
-                dy = 0, 
-                TOLERANCE = 100,
-                SCROLL_AMOUNT = 35;
-            
             offset = getOffsetToMouse($event);
 
-            if (offset.x - $scope.visibleArea.left <= TOLERANCE) {
-                dx = -SCROLL_AMOUNT;
-                offset.x -= SCROLL_AMOUNT;
-            }
-
-            if ($scope.visibleArea.right - offset.x <= TOLERANCE) {
-                dx = SCROLL_AMOUNT;
-                offset.x += SCROLL_AMOUNT;                
-            }
-
-            if (offset.y - $scope.visibleArea.top <= TOLERANCE) {
-                dy = -SCROLL_AMOUNT;
-                offset.y -= SCROLL_AMOUNT;                
-            }
-
-            if ($scope.visibleArea.bottom - offset.y <= TOLERANCE) {
-                dy = SCROLL_AMOUNT;
-                offset.y += SCROLL_AMOUNT;                
-            }
-
-            if (dx !== 0 || dy !== 0) {
-                clearTimeout(scrollerTimeout);
-
-                $scope.diagramContainerController.scrollSome(
-                    $scope.visibleArea.left + dx, 
-                    $scope.visibleArea.top + dy
-                );
-                if (moveOperation) {
-                    moveOperation.set(offset);
-                }
-
-            } else {
-                moveOperation.set(offset);
-            }
+            moveOperation.set(offset);
 
         }
 
@@ -197,7 +218,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
 
         $scope.diagram.config = $scope.diagram.config || {};
 
-        if ($scope.diagram.config.editable === true &&            
+        if ($scope.diagram.config.editable === true &&
             component.nonSelectable !== true &&
             component.locationLocked !== true) {
 
@@ -209,7 +230,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
                 mousePosition: {
                     x: $event.pageX,
                     y: $event.pageY
-                },                
+                },
                 primaryTarget: primaryTargetDescriptor,
                 targets: [ primaryTargetDescriptor ]
             };

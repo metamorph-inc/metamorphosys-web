@@ -19,8 +19,81 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         onDiagramMouseMove,
         onDiagramMouseLeave,
         onWindowBlur,
-        onPortMouseDown;
+        onPortMouseDown,
 
+        getOffsetToMouse,
+        scrollWhenAlongTheEdge,        
+        latestMouseEvent,
+        scrollWhenAlongTheEdgeInterval;      
+
+
+    getOffsetToMouse = function ($event) {
+
+        var offset;
+
+        offset = {
+            x: $event.pageX - $scope.elementOffset.left,
+            y: $event.pageY - $scope.elementOffset.top
+        };
+
+        return offset;
+
+    };
+
+
+    scrollWhenAlongTheEdge = function() {
+
+        var dx = 0,
+            dy = 0,
+            TOLERANCE = 40,
+            SCROLL_AMOUNT = 75,
+            offset,
+            didScroll,
+            latestOffset;
+
+        if (latestMouseEvent) {
+
+            latestOffset = getOffsetToMouse(latestMouseEvent);
+
+            if (latestOffset.x - $scope.visibleArea.left <= TOLERANCE) {
+                dx = -SCROLL_AMOUNT;
+                latestOffset.x -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.right - latestOffset.x <= TOLERANCE) {
+                dx = SCROLL_AMOUNT;
+                latestOffset.x += SCROLL_AMOUNT;
+            }
+
+            if (latestOffset.y - $scope.visibleArea.top <= TOLERANCE) {
+                dy = -SCROLL_AMOUNT;
+                latestOffset.y -= SCROLL_AMOUNT;
+            }
+
+            if ($scope.visibleArea.bottom - latestOffset.y <= TOLERANCE) {
+                dy = SCROLL_AMOUNT;
+                latestOffset.y += SCROLL_AMOUNT;
+            }
+
+            if (dx !== 0 || dy !== 0) {
+
+                didScroll = $scope.diagramContainerController.scrollSome(
+                    $scope.visibleArea.left + dx,
+                    $scope.visibleArea.top + dy
+                );
+
+                if (didScroll) {
+                    onDiagramMouseMove(latestMouseEvent);
+                }
+
+            }
+        }
+
+        if (self.wiring) {
+            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);        
+        }
+
+    };
 
 
     startWire = function(component, port) {
@@ -33,6 +106,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         $log.debug('Starting wire', wireStart);
 
         self.wiring = true;
+
+        scrollWhenAlongTheEdge();        
 
     };
 
@@ -105,6 +180,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
     onDiagramMouseMove = function($event) {
 
         var snappedPosition;
+
+        latestMouseEvent = $event;
 
         if (wireStart) {
 

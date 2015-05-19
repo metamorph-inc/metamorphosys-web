@@ -29,11 +29,16 @@ module.exports = function($scope, $timeout, $log) {
 
         _updateVisibleArea = function() {
 
+            var w = $scope.$contentPane.width(),
+                h = $scope.$contentPane.height();
+
             $scope.visibleArea = {
                 left: left || 0,
                 top: top || 0,
-                right: left + $scope.$contentPane.width(),
-                bottom: top + $scope.$contentPane.height()
+                right: left + w,
+                bottom: top + h,
+                width: w,
+                height: h
             };
 
         };

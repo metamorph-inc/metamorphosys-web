@@ -111,11 +111,25 @@ angular.module('mms.diagramContainer', [
                 $scope.initialized = val;
             };
 
-            this.scrollSome = function(dx, dy) {
+            this.scrollSome = function(x, y) {
 
-                var jsp = $scope.$contentPane.data('jsp');
+                var jsp = $scope.$contentPane.data('jsp'),
+                    result;
 
-                jsp.scrollTo(dx, dy, false);
+                if (x >= 0 &&
+                    x + $scope.visibleArea.width <= $scope.diagram.config.width + 15 &&
+                    y >= 0 &&
+                    y + $scope.visibleArea.height <= $scope.diagram.config.height + 15) {
+                    
+                    jsp.scrollTo(x, y, false);
+
+                    result = true;
+
+                } else {
+                    result = false;
+                }
+
+                return result;
 
             };
 
