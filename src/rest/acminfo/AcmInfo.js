@@ -5,9 +5,8 @@
 
      'use strict';
 
-    var ParseAcm = require('./ParseAcm'),
+    var ParseAcm = require('parseacm'),
         Logger = require('../../../node_modules/webgme/src/server/logger'),
-        logger,
         q = require('q'),
         BlobClient = requireJS('blob/BlobClient'),
         contentDisposition = require('content-disposition'),
