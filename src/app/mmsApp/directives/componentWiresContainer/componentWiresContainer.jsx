@@ -126,12 +126,14 @@ var ComponentWire = React.createClass({
                 <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} crossOversTimeStamp={wireSegment._crossOversTimeStamp}/>
             );
 
-            if (self.props.wire.selected) {
+            if (i !== l - 1) {
 
-                if (i !== l - 1) {
+                if (self.props.wire.selected || wireSegment._endCornerSelected) {
+
                     childCorners.push(
-                        <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl}/>
+                        <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} selected={wireSegment._endCornerSelected}/>
                     );
+
                 }
 
             }
@@ -247,7 +249,8 @@ var ComponentWireCorner = React.createClass({
 
           return (
             nextParameters.x2 !== parameters.x2 ||
-            nextParameters.y2 !== parameters.y2
+            nextParameters.y2 !== parameters.y2 ||
+            nextProps.selected !== this.props.selected
             );
     },
 
@@ -266,14 +269,14 @@ var ComponentWireCorner = React.createClass({
     render: function(){
 
         var parameters = this.props.segment.getParameters(),
-        className = 'component-wire-corner';
+            classString = 'component-wire-corner';
 
-        // if (this.props.wire.selected) {
-        //     className += ' selected';
-        // }
+        if (this.props.selected) {
+            classString += ' selected'
+        }
 
         return (
-            <rect className={className}
+            <rect className={classString}
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
                 x={parameters.x2 - 3}

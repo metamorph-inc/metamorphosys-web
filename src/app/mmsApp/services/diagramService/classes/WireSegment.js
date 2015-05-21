@@ -6,7 +6,17 @@ var WireSegment = function(parameters, parentWire) {
 
 	this._parameters = parameters;
 	this._parentWire = parentWire;
+
+    this._endCornerSelected = false;
 	
+};
+
+WireSegment.prototype.selectEndCorner = function() {
+    this._endCornerSelected = true;
+};
+
+WireSegment.prototype.deselectEndCorner = function() {
+    this._endCornerSelected = false;
 };
 
 WireSegment.prototype.setParentWire = function ( parentWire ) {
@@ -52,6 +62,21 @@ WireSegment.prototype.isInViewport = function(viewPort, padding) {
         }
 
     }
+
+    return result;
+
+};
+
+WireSegment.prototype.isEndCornerInViewport = function(viewPort, padding) {
+
+    var result = false;
+
+    if (this._parameters.x2 >= (viewPort.left + padding.x) && 
+        this._parameters.x2 <= (viewPort.right - padding.x) &&
+        this._parameters.y2 >= (viewPort.top + padding.y) &&
+        this._parameters.y2 <= (viewPort.bottom - padding.y) ) {
+            result = true;
+        }
 
     return result;
 

@@ -56,7 +56,8 @@ var Diagram = function() {
 
     this.state = {
         selectedComponentIds: [],
-        selectedWireIds: []
+        selectedWireIds: [],
+        selectedSegmentEndcornerIds: []
     };
 
     sortComponentsByZ(this._components);
@@ -497,7 +498,7 @@ Diagram.prototype.getSelectedWires = function() {
 
 };
 
-Diagram.prototype.selectComponent = function(componentId) {
+Diagram.prototype.selectComponent = function(componentId, silent) {
 
     var component = this.getComponentById(componentId),
         index;
@@ -510,7 +511,9 @@ Diagram.prototype.selectComponent = function(componentId) {
 
             this.state.selectedComponentIds.push(componentId);
 
-            this.afterSelectionChange();
+            if (!silent) {
+                this.afterSelectionChange();
+            }
 
         }
 
@@ -518,7 +521,7 @@ Diagram.prototype.selectComponent = function(componentId) {
 
 };
 
-Diagram.prototype.selectWire = function(wireId) {
+Diagram.prototype.selectWire = function(wireId, silent) {
 
     var wire = this.getWireById(wireId),
         index;
@@ -530,10 +533,37 @@ Diagram.prototype.selectWire = function(wireId) {
         if (index === -1) {
 
             this.state.selectedWireIds.push(wireId);
-
             wire.selected = true;
 
-            this.afterSelectionChange();
+            if (!silent) {
+                this.afterSelectionChange();
+            }
+
+        }
+
+    }
+
+};
+
+Diagram.prototype.selectSegmentEndCorner = function(wireId, segmentIndex, silent) {
+
+    var wire = this.getWireById(wireId),
+        segment = wire.getSegments()[segmentIndex],
+        id = wireId + '_' + segmentIndex,
+        index;
+
+    if (segment && this.config.disallowSelection !== true && wire && wire.nonSelectable !== true) {
+
+        index = this.state.selectedSegmentEndcornerIds.indexOf(id);
+
+        if (index === -1) {
+            
+            this.state.selectedSegmentEndcornerIds.push(id);
+            segment.selectEndCorner();
+            
+            if (!silent) {
+                this.afterSelectionChange();
+            }
 
         }
 
@@ -553,9 +583,7 @@ Diagram.prototype.deselectComponent = function(componentId) {
         if (index > -1) {
 
             this.state.selectedComponentIds.splice(index, 1);
-
             component.selected = false;
-
             this.afterSelectionChange();
 
         }
@@ -631,6 +659,31 @@ Diagram.prototype.clearSelection = function(silent) {
         }
 
     }
+
+    if (this.state.selectedSegmentEndcornerIds.length) {
+
+        this.state.selectedSegmentEndcornerIds.forEach(function(idPairStr) {
+
+            var idPair = idPairStr.split('_'),
+                wire = self.getWireById(idPair[0]),
+                segment = wire.getSegments()[idPair[1]];
+
+            if (segment) {
+                segment.deselectEndCorner();
+            }
+
+        });
+
+        this.state.selectedSegmentEndcornerIds = [];
+
+        if (silent !== true) {
+
+            this.afterSelectionChange();
+
+        }
+
+    }
+
 
 };
 
@@ -908,7 +961,7 @@ Diagram.prototype.getComponentsInViewport = function(viewport, padding) {
 
 };
 
-Diagram.prototype.selectComponentsInViewport = function(viewport, padding) {
+Diagram.prototype.selectComponentsInViewport = function(viewport, padding, silent) {
 
     var components = this._components;
 
@@ -917,10 +970,41 @@ Diagram.prototype.selectComponentsInViewport = function(viewport, padding) {
             var component = components[i];
 
             if (component.isInViewport(viewport, padding)) {
-                this.selectComponent(component.id);
+                this.selectComponent(component.id, true);
             }
 
         }    
+
+        if (!silent) {
+            this.afterSelectionChange();
+        }
+
+};
+
+Diagram.prototype.selectWireCornersInViewport = function(viewport, padding, silent) {
+
+    var wires = this._wires;
+
+        for (var i = 0; i < wires.length; i++) {
+
+            var wire = wires[i];
+            var segments = wire.getSegments();
+
+            for (var j = 0; j < segments.length-1; j++) {
+
+                var segment = segments[j];
+
+                if (segment && segment.isEndCornerInViewport(viewport, padding)) {
+                    this.selectSegmentEndCorner(wire.getId(), j, true);
+                }
+
+            }
+        }    
+
+        if (!silent) {
+            this.afterSelectionChange();
+        }
+        
 };
 
 EventDispatcher.prototype.apply(Diagram.prototype);
