@@ -580,11 +580,11 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         } else if (descriptor.baseName === 'Connector') {
 
-            element = avmComponentModelParser(descriptor, zIndex);
+            element = connectorParser(descriptor, zIndex);
 
         } else if (descriptor.baseName === 'Container') {
 
-            element = avmComponentModelParser(descriptor, zIndex);
+            element = containerParser(descriptor, zIndex);
 
         } else if (descriptor.baseName === 'ConnectorComposition') {
 
