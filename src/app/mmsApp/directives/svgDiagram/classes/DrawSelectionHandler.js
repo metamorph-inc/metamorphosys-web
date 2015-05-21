@@ -89,8 +89,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             }
 
-            $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING);
-            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 });            
+            $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING, true);
+            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 }, true);            
 
         }
 
@@ -123,7 +123,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
     finishDraw = function () {
         self.drawing = false; 
-        $scope.drawnSelection = null;        
+        $scope.drawnSelection = null;  
+        $scope.diagram.afterSelectionChange();
     };
 
     onDiagramMouseMove = function ($event) {
