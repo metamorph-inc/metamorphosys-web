@@ -126,74 +126,11 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-minus',
                     action: function() {
 
-                        var sIndex,
-                            nextSegment,
-                            affectedSegmentParameters,
-                            segments = wire.getSegments();
-
-                        sIndex = segments.indexOf(segment);
-
-                        nextSegment = segments[sIndex + 1];
-
-                        var parameters = segment.getParameters();
-                        var nextParameters = nextSegment.getParameters();
-
-                        wire.deleteSegment(sIndex);
-
-                        var newSegments = wiringService.getSegmentsBetweenPositions({
-                            end1: {
-                                x: parameters.x1,
-                                y: parameters.y1
-                            },
-                            end2: {
-                                x: nextParameters.x2,
-                                y: nextParameters.y2
-                            }
-                        }, 'SimpleRouter');
-
-                        wire.replaceSegmentsFromParametersArray(
-                            sIndex,
-                            newSegments
-                        );
-
-                        if (sIndex > 0 &&
-                            parameters.router &&
-                            parameters.router.type === 'ElbowRouter' &&
-                            parameters.elbowPartOrder === 1) {
-
-                            // If it was part of an Elbow routed segment set, set the other part to
-                            // simple-routed
-
-                            affectedSegmentParameters = segments[sIndex - 1].getParameters();
-                            affectedSegmentParameters.router = {
-                                type: 'SimpleRouter'
-                            };
-
-                            delete affectedSegmentParameters.elbowPartOrder;
-
-                        }
-
-
-                        if (sIndex + 1 < segments.length &&
-                            nextParameters.router &&
-                            nextParameters.router.type === 'ElbowRouter' &&
-                            nextParameters.elbowPartOrder === 0) {
-
-                            // If it was part of an Elbow routed segment set, set the other part to
-                            // simple-routed
-
-                            affectedSegmentParameters = segments[sIndex + 1].getParameters();
-                            affectedSegmentParameters.router = {
-                                type: 'SimpleRouter'
-                            };
-
-                            delete affectedSegmentParameters.elbowPartOrder;
-
-                        }
+                        wire.destroyEndCornerOfSegment(segment, wiringService);                      
 
                         $scope.diagram.updateWireSegments(wire);
 
-                        ga('send', 'event', 'corner', 'destroy', wire.getId(), sIndex);
+                        ga('send', 'event', 'corner', 'destroy', wire.getId(), wire.getSegments().indexOf(segment));
 
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
 
@@ -212,93 +149,11 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-plus',
                     action: function() {
 
-                        var sIndex,
-                            newSegmentParameters1,
-                            newSegmentParameters2,
-                            newPosition,
-                            segmentParameters,
-                            nextParameters,
-                            segments = wire.getSegments(),
-                            affectedSegmentParameters;
-
-                        sIndex = segments.indexOf(segment);
-
-                        newPosition = offsetToMouse;
-
-                        segmentParameters = segment.getParameters();
-
-                        newPosition = gridService.getSnappedPosition(newPosition);
-
-                        newSegmentParameters1 = wiringService.getSegmentsBetweenPositions({
-                            end1: {
-                                x: segmentParameters.x1,
-                                y: segmentParameters.y1
-                            },
-
-                            end2: {
-                                x: newPosition.x,
-                                y: newPosition.y
-                            }
-                        }, 'SimpleRouter')[0];
-
-
-                        newSegmentParameters2 = wiringService.getSegmentsBetweenPositions({
-                            end1: {
-                                x: newPosition.x,
-                                y: newPosition.y
-                            },
-
-                            end2: {
-                                x: segmentParameters.x2,
-                                y: segmentParameters.y2
-                            }
-                        }, 'SimpleRouter')[0];
-
-                        wire.deleteSegment(sIndex);
-                        wire.insertSegment(sIndex, new WireSegment(newSegmentParameters1, wire));
-                        wire.insertSegment(sIndex + 1, new WireSegment(newSegmentParameters2, wire));
-
-                        if (sIndex > 0 &&
-                            segmentParameters.router &&
-                            segmentParameters.router.type === 'ElbowRouter' &&
-                            segmentParameters.elbowPartOrder === 1) {
-
-                            // If it was part of an Elbow routed segment set, set the other part to
-                            // simple-routed
-
-                            affectedSegmentParameters = segments[sIndex - 1].getParameters();
-                            affectedSegmentParameters.router = {
-                                type: 'SimpleRouter'
-                            };
-
-                            delete affectedSegmentParameters.elbowPartOrder;
-
-                        }
-
-
-                        nextParameters = segments[sIndex + 2];
-
-                        if (sIndex + 2 < segments.length &&
-                            nextParameters.router &&
-                            nextParameters.router.type === 'ElbowRouter' &&
-                            nextParameters.elbowPartOrder === 0) {
-
-                            // If it was part of an Elbow routed segment set, set the other part to
-                            // simple-routed
-
-                            affectedSegmentParameters = segments[sIndex + 2].getParameters();
-                            affectedSegmentParameters.router = {
-                                type: 'SimpleRouter'
-                            };
-
-                            delete affectedSegmentParameters.elbowPartOrder;
-
-                        }
-
+                        wire.splitSegmentWithNewCorner(segment, offsetToMouse, wiringService, gridService);
 
                         $scope.diagram.updateWireSegments(wire);
 
-                        ga('send', 'event', 'corner', 'add', wire.getId(), sIndex);
+                        ga('send', 'event', 'corner', 'add', wire.getId(), wire.getSegments().indexOf(segment));
 
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }

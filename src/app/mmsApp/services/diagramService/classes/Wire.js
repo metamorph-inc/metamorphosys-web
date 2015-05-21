@@ -22,11 +22,11 @@ Wire.prototype.setId = function(id) {
 };
 
 Wire.prototype.getEnd1 = function() {
-	return this._end1;
+    return this._end1;
 };
 
 Wire.prototype.getEnd2 = function() {
-	return this._end2;
+    return this._end2;
 };
 
 Wire.prototype.getSegments = function() {
@@ -34,7 +34,7 @@ Wire.prototype.getSegments = function() {
 };
 
 Wire.prototype.getCopyOfSegmentsParameters = function() {
-        
+
     var i, l,
         results = [];
 
@@ -56,12 +56,12 @@ Wire.prototype.makeSegmentsFromParameters = function(parametersArray) {
 
     var self = this;
 
-    this.removeSegments();    
+    this.removeSegments();
 
     if (Array.isArray(parametersArray)) {
 
-        this._segments = parametersArray.map(function(parameters){
-            
+        this._segments = parametersArray.map(function(parameters) {
+
             return new WireSegment(parameters, self);
 
         });
@@ -75,7 +75,7 @@ Wire.prototype.removeSegments = function() {
 };
 
 Wire.prototype.appendSegmentsFromParameters = function(parametersArray) {
-    
+
     var i,
         segment;
 
@@ -89,7 +89,7 @@ Wire.prototype.appendSegmentsFromParameters = function(parametersArray) {
 };
 
 Wire.prototype.appendSegmentFromParameters = function(parameters) {
-    
+
     var i,
         segment;
 
@@ -99,7 +99,7 @@ Wire.prototype.appendSegmentFromParameters = function(parameters) {
 };
 
 Wire.prototype.prependSegmentsFromParameters = function(parametersArray) {
-    
+
     var i,
         segment;
 
@@ -136,7 +136,7 @@ Wire.prototype.prependSegmentsFromParameters = function(parametersArray) {
 //     for (i = 0; i < arguments.length; i++) {
 
 //         segment = arguments[i];
-        
+
 //         segment.setParentWire(this);
 //         this._segments.unShift(segment);
 
@@ -244,6 +244,163 @@ Wire.prototype.getEndPositions = function() {
     }
 
     return positions;
+
+};
+
+Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {
+
+    var sIndex,
+        nextSegment,
+        affectedSegmentParameters,
+        wire = this,
+        segments = wire.getSegments();
+
+    sIndex = segments.indexOf(segment);
+
+    nextSegment = segments[sIndex + 1];
+
+    var parameters = segment.getParameters();
+    var nextParameters = nextSegment.getParameters();
+
+    wire.deleteSegment(sIndex);
+
+    var newSegments = wiringService.getSegmentsBetweenPositions({
+        end1: {
+            x: parameters.x1,
+            y: parameters.y1
+        },
+        end2: {
+            x: nextParameters.x2,
+            y: nextParameters.y2
+        }
+    }, 'SimpleRouter');
+
+    wire.replaceSegmentsFromParametersArray(
+        sIndex,
+        newSegments
+    );
+
+    if (sIndex > 0 &&
+        parameters.router &&
+        parameters.router.type === 'ElbowRouter' &&
+        parameters.elbowPartOrder === 1) {
+
+        // If it was part of an Elbow routed segment set, set the other part to
+        // simple-routed
+
+        affectedSegmentParameters = segments[sIndex - 1].getParameters();
+        affectedSegmentParameters.router = {
+            type: 'SimpleRouter'
+        };
+
+        delete affectedSegmentParameters.elbowPartOrder;
+
+    }
+
+
+    if (sIndex + 1 < segments.length &&
+        nextParameters.router &&
+        nextParameters.router.type === 'ElbowRouter' &&
+        nextParameters.elbowPartOrder === 0) {
+
+        // If it was part of an Elbow routed segment set, set the other part to
+        // simple-routed
+
+        affectedSegmentParameters = segments[sIndex + 1].getParameters();
+        affectedSegmentParameters.router = {
+            type: 'SimpleRouter'
+        };
+
+        delete affectedSegmentParameters.elbowPartOrder;
+
+    }
+
+};
+
+Wire.prototype.splitSegmentWithNewCorner = function(segment, offsetToMouse, wiringService, gridService) {
+    var sIndex,
+        newSegmentParameters1,
+        newSegmentParameters2,
+        newPosition,
+        segmentParameters,
+        nextParameters,
+        wire = this,
+        segments = wire.getSegments(),
+        affectedSegmentParameters;
+
+    sIndex = segments.indexOf(segment);
+
+    newPosition = offsetToMouse;
+
+    segmentParameters = segment.getParameters();
+
+    newPosition = gridService.getSnappedPosition(newPosition);
+
+    newSegmentParameters1 = wiringService.getSegmentsBetweenPositions({
+        end1: {
+            x: segmentParameters.x1,
+            y: segmentParameters.y1
+        },
+
+        end2: {
+            x: newPosition.x,
+            y: newPosition.y
+        }
+    }, 'SimpleRouter')[0];
+
+
+    newSegmentParameters2 = wiringService.getSegmentsBetweenPositions({
+        end1: {
+            x: newPosition.x,
+            y: newPosition.y
+        },
+
+        end2: {
+            x: segmentParameters.x2,
+            y: segmentParameters.y2
+        }
+    }, 'SimpleRouter')[0];
+
+    wire.deleteSegment(sIndex);
+    wire.insertSegment(sIndex, new WireSegment(newSegmentParameters1, wire));
+    wire.insertSegment(sIndex + 1, new WireSegment(newSegmentParameters2, wire));
+
+    if (sIndex > 0 &&
+        segmentParameters.router &&
+        segmentParameters.router.type === 'ElbowRouter' &&
+        segmentParameters.elbowPartOrder === 1) {
+
+        // If it was part of an Elbow routed segment set, set the other part to
+        // simple-routed
+
+        affectedSegmentParameters = segments[sIndex - 1].getParameters();
+        affectedSegmentParameters.router = {
+            type: 'SimpleRouter'
+        };
+
+        delete affectedSegmentParameters.elbowPartOrder;
+
+    }
+
+
+    nextParameters = segments[sIndex + 2];
+
+    if (sIndex + 2 < segments.length &&
+        nextParameters.router &&
+        nextParameters.router.type === 'ElbowRouter' &&
+        nextParameters.elbowPartOrder === 0) {
+
+        // If it was part of an Elbow routed segment set, set the other part to
+        // simple-routed
+
+        affectedSegmentParameters = segments[sIndex + 2].getParameters();
+        affectedSegmentParameters.router = {
+            type: 'SimpleRouter'
+        };
+
+        delete affectedSegmentParameters.elbowPartOrder;
+
+    }
 
 };
 
