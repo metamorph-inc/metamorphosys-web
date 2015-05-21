@@ -302,7 +302,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                         if (!inSelection) {
                             $rootScope.$emit('componentDeletionMustBeDone', component);
                         } else {
-                            $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
+                            $rootScope.$emit('selectedDiagramThingsDeletionMustBeDone', $scope.diagram);
                         }
 
 

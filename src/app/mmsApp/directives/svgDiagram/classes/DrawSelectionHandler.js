@@ -89,8 +89,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
             }
 
-            $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING, true);
-            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 }, true);            
+            $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING, false);
+            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 }, false);            
 
         }
 

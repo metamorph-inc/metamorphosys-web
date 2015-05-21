@@ -45,7 +45,7 @@ module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
 
             if (event.keyCode === 8 || event.keyCode === 46) {
 
-                $rootScope.$emit('componentDeletionMustBeDone', selectedComponents);
+                $rootScope.$emit('selectedDiagramThingsDeletionMustBeDone', $scope.diagram);
 
             }
 

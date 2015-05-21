@@ -341,6 +341,64 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('selectedDiagramThingsDeletionMustBeDone', function($event, diagram, msg) {
+
+                        // TODO: Continue from here
+
+                        var startDeletionOfComponent;
+
+                        startDeletionOfComponent = function(component) {
+
+                            var i,
+                                wires,
+                                deleteMessage,
+                                nodeIdsToDelete,
+                                diagram = diagramService.getDiagram(selectedContainerId);
+
+                            if (angular.isObject(component)) {
+
+                                nodeIdsToDelete = [];
+
+                                deleteMessage = 'Deleting design element';
+
+                                wires = diagram.getWiresForComponents([component]);
+
+                                if (wires.length > 0) {
+
+                                    deleteMessage += ' with wires';
+
+                                    nodeIdsToDelete = wires.map(function(wire) {
+                                        return wire.getId();
+                                    });
+
+                                }
+
+                                nodeIdsToDelete.unshift(component.id);
+
+                                for (i = 0; i < nodeIdsToDelete.length; i++) {
+                                    nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
+                                }
+
+                            }
+                        };
+
+                        $rootScope.setProcessing();
+
+                        nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
+
+                        if (angular.isArray(components)) {
+
+                            angular.forEach(components, function(component) {
+                                startDeletionOfComponent(component);
+                            });
+
+                        } else {
+                            startDeletionOfComponent(components);
+                        }
+
+                        nodeService.completeTransaction(layoutContext);
+
+                    });
 
                     designLayoutService.watchDiagramElements(
                             layoutContext,
