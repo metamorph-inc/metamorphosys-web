@@ -690,10 +690,14 @@ Diagram.prototype.clearSelection = function(silent) {
 
             var idPair = idPairStr.split('_'),
                 wire = self.getWireById(idPair[0]),
+                segment;
+
+            if (wire) {
                 segment = wire.getSegments()[idPair[1]];
 
-            if (segment) {
-                segment.deselectEndCorner();
+                if (segment) {
+                    segment.deselectEndCorner();
+                }
             }
 
         });

@@ -24,7 +24,7 @@ angular.module('cyphy.services')
 
         this.setWireSegments = function (context, nodeId, segments, msg) {
 
-            nodeService.loadNode(context, nodeId)
+            return nodeService.loadNode(context, nodeId)
                 .then(function (node) {
                     node.setRegistry('wireSegments', segments, msg);
                 });
@@ -33,7 +33,7 @@ angular.module('cyphy.services')
 
         this.setPosition = function (context, nodeId, position, msg) {
 
-            nodeService.loadNode(context, nodeId)
+            return nodeService.loadNode(context, nodeId)
                 .then(function (node) {
                     node.setRegistry('position', position, msg);
                 });
@@ -42,7 +42,7 @@ angular.module('cyphy.services')
 
         this.setRotation = function (context, nodeId, angle, msg) {
 
-            nodeService.loadNode(context, nodeId)
+            return nodeService.loadNode(context, nodeId)
                 .then(function (node) {
                     node.setRegistry('rotation', angle, msg);
                 });
@@ -51,7 +51,7 @@ angular.module('cyphy.services')
 
         this.setRotation = function (context, nodeId, rotation, msg) {
 
-            nodeService.loadNode(context, nodeId)
+            return nodeService.loadNode(context, nodeId)
                 .then(function (node) {
                     node.setRegistry('rotation', rotation, msg);
                 });

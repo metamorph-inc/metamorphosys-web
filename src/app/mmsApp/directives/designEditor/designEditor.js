@@ -41,7 +41,7 @@ angular.module('mms.designEditor', [
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager, wiringService) {
+            acmImportService, mmsUtils, operationsManager, wiringService, $q) {
 
             var justCreatedWires,
                 layoutContext,
@@ -426,6 +426,8 @@ angular.module('mms.designEditor', [
 
                         }
 
+                        var gmeUpdatePromises = [];
+
                         // Deleting gathered component and wires
 
                         for (i = 0; i < nodeIdsToDelete.length; i++) {
@@ -437,11 +439,12 @@ angular.module('mms.designEditor', [
                         // Updating wires
 
                         wiresToUpdate.forEach(function(wire) {
-                            designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), 'Removing wire corner');
+                            gmeUpdatePromises.push(designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), 'Removing wire corner'));
                         });
 
-
-                        nodeService.completeTransaction(layoutContext);
+                        $q.all(gmeUpdatePromises).then(function(){
+                            nodeService.completeTransaction(layoutContext);
+                        });
 
                     });
 
