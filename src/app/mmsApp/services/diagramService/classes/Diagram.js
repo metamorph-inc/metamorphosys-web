@@ -498,6 +498,30 @@ Diagram.prototype.getSelectedWires = function() {
 
 };
 
+Diagram.prototype.getWireSegmentsWithSelectedEndCorner = function() {
+
+    var i,
+        self,
+        segments = [],
+        idPair,
+        wire,
+        segment;
+
+    for (i = 0; i < this.state.selectedSegmentEndcornerIds.length; i++) {
+        idPair = this.state.selectedSegmentEndcornerIds[i].split('_');
+        wire = this.getWireById(idPair[0]);
+        if (wire) {
+            segment = wire.getSegments()[idPair[1]];
+            if(segment) {
+                segments.push(segment);
+            }
+        }
+    }
+
+    return segments;
+
+};
+
 Diagram.prototype.selectComponent = function(componentId, silent) {
 
     var component = this.getComponentById(componentId),

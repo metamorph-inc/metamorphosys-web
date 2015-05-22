@@ -35,13 +35,13 @@ angular.module('mms.designEditor', [
 
             _ghostComponent.style.top = (e.pageY + 5) + 'px';
             _ghostComponent.style.left = (e.pageX + 5) + 'px';
-            
+
         }
 
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager) {
+            acmImportService, mmsUtils, operationsManager, wiringService) {
 
             var justCreatedWires,
                 layoutContext,
@@ -78,8 +78,6 @@ angular.module('mms.designEditor', [
                 if (selectedComponentIds.length === 1) {
 
                     self.inspectableComponent = self.diagram.getComponentById(selectedComponentIds[0]);
-
-                    $log.debug('inspectableComponent', self.inspectableComponent);
 
                 } else if (selectedWireIds.length === 1) {
 
@@ -175,8 +173,8 @@ angular.module('mms.designEditor', [
 
                         if (componentUrl) {
                             acmImportService.importAcm(self.layoutContext, selectedContainerId,
-                                componentUrl, position)
-                                .catch(function (err) {
+                                    componentUrl, position)
+                                .catch(function(err) {
                                     $log.error(err);
                                     $rootScope.stopProcessing();
                                 });
@@ -201,8 +199,8 @@ angular.module('mms.designEditor', [
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
-                                subcircuitUrl, position, componentServerUrl)
-                                .catch(function (err) {
+                                    subcircuitUrl, position, componentServerUrl)
+                                .catch(function(err) {
                                     $log.error(err);
                                     $rootScope.stopProcessing();
                                 });
@@ -286,9 +284,9 @@ angular.module('mms.designEditor', [
 
                     addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
 
-                        var startDeletionOfComponent;
+                        var doDeletionOfComponent;
 
-                        startDeletionOfComponent = function(component) {
+                        doDeletionOfComponent = function(component) {
 
                             var i,
                                 wires,
@@ -330,11 +328,11 @@ angular.module('mms.designEditor', [
                         if (angular.isArray(components)) {
 
                             angular.forEach(components, function(component) {
-                                startDeletionOfComponent(component);
+                                doDeletionOfComponent(component);
                             });
 
                         } else {
-                            startDeletionOfComponent(components);
+                            doDeletionOfComponent(components);
                         }
 
                         nodeService.completeTransaction(layoutContext);
@@ -343,58 +341,105 @@ angular.module('mms.designEditor', [
 
                     addRootScopeEventListener('selectedDiagramThingsDeletionMustBeDone', function($event, diagram, msg) {
 
-                        // TODO: Continue from here
+                        var selectedComponents = diagram.getSelectedComponents(),
+                            selectedWires = diagram.getSelectedWires(),
+                            selectedWireSegmentsWithSelectedEndCorner = diagram.getWireSegmentsWithSelectedEndCorner(),
+                            deletedWires = [],
+                            i,
+                            nodeIdsToDelete = [],
+                            deleteMessage = 'Deleting design element',
 
-                        var startDeletionOfComponent;
+                            doDeletionOfComponent = function(component) {
 
-                        startDeletionOfComponent = function(component) {
+                                var i,
+                                    componentWires = [],
+                                    deleteMessage;
 
-                            var i,
-                                wires,
-                                deleteMessage,
-                                nodeIdsToDelete,
-                                diagram = diagramService.getDiagram(selectedContainerId);
+                                if (angular.isObject(component)) {
 
-                            if (angular.isObject(component)) {
+                                    componentWires = diagram.getWiresForComponents([component]);
 
-                                nodeIdsToDelete = [];
+                                    if (componentWires.length > 0) {
 
-                                deleteMessage = 'Deleting design element';
+                                        deleteMessage += ' with wires';
 
-                                wires = diagram.getWiresForComponents([component]);
+                                        componentWires.forEach(function(wire) {
+                                            nodeIdsToDelete.push(wire.getId());
+                                        });
 
-                                if (wires.length > 0) {
+                                    }
 
-                                    deleteMessage += ' with wires';
-
-                                    nodeIdsToDelete = wires.map(function(wire) {
-                                        return wire.getId();
-                                    });
+                                    nodeIdsToDelete.unshift(component.id);
 
                                 }
 
-                                nodeIdsToDelete.unshift(component.id);
+                                return componentWires;
 
-                                for (i = 0; i < nodeIdsToDelete.length; i++) {
-                                    nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
-                                }
-
-                            }
-                        };
+                            };
 
                         $rootScope.setProcessing();
-
                         nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
 
-                        if (angular.isArray(components)) {
+                        if (Array.isArray(selectedComponents)) {
 
-                            angular.forEach(components, function(component) {
-                                startDeletionOfComponent(component);
+                            angular.forEach(selectedComponents, function(component) {
+
+                                deletedWires = deletedWires.concat(doDeletionOfComponent(component));
+
                             });
 
-                        } else {
-                            startDeletionOfComponent(components);
+                        } 
+
+                        if (Array.isArray(selectedWires)) {
+
+                            angular.forEach(selectedWires, function(aWire) {
+
+                                if (deletedWires.indexOf(aWire) === -1) {
+                                    nodeIdsToDelete.push(aWire.getId());
+                                    deletedWires.push(aWire);
+                                }
+
+                            });
                         }
+
+                        // Now updating wires which has corners deleted
+
+                        var wiresToUpdate = [];
+
+                        if (Array.isArray(selectedWireSegmentsWithSelectedEndCorner)) {
+
+                            angular.forEach(selectedWireSegmentsWithSelectedEndCorner, function(aSegment) {
+
+                                var parentWire = aSegment.getParentWire();
+
+                                if (deletedWires.indexOf(parentWire) === -1) {
+
+                                    parentWire.destroyEndCornerOfSegment(aSegment, wiringService);
+
+                                    if (wiresToUpdate.indexOf(parentWire) === -1) {
+                                        wiresToUpdate.push(parentWire);
+                                    }
+
+                                }
+
+                            });
+
+                        }
+
+                        // Deleting gathered component and wires
+
+                        for (i = 0; i < nodeIdsToDelete.length; i++) {
+                            
+                            nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
+
+                        }
+
+                        // Updating wires
+
+                        wiresToUpdate.forEach(function(wire) {
+                            designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), 'Removing wire corner');
+                        });
+
 
                         nodeService.completeTransaction(layoutContext);
 
@@ -629,13 +674,13 @@ angular.module('mms.designEditor', [
 
                 _ghostComponent.style.zIndex = '100';
                 _ghostComponent.style.top = (e.pageY + 5) + 'px';
-                _ghostComponent.style.left = (e.pageX + 5) + 'px';                
+                _ghostComponent.style.left = (e.pageX + 5) + 'px';
                 _ghostComponent.style.position = 'absolute';
                 _ghostComponent.style.pointerEvents = 'none';
 
                 document.body.appendChild(_ghostComponent);
 
-                document.body.addEventListener('drag', dragginginIE, true);        
+                document.body.addEventListener('drag', dragginginIE, true);
             }
 
             dndService.startDrag('component', {
