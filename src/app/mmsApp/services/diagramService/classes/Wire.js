@@ -33,6 +33,25 @@ Wire.prototype.getSegments = function() {
     return this._segments;
 };
 
+Wire.prototype.translateSegments = function(translation) {
+
+    var i, 
+        l,
+        newSegments = [];
+
+    if (Array.isArray(this._segments)) {
+
+        l = this._segments.length;
+
+        for (i = 0; i < l; i++) {
+            this._segments[i].translate(translation);
+        }
+
+    }
+
+
+};
+
 Wire.prototype.getCopyOfSegmentsParameters = function() {
 
     var i, l,
@@ -245,6 +264,13 @@ Wire.prototype.getEndPositions = function() {
 
     return positions;
 
+};
+
+Wire.prototype.getEnds = function() {
+    return {
+        end1: this._end1,
+        end2: this._end2
+    };
 };
 
 Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {

@@ -11,6 +11,16 @@ var WireSegment = function(parameters, parentWire) {
 	
 };
 
+WireSegment.prototype.translate = function(translation) {
+
+    this._parameters.x1 += translation.x;
+    this._parameters.y1 += translation.y;
+
+    this._parameters.x2 += translation.x;
+    this._parameters.y2 += translation.y;
+
+};
+
 WireSegment.prototype.selectEndCorner = function() {
     this._endCornerSelected = true;
 };

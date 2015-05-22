@@ -15,16 +15,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
             operationClass: function () {
 
                 var dragTargetsDescriptor,
-                    dragTargetsWiresUpdate,
                     diagram;
-
-                dragTargetsWiresUpdate = function (affectedWires) {
-
-                    angular.forEach(affectedWires, function (wire) {
-                        wiringService.adjustWireEndSegments(wire);
-                    });
-
-                };
 
 
                 this.init = function (aDiagram, possibleDragTargetDescriptor) {
@@ -36,7 +27,9 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                     var i,
                         target,
-                        snappedPosition;
+                        snappedPosition,
+                        componentsBeingMoved = {},
+                        translation = null;
 
                     for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
 
@@ -48,14 +41,46 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                                 y: offset.y + target.deltaToCursor.y
                             });
 
+                        if (translation === null) {
+
+                            var earlierPosition = target.component.getPosition();
+
+                            translation = {
+                                x: snappedPosition.x - earlierPosition.x, 
+                                y: snappedPosition.y - earlierPosition.y
+                            };
+                        }
+
                         target.component.setPosition(
                             snappedPosition.x,
                             snappedPosition.y
                         );
 
+                        componentsBeingMoved[target.component.getId()] = target.component;
+
                     }
 
-                    dragTargetsWiresUpdate(dragTargetsDescriptor.affectedWires);
+                    angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+
+                        var ends = wire.getEnds();
+
+                        if (componentsBeingMoved[ends.end1.component.getId()] &&
+                            componentsBeingMoved[ends.end2.component.getId()]) {
+
+                            // Adjust all segments
+
+                            wire.translateSegments(translation);
+
+                        } else {
+
+                            // Only adjust ends
+
+                            wiringService.adjustWireEndSegments(wire);
+                        }
+
+                    });
+
+
                     diagram.afterWireChange(dragTargetsDescriptor.affectedWires);                    
 
                 };
