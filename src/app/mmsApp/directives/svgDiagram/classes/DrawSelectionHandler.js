@@ -21,8 +21,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         endCorner = null,
 
         VIEWPORT_PADDING = {
-            x: -20,
-            y: -20
+            x: +20,
+            y: +20
         };
 
     this.drawing = false;
