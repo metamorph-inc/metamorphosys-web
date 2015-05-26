@@ -599,6 +599,44 @@ angular.module('mms.designEditor', [
 
         };
 
+        DesignEditorController.prototype.subcircuitBrowserItemDragStart = function(e, item) {
+
+            if (typeof e.dataTransfer.setDragImage === 'function') {
+                e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
+            } else {
+
+                // We are in IE land
+
+                _ghostComponent.style.zIndex = '100';
+                _ghostComponent.style.top = (e.pageY + 5) + 'px';
+                _ghostComponent.style.left = (e.pageX + 5) + 'px';                
+                _ghostComponent.style.position = 'absolute';
+                _ghostComponent.style.pointerEvents = 'none';
+
+                document.body.appendChild(_ghostComponent);
+
+                document.body.addEventListener('drag', dragginginIE, true);        
+            }
+
+            dndService.startDrag('subcircuit', {
+                componentId: item.id
+            });
+        };
+
+        DesignEditorController.prototype.subcircuitBrowserItemDragEnd = function(e, item) {
+            dndService.stopDrag();
+
+            if (typeof e.dataTransfer.setDragImage !== 'function') {
+
+                // We are in IE land
+
+                document.body.removeChild(_ghostComponent);
+                document.body.removeEventListener('drag', dragginginIE, true);
+
+            }
+
+        };
+
         EventDispatcher.prototype.apply(DesignEditorController.prototype);
 
         return {

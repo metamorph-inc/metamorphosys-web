@@ -833,9 +833,9 @@ angular.module("mms.subcircuitBrowser", [
 
             var state, locationSearchObject;
 
-            if (self.persistState && $cookies.componentBrowserState) {
+            if (self.persistState && $cookies.subcircuitBrowserState) {
 
-                state = JSON.parse($cookies.componentBrowserState);
+                state = JSON.parse($cookies.subcircuitBrowserState);
 
                 angular.extend(self, state);
             }
@@ -875,7 +875,7 @@ angular.module("mms.subcircuitBrowser", [
                 var stateObjectJSON = JSON.stringify(state);
 
                 if (this.persistState) {
-                    $cookies.componentBrowserState = stateObjectJSON;
+                    $cookies.subcircuitBrowserState = stateObjectJSON;
                 }
 
                 if (this.persistStateInUrl) {

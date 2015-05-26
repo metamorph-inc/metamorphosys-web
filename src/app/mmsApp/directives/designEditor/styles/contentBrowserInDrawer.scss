@@ -16,7 +16,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 	}
 
 
-	.component-browser .tree-navigator .selected-node > .node-label {
+	.content-browser.tree-navigator .selected-node > .node-label {
 	    background-color: rgba(165, 185, 202, 0.4);
 	    color: #fff;
 	}	
@@ -25,11 +25,11 @@ $hover-color: rgba(158, 158, 158, 0.2);
 		color: #fff;
 	}
 
-	.component-browser .no-components-to-list {
+	.content-browser.no-components-to-list {
 		background-color: $baseFrontColor;
 	}
 
-	.component-browser {
+	.content-browser{
 
 		input {
 			color: #000;
@@ -363,6 +363,18 @@ $hover-color: rgba(158, 158, 158, 0.2);
 			background-color: #fff;
 		}
 
+	}
+
+	.subcircuit-browser  {
+
+		h5 {
+			float: left;
+		}
+		
+	}
+
+	.subcircuit-listing  {
+		padding-top: 3em;
 	}
 
 }

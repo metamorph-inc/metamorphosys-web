@@ -77,19 +77,6 @@ body, html {
   display: inline-block;
   margin-top: 40px; }
 
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-.component-listing {
-  position: relative; }
-  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .component-listing .listing-views {
-    margin-top: 10px; }
-  /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .component-listing .actions {
-    text-align: center; }
-    /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-    .component-listing .actions .download-button + .info-button {
-      margin-left: 2px; }
-
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
 .component-categories .tree-navigator {
   border-top: 1px dotted #eee; }
@@ -118,6 +105,24 @@ body, html {
 .component-categories i.icon-arrow-down:after {
   margin-left: 0; }
 
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+.component-listing {
+  position: relative; }
+  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .component-listing .listing-views {
+    margin-top: 10px; }
+  /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .component-listing .actions {
+    text-align: center; }
+    /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+    .component-listing .actions .download-button + .info-button {
+      margin-left: 2px; }
+
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/countDisplay/styles/countDisplay.scss */
+.count-display {
+  color: #999;
+  margin-right: 25px; }
+
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentSearch/styles/component-search.scss */
 .component-search .search-button {
   margin-left: 1ex; }
@@ -126,11 +131,6 @@ body, html {
   min-width: 18em;
   width: auto;
   display: inline-block; }
-
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/countDisplay/styles/countDisplay.scss */
-.count-display {
-  color: #999;
-  margin-right: 25px; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
 .download-button {
