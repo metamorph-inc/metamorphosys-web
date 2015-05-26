@@ -184,7 +184,7 @@ angular.module('mms.designEditor', [
 
                     });
 
-                    addRootScopeEventListener('subcircuitInstantiationMustBeDone', function($event, subcircuitUrl, position, componentServerUrl) {
+                    addRootScopeEventListener('subcircuitInstantiationMustBeDone', function($event, subcircuitUrl, position, contentServerUrl) {
 
                         $rootScope.setProcessing();
 
@@ -201,7 +201,7 @@ angular.module('mms.designEditor', [
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
-                                subcircuitUrl, position, componentServerUrl)
+                                subcircuitUrl, position, contentServerUrl)
                                 .catch(function (err) {
                                     $log.error(err);
                                     $rootScope.stopProcessing();

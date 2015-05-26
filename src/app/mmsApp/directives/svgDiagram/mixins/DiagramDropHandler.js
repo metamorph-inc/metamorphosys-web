@@ -19,7 +19,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
         position,
-        componentServerUrl = this.componentServerUrl;
+        contentServerUrl = this.contentServerUrl;
 
     e.preventDefault();
     // if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
@@ -39,7 +39,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
         ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
 
         this.$rootScope.$emit('componentInstantiationMustBeDone',
-            componentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+            contentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
 
     } else if (e.dataTransfer.files.length) {
 
@@ -53,7 +53,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         this.acmImportService.storeDroppedAcm(e.dataTransfer.files[0])
             .then(function (url) {
-                self.$rootScope.$emit(event, url, position, componentServerUrl);
+                self.$rootScope.$emit(event, url, position, contentServerUrl);
             })
             .catch(function (err) {
                 self.$log.error('Error creating drag-n-drop component: ' + err);

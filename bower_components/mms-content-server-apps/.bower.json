@@ -59,7 +59,8 @@
     "branch": "master",
     "commit": "26672d8fe89847ac45fd8bca1d4caab4f160537a"
   },
-  "_source": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
+  "_source": "https://ljuracz@bitbucket.org/metamorphsoftwareinc/content-server.git",
   "_target": "*",
-  "_originalSource": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
+  "_originalSource": "https://ljuracz@bitbucket.org/metamorphsoftwareinc/content-server.git",
+  "_direct": true
 }
