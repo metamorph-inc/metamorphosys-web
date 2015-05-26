@@ -834,6 +834,7 @@ define([
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 copyAttrIfSet('RelativeLayer');
+                copyAttrIfSet('RelativeRotation');
                 setOriginForRelativeConstraint();
             }
             else if (type === 'RelativeRangeLayoutConstraint') {

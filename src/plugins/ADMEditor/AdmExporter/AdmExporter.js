@@ -696,6 +696,7 @@ define([
             if (type === 'RelativeLayoutConstraint') {
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
+                copyAttrIfSet('RelativeRotation');
                 data['@Origin'] = self.core.getGuid(origin);
 
                 var val = self.core.getAttribute(node, 'RelativeLayer');
