@@ -42,7 +42,6 @@
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": "91705197",
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": "126974487",
     "f26a44de-edb5-57c8-fd0f-242811b7816c": "24011457",
-    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": "1118537161",
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": "488584186",
     "f9f20885-6316-a7b6-2196-8299f45692ff": "1474284259"
   },
@@ -85,8 +84,7 @@
       "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {},
       "f9f20885-6316-a7b6-2196-8299f45692ff": {}
     },
-    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {},
-    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": {}
+    "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {}
   },
   "nodes": {
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
@@ -3055,6 +3053,7 @@
     "f26a44de-edb5-57c8-fd0f-242811b7816c": {
       "attributes": {
         "RelativeLayer": "Either",
+        "RelativeRotation": "r0",
         "XOffset": null,
         "YOffset": null,
         "name": "RelativeLayoutConstraint"
@@ -3085,6 +3084,17 @@
           "Notes": {
             "type": "string",
             "default": ""
+          },
+          "RelativeRotation": {
+            "type": "string",
+            "default": "r0",
+            "enum": [
+              "r0",
+              "r90",
+              "r180",
+              "r270",
+              "NoRestriction"
+            ]
           }
         },
         "pointers": {
@@ -3117,31 +3127,6 @@
       "sets": {
         "ConstraintTarget": []
       },
-      "constraints": {}
-    },
-    "f4cc2aec-3cc1-ecbd-77ec-508931dcaab0": {
-      "attributes": {
-        "name": "GlobalLayoutConstraintException"
-      },
-      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
-      "meta": {
-        "attributes": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "parent": "700fb14d-a86b-aefa-d1af-2d18f88fe3c1",
-      "pointers": {
-        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
-      },
-      "registry": {
-        "position": {
-          "x": 1311,
-          "y": 501
-        }
-      },
-      "sets": {},
       "constraints": {}
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
