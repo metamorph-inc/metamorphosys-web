@@ -157,11 +157,12 @@ var ComponentWireSegment = React.createClass({
         var nextParameters = nextProps.segment._parameters,
             parameters = this.props.segment._parameters;
 
-            console.log(nextParameters.x1 !== parameters.x1 ||
-            nextParameters.x2 !== parameters.x2 ||
-            nextParameters.y1 !== parameters.y1 ||
-            nextParameters.y2 !== parameters.y2 ||
-            nextProps.crossOversTimeStamp !== this.props.crossOversTimeStamp);
+            // console.log('Should I update?', 
+            //     nextParameters.x1 - parameters.x1, 
+            //     nextParameters.x2 - parameters.x2,
+            //     nextParameters.y1 - parameters.y1,
+            //     nextParameters.y2 - parameters.y2
+            // );
 
       return (
             nextParameters.x1 !== parameters.x1 ||

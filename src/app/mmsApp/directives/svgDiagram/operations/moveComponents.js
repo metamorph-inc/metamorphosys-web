@@ -56,22 +56,20 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             snappedPosition.y
                         );
 
-                        componentsBeingMoved[target.component.getId()] = target.component;
-
                     }
 
                     angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
 
                         var ends = wire.getEnds();
 
-                        if (componentsBeingMoved[ends.end1.component.getId()] &&
-                            componentsBeingMoved[ends.end2.component.getId()]) {
+                        if (dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end1.component) !== -1 &&
+                            dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end2.component) !== -1) {
 
                             // Adjust all segments
 
+                            //wiringService.adjustWireEndSegments(wire);                            
                             wire.translateSegments(translation);
 
-                            console.log(wire.getSegments());
 
                         } else {
 
@@ -117,10 +115,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     var message,
                         components;
 
-                    components = dragTargetsDescriptor.targets.map(
-                        function (target) {
-                            return target.component;
-                        });
+                    components = dragTargetsDescriptor.componentsBeingDragged;
 
                     if (components.length > 1) {
                         message = 'Dragging selection';
@@ -133,6 +128,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         {
                             diagramId: diagram.id,
                             components: components,
+                            wires: dragTargetsDescriptor.affectedWires,
                             message: message,
                             primaryTarget: dragTargetsDescriptor.primaryTarget
                         });

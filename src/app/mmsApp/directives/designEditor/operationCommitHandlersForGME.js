@@ -51,14 +51,18 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
 
             i = 0;
 
-            //nodeService.startTransaction(designCtx, data.message);
+
+
+            var layoutContext = projectHandling.getContainerLayoutContext();
+
+            nodeService.startTransaction(layoutContext, data.message);
 
             angular.forEach(data.components, function(component) {
 
                 $timeout(function() {
 
                     designLayoutService.setPosition(
-                        projectHandling.getContainerLayoutContext(),
+                        layoutContext,
                         component.id,
                         component.getPosition(),
                         data.message
@@ -69,12 +73,33 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
 
             });
 
+            angular.forEach(data.wires, function (wire) {
+
+                var ends = wire.getEnds();
+
+                if (data.components.indexOf(ends.end1.component) !== -1 &&
+                    data.components.indexOf(ends.end2.component) !== -1) {
+
+                    // Save wire change
+
+                    designLayoutService.setWireSegments(
+                        projectHandling.getContainerLayoutContext(),
+                        wire.getId(),
+                        wire.getCopyOfSegmentsParameters(),
+                        data.message || 'Updating wire'
+                    );                                        
+
+                } 
+
+            });
+
+
             if (angular.isFunction(ga)) {
                 ga('send', 'event', 'component', 'drag', data.primaryTarget.label);
             }
 
 
-            //nodeService.completeTransaction(designCtx);
+            nodeService.completeTransaction(layoutContext);
 
         });
 

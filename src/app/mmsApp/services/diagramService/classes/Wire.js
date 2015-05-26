@@ -39,11 +39,14 @@ Wire.prototype.translateSegments = function(translation) {
         l,
         newSegments = [];
 
+    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+
     if (Array.isArray(this._segments)) {
 
         l = this._segments.length;
 
         for (i = 0; i < l; i++) {
+
             this._segments[i].translate(translation);
         }
 

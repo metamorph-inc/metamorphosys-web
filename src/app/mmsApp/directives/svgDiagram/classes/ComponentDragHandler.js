@@ -259,6 +259,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
                 });
             }
 
+            possibbleDragTargetsDescriptor.componentsBeingDragged = componentsToDrag;
+
             possibbleDragTargetsDescriptor.affectedWires = $scope.diagram.getWiresForComponents(
                 componentsToDrag
             );
