@@ -153,7 +153,7 @@ define(
                 return Q.ninvoke(storage, 'openProject', projectName);
             }).then(function (p) {
                 project = p;
-                core = new Core(project, {globConf: CONFIG});
+                core = new Core(project, {globConf: CONFIG, logger: logger});
                 return Q.ninvoke(project, 'getBranchHash', 'master', '#hack');
             }).spread(function (commitHash) {
                 return Q.ninvoke(project, 'loadObject', commitHash);

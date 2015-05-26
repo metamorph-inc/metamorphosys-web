@@ -84,6 +84,11 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'mms.componentBrowser',
     'mms.componentBrowser.componentLibrary',    
 
+    // Subcircuit Browser
+
+    'mms.subcircuitBrowser',
+    'mms.subcircuitBrowser.subcircuitLibrary'
+
 ]);
 
 require('./appInit');

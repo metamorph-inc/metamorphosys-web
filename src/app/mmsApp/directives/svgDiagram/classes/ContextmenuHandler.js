@@ -478,17 +478,19 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                             });
                     }
                 }]
-            }, {
-                id: 'printMenu',
-                items: [{
-                    id: 'printDiagram',
-                    label: 'Print diagram',
-                    iconClass: 'glyphicon glyphicon-print',
-                    action: function() {
-                        window.print();
-                    }
-                }]
-            }];
+            }
+            // , {
+            //     id: 'printMenu',
+            //     items: [{
+            //         id: 'printDiagram',
+            //         label: 'Print diagram',
+            //         iconClass: 'glyphicon glyphicon-print',
+            //         action: function() {
+            //             window.print();
+            //         }
+            //     }]
+            // }
+            ];
 
         openMenu($event);
 

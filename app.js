@@ -2,7 +2,7 @@
  * Created by Zsolt on 4/4/2014.
  */
 
-var config = require('./config'),
+var config = require('./' + (process.argv[2] || 'config')),
     webgme = require('webgme');
 
 webgme.addToRequireJsPaths(config);

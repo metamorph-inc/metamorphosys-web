@@ -19,7 +19,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
         position,
-        componentServerUrl = this.componentServerUrl;
+        contentServerUrl = this.contentServerUrl;
 
     e.preventDefault();
     // if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
@@ -29,17 +29,33 @@ DiagramDropHandler._onDrop = function(e, dragged) {
     // this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     // return false;
 
+    if (dragged && dragged.data) {
 
-    if (dragged && dragged.data && dragged.data.componentId) {
+        if(dragged.data.componentId) {
 
-        console.log('Dropped component id: ', dragged.data.componentId);
 
-        position = this.mmsUtils.getPositionFromEvent(e);
+            console.log('Dropped component id: ', dragged.data.componentId);
 
-        ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
+            position = this.mmsUtils.getPositionFromEvent(e);
 
-        this.$rootScope.$emit('componentInstantiationMustBeDone',
-            componentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+            ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
+
+            this.$rootScope.$emit('componentInstantiationMustBeDone',
+                contentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+
+        } else if (dragged.data.subcircuitId) {
+
+            console.log('Dropped subcircuit id: ', dragged.data.subcircuitId);
+
+            position = this.mmsUtils.getPositionFromEvent(e);
+
+            ga('send', 'event', 'avmComponent', 'dropped', dragged.data.subcircuitId);
+
+            this.$rootScope.$emit('subcircuitInstantiationMustBeDone',
+                contentServerUrl + '/subcircuit/getsubcircuit/download/' + dragged.data.subcircuitId, position, contentServerUrl);
+
+
+        }
 
     } else if (e.dataTransfer.files.length) {
 
@@ -53,7 +69,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         this.acmImportService.storeDroppedAcm(e.dataTransfer.files[0])
             .then(function (url) {
-                self.$rootScope.$emit(event, url, position, componentServerUrl);
+                self.$rootScope.$emit(event, url, position, contentServerUrl);
             })
             .catch(function (err) {
                 self.$log.error('Error creating drag-n-drop component: ' + err);

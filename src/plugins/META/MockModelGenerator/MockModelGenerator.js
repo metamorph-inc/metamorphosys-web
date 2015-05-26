@@ -4,7 +4,7 @@
  * Author: Patrik Meijer
  */
 
-define(['plugin/PluginConfig', 'plugin/PluginBase', 'ejs', 'plugin/MockModelGenerator/MockModelGenerator/Templates/Templates'], function (PluginConfig, PluginBase, ejs, TEMPLATES) {
+define(['plugin/PluginConfig', 'plugin/PluginBase', 'common/util/ejs', 'plugin/MockModelGenerator/MockModelGenerator/Templates/Templates'], function (PluginConfig, PluginBase, ejs, TEMPLATES) {
     'use strict';
 
     /**

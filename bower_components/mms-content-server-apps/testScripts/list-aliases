@@ -1,0 +1,2 @@
+#
+curl -s -XGET 'localhost:9200/_alias/*' |underscore pretty |sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'

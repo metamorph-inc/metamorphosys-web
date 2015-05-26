@@ -7465,6 +7465,7 @@
             "XOffset": "-5.1",
             "YOffset": "-10.2",
             "RelativeLayer": "Same",
+            "RelativeRotation": "r0",
             "Notes": "TestNotes"
         },
         "registry": {
@@ -7499,6 +7500,7 @@
             "XOffset": "5.1",
             "YOffset": "10.2",
             "RelativeLayer": "Opposite",
+            "RelativeRotation": "NoRestriction",
             "Notes": "TestNotes"
         },
         "registry": {
@@ -7531,7 +7533,8 @@
         "attributes": {
             "name": "RelativeLayoutConstraint",
             "XOffset": "-5.1",
-            "YOffset": "-10.2"
+            "YOffset": "-10.2",
+            "RelativeRotation": "r90"
         },
         "registry": {
             "DisplayFormat": "",
