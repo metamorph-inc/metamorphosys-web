@@ -2829,6 +2829,7 @@
         "f26a44de-edb5-57c8-fd0f-242811b7816c": {
             "attributes": {
                 "RelativeLayer": "Either",
+                "RelativeRotation": "r0",
                 "XOffset": null,
                 "YOffset": null,
                 "name": "RelativeLayoutConstraint"
@@ -2847,6 +2848,17 @@
                             "Either",
                             "Same",
                             "Opposite"
+                        ],
+                        "type": "string"
+                    },
+                    "RelativeRotation": {
+                        "default": "r0",
+                        "enum": [
+                            "r0",
+                            "r90",
+                            "r180",
+                            "r270",
+                            "NoRestriction"
                         ],
                         "type": "string"
                     },
