@@ -45,14 +45,14 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         } else if (dragged.data.subcircuitId) {
 
-            console.log('Dropped subcircuit id: ', dragged.data.componentId);
+            console.log('Dropped subcircuit id: ', dragged.data.subcircuitId);
 
             position = this.mmsUtils.getPositionFromEvent(e);
 
             ga('send', 'event', 'avmComponent', 'dropped', dragged.data.subcircuitId);
 
             this.$rootScope.$emit('subcircuitInstantiationMustBeDone',
-                contentServerUrl + '/getsubcircuit/download/' + dragged.data.subcircuitId, position, contentServerUrl);
+                contentServerUrl + '/subcircuit/getsubcircuit/download/' + dragged.data.subcircuitId, position, contentServerUrl);
 
 
         }
