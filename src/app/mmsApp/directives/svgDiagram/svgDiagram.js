@@ -27,13 +27,15 @@ angular.module('mms.svgDiagram', [
 
         'isis.ui.contextmenu',
 
-        'mms.componentBrowser.componentLibrary'
+        'mms.componentBrowser.componentLibrary',
+        'mms.subcircuitBrowser.subcircuitLibrary'        
     ])
-    .config(function(componentLibraryProvider, componentServerUrl) {
-        componentLibraryProvider.setServerUrl(componentServerUrl);
+    .config(function(componentLibraryProvider, subcircuitLibraryProvider, contentServerUrl) {
+        componentLibraryProvider.setServerUrl(contentServerUrl);
+        subcircuitLibraryProvider.setServerUrl(contentServerUrl);        
     })
     .directive('svgDiagram',
-        function($rootScope, $log, diagramService, wiringService, componentLibrary, componentServerUrl,
+        function($rootScope, $log, diagramService, wiringService, componentLibrary, contentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 
             acmImportService, testBenchService, projectHandling) {
 
@@ -78,7 +80,7 @@ angular.module('mms.svgDiagram', [
                 this.$rootScope = $rootScope;
                 this.componentLibrary = componentLibrary;
                 this.mmsUtils = mmsUtils;
-                this.componentServerUrl = componentServerUrl;                
+                this.contentServerUrl = contentServerUrl;                
                 this.$log = $log;
                 this.acmImportService = acmImportService;
                 this.dndService = dndService;

@@ -127,7 +127,7 @@ angular.module('cyphy.services')
             return deferred.promise;
         };
 
-        this.importAdm = function (context, parentId, admUrl, position, componentServerUrl) {
+        this.importAdm = function (context, parentId, admUrl, position, contentServerUrl) {
             var config = {
                 activeNode: parentId,
                 runOnServer: true,
@@ -135,7 +135,7 @@ angular.module('cyphy.services')
                     admFile: '',
                     admUrl: admUrl,
                     useExistingComponents: false,
-                    componentServerUrl: componentServerUrl,
+                    componentServerUrl: contentServerUrl,
                     position: position
                 }
             };

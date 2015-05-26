@@ -17,7 +17,7 @@ angular.module('mms.diagramContainer', [
         '$log',
         '$window',
         '$rootScope',
-        'componentServerUrl',
+        'contentServerUrl',
         'acmImportService',
         function($scope, $timeout, $log, $window, $rootScope) {
 

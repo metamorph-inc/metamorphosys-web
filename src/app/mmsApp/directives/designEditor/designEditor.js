@@ -184,7 +184,7 @@ angular.module('mms.designEditor', [
 
                     });
 
-                    addRootScopeEventListener('subcircuitInstantiationMustBeDone', function($event, subcircuitUrl, position, componentServerUrl) {
+                    addRootScopeEventListener('subcircuitInstantiationMustBeDone', function($event, subcircuitUrl, position, contentServerUrl) {
 
                         $rootScope.setProcessing();
 
@@ -201,7 +201,7 @@ angular.module('mms.designEditor', [
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
-                                subcircuitUrl, position, componentServerUrl)
+                                subcircuitUrl, position, contentServerUrl)
                                 .catch(function (err) {
                                     $log.error(err);
                                     $rootScope.stopProcessing();
@@ -586,6 +586,44 @@ angular.module('mms.designEditor', [
         };
 
         DesignEditorController.prototype.componentBrowserItemDragEnd = function(e, item) {
+            dndService.stopDrag();
+
+            if (typeof e.dataTransfer.setDragImage !== 'function') {
+
+                // We are in IE land
+
+                document.body.removeChild(_ghostComponent);
+                document.body.removeEventListener('drag', dragginginIE, true);
+
+            }
+
+        };
+
+        DesignEditorController.prototype.subcircuitBrowserItemDragStart = function(e, item) {
+
+            if (typeof e.dataTransfer.setDragImage === 'function') {
+                e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
+            } else {
+
+                // We are in IE land
+
+                _ghostComponent.style.zIndex = '100';
+                _ghostComponent.style.top = (e.pageY + 5) + 'px';
+                _ghostComponent.style.left = (e.pageX + 5) + 'px';                
+                _ghostComponent.style.position = 'absolute';
+                _ghostComponent.style.pointerEvents = 'none';
+
+                document.body.appendChild(_ghostComponent);
+
+                document.body.addEventListener('drag', dragginginIE, true);        
+            }
+
+            dndService.startDrag('subcircuit', {
+                subcircuitId: item.id
+            });
+        };
+
+        DesignEditorController.prototype.subcircuitBrowserItemDragEnd = function(e, item) {
             dndService.stopDrag();
 
             if (typeof e.dataTransfer.setDragImage !== 'function') {

@@ -15,7 +15,6 @@
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
         <drawer-panel name="Components" icon-class="glyphicon glyphicon-chevron-right" height="300">
-        {{designEditorCtrl.componentBrowserItemDragStart}}
             <component-browser 
             no-header 
             persist-state
@@ -23,6 +22,15 @@
             on-item-drag-end="designEditorCtrl.componentBrowserItemDragEnd"  
             no-download            
             ></component-browser>
+        </drawer-panel>
+        <drawer-panel name="Subcircuits" icon-class="glyphicon glyphicon-chevron-right" height="300">
+            <subcircuit-browser 
+            no-header 
+            persist-state
+            on-item-drag-start="designEditorCtrl.subcircuitBrowserItemDragStart"
+            on-item-drag-end="designEditorCtrl.subcircuitBrowserItemDragEnd"  
+            no-download            
+            ></subcircuit-browser>
         </drawer-panel>
     </footer-drawer>
 </div>
