@@ -143,13 +143,15 @@ describe('AdmImporterRegressions', function () {
         expect(constrained.C2b['@XRangeMax']).to.equal('5.5');
         expect(constrained.C3a1['@XOffset']).to.equal('5.1');
         expect(constrained.C3a1['@RelativeLayer']).to.equal('Opposite');
+        expect(constrained.C3a1['@RelativeRotation']).to.equal('NoRestriction');
         expect(constrained.C3a2['@XOffset']).to.equal('-5.1');
         expect(constrained.C3a2['@RelativeLayer']).to.be.undefined;
+        expect(constrained.C3a2['@RelativeRotation']).to.equal('r90');
         expect(constrained.C3b1['@RelativeLayer']).to.equal('Same');
         expect(componentInstances[constrained.C3a1['@Origin']]['@Name']).to.equal('C3a2');
         expect(componentInstances[constrained.C3b1['@Origin']]['@Name']).to.equal('C3b2');
 
-        // Global Layout Constarint Exceptions
+        // Global Layout Constraint Exceptions
         expect(constrained.Global1['@Constraint']).to.equal('InterChipSpacing');
         expect(constrained.Global2['@Constraint']).to.equal('BoardEdgeSpacing');
 
