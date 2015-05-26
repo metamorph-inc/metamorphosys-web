@@ -619,7 +619,7 @@ angular.module('mms.designEditor', [
             }
 
             dndService.startDrag('subcircuit', {
-                componentId: item.id
+                subcircuitId: item.id
             });
         };
 

@@ -29,17 +29,33 @@ DiagramDropHandler._onDrop = function(e, dragged) {
     // this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     // return false;
 
+    if (dragged && dragged.data) {
 
-    if (dragged && dragged.data && dragged.data.componentId) {
+        if(dragged.data.componentId) {
 
-        console.log('Dropped component id: ', dragged.data.componentId);
 
-        position = this.mmsUtils.getPositionFromEvent(e);
+            console.log('Dropped component id: ', dragged.data.componentId);
 
-        ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
+            position = this.mmsUtils.getPositionFromEvent(e);
 
-        this.$rootScope.$emit('componentInstantiationMustBeDone',
-            contentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+            ga('send', 'event', 'avmComponent', 'dropped', dragged.data.componentId);
+
+            this.$rootScope.$emit('componentInstantiationMustBeDone',
+                contentServerUrl + '/getcomponent/download/' + dragged.data.componentId, position);
+
+        } else if (dragged.data.subcircuitId) {
+
+            console.log('Dropped subcircuit id: ', dragged.data.componentId);
+
+            position = this.mmsUtils.getPositionFromEvent(e);
+
+            ga('send', 'event', 'avmComponent', 'dropped', dragged.data.subcircuitId);
+
+            this.$rootScope.$emit('subcircuitInstantiationMustBeDone',
+                contentServerUrl + '/getsubcircuit/download/' + dragged.data.subcircuitId, position, contentServerUrl);
+
+
+        }
 
     } else if (e.dataTransfer.files.length) {
 
