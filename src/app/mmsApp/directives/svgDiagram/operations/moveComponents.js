@@ -71,6 +71,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                             wire.translateSegments(translation);
 
+                            console.log(wire.getSegments());
+
                         } else {
 
                             // Only adjust ends
