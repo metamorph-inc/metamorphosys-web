@@ -244,6 +244,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
                         targets: [ primartyTargetDescriptor ]
                     };
 
+                    possibbleDragTargetsDescriptor.selectedSegmentEndcornerIds = $scope.diagram.getSelectedSegmentEndcornerIds();
+
                 }
 
             }

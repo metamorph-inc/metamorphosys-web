@@ -119,6 +119,9 @@ module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
                         componentsToDrag
                     );
 
+                    possibbleDragTargetsDescriptor.componentsBeingDragged = componentsToDrag;
+
+                    possibbleDragTargetsDescriptor.selectedSegmentEndcornerIds = $scope.diagram.getSelectedSegmentEndcornerIds();
 
                     operation = operationsManager.initNew(
                         'MoveComponents',

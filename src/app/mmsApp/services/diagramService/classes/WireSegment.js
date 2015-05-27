@@ -26,8 +26,6 @@ WireSegment.prototype.translateEnd2 = function(translation) {
 
     this._parameters.x2 += translation.x;
     this._parameters.y2 += translation.y;
-
-    console.log(translation);
     
 };
 
