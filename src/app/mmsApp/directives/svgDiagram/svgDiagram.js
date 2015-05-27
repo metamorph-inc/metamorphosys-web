@@ -73,6 +73,12 @@ angular.module('mms.svgDiagram', [
 
                     componentElements,
 
+                    wasComponnetMouseDowned = false,
+                    wasDiagramMouseDowned = false,
+                    wasWireMouseDowned = false,
+                    wasPortMouseDowned = false,
+                    wasWireCornerMouseDowned = false,
+
                     $$window;
 
                 $$window = $($window);
@@ -176,6 +182,8 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseDown = function(event) {
 
+                    wasDiagramMouseDowned = true;
+
                     drawSelectionHandler.cancel();
 
                     var target = event.srcElement || event.target;
@@ -200,26 +208,32 @@ angular.module('mms.svgDiagram', [
 
                 $scope.onDiagramMouseUp = function(event) {
 
-                    var target = event.srcElement || event.target;
-                    
-                    //console.log('diagram mouse up');
+                    if (wasDiagramMouseDowned) {
 
-                    drawSelectionHandler.onDiagramMouseUp(event);
+                        var target = event.srcElement || event.target;
+                        
+                        //console.log('diagram mouse up');
 
-                    if (target === $scope.svgContainer) {
+                        drawSelectionHandler.onDiagramMouseUp(event);
+
+                        if (target === $scope.svgContainer) {
 
 
-                        if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                            event.which !== 3) {
+                            if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                                event.which !== 3) {
 
-                            $scope.diagram.clearSelection();
+                                $scope.diagram.clearSelection();
+
+                            }
+
+                            componentDragHandler.onDiagramMouseUp(event);
+                            wireDragHandler.onDiagramMouseUp(event);
+                            wireDrawHandler.onDiagramMouseUp(event);
+                            panHandler.onDiagramMouseUp(event);
 
                         }
 
-                        componentDragHandler.onDiagramMouseUp(event);
-                        wireDragHandler.onDiagramMouseUp(event);
-                        wireDrawHandler.onDiagramMouseUp(event);
-                        panHandler.onDiagramMouseUp(event);
+                        wasDiagramMouseDowned = false;
 
                     }
                 };
@@ -269,17 +283,32 @@ angular.module('mms.svgDiagram', [
                     wireDragHandler.onDiagramMouseLeave($event);
                     wireDrawHandler.onDiagramMouseLeave($event);
                     panHandler.onDiagramMouseLeave($event);
-                    drawSelectionHandler.cancel();                    
+                    drawSelectionHandler.cancel();         
+
+                    wasComponnetMouseDowned = false;
+                    wasDiagramMouseDowned = false;
+                    wasWireMouseDowned = false;
+                    wasPortMouseDowned = false;
+                    wasWireCornerMouseDowned = false;                    
+
 
                 };
 
                 function onWindowBlur($event) {
+
                     componentDragHandler.onWindowBlur($event);
                     wireDragHandler.onWindowBlur($event);
                     wireDrawHandler.onWindowBlur($event);
                     panHandler.onWindowBlur($event);
                     dndService.stopDrag();
                     drawSelectionHandler.cancel();
+
+                    wasComponnetMouseDowned = false;
+                    wasDiagramMouseDowned = false;
+                    wasWireMouseDowned = false;
+                    wasPortMouseDowned = false;
+                    wasWireCornerMouseDowned = false;                    
+
                 }
 
                 $$window.on('blur', onWindowBlur);
@@ -289,21 +318,29 @@ angular.module('mms.svgDiagram', [
 
                 this.onComponentMouseUp = function(component, $event) {
 
-                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                        $event.which !== 3) {
+                    if (wasComponnetMouseDowned) {
 
-                        selectionHandler.onComponentMouseUp(component, $event);
-                        $event.stopPropagation();
+                        if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                            $event.which !== 3) {
 
-                        componentDragHandler.onComponentMouseUp(component, $event);
+                            selectionHandler.onComponentMouseUp(component, $event);
+                            $event.stopPropagation();
 
-                    } else {
-                        componentDragHandler.onComponentMouseUp(component, $event);
-                        panHandler.onComponentMouseUp($event);
+                            componentDragHandler.onComponentMouseUp(component, $event);
+
+                        } else {
+                            componentDragHandler.onComponentMouseUp(component, $event);
+                            panHandler.onComponentMouseUp($event);
+                        }
+
+                        wasComponnetMouseDowned = false;
+
                     }
                 };
 
                 this.onPortMouseDown = function(component, port, $event) {
+
+                    wasPortMouseDowned = true;
 
                     if (!wireDrawHandler.wiring && $event.which === 3) {
 
@@ -317,11 +354,17 @@ angular.module('mms.svgDiagram', [
 
                 this.onPortMouseUp = function(component, port, $event) {
 
-                    if (panHandler.panning) {
-                        panHandler.onPortMouseUp($event);
-                    }
+                    if (wasPortMouseDowned) {
 
-                    $event.stopPropagation();
+                        if (panHandler.panning) {
+                            panHandler.onPortMouseUp($event);
+                        }
+
+                        $event.stopPropagation();
+
+                        wasPortMouseDowned = false;
+
+                    }
 
                 };
 
@@ -332,6 +375,8 @@ angular.module('mms.svgDiagram', [
                 };
 
                 this.onComponentMouseDown = function(component, $event) {
+
+                    wasComponnetMouseDowned = true;
 
                     if ($event.which === 3) {
 
@@ -346,26 +391,30 @@ angular.module('mms.svgDiagram', [
 
                 this.onWireMouseUp = function(wire, segment, $event) {
 
+                    if (wasWireMouseDowned) {
 
-                    if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                        $event.which !== 3) {
+                        if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
+                            $event.which !== 3) {
 
-                        selectionHandler.onWireMouseUp(wire, $event);
-                        $event.stopPropagation();
+                            selectionHandler.onWireMouseUp(wire, $event);
+                            $event.stopPropagation();
 
-                        wireDragHandler.onWireMouseUp(wire, segment, $event);
+                            wireDragHandler.onWireMouseUp(wire, segment, $event);
 
-                    } else {
-                        wireDragHandler.onWireMouseUp(wire, segment, $event);
-                        $event.stopPropagation();
+                        } else {
+                            wireDragHandler.onWireMouseUp(wire, segment, $event);
+                            $event.stopPropagation();
+                        }
+
+                        wasWireMouseDowned = false;
+
                     }
-
 
                 };
 
                 this.onWireMouseDown = function(wire, segment, event) {
 
-                    //console.log('onWireMouseDown', event);
+                    wasWireMouseDowned = true;
 
                     if (event.button === 2) {
 
@@ -389,12 +438,20 @@ angular.module('mms.svgDiagram', [
 
                 this.onWireCornerMouseUp = function(wire, segment, $event) {
 
-                    wireDragHandler.onWireMouseUp(wire, segment, $event);
-                    $event.stopPropagation();
+                    if (wasWireCornerMouseDowned) {
+
+                        wireDragHandler.onWireMouseUp(wire, segment, $event);
+                        $event.stopPropagation();
+
+                        wasWireCornerMouseDowned = false;
+
+                    }
 
                 };
 
                 this.onWireCornerMouseDown = function(wire, segment, event) {
+
+                    wasWireCornerMouseDowned = true;
 
                     if (event.button === 2) {
 
