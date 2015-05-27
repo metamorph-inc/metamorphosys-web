@@ -126,10 +126,10 @@ var ComponentWire = React.createClass({
                 <ComponentWireSegment key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} crossOversTimeStamp={wireSegment._crossOversTimeStamp}/>
             );
 
-            if ( ( self.props.wire.selected || wireSegment._endCornerSelected ) && ( i !== l - 1) ) {
+            if ( ( self.props.wire.selected || wireSegment._parameters.endCornerSelected ) && ( i !== l - 1) ) {
 
                 childCorners.push(
-                    <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} selected={wireSegment._endCornerSelected}/>
+                    <ComponentWireCorner key={i} wire={self.props.wire} segment={wireSegment} diagramCtrl={self.props.diagramCtrl} selected={wireSegment._parameters.endCornerSelected}/>
                 );
 
             }

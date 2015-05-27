@@ -83,14 +83,14 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                     });
 
-                    angular.forEach(dragTargetsDescriptor.wireSegmentsWithSelectedEnds, function(segment) {
+                    angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
 
-                        var parentWire = segment.getParentWire();
+                        var parentWire = diagram.getWireById(wireAndIndex[0]);
 
                         if (!completelyChangedWiresById[parentWire.getId()]) {
 
-                            parentWire.translateSegmentEndCorner(segment, translation);
-
+                            parentWire.translateSegmentEndCorner(wireAndIndex[1], translation);
+ 
                         }
 
                     });

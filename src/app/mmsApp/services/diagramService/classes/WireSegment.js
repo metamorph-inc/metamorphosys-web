@@ -7,8 +7,6 @@ var WireSegment = function(parameters, parentWire) {
 	this._parameters = parameters;
 	this._parentWire = parentWire;
 
-    this._endCornerSelected = false;
-	
 };
 
 WireSegment.prototype.translate = function(translation) {
@@ -28,14 +26,17 @@ WireSegment.prototype.translateEnd2 = function(translation) {
 
     this._parameters.x2 += translation.x;
     this._parameters.y2 += translation.y;
+
+    console.log(translation);
+    
 };
 
 WireSegment.prototype.selectEndCorner = function() {
-    this._endCornerSelected = true;
+    this._parameters.endCornerSelected = true;
 };
 
 WireSegment.prototype.deselectEndCorner = function() {
-    this._endCornerSelected = false;
+    this._parameters.endCornerSelected = false;
 };
 
 WireSegment.prototype.setParentWire = function ( parentWire ) {

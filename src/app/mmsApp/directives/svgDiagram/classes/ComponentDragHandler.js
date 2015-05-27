@@ -265,7 +265,7 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
                 componentsToDrag
             );
 
-            possibbleDragTargetsDescriptor.wireSegmentsWithSelectedEnds = $scope.diagram.getWireSegmentsWithSelectedEndCorner();
+            possibbleDragTargetsDescriptor.selectedSegmentEndcornerIds = $scope.diagram.getSelectedSegmentEndcornerIds();
         }
 
     };

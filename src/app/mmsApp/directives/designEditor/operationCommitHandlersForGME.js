@@ -85,7 +85,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                     designLayoutService.setWireSegments(
                         projectHandling.getContainerLayoutContext(),
                         wire.getId(),
-                        wire.getCopyOfSegmentsParameters(),
+                        wire.getCopyOfSegmentsParameters(true),
                         data.message || 'Updating wire'
                     );                                        
 
@@ -119,7 +119,7 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
                     designLayoutService.setWireSegments(
                         projectHandling.getContainerLayoutContext(),
                         wire.getId(),
-                        wire.getCopyOfSegmentsParameters(),
+                        wire.getCopyOfSegmentsParameters(true),
                         data.message || 'Updating wire'
                     );
 

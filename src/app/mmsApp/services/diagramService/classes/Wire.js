@@ -52,37 +52,44 @@ Wire.prototype.translateSegments = function(translation) {
 
     }
 
-
 };
 
-Wire.prototype.translateSegmentEndCorner = function(segment, translation) {
+Wire.prototype.translateSegmentEndCorner = function(index, translation) {
 
-    var newSegments = [],
-        index = this._segments.indexOf(segment);
+    var newSegments = [];
 
     if (index > -1 && Array.isArray(this._segments)) {
 
         this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
 
         this._segments[index].translateEnd2(translation);
-        this._segments[index + 1].translateEnd1(translation);        
+        this._segments[Number(index) + 1].translateEnd1(translation);        
 
     }
 
 
 };
 
-Wire.prototype.getCopyOfSegmentsParameters = function() {
+Wire.prototype.getCopyOfSegmentsParameters = function(stripEndcornerSelected) {
 
     var i, l,
-        results = [];
+        results = [],
+        paramsCopy;
 
     if (Array.isArray(this._segments)) {
 
         l = this._segments.length;
 
         for (i = 0; i < l; i++) {
-            results.push(angular.copy(this._segments[i].getParameters()));
+
+            paramsCopy = angular.copy(this._segments[i].getParameters());
+
+            if (stripEndcornerSelected) {
+                paramsCopy.endCornerSelected = false;
+            }
+
+            results.push(paramsCopy);
+
         }
 
     }
@@ -91,7 +98,7 @@ Wire.prototype.getCopyOfSegmentsParameters = function() {
 
 };
 
-Wire.prototype.makeSegmentsFromParameters = function(parametersArray) {
+Wire.prototype.makeSegmentsFromParameters = function(parametersArray, selectedSegments) {
 
     var self = this;
 

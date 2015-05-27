@@ -64,10 +64,6 @@ var Diagram = function() {
 
 };
 
-Diagram.prototype.updateWireSegments = function(wire) {
-    console.log('TODO: updateWireSegmentsForMe', wire);
-};
-
 Diagram.prototype.sortComponentsByZ = function() {
     sortComponentsByZ(this._components);
 };
@@ -520,6 +516,12 @@ Diagram.prototype.getWireSegmentsWithSelectedEndCorner = function() {
 
     return segments;
 
+};
+
+Diagram.prototype.getSelectedSegmentEndcornerIds = function() {
+    return this.state.selectedSegmentEndcornerIds.map(function(ids){
+        return ids.split('_');
+    });
 };
 
 Diagram.prototype.selectComponent = function(componentId, silent) {
