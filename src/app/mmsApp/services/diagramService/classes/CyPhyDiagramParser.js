@@ -288,7 +288,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         portStuff = minePortsFromInterfaces(element);
 
-        console.log(element);
+        //console.log(element);
 
         if (element.details && angular.isString(element.details.classifications) && 
             element.details.classifications.indexOf('capacitors.single_components') > -1 ) {
