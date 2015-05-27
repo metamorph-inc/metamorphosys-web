@@ -48,7 +48,7 @@ config.visualization.visualizerDescriptors.push('./Visualizers.json');
 config.storage.keyType = 'rand160Bits';
 config.requirejsPaths = {
     'ejs': './node_modules/webgme/src/common/util/ejs',
-    'xmljsonconverter': './node_modules/parseacm/xmljsonconverter',
+    'xmljsonconverter': './node_modules/parseddp/xmljsonconverter',
     'sax': './vendor/sax/sax',
     'q': './node_modules/q/q',
     'js': './node_modules/webgme/src/client/js',
