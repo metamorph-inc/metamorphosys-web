@@ -60,6 +60,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                     }
 
+                    var completelyChangedWiresById = {};
+
                     angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
 
                         var ends = wire.getEnds();
@@ -71,7 +73,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                             wire.translateSegments(translation);
 
-                            console.log(wire.getSegments());
+                            completelyChangedWiresById[wire.getId()] = wire;
 
                         } else {
 
@@ -82,6 +84,17 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                     });
 
+                    angular.forEach(dragTargetsDescriptor.wireSegmentsWithSelectedEnds, function(segment) {
+
+                        var parentWire = segment.getParentWire();
+
+                        if (!completelyChangedWiresById[parentWire.getId()]) {
+
+                            parentWire.translateSegmentEndCorner(segment, translation);
+
+                        }
+
+                    });
 
                     diagram.afterWireChange(dragTargetsDescriptor.affectedWires);                    
 

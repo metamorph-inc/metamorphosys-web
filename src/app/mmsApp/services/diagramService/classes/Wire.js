@@ -52,6 +52,24 @@ Wire.prototype.translateSegments = function(translation) {
 
 };
 
+Wire.prototype.translateSegmentEndCorner = function(segment, translation) {
+
+    var newSegments = [],
+        index;
+
+    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+
+    if (Array.isArray(this._segments)) {
+
+        index = this._segments.indexOf(segment);
+        this._segments[index].translateEnd2(translation);
+        this._segments[index + 1].translateEnd1(translation);        
+
+    }
+
+
+};
+
 Wire.prototype.getCopyOfSegmentsParameters = function() {
 
     var i, l,
