@@ -127,7 +127,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                 this.finish = function () {
 
                     var message,
-                        components;
+                        components,
+                        wires = [];
 
                     components = dragTargetsDescriptor.componentsBeingDragged;
 
@@ -136,6 +137,31 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     } else {
                         message = 'Dragging ' + components[0].label;
                     }
+
+                    angular.forEach(dragTargetsDescriptor.affectedWires, function(wire) {
+
+                        var ends = wire.getEnds();
+
+                        if (components.indexOf(ends.end1.component) !== -1 &&
+                            components.indexOf(ends.end2.component) !== -1) {
+
+                            wires.push(wire);
+
+                        }
+
+                    });
+
+                    angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
+
+                        var parentWire = diagram.getWireById(wireAndIndex[0]);
+
+                        if (wires.indexOf(parentWire) === -1) {
+
+                            wires.push(parentWire);
+ 
+                        }
+
+                    });
 
                     operationsManager.commitOperation(
                         type,

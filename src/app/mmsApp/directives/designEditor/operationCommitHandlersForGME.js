@@ -75,21 +75,14 @@ angular.module('mms.designVisualization.operations.gmeCommitHandlers', [])
 
             angular.forEach(data.wires, function (wire) {
 
-                var ends = wire.getEnds();
+                // Save wire change
 
-                if (data.components.indexOf(ends.end1.component) !== -1 &&
-                    data.components.indexOf(ends.end2.component) !== -1) {
-
-                    // Save wire change
-
-                    designLayoutService.setWireSegments(
-                        projectHandling.getContainerLayoutContext(),
-                        wire.getId(),
-                        wire.getCopyOfSegmentsParameters(true),
-                        data.message || 'Updating wire'
-                    );                                        
-
-                } 
+                designLayoutService.setWireSegments(
+                    projectHandling.getContainerLayoutContext(),
+                    wire.getId(),
+                    wire.getCopyOfSegmentsParameters(true),
+                    data.message || 'Updating wire'
+                );                                        
 
             });
 
