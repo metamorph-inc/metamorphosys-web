@@ -288,14 +288,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         portStuff = minePortsFromInterfaces(element);
 
-        if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'C' &&
-            (!isNaN(element.name.charAt(1)) ||
-                element.name.charAt(1) === ' ' ||
-                element.name.charAt(1) === '_')
-        ) {
+        console.log(element);
 
-            // Cheap shot to figure if it is a capacitor
+        if (element.details && angular.isString(element.details.classifications) && 
+            element.details.classifications.indexOf('capacitors.single_components') > -1 ) {
 
             symbol = symbolManager.getSymbol('capacitor');
 
@@ -330,14 +326,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             newModelComponent.registerPortInstances(portStuff.portInstances);
 
-        } else if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'L' &&
-            (!isNaN(element.name.charAt(1)) ||
-                element.name.charAt(1) === ' ' ||
-                element.name.charAt(1) === '_')
-        ) {
+        } 
 
-            // Cheap shot to figure if it is a capacitor
+        else 
+
+        if (element.details && angular.isString(element.details.classifications) && 
+            element.details.classifications.indexOf('inductors.single_components') > -1 ) {
 
             symbol = symbolManager.getSymbol('inductor');
 
@@ -372,12 +366,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             newModelComponent.registerPortInstances(portStuff.portInstances);
 
-        } else if (angular.isString(element.name) &&
-            element.name.charAt(0) === 'R' &&
-            (!isNaN(element.name.charAt(1)) ||
-                element.name.charAt(1) === ' ' ||
-                element.name.charAt(1) === '_')
-        ) {
+        } 
+
+        else 
+
+        if (element.details && angular.isString(element.details.classifications) && 
+            element.details.classifications.indexOf('resistors.single_components') > -1 ) {
 
             // Cheap shot to figure if it is a capacitor
 
@@ -416,44 +410,86 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         }
 
-        //else if (angular.isString(element.name) &&
-        //    element.name.charAt(0) === 'D' && !isNaN(element.name.charAt(1))
-        //) {
-        //
-        //    // Cheap shot to figure if it is a diode
-        //
-        //    symbol = symbolManager.getSymbol('tvsDiode');
-        //
-        //    newModelComponent = new DiagramComponent({
-        //        id: element.id,
-        //        label: labelParser(element.name),
-        //        x: element.position.x,
-        //        y: element.position.y,
-        //        z: element.position.z || zIndex,
-        //        rotation: element.rotation || 0,
-        //        scaleX: 1,
-        //        scaleY: 1,
-        //        symbol: symbol,
-        //        nonSelectable: false,
-        //        locationLocked: false,
-        //        draggable: true
-        //    });
-        //
-        //    for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
-        //
-        //        if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
-        //            portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-        //        }
-        //
-        //        if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
-        //            portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-        //        }
-        //
-        //    }
-        //
-        //    newModelComponent.registerPortInstances(portStuff.portInstances);
-        //
-        //}
+        else 
+
+        if (element.details && angular.isString(element.details.classifications) && 
+            element.details.classifications.indexOf('diodes.tvs_diodes') > -1 ) {
+
+           // Cheap shot to figure if it is a diode
+        
+           symbol = symbolManager.getSymbol('tvsDiode');
+        
+           newModelComponent = new DiagramComponent({
+               id: element.id,
+               label: labelParser(element.name),
+               x: element.position.x,
+               y: element.position.y,
+               z: element.position.z || zIndex,
+               rotation: element.rotation || 0,
+               scaleX: 1,
+               scaleY: 1,
+               symbol: symbol,
+               nonSelectable: false,
+               locationLocked: false,
+               draggable: true
+           });
+        
+           for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+               }
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+               }
+        
+           }
+        
+           newModelComponent.registerPortInstances(portStuff.portInstances);
+        
+        }
+        
+        else 
+
+        if (element.details && angular.isString(element.details.classifications) && 
+            element.details.classifications.indexOf('diodes.uncategorized') > -1 ) {
+
+           // Cheap shot to figure if it is a diode
+        
+           symbol = symbolManager.getSymbol('diode');
+        
+           newModelComponent = new DiagramComponent({
+               id: element.id,
+               label: labelParser(element.name),
+               x: element.position.x,
+               y: element.position.y,
+               z: element.position.z || zIndex,
+               rotation: element.rotation || 0,
+               scaleX: 1,
+               scaleY: 1,
+               symbol: symbol,
+               nonSelectable: false,
+               locationLocked: false,
+               draggable: true
+           });
+        
+           for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'Cathode') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+               }
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'Anode') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+               }
+        
+           }
+        
+           newModelComponent.registerPortInstances(portStuff.portInstances);
+        
+        }
+        
         else {
 
             if (!pcbService.isPcbClassification(element.details.classifications)) {
