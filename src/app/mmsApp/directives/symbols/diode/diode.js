@@ -19,18 +19,18 @@ angular.module(
                 width: 60,
                 height: 15,
                 ports: {
-                    C: {
-                        id: 'C',
+                    A: {
+                        id: 'A',
                         wireAngle: 180,
                         wireLeadIn: 20,
-                        label: 'C',
+                        label: 'A',
                         x: 0,
                         y: 7.5
-                    }, A: {
-                        id: 'A',
+                    }, C: {
+                        id: 'C',
                         wireAngle: 0,
                         wireLeadIn: 20,
-                        label: 'A',
+                        label: 'C',
                         x: 60,
                         y: 7.5
                     } }
