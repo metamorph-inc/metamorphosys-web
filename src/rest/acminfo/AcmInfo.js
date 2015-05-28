@@ -5,7 +5,7 @@
 
      'use strict';
 
-    var ParseAcm = require('parseddp'),
+    var ParseDdp = require('parseddp'),
         Logger = require('../../../node_modules/webgme/src/server/logger'),
         q = require('q'),
         BlobClient = requireJS('blob/BlobClient'),
@@ -14,7 +14,7 @@
         blobClient;
 
         var newParseAcm = function (id) {
-            var parse = new ParseAcm(id);
+            var parse = new ParseDdp.ParseAcm(id);
             parse.getAcmZip = function getAcmZip() {
                 return q.ninvoke(blobClient, 'getObject', id);
             };
