@@ -9,7 +9,7 @@
         common: './node_modules/webgme/src/common',
         blob: './node_modules/webgme/src/common/blob',
         plugin: './node_modules/webgme/src/plugin',
-        xmljsonconverter: './node_modules/parseacm/xmljsonconverter',
+        xmljsonconverter: './node_modules/parseddp/xmljsonconverter',
         sax: './vendor/sax/sax',
         jszip: './node_modules/webgme/src/client/lib/jszip/jszip',
         ejs: './node_modules/webgme/src/common/util/ejs',

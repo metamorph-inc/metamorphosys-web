@@ -25,7 +25,7 @@ function GridService( $log, $rootScope, $timeout ) {
             _recalculateVisibleDiagramComponents,
             recalculateVisibleWires;
 
-        gridSize = 5;
+        gridSize = 10;
 
         recalculateVisibleWires = function ( grid ) {
 
