@@ -159,12 +159,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             if (sourcePort && destinationPort) {
 
                 wire = new Wire(
-                    element.id,
-                    {
+                    element.id, {
                         component: sourcePort.parentComponent,
                         port: sourcePort
-                    },
-                    {
+                    }, {
                         component: destinationPort.parentComponent,
                         port: destinationPort
                     }
@@ -282,243 +280,184 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         var portStuff,
             newModelComponent,
-            symbol;
+            symbol,
+            customSymbolWasFound = false,
+            numberOfPortsMapped = 0;
 
         zIndex = zIndex || 0;
 
-        portStuff = minePortsFromInterfaces(element);
-
         //console.log(element);
 
-        if (element.details && angular.isString(element.details.classifications) && 
-            element.details.classifications.indexOf('capacitors.single_components') > -1 ) {
+        if (!customSymbolWasFound && element.details && angular.isString(element.details.classifications) &&
+            element.details.classifications.indexOf('capacitors.single_components') > -1) {
 
             symbol = symbolManager.getSymbol('capacitor');
 
-            newModelComponent = new DiagramComponent({
-                id: element.id,
-                label: labelParser(element.name),
-                x: element.position.x,
-                y: element.position.y,
-                z: element.position.z || zIndex,
-                rotation: element.rotation || 0,
-                scaleX: 1,
-                scaleY: 1,
-                symbol: symbol,
-                nonSelectable: false,
-                readonly: false,
-                locationLocked: false,
-                draggable: true,
-                metaType: 'AVMComponent'
-            });
+            numberOfPortsMapped = 0;
+            portStuff = minePortsFromInterfaces(element);
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
                 }
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
                 }
 
             }
 
-            newModelComponent.registerPortInstances(portStuff.portInstances);
+            if (numberOfPortsMapped === 2) {
 
-        } 
+                newModelComponent = new DiagramComponent({
+                    id: element.id,
+                    label: labelParser(element.name),
+                    x: element.position.x,
+                    y: element.position.y,
+                    z: element.position.z || zIndex,
+                    rotation: element.rotation || 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                    symbol: symbol,
+                    nonSelectable: false,
+                    readonly: false,
+                    locationLocked: false,
+                    draggable: true,
+                    metaType: 'AVMComponent'
+                });
 
-        else 
+                newModelComponent.registerPortInstances(portStuff.portInstances);
+                customSymbolWasFound = true;
+            }
 
-        if (element.details && angular.isString(element.details.classifications) && 
-            element.details.classifications.indexOf('inductors.single_components') > -1 ) {
+        }
+
+        if (!customSymbolWasFound && element.details && angular.isString(element.details.classifications) &&
+            element.details.classifications.indexOf('inductors.single_components') > -1) {
 
             symbol = symbolManager.getSymbol('inductor');
 
-            newModelComponent = new DiagramComponent({
-                id: element.id,
-                label: labelParser(element.name),
-                x: element.position.x,
-                y: element.position.y,
-                z: element.position.z || zIndex,
-                rotation: element.rotation || 0,
-                scaleX: 1,
-                scaleY: 1,
-                symbol: symbol,
-                nonSelectable: false,
-                readonly: false,
-                locationLocked: false,
-                draggable: true,
-                metaType: 'AVMComponent'
-            });
+            numberOfPortsMapped = 0;
+            portStuff = minePortsFromInterfaces(element);
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                    numberOfPortsMapped++;
                 }
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
+                    numberOfPortsMapped++;
                 }
 
             }
 
-            newModelComponent.registerPortInstances(portStuff.portInstances);
+            if (numberOfPortsMapped === 2) {
 
-        } 
+                newModelComponent = new DiagramComponent({
+                    id: element.id,
+                    label: labelParser(element.name),
+                    x: element.position.x,
+                    y: element.position.y,
+                    z: element.position.z || zIndex,
+                    rotation: element.rotation || 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                    symbol: symbol,
+                    nonSelectable: false,
+                    readonly: false,
+                    locationLocked: false,
+                    draggable: true,
+                    metaType: 'AVMComponent'
+                });
 
-        else 
 
-        if (element.details && angular.isString(element.details.classifications) && 
-            element.details.classifications.indexOf('resistors.single_components') > -1 ) {
+                newModelComponent.registerPortInstances(portStuff.portInstances);
+                customSymbolWasFound = true;
+            }
+
+        }
+
+        if (!customSymbolWasFound && element.details && angular.isString(element.details.classifications) &&
+            element.details.classifications.indexOf('resistors.single_components') > -1) {
 
             // Cheap shot to figure if it is a capacitor
 
             symbol = symbolManager.getSymbol('resistor');
 
-            newModelComponent = new DiagramComponent({
-                id: element.id,
-                label: labelParser(element.name),
-                x: element.position.x,
-                y: element.position.y,
-                z: element.position.z || zIndex,
-                rotation: element.rotation || 0,
-                scaleX: 1,
-                scaleY: 1,
-                symbol: symbol,
-                nonSelectable: false,
-                readonly: false,
-                locationLocked: false,
-                draggable: true,
-                metaType: 'AVMComponent'
-            });
+            numberOfPortsMapped = 0;
+            portStuff = minePortsFromInterfaces(element);
 
             for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.p1;
+                    numberOfPortsMapped++;
                 }
 
                 if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
                     portStuff.portInstances[zIndex].portSymbol = symbol.ports.p2;
+                    numberOfPortsMapped++;
                 }
 
             }
 
-            newModelComponent.registerPortInstances(portStuff.portInstances);
+            if (numberOfPortsMapped === 2) {
+
+                newModelComponent = new DiagramComponent({
+                    id: element.id,
+                    label: labelParser(element.name),
+                    x: element.position.x,
+                    y: element.position.y,
+                    z: element.position.z || zIndex,
+                    rotation: element.rotation || 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                    symbol: symbol,
+                    nonSelectable: false,
+                    readonly: false,
+                    locationLocked: false,
+                    draggable: true,
+                    metaType: 'AVMComponent'
+                });
+
+
+                newModelComponent.registerPortInstances(portStuff.portInstances);
+                customSymbolWasFound = true;
+            }
 
         }
 
-        else 
+        if (!customSymbolWasFound && element.details && angular.isString(element.details.classifications) &&
+            element.details.classifications.indexOf('diodes.tvs_diodes') > -1) {
 
-        if (element.details && angular.isString(element.details.classifications) && 
-            element.details.classifications.indexOf('diodes.tvs_diodes') > -1 ) {
+            // Cheap shot to figure if it is a diode
 
-           // Cheap shot to figure if it is a diode
-        
-           symbol = symbolManager.getSymbol('tvsDiode');
-        
-           newModelComponent = new DiagramComponent({
-               id: element.id,
-               label: labelParser(element.name),
-               x: element.position.x,
-               y: element.position.y,
-               z: element.position.z || zIndex,
-               rotation: element.rotation || 0,
-               scaleX: 1,
-               scaleY: 1,
-               symbol: symbol,
-               nonSelectable: false,
-               locationLocked: false,
-               draggable: true
-           });
-        
-           for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-               }
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-               }
-        
-           }
-        
-           newModelComponent.registerPortInstances(portStuff.portInstances);
-        
-        }
-        
-        else 
+            symbol = symbolManager.getSymbol('tvsDiode');
 
-        if (element.details && angular.isString(element.details.classifications) && 
-            element.details.classifications.indexOf('diodes.uncategorized') > -1 ) {
+            numberOfPortsMapped = 0;
+            portStuff = minePortsFromInterfaces(element);
 
-           // Cheap shot to figure if it is a diode
-        
-           symbol = symbolManager.getSymbol('diode');
-        
-           newModelComponent = new DiagramComponent({
-               id: element.id,
-               label: labelParser(element.name),
-               x: element.position.x,
-               y: element.position.y,
-               z: element.position.z || zIndex,
-               rotation: element.rotation || 0,
-               scaleX: 1,
-               scaleY: 1,
-               symbol: symbol,
-               nonSelectable: false,
-               locationLocked: false,
-               draggable: true
-           });
-        
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
 
-           for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'C') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-               }
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'A') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-               }
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-               }
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-               }
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
 
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
-               }
-        
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
-                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
-               }
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
 
-           }
-        
-           newModelComponent.registerPortInstances(portStuff.portInstances);
-        
-        }
-        
-        else {
+            }
 
-            if (!pcbService.isPcbClassification(element.details.classifications)) {
-                symbol = symbolManager.makeBoxSymbol(
-                    'box',
-                    element.name, {
-                        showPortLabels: true,
-                        limitLabelWidthTo: 150
-                    }, portStuff.portDescriptors, {
-                        minWidth: 200,
-                        portWireLeadInIncrement: 10
-                    });
+            if (numberOfPortsMapped === 2) {
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
@@ -532,14 +471,116 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     symbol: symbol,
                     nonSelectable: false,
                     locationLocked: false,
-                    draggable: true,
-                    metaType: 'AVMComponent'
+                    draggable: true
                 });
 
 
                 newModelComponent.registerPortInstances(portStuff.portInstances);
+                customSymbolWasFound = true;
+            }
+
+        }
+
+        if (!customSymbolWasFound && element.details && angular.isString(element.details.classifications) &&
+            element.details.classifications.indexOf('diodes.uncategorized') > -1) {
+
+            // Cheap shot to figure if it is a diode
+
+            symbol = symbolManager.getSymbol('diode');
+
+            numberOfPortsMapped = 0;
+            portStuff = minePortsFromInterfaces(element);
+
+            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'C') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'A') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
 
             }
+
+            if (numberOfPortsMapped >= 2) {
+
+                newModelComponent = new DiagramComponent({
+                    id: element.id,
+                    label: labelParser(element.name),
+                    x: element.position.x,
+                    y: element.position.y,
+                    z: element.position.z || zIndex,
+                    rotation: element.rotation || 0,
+                    scaleX: 1,
+                    scaleY: 1,
+                    symbol: symbol,
+                    nonSelectable: false,
+                    locationLocked: false,
+                    draggable: true
+                });
+
+
+                newModelComponent.registerPortInstances(portStuff.portInstances);
+                customSymbolWasFound = true;
+            }
+
+        }
+
+        if (!customSymbolWasFound && !pcbService.isPcbClassification(element.details.classifications)) {
+
+            portStuff = minePortsFromInterfaces(element);
+            
+            symbol = symbolManager.makeBoxSymbol(
+                'box',
+                element.name, {
+                    showPortLabels: true,
+                    limitLabelWidthTo: 150
+                }, portStuff.portDescriptors, {
+                    minWidth: 200,
+                    portWireLeadInIncrement: 10
+                });
+
+            newModelComponent = new DiagramComponent({
+                id: element.id,
+                label: labelParser(element.name),
+                x: element.position.x,
+                y: element.position.y,
+                z: element.position.z || zIndex,
+                rotation: element.rotation || 0,
+                scaleX: 1,
+                scaleY: 1,
+                symbol: symbol,
+                nonSelectable: false,
+                locationLocked: false,
+                draggable: true,
+                metaType: 'AVMComponent'
+            });
+
+            newModelComponent.registerPortInstances(portStuff.portInstances);
+            customSymbolWasFound = true;
 
         }
 
