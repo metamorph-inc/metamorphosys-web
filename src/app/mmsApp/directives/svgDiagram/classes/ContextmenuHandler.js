@@ -289,6 +289,20 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     }]
                 }]
             }, {
+                id: 'edit',
+                items: [{
+                    id: 'duplicate',
+                    label: 'Duplicate this',
+                    keyboardShortcut: 'alt-D',
+                    action: function() {
+
+                        ga('send', 'event', 'component', 'destroy', component.id);
+
+                        $rootScope.$emit('componentDuplicationMustBeDone', component);
+
+                    }
+                }]
+            }, {
                 id: 'delete',
                 items: [{
                     id: 'destroy',
