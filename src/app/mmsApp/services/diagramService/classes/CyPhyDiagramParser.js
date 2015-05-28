@@ -474,16 +474,33 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                draggable: true
            });
         
+
            for (zIndex = 0; zIndex < portStuff.portInstances.length; zIndex++) {
         
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'Cathode') {
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'C') {
                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
                }
         
-               if (portStuff.portInstances[zIndex].portSymbol.label === 'Anode') {
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'A') {
                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
                }
         
+               if (portStuff.portInstances[zIndex].portSymbol.label === '1') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+               }
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === '2') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+               }
+
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'P1') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+               }
+        
+               if (portStuff.portInstances[zIndex].portSymbol.label === 'P2') {
+                   portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+               }
+
            }
         
            newModelComponent.registerPortInstances(portStuff.portInstances);
