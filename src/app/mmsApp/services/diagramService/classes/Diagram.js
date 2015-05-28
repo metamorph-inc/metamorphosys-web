@@ -50,8 +50,8 @@ var Diagram = function() {
     this.config = {
         editable: true,
         disallowSelection: false,
-        width: 5000,
-        height: 5000
+        width: 2500,
+        height: 2500
     };
 
     this.state = {
@@ -72,6 +72,7 @@ Diagram.prototype.addComponent = function(aDiagramComponent) {
 
     var i,
         port;
+
 
     if (angular.isObject(aDiagramComponent) && !angular.isDefined(this._componentsById[aDiagramComponent.id])) {
 

@@ -555,8 +555,8 @@ angular.module('mms.svgDiagram', [
                             scope.$element = $element;
                             scope.svgContainer = $element[0].querySelector('svg.svg-diagram');
 
-                            $element.outerWidth(scope.diagram.config.width);
-                            $element.outerHeight(scope.diagram.config.width);
+                            //$element.outerWidth(scope.diagram.config.width);
+                            //$element.outerHeight(scope.diagram.config.width);
 
                             scope.id = id = newDiagramId;
 

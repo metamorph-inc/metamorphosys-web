@@ -552,7 +552,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         if (!customSymbolWasFound && !pcbService.isPcbClassification(element.details.classifications)) {
 
             portStuff = minePortsFromInterfaces(element);
-            
+
             symbol = symbolManager.makeBoxSymbol(
                 'box',
                 element.name, {
@@ -607,7 +607,20 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
 
             diagram,
-            wire;
+            wire,
+
+            checkMaxSizes = function(component) {
+
+                if (component) {
+
+                    var boundingBox = component.getGridBoundingBox();
+
+                    diagram.config.width = Math.max(diagram.config.width, boundingBox.x + boundingBox.width);
+                    diagram.config.height = Math.max(diagram.config.height, boundingBox.y + boundingBox.height);            
+                    
+                }
+
+            };
 
 
         diagram = new Diagram();
@@ -616,14 +629,13 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             i = 0;
 
-            diagram.config.width = 2500;
-            diagram.config.height = 2500;
-
             angular.forEach(diagramElements.Connector, function(element) {
 
                 newDiagramComponent = connectorParser(element, i);
 
                 diagram.addComponent(newDiagramComponent);
+
+                checkMaxSizes(newDiagramComponent);
 
                 i++;
 
@@ -635,6 +647,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 diagram.addComponent(newDiagramComponent);
 
+                checkMaxSizes(newDiagramComponent);                
+
                 i++;
 
             });
@@ -644,6 +658,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 newDiagramComponent = containerParser(element, i);
 
                 diagram.addComponent(newDiagramComponent);
+
+                checkMaxSizes(newDiagramComponent);                
 
                 i++;
 
