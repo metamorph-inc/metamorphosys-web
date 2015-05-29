@@ -164,6 +164,17 @@ module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
                 }
             }
 
+            // Duplicate
+
+            if (event.keyCode === 68 && event.altKey) {
+
+                component = selectedComponents[0];                
+
+                $rootScope.$emit('componentDuplicationMustBeDone', component);
+
+            }
+
+
         }
 
     });
