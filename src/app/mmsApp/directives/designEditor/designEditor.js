@@ -284,21 +284,27 @@ angular.module('mms.designEditor', [
                         nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
                     });
 
-                    addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, msg) {
+                    addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, offset) {
 
                         if (component) {
 
                             $rootScope.setProcessing();
 
-                            justDuplicatedComponentNewPosition = component.getPosition();
+                            if (!offset) {
 
-                            justDuplicatedComponentNewPosition.x += 30;
-                            justDuplicatedComponentNewPosition.y += 30;
+                                justDuplicatedComponentNewPosition = component.getPosition();
 
-                            justDuplicatedComponentNewPosition.z = justDuplicatedComponentNewPosition.z || 0;
-                            justDuplicatedComponentNewPosition.z++;
+                                justDuplicatedComponentNewPosition.x += 30;
+                                justDuplicatedComponentNewPosition.y += 30;
 
-                            nodeService.startTransaction(layoutContext, msg || 'Duplicating design element');
+                                justDuplicatedComponentNewPosition.z = justDuplicatedComponentNewPosition.z || 0;
+                                justDuplicatedComponentNewPosition.z++;
+
+                            } else {
+                                justDuplicatedComponentNewPosition = offset;
+                            }
+
+                            nodeService.startTransaction(layoutContext, 'Duplicating design element');
 
                             nodeService.loadNode(layoutContext, component.getId())
                                 .then(function(nodeToCopy) {

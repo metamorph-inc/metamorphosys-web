@@ -2,7 +2,9 @@
 
 'use strict';
 
-module.exports = function ($scope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
+module.exports = function (
+    $scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log
+    ) {
 
     var self = this,
         getOffsetToMouse,
@@ -141,7 +143,8 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
     onDiagramMouseMove = function ($event) {
 
         var offset,
-            scrollerTimeout;
+            scrollerTimeout,
+            component;
 
         if (possibbleDragTargetsDescriptor && (
                 $event.pageX !== possibbleDragTargetsDescriptor.mousePosition.x ||
@@ -149,7 +152,40 @@ module.exports = function ($scope, diagramService, wiringService, operationsMana
                 )
             ) {
 
-            startDrag();
+            if ($scope.altKey) {
+
+                // Drag-duplicate
+
+                component = possibbleDragTargetsDescriptor.primaryTarget.component;
+
+                var prevX = possibbleDragTargetsDescriptor.mousePosition.x;
+                var prevY = possibbleDragTargetsDescriptor.mousePosition.y;
+
+                cancelDrag();
+
+                // Getting direction of mouseMove
+
+                var dX = $event.pageX - prevX;
+                var dY = $event.pageY - prevY;
+
+                var componentPosition = component.getPosition();
+
+                componentPosition.z = componentPosition.z || 0;
+
+                $rootScope.$emit(
+                    'componentDuplicationMustBeDone', 
+                    component,
+                    {
+                        x: componentPosition.x + 30 * dX / Math.abs( ( dX || 1 ) ),
+                        y: componentPosition.y + 30 * dY / Math.abs( ( dY || 1 ) ),
+                        z: componentPosition.z + 1                                          
+                    }
+                );                
+
+            } else {
+                startDrag();
+            }
+
         }
 
         if (moveOperation) {

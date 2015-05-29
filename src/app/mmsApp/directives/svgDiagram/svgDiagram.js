@@ -95,6 +95,7 @@ angular.module('mms.svgDiagram', [
 
                 componentDragHandler = new ComponentDragHandler(
                     $scope,
+                    $rootScope,
                     diagramService,
                     wiringService,
                     operationsManager,
@@ -634,6 +635,10 @@ angular.module('mms.svgDiagram', [
 
                         killDelete(event);
 
+                        if (event.keyCode === 18) {
+                            scope.altKey = true;   
+                        }                        
+
                         if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
                             projectHandling.undo();
                         }
@@ -644,7 +649,16 @@ angular.module('mms.svgDiagram', [
 
                     }
 
+                    function keyUpHandler(event) {
+
+                        if (event.keyCode === 18) {
+                            scope.altKey = false;   
+                        }
+
+                    }
+
                     $(document).bind('keydown', keyDownHandler);
+                    $(document).bind('keyup', keyUpHandler);                    
 
                     dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
 
@@ -663,6 +677,7 @@ angular.module('mms.svgDiagram', [
                     scope.$on('$destroy', function() {
 
                         $(document).unbind('keydown', keyDownHandler);
+                        $(document).unbind('keyup', keyUpHandler);                        
                         $element.unbind('contextmenu', killContextMenu);
 
                         dndService.unregisterDropTarget( element[0].querySelector('svg') );
