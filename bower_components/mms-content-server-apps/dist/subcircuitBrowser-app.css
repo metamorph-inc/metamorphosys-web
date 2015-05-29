@@ -1,121 +1,199 @@
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/styles/subcircuitBrowserApp.scss */
+/* line 1, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/styles/subcircuitBrowserApp.scss */
 body, html {
   height: 100%; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 3, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser #morph-logo {
   width: 240px;
   margin-top: -10px; }
-/* line 8, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 8, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .header-panel {
   position: relative;
   border-bottom: 1px solid #eee; }
-  /* line 13, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+  /* line 13, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
   .subcircuit-browser .header-panel h2 {
     padding-left: 10px;
     margin-bottom: 20px; }
-/* line 19, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 19, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .top-component-search {
   position: absolute;
   right: 10px;
   z-index: 10;
   top: 4ex; }
-/* line 26, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 26, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser.no-header .top-component-search {
   top: 1ex; }
-/* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 30, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .left-panel {
   border-right: 1px solid #eee;
   line-height: 30px;
   width: 20%;
   float: left; }
-/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 37, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .main-container-panel {
   position: relative;
   width: 100%;
   float: left;
   padding: 10px; }
-/* line 44, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 44, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .components {
   padding-left: 21%; }
-/* line 49, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 49, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .info-icon {
   color: #1565C0; }
-/* line 53, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 53, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .panel-info {
   border-color: #1565C0; }
-/* line 58, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 58, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .no-components-to-list {
   margin-top: 40px;
   display: inline-block; }
-/* line 64, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 64, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .count-display {
   float: right;
   margin-top: 0; }
-/* line 69, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 69, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .paging-buttons.upper {
   position: absolute;
   width: 100%; }
-/* line 78, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 78, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .not-empty-list-content .component-search {
   position: absolute;
   right: 0;
   top: -65px; }
-/* line 91, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 91, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .empty-list-content {
   margin-top: 80px; }
-  /* line 95, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+  /* line 95, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
   .subcircuit-browser .empty-list-content .component-search {
     width: 100%; }
-    /* line 99, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+    /* line 99, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
     .subcircuit-browser .empty-list-content .component-search .form-control.search-field {
       width: 100%;
       max-width: 30em; }
-/* line 108, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 108, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .error-message {
   display: inline-block;
   margin-top: 40px; }
-/* line 113, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
+/* line 113, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitBrowser/styles/subcircuitBrowser.scss */
 .subcircuit-browser .list-view {
   margin-top: 4em; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 3, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories .tree-navigator {
   border-top: 1px dotted #eee; }
-  /* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+  /* line 7, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
   .subcircuit-categories .tree-navigator header {
     display: none; }
-/* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 12, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories h4 {
   padding-left: 10px; }
-/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 16, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories .tree-navigator .selected-node > .node-label {
   background-color: #90CAF9; }
-/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 20, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories .tree-navigator .icon-arrow-right:after {
   border-left-color: #0D47A1; }
-/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 24, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories .tree-navigator .node-label {
   padding-left: 12px; }
-/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 28, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories .tree-navigator .node-expander {
   margin-left: -12px; }
-/* line 32, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 32, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories i.icon-arrow-right:after {
   margin-left: 5px; }
-/* line 36, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
+/* line 36, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitCategories/styles/subcircuitCategories.scss */
 .subcircuit-categories i.icon-arrow-down:after {
   margin-left: 0; }
 
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+/* line 1, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.subcircuit-list-view {
+  margin-top: 4em; }
+  /* line 7, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+  .subcircuit-list-view .item-list ul.list-group li.item-list-item.context-menu-trigger {
+    cursor: default; }
+
+/* line 19, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.detail-name, .detail-value {
+  font-size: 10px; }
+
+/* line 25, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.detail-name {
+  font-weight: bold;
+  width: 13em;
+  text-align: right; }
+
+/* line 31, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.detail-value {
+  width: 20em;
+  text-align: left; }
+
+/* line 36, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.property-table {
+  display: inline-table;
+  margin-right: 10px; }
+
+/* line 41, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px; }
+
+/* line 47, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+table tr:nth-child(odd), .icon-header {
+  background-color: transparent; }
+
+/* line 51, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+table tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.08); }
+
+/* line 55, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.icon-container, .icon {
+  max-width: 70px;
+  max-height: 70px; }
+
+/* line 60, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.icon-container {
+  display: inline-block;
+  margin-left: 10px; }
+
+/* line 65, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.icon {
+  width: 100%;
+  height: 100%; }
+
+/* line 70, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.description-container {
+  display: inline-table;
+  margin-left: 20px; }
+
+/* line 74, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.description-header {
+  font-weight: bold; }
+
+/* line 77, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+.description {
+  overflow: scroll;
+  width: 200px;
+  max-height: 120px;
+  padding-left: 5px;
+  color: inherit !important;
+  font-size: 11px; }
+
+/* line 87, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+::-webkit-scrollbar {
+  display: none; }
+
+/* line 1, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
 .subcircuit-listing {
   position: relative; }
-  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+  /* line 5, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
   .subcircuit-listing .listing-views {
     margin-top: 10px; }
-  /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+  /* line 12, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
   .subcircuit-listing .actions {
     text-align: center; }
-    /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+    /* line 15, /Users/robertboyles/Metamorph/Bitbucket/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
     .subcircuit-listing .actions .download-button + .info-button {
       margin-left: 2px; }

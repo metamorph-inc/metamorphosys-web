@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*globals angular*/
+
 "use strict";
 
 require("./directives/subcircuitBrowser/subcircuitBrowser");
@@ -20,20 +22,21 @@ angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcir
         console.log("Finish dragging", e, item);
     };
 });
-/*globals angular*/
 
-},{"./appConfig":10,"./directives/subcircuitBrowser/subcircuitBrowser":11,"./services/subcircuitLibrary.js":13}],2:[function(require,module,exports){
+},{"./appConfig":9,"./directives/subcircuitBrowser/subcircuitBrowser":10,"./services/subcircuitLibrary.js":13}],2:[function(require,module,exports){
 "use strict";
+
+require("../componentBrowser/services/componentLibrary.js");
+require("../subcircuitBrowser/services/subcircuitLibrary.js");
 
 module.exports = function ($scope, contentLibraryService) {
 
-    var config, self, findOctopart, renderList, formatProperties, itemGenerator;
+    var self, config, formatProperties, itemGenerator;
 
     self = this;
 
-    console.log(self.noDownload);
-
     config = {
+
         sortable: false,
         secondaryItemMenu: false,
         detailsCollapsible: false,
@@ -92,44 +95,21 @@ module.exports = function ($scope, contentLibraryService) {
 
     };
 
-    if (typeof this.onItemDragStart === "function" && typeof this.onItemDragEnd === "function") {
-
-        config.onItemDragStart = function (e, item) {
-            self.onItemDragStart(e, item);
-        };
-
-        config.onItemDragEnd = function (e, item) {
-            self.onItemDragEnd(e, item);
-        };
-    }
-
-    this.listData = {
-        items: []
-    };
-
-    this.config = config;
-
-    formatProperties = function (comp) {
-        var res = "";
+    formatProperties = function (item, itemClass) {
+        var res = [],
+            properties = {},
+            halfProperties1,
+            halfProperties2;
         var pp, i, prop, key;
 
-        var build = function build(x) {
-            if (x !== undefined && x !== null && x !== "") {
-                if (res !== "") {
-                    res += " ";
-                }
-                res += x;
-            }
-        };
-
-        if (comp.componentProperties === undefined) {
-            pp = comp.prominentProperties;
+        if (item[itemClass + "Properties"] === undefined) {
+            pp = item.prominentProperties;
             //  add non-prominent properties
-            if (comp.otherProperties !== undefined && comp.otherProperties !== null) {
+            if (item.otherProperties !== undefined && item.otherProperties !== null) {
                 if (pp === undefined || pp === null) {
-                    pp = comp.otherProperties;
+                    pp = item.otherProperties;
                 } else {
-                    pp = pp.concat(comp.otherProperties);
+                    pp = pp.concat(item.otherProperties);
                 }
             }
 
@@ -137,116 +117,89 @@ module.exports = function ($scope, contentLibraryService) {
                 for (i in pp) {
                     prop = pp[i];
                     if (prop.name !== undefined && prop.value !== undefined) {
-                        if (prop.name !== "ComponentName") {
-                            if (res !== "") {
-                                res += " ";
-                            }
-                            res += prop.name + " " + prop.value;
+                        if (prop.name !== capitalizeFirstLetter(itemClass) + "Name") {
+                            properties[prop.name] = prop.value;
                             if (prop.units !== undefined) {
-                                res += " " + prop.units;
+                                properties[prop.name] += " " + prop.units;
                             }
                         }
                     } else {
                         for (key in prop) {
                             if (key !== "id") {
-                                if (res !== "") {
-                                    res += " ";
-                                }
-                                res += key + ": ";
-                                res += " " + prop[key];
+                                properties[prop.name] = prop[key];
                             }
                         }
                     }
                 }
             }
         } else {
-            pp = comp.componentProperties;
+            pp = item[itemClass + "Properties"];
             if (pp !== undefined && pp !== null) {
                 for (i in pp) {
                     prop = pp[i];
                     if (prop.name !== undefined && prop.stringValue !== undefined) {
-                        if (prop.name !== "ComponentName") {
-                            if (res !== "") {
-                                res += " ";
-                            }
-                            res += prop.name + " " + prop.stringValue;
+                        if (prop.name !== capitalizeFirstLetter(itemClass) + "Name") {
+                            properties[prop.name] = prop.stringValue;
                             if (prop.units !== undefined) {
-                                res += " " + prop.units;
+                                properties[prop.name] += " " + prop.units;
                             }
                         }
-                    } else {
-                        build(prop.name);
-                        build(prop.stringValue);
-                        build(prop.units);
                     }
                 }
             }
         }
+
+        // Split property list into two arrays for use in table-format in list view.
+        var sortedPropKeys = Object.keys(properties).sort(),
+            middle = Math.ceil(sortedPropKeys.length / 2),
+            j;
+
+        halfProperties1 = {};
+        for (j = 0; j < middle; j++) {
+            halfProperties1[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+        }
+        res.push(halfProperties1);
+
+        halfProperties2 = {};
+        for (j = middle; j < sortedPropKeys.length; j++) {
+            halfProperties2[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+        }
+
+        res.push(halfProperties2);
+
         return res;
     };
 
-    findOctopart = function (comp) {
-        var oprops;
-        var i, prop;
-        if (comp.componentProperties === undefined) {
-            oprops = comp.otherProperties;
-            if (Array.isArray(oprops)) {
-                for (i in oprops) {
-                    prop = oprops[i];
-                    if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
-                        return prop.value;
-                    }
-                }
-            }
-        } else {
-            oprops = comp.componentProperties;
-            if (Array.isArray(oprops)) {
-                for (i in oprops) {
-                    prop = oprops[i];
-                    if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
-                        return prop.stringValue;
-                    }
-                }
-            }
-        }
-        return undefined;
-    };
-
-    itemGenerator = function (comp) {
+    itemGenerator = function (item, itemClass) {
+        var details = { properties: formatProperties(item, itemClass),
+            icon: null,
+            markdown: null };
+        contentLibraryService.getXmlData(item.id, details);
         return {
-            id: comp.id,
-            octopart: findOctopart(comp),
-            title: comp.name.replace(/_/g, " "),
+            id: item.id,
+            title: item.name.replace(/_/g, " "),
             toolTip: "Open item",
             headerTemplateUrl: "/componentBrowser/templates/itemHeader.html",
-            details: formatProperties(comp)
+            detailsTemplateUrl: "/componentBrowser/templates/itemDetail.html",
+            details: details
         };
     };
 
-    renderList = function () {
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
-        var comps = [];
-
-        for (var i in self.components) {
-            var comp = self.components[i];
-            comps.push(itemGenerator(comp));
-        }
-        self.listData.items = comps;
-    };
-
-    console.log($scope);
-
-    $scope.$watchCollection(function () {
-        return self.components;
-    }, function () {
-        console.log("listdata changed");
-        renderList();
-    });
-
-    renderList();
+    return { config: config,
+        itemGenerator: itemGenerator };
 };
 
-},{}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":8,"../subcircuitBrowser/services/subcircuitLibrary.js":13}],3:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -278,13 +231,10 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
 
 },{}],4:[function(require,module,exports){
+/*global angular, alert, numeral*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -316,11 +266,12 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
-/*global angular, alert, numeral*/
 
 },{}],5:[function(require,module,exports){
-"use strict";
 
+/*global angular*/
+
+"use strict";
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -332,11 +283,14 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
+},{}],6:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 3/27/15.
+ */
+
 /*global angular*/
 
-},{}],6:[function(require,module,exports){
 "use strict";
-
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -347,53 +301,14 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
-/**
- * Created by Blake McBride on 3/27/15.
- */
-
-/*global angular*/
 
 },{}],7:[function(require,module,exports){
-"use strict";
-
-require("../../services/componentLibrary.js");
-require("../downloadButton/downloadButton.js");
-require("../infoButton/infoButton.js");
-var listViewBase = require("../../../common/listViewBase.js");
-
-angular.module("mms.componentBrowser.listView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("ListViewItemController", function ($scope) {
-    console.log($scope);
-    //debugger;
-}).directive("listView", function () {
-
-    function ComponentDetailsController($scope) {
-
-        listViewBase.call(this, $scope, this.contentLibraryService);
-    }
-
-    return {
-        restrict: "E",
-        replace: true,
-        controller: ComponentDetailsController,
-        controllerAs: "ctrl",
-        bindToController: true,
-        templateUrl: "/componentBrowser/templates/listView.html",
-        scope: {
-            components: "=",
-            onItemDragStart: "=",
-            onItemDragEnd: "=",
-            noDownload: "=",
-            contentLibraryService: "="
-        }
-    };
-});
 /**
- * Created by Blake McBride on 2/16/15.
+ * Created by Blake McBride on 2/24/15.
  */
 
 /*global angular*/
 
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":9,"../downloadButton/downloadButton.js":5,"../infoButton/infoButton.js":6}],8:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -454,13 +369,10 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
-/**
- * Created by Blake McBride on 2/24/15.
- */
 
-/*global angular*/
+},{}],8:[function(require,module,exports){
+/*globals angular*/
 
-},{}],9:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -680,20 +592,48 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
                 return deferred.promise;
             };
+
+            this.getXmlData = function (id, details) {
+                var path = serverUrl + "/getcomponent/info/" + id;
+                return $http.get(path).then(function (json) {
+                    details.icon = json.data.icon;
+
+                    details.markdown = (function (markdownHtml) {
+                        if (markdownHtml) {
+                            var el = document.createElement("html"),
+                                description = null,
+                                pEls,
+                                i;
+
+                            el.innerHTML = markdownHtml;
+                            pEls = el.getElementsByTagName("p");
+
+                            for (i = 0; i < pEls.length; i++) {
+                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
+                                    description = pEls[i + 1].textContent;
+                                    break;
+                                }
+                            }
+                            return description;
+                        }
+                    })(json.data.documentation);
+                });
+            };
         };
 
         return new ComponentLibrary();
     }];
 });
-/*globals angular*/
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+/*globals angular*/
 "use strict";
 
-/*globals angular*/
-angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000");
+angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "");
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+/*global angular*/
+
 "use strict";
 
 //require('../subcircuitCategories/subcircuitCategories.js');
@@ -1008,19 +948,111 @@ angular.module("mms.subcircuitBrowser", [
         }
     };
 });
+
+},{"../../../componentBrowser/directives/componentSearch/componentSearch.js":3,"../../services/subcircuitLibrary.js":13,"../subcircuitListing/subcircuitListing.js":12}],11:[function(require,module,exports){
+/**
+ * Created by Robert Boyles on 5/28/15.
+ */
+
 /*global angular*/
 
-},{"../../../componentBrowser/directives/componentSearch/componentSearch.js":3,"../../services/subcircuitLibrary.js":13,"../subcircuitListing/subcircuitListing.js":12}],12:[function(require,module,exports){
 "use strict";
 
-require("../../../componentBrowser/directives/listView/listView.js");
+require("../../services/subcircuitLibrary.js");
+require("../../../componentBrowser/directives/downloadButton/downloadButton.js");
+require("../../../componentBrowser/directives/infoButton/infoButton.js");
+var listViewBase = require("../../../common/listViewBase.js");
+
+angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("SubcircuitListViewItemController", function ($scope) {
+    console.log($scope);
+    //debugger;
+}).directive("subcircuitListView", function () {
+
+    function SubcircuitDetailsController($scope) {
+
+        var commonList = listViewBase.call(this, $scope, this.contentLibraryService);
+
+        var config = commonList.config,
+            self,
+            renderList;
+
+        self = this;
+
+        console.log(self.noDownload);
+
+        this.listData = {
+            items: []
+        };
+
+        if (typeof this.onItemDragStart === "function" && typeof this.onItemDragEnd === "function") {
+
+            config.onItemDragStart = function (e, item) {
+                self.onItemDragStart(e, item);
+            };
+
+            config.onItemDragEnd = function (e, item) {
+                self.onItemDragEnd(e, item);
+            };
+        }
+
+        this.config = config;
+
+        renderList = function () {
+
+            var comps = [];
+
+            for (var i in self.components) {
+                var comp = self.components[i],
+                    item = commonList.itemGenerator(comp, "subcircuit");
+
+                comps.push(item);
+            }
+            self.listData.items = comps;
+        };
+
+        $scope.$watchCollection(function () {
+            return self.components;
+        }, function () {
+            renderList();
+        });
+
+        renderList();
+    }
+
+    return {
+        restrict: "E",
+        replace: true,
+        controller: SubcircuitDetailsController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/subcircuitBrowser/templates/subcircuitListView.html",
+        scope: {
+            components: "=",
+            onItemDragStart: "=",
+            onItemDragEnd: "=",
+            noDownload: "=",
+            contentLibraryService: "="
+        }
+    };
+});
+
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":5,"../../../componentBrowser/directives/infoButton/infoButton.js":6,"../../services/subcircuitLibrary.js":13}],12:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
+
+"use strict";
+
+require("../subcircuitListView/subcircuitListView.js");
 //require('../gridView/gridView.js');
 require("../../../componentBrowser/directives/countDisplay/countDisplay.js");
 //require('../../../componentBrowser/directives/viewSelection/viewSelection.js');
 require("../../../componentBrowser/directives/paging/paging.js");
 require("../../services/subcircuitLibrary.js");
 
-angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.componentBrowser.listView",
+angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowser.subcircuitListView",
 //    'mms.componentBrowser.gridView',
 //    'mms.componentBrowser.viewSelection',
 "mms.componentBrowser.countDisplay", "mms.componentBrowser.paging", "mms.subcircuitBrowser.subcircuitLibrary"]).directive("subcircuitListing", function (subcircuitLibrary) {
@@ -1072,13 +1104,10 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.componentBrowser
         templateUrl: "/subcircuitBrowser/templates/subcircuitListing.html"
     };
 });
-/**
- * Created by Blake McBride on 2/23/15.
- */
 
-/*global angular, alert*/
+},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":4,"../../../componentBrowser/directives/paging/paging.js":7,"../../services/subcircuitLibrary.js":13,"../subcircuitListView/subcircuitListView.js":11}],13:[function(require,module,exports){
+/*globals angular*/
 
-},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":4,"../../../componentBrowser/directives/listView/listView.js":7,"../../../componentBrowser/directives/paging/paging.js":8,"../../services/subcircuitLibrary.js":13}],13:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1197,12 +1226,38 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
 
                 return deferred.promise;
             };
+
+            this.getXmlData = function (id, details) {
+                var path = serverUrl + "/subcircuit/getsubcircuit/info/" + id;
+                return $http.get(path).then(function (json) {
+                    details.icon = json.data.icon;
+
+                    details.markdown = (function (markdownHtml) {
+                        if (markdownHtml) {
+                            var el = document.createElement("html"),
+                                description = null,
+                                pEls,
+                                i;
+
+                            el.innerHTML = markdownHtml;
+                            pEls = el.getElementsByTagName("p");
+
+                            for (i = 0; i < pEls.length; i++) {
+                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
+                                    description = pEls[i + 1].textContent;
+                                    break;
+                                }
+                            }
+                            return description;
+                        }
+                    })(json.data.documentation);
+                });
+            };
         };
 
         return new SubcircuitLibrary();
     }];
 });
-/*globals angular*/
 
 },{}]},{},[1])
 

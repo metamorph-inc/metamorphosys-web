@@ -1,4 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*globals angular*/
+/**
+ * Created by blake on 2/9/15.
+ */
+
 "use strict";
 
 require("./directives/componentBrowser/componentBrowser");
@@ -20,23 +25,21 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
         console.log("Finish dragging", e, item);
     };
 });
-/*globals angular*/
-/**
- * Created by blake on 2/9/15.
- */
 
 },{"./appConfig":3,"./directives/componentBrowser/componentBrowser":4,"./services/componentLibrary.js":15}],2:[function(require,module,exports){
 "use strict";
 
+require("../componentBrowser/services/componentLibrary.js");
+require("../subcircuitBrowser/services/subcircuitLibrary.js");
+
 module.exports = function ($scope, contentLibraryService) {
 
-    var config, self, findOctopart, renderList, formatProperties, itemGenerator;
+    var self, config, formatProperties, itemGenerator;
 
     self = this;
 
-    console.log(self.noDownload);
-
     config = {
+
         sortable: false,
         secondaryItemMenu: false,
         detailsCollapsible: false,
@@ -95,44 +98,21 @@ module.exports = function ($scope, contentLibraryService) {
 
     };
 
-    if (typeof this.onItemDragStart === "function" && typeof this.onItemDragEnd === "function") {
-
-        config.onItemDragStart = function (e, item) {
-            self.onItemDragStart(e, item);
-        };
-
-        config.onItemDragEnd = function (e, item) {
-            self.onItemDragEnd(e, item);
-        };
-    }
-
-    this.listData = {
-        items: []
-    };
-
-    this.config = config;
-
-    formatProperties = function (comp) {
-        var res = "";
+    formatProperties = function (item, itemClass) {
+        var res = [],
+            properties = {},
+            halfProperties1,
+            halfProperties2;
         var pp, i, prop, key;
 
-        var build = function build(x) {
-            if (x !== undefined && x !== null && x !== "") {
-                if (res !== "") {
-                    res += " ";
-                }
-                res += x;
-            }
-        };
-
-        if (comp.componentProperties === undefined) {
-            pp = comp.prominentProperties;
+        if (item[itemClass + "Properties"] === undefined) {
+            pp = item.prominentProperties;
             //  add non-prominent properties
-            if (comp.otherProperties !== undefined && comp.otherProperties !== null) {
+            if (item.otherProperties !== undefined && item.otherProperties !== null) {
                 if (pp === undefined || pp === null) {
-                    pp = comp.otherProperties;
+                    pp = item.otherProperties;
                 } else {
-                    pp = pp.concat(comp.otherProperties);
+                    pp = pp.concat(item.otherProperties);
                 }
             }
 
@@ -140,122 +120,91 @@ module.exports = function ($scope, contentLibraryService) {
                 for (i in pp) {
                     prop = pp[i];
                     if (prop.name !== undefined && prop.value !== undefined) {
-                        if (prop.name !== "ComponentName") {
-                            if (res !== "") {
-                                res += " ";
-                            }
-                            res += prop.name + " " + prop.value;
+                        if (prop.name !== capitalizeFirstLetter(itemClass) + "Name") {
+                            properties[prop.name] = prop.value;
                             if (prop.units !== undefined) {
-                                res += " " + prop.units;
+                                properties[prop.name] += " " + prop.units;
                             }
                         }
                     } else {
                         for (key in prop) {
                             if (key !== "id") {
-                                if (res !== "") {
-                                    res += " ";
-                                }
-                                res += key + ": ";
-                                res += " " + prop[key];
+                                properties[prop.name] = prop[key];
                             }
                         }
                     }
                 }
             }
         } else {
-            pp = comp.componentProperties;
+            pp = item[itemClass + "Properties"];
             if (pp !== undefined && pp !== null) {
                 for (i in pp) {
                     prop = pp[i];
                     if (prop.name !== undefined && prop.stringValue !== undefined) {
-                        if (prop.name !== "ComponentName") {
-                            if (res !== "") {
-                                res += " ";
-                            }
-                            res += prop.name + " " + prop.stringValue;
+                        if (prop.name !== capitalizeFirstLetter(itemClass) + "Name") {
+                            properties[prop.name] = prop.stringValue;
                             if (prop.units !== undefined) {
-                                res += " " + prop.units;
+                                properties[prop.name] += " " + prop.units;
                             }
                         }
-                    } else {
-                        build(prop.name);
-                        build(prop.stringValue);
-                        build(prop.units);
                     }
                 }
             }
         }
+
+        // Split property list into two arrays for use in table-format in list view.
+        var sortedPropKeys = Object.keys(properties).sort(),
+            middle = Math.ceil(sortedPropKeys.length / 2),
+            j;
+
+        halfProperties1 = {};
+        for (j = 0; j < middle; j++) {
+            halfProperties1[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+        }
+        res.push(halfProperties1);
+
+        halfProperties2 = {};
+        for (j = middle; j < sortedPropKeys.length; j++) {
+            halfProperties2[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+        }
+
+        res.push(halfProperties2);
+
         return res;
     };
 
-    findOctopart = function (comp) {
-        var oprops;
-        var i, prop;
-        if (comp.componentProperties === undefined) {
-            oprops = comp.otherProperties;
-            if (Array.isArray(oprops)) {
-                for (i in oprops) {
-                    prop = oprops[i];
-                    if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
-                        return prop.value;
-                    }
-                }
-            }
-        } else {
-            oprops = comp.componentProperties;
-            if (Array.isArray(oprops)) {
-                for (i in oprops) {
-                    prop = oprops[i];
-                    if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
-                        return prop.stringValue;
-                    }
-                }
-            }
-        }
-        return undefined;
-    };
-
-    itemGenerator = function (comp) {
+    itemGenerator = function (item, itemClass) {
+        var details = { properties: formatProperties(item, itemClass),
+            icon: null,
+            markdown: null };
+        contentLibraryService.getXmlData(item.id, details);
         return {
-            id: comp.id,
-            octopart: findOctopart(comp),
-            title: comp.name.replace(/_/g, " "),
+            id: item.id,
+            title: item.name.replace(/_/g, " "),
             toolTip: "Open item",
             headerTemplateUrl: "/componentBrowser/templates/itemHeader.html",
-            details: formatProperties(comp)
+            detailsTemplateUrl: "/componentBrowser/templates/itemDetail.html",
+            details: details
         };
     };
 
-    renderList = function () {
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
-        var comps = [];
-
-        for (var i in self.components) {
-            var comp = self.components[i];
-            comps.push(itemGenerator(comp));
-        }
-        self.listData.items = comps;
-    };
-
-    console.log($scope);
-
-    $scope.$watchCollection(function () {
-        return self.components;
-    }, function () {
-        console.log("listdata changed");
-        renderList();
-    });
-
-    renderList();
+    return { config: config,
+        itemGenerator: itemGenerator };
 };
 
-},{}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":15,"../subcircuitBrowser/services/subcircuitLibrary.js":16}],3:[function(require,module,exports){
+/*globals angular*/
 "use strict";
 
-/*globals angular*/
-angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "http://localhost:3000");
+angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "");
 
 },{}],4:[function(require,module,exports){
+/*global angular*/
+
 "use strict";
 
 require("../componentCategories/componentCategories.js");
@@ -565,9 +514,14 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         }
     };
 });
+
+},{"../../services/componentLibrary.js":15,"../componentCategories/componentCategories.js":5,"../componentListing/componentListing.js":7,"../componentSearch/componentSearch.js":8}],5:[function(require,module,exports){
 /*global angular*/
 
-},{"../../services/componentLibrary.js":15,"../componentCategories/componentCategories.js":5,"../componentListing/componentListing.js":6,"../componentSearch/componentSearch.js":7}],5:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
 "use strict";
 
 /*global numeral*/
@@ -769,23 +723,141 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         }
     };
 });
-/*global angular*/
-
-/**
- * Created by Blake McBride on 2/9/15.
- */
 
 },{"../../services/componentLibrary.js":15}],6:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/16/15.
+ */
+
+/*global angular*/
+
 "use strict";
 
-require("../listView/listView.js");
+require("../../services/componentLibrary.js");
+require("../downloadButton/downloadButton.js");
+require("../infoButton/infoButton.js");
+var listViewBase = require("../../../common/listViewBase.js");
+
+angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("ComponentListViewItemController", function ($scope) {
+    console.log($scope);
+    //debugger;
+}).directive("componentListView", function () {
+
+    function ComponentDetailsController($scope) {
+
+        var commonList = listViewBase.call(this, $scope, this.contentLibraryService);
+
+        var config = commonList.config,
+            self,
+            findOctopart,
+            renderList;
+
+        self = this;
+
+        console.log(self.noDownload);
+
+        this.listData = {
+            items: []
+        };
+
+        if (typeof this.onItemDragStart === "function" && typeof this.onItemDragEnd === "function") {
+
+            config.onItemDragStart = function (e, item) {
+                self.onItemDragStart(e, item);
+            };
+
+            config.onItemDragEnd = function (e, item) {
+                self.onItemDragEnd(e, item);
+            };
+        }
+
+        this.config = config;
+
+        findOctopart = function (comp) {
+            var oprops;
+            var i, prop;
+            if (comp.componentProperties === undefined) {
+                oprops = comp.otherProperties;
+                if (Array.isArray(oprops)) {
+                    for (i in oprops) {
+                        prop = oprops[i];
+                        if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
+                            return prop.value;
+                        }
+                    }
+                }
+            } else {
+                oprops = comp.componentProperties;
+                if (Array.isArray(oprops)) {
+                    for (i in oprops) {
+                        prop = oprops[i];
+                        if (prop.name !== undefined && prop.name.toLowerCase().indexOf("octopart") === 0) {
+                            return prop.stringValue;
+                        }
+                    }
+                }
+            }
+            return undefined;
+        };
+
+        renderList = function () {
+
+            var comps = [];
+
+            for (var i in self.components) {
+                var comp = self.components[i],
+                    item = commonList.itemGenerator(comp, "component");
+
+                item.octopart = findOctopart(comp);
+
+                comps.push(item);
+            }
+            self.listData.items = comps;
+        };
+
+        $scope.$watchCollection(function () {
+            return self.components;
+        }, function () {
+            renderList();
+        });
+
+        renderList();
+    }
+
+    return {
+        restrict: "E",
+        replace: true,
+        controller: ComponentDetailsController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/componentListView.html",
+        scope: {
+            components: "=",
+            onItemDragStart: "=",
+            onItemDragEnd: "=",
+            noDownload: "=",
+            contentLibraryService: "="
+        }
+    };
+});
+
+},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":10,"../infoButton/infoButton.js":12}],7:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
+
+"use strict";
+
+require("../componentListView/componentListView.js");
 require("../gridView/gridView.js");
 require("../countDisplay/countDisplay.js");
 require("../viewSelection/viewSelection.js");
 require("../paging/paging.js");
 require("../../services/componentLibrary.js");
 
-angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.listView", "mms.componentBrowser.gridView", "mms.componentBrowser.viewSelection", "mms.componentBrowser.countDisplay", "mms.componentBrowser.paging", "mms.componentBrowser.componentLibrary"]).directive("componentListing", function (componentLibrary) {
+angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.componentListView", "mms.componentBrowser.gridView", "mms.componentBrowser.viewSelection", "mms.componentBrowser.countDisplay", "mms.componentBrowser.paging", "mms.componentBrowser.componentLibrary"]).directive("componentListing", function (componentLibrary) {
 
     function ComponentListingController() {
 
@@ -832,13 +904,14 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.l
         templateUrl: "/componentBrowser/templates/componentListing.html"
     };
 });
+
+},{"../../services/componentLibrary.js":15,"../componentListView/componentListView.js":6,"../countDisplay/countDisplay.js":9,"../gridView/gridView.js":11,"../paging/paging.js":13,"../viewSelection/viewSelection.js":14}],8:[function(require,module,exports){
 /**
  * Created by Blake McBride on 2/23/15.
  */
 
 /*global angular, alert*/
 
-},{"../../services/componentLibrary.js":15,"../countDisplay/countDisplay.js":8,"../gridView/gridView.js":10,"../listView/listView.js":12,"../paging/paging.js":13,"../viewSelection/viewSelection.js":14}],7:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -870,13 +943,10 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
-/**
- * Created by Blake McBride on 2/23/15.
- */
 
-/*global angular, alert*/
+},{}],9:[function(require,module,exports){
+/*global angular, alert, numeral*/
 
-},{}],8:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -908,11 +978,12 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
-/*global angular, alert, numeral*/
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+
+/*global angular*/
+
 "use strict";
-
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -924,9 +995,13 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
+},{}],11:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
+
 /*global angular*/
 
-},{}],10:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -1288,15 +1363,15 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
         }
     };
 });
+
+},{"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":10,"../infoButton/infoButton.js":12}],12:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/26/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
-},{"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":9,"../infoButton/infoButton.js":11}],11:[function(require,module,exports){
 "use strict";
-
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -1307,53 +1382,14 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
+
+},{}],13:[function(require,module,exports){
 /**
- * Created by Blake McBride on 3/27/15.
+ * Created by Blake McBride on 2/24/15.
  */
 
 /*global angular*/
 
-},{}],12:[function(require,module,exports){
-"use strict";
-
-require("../../services/componentLibrary.js");
-require("../downloadButton/downloadButton.js");
-require("../infoButton/infoButton.js");
-var listViewBase = require("../../../common/listViewBase.js");
-
-angular.module("mms.componentBrowser.listView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("ListViewItemController", function ($scope) {
-    console.log($scope);
-    //debugger;
-}).directive("listView", function () {
-
-    function ComponentDetailsController($scope) {
-
-        listViewBase.call(this, $scope, this.contentLibraryService);
-    }
-
-    return {
-        restrict: "E",
-        replace: true,
-        controller: ComponentDetailsController,
-        controllerAs: "ctrl",
-        bindToController: true,
-        templateUrl: "/componentBrowser/templates/listView.html",
-        scope: {
-            components: "=",
-            onItemDragStart: "=",
-            onItemDragEnd: "=",
-            noDownload: "=",
-            contentLibraryService: "="
-        }
-    };
-});
-/**
- * Created by Blake McBride on 2/16/15.
- */
-
-/*global angular*/
-
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":9,"../infoButton/infoButton.js":11}],13:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -1414,13 +1450,14 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
+
+},{}],14:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/24/15.
+ * Created by Blake McBride on 2/26/15.
  */
 
 /*global angular*/
 
-},{}],14:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
@@ -1454,13 +1491,10 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
         templateUrl: "/componentBrowser/templates/viewSelection.html"
     };
 });
-/**
- * Created by Blake McBride on 2/26/15.
- */
-
-/*global angular*/
 
 },{}],15:[function(require,module,exports){
+/*globals angular*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -1680,12 +1714,192 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
                 return deferred.promise;
             };
+
+            this.getXmlData = function (id, details) {
+                var path = serverUrl + "/getcomponent/info/" + id;
+                return $http.get(path).then(function (json) {
+                    details.icon = json.data.icon;
+
+                    details.markdown = (function (markdownHtml) {
+                        if (markdownHtml) {
+                            var el = document.createElement("html"),
+                                description = null,
+                                pEls,
+                                i;
+
+                            el.innerHTML = markdownHtml;
+                            pEls = el.getElementsByTagName("p");
+
+                            for (i = 0; i < pEls.length; i++) {
+                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
+                                    description = pEls[i + 1].textContent;
+                                    break;
+                                }
+                            }
+                            return description;
+                        }
+                    })(json.data.documentation);
+                });
+            };
         };
 
         return new ComponentLibrary();
     }];
 });
+
+},{}],16:[function(require,module,exports){
 /*globals angular*/
+
+"use strict";
+
+angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
+    var serverUrl;
+
+    this.setServerUrl = function (url) {
+        serverUrl = url;
+    };
+
+    this.$get = ["$http", "$q", "$log", function ($http, $q, $log) {
+
+        var SubcircuitLibrary, encodeCategoryPath;
+
+        encodeCategoryPath = function (path) {
+            return path.replace(/\//g, "!");
+        };
+
+        SubcircuitLibrary = function () {
+
+            var subcircuitTree, subcircuitGrandTotal;
+
+            this.getListOfSubCircuits = function (categoryPath, itemCount, cursor) {
+
+                var deferred = $q.defer();
+
+                $http.get(serverUrl + "/subcircuit/search" + "/" + encodeCategoryPath(categoryPath) + "/" + "_all" + "/" + itemCount + "/" + cursor).success(function (data) {
+                    deferred.resolve(data);
+                }).error(function (e) {
+                    // assume attempt to page past available components
+                    deferred.reject("Could not load list of sub-circuits", e);
+                });
+
+                return deferred.promise;
+            };
+
+            this.getSubCircuitTree = function (id) {
+
+                var deferred = $q.defer(),
+                    url;
+
+                url = serverUrl + "/subcircuit/classification/tree";
+
+                if (angular.isString(id)) {
+                    url += "/" + encodeCategoryPath(id);
+                }
+
+                $http.get(url).success(function (data) {
+
+                    subcircuitTree = data.classes;
+                    deferred.resolve(subcircuitTree);
+                    subcircuitGrandTotal = data.grandTotal;
+                }).error(function (data, status, headers, config) {
+                    deferred.reject({
+                        msg: "Could not load sub-circuit classification tree",
+                        data: data,
+                        status: status,
+                        headers: headers,
+                        config: config
+                    });
+                });
+
+                return deferred.promise;
+            };
+
+            var downloadURL = function downloadURL(url) {
+                var hiddenIFrameID = "hiddenDownloader",
+                    iframe = document.getElementById(hiddenIFrameID);
+                if (iframe === null) {
+                    iframe = document.createElement("iframe");
+                    iframe.id = hiddenIFrameID;
+                    iframe.style.display = "none";
+                    document.body.appendChild(iframe);
+                }
+                iframe.src = url;
+            };
+
+            this.downloadItem = function (id) {
+
+                $log.debug("Download handler");
+
+                $http.get(serverUrl + "/subcircuit/getsubcircuit/f/" + id).success(function (filename) {
+
+                    downloadURL(serverUrl + "/" + filename);
+                });
+            };
+
+            this.getSubcircuitGrandTotal = function () {
+                return subcircuitGrandTotal;
+            };
+
+            this.searchSubCircuits = function (categoryPath, globalSearchText, itemCount, cursor) {
+
+                console.log(serverUrl + "/subcircuit/search" + "/" + encodeCategoryPath(categoryPath) + "/" + globalSearchText + "/" + itemCount + "/" + cursor);
+
+                var deferred = $q.defer();
+
+                globalSearchText = globalSearchText === undefined || globalSearchText === null || globalSearchText === "" ? "_all" : globalSearchText;
+
+                console.log(globalSearchText);
+
+                $http({
+                    url: serverUrl + "/subcircuit/search" + "/" + encodeCategoryPath(categoryPath) + "/" + globalSearchText + "/" + itemCount + "/" + cursor,
+                    method: "GET"
+                }).success(function (data) {
+
+                    if (data && angular.isArray(data.subcircuit) && data.subcircuit.length) {
+                        deferred.resolve(data);
+                    } else {
+                        data = {};
+                        data.subcircuit = []; //  no data
+                        deferred.resolve(data);
+                    }
+                }).error(function (e) {
+                    deferred.reject("Could not perform search", e);
+                });
+
+                return deferred.promise;
+            };
+
+            this.getXmlData = function (id, details) {
+                var path = serverUrl + "/subcircuit/getsubcircuit/info/" + id;
+                return $http.get(path).then(function (json) {
+                    details.icon = json.data.icon;
+
+                    details.markdown = (function (markdownHtml) {
+                        if (markdownHtml) {
+                            var el = document.createElement("html"),
+                                description = null,
+                                pEls,
+                                i;
+
+                            el.innerHTML = markdownHtml;
+                            pEls = el.getElementsByTagName("p");
+
+                            for (i = 0; i < pEls.length; i++) {
+                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
+                                    description = pEls[i + 1].textContent;
+                                    break;
+                                }
+                            }
+                            return description;
+                        }
+                    })(json.data.documentation);
+                });
+            };
+        };
+
+        return new SubcircuitLibrary();
+    }];
+});
 
 },{}]},{},[1])
 
