@@ -18,7 +18,7 @@ angular.module('mms.testbenchActions', [
             findTestbench;
 
         tooltipMessage = 'Generate PCB';
-        progressTooltipMessage = 'PCB generation in progress...';
+        progressTooltipMessage = 'Generating PCB';
         progressMessage = 'PCB generation in progress. It will take a couple of minutes...';
 
         findResultById = function (id) {
