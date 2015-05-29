@@ -319,7 +319,7 @@ angular.module('mms.svgDiagram', [
 
                 this.onComponentMouseUp = function(component, $event) {
 
-                    if (wasComponnetMouseDowned) {
+                    if (wasComponnetMouseDowned || componentDragHandler.dragging) {
 
                         if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
                             $event.which !== 3) {

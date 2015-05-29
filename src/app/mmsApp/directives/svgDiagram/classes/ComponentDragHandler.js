@@ -2,9 +2,9 @@
 
 'use strict';
 
-module.exports = function (
+module.exports = function(
     $scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log
-    ) {
+) {
 
     var self = this,
         getOffsetToMouse,
@@ -25,7 +25,11 @@ module.exports = function (
 
         scrollWhenAlongTheEdge,
         latestOffset,
-        scrollWhenAlongTheEdgeInterval;
+        scrollWhenAlongTheEdgeInterval,
+
+        afterComponentDuplicated,
+
+        lastMousePosition;
 
     scrollWhenAlongTheEdge = function() {
 
@@ -73,13 +77,13 @@ module.exports = function (
         }
 
         if (self.dragging) {
-            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);        
+            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);
         }
 
     };
 
 
-    getOffsetToMouse = function ($event) {
+    getOffsetToMouse = function($event) {
 
         var offset;
 
@@ -95,7 +99,7 @@ module.exports = function (
     };
 
 
-    startDrag = function () {
+    startDrag = function() {
 
         self.dragging = true;
 
@@ -108,7 +112,7 @@ module.exports = function (
 
     };
 
-    cancelDrag = function () {
+    cancelDrag = function() {
 
         possibbleDragTargetsDescriptor = null;
 
@@ -123,7 +127,7 @@ module.exports = function (
 
     };
 
-    finishDrag = function () {
+    finishDrag = function() {
 
         possibbleDragTargetsDescriptor = null;
 
@@ -140,17 +144,71 @@ module.exports = function (
 
     };
 
-    onDiagramMouseMove = function ($event) {
+    afterComponentDuplicated = function(component) {
+
+        if (component && lastMousePosition) {
+
+            var boundingBox = component.getGridBoundingBox();
+
+            var getDragDescriptor = function(component) {
+
+                return {
+                    component: component,
+                    originalPosition: {
+                        x: component.x,
+                        y: component.y
+                    },
+                    deltaToCursor: {
+                        x: -boundingBox.width/2,
+                        y: -boundingBox.height/2
+                    }
+                };
+
+            };
+
+            var primaryTargetDescriptor = getDragDescriptor(component);
+
+            var dragTargetsDescriptor = {
+                primaryTarget: primaryTargetDescriptor,
+                targets: [primaryTargetDescriptor],
+                mousePosition: lastMousePosition || {x: 0, y: 0},                
+            };
+
+            dragTargetsDescriptor.componentsBeingDragged = [component];
+
+            dragTargetsDescriptor.selectedSegmentEndcornerIds = $scope.diagram.getSelectedSegmentEndcornerIds();
+
+            moveOperation = operationsManager.initNew(
+                'MoveComponents',
+                $scope.diagram,
+                dragTargetsDescriptor
+            );
+
+            self.dragging = true;
+
+            // component.setPosition(
+            //     lastMousePosition.x - boundingBox.width / 2, 
+            //     lastMousePosition.y - boundingBox.height / 2
+            // );
+        }
+
+    };
+
+    onDiagramMouseMove = function($event) {
 
         var offset,
             scrollerTimeout,
             component;
 
+        lastMousePosition = {
+            x: $event.pageX,
+            y: $event.pageY
+        };
+
         if (possibbleDragTargetsDescriptor && (
                 $event.pageX !== possibbleDragTargetsDescriptor.mousePosition.x ||
                 $event.pageY !== possibbleDragTargetsDescriptor.mousePosition.y
-                )
-            ) {
+            )) {
 
             if ($scope.altKey) {
 
@@ -173,14 +231,15 @@ module.exports = function (
                 componentPosition.z = componentPosition.z || 0;
 
                 $rootScope.$emit(
-                    'componentDuplicationMustBeDone', 
+                    'componentDuplicationMustBeDone',
                     component,
-                    {
-                        x: componentPosition.x + 30 * dX / Math.abs( ( dX || 1 ) ),
-                        y: componentPosition.y + 30 * dY / Math.abs( ( dY || 1 ) ),
-                        z: componentPosition.z + 1                                          
-                    }
-                );                
+                    afterComponentDuplicated
+                    // {
+                    //     x: componentPosition.x + 30 * dX / Math.abs( ( dX || 1 ) ),
+                    //     y: componentPosition.y + 30 * dY / Math.abs( ( dY || 1 ) ),
+                    //     z: componentPosition.z + 1                                          
+                    // }
+                );
 
             } else {
                 startDrag();
@@ -198,26 +257,26 @@ module.exports = function (
 
     };
 
-    onDiagramMouseUp = function ($event) {
+    onDiagramMouseUp = function($event) {
 
         finishDrag();
         $event.stopPropagation();
 
     };
 
-    onDiagramMouseLeave = function (/*$event*/) {
+    onDiagramMouseLeave = function( /*$event*/ ) {
 
         finishDrag();
 
     };
 
-    onWindowBlur = function (/*$event*/) {
+    onWindowBlur = function( /*$event*/ ) {
 
         finishDrag();
 
     };
 
-    onComponentMouseUp = function (component, $event) {
+    onComponentMouseUp = function(component, $event) {
 
         possibbleDragTargetsDescriptor = null;
 
@@ -226,7 +285,7 @@ module.exports = function (
 
     };
 
-    onComponentMouseDown = function (component, $event) {
+    onComponentMouseDown = function(component, $event) {
 
         var componentsToDrag,
             getDragDescriptor,
@@ -234,7 +293,7 @@ module.exports = function (
 
         componentsToDrag = [];
 
-        getDragDescriptor = function (component) {
+        getDragDescriptor = function(component) {
 
             var offset = getOffsetToMouse($event);
 
@@ -268,7 +327,7 @@ module.exports = function (
                     y: $event.pageY
                 },
                 primaryTarget: primaryTargetDescriptor,
-                targets: [ primaryTargetDescriptor ]
+                targets: [primaryTargetDescriptor]
             };
 
             componentsToDrag.push(component);
@@ -277,7 +336,7 @@ module.exports = function (
 
                 // Drag along other selected components
 
-                angular.forEach($scope.diagram.state.selectedComponentIds, function (selectedComponentId) {
+                angular.forEach($scope.diagram.state.selectedComponentIds, function(selectedComponentId) {
 
                     var selectedComponent;
 

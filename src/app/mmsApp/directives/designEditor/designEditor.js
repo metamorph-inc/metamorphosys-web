@@ -58,6 +58,7 @@ angular.module('mms.designEditor', [
                 selectionHandler,
 
                 justDuplicatedComponentNewPosition,
+                afterDuplicatedComponentCallback,
 
                 self = this;
 
@@ -284,25 +285,21 @@ angular.module('mms.designEditor', [
                         nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
                     });
 
-                    addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, offset) {
+                    addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 
                         if (component) {
 
                             $rootScope.setProcessing();
 
-                            if (!offset) {
+                            justDuplicatedComponentNewPosition = component.getPosition();
 
-                                justDuplicatedComponentNewPosition = component.getPosition();
+                            justDuplicatedComponentNewPosition.x += 30;
+                            justDuplicatedComponentNewPosition.y += 30;
 
-                                justDuplicatedComponentNewPosition.x += 30;
-                                justDuplicatedComponentNewPosition.y += 30;
+                            justDuplicatedComponentNewPosition.z = justDuplicatedComponentNewPosition.z || 0;
+                            justDuplicatedComponentNewPosition.z++;
 
-                                justDuplicatedComponentNewPosition.z = justDuplicatedComponentNewPosition.z || 0;
-                                justDuplicatedComponentNewPosition.z++;
-
-                            } else {
-                                justDuplicatedComponentNewPosition = offset;
-                            }
+                            afterDuplicatedComponentCallback = cb;
 
                             nodeService.startTransaction(layoutContext, 'Duplicating design element');
 
@@ -511,20 +508,26 @@ angular.module('mms.designEditor', [
                                             if (!(designStructureUpdateObject.data.baseName === 'ConnectorComposition' &&
                                                     justCreatedWires.indexOf(designStructureUpdateObject.data.id) > -1)) {
 
-                                                diagramService.createNewComponentFromFromCyPhyElement(
+                                                var newDiagramElement = diagramService.createNewComponentFromFromCyPhyElement(
                                                     selectedContainerId,
                                                     designStructureUpdateObject.data);
 
                                                 if (justDuplicatedComponentNewPosition) {
 
-                                                    designLayoutService.setPosition(
-                                                        layoutContext,
-                                                        designStructureUpdateObject.data.id,
-                                                        justDuplicatedComponentNewPosition
-                                                    );
+                                                    if (typeof afterDuplicatedComponentCallback === 'function') {
+                                                        afterDuplicatedComponentCallback(newDiagramElement);
+                                                    } else {
 
+                                                        designLayoutService.setPosition(
+                                                            layoutContext,
+                                                            designStructureUpdateObject.data.id,
+                                                            justDuplicatedComponentNewPosition
+                                                        );                                                       
+
+                                                    }
 
                                                     justDuplicatedComponentNewPosition = null;
+                                                    afterDuplicatedComponentCallback = null;
 
                                                 }
 
