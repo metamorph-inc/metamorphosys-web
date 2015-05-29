@@ -15,7 +15,7 @@
 
         var newParseAcm = function (id) {
             var parse = new ParseDdp.ParseAcm(id);
-            parse.getAcmZip = function getAcmZip() {
+            parse.getZip = function getZip() {
                 return q.ninvoke(blobClient, 'getObject', id);
             };
             parse.getDatasheetUrl = function getDatasheetUrl(path) {
