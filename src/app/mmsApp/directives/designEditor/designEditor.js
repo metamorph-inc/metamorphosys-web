@@ -41,7 +41,7 @@ angular.module('mms.designEditor', [
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager) {
+            acmImportService, mmsUtils, operationsManager, wiringService, $q) {
 
             var justCreatedWires,
                 layoutContext,
@@ -56,6 +56,8 @@ angular.module('mms.designEditor', [
                 randomSymbolGenerator,
 
                 selectionHandler,
+
+                justDuplicatedComponentNewPosition,
 
                 self = this;
 
@@ -78,8 +80,6 @@ angular.module('mms.designEditor', [
                 if (selectedComponentIds.length === 1) {
 
                     self.inspectableComponent = self.diagram.getComponentById(selectedComponentIds[0]);
-
-                    $log.debug('inspectableComponent', self.inspectableComponent);
 
                 } else if (selectedWireIds.length === 1) {
 
@@ -288,6 +288,16 @@ angular.module('mms.designEditor', [
 
                         if (component) {
 
+                            $rootScope.setProcessing();
+
+                            justDuplicatedComponentNewPosition = component.getPosition();
+
+                            justDuplicatedComponentNewPosition.x += 30;
+                            justDuplicatedComponentNewPosition.y += 30;
+
+                            justDuplicatedComponentNewPosition.z = justDuplicatedComponentNewPosition.z || 0;
+                            justDuplicatedComponentNewPosition.z++;
+
                             nodeService.startTransaction(layoutContext, msg || 'Duplicating design element');
 
                             nodeService.loadNode(layoutContext, component.getId())
@@ -295,7 +305,7 @@ angular.module('mms.designEditor', [
 
                                     var nodesToCopy = {};
 
-                                    nodesToCopy[ nodeToCopy.id ] = nodeToCopy;
+                                    nodesToCopy[nodeToCopy.id] = nodeToCopy;
 
                                     nodeService.copyMoreNodes(
                                         layoutContext,
@@ -312,9 +322,9 @@ angular.module('mms.designEditor', [
 
                     addRootScopeEventListener('componentDeletionMustBeDone', function($event, components, msg) {
 
-                        var startDeletionOfComponent;
+                        var doDeletionOfComponent;
 
-                        startDeletionOfComponent = function(component) {
+                        doDeletionOfComponent = function(component) {
 
                             var i,
                                 wires,
@@ -356,17 +366,125 @@ angular.module('mms.designEditor', [
                         if (angular.isArray(components)) {
 
                             angular.forEach(components, function(component) {
-                                startDeletionOfComponent(component);
+                                doDeletionOfComponent(component);
                             });
 
                         } else {
-                            startDeletionOfComponent(components);
+                            doDeletionOfComponent(components);
                         }
 
                         nodeService.completeTransaction(layoutContext);
 
                     });
 
+                    addRootScopeEventListener('selectedDiagramThingsDeletionMustBeDone', function($event, diagram, msg) {
+
+                        var selectedComponents = diagram.getSelectedComponents(),
+                            selectedWires = diagram.getSelectedWires(),
+                            selectedWireSegmentsWithSelectedEndCorner = diagram.getWireSegmentsWithSelectedEndCorner(),
+                            deletedWires = [],
+                            i,
+                            nodeIdsToDelete = [],
+                            deleteMessage = 'Deleting design element',
+
+                            doDeletionOfComponent = function(component) {
+
+                                var i,
+                                    componentWires = [],
+                                    deleteMessage;
+
+                                if (angular.isObject(component)) {
+
+                                    componentWires = diagram.getWiresForComponents([component]);
+
+                                    if (componentWires.length > 0) {
+
+                                        deleteMessage += ' with wires';
+
+                                        componentWires.forEach(function(wire) {
+                                            nodeIdsToDelete.push(wire.getId());
+                                        });
+
+                                    }
+
+                                    nodeIdsToDelete.unshift(component.id);
+
+                                }
+
+                                return componentWires;
+
+                            };
+
+                        $rootScope.setProcessing();
+                        nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
+
+                        if (Array.isArray(selectedComponents)) {
+
+                            angular.forEach(selectedComponents, function(component) {
+
+                                deletedWires = deletedWires.concat(doDeletionOfComponent(component));
+
+                            });
+
+                        }
+
+                        if (Array.isArray(selectedWires)) {
+
+                            angular.forEach(selectedWires, function(aWire) {
+
+                                if (deletedWires.indexOf(aWire) === -1) {
+                                    nodeIdsToDelete.push(aWire.getId());
+                                    deletedWires.push(aWire);
+                                }
+
+                            });
+                        }
+
+                        // Now updating wires which has corners deleted
+
+                        var wiresToUpdate = [];
+
+                        if (Array.isArray(selectedWireSegmentsWithSelectedEndCorner)) {
+
+                            angular.forEach(selectedWireSegmentsWithSelectedEndCorner, function(aSegment) {
+
+                                var parentWire = aSegment.getParentWire();
+
+                                if (deletedWires.indexOf(parentWire) === -1) {
+
+                                    parentWire.destroyEndCornerOfSegment(aSegment, wiringService);
+
+                                    if (wiresToUpdate.indexOf(parentWire) === -1) {
+                                        wiresToUpdate.push(parentWire);
+                                    }
+
+                                }
+
+                            });
+
+                        }
+
+                        var gmeUpdatePromises = [];
+
+                        // Deleting gathered component and wires
+
+                        for (i = 0; i < nodeIdsToDelete.length; i++) {
+
+                            nodeService.destroyNode(layoutContext, nodeIdsToDelete[i], deleteMessage);
+
+                        }
+
+                        // Updating wires
+
+                        wiresToUpdate.forEach(function(wire) {
+                            gmeUpdatePromises.push(designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), 'Removing wire corner'));
+                        });
+
+                        $q.all(gmeUpdatePromises).then(function() {
+                            nodeService.completeTransaction(layoutContext);
+                        });
+
+                    });
 
                     designLayoutService.watchDiagramElements(
                             layoutContext,
@@ -390,6 +508,19 @@ angular.module('mms.designEditor', [
                                                 diagramService.createNewComponentFromFromCyPhyElement(
                                                     selectedContainerId,
                                                     designStructureUpdateObject.data);
+
+                                                if (justDuplicatedComponentNewPosition) {
+
+                                                    designLayoutService.setPosition(
+                                                        layoutContext,
+                                                        designStructureUpdateObject.data.id,
+                                                        justDuplicatedComponentNewPosition
+                                                    );
+
+
+                                                    justDuplicatedComponentNewPosition = null;
+
+                                                }
 
                                                 gridService.invalidateVisibleDiagramComponents(selectedContainerId);
                                             }
@@ -612,6 +743,44 @@ angular.module('mms.designEditor', [
         };
 
         DesignEditorController.prototype.componentBrowserItemDragEnd = function(e, item) {
+            dndService.stopDrag();
+
+            if (typeof e.dataTransfer.setDragImage !== 'function') {
+
+                // We are in IE land
+
+                document.body.removeChild(_ghostComponent);
+                document.body.removeEventListener('drag', dragginginIE, true);
+
+            }
+
+        };
+
+        DesignEditorController.prototype.subcircuitBrowserItemDragStart = function(e, item) {
+
+            if (typeof e.dataTransfer.setDragImage === 'function') {
+                e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
+            } else {
+
+                // We are in IE land
+
+                _ghostComponent.style.zIndex = '100';
+                _ghostComponent.style.top = (e.pageY + 5) + 'px';
+                _ghostComponent.style.left = (e.pageX + 5) + 'px';
+                _ghostComponent.style.position = 'absolute';
+                _ghostComponent.style.pointerEvents = 'none';
+
+                document.body.appendChild(_ghostComponent);
+
+                document.body.addEventListener('drag', dragginginIE, true);
+            }
+
+            dndService.startDrag('subcircuit', {
+                subcircuitId: item.id
+            });
+        };
+
+        DesignEditorController.prototype.subcircuitBrowserItemDragEnd = function(e, item) {
             dndService.stopDrag();
 
             if (typeof e.dataTransfer.setDragImage !== 'function') {
