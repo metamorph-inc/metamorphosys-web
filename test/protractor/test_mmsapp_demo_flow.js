@@ -23,10 +23,10 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         searchTerm = '12',
         searchTermX = 'xy',
-        categoryToUnfold = 'Optoelectronics',
-        subCategoryToUnfold = 'Optocouplers-optoisolators',
-        componentToDrag = 'ILD213T',
-        targetComponentLabel = 'ILD213T',
+        categoryToUnfold = 'Ara (8)',
+        subCategoryToUnfold = 'Bridge chips (4)',
+        componentToDrag = 'T6WR5XBG',
+        targetComponentLabel = 'T6WR5XBG',
 
         targetContainerLabel = "Power System",
         mainContainerLabel = "Template Module 1x2",
@@ -163,14 +163,18 @@ describe('Metamorphosys Tech Demo Flow', function() {
         var componentBrowser,
             componentSearchInput;
 
+        element(by.css('div.footer-drawer > header > ul > li:nth-child(2) > button')).click();
+        browser.sleep(componentLibraryQueryTimeLimit);
+
         componentBrowser = element(by.css('.component-browser'));
         expect(browser.isElementPresent(componentBrowser)).toEqual(true);
 
-        componentSearchInput = element(by.css('.component-search-input'));
+        componentSearchInput = element(by.css('div.component-search > input'));
         expect(browser.isElementPresent(componentSearchInput)).toEqual(true);
 
     });
 
+    /*
     it('Component search should return search results', function () {
 
         var componentSearchInput,
@@ -220,12 +224,12 @@ describe('Metamorphosys Tech Demo Flow', function() {
             });
 
     });
-
+*/
     it('Shoud display ' + categoryToUnfold + ' category', function () {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('.component-browser li[title=' + categoryToUnfold + ']'));
+        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\']'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
 
     });
@@ -236,14 +240,14 @@ describe('Metamorphosys Tech Demo Flow', function() {
             childrenList,
             items;
 
-        categoryExpander = element(by.css('.component-browser li[title=' + categoryToUnfold + '] .node-expander'));
+        categoryExpander = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] .node-expander'));
 
         categoryExpander.click()
             .then(function () {
 
                 browser.sleep(componentLibraryQueryTimeLimit);
 
-                childrenList = element(by.css('.component-browser li[title=' + categoryToUnfold + '] > .node-list'));
+                childrenList = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] > .node-list'));
 
                 browser.wait(function () {
                         return childrenList.isDisplayed();
@@ -259,29 +263,30 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     });
 
-    it('Shoud display ' + subCategoryToUnfold + ' subcategory', function () {
+    it('Should display ' + subCategoryToUnfold + ' subcategory', function () {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('.component-browser li[title=' + subCategoryToUnfold + ']'));
+        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\']'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
+        sensorCategoryItem.click();
 
     });
 
+    /*
     it( subCategoryToUnfold + ' category should expand', function () {
 
         var categoryExpander,
             childrenList,
             items;
 
-        categoryExpander = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] .node-expander'));
+        categoryExpander = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] .node-expander'));
 
         categoryExpander.click()
             .then(function () {
 
                 browser.sleep(componentLibraryQueryTimeLimit);
-
-                childrenList = element(by.css('.component-browser li[title=' + subCategoryToUnfold + '] > .node-list'));
+                childrenList = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] > .node-list'));
 
                 browser.wait(function () {
                         return childrenList.isDisplayed();
@@ -294,8 +299,8 @@ describe('Metamorphosys Tech Demo Flow', function() {
                     });
 
             });
-
     });
+         */
 
 
     it('Should be able to navigate to same project and design in other browser', function () {
@@ -352,7 +357,8 @@ describe('Metamorphosys Tech Demo Flow', function() {
             .then(function () {
                 browser.driver.executeScript(function (componentTitle) {
 
-                    $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
+                $('div.footer-drawer div.main-container-panel div.component-listing div.listing-views > div > div > div > div > ul > li:nth-child(1)').simulateDragDrop({
+                    // TODO: $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
                         dropTarget: $('.svg-diagram')
                     });
 
@@ -516,7 +522,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
                     expect(newPosition1).toEqual(newPosition2);
 
-});
+                });
             });
         });
 
@@ -578,10 +584,13 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 browser.driver.executeScript(function (wireId, segmentIndex) {
 
                     var wireEl = document.getElementById(wireId),
-                        wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex],
-                        mouseEvent = new Event('mouseup', {bubbles: true, cancelable: false});
+                        wireSegmentEl = wireEl.querySelectorAll('.component-wire-segment')[segmentIndex];
 
-                    wireSegmentEl.dispatchEvent(mouseEvent);
+                    ['mousedown', 'mouseup'].forEach(function (eventType) {
+                        var mouseEvent = new Event(eventType, {bubbles: true, cancelable: false});
+
+                        wireSegmentEl.dispatchEvent(mouseEvent);
+                    });
 
                 }, wireIdToSelect, segmentIndexToSelect).then(function () {
 
@@ -608,6 +617,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
             };
 
+        element(by.css('div.footer-drawer > header > ul > li:nth-child(1) > button')).click();
         // Select Wire
         checkWireSelection(browser, wireIdToSelect, segmentIndexToSelect, true);
 
