@@ -1,8 +1,8 @@
 FROM ubuntu:14.04
 MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 
-RUN printf 'deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\ndeb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\n' > /etc/apt/sources.list.d/chris-lea-node_js-trusty.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B9316A7BC7917B12 #44A334DA # 87374F5D
+RUN apt-get -qq update && apt-get install -y --no-install-recommends apt-transport-https ca-certificates
+RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/sources.list.d/nodesource-trusty.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68576280
 
 RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential git-core nodejs mongodb-server python moreutils ca-certificates
 

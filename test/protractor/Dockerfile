@@ -1,14 +1,14 @@
 FROM ubuntu:14.04
 MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 
-RUN printf 'deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\ndeb-src http://ppa.launchpad.net/chris-lea/node.js/ubuntu trusty main\n' > /etc/apt/sources.list.d/chris-lea-node_js-trusty.list
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B9316A7BC7917B12 #44A334DA # 87374F5D
+RUN apt-get -qq update && apt-get install -y --no-install-recommends apt-transport-https ca-certificates
+RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/sources.list.d/nodesource-trusty.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68576280
 
-RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential openjdk-7-jdk git-core nodejs xvfb firefox python moreutils
+RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential openjdk-7-jdk git-core nodejs xvfb firefox python moreutils ca-certificates
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 
-RUN npm install -g protractor@2.0.0
+RUN npm install -g npm@2.9.1 && npm install -g protractor@2.0.0
 RUN webdriver-manager update --standalone
 
 RUN echo Xvfb :99 -ac -screen 0 1024x768x24 \& > /etc/init.d/xvfb
