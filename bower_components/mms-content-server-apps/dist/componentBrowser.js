@@ -1,9 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*globals angular*/
-/**
- * Created by blake on 2/9/15.
- */
-
 "use strict";
 
 require("./directives/componentBrowser/componentBrowser");
@@ -25,8 +20,12 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
         console.log("Finish dragging", e, item);
     };
 });
+/*globals angular*/
+/**
+ * Created by blake on 2/9/15.
+ */
 
-},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":4,"./services/componentLibrary.js":15}],2:[function(require,module,exports){
+},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":16}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -196,23 +195,187 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":15,"../subcircuitBrowser/services/subcircuitLibrary.js":16}],3:[function(require,module,exports){
-/*globals angular*/
+},{"../componentBrowser/services/componentLibrary.js":16,"../subcircuitBrowser/services/subcircuitLibrary.js":17}],3:[function(require,module,exports){
 "use strict";
 
-angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "");
+/*globals angular*/
+angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "http://localhost:3000");
 
 },{}],4:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies) {
+
+    function ResizerController() {
+
+        this._startingWidth = 300;
+        this._minWidth = 200;
+        this._maxWidth = 500;
+
+        this._panelDragging = false;
+        this._potentialPanelDragStart = null;
+        this._widthBeforePanelDragging = null;
+
+        this._widthAllowance = null;
+    }
+
+    ResizerController.prototype.getWidth = function () {
+        return this._width;
+    };
+
+    ResizerController.prototype.setWidth = function (width) {
+
+        if (!isNaN(width) && width >= this._minWidth && width <= this._maxWidth) {
+
+            this._width = width;
+            $cookies.categoryWidth = width;
+
+            this._updateResizerPosition();
+
+            if (this._categoryPanelEl) {
+                this._categoryPanelEl.style.width = Math.floor(this._width) + "px";
+            }
+
+            if (this._detailPanelEl) {
+                this._detailPanelEl.style.width = Math.floor(this._widthAllowance - this._width) + "px";
+            }
+        } else {
+            this._stopPanelDragging();
+        }
+    };
+
+    ResizerController.prototype._updateResizerPosition = function () {
+
+        this._resizerEl.style.left = this._width + "px";
+    };
+
+    ResizerController.prototype._init = function () {
+
+        this._widthAllowance = parseInt(getComputedStyle(this._resizerEl.parentElement).width.slice(0, -2), 10);
+        this.setWidth(this._startingWidth);
+    };
+
+    ResizerController.prototype.panelMouseDown = function ($event) {
+
+        if (!this._panelDragging) {
+            this._potentialPanelDragStart = $event.clientX;
+            $event.preventDefault();
+        }
+    };
+
+    ResizerController.prototype._startPanelDragging = function () {
+
+        this._panelDragging = true;
+        this._widthBeforePanelDragging = this.getWidth();
+        this._widthAllowance = parseInt(getComputedStyle(this._resizerEl.parentElement).width.slice(0, -2), 10);
+    };
+
+    ResizerController.prototype._stopPanelDragging = function () {
+        this._panelDragging = false;
+    };
+
+    ResizerController.prototype._resizerMouseUp = function () {
+
+        this._potentialPanelDragStart = null;
+
+        if (this._panelDragging) {
+            this._stopPanelDragging();
+        }
+    };
+
+    ResizerController.prototype._resizerMouseMove = function ($event) {
+
+        var newwidth, offset;
+
+        if (!this._panelDragging && this._potentialPanelDragStart != null) {
+            this._startPanelDragging();
+        }
+
+        if (this._panelDragging) {
+
+            newwidth = this._widthBeforePanelDragging + ($event.clientX - this._potentialPanelDragStart);
+
+            offset = Math.min(newwidth, this._widthAllowance) - this._width;
+
+            this.setWidth(Math.min(newwidth, this._widthAllowance), offset);
+        }
+    };
+
+    ResizerController.prototype._correctResizerHeight = function () {
+        this._resizerEl.style.height = this._categoryPanelEl.style.height;
+    };
+
+    return {
+        restrict: "E",
+        scope: true,
+        controller: ResizerController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        replace: true,
+        transclude: true,
+        templateUrl: "/componentBrowser/templates/categoryResizer.html",
+        require: ["categoryResizer"],
+        link: function link(scope, element, attributes, controllers) {
+
+            var ctrl = controllers[0],
+                boundResizerMouseUp = ctrl._resizerMouseUp.bind(ctrl),
+                boundResizerMouseMove = ctrl._resizerMouseMove.bind(ctrl),
+                parentElement;
+
+            ctrl._resizerEl = element[0];
+
+            if ($cookies.categoryWidth && !isNaN($cookies.categoryWidth)) {
+                ctrl._startingWidth = parseInt($cookies.categoryWidth, 10);
+            } else if (attributes.startingWidth && !isNaN(attributes.startingWidth)) {
+                ctrl._startingWidth = attributes.startingWidth;
+            }
+
+            if (attributes.minWidth && !isNaN(attributes.minWidth)) {
+                ctrl._minWidth = attributes.minWidth;
+            }
+
+            if (attributes.maxWidth && !isNaN(attributes.maxWidth)) {
+                ctrl._maxWidth = attributes.maxWidth;
+            }
+
+            parentElement = ctrl._resizerEl.parentElement;
+
+            ctrl._categoryPanelEl = parentElement.querySelector(".left-panel");
+            ctrl._detailPanelEl = parentElement.querySelector(".main-container-panel");
+
+            ctrl._init();
+
+            ctrl._padding = parseInt(getComputedStyle(ctrl._resizerEl).width.slice(0, -2), 10);
+
+            document.addEventListener("mouseup", boundResizerMouseUp);
+            document.addEventListener("mousemove", boundResizerMouseMove);
+
+            if (ctrl._categoryPanelEl) {
+                ctrl._correctResizerHeight();
+            }
+
+            scope.$on("$destroy", function () {
+
+                if (ctrl._resizerEl) {
+                    document.removeEventListener("mouseup", boundResizerMouseUp);
+                    document.removeEventListener("mousemove", boundResizerMouseMove);
+                }
+            });
+        }
+    };
+});
 /*global angular*/
 
+},{}],5:[function(require,module,exports){
 "use strict";
 
 require("../componentCategories/componentCategories.js");
 require("../componentSearch/componentSearch.js");
 require("../componentListing/componentListing.js");
 require("../../services/componentLibrary.js");
+require("../categoryResizer/categoryResizer.js");
 
-angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.componentBrowser.componentCategories", "mms.componentBrowser.componentSearch", "mms.componentBrowser.componentListing", "mms.componentBrowser.componentLibrary", "ngCookies"]).directive("componentBrowser", function () {
+angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.componentBrowser.componentCategories", "mms.componentBrowser.componentSearch", "mms.componentBrowser.componentListing", "mms.componentBrowser.componentLibrary", "mms.contentBrowser.categoryResizer", "ngCookies"]).directive("componentBrowser", function () {
 
     function ComponentBrowserController($scope, componentLibrary, $log, $anchorScroll, $timeout, $cookies, $location) {
 
@@ -514,14 +677,9 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         }
     };
 });
-
-},{"../../services/componentLibrary.js":15,"../componentCategories/componentCategories.js":5,"../componentListing/componentListing.js":7,"../componentSearch/componentSearch.js":8}],5:[function(require,module,exports){
 /*global angular*/
 
-/**
- * Created by Blake McBride on 2/9/15.
- */
-
+},{"../../services/componentLibrary.js":16,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":8,"../componentSearch/componentSearch.js":9}],6:[function(require,module,exports){
 "use strict";
 
 /*global numeral*/
@@ -723,14 +881,13 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         }
     };
 });
-
-},{"../../services/componentLibrary.js":15}],6:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/16/15.
- */
-
 /*global angular*/
 
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
+},{"../../services/componentLibrary.js":16}],7:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -840,14 +997,13 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
         }
     };
 });
-
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":10,"../infoButton/infoButton.js":12}],7:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/23/15.
+ * Created by Blake McBride on 2/16/15.
  */
 
-/*global angular, alert*/
+/*global angular*/
 
+},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":16,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],8:[function(require,module,exports){
 "use strict";
 
 require("../componentListView/componentListView.js");
@@ -904,14 +1060,13 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
         templateUrl: "/componentBrowser/templates/componentListing.html"
     };
 });
-
-},{"../../services/componentLibrary.js":15,"../componentListView/componentListView.js":6,"../countDisplay/countDisplay.js":9,"../gridView/gridView.js":11,"../paging/paging.js":13,"../viewSelection/viewSelection.js":14}],8:[function(require,module,exports){
 /**
  * Created by Blake McBride on 2/23/15.
  */
 
 /*global angular, alert*/
 
+},{"../../services/componentLibrary.js":16,"../componentListView/componentListView.js":7,"../countDisplay/countDisplay.js":10,"../gridView/gridView.js":12,"../paging/paging.js":14,"../viewSelection/viewSelection.js":15}],9:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -943,10 +1098,13 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
 
-},{}],9:[function(require,module,exports){
-/*global angular, alert, numeral*/
+/*global angular, alert*/
 
+},{}],10:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -978,12 +1136,11 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
+/*global angular, alert, numeral*/
 
-},{}],10:[function(require,module,exports){
-
-/*global angular*/
-
+},{}],11:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -995,13 +1152,9 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
-},{}],11:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/26/15.
- */
-
 /*global angular*/
 
+},{}],12:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -1147,7 +1300,7 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
 
         if (!this.noDownload) {
 
-            cellTemplate = "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\">" + "</download-button><info-button ng-if=\"row.entity.octopart!==undefined\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
+            cellTemplate = "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\"></download-button>" + "<info-button ng-if=\"row.entity.octopart!==undefined\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
             cellWidth = 70;
         } else {
 
@@ -1319,7 +1472,7 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
         $scope.onItemDragEnd = this.onItemDragEnd;
 
         $scope.clickHandler = function (row) {
-            componentLibrary.downloadComponent(row.entity.id);
+            componentLibrary.downloadItem(row.entity.id);
         };
 
         $scope.infoHandler = function (row) {
@@ -1363,15 +1516,15 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
         }
     };
 });
-
-},{"../../services/componentLibrary.js":15,"../downloadButton/downloadButton.js":10,"../infoButton/infoButton.js":12}],12:[function(require,module,exports){
 /**
- * Created by Blake McBride on 3/27/15.
+ * Created by Blake McBride on 2/26/15.
  */
 
 /*global angular*/
 
+},{"../../services/componentLibrary.js":16,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],13:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -1382,14 +1535,13 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
-
-},{}],13:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/24/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
+},{}],14:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -1450,14 +1602,13 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
-
-},{}],14:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/26/15.
+ * Created by Blake McBride on 2/24/15.
  */
 
 /*global angular*/
 
+},{}],15:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
@@ -1491,10 +1642,13 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
         templateUrl: "/componentBrowser/templates/viewSelection.html"
     };
 });
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
 
-},{}],15:[function(require,module,exports){
-/*globals angular*/
+/*global angular*/
 
+},{}],16:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -1746,10 +1900,9 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         return new ComponentLibrary();
     }];
 });
-
-},{}],16:[function(require,module,exports){
 /*globals angular*/
 
+},{}],17:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1900,6 +2053,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         return new SubcircuitLibrary();
     }];
 });
+/*globals angular*/
 
 },{}]},{},[1])
 

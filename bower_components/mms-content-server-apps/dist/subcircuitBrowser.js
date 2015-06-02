@@ -1,6 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*globals angular*/
-
 "use strict";
 
 require("./directives/subcircuitBrowser/subcircuitBrowser");
@@ -22,6 +20,7 @@ angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcir
         console.log("Finish dragging", e, item);
     };
 });
+/*globals angular*/
 
 },{"./appConfig":9,"./directives/subcircuitBrowser/subcircuitBrowser":10,"./services/subcircuitLibrary.js":13}],2:[function(require,module,exports){
 "use strict";
@@ -194,12 +193,6 @@ module.exports = function ($scope, contentLibraryService) {
 };
 
 },{"../componentBrowser/services/componentLibrary.js":8,"../subcircuitBrowser/services/subcircuitLibrary.js":13}],3:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
-
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -231,10 +224,13 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
 
 },{}],4:[function(require,module,exports){
-/*global angular, alert, numeral*/
-
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -266,12 +262,11 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
+/*global angular, alert, numeral*/
 
 },{}],5:[function(require,module,exports){
-
-/*global angular*/
-
 "use strict";
+
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -283,14 +278,11 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
-},{}],6:[function(require,module,exports){
-/**
- * Created by Blake McBride on 3/27/15.
- */
-
 /*global angular*/
 
+},{}],6:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -301,14 +293,13 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
-
-},{}],7:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/24/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
+},{}],7:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -369,10 +360,13 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/24/15.
+ */
+
+/*global angular*/
 
 },{}],8:[function(require,module,exports){
-/*globals angular*/
-
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -624,16 +618,15 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         return new ComponentLibrary();
     }];
 });
+/*globals angular*/
 
 },{}],9:[function(require,module,exports){
-/*globals angular*/
 "use strict";
 
-angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "");
+/*globals angular*/
+angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000");
 
 },{}],10:[function(require,module,exports){
-/*global angular*/
-
 "use strict";
 
 //require('../subcircuitCategories/subcircuitCategories.js');
@@ -948,14 +941,9 @@ angular.module("mms.subcircuitBrowser", [
         }
     };
 });
-
-},{"../../../componentBrowser/directives/componentSearch/componentSearch.js":3,"../../services/subcircuitLibrary.js":13,"../subcircuitListing/subcircuitListing.js":12}],11:[function(require,module,exports){
-/**
- * Created by Robert Boyles on 5/28/15.
- */
-
 /*global angular*/
 
+},{"../../../componentBrowser/directives/componentSearch/componentSearch.js":3,"../../services/subcircuitLibrary.js":13,"../subcircuitListing/subcircuitListing.js":12}],11:[function(require,module,exports){
 "use strict";
 
 require("../../services/subcircuitLibrary.js");
@@ -1035,14 +1023,13 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
         }
     };
 });
-
-},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":5,"../../../componentBrowser/directives/infoButton/infoButton.js":6,"../../services/subcircuitLibrary.js":13}],12:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/23/15.
+ * Created by Robert Boyles on 5/28/15.
  */
 
-/*global angular, alert*/
+/*global angular*/
 
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":5,"../../../componentBrowser/directives/infoButton/infoButton.js":6,"../../services/subcircuitLibrary.js":13}],12:[function(require,module,exports){
 "use strict";
 
 require("../subcircuitListView/subcircuitListView.js");
@@ -1104,10 +1091,13 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowse
         templateUrl: "/subcircuitBrowser/templates/subcircuitListing.html"
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
 
 },{"../../../componentBrowser/directives/countDisplay/countDisplay.js":4,"../../../componentBrowser/directives/paging/paging.js":7,"../../services/subcircuitLibrary.js":13,"../subcircuitListView/subcircuitListView.js":11}],13:[function(require,module,exports){
-/*globals angular*/
-
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1258,6 +1248,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         return new SubcircuitLibrary();
     }];
 });
+/*globals angular*/
 
 },{}]},{},[1])
 
