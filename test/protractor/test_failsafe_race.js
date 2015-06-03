@@ -15,7 +15,7 @@ describe('perfTest', function() {
     }
     browser.wait(function(){
         return element(by.id('result')).isPresent();
-    }, 5000);
+    }, 15000);
     element(by.id('result')).getText().then(function(text) {
         expect(text).toEqual('SUCCESS');
     });
