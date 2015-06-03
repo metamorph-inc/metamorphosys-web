@@ -267,7 +267,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\']'));
+        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] > div'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
         sensorCategoryItem.click();
 
