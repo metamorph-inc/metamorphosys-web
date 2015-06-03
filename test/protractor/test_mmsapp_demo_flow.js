@@ -24,9 +24,9 @@ describe('Metamorphosys Tech Demo Flow', function() {
         searchTerm = '12',
         searchTermX = 'xy',
         categoryToUnfold = 'Ara (8)',
-        subCategoryToUnfold = 'Bridge chips (4)',
-        componentToDrag = 'T6WR5XBG',
-        targetComponentLabel = 'T6WR5XBG',
+        subCategoryToUnfold = 'Semiconductors and actives (4)',
+        componentToDrag = 'TEA10201V15A0',
+        targetComponentLabel = 'TEA10201V15A0',
 
         targetContainerLabel = "Power System",
         mainContainerLabel = "Template Module 1x2",
