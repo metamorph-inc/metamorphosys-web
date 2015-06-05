@@ -28,15 +28,15 @@ angular.module('mms.svgDiagram', [
         'isis.ui.contextmenu',
 
         'mms.componentBrowser.componentLibrary',
-        'mms.subcircuitBrowser.subcircuitLibrary'        
+        'mms.subcircuitBrowser.subcircuitLibrary'
     ])
     .config(function(componentLibraryProvider, subcircuitLibraryProvider, contentServerUrl) {
         componentLibraryProvider.setServerUrl(contentServerUrl);
-        subcircuitLibraryProvider.setServerUrl(contentServerUrl);        
+        subcircuitLibraryProvider.setServerUrl(contentServerUrl);
     })
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService, componentLibrary, contentServerUrl,
-            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService, 
+            gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService,
             acmImportService, testBenchService, projectHandling) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
@@ -86,7 +86,7 @@ angular.module('mms.svgDiagram', [
                 this.$rootScope = $rootScope;
                 this.componentLibrary = componentLibrary;
                 this.mmsUtils = mmsUtils;
-                this.contentServerUrl = contentServerUrl;                
+                this.contentServerUrl = contentServerUrl;
                 this.$log = $log;
                 this.acmImportService = acmImportService;
                 this.dndService = dndService;
@@ -212,7 +212,7 @@ angular.module('mms.svgDiagram', [
                     if (wasDiagramMouseDowned) {
 
                         var target = event.srcElement || event.target;
-                        
+
                         //console.log('diagram mouse up');
 
                         drawSelectionHandler.onDiagramMouseUp(event);
@@ -284,13 +284,13 @@ angular.module('mms.svgDiagram', [
                     wireDragHandler.onDiagramMouseLeave($event);
                     wireDrawHandler.onDiagramMouseLeave($event);
                     panHandler.onDiagramMouseLeave($event);
-                    drawSelectionHandler.cancel();         
+                    drawSelectionHandler.cancel();
 
                     wasComponnetMouseDowned = false;
                     wasDiagramMouseDowned = false;
                     wasWireMouseDowned = false;
                     wasPortMouseDowned = false;
-                    wasWireCornerMouseDowned = false;                    
+                    wasWireCornerMouseDowned = false;
 
 
                 };
@@ -308,7 +308,7 @@ angular.module('mms.svgDiagram', [
                     wasDiagramMouseDowned = false;
                     wasWireMouseDowned = false;
                     wasPortMouseDowned = false;
-                    wasWireCornerMouseDowned = false;                    
+                    wasWireCornerMouseDowned = false;
 
                 }
 
@@ -568,6 +568,11 @@ angular.module('mms.svgDiagram', [
                             $timeout(function() {
                                 diagramContainerController.setInitialized(true);
                                 scope.$emit('DiagramInitialized');
+
+                                // TODO: Erase! This is just for the componentDocumentation mockup. Thisonly works with EKG USB
+
+                                scope.diagram.selectComponent('/1922727130/1620862711/260488260/1596412976');
+
                             }, 300);
 
                         }
@@ -581,7 +586,7 @@ angular.module('mms.svgDiagram', [
                         function(visibleArea) {
 
                             if (scope.$element) {
-                                
+
                                 scope.visibleArea = visibleArea;
 
                                 scope.elementOffset = scope.$element.offset();
@@ -636,8 +641,8 @@ angular.module('mms.svgDiagram', [
                         killDelete(event);
 
                         if (event.keyCode === 18) {
-                            scope.altKey = true;   
-                        }                        
+                            scope.altKey = true;
+                        }
 
                         if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
                             projectHandling.undo();
@@ -652,38 +657,38 @@ angular.module('mms.svgDiagram', [
                     function keyUpHandler(event) {
 
                         if (event.keyCode === 18) {
-                            scope.altKey = false;   
+                            scope.altKey = false;
                         }
 
                     }
 
                     $(document).bind('keydown', keyDownHandler);
-                    $(document).bind('keyup', keyUpHandler);                    
+                    $(document).bind('keyup', keyUpHandler);
 
                     dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
 
                     dndService.registerDropTarget(
-                        element[0].querySelector('svg'), 
+                        element[0].querySelector('svg'),
                         'component subscircuit',
                         dropHandler
                     );
 
                     // dragenterFromOutsideHandler = svgDiagramController._onDragenterFromOutside.bind(svgDiagramController);
-                    // dragleaveFromOutsideHandler = svgDiagramController._onDragleaveFromOutside.bind(svgDiagramController);                    
+                    // dragleaveFromOutsideHandler = svgDiagramController._onDragleaveFromOutside.bind(svgDiagramController);
 
                     // document.documentElement.addEventListener('dragenter', dragenterFromOutsideHandler, false);
-                    // document.documentElement.addEventListener('dragenter', dragleaveFromOutsideHandler, false);                    
+                    // document.documentElement.addEventListener('dragenter', dragleaveFromOutsideHandler, false);
 
                     scope.$on('$destroy', function() {
 
                         $(document).unbind('keydown', keyDownHandler);
-                        $(document).unbind('keyup', keyUpHandler);                        
+                        $(document).unbind('keyup', keyUpHandler);
                         $element.unbind('contextmenu', killContextMenu);
 
                         dndService.unregisterDropTarget( element[0].querySelector('svg') );
 
                         // document.documentElement.removeEventListener('dragenter', dragenterFromOutsideHandler);
-                        // document.documentElement.removeEventListener('dragenter', dragleaveFromOutsideHandler);                    
+                        // document.documentElement.removeEventListener('dragenter', dragleaveFromOutsideHandler);
 
                     });
 

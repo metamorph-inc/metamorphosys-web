@@ -66,7 +66,6 @@ var ComponentDocumentationTable = React.createClass({
             <div className="component-documentation-table">
                 <ComponentDescription description={this.props.documentation.description} icon={this.props.documentation.icon}/>
                 <ComponentVisuals images={this.props.documentation.images}></ComponentVisuals>
-                <h3>Connectors:</h3>
                 <ConnectorsDescription connectors={this.props.documentation.connectors}/>
             </div>
         );
@@ -85,7 +84,9 @@ var ComponentDescription = React.createClass({
                 <div className="component-description-text">
                     {this.props.description}
                 </div>
-                <img src={this.props.icon} className="component-icon"/>
+                <div className="component-icon-container">
+                    <img src={this.props.icon} className="component-icon"/>
+                </div>
             </div>
         );
 	}
@@ -96,11 +97,23 @@ var ComponentVisuals = React.createClass({
 
 	render: function() {
 
-        var self = this;
+        var self = this,
+            activeVisual = 0;
+
+        var images = this.props.images.map(function(imageUrl, index) {
+
+            var className = 'component-visual';
+
+            if (index === activeVisual) {
+                className += ' active';
+            }
+
+            return <img src={imageUrl} className={className}/>;
+        });
 
         return (
             <div className="component-visuals">
-                <img src={this.props.icon} className="component-icon"/>
+                {images}
             </div>
         );
 	}
@@ -119,9 +132,8 @@ var ConnectorsDescription = React.createClass({
 
         return (
             <div className="connectors-description">
-                <ul className="connectors-description-list">
-                    {connectors}
-                </ul>
+                <h3>Connectors:</h3>
+                {connectors}
             </div>
         );
 	}
@@ -134,11 +146,11 @@ var ConnectorDescription = React.createClass({
         var self = this;
 
         return (
-            <li className="connectors-description">
-                <div class="connector-name">{this.props.connector.name}</div>
-                <div class="connector-type">{this.props.connector.type}</div>
-                <div clasw="connector-description">{this.props.connector.description}</div>
-            </li>
+            <div className="connector-description">
+                <div className="connector-name">{this.props.connector.name}</div>
+                <div className="connector-type">{this.props.connector.type}</div>
+                <div className="connector-description-text"><div className="lil-stick"></div>{this.props.connector.description}</div>
+            </div>
         );
 	}
 });

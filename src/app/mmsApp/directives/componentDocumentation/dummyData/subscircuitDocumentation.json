@@ -44,7 +44,10 @@
 		}
 	],
 	"images": [
-		"diagram.jpg"
+		"images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg"
 	],
-	"icon": "icon.svg"
+	"icon": "images/dummySubcircuitIcon.svg"
 }
