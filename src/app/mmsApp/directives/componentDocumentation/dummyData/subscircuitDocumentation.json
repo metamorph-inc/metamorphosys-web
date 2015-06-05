@@ -22,7 +22,7 @@
 			"type": "AnalogSignal",
 			"description": "Cras dictum risus vitae ex rhoncus, aliquet faucibus nulla feugiat."
 		},
-		{
+        {
             "name": "signalOut",
 			"type": "AnalogSignal",
 			"description": "In pretium quis odio eu porta. Maecenas mollis odio vitae accumsan pretium."
@@ -36,11 +36,6 @@
             "name": "rtArmDiscon",
 			"type": "AnalogSignal",
 			"description": "Morbi molestie malesuada nunc, ac venenatis odio faucibus eget. Etiam metus nibh, imperdiet non semper sed, vulputate et urna. Donec commodo lacus dignissim, pellentesque augue quis, tempus felis."
-		},
-		{
-            "name": "rightLeg",
-			"type": "AnalogSignal",
-			"description": "Pellentesque mi augue, consectetur ac lacinia id, ultrices a lorem. Pellentesque sed nulla in quam interdum blandit."
 		}
 	],
 	"images": [

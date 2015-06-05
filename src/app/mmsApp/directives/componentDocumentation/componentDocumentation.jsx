@@ -149,7 +149,7 @@ var ConnectorDescription = React.createClass({
             <div className="connector-description">
                 <div className="connector-name">{this.props.connector.name}</div>
                 <div className="connector-type">{this.props.connector.type}</div>
-                <div className="connector-description-text"><div className="lil-stick"></div>{this.props.connector.description}</div>
+                <div className="connector-description-text">{this.props.connector.description}</div>
             </div>
         );
 	}

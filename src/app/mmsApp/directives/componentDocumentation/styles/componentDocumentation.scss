@@ -1,4 +1,4 @@
-$connectors-description-width: 180px;
+$connectors-description-width: 220px;
 
 $visual-container-width: 300px;
 $visual-container-height: 200px;
@@ -93,45 +93,12 @@ $visual-container-padding: 2px;
 
             .connector-description-text {
                 font-size: 11px;
-                position: absolute;
-                background-color: #fff;
-                color: #000;
                 border-radius: .5ex;
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
-                padding: 1ex;
-                z-index: 2;
-                opacity: 0;
-                transition: opacity 200ms;
-                margin-left: 10px;
-                margin-top: 5px;
-                display: none;
-                box-shadow: 0 0 20px rgba(0,0,0,.4);
                 width: $connectors-description-width;
-
-                .lil-stick {
-                    position: absolute;
-                    background-color: #fff;
-                    height: 5px;
-                    width: 1px;
-                    display: inline-block;
-                    left: 5px;
-                    top: -5px;
-                }
-
             }
 
-            &:hover {
-
-                .connector-name {
-                    border-color: #fff;
-                }
-
-                .connector-description-text {
-                    display: block;
-                    opacity: 1;
-                }
-            }
         }
     }
 }
