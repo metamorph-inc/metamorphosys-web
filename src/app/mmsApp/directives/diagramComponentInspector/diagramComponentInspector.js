@@ -1,5 +1,7 @@
 'use strict';
 
+require('../componentDocumentation/componentDocumentation.jsx');
+
 require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
@@ -8,7 +10,8 @@ angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
         'mms.contentEditable',
-        'mms.componentBrowser.infoButton'
+        'mms.componentBrowser.infoButton',
+        'mms.componentDocumentation.react'
     ])
     .directive('diagramComponentInspector', [
         function() {
