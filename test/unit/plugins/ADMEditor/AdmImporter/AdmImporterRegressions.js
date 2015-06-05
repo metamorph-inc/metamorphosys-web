@@ -109,6 +109,8 @@ describe('AdmImporterRegressions', function () {
                 return p['@Name'] === 'OutP2';
             })[0].Value['@ID']);
 
+        expect(RootContainer['@Description']).to.equal('CADescription');
+        expect(RootContainer.Container[0]['@Description']).to.equal('SubCADescription');
         done();
     });
 
@@ -116,6 +118,9 @@ describe('AdmImporterRegressions', function () {
         var RootContainer = design.RootContainer;
         expect(RootContainer.Connector.length).to.equal(1);
         expect(RootContainer.Connector[0].Role[0]['@PortMap']).to.equal(RootContainer.Connector[0].Role[1]['@ID']);
+
+        expect(RootContainer.Connector[0]['@Notes']).to.equal('ConnectorNotes');
+        expect(RootContainer.Connector[0]['@Definition']).to.equal('ConnectorDefn');
 
         done();
     });

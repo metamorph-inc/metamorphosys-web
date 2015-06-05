@@ -3,6 +3,7 @@
         "ID": 384,
         "attributes": {
             "name": "RelativeRangeConstraint",
+            "Description": "",
             "Type": "Compound"
         },
         "registry": {

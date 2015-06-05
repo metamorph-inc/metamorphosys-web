@@ -60,7 +60,17 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
             var core = model.core;
             var root = core._rootNode;
             var META = model.META;
-            runAdmImporter(Templates, admFilename, expect, core, root, admFolder, META, function (err, container) {
+            var callbackImmediate = function (callback) {
+                // 'expect' throws exceptions that must not be caught by q inside AdmImport
+                var self = this;
+                return function () {
+                    var args = arguments;
+                    setImmediate(function () {
+                        callback.apply(self, args);
+                    });
+                };
+            };
+            runAdmImporter(Templates, admFilename, expect, core, root, admFolder, META, callbackImmediate(function (err, container) {
                 if (err) {
                     return callback(err);
                 }
@@ -83,7 +93,7 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
                 expect(nodesWithoutUndefined).to.deep.equal(JSON.parse(expected));
 
                 callback(err, container);
-            });
+            }));
         }
 
         return {runAdmImporterRegression: runAdmImporterRegression,

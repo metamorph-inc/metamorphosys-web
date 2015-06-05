@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="ComponentAssembly" DesignID="{8504b8d9-ef48-40f0-a0b0-410483ad8049}" xmlns="avm">
-  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ComponentAssembly" xmlns="">
-    <Container xsi:type="q1:Compound" YPosition="196" XPosition="735" Name="ComponentAssembly">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" Name="ComponentAssembly" Description="CADescription" xmlns="">
+    <Container xsi:type="q1:Compound" YPosition="196" XPosition="735" Name="ComponentAssembly" Description="SubCADescription">
       <Property xsi:type="q1:PrimitiveProperty" Name="OutP3" OnDataSheet="true" ID="property.id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" XPosition="721" YPosition="343">
         <Value ID="id-251b84b5-8b7f-4a0e-a754-f9c0dfe711c6" DimensionType="Scalar" Dimensions="" DataType="String">
           <ValueExpression xsi:type="q1:DerivedValue" ValueSource="5fb50551-57eb-4887-b971-87714f557597" />

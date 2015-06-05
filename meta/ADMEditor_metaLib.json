@@ -1420,6 +1420,7 @@
         },
         "3317c9c6-6c44-1a06-a476-11f77d722b34": {
             "attributes": {
+                "Description": "",
                 "INFO": "System of components and sub-systems.",
                 "Type": "Compound",
                 "name": "Container"
@@ -1436,6 +1437,10 @@
                     ]
                 },
                 "attributes": {
+                    "Description": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "Type": {
                         "default": "Compound",
                         "enum": [
@@ -1570,6 +1575,8 @@
         },
         "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
             "attributes": {
+                "Definition": "",
+                "Description": "",
                 "ID": "",
                 "INFO": "Container of domain connectors.",
                 "name": "Connector"
@@ -1578,6 +1585,14 @@
             "constraints": {},
             "meta": {
                 "attributes": {
+                    "Definition": {
+                        "default": "",
+                        "type": "string"
+                    },
+                    "Description": {
+                        "default": "",
+                        "type": "string"
+                    },
                     "ID": {
                         "default": "",
                         "type": "string"

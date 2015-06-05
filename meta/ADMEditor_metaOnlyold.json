@@ -524,7 +524,6 @@
     },
     "3317c9c6-6c44-1a06-a476-11f77d722b34": {
       "attributes": {
-        "Description": "",
         "INFO": "System of components and sub-systems.",
         "Type": "Compound",
         "name": "Container"
@@ -543,10 +542,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "Description": {
-            "type": "string",
-            "default": ""
           }
         },
         "children": {
@@ -679,8 +674,6 @@
     },
     "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
       "attributes": {
-        "Definition": "",
-        "Description": "",
         "ID": "",
         "INFO": "Container of domain connectors.",
         "name": "Connector"
@@ -688,20 +681,12 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
-          "Description": {
-            "type": "string",
-            "default": ""
-          },
           "ID": {
             "default": "",
             "type": "string"
           },
           "name": {
             "type": "string"
-          },
-          "Definition": {
-            "type": "string",
-            "default": ""
           }
         },
         "children": {

@@ -581,6 +581,7 @@ define([
         containerData['@ID'] = containerData['@ID'] || self.core.getPath(container);
         this.designID2Node[containerData['@ID']] = container;
         self.core.setAttribute(container, 'name', containerData['@Name']);
+        self.core.setAttribute(container, 'Description', containerData['@Description'] || '');
         self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice("avm:".length));
         if (depth === 0) {
             self.core.setRegistry(container, 'position', {
@@ -901,6 +902,8 @@ define([
         });
         self.connID2Node[connectorData['@ID']] = connector;
         self.core.setAttribute(connector, 'name', connectorData['@Name']);
+        self.core.setAttribute(connector, 'Description', connectorData['@Notes'] || '');
+        self.core.setAttribute(connector, 'Definition', connectorData['@Definition'] || '');
         // Add Domain-Connectors (Role in adm).
         if (connectorData.Role) {
             for (i = 0; i < connectorData.Role.length; i += 1) {

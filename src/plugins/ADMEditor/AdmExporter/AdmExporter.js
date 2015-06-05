@@ -1344,6 +1344,7 @@ define([
                 "@xmlns:q1": "avm",
                 "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
                 "@Name": self.core.getAttribute(node, 'name'),
+                "@Description": self.core.getAttribute(node, 'Description') || '',
                 "@xmlns": "",
                 "Container": [],
                 "Property": [],
@@ -1376,9 +1377,10 @@ define([
             data = {
                 "@Name": self.core.getAttribute(node, 'name'),
                 "@ID": self.core.getGuid(node),
+                "@Notes": self.core.getAttribute(node, 'Description') || '',
+                "@Definition": self.core.getAttribute(node, 'Definition') || '',
                 "@ConnectorComposition": '',
                 "@ApplyJoinData": '',
-                "@Definition": '',
                 "@XPosition": pos.x,
                 "@YPosition": pos.y,
                 "Role": []

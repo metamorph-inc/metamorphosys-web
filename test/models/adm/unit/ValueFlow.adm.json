@@ -3,6 +3,7 @@
         "ID": 100,
         "attributes": {
             "name": "ComponentAssembly",
+            "Description": "CADescription",
             "Type": "Compound"
         },
         "registry": {
@@ -38,6 +39,7 @@
         "ID": 101,
         "attributes": {
             "name": "ComponentAssembly",
+            "Description": "SubCADescription",
             "Type": "Compound"
         },
         "registry": {

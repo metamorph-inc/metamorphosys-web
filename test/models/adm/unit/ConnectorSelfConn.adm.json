@@ -3,6 +3,7 @@
         "ID": 145,
         "attributes": {
             "name": "ConnectorSelfConn",
+            "Description": "",
             "Type": "Compound"
         },
         "registry": {
@@ -32,7 +33,9 @@
     "/1/41/43/145/146": {
         "ID": 146,
         "attributes": {
-            "name": "Connector"
+            "name": "Connector",
+            "Description": "ConnectorNotes",
+            "Definition": "ConnectorDefn"
         },
         "registry": {
             "DisplayFormat": "",
