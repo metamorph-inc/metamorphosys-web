@@ -529,6 +529,8 @@ define( [ 'plugin/PluginConfig',
 
         self.core.setAttribute( newConnectorNode, 'name', connName );
         self.core.setAttribute( newConnectorNode, 'ID', connId );
+        self.core.setAttribute(newConnectorNode, 'Description', avmConnInfo['@Notes'] || '');
+        self.core.setAttribute(newConnectorNode, 'Definition', avmConnInfo['@Definition'] || '');
         self.core.setRegistry( newConnectorNode, 'position', {
             x: xPos,
             y: yPos
