@@ -6,8 +6,6 @@ angular.module('mms.componentDocumentation.react', [])
 
             function ComponentDocumentationController() {
 
-                this.documentation = require('./dummyData/subscircuitDocumentation.json');
-
             }
 
             return {
@@ -19,7 +17,7 @@ angular.module('mms.componentDocumentation.react', [])
                 transclude: false,
                 template: '<div class="component-documentation"></div>',
                 scope: {
-                    //documentation: '='
+                    documentation: '='
                 },
                 require: ['componentDocumentation'],
                 link: function(scope, element, attr, controllers) {
@@ -38,7 +36,9 @@ angular.module('mms.componentDocumentation.react', [])
                     }
 
                     scope.$watch(function() {
-                        return ctrl.documentation.id;
+                        if (ctrl.documentation) {
+                            return ctrl.documentation.id;
+                        }
                     }, function(newId, oldId){
 
                         if ((oldId !== newId || oldId != null) && newId != null) {

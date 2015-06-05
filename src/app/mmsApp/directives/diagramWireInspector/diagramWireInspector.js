@@ -36,10 +36,10 @@ angular.module('mms.diagramWireInspector', [
                         };
 
                         self.componentB = {
-                            id: self.wire._end2.component.id,                            
+                            id: self.wire._end2.component.id,
                             label: self.wire._end2.component.label,
-                            classificationTags: self.wire._end2.component.classificationTags,                            
-                            portLabel: self.wire._end2.port.portSymbol.label                            
+                            classificationTags: self.wire._end2.component.classificationTags,
+                            portLabel: self.wire._end2.port.portSymbol.label
                         };
 
                         initialized = true;
