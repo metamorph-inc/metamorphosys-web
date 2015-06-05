@@ -1,10 +1,10 @@
-$connectors-description-width: 220px;
+$connectors-description-width: 240px;
 
 $visual-container-width: 300px;
 $visual-container-height: 200px;
 $visual-container-padding: 2px;
 
-.component-documentation {
+.component-documentation-table {
 
     h3 {
         margin-top: 2ex;
@@ -18,9 +18,20 @@ $visual-container-padding: 2px;
         display: inline-block;
     }
 
-    .component-description-text {
-        padding-right: 90px;
-        min-height: 100px;
+    .component-description {
+
+        .component-description-text {
+            padding-right: 90px;
+            min-height: 100px;
+
+        }
+
+        &.no-icon {
+            .component-description-text {
+                padding-right: 0;
+            }
+        }
+
     }
 
     .component-icon-container {
@@ -101,4 +112,12 @@ $visual-container-padding: 2px;
 
         }
     }
+
+    &.no-visuals {
+
+        .connectors-description {
+            padding-left: 0;
+        }
+    }
+
 }

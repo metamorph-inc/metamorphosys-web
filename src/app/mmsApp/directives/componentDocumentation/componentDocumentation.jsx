@@ -55,17 +55,24 @@ angular.module('mms.componentDocumentation.react', [])
         }
     );
 
-
 var ComponentDocumentationTable = React.createClass({
 
 	render: function() {
 
-        var self = this;
+        var self = this,
+            className = "component-documentation-table",
+            componentVisuals;
+
+        if (!this.props.documentation.visuals) {
+            className += ' no-visuals';
+        } else {
+            componentVisuals = <ComponentVisuals images={this.props.documentation.visuals}></ComponentVisuals>;
+        }
 
         return (
-            <div className="component-documentation-table">
+            <div className={className}>
                 <ComponentDescription description={this.props.documentation.description} icon={this.props.documentation.icon}/>
-                <ComponentVisuals images={this.props.documentation.images}></ComponentVisuals>
+                {componentVisuals}
                 <ConnectorsDescription connectors={this.props.documentation.connectors}/>
             </div>
         );
@@ -77,15 +84,23 @@ var ComponentDescription = React.createClass({
 
 	render: function() {
 
-        var self = this;
+        var self = this,
+            className = "component-description",
+            icon;
+
+        if (!this.props.icon) {
+            className += ' no-icon';
+        } else {
+            icon = <img src={this.props.icon} className="component-icon"/>;
+        }
 
         return (
-            <div className="component-description">
+            <div className={className}>
                 <div className="component-description-text">
                     {this.props.description}
                 </div>
                 <div className="component-icon-container">
-                    <img src={this.props.icon} className="component-icon"/>
+                    {icon}
                 </div>
             </div>
         );
