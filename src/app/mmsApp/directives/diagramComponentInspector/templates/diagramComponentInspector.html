@@ -15,8 +15,9 @@
         </div>
         <div class="inspectable-details">
             <inspected-component-details ng-if="ctrl.inspectable.details.acmInfo"
-            	component="ctrl.inspectable" 
-            ></inspected-component-details>
+                                         component="ctrl.inspectable"></inspected-component-details>
+            <inspected-container-details ng-if="ctrl.inspectable.metaType == 'Container'"
+                                         container="ctrl.inspectable"></inspected-container-details>
         </div>
     </div>
 </div>

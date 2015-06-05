@@ -1,19 +1,24 @@
 'use strict';
 
+require('../componentDocumentation/componentDocumentation.jsx');
+
 require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
+require('../../services/subcircuitDocumentation/subcircuitDocumentation.js');
 
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
         'mms.contentEditable',
-        'mms.componentBrowser.infoButton'
+        'mms.componentBrowser.infoButton',
+        'mms.componentDocumentation.react',
+        'mms.subcircuitDocumentation'
     ])
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController($scope, $rootScope, $http) {
+            function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation) {
 
                 var self = this;
 
@@ -95,7 +100,16 @@ angular.module('mms.diagramComponentInspector', [
                                 }
 
                             }
+                            else if (newInspectable.metaType === 'Container') {
 
+                                newInspectable.details = {};
+                                subcircuitDocumentation.loadDocumentation(projectHandling.getContainerLayoutContext(), newInspectable.id)
+                                    .then(function (containerData) {
+                                        newInspectable.details.documentation = containerData;
+
+                                    });
+
+                            }
                         }
                     }
 

@@ -428,12 +428,12 @@ registerAppTasks = function(appName) {
         return gulp.src(appSourceRoot + 'app.js')
             .pipe(through2.obj(function(file, enc, next) {
                 browserify(file.path, {
-                        debug: process.env.NODE_ENV === 'development'
+                        debug: true
                     })
                     .transform(babelify.configure({
                         //whitelist: ['es6', 'react'],
-                        extensions: ['.jsx'],
-                        only: onlyRe
+                        extensions: ['.jsx']
+                        //only: onlyRe
 
                     }))
                     .bundle(function(err, res) {

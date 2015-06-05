@@ -1,0 +1,48 @@
+{   "id": 1,
+    "entityType": "subcircuit",
+	"description": "This tiny breakout circuit features the ADMP401 MEMs microphone. One of the key advantages to this breakout and microphone is the bottom ported input. This means the microphone's input can fit flush against the enclosure of your project. Plus you will not have to deal with trying to solder the microphone's wacky footprint. Wootness!\n\nThe amplifier on the breakout has a gain of 67 and more than meets the bandwidth requirements of the mic. The amplifier's AUD output will float at one half Vcc when no sound is being picked up. The amplifier produces a peak-to-peak output of about 200mV when the microphone is held at arms length and is being talked into at normal conversational volume levels. So the AUD output can easily be connected to the ADC of a micro.",
+	"connectors": [
+		{
+            "name": "power_3V3",
+			"type": "Supply_Single",
+			"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc mattis nulla massa, eu fermentum mi aliquam quis."
+		},
+		{
+            "name": "shutDownNot",
+			"type": "DigitalSignal",
+			"description": "Aliquam non lacinia dui. Praesent placerat massa purus, id tristique nibh porttitor ac."
+		},
+		{
+            "name": "rightArm",
+			"type": "AnalogSignal",
+			"description": "Curabitur lobortis vitae ligula ac dignissim. Cras dictum risus vitae ex rhoncus, aliquet faucibus nulla feugiat."
+		},
+		{
+            "name": "lftArmDiscon",
+			"type": "AnalogSignal",
+			"description": "Cras dictum risus vitae ex rhoncus, aliquet faucibus nulla feugiat."
+		},
+        {
+            "name": "signalOut",
+			"type": "AnalogSignal",
+			"description": "In pretium quis odio eu porta. Maecenas mollis odio vitae accumsan pretium."
+		},
+		{
+            "name": "leftArm",
+			"type": "AnalogSignal",
+			"description": "Integer ligula metus, feugiat id felis quis, malesuada fermentum diam. Fusce nec enim commodo, dapibus lorem eget, posuere nulla."
+		},
+		{
+            "name": "rtArmDiscon",
+			"type": "AnalogSignal",
+			"description": "Morbi molestie malesuada nunc, ac venenatis odio faucibus eget. Etiam metus nibh, imperdiet non semper sed, vulputate et urna. Donec commodo lacus dignissim, pellentesque augue quis, tempus felis."
+		}
+	],
+	"visuals": [
+		"images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg",
+        "images/dummySubcircuitVisual.jpg"
+	],
+	"icon": "images/dummySubcircuitIcon.svg"
+}
