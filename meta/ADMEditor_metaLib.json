@@ -1422,6 +1422,7 @@
             "attributes": {
                 "Description": "",
                 "INFO": "System of components and sub-systems.",
+                "Resource": "",
                 "Type": "Compound",
                 "name": "Container"
             },
@@ -1440,6 +1441,10 @@
                     "Description": {
                         "default": "",
                         "type": "string"
+                    },
+                    "Resource": {
+                        "default": "",
+                        "type": "asset"
                     },
                     "Type": {
                         "default": "Compound",
