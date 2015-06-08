@@ -19,7 +19,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 	.content-browser.tree-navigator .selected-node > .node-label {
 	    background-color: rgba(165, 185, 202, 0.4);
 	    color: #fff;
-	}	
+	}
 
 	i.info-icon.glyphicon.glyphicon-info-sign {
 		color: #fff;
@@ -39,7 +39,11 @@ $hover-color: rgba(158, 158, 158, 0.2);
 			color: #999;
 		}
 
-		height: 100%;		
+		height: 100%;
+
+		.listing-header {
+			background-color: $baseBGColor;
+		}
 
     md-progress-circular {
         margin-top: 2em;
@@ -194,7 +198,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 
 						/* No support for these yet, use at own risk */
 						-o-user-select: none;
-						user-select: none;   
+						user-select: none;
 					}
 
 				    > li:hover {
@@ -209,15 +213,15 @@ $hover-color: rgba(158, 158, 158, 0.2);
 		.grid-view {
 			.grid-row {
 
-				transition: background-color .25s;				
+				transition: background-color .25s;
 				cursor: copy;
 
 				&:hover {
 
 					.ui-grid-cell {
-						background-color: $hover-color;	
+						background-color: $hover-color;
 					}
-					
+
 				}
 
 			}
@@ -253,7 +257,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 			}
 
 			.tree-navigator {
-				
+
 				margin-top: 0;
 				border-top: 0;
 
@@ -283,7 +287,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 
 					> li {
 				 	   border-bottom: none;
-					}			
+					}
 
 					ul.node-list {
 			            padding: 0 0 0 2ex;
@@ -370,7 +374,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 		h5 {
 			float: left;
 		}
-		
+
 	}
 
 	.subcircuit-listing  {
@@ -385,8 +389,8 @@ $hover-color: rgba(158, 158, 158, 0.2);
 
 		/* No support for these yet, use at own risk */
 		-o-user-select: none;
-		user-select: none;   		
-		
+		user-select: none;
+
 	}
 
 }
