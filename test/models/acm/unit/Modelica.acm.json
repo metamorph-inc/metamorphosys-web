@@ -38,7 +38,9 @@
         "ID": 42,
         "attributes": {
             "name": "c",
-            "ID": "id-a99d8ceb-ab0c-42e3-a87f-e2dc046d4d0c"
+            "ID": "id-a99d8ceb-ab0c-42e3-a87f-e2dc046d4d0c",
+            "Description": "instancenotes",
+            "Definition": "definition"
         },
         "registry": {
             "DisplayFormat": "",
