@@ -569,10 +569,6 @@ angular.module('mms.svgDiagram', [
                                 diagramContainerController.setInitialized(true);
                                 scope.$emit('DiagramInitialized');
 
-                                // TODO: Erase! This is just for the componentDocumentation mockup. Thisonly works with EKG USB
-
-                                scope.diagram.selectComponent('/1922727130/1620862711/260488260/1596412976');
-
                             }, 300);
 
                         }
