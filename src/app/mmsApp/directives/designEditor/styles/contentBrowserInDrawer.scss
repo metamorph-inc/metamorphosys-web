@@ -15,6 +15,21 @@ $hover-color: rgba(158, 158, 158, 0.2);
 		color: $linkHoverColorOnDark;
 	}
 
+	.content-list-view .item-list li.item-list-item {
+		min-height: 70px;
+
+		.icon-container {
+
+		    top: 20px;
+
+		    height: 45px;
+			line-height: 45px;
+
+		    text-align:center;
+		}
+
+	}
+
 
 	.content-browser.tree-navigator .selected-node > .node-label {
 	    background-color: rgba(165, 185, 202, 0.4);

@@ -2,7 +2,7 @@
     "scripts": [
         "./vendor/innersvg/innersvg.js",
         "./bower_components/jquery/dist/jquery.min.js",
-        "./bower_components/jquery-ui/jquery-ui.min.js",        
+        "./bower_components/jquery-ui/jquery-ui.min.js",
         "./bower_components/angular/angular.js",
         "./bower_components/angular-material/angular-material.min.js",
         "./node_modules/ng-gme/dist/ng-gme.js",
@@ -16,12 +16,12 @@
         "./bower_components/react/react.js",
         "./vendor/stats/stats.min.js",
 
-        "./bower_components/mms-content-server-apps/dist/componentBrowser.js",
-        "./bower_components/mms-content-server-apps/dist/componentBrowser-templates.js",
-        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser.js",
-        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser-templates.js",
+        "../content-server/dist/componentBrowser.js",
+        "../content-server/dist/componentBrowser-templates.js",
+        "../content-server/dist/subcircuitBrowser.js",
+        "../content-server/dist/subcircuitBrowser-templates.js",
 
-        "./bower_components/angular-ui-grid/ui-grid.min.js",       
+        "./bower_components/angular-ui-grid/ui-grid.min.js",
         "./bower_components/numeral/numeral.js"
     ],
     "styles": [
@@ -40,12 +40,12 @@
         "./public/cyphy-library/cyphy-components.css",
         "./bower_components/angular-xeditable/dist/css/xeditable.css",
 
-        "./bower_components/mms-content-server-apps/dist/componentBrowser-app.css",
-        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser-app.css", 
+        "../content-server/dist/componentBrowser-app.css",
+        "../content-server/dist/subcircuitBrowser-app.css",
 
         "./bower_components/angular-ui-grid/ui-grid.css",
         "./bower_components/angular-ui-grid/ui-grid.ttf",
-        "./bower_components/angular-ui-grid/ui-grid.woff"         
+        "./bower_components/angular-ui-grid/ui-grid.woff"
 
     ],
     "fonts": [
