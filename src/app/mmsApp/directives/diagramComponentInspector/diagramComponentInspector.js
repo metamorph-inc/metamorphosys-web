@@ -1,7 +1,5 @@
 'use strict';
 
-require('../componentDocumentation/componentDocumentation.jsx');
-
 require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
