@@ -131,6 +131,10 @@ angular.module('cyphy.services')
                 return data;
             };
             GmeMapping.prototype._processNode = function GmeMappingProcessNode(node) {
+                if (this.nodes[node.getId()]) {
+                    // already loaded; first load can do this since loadChildren triggers onNewChildLoaded
+                    return;
+                }
                 var self = this,
                     onUnload = function (id) {
                         self._onUnload(id);
@@ -141,7 +145,9 @@ angular.module('cyphy.services')
                 data._id = node.getId();
                 self._setNodeAttributes(node, data);
                 node.onNewChildLoaded(function (newChild) {
-                    self._processNode(newChild);
+                    if (self.map[newChild.getMetaTypeName(self.meta)]) {
+                        self._processNode(newChild);
+                    }
                 });
                 node.onUnload(onUnload);
                 node.onUpdate(function (id) {
