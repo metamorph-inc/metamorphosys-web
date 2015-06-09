@@ -9,8 +9,9 @@ define([
     'plugin/AdmExporter/AdmExporter/meta',
     'xmljsonconverter',
     'plugin/AdmExporter/AdmExporter/Templates/Templates',
-    'ejs'
-], function (PluginConfig, PluginBase, MetaTypes, Converter, TEMPLATES, ejs) {
+    'ejs',
+    'q'
+], function (PluginConfig, PluginBase, MetaTypes, Converter, TEMPLATES, ejs, Q) {
     'use strict';
 
     /**
@@ -32,6 +33,7 @@ define([
             "@xmlns": "avm",
             "RootContainer": null
         };
+        this.resources = {};
 
         this.acmFiles = {};
         this.gatheredAcms = {};
@@ -126,9 +128,8 @@ define([
             createArtifacts;
         if (!self.activeNode) {
             self.createMessage(null,
-                'Active node is not present! This happens sometimes... Loading another model ' +
-                'and trying again will solve it most of times.', 'error');
-            callback('Active node is not present!', self.result);
+                'Active node is not present', 'error');
+            callback('Active node is not present', self.result);
             return;
         }
         if (self.isMetaTypeOf(self.activeNode, self.META.Container) === false) {
@@ -152,69 +153,75 @@ define([
             });
         };
 
-        self.setupDesertCfg(config.desertCfg, function (err) {
-            if (err) {
-                self.logger.error(err);
-                callback(null, self.result);
-                return;
-            }
-            if (self.selectedAlternatives) {
-                self.logger.info('Running on single configuration');
-                self.logger.info(JSON.stringify(self.selectedAlternatives, null));
-            }
-            createArtifacts = function (err) {
+        Q.ninvoke(self, 'setupDesertCfg', config.desertCfg)
+            .then(function () {
+                if (self.selectedAlternatives) {
+                    self.logger.info('Running on single configuration');
+                    self.logger.info(JSON.stringify(self.selectedAlternatives, null));
+                }
+                return Q.ninvoke(self, 'exploreDesign', self.activeNode, config.acms);
+            }).then(function createArtifacts() {
                 var artifact,
                     admXmlStr;
-                if (err) {
-                    callback(err, self.result);
-                    return;
-                }
                 artifact = self.blobClient.createArtifact('design');
                 admXmlStr = jsonToXml.convertToString({
                     Design: self.admData
                 });
 
-                artifact.addFile(self.admData['@Name'] + '.adm', admXmlStr, function (err, hash) {
-                    if (err) {
-                        self.result.setSuccess(false);
-                        callback('Could not add adm file : err' + err.toString(), self.result);
-                        return;
-                    }
-                    self.logger.info('ADM hash: ' + hash);
-                    if (self.includeAcms) {
-                        artifact.addObjectHashes(self.acmFiles, function (err, hashes) {
-                            if (err) {
-                                self.result.setSuccess(false);
-                                callback('Could not add acm files : err' + err.toString(), self.result);
-                                return;
-                            }
-                            self.logger.info('ACM hashes: ' + hashes.toString());
-                            artifact.addFiles({
-                                'execute.py': ejs.render(TEMPLATES['execute.py.ejs']),
-                                'run_execution.cmd': ejs.render(TEMPLATES['run_execution.cmd.ejs']),
-                                'empty.xme': ejs.render(TEMPLATES['empty.xme.ejs']),
-                                'executor_config.json': JSON.stringify({
-                                    cmd: 'run_execution.cmd',
-                                    files: [],
-                                    dirs: []
-                                }, null, 4)
-                            }, function (err, hashes) {
+                Q.ninvoke(artifact, 'addFile', self.admData['@Name'] + '.adm', admXmlStr)
+                    .then(function (hash) {
+                        self.logger.info('ADM hash: ' + hash);
+                        return self.packageResources(artifact);
+                    }).then(function () {
+                        if (self.includeAcms) {
+                            artifact.addObjectHashes(self.acmFiles, function (err, hashes) {
                                 if (err) {
-                                    callback('Could not script files : err' + err.toString(), self
-                                        .result);
+                                    self.result.setSuccess(false);
+                                    callback('Could not add acm files : err' + err.toString(), self.result);
                                     return;
                                 }
-                                self.logger.info('Script hashes: ' + hashes.toString());
-                                finishAndSaveArtifact(artifact);
+                                self.logger.info('ACM hashes: ' + hashes.toString());
+                                artifact.addFiles({
+                                    'execute.py': ejs.render(TEMPLATES['execute.py.ejs']),
+                                    'run_execution.cmd': ejs.render(TEMPLATES['run_execution.cmd.ejs']),
+                                    'empty.xme': ejs.render(TEMPLATES['empty.xme.ejs']),
+                                    'executor_config.json': JSON.stringify({
+                                        cmd: 'run_execution.cmd',
+                                        files: [],
+                                        dirs: []
+                                    }, null, 4)
+                                }, function (err, hashes) {
+                                    if (err) {
+                                        callback('Could not script files : err' + err.toString(), self
+                                            .result);
+                                        return;
+                                    }
+                                    self.logger.info('Script hashes: ' + hashes.toString());
+                                    finishAndSaveArtifact(artifact);
+                                });
                             });
-                        });
-                    } else {
-                        finishAndSaveArtifact(artifact);
-                    }
-                });
-            };
-            self.exploreDesign(self.activeNode, config.acms, createArtifacts);
-        });
+                        } else {
+                            finishAndSaveArtifact(artifact);
+                        }
+                    });
+            }).catch(function (err) {
+                self.logger.error(err);
+                callback(null, self.result);
+            });
+    };
+
+    AdmExporter.prototype.packageResources = function (artifact, callback) {
+        var self = this,
+            resources = Object.getOwnPropertyNames(self.resources);
+
+        return Q.all(resources.map(function (id) {
+            return self.resources[id].then(function (subArtifact) {
+                var content = subArtifact.descriptor.content;
+                return Q.all(Object.getOwnPropertyNames(content).map(function (name) {
+                    return Q.ninvoke(artifact, 'addMetadataHash', id + '/' + name, content[name].content);
+                }));
+            });
+        })).nodeify(callback);
     };
 
     AdmExporter.prototype.setupDesertCfg = function (desertCfgId, callback) {
@@ -1345,6 +1352,7 @@ define([
                 "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
                 "@Name": self.core.getAttribute(node, 'name'),
                 "@Description": self.core.getAttribute(node, 'Description') || '',
+                "@ID": self.core.getGuid(node),
                 "@xmlns": "",
                 "Container": [],
                 "Property": [],
@@ -1361,6 +1369,9 @@ define([
             pos = self.getPositionUInt32(node);
             containerData["@XPosition"] = pos.x;
             containerData["@YPosition"] = pos.y;
+        }
+        if (self.core.getAttribute(node, 'Resource')) {
+            self.resources[containerData['@ID']] = Q.ninvoke(self.blobClient, 'getArtifact', self.core.getAttribute(node, 'Resource'));
         }
 
         return containerData;

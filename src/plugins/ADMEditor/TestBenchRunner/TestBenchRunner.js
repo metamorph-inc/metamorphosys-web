@@ -11,9 +11,10 @@ define(['plugin/PluginConfig',
     'plugin/AdmExporter/AtmExporter/AtmExporter',
     'xmljsonconverter',
     'executor/ExecutorClient',
-    'ejs'
+    'ejs',
+    'q'
 ], function (PluginConfig, PluginBase, MetaTypes, TEMPLATES, AdmExporter, AtmExporter, Converter, ExecutorClient,
-             ejs) {
+             ejs, Q) {
     'use strict';
     //<editor-fold desc="============================ Class Definition ================================">
     /**
@@ -500,6 +501,7 @@ define(['plugin/PluginConfig',
             self.admExporter.logger = self.logger;
             self.admExporter.result = self.result;
             self.admExporter.rootNode = self.rootNode;
+            self.admExporter.blobClient = self.blobClient;
             self.logger.info('AdmExporter had not been initialized - created a new instance.');
         } else {
             self.admExporter.acmFiles = {};
@@ -541,7 +543,6 @@ define(['plugin/PluginConfig',
             self.run_exec_cmd = ejs.render(TEMPLATES['run_execution.cmd.ejs']);
             self.exec_py = ejs.render(TEMPLATES['execute.py.ejs']);
         }
-        filesToAdd[self.admData['@Name'] + '.adm'] = self.admString;
         filesToAdd['run_execution.cmd'] = self.run_exec_cmd;
         filesToAdd['execute.py'] = self.exec_py;
         executorConfig = {
@@ -573,19 +574,22 @@ define(['plugin/PluginConfig',
         };
 
         var addObjectHashes = function addObjectHashes() {
-            artifact.addObjectHashes(self.designAcmFiles, function (err, hashes) {
-                if (err) {
-                    callback('Could not add acm files : err' + err.toString());
-                    return;
-                }
-                artifact.addFiles(filesToAdd, function (err, hashes) {
-                    if (err) {
-                        callback('Could not add script files : err' + err.toString());
-                        return;
-                    }
-                    callback(null, artifact);
-                });
-            });
+            Q.ninvoke(artifact, 'addObjectHashes', self.designAcmFiles)
+                .then(function () {
+                    var adp = self.blobClient.createArtifact(self.admData['@Name'] + '.adp');
+                    return Q.ninvoke(self.admExporter, 'packageResources', adp)
+                        .then(function () {
+                            return Q.ninvoke(adp, 'addFile', self.admData['@Name'] + '.adm', self.admString);
+                        }).then(function () {
+                            return Q.ninvoke(adp, 'save');
+                        }).then(function (hash) {
+                            return Q.ninvoke(artifact, 'addMetadataHash', self.admData['@Name'] + '.adp', hash);
+                        });
+                }).then(function () {
+                    return Q.ninvoke(artifact, 'addFiles', filesToAdd);
+                }).then(function () {
+                    return artifact;
+                }).nodeify(callback);
         };
 
         artifact = self.blobClient.createArtifact(self.activeNodeName);
