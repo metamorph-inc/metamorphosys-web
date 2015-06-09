@@ -14,7 +14,7 @@
     "ng-gme": "=0.1.1",
     "parseddp": "git+https://bitbucket.org/metamorphsoftwareinc/parseddp.git#a1ca44d9221acba6b962861029a8b515659036f9",
     "requirejs": "=2.1.11",
-    "webgme": "https://github.com/metamorph-inc/webgme/tarball/523e72b83a400438f4d2f55904f2a7a71136863c",
+    "webgme": "https://github.com/metamorph-inc/webgme/tarball/9c627b00b3708c60d5d06f3b056ee7bcc7356fc0",
     "winreg": "=0.0.12"
   },
   "devDependencies": {
