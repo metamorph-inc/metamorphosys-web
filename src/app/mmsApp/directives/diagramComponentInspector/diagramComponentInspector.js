@@ -10,7 +10,7 @@ angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedComponentDetails',
         'mms.contentEditable',
         'mms.componentBrowser.infoButton',
-        'mms.componentDocumentation.react',
+        'mms.subcircuitDetails.react',
         'mms.subcircuitDocumentation'
     ])
     .directive('diagramComponentInspector', [
