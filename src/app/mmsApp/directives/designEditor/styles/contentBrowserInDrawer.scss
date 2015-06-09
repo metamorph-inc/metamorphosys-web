@@ -1,7 +1,7 @@
 @import '../../../styles/colors';
 
 $border-styles: 1px solid rgba(143, 156, 166, .2);
-$hover-color: rgba(158, 158, 158, 0.2);
+$hover-color: rgba(158, 158, 158, 0.1);
 
 .footer-drawer {
 
@@ -416,4 +416,15 @@ $hover-color: rgba(158, 158, 158, 0.2);
 			background-color: rgba(0,0,0,.5);
 		}
 	}
+
+	.show-more-button,
+	.show-less-button{
+		color: #ffa;
+	}
+
+	.show-more-button:hover,
+	.show-less-button:hover{
+		background-color: rgba(0,0,0,.4);
+	}
+
 }
