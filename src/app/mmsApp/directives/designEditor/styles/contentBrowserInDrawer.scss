@@ -55,6 +55,15 @@ $hover-color: rgba(158, 158, 158, 0.1);
 
 	.content-browser{
 
+		.item-title {
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		h3 {
+			font-size: 14px;			
+		}
+
 		input {
 			color: #000;
 		}
