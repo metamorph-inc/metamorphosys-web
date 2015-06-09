@@ -25,7 +25,7 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
  * Created by blake on 2/9/15.
  */
 
-},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":16}],2:[function(require,module,exports){
+},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":17}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -100,9 +100,10 @@ module.exports = function ($scope, contentLibraryService) {
     formatProperties = function (item, itemClass) {
         var res = [],
             properties = {},
-            halfProperties1,
-            halfProperties2;
-        var pp, i, prop, key;
+            pp,
+            i,
+            prop,
+            key;
 
         if (item[itemClass + "Properties"] === undefined) {
             pp = item.prominentProperties;
@@ -151,38 +152,43 @@ module.exports = function ($scope, contentLibraryService) {
             }
         }
 
-        // Split property list into two arrays for use in table-format in list view.
         var sortedPropKeys = Object.keys(properties).sort(),
-            middle = Math.ceil(sortedPropKeys.length / 2),
             j;
 
-        halfProperties1 = {};
-        for (j = 0; j < middle; j++) {
-            halfProperties1[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
-        }
-        res.push(halfProperties1);
+        for (j = 0; j < sortedPropKeys.length; j++) {
 
-        halfProperties2 = {};
-        for (j = middle; j < sortedPropKeys.length; j++) {
-            halfProperties2[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+            res.push({
+                name: sortedPropKeys[j],
+                value: properties[sortedPropKeys[j]]
+            });
         }
-
-        res.push(halfProperties2);
 
         return res;
     };
 
-    itemGenerator = function (item, itemClass) {
-        var details = { properties: formatProperties(item, itemClass),
-            icon: null,
-            markdown: null };
-        contentLibraryService.getXmlData(item.id, details);
+    itemGenerator = function (item, itemClass, templateUrlBase) {
+
+        var details = {
+            properties: formatProperties(item, itemClass),
+            markdown: null,
+            documentation: {
+                id: item.id,
+                description: item.description,
+                connectors: null,
+                visuals: null,
+                icon: null
+            }
+
+        };
+
+        contentLibraryService.getDetails(item.id, details);
+
         return {
             id: item.id,
             title: item.name.replace(/_/g, " "),
             toolTip: "Open item",
-            headerTemplateUrl: "/componentBrowser/templates/itemHeader.html",
-            detailsTemplateUrl: "/componentBrowser/templates/itemDetail.html",
+            headerTemplateUrl: templateUrlBase + "itemHeader.html",
+            detailsTemplateUrl: templateUrlBase + "itemDetail.html",
             details: details
         };
     };
@@ -195,7 +201,7 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":16,"../subcircuitBrowser/services/subcircuitLibrary.js":17}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":17,"../subcircuitBrowser/services/subcircuitLibrary.js":18}],3:[function(require,module,exports){
 "use strict";
 
 /*globals angular*/
@@ -204,7 +210,7 @@ angular.module("mms.componentBrowser.config", []).constant("componentServerUrl",
 },{}],4:[function(require,module,exports){
 "use strict";
 
-angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies) {
+angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
 
     function ResizerController() {
 
@@ -228,7 +234,6 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
         if (!isNaN(width) && width >= this._minWidth && width <= this._maxWidth) {
 
             this._width = width;
-            $cookies.categoryWidth = width;
 
             this._updateResizerPosition();
 
@@ -239,6 +244,10 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
             if (this._detailPanelEl) {
                 this._detailPanelEl.style.width = Math.floor(this._widthAllowance - this._width) + "px";
             }
+
+            $timeout(function () {
+                $cookies.categoryWidth = width;
+            });
         } else {
             this._stopPanelDragging();
         }
@@ -320,6 +329,7 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
             var ctrl = controllers[0],
                 boundResizerMouseUp = ctrl._resizerMouseUp.bind(ctrl),
                 boundResizerMouseMove = ctrl._resizerMouseMove.bind(ctrl),
+                boundParentWindowResize = ctrl._init.bind(ctrl),
                 parentElement;
 
             ctrl._resizerEl = element[0];
@@ -349,6 +359,7 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
 
             document.addEventListener("mouseup", boundResizerMouseUp);
             document.addEventListener("mousemove", boundResizerMouseMove);
+            window.addEventListener("resize", boundParentWindowResize);
 
             if (ctrl._categoryPanelEl) {
                 ctrl._correctResizerHeight();
@@ -359,6 +370,7 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
                 if (ctrl._resizerEl) {
                     document.removeEventListener("mouseup", boundResizerMouseUp);
                     document.removeEventListener("mousemove", boundResizerMouseMove);
+                    window.removeEventListener("resize", boundParentWindowResize);
                 }
             });
         }
@@ -383,7 +395,7 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
 
         self = this;
 
-        this.showHeader = false;
+        this.embedded = false;
 
         this.persistState = false;
 
@@ -418,6 +430,7 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         this.onCategorySelectionChange = function () {
 
             self.searchText = null;
+            self.resultsForSearchText = null;
 
             self.pagingParameters.cursor = 0;
             self.filtered = false;
@@ -649,10 +662,10 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         require: "componentBrowser",
         link: function link(scope, element, attributes, ctrl) {
 
-            if (attributes.hasOwnProperty("noHeader")) {
-                ctrl.showHeader = false;
+            if (attributes.hasOwnProperty("embedded")) {
+                ctrl.embedded = true;
             } else {
-                ctrl.showHeader = true;
+                ctrl.embedded = false;
             }
 
             if (attributes.hasOwnProperty("persistState")) {
@@ -679,10 +692,8 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
 });
 /*global angular*/
 
-},{"../../services/componentLibrary.js":16,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":8,"../componentSearch/componentSearch.js":9}],6:[function(require,module,exports){
+},{"../../services/componentLibrary.js":17,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":8,"../componentSearch/componentSearch.js":9}],6:[function(require,module,exports){
 "use strict";
-
-/*global numeral*/
 
 require("../../services/componentLibrary.js");
 
@@ -722,20 +733,12 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         addNode = function (parentTreeNode, lbl, id, i, e) {
 
             var newTreeNode,
-                dlbl,
                 children = [];
 
-            if (e !== undefined && e.categoryTotal !== undefined) {
-                dlbl = lbl + " (" + numeral(e.categoryTotal).format("0,0") + ")";
-            } else {
-                dlbl = lbl;
-            }
-
-            // node structure
             newTreeNode = {
                 id: id,
-                label: dlbl,
-                extraInfo: "",
+                label: lbl,
+                extraInfo: e && !isNaN(e.categoryTotal) && "[" + e.categoryTotal + "]",
                 children: children,
                 childrenCount: e === undefined ? 0 : e.childCategoriesCount,
                 nodeData: {
@@ -746,8 +749,6 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
                 iconClass: null,
 
                 draggable: false,
-                //dragChannel: 'a',
-                //dropChannel: ( Math.random() > 0.5 ) ? 'a' : 'b',
                 order: i
             };
 
@@ -823,13 +824,6 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
                 console.log("Node was double-clicked:", node);
             },
 
-            //nodeContextmenuRenderer: function ( e, node ) {
-            //    console.log( 'Contextmenu was triggered for node:', node );
-            //
-            //    return getNodeContextmenu( node );
-            //
-            //},
-
             nodeExpanderClick: function nodeExpanderClick(e, node, isExpand) {
                 console.log("Expander was clicked for node:", node, isExpand);
             }
@@ -837,7 +831,7 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         };
 
         self.config = config;
-        //self.config.disableManualSelection = true;
+
         self.config.selectedScope = self.config.scopeMenu[0].items[0];
         self.config.nodeClassGetter = function (node) {
             var nodeCssClass = "";
@@ -887,15 +881,17 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
  * Created by Blake McBride on 2/9/15.
  */
 
-},{"../../services/componentLibrary.js":16}],7:[function(require,module,exports){
+},{"../../services/componentLibrary.js":17}],7:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
 require("../downloadButton/downloadButton.js");
 require("../infoButton/infoButton.js");
+require("../propertyTable/propertyTable.js");
+
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("ComponentListViewItemController", function ($scope) {
+angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton", "mms.propertyTable"]).controller("ComponentListViewItemController", function ($scope) {
     console.log($scope);
     //debugger;
 }).directive("componentListView", function () {
@@ -910,8 +906,6 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
             renderList;
 
         self = this;
-
-        console.log(self.noDownload);
 
         this.listData = {
             items: []
@@ -963,7 +957,7 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
 
             for (var i in self.components) {
                 var comp = self.components[i],
-                    item = commonList.itemGenerator(comp, "component");
+                    item = commonList.itemGenerator(comp, "component", "/componentBrowser/templates/");
 
                 item.octopart = findOctopart(comp);
 
@@ -1003,7 +997,7 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
 
 /*global angular*/
 
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":16,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],8:[function(require,module,exports){
+},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":17,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13,"../propertyTable/propertyTable.js":15}],8:[function(require,module,exports){
 "use strict";
 
 require("../componentListView/componentListView.js");
@@ -1054,7 +1048,8 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
             onItemDragStart: "=",
             onItemDragEnd: "=",
             noDownload: "=",
-            setItemsPerPage: "="
+            setItemsPerPage: "=",
+            resultsForSearchText: "="
         },
         replace: true,
         templateUrl: "/componentBrowser/templates/componentListing.html"
@@ -1066,7 +1061,7 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
 
 /*global angular, alert*/
 
-},{"../../services/componentLibrary.js":16,"../componentListView/componentListView.js":7,"../countDisplay/countDisplay.js":10,"../gridView/gridView.js":12,"../paging/paging.js":14,"../viewSelection/viewSelection.js":15}],9:[function(require,module,exports){
+},{"../../services/componentLibrary.js":17,"../componentListView/componentListView.js":7,"../countDisplay/countDisplay.js":10,"../gridView/gridView.js":12,"../paging/paging.js":14,"../viewSelection/viewSelection.js":16}],9:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -1522,7 +1517,7 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
 
 /*global angular*/
 
-},{"../../services/componentLibrary.js":16,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],13:[function(require,module,exports){
+},{"../../services/componentLibrary.js":17,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],13:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
@@ -1611,6 +1606,172 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
 },{}],15:[function(require,module,exports){
 "use strict";
 
+angular.module("mms.propertyTable", []).directive("propertyTable", function ($timeout) {
+
+    function PropertyTableController() {
+
+        this._items = [];
+    }
+
+    PropertyTableController.prototype.registerItem = function (element) {
+        this._items.push(element);
+    };
+
+    PropertyTableController.prototype.deRegisterItem = function (element) {
+
+        var index = this._items.indexOf(element);
+
+        if (index > -1) {
+            this._items.splice(index, 1);
+        }
+    };
+
+    return {
+        restrict: "E",
+        scope: {
+            properties: "=",
+            nameMaxWidth: "@",
+            valueMaxWidth: "@"
+        },
+        replace: true,
+        controller: PropertyTableController,
+        bindToController: true,
+        controllerAs: "ctrl",
+        templateUrl: "/componentBrowser/templates/propertyTable.html",
+        require: "propertyTable",
+        link: function link(scope, $element, attributes, ctrl) {
+
+            function layoutInternals() {
+                var nameWidth,
+                    valueWidth,
+                    widestNameWidth = 0,
+                    widestValueWidth = 0;
+
+                ctrl._items.forEach(function (item) {
+
+                    item.resetSizes();
+
+                    nameWidth = item.getNameWidth();
+                    valueWidth = item.getValueWidth();
+
+                    widestNameWidth = Math.max(nameWidth, widestNameWidth);
+                    widestValueWidth = Math.max(valueWidth, widestValueWidth);
+                });
+
+                if (!isNaN(ctrl.nameMaxWidth)) {
+                    widestNameWidth = Math.min(ctrl.nameMaxWidth, widestNameWidth);
+                }
+
+                //console.log(widestNameWidth);
+
+                if (!isNaN(ctrl.valueMaxWidth)) {
+                    widestValueWidth = Math.min(ctrl.valueMaxWidth, widestValueWidth);
+                }
+
+                var itemWidth = widestNameWidth + widestValueWidth;
+
+                ctrl._items.forEach(function (item) {
+
+                    item.setNameWidth(widestNameWidth);
+                    item.setValueWidth(widestValueWidth);
+                    item.setWidth(itemWidth);
+                });
+            }
+
+            $timeout(function () {
+                layoutInternals();
+            }, false);
+
+            scope.$watchCollection(function () {
+                return ctrl.properties;
+            }, function () {
+                layoutInternals();
+            });
+        }
+    };
+}).directive("propertyTableItem", function () {
+
+    function PropertyItemController() {
+
+        this._element = null;
+    }
+
+    PropertyItemController.prototype.setWidth = function (w) {
+        this._element.style.width = w + "px";
+    };
+
+    PropertyItemController.prototype.getNameWidth = function () {
+
+        var nameElement = this._element.querySelector(".property-name");
+
+        return Math.ceil(parseFloat(getComputedStyle(nameElement).width));
+    };
+
+    PropertyItemController.prototype.setNameWidth = function (w) {
+
+        var nameElement = this._element.querySelector(".property-name");
+
+        nameElement.style.width = w + "px";
+    };
+
+    PropertyItemController.prototype.getValueWidth = function () {
+
+        var valueElement = this._element.querySelector(".property-value");
+
+        return Math.ceil(parseFloat(getComputedStyle(valueElement).width));
+    };
+
+    PropertyItemController.prototype.setValueWidth = function (w) {
+
+        var valueElement = this._element.querySelector(".property-value");
+
+        valueElement.style.width = w + "px";
+    };
+
+    PropertyItemController.prototype.resetSizes = function () {
+
+        var valueElement = this._element.querySelector(".property-value"),
+            nameElement = this._element.querySelector(".property-name");
+
+        valueElement.style.width = null;
+        nameElement.style.width = null;
+        this._element.style.width = null;
+    };
+
+    return {
+        restrict: "E",
+        scope: {
+            property: "="
+        },
+        replace: true,
+        controller: PropertyItemController,
+        bindToController: true,
+        controllerAs: "ctrl",
+        templateUrl: "/componentBrowser/templates/propertyTableItem.html",
+        require: ["propertyTableItem", "^propertyTable"],
+        link: function link(scope, $element, attributes, ctrls) {
+
+            var ctrl = ctrls[0],
+                propertyTable = ctrls[1];
+
+            ctrl._element = $element[0];
+            propertyTable.registerItem(ctrl);
+
+            scope.$on("$destroy", function () {
+                propertyTable.deRegisterItem(ctrl);
+            });
+        }
+    };
+});
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
+
+/*global angular*/
+
+},{}],16:[function(require,module,exports){
+"use strict";
+
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
 
     function ViewSelectionController() {
@@ -1648,7 +1809,7 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
 
 /*global angular*/
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -1869,10 +2030,13 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
                 return deferred.promise;
             };
 
-            this.getXmlData = function (id, details) {
+            this.getDetails = function (id, details) {
                 var path = serverUrl + "/getcomponent/info/" + id;
                 return $http.get(path).then(function (json) {
-                    details.icon = json.data.icon;
+
+                    details.documentation.icon = json.data.icon;
+
+                    console.log(json.data);
 
                     details.markdown = (function (markdownHtml) {
                         if (markdownHtml) {
@@ -1902,7 +2066,7 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 });
 /*globals angular*/
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -2022,31 +2186,25 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
                 return deferred.promise;
             };
 
-            this.getXmlData = function (id, details) {
-                var path = serverUrl + "/subcircuit/getsubcircuit/info/" + id;
-                return $http.get(path).then(function (json) {
-                    details.icon = json.data.icon;
+            this.getDetails = function (id) {
 
-                    details.markdown = (function (markdownHtml) {
-                        if (markdownHtml) {
-                            var el = document.createElement("html"),
-                                description = null,
-                                pEls,
-                                i;
+                var path = serverUrl + "/subcircuit/overview/" + id,
+                    deferred = $q.defer();
 
-                            el.innerHTML = markdownHtml;
-                            pEls = el.getElementsByTagName("p");
+                $http.get(path).then(function (json) {
 
-                            for (i = 0; i < pEls.length; i++) {
-                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
-                                    description = pEls[i + 1].textContent;
-                                    break;
-                                }
-                            }
-                            return description;
-                        }
-                    })(json.data.documentation);
+                    var documentation = {
+                        id: id,
+                        description: json.data.description,
+                        connectors: json.data.connectors,
+                        visuals: json.data.visuals,
+                        icon: json.data.icon
+                    };
+
+                    deferred.resolve(documentation);
                 });
+
+                return deferred.promise;
             };
         };
 

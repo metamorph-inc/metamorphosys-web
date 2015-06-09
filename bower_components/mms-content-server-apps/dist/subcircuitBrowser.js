@@ -22,7 +22,7 @@ angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcir
 });
 /*globals angular*/
 
-},{"./appConfig":9,"./directives/subcircuitBrowser/subcircuitBrowser":10,"./services/subcircuitLibrary.js":13}],2:[function(require,module,exports){
+},{"./appConfig":11,"./directives/subcircuitBrowser/subcircuitBrowser":12,"./services/subcircuitLibrary.js":17}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -97,9 +97,10 @@ module.exports = function ($scope, contentLibraryService) {
     formatProperties = function (item, itemClass) {
         var res = [],
             properties = {},
-            halfProperties1,
-            halfProperties2;
-        var pp, i, prop, key;
+            pp,
+            i,
+            prop,
+            key;
 
         if (item[itemClass + "Properties"] === undefined) {
             pp = item.prominentProperties;
@@ -148,38 +149,43 @@ module.exports = function ($scope, contentLibraryService) {
             }
         }
 
-        // Split property list into two arrays for use in table-format in list view.
         var sortedPropKeys = Object.keys(properties).sort(),
-            middle = Math.ceil(sortedPropKeys.length / 2),
             j;
 
-        halfProperties1 = {};
-        for (j = 0; j < middle; j++) {
-            halfProperties1[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
-        }
-        res.push(halfProperties1);
+        for (j = 0; j < sortedPropKeys.length; j++) {
 
-        halfProperties2 = {};
-        for (j = middle; j < sortedPropKeys.length; j++) {
-            halfProperties2[sortedPropKeys[j]] = properties[sortedPropKeys[j]];
+            res.push({
+                name: sortedPropKeys[j],
+                value: properties[sortedPropKeys[j]]
+            });
         }
-
-        res.push(halfProperties2);
 
         return res;
     };
 
-    itemGenerator = function (item, itemClass) {
-        var details = { properties: formatProperties(item, itemClass),
-            icon: null,
-            markdown: null };
-        contentLibraryService.getXmlData(item.id, details);
+    itemGenerator = function (item, itemClass, templateUrlBase) {
+
+        var details = {
+            properties: formatProperties(item, itemClass),
+            markdown: null,
+            documentation: {
+                id: item.id,
+                description: item.description,
+                connectors: null,
+                visuals: null,
+                icon: null
+            }
+
+        };
+
+        contentLibraryService.getDetails(item.id, details);
+
         return {
             id: item.id,
             title: item.name.replace(/_/g, " "),
             toolTip: "Open item",
-            headerTemplateUrl: "/componentBrowser/templates/itemHeader.html",
-            detailsTemplateUrl: "/componentBrowser/templates/itemDetail.html",
+            headerTemplateUrl: templateUrlBase + "itemHeader.html",
+            detailsTemplateUrl: templateUrlBase + "itemDetail.html",
             details: details
         };
     };
@@ -192,7 +198,178 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":8,"../subcircuitBrowser/services/subcircuitLibrary.js":13}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":10,"../subcircuitBrowser/services/subcircuitLibrary.js":17}],3:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
+
+    function ResizerController() {
+
+        this._startingWidth = 300;
+        this._minWidth = 200;
+        this._maxWidth = 500;
+
+        this._panelDragging = false;
+        this._potentialPanelDragStart = null;
+        this._widthBeforePanelDragging = null;
+
+        this._widthAllowance = null;
+    }
+
+    ResizerController.prototype.getWidth = function () {
+        return this._width;
+    };
+
+    ResizerController.prototype.setWidth = function (width) {
+
+        if (!isNaN(width) && width >= this._minWidth && width <= this._maxWidth) {
+
+            this._width = width;
+
+            this._updateResizerPosition();
+
+            if (this._categoryPanelEl) {
+                this._categoryPanelEl.style.width = Math.floor(this._width) + "px";
+            }
+
+            if (this._detailPanelEl) {
+                this._detailPanelEl.style.width = Math.floor(this._widthAllowance - this._width) + "px";
+            }
+
+            $timeout(function () {
+                $cookies.categoryWidth = width;
+            });
+        } else {
+            this._stopPanelDragging();
+        }
+    };
+
+    ResizerController.prototype._updateResizerPosition = function () {
+
+        this._resizerEl.style.left = this._width + "px";
+    };
+
+    ResizerController.prototype._init = function () {
+
+        this._widthAllowance = parseInt(getComputedStyle(this._resizerEl.parentElement).width.slice(0, -2), 10);
+        this.setWidth(this._startingWidth);
+    };
+
+    ResizerController.prototype.panelMouseDown = function ($event) {
+
+        if (!this._panelDragging) {
+            this._potentialPanelDragStart = $event.clientX;
+            $event.preventDefault();
+        }
+    };
+
+    ResizerController.prototype._startPanelDragging = function () {
+
+        this._panelDragging = true;
+        this._widthBeforePanelDragging = this.getWidth();
+        this._widthAllowance = parseInt(getComputedStyle(this._resizerEl.parentElement).width.slice(0, -2), 10);
+    };
+
+    ResizerController.prototype._stopPanelDragging = function () {
+        this._panelDragging = false;
+    };
+
+    ResizerController.prototype._resizerMouseUp = function () {
+
+        this._potentialPanelDragStart = null;
+
+        if (this._panelDragging) {
+            this._stopPanelDragging();
+        }
+    };
+
+    ResizerController.prototype._resizerMouseMove = function ($event) {
+
+        var newwidth, offset;
+
+        if (!this._panelDragging && this._potentialPanelDragStart != null) {
+            this._startPanelDragging();
+        }
+
+        if (this._panelDragging) {
+
+            newwidth = this._widthBeforePanelDragging + ($event.clientX - this._potentialPanelDragStart);
+
+            offset = Math.min(newwidth, this._widthAllowance) - this._width;
+
+            this.setWidth(Math.min(newwidth, this._widthAllowance), offset);
+        }
+    };
+
+    ResizerController.prototype._correctResizerHeight = function () {
+        this._resizerEl.style.height = this._categoryPanelEl.style.height;
+    };
+
+    return {
+        restrict: "E",
+        scope: true,
+        controller: ResizerController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        replace: true,
+        transclude: true,
+        templateUrl: "/componentBrowser/templates/categoryResizer.html",
+        require: ["categoryResizer"],
+        link: function link(scope, element, attributes, controllers) {
+
+            var ctrl = controllers[0],
+                boundResizerMouseUp = ctrl._resizerMouseUp.bind(ctrl),
+                boundResizerMouseMove = ctrl._resizerMouseMove.bind(ctrl),
+                boundParentWindowResize = ctrl._init.bind(ctrl),
+                parentElement;
+
+            ctrl._resizerEl = element[0];
+
+            if ($cookies.categoryWidth && !isNaN($cookies.categoryWidth)) {
+                ctrl._startingWidth = parseInt($cookies.categoryWidth, 10);
+            } else if (attributes.startingWidth && !isNaN(attributes.startingWidth)) {
+                ctrl._startingWidth = attributes.startingWidth;
+            }
+
+            if (attributes.minWidth && !isNaN(attributes.minWidth)) {
+                ctrl._minWidth = attributes.minWidth;
+            }
+
+            if (attributes.maxWidth && !isNaN(attributes.maxWidth)) {
+                ctrl._maxWidth = attributes.maxWidth;
+            }
+
+            parentElement = ctrl._resizerEl.parentElement;
+
+            ctrl._categoryPanelEl = parentElement.querySelector(".left-panel");
+            ctrl._detailPanelEl = parentElement.querySelector(".main-container-panel");
+
+            ctrl._init();
+
+            ctrl._padding = parseInt(getComputedStyle(ctrl._resizerEl).width.slice(0, -2), 10);
+
+            document.addEventListener("mouseup", boundResizerMouseUp);
+            document.addEventListener("mousemove", boundResizerMouseMove);
+            window.addEventListener("resize", boundParentWindowResize);
+
+            if (ctrl._categoryPanelEl) {
+                ctrl._correctResizerHeight();
+            }
+
+            scope.$on("$destroy", function () {
+
+                if (ctrl._resizerEl) {
+                    document.removeEventListener("mouseup", boundResizerMouseUp);
+                    document.removeEventListener("mousemove", boundResizerMouseMove);
+                    window.removeEventListener("resize", boundParentWindowResize);
+                }
+            });
+        }
+    };
+});
+/*global angular*/
+
+},{}],4:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -230,7 +407,7 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
 
 /*global angular, alert*/
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -264,7 +441,7 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
 });
 /*global angular, alert, numeral*/
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
@@ -277,25 +454,6 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
         templateUrl: "/componentBrowser/templates/downloadButton.html"
     };
 });
-
-/*global angular*/
-
-},{}],6:[function(require,module,exports){
-"use strict";
-
-angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
-
-    return {
-        restrict: "E",
-        replace: true,
-        controllerAs: "ctrl",
-        bindToController: true,
-        templateUrl: "/componentBrowser/templates/infoButton.html"
-    };
-});
-/**
- * Created by Blake McBride on 3/27/15.
- */
 
 /*global angular*/
 
@@ -367,6 +525,36 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
 /*global angular*/
 
 },{}],8:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.componentBrowser.showLessButton", []).directive("showLessButton", function () {
+
+    return {
+        restrict: "E",
+        replace: true,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/showLessButton.html"
+    };
+});
+/*global angular*/
+
+},{}],9:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreButton", function () {
+
+    return {
+        restrict: "E",
+        replace: true,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/showMoreButton.html"
+    };
+});
+/*global angular*/
+
+},{}],10:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -587,10 +775,13 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
                 return deferred.promise;
             };
 
-            this.getXmlData = function (id, details) {
+            this.getDetails = function (id, details) {
                 var path = serverUrl + "/getcomponent/info/" + id;
                 return $http.get(path).then(function (json) {
-                    details.icon = json.data.icon;
+
+                    details.documentation.icon = json.data.icon;
+
+                    console.log(json.data);
 
                     details.markdown = (function (markdownHtml) {
                         if (markdownHtml) {
@@ -620,25 +811,22 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 });
 /*globals angular*/
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 /*globals angular*/
 angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000");
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
-//require('../subcircuitCategories/subcircuitCategories.js');
+require("../subcircuitCategories/subcircuitCategories.js");
 require("../../../componentBrowser/directives/componentSearch/componentSearch.js");
 require("../subcircuitListing/subcircuitListing.js");
 require("../../services/subcircuitLibrary.js");
+require("../../../componentBrowser/directives/categoryResizer/categoryResizer.js");
 
-angular.module("mms.subcircuitBrowser", [
-
-//    'mms.subcircuitBrowser.subcircuitCategories',
-
-"mms.componentBrowser.componentSearch", "mms.subcircuitBrowser.subcircuitListing", "mms.componentBrowser.templates", "mms.subcircuitBrowser.templates", "mms.subcircuitBrowser.subcircuitLibrary", "ngCookies"]).directive("subcircuitBrowser", function () {
+angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCategories", "mms.componentBrowser.componentSearch", "mms.subcircuitBrowser.subcircuitListing", "mms.componentBrowser.templates", "mms.subcircuitBrowser.templates", "mms.subcircuitBrowser.subcircuitLibrary", "mms.contentBrowser.categoryResizer", "ngCookies"]).directive("subcircuitBrowser", function () {
 
     function SubcircuitBrowserController($scope, subcircuitLibrary, $log, $anchorScroll, $timeout, $cookies, $location) {
 
@@ -681,7 +869,7 @@ angular.module("mms.subcircuitBrowser", [
         this.onCategorySelectionChange = function () {
 
             self.searchText = null;
-            console.log("inhere");
+            self.resultsForSearchText = null;
 
             self.pagingParameters.cursor = 0;
             self.filtered = false;
@@ -913,10 +1101,10 @@ angular.module("mms.subcircuitBrowser", [
         require: "subcircuitBrowser",
         link: function link(scope, element, attributes, ctrl) {
 
-            if (attributes.hasOwnProperty("noHeader")) {
-                ctrl.showHeader = false;
+            if (attributes.hasOwnProperty("embedded")) {
+                ctrl.embedded = true;
             } else {
-                ctrl.showHeader = true;
+                ctrl.embedded = false;
             }
 
             if (attributes.hasOwnProperty("persistState")) {
@@ -943,15 +1131,408 @@ angular.module("mms.subcircuitBrowser", [
 });
 /*global angular*/
 
-},{"../../../componentBrowser/directives/componentSearch/componentSearch.js":3,"../../services/subcircuitLibrary.js":13,"../subcircuitListing/subcircuitListing.js":12}],11:[function(require,module,exports){
+},{"../../../componentBrowser/directives/categoryResizer/categoryResizer.js":3,"../../../componentBrowser/directives/componentSearch/componentSearch.js":4,"../../services/subcircuitLibrary.js":17,"../subcircuitCategories/subcircuitCategories.js":13,"../subcircuitListing/subcircuitListing.js":16}],13:[function(require,module,exports){
 "use strict";
 
 require("../../services/subcircuitLibrary.js");
+
+angular.module("mms.subcircuitBrowser.subcircuitCategories", ["isis.ui.treeNavigator", "mms.subcircuitBrowser.subcircuitLibrary"]).directive("subcircuitCategories", function () {
+
+    function SubcircuitCategoriesController($q, subcircuitLibrary, $timeout) {
+
+        var self = this;
+
+        var addData = (function (_addData) {
+            var _addDataWrapper = function addData(_x, _x2) {
+                return _addData.apply(this, arguments);
+            };
+
+            _addDataWrapper.toString = function () {
+                return _addData.toString();
+            };
+
+            return _addDataWrapper;
+        })(function (parent, array) {
+            var children = [];
+            for (var i in array) {
+                var e = array[i];
+                var n = addNode(parent, e.label, e.id, i, e);
+                children.push(n);
+                if (e.subClasses !== undefined) {
+                    addData(n, e.subClasses);
+                }
+            }
+            return children;
+        });
+
+        var config,
+            treeNodes = {},
+            addNode;
+
+        addNode = function (parentTreeNode, lbl, id, i, e) {
+
+            var newTreeNode,
+                children = [];
+
+            // node structure
+            newTreeNode = {
+                id: id,
+                label: lbl,
+                extraInfo: e && !isNaN(e.categoryTotal) && "[" + e.categoryTotal + "]",
+                children: children,
+                childrenCount: e === undefined ? 0 : e.childCategoriesCount,
+                nodeData: {
+                    label: lbl,
+                    path: e === undefined ? "" : e.id,
+                    childComponentsCount: e === undefined ? 0 : e.childComponentsCount
+                },
+                iconClass: null,
+
+                draggable: false,
+                order: i
+            };
+
+            // add the new node to the map
+            treeNodes[newTreeNode.id] = newTreeNode;
+
+            if (parentTreeNode) {
+                // if a parent was given add the new node as a child node
+                parentTreeNode.iconClass = undefined;
+                parentTreeNode.children.push(newTreeNode);
+
+                //                parentTreeNode.childrenCount = parentTreeNode.children.length;
+
+                if (newTreeNode.childrenCount) {
+                    newTreeNode.iconClass = undefined;
+                }
+
+                //               sortChildren( parentTreeNode.children );
+
+                newTreeNode.parentId = parentTreeNode.id;
+            } else {
+
+                // if no parent is given replace the current root node with this node
+                self.treeData = newTreeNode;
+                self.treeData.unCollapsible = true;
+                newTreeNode.parentId = null;
+            }
+
+            return newTreeNode;
+        };
+
+        config = {
+
+            scopeMenu: [{
+                items: []
+            }],
+
+            loadChildren: function loadChildren(e, node) {
+                console.log("loadChildren called:", node);
+                var deferred = $q.defer();
+
+                subcircuitLibrary.getSubCircuitTree(node.nodeData.path).then(function (data) {
+
+                    var children;
+
+                    children = addData(node, data);
+                    deferred.resolve(children);
+                });
+
+                return deferred.promise;
+            },
+
+            showRootLabel: false,
+
+            // Tree Event callbacks
+
+            nodeClick: function nodeClick(e, node) {
+
+                self.lockGridColumns = false;
+                console.log("clicked");
+
+                if (!self.selectedCategory || self.selectedCategory.path !== node.nodeData.path) {
+
+                    self.selectedCategory = node.nodeData;
+
+                    if (angular.isFunction(self.onSelectionChange)) {
+
+                        $timeout(self.onSelectionChange);
+                    }
+                }
+            },
+
+            nodeDblclick: function nodeDblclick(e, node) {
+                console.log("Node was double-clicked:", node);
+            },
+
+            nodeExpanderClick: function nodeExpanderClick(e, node, isExpand) {
+                console.log("Expander was clicked for node:", node, isExpand);
+            }
+
+        };
+
+        self.config = config;
+        //self.config.disableManualSelection = true;
+        self.config.selectedScope = self.config.scopeMenu[0].items[0];
+        self.config.nodeClassGetter = function (node) {
+            var nodeCssClass = "";
+
+            if (node.order % 2 === 0) {
+                nodeCssClass = "even";
+            }
+
+            return nodeCssClass;
+        };
+        self.treeData = {};
+        self.config.state = {
+            // id of activeNode
+            activeNode: "Node item 0.0",
+
+            // ids of selected nodes
+            selectedNodes: ["Node item 0.0"],
+
+            expandedNodes: ["Node item 0", "Node item 0.1"],
+
+            // id of active scope
+            activeScope: "project"
+        };
+
+        addNode(null, "Components", "Components");
+        subcircuitLibrary.getSubCircuitTree().then(function (data) {
+            addData(self.treeData, data);
+        });
+    }
+
+    return {
+        restrict: "E",
+        controller: SubcircuitCategoriesController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/subcircuitBrowser/templates/subcircuitCategories.html",
+        scope: {
+            selectedCategory: "=",
+            onSelectionChange: "=",
+            lockGridColumns: "="
+        }
+    };
+});
+/*global angular*/
+
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
+},{"../../services/subcircuitLibrary.js":17}],14:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.subcircuitDetails.react", []).directive("subcircuitDetails", function () {
+
+    function SubcircuitDetailsController() {}
+
+    return {
+        restrict: "E",
+        controller: SubcircuitDetailsController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        replace: true,
+        transclude: false,
+        template: "<div class=\"subcircuit-details\"></div>",
+        scope: {
+            details: "="
+        },
+        require: ["subcircuitDetails"],
+        link: function link(scope, element, attr, controllers) {
+
+            var ctrl = controllers[0];
+
+            function cleanup() {
+                React.unmountComponentAtNode(element[0]);
+            }
+
+            function render() {
+                React.render(React.createElement(SubcircuitDetailsGrid, { details: ctrl.details }), element[0]);
+            }
+
+            scope.$watch(function () {
+                if (ctrl.details) {
+                    return ctrl.details;
+                }
+            }, function (newO, oldO) {
+
+                if ((oldO !== newO || oldO != null) && newO != null) {
+
+                    cleanup();
+                    render();
+                }
+            });
+
+            scope.$on("$destroy", cleanup());
+        }
+    };
+});
+
+var SubcircuitDetailsGrid = React.createClass({
+    displayName: "SubcircuitDetailsGrid",
+
+    render: function render() {
+
+        var className = "subcircuit-details-grid",
+            subcircuitVisuals;
+
+        if (!this.props.details.visuals) {
+            className += " no-visuals";
+        } else {
+            subcircuitVisuals = React.createElement(SubcircuitVisuals, { images: this.props.details.visuals });
+        }
+
+        return React.createElement(
+            "div",
+            { className: className },
+            React.createElement(SubcircuitDescription, { description: this.props.details.description, icon: this.props.details.icon }),
+            subcircuitVisuals,
+            React.createElement(ConnectorsDescription, { connectors: this.props.details.connectors })
+        );
+    }
+});
+
+var SubcircuitDescription = React.createClass({
+    displayName: "SubcircuitDescription",
+
+    render: function render() {
+
+        var self = this,
+            className = "subcircuit-description",
+            icon;
+
+        if (!this.props.icon) {
+            className += " no-icon";
+        } else {
+            icon = React.createElement("img", { src: this.props.icon, className: "subcircuit-icon" });
+        }
+
+        return React.createElement(
+            "div",
+            { className: className },
+            React.createElement(
+                "div",
+                { className: "subcircuit-description-text" },
+                this.props.description
+            ),
+            React.createElement(
+                "div",
+                { className: "subcircuit-icon-container" },
+                icon
+            )
+        );
+    }
+});
+
+var SubcircuitVisuals = React.createClass({
+    displayName: "SubcircuitVisuals",
+
+    render: function render() {
+
+        var self = this,
+            activeVisual = 0;
+
+        var images = this.props.images.map(function (imageUrl, index) {
+
+            var className = "subcircuit-visual";
+
+            if (index === activeVisual) {
+                className += " active";
+            }
+
+            return React.createElement("img", { src: imageUrl, className: className });
+        });
+
+        return React.createElement(
+            "div",
+            { className: "subcircuit-visuals" },
+            images
+        );
+    }
+});
+
+var ConnectorsDescription = React.createClass({
+    displayName: "ConnectorsDescription",
+
+    render: function render() {
+
+        var title, connectors;
+
+        if (Array.isArray(this.props.connectors)) {
+
+            title = React.createElement(
+                "h3",
+                null,
+                "Connectors:"
+            );
+
+            connectors = Array.isArray(this.props.connectors) && this.props.connectors.map(function (connectorDescription) {
+                return React.createElement(ConnectorDescription, { connector: connectorDescription });
+            });
+        }
+
+        return React.createElement(
+            "div",
+            { className: "connectors-description" },
+            title,
+            connectors
+        );
+    }
+});
+
+var ConnectorDescription = React.createClass({
+    displayName: "ConnectorDescription",
+
+    render: function render() {
+
+        var self = this,
+            connectorDetails = [];
+
+        connectorDetails.push(React.createElement(
+            "div",
+            { className: "connector-name" },
+            this.props.connector.name
+        ));
+
+        if (this.props.connector.type) {
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-type" },
+                this.props.connector.type
+            ));
+        }
+
+        if (this.props.connector.description) {
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-description-text" },
+                this.props.connector.description
+            ));
+        }
+
+        return React.createElement(
+            "div",
+            { className: "connector-description" },
+            connectorDetails
+        );
+    }
+});
+
+},{}],15:[function(require,module,exports){
+"use strict";
+
+require("..//subcircuitDetails/subcircuitDetails.jsx");
+require("../../services/subcircuitLibrary.js");
 require("../../../componentBrowser/directives/downloadButton/downloadButton.js");
-require("../../../componentBrowser/directives/infoButton/infoButton.js");
+require("../../../componentBrowser/directives/showMoreButton/showMoreButton.js");
+require("../../../componentBrowser/directives/showLessButton/showLessButton.js");
+
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton"]).controller("SubcircuitListViewItemController", function ($scope) {
+angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.subcircuitDetails.react"]).controller("SubcircuitListViewItemController", function ($scope) {
     console.log($scope);
     //debugger;
 }).directive("subcircuitListView", function () {
@@ -965,8 +1546,6 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
             renderList;
 
         self = this;
-
-        console.log(self.noDownload);
 
         this.listData = {
             items: []
@@ -990,8 +1569,11 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
             var comps = [];
 
             for (var i in self.components) {
+
                 var comp = self.components[i],
-                    item = commonList.itemGenerator(comp, "subcircuit");
+                    item = commonList.itemGenerator(comp, "subcircuit", "/subcircuitBrowser/templates/");
+
+                item.expandDetails = self.expandDetails;
 
                 comps.push(item);
             }
@@ -1005,6 +1587,15 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
         });
 
         renderList();
+
+        this.expandDetails = function (item) {
+
+            self.contentLibraryService.getDetails(item.id, item.details).then(function (documentation) {
+
+                item.details.documentation = documentation;
+                item.expandedDetails = true;
+            });
+        };
     }
 
     return {
@@ -1029,7 +1620,7 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
 
 /*global angular*/
 
-},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":5,"../../../componentBrowser/directives/infoButton/infoButton.js":6,"../../services/subcircuitLibrary.js":13}],12:[function(require,module,exports){
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/showLessButton/showLessButton.js":8,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":9,"../../services/subcircuitLibrary.js":17,"..//subcircuitDetails/subcircuitDetails.jsx":14}],16:[function(require,module,exports){
 "use strict";
 
 require("../subcircuitListView/subcircuitListView.js");
@@ -1085,7 +1676,8 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowse
             onItemDragStart: "=",
             onItemDragEnd: "=",
             noDownload: "=",
-            setItemsPerPage: "="
+            setItemsPerPage: "=",
+            resultsForSearchText: "="
         },
         replace: true,
         templateUrl: "/subcircuitBrowser/templates/subcircuitListing.html"
@@ -1097,7 +1689,7 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowse
 
 /*global angular, alert*/
 
-},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":4,"../../../componentBrowser/directives/paging/paging.js":7,"../../services/subcircuitLibrary.js":13,"../subcircuitListView/subcircuitListView.js":11}],13:[function(require,module,exports){
+},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":5,"../../../componentBrowser/directives/paging/paging.js":7,"../../services/subcircuitLibrary.js":17,"../subcircuitListView/subcircuitListView.js":15}],17:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1217,31 +1809,25 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
                 return deferred.promise;
             };
 
-            this.getXmlData = function (id, details) {
-                var path = serverUrl + "/subcircuit/getsubcircuit/info/" + id;
-                return $http.get(path).then(function (json) {
-                    details.icon = json.data.icon;
+            this.getDetails = function (id) {
 
-                    details.markdown = (function (markdownHtml) {
-                        if (markdownHtml) {
-                            var el = document.createElement("html"),
-                                description = null,
-                                pEls,
-                                i;
+                var path = serverUrl + "/subcircuit/overview/" + id,
+                    deferred = $q.defer();
 
-                            el.innerHTML = markdownHtml;
-                            pEls = el.getElementsByTagName("p");
+                $http.get(path).then(function (json) {
 
-                            for (i = 0; i < pEls.length; i++) {
-                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
-                                    description = pEls[i + 1].textContent;
-                                    break;
-                                }
-                            }
-                            return description;
-                        }
-                    })(json.data.documentation);
+                    var documentation = {
+                        id: id,
+                        description: json.data.description,
+                        connectors: json.data.connectors,
+                        visuals: json.data.visuals,
+                        icon: json.data.icon
+                    };
+
+                    deferred.resolve(documentation);
                 });
+
+                return deferred.promise;
             };
         };
 

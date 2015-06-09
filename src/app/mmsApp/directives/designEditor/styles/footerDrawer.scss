@@ -8,15 +8,6 @@ $header-height: 38px;
         color: #eceeef;
     }
 
-    .list-group-item {
-        border: 1px solid rgba(143, 156, 166, .2);
-    }
-
-    .item-list ul.list-group li.item-list-item {
-        padding: 0 1em;
-        background-color: transparent;
-    }
-
     background: $baseBGColor;
     border-top: 1px solid rgba(0, 0, 0, .12);
     height: 0;
@@ -34,7 +25,7 @@ $header-height: 38px;
         width: 100%;
         left: 0;
         padding: 3px 10px;
-        
+
         cursor: row-resize;
 
         -webkit-user-select: none;
@@ -61,8 +52,8 @@ $header-height: 38px;
                     border-radius: 0;
                 }
 
-                .md-button.md-default-theme[disabled], 
-                .md-button.md-default-theme.md-raised[disabled], 
+                .md-button.md-default-theme[disabled],
+                .md-button.md-default-theme.md-raised[disabled],
                 .md-button.md-default-theme.md-fab[disabled] {
                     cursor: default;
                     color: $linkColorOnDark;
@@ -77,7 +68,7 @@ $header-height: 38px;
                     }
 
                 }
-            
+
 		}
 
         .drawer-expander {
@@ -108,8 +99,8 @@ $header-height: 38px;
 
             &:active,
             &:hover {
-                color: $linkHoverColorOnDark;       
-            }            
+                color: $linkHoverColorOnDark;
+            }
         }
 
         img {
