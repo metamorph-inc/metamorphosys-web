@@ -166,6 +166,16 @@ define([
         }
 
         self.admData = self.admData['Design'];
+        var resourcePromise = Q(null);
+        if (self.resourceFiles) {
+            var artifact = self.blobClient.createArtifact(self.admData['@Name']);
+            resourcePromise = Q.all(self.resourceFiles.map(function (file) {
+                return Q.ninvoke(artifact, 'addFile', file.name, file[typeof window === 'undefined' ? 'asNodeBuffer' : 'asArrayBuffer'].call(file));
+            })).then(function () {
+                return Q.ninvoke(artifact, 'save');
+            });
+        }
+
         workspaceNode = self.getWorkspaceNode(admFolder);
         //timeStamp = new Date().getTime();
         self.exploreACMs(workspaceNode, false, function (err) {
@@ -203,7 +213,11 @@ define([
                         //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
                         //    ((new Date().getTime() - timeStamp) / 1000).toString());
                         self.makePortMaps();
-                        finnishPlugin(null);
+                        resourcePromise.then(function (artifactHash) {
+                            if (artifactHash) {
+                                self.core.setAttribute(container, 'Resource', artifactHash);
+                            }
+                        }).nodeify(finnishPlugin);
                     }
                 });
             }).catch(function (error) {
@@ -326,6 +340,10 @@ define([
                     admXml = zipFile.file(/\.adm$/).filter(function (entry) {
                         return entry.name.indexOf('__MACOSX') !== 0;
                     });
+                    self.resourceFiles = zipFile.file(/./).filter(function (entry) {
+                        return entry.name.indexOf('__MACOSX') !== 0 && !/\.adm$/.exec(entry.name);
+                    });
+
                     if (admXml.length === 1) {
                         return self.innerMain(admXml[0].asText(), callback, finnishPlugin);
                     } else {

@@ -221,7 +221,7 @@ def import_design(mga_path, adm_file, testbench_config):
                     logger.debug(' "{0}" ({1})'.format(tlsut_mga.Referred.Name, tlsut_mga.Referred.MetaBase.Name))
                 else:
                     logger.debug(' [null reference]')
-                    
+
                 set_testbench_properties(testbench_config, testbench_mga)
             except pywintypes.com_error as err:
                 logger.error(err.message)
@@ -254,7 +254,7 @@ def import_design(mga_path, adm_file, testbench_config):
                     design_ids.append(cfg_mga.ID)
         else:
             design_ids.append(design_id)
- 
+
         if testbench_config:
             ## Reference the design from the top-level-system-under-test.
             logger.debug('Creating ReferenceSwitcher')
@@ -416,7 +416,7 @@ if __name__ == '__main__':
     logger.info('(1) Components extracted...')
 
     try:
-        adm_path = [f for f in os.listdir('.') if f.endswith('.adm')][0]
+        adm_path = [f for f in os.listdir('.') if f.endswith('.adm') or f.endswith('.adp')][0]
     except IndexError:
         logger.error('Could not find an adm at {0}'.format(os.getcwd()))
         with open('_FAILED.txt', 'ab+') as f_out:
@@ -425,7 +425,7 @@ if __name__ == '__main__':
     if os.path.isfile('tbAsset.zip'):
         with zipfile.ZipFile('tbAsset.zip') as zippy:
             zippy.extractall('.')
-            
+
         try:
             xme_path = [f for f in os.listdir('.') if f.endswith('.xme')][0]
         except IndexError:
