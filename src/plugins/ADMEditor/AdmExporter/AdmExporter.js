@@ -218,7 +218,12 @@ define([
             return self.resources[id].then(function (subArtifact) {
                 var content = subArtifact.descriptor.content;
                 return Q.all(Object.getOwnPropertyNames(content).map(function (name) {
-                    return Q.ninvoke(artifact, 'addMetadataHash', id + '/' + name, content[name].content);
+                    // FIXME can we support this?
+                    //if (content[name].contentType === 'object')
+		    // blob.getTheThing.
+                    // then Q.ninvoke(artifact, 'addMetadataHash', id + '/' + name, content[name].content);
+                    // else if (content[name].contentType === 'softLink')
+                    return Q.ninvoke(artifact, 'addObjectHash', id + '/' + name, content[name].content);
                 }));
             });
         })).nodeify(callback);

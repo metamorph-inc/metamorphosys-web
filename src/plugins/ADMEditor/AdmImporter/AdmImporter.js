@@ -66,6 +66,7 @@ define([
         this.admData = null;
         this.copies = false;
         this.currentSuccess = true;
+        this.resourcePromises = [];
     };
 
     // Prototypal inheritance from PluginBase.
@@ -166,15 +167,6 @@ define([
         }
 
         self.admData = self.admData['Design'];
-        var resourcePromise = Q(null);
-        if (self.resourceFiles) {
-            var artifact = self.blobClient.createArtifact(self.admData['@Name']);
-            resourcePromise = Q.all(self.resourceFiles.map(function (file) {
-                return Q.ninvoke(artifact, 'addFile', file.name, file[typeof window === 'undefined' ? 'asNodeBuffer' : 'asArrayBuffer'].call(file));
-            })).then(function () {
-                return Q.ninvoke(artifact, 'save');
-            });
-        }
 
         workspaceNode = self.getWorkspaceNode(admFolder);
         //timeStamp = new Date().getTime();
@@ -213,11 +205,8 @@ define([
                         //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
                         //    ((new Date().getTime() - timeStamp) / 1000).toString());
                         self.makePortMaps();
-                        resourcePromise.then(function (artifactHash) {
-                            if (artifactHash) {
-                                self.core.setAttribute(container, 'Resource', artifactHash);
-                            }
-                        }).nodeify(finnishPlugin);
+                        Q.all(self.resourcePromises)
+                            .nodeify(finnishPlugin);
                     }
                 });
             }).catch(function (error) {
@@ -601,6 +590,26 @@ define([
         self.core.setAttribute(container, 'name', containerData['@Name']);
         self.core.setAttribute(container, 'Description', containerData['@Description'] || '');
         self.core.setAttribute(container, 'Type', containerData['@xsi:type'].slice("avm:".length));
+
+        if (self.resourceFiles) {
+            var thisContainerFiles = self.resourceFiles.filter(function (entry) {
+                return containerData['@ID'] && self.startsWith(entry.name, containerData['@ID'] + '/');
+            });
+            if (thisContainerFiles.length) {
+                var artifact = self.blobClient.createArtifact(self.admData['@Name']);
+                var resourcePromise = Q.all(thisContainerFiles.map(function (file) {
+                    return Q.ninvoke(artifact, 'addFileAsSoftLink', file.name.substring((containerData['@ID'] + '/').length), file[typeof window === 'undefined' ? 'asNodeBuffer' : 'asArrayBuffer'].call(file));
+                })).then(function () {
+                    return Q.ninvoke(artifact, 'save');
+                }).then(function (artifactHash) {
+                    if (artifactHash) {
+                        self.core.setAttribute(container, 'Resource', artifactHash);
+                    }
+                });
+                self.resourcePromises.push(resourcePromise);
+            }
+        }
+
         if (depth === 0) {
             self.core.setRegistry(container, 'position', {
                 x: 100,
