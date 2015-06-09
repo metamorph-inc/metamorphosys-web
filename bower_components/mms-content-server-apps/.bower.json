@@ -32,7 +32,8 @@
     "angular": "~1.3.12",
     "angular-ui-grid": "~3.0.0-rc.20",
     "numeral": "~1.5.3",
-    "angular-cookies": "~1.3.15"
+    "angular-cookies": "~1.3.15",
+    "react": "~0.13.3"
   },
   "resolutions": {
     "angular": "~1.3.13",
@@ -53,11 +54,11 @@
     "JS",
     "Metamorph"
   ],
-  "_release": "972f87194e",
+  "_release": "3b09ebaab1",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "972f87194e860363110ef264019700eaaabbdf7f"
+    "commit": "3b09ebaab139f28aa5f410a36903774e6e8552df"
   },
   "_source": "https://ljuracz@bitbucket.org/metamorphsoftwareinc/content-server.git",
   "_target": "*",

@@ -16,10 +16,10 @@
         "./bower_components/react/react.js",
         "./vendor/stats/stats.min.js",
 
-        "../content-server/dist/componentBrowser.js",
-        "../content-server/dist/componentBrowser-templates.js",
-        "../content-server/dist/subcircuitBrowser.js",
-        "../content-server/dist/subcircuitBrowser-templates.js",
+        "./bower_components/mms-content-server-apps/dist/componentBrowser.js",
+        "./bower_components/mms-content-server-apps/dist/componentBrowser-templates.js",
+        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser.js",
+        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser-templates.js",
 
         "./bower_components/angular-ui-grid/ui-grid.min.js",
         "./bower_components/numeral/numeral.js"
@@ -40,8 +40,8 @@
         "./public/cyphy-library/cyphy-components.css",
         "./bower_components/angular-xeditable/dist/css/xeditable.css",
 
-        "../content-server/dist/componentBrowser-app.css",
-        "../content-server/dist/subcircuitBrowser-app.css",
+        "./bower_components/mms-content-server-apps/dist/componentBrowser-app.css",
+        "./bower_components/mms-content-server-apps/dist/subcircuitBrowser-app.css",
 
         "./bower_components/angular-ui-grid/ui-grid.css",
         "./bower_components/angular-ui-grid/ui-grid.ttf",
