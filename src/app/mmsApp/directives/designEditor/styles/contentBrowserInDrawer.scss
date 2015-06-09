@@ -198,6 +198,11 @@ $hover-color: rgba(158, 158, 158, 0.2);
         border-top: none;
     }
 
+	    .list-group-item {
+	        border: 1px solid rgba(143, 156, 166, .2);
+			padding: 0 10px;
+			background-color: transparent !important;			
+	    }
 
 		.list-view {
 			 .item-list {
@@ -214,6 +219,7 @@ $hover-color: rgba(158, 158, 158, 0.2);
 						/* No support for these yet, use at own risk */
 						-o-user-select: none;
 						user-select: none;
+
 					}
 
 				    > li:hover {
