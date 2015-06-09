@@ -158,22 +158,14 @@ var ConnectorDescription = React.createClass({
 
 	render: function() {
 
-        var self = this,
-            connectorDetails;
+        var self = this;
 
-        connectorDetails = <div className="connector-name">{this.props.connector.name}</div>;
-
-        if (this.props.connector.type) {
-            connectorDetails += <div className="connector-type">{this.props.connector.type}</div>;
-        }
-
-        if (this.props.connector.description) {
-            connectorDetails += <div className="connector-description-text">{this.props.connector.description}</div>;
-        }
 
         return (
             <div className="connector-description">
-                {connectorDetails}
+                <div className="connector-name">{this.props.connector.name}</div>
+                { this.props.connector.type && <div className="connector-type">{this.props.connector.type}</div> }
+                { this.props.connector.description && <div className="connector-description-text">{this.props.connector.description}</div> }
             </div>
         );
 	}
