@@ -259,7 +259,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 showPortLabels: true,
                 limitLabelWidthTo: 150
             }, portStuff.portDescriptors, {
-                minWidth: 200,
+                minWidth: 240,
                 portWireLeadInIncrement: 8,
                 portWireLength: 14,
                 topPortPadding: 26

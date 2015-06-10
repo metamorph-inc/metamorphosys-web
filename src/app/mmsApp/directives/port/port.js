@@ -71,7 +71,7 @@ angular.module(
 
     function ($compile, $timeout) {
 
-        var TYPE_ELEMENT_SPACING = 2;
+        var TYPE_ELEMENT_SPACING = 6;
 
         return {
             scope: false,
@@ -154,7 +154,7 @@ angular.module(
 
                             var boundingBox = labelEl.getBBox(),
                                 dx,
-                                dy = scope.portInstance.portSymbol.labelPosition.y;
+                                dy = scope.portInstance.portSymbol.labelPosition.y - 1;
 
                             if (boundingBox) {
 
@@ -178,7 +178,7 @@ angular.module(
                                 );
 
                             }
-                        });
+                        }, 10, false);
                     }
 
                 }
@@ -248,12 +248,27 @@ angular.module(
     })
     .directive(
     'textualPortSymbol',
-    function () {
+    function ($timeout) {
         return {
             scope: false,
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/textualPortSymbol.html'
+            templateUrl: '/mmsApp/templates/textualPortSymbol.html',
+            link: function(scope, element) {
+
+                $timeout(function(){
+
+                    var boundingBox = element[0].querySelector('.port-type-text').getBBox(),
+                        boxEl = element[0].querySelector('.port-type-text-box'),
+                        TEXT_PADDING = 4;
+
+                    boxEl.setAttribute('x', boundingBox.x - TEXT_PADDING);
+                    boxEl.setAttribute('y', boundingBox.y - TEXT_PADDING / 2);
+                    boxEl.setAttribute('width', boundingBox.width + 2 * TEXT_PADDING);
+                    boxEl.setAttribute('height', boundingBox.height + 2 * TEXT_PADDING / 2 - 1);
+
+                }, 50, false);
+            }
         };
     });
