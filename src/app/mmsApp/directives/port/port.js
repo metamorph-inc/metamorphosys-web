@@ -268,7 +268,39 @@ angular.module(
                     boxEl.setAttribute('width', boundingBox.width + 2 * TEXT_PADDING);
                     boxEl.setAttribute('height', boundingBox.height + 2 * TEXT_PADDING / 2 - 1);
 
-                }, 50, false);
+                }, 150, false);
+            }
+        };
+    })
+    .directive(
+    'usbConnectorSymbol',
+    function () {
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateNamespace: 'SVG',
+            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html',
+            link: function(scope, element) {
+
+                var dx,
+                    dy = -8;
+
+                if (scope.portInstance.portSymbol.side === 'right') {
+
+                    dx = -17;
+
+                } else {
+
+                    dx = -3;
+
+                }
+
+                element[0].setAttribute(
+                    'transform',
+                    'translate( ' + dx + ', ' + dy + ' )'
+                );
+
             }
         };
     });

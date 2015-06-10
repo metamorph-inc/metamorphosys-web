@@ -21,18 +21,22 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         randomConnectorTypes = [
             'I2C',
-            'Supply_Single',
-            'DigitalSignal',
-            'AnalogSignal',
-            'ThermalPad',
+            // 'Supply_Single',
+            // 'DigitalSignal',
+            // 'AnalogSignal',
+            // 'ThermalPad',
             'SPI3',
             'SPI2',
             'GPIO',
-            'USB',
-            'AnalogBus',
-            'DigitalBus',
-            'DigitalClock'
-        ];
+            'USB'
+            // 'AnalogBus',
+            // 'DigitalBus',
+            // 'DigitalClock'
+        ],
+
+        connectorTypeToSymbolDirective = {
+            USB: 'usb-connector-symbol'
+        };
 
 
 
@@ -110,15 +114,17 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             angular.forEach(allInterConnectors, function(innerConnector) {
 
-                var portSymbol;
+                var portSymbol,
+                    connectorType = innerConnector.definition ||
+                        randomConnectorTypes[
+                            Math.round( Math.random() * (randomConnectorTypes.length - 1) )
+                        ];
 
                 portSymbol = {
                     id: innerConnector.id,
                     label: labelParser(innerConnector.name),
-                    type: innerConnector.definition ||
-                        randomConnectorTypes[
-                            Math.round( Math.random() * (randomConnectorTypes.length - 1) )
-                        ]
+                    type: connectorType,
+                    portTypeDirective: connectorTypeToSymbolDirective[ connectorType ]
                 };
 
                 if (element.baseName === 'Container') {
