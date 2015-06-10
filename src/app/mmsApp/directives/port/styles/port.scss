@@ -5,6 +5,10 @@
     font-size: 70%;
   }
 
+  .port-type {
+    font-size: 70%;
+  }
+
   .port-shape {
     cursor: crosshair;
   }
@@ -12,4 +16,18 @@
   .port-shape:hover {
     fill: #ff7100;
   }
+
+  &.right {
+
+      .port-label {
+          text-anchor: end;
+      }
+
+      .port-type {
+          text-anchor: end;
+      }
+
+  }
+
+
 }

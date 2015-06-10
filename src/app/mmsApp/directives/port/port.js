@@ -39,6 +39,22 @@ angular.module(
 
         };
 
+        $scope.getTypeText = function() {
+
+            var type;
+
+            if (angular.isString($scope.portInstance.type)) {
+                type = $scope.portInstance.type;
+            } else if (angular.isFunction($scope.portInstance.type)) {
+                type = $scope.portInstance.type();
+            } else {
+                type = $scope.portInstance.portSymbol.type;
+            }
+
+            return type;
+
+        };
+
         $scope.getCssClass = function () {
 
             var cssClass;
@@ -53,7 +69,9 @@ angular.module(
     .directive(
     'port',
 
-    function ($compile) {
+    function ($compile, $timeout) {
+
+        var TYPE_ELEMENT_SPACING = 2;
 
         return {
             scope: false,
@@ -66,12 +84,11 @@ angular.module(
             link: function (scope, element, attributes, controllers) {
 
                 var svgDiagramController,
-                    portDirective,
-                    compiledSymbol,
-                    templateStr,
-                    template,
                     diagramContainerController,
-                    $el;
+
+                    labelEl,
+                    typeEl;
+
 
                 svgDiagramController = controllers[0];
                 diagramContainerController = controllers[1];
@@ -88,31 +105,99 @@ angular.module(
                     svgDiagramController.onPortMouseUp(scope.component, port, $event);
                 };
 
-                portDirective = scope.portInstance.portSymbol.portDirective || 'circle-port';
 
-                compiledSymbol = diagramContainerController.getCompiledDirective(portDirective);
+                function replaceWithDirective(placeHolderEl, directive) {
 
-                if (!angular.isFunction(compiledSymbol)) {
+                    var compiledSymbol,
+                        templateStr,
+                        template;
 
-                    templateStr = '<' + portDirective + '>' +
-                    '</' + portDirective + '>';
+                    if (placeHolderEl) {
 
-                    template = angular.element(templateStr);
+                        compiledSymbol = diagramContainerController.getCompiledDirective(directive);
 
-                    compiledSymbol = $compile(template);
+                        if (!angular.isFunction(compiledSymbol)) {
 
-                    diagramContainerController.setCompiledDirective(portDirective, compiledSymbol);
+                            templateStr = '<' + directive + '>' +
+                            '</' + directive + '>';
+
+                            template = angular.element(templateStr);
+
+                            compiledSymbol = $compile(template);
+
+                            diagramContainerController.setCompiledDirective(directive, compiledSymbol);
+
+                        }
+
+
+                        compiledSymbol(scope, function (clonedElement) {
+
+                            placeHolderEl.parentNode.replaceChild(
+                                clonedElement[0],
+                                placeHolderEl
+                            );
+
+                        });
+
+                    }
 
                 }
 
-                $el = $(element);
+                function positionTypeSymbol() {
 
-                compiledSymbol(scope, function (clonedElement) {
-                    $el.find('.symbol-placeholder')
-                        .replaceWith(clonedElement);
+                    labelEl = labelEl || element[0].querySelector('.port-label');
+                    typeEl = typeEl || element[0].querySelector('.port-type');
+
+                    if (labelEl && typeEl) {
+
+                        $timeout(function(){
+
+                            var boundingBox = labelEl.getBBox(),
+                                dx,
+                                dy = scope.portInstance.portSymbol.labelPosition.y;
+
+                            if (boundingBox) {
+
+                                if (scope.portInstance.portSymbol.side === 'right') {
+
+                                    dx = scope.portInstance.portSymbol.labelPosition.x -
+                                        boundingBox.width -
+                                        TYPE_ELEMENT_SPACING;
+
+                                } else {
+
+                                    dx = scope.portInstance.portSymbol.labelPosition.x +
+                                        boundingBox.width +
+                                        TYPE_ELEMENT_SPACING;
+
+                                }
+
+                                typeEl.setAttribute(
+                                    'transform',
+                                    'translate( ' + dx + ', ' + dy + ' )'
+                                );
+
+                            }
+                        });
+                    }
+
+                }
+
+                replaceWithDirective(
+                    element[0].querySelector('.symbol-placeholder'),
+                    scope.portInstance.portSymbol.portDirective || 'circle-port'
+                );
+
+                scope.$watch('component.symbol.showPortLabels', function() {
+
+                    replaceWithDirective(
+                        element[0].querySelector('.port-type-symbol-placeholder'),
+                        scope.portInstance.portSymbol.portTypeDirective || 'textual-port-symbol'
+                    );
+
+                    positionTypeSymbol();
+
                 });
-
-
             }
         };
     }
@@ -159,5 +244,16 @@ angular.module(
             replace: true,
             templateNamespace: 'SVG',
             templateUrl: '/mmsApp/templates/rectanglePort.html'
+        };
+    })
+    .directive(
+    'textualPortSymbol',
+    function () {
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateNamespace: 'SVG',
+            templateUrl: '/mmsApp/templates/textualPortSymbol.html'
         };
     });

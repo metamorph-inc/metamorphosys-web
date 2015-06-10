@@ -781,8 +781,6 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
                     details.documentation.icon = json.data.icon;
 
-                    console.log(json.data);
-
                     details.markdown = (function (markdownHtml) {
                         if (markdownHtml) {
                             var el = document.createElement("html"),

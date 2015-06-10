@@ -2,12 +2,17 @@
    ng-attr-transform="{{::getPortTransform()}}"
    class="port"
    ng-class="::getCssClass()">
-    <text class="port-label"
-          ng-if="::isPortLabelVisible()"
-          ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
-          ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
-        >{{getLabel()}}
-    </text>
+   <g ng-if="::isPortLabelVisible()">
+        <text class="port-label"
+              ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
+              ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
+            >{{getLabel()}}
+        </text>
+        <g class="port-type"
+            ng-class="::getTypeText()">
+            <g class="port-type-symbol-placeholder"></g>
+        </g>
+    </g>
     <g
         ng-click="onPortClick(portInstance, $event)"
         ng-mousedown="onPortMouseDown(portInstance, $event)"

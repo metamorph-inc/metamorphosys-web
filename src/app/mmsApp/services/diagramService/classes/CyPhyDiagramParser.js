@@ -17,7 +17,22 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         ComponentPort,
         Wire,
 
-        minePortsFromInterfaces;
+        minePortsFromInterfaces,
+
+        randomConnectorTypes = [
+            'I2C',
+            'Supply_Single',
+            'DigitalSignal',
+            'AnalogSignal',
+            'ThermalPad',
+            'SPI3',
+            'SPI2',
+            'GPIO',
+            'USB',
+            'AnalogBus',
+            'DigitalBus',
+            'DigitalClock'
+        ];
 
 
 
@@ -99,7 +114,11 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 portSymbol = {
                     id: innerConnector.id,
-                    label: labelParser(innerConnector.name)
+                    label: labelParser(innerConnector.name),
+                    type: innerConnector.definition ||
+                        randomConnectorTypes[
+                            Math.round( Math.random() * (randomConnectorTypes.length - 1) )
+                        ]
                 };
 
                 if (element.baseName === 'Container') {
@@ -616,8 +635,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     var boundingBox = component.getGridBoundingBox();
 
                     diagram.config.width = Math.max(diagram.config.width, boundingBox.x + boundingBox.width);
-                    diagram.config.height = Math.max(diagram.config.height, boundingBox.y + boundingBox.height);            
-                    
+                    diagram.config.height = Math.max(diagram.config.height, boundingBox.y + boundingBox.height);
+
                 }
 
             };
@@ -647,7 +666,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 diagram.addComponent(newDiagramComponent);
 
-                checkMaxSizes(newDiagramComponent);                
+                checkMaxSizes(newDiagramComponent);
 
                 i++;
 
@@ -659,7 +678,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 diagram.addComponent(newDiagramComponent);
 
-                checkMaxSizes(newDiagramComponent);                
+                checkMaxSizes(newDiagramComponent);
 
                 i++;
 
