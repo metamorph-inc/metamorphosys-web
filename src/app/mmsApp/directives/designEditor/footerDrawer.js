@@ -6,7 +6,7 @@ angular.module('mms.designEditor.footerDrawer', [
         'ngCookies'
     ])
     .directive('footerDrawer', 
-        function(projectHandling, mmsUtils, $cookies) {
+        function(projectHandling, mmsUtils, $cookies, projectsToDisableComponentBrowser) {
 
             function DrawerController() {
 
@@ -29,8 +29,9 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
-                this._projectsToDisableComponentBrowser = [];
+                this._projectsToDisableComponentBrowser = projectsToDisableComponentBrowser;
                 this._currentDesign = projectHandling.getSelectedDesign().name.toLowerCase();
+
                 
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
@@ -337,6 +338,13 @@ angular.module('mms.designEditor.footerDrawer', [
 
                     ctrl.name = attributes.name;
                     ctrl.iconClass = attributes.iconClass;
+
+                    if (ctrl.name.toLowerCase() === "inspector" ) {
+                        ctrl.contentPanel = false;
+                    }
+                    else {
+                        ctrl.contentPanel = true;
+                    }
 
                     if (attributes.hasOwnProperty('active')) {
                         ctrl.active = true;
