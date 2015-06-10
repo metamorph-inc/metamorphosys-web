@@ -210,7 +210,7 @@ module.exports = function(
                 $event.pageY !== possibbleDragTargetsDescriptor.mousePosition.y
             )) {
 
-            if ($scope.altKey) {
+            if ($event.altKey) {
 
                 // Drag-duplicate
 

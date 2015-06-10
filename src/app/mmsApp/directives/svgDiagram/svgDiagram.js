@@ -636,10 +636,6 @@ angular.module('mms.svgDiagram', [
 
                         killDelete(event);
 
-                        if (event.keyCode === 18) {
-                            scope.altKey = true;
-                        }
-
                         if (event.keyCode === 90 && (event.metaKey || event.ctrlKey)) {
                             projectHandling.undo();
                         }
@@ -651,10 +647,6 @@ angular.module('mms.svgDiagram', [
                     }
 
                     function keyUpHandler(event) {
-
-                        if (event.keyCode === 18) {
-                            scope.altKey = false;
-                        }
 
                     }
 
