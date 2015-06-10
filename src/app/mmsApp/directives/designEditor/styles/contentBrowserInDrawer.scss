@@ -15,26 +15,22 @@ $hover-color: rgba(158, 158, 158, 0.1);
 		color: $linkHoverColorOnDark;
 	}
 
-	.content-list-view .info-button {
-	    background-color: rgb(13,71,161);
-	    border-bottom-left-radius: 0;
-	}
-
 	.content-list-view .item-list li.item-list-item {
 		min-height: 70px;
 
 		.icon-container {
 
-		    top: 20px;
+		    top: 10px;
 
 		    height: 45px;
-			line-height: 45px;
+ 			  line-height: 45px;
 
 		    text-align:center;
+		}
 
-			&.no-info-button {
-					top: 10px;
-			}
+		.info-button {
+			background-color: #4F5C6F;
+			border-bottom-left-radius: 0;
 		}
 
 	}
