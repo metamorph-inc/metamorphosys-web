@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('mms.designEditor.footerDrawer', [
+        'mms.projectHandling',
         'mms.utils',
         'ngCookies'
     ])
     .directive('footerDrawer', 
-        function(mmsUtils, $cookies) {
+        function(projectHandling, mmsUtils, $cookies) {
 
             function DrawerController() {
 
@@ -28,6 +29,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
+                this._projectsToDisableComponentBrowser = [];
+                this._currentDesign = projectHandling.getSelectedDesign().name.toLowerCase();
                 
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
@@ -203,12 +206,34 @@ angular.module('mms.designEditor.footerDrawer', [
 
             DrawerController.prototype.registerPanel = function(panelCtrl) {
 
-                if (panelCtrl && panelCtrl.name) {
+                var disableComponentBrowser = this._projectsToDisableComponentBrowser.indexOf(this._currentDesign) !== -1;
 
-                    this._panels.push(panelCtrl);
+                if (panelCtrl && panelCtrl.name) { 
+                    if (panelCtrl.name.toLowerCase() !== "components" && disableComponentBrowser || !disableComponentBrowser) {
 
-                    if (panelCtrl.active) {
-                        this.activatePanel(panelCtrl);
+                        if ( this._panels.map( function(x) {
+                            return x.name.toLowerCase();
+                        }).indexOf(panelCtrl.name.toLowerCase()) === -1 ) {
+
+                            this._panels.push(panelCtrl);
+
+                            if (panelCtrl.active) {
+                                this.activatePanel(panelCtrl);
+                            }
+                        }
+
+                    }
+
+                    else {
+                        
+                        var componentPanelIndex = this._panels.map( function(x) {
+                                return x.name.toLowerCase();
+                            }).indexOf("components");
+
+                        if (componentPanelIndex !== -1) {
+                            this._panels.splice(componentPanelIndex, 1);
+                        }
+
                     }
 
                 }
@@ -287,7 +312,7 @@ angular.module('mms.designEditor.footerDrawer', [
         }
     )
     .directive('drawerPanel', 
-        function() {
+        function(projectHandling, $rootScope) {
 
             function DrawerPanelController() {
                 this.name = null;
@@ -324,6 +349,16 @@ angular.module('mms.designEditor.footerDrawer', [
                     } 
 
                     footerDrawerCtrl.registerPanel(ctrl);
+
+                    $rootScope.$on('designMustBeOpened', function(event, design) {
+
+                        footerDrawerCtrl._currentDesign = design.name.toLowerCase();
+                        footerDrawerCtrl.registerPanel(ctrl);
+                        footerDrawerCtrl.activatePanel(footerDrawerCtrl._panels[footerDrawerCtrl._panels.map( function(x) {
+                                return x.name.toLowerCase();
+                            }).indexOf("inspector")]);
+
+                    });
 
                 }
             };
