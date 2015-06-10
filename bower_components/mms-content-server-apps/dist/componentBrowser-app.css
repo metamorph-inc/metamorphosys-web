@@ -174,93 +174,95 @@ body, html {
   /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
   .content-list-view .item-list ul.list-group li.item-list-item.context-menu-trigger {
     cursor: default; }
-/* line 25, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  /* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  .content-list-view .item-list ul.list-group li.item-list-item:hover .info-button {
+    opacity: 1; }
+/* line 27, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .content-list-view .info-button {
   text-align: center;
-  width: 120px;
+  display: inline-block;
   position: absolute;
-  top: 0;
-  right: 0;
-  padding: 2px 6px;
+  bottom: 0;
+  left: 0;
+  padding: 2px 15px 1px;
   color: #fff;
   background-color: #1976d2;
-  border-bottom-left-radius: 5px;
-  transition: background-color 200ms; }
-  /* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  border-top-right-radius: 10px;
+  transition: background-color 200ms, opacity 200ms;
+  z-index: 10;
+  opacity: 0; }
+  /* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
   .content-list-view .info-button:hover {
     color: #fff;
     background-color: #E65100; }
 
-/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 48, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-name, .detail-value {
   font-size: 8px; }
 
-/* line 51, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 54, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-name {
   font-weight: bold;
   width: 8em;
   text-align: right; }
 
-/* line 57, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 60, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-value {
   width: 10em;
   text-align: left; }
 
-/* line 62, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 65, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .property-table {
   display: inline-table;
   vertical-align: top;
   margin-right: 3px; }
 
-/* line 68, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 71, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 td {
   border-collapse: collapse;
   padding: 1px; }
 
-/* line 73, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 76, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 table tr:nth-child(odd), .icon-header {
   background-color: transparent; }
 
-/* line 77, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 80, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 table tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.08); }
 
-/* line 81, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 84, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .icon-container {
   display: block;
   position: absolute;
-  top: 25px;
+  top: 15px;
   right: 10px;
   width: 95px;
   height: 60px;
   line-height: 60px;
   text-align: center; }
-  /* line 93, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
-  .icon-container.no-info-button {
-    top: 15px; }
 
-/* line 98, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 101, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .icon {
   max-width: 100%;
   max-height: 100%;
   display: inline-block; }
 
-/* line 104, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 107, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .item-details {
   margin-bottom: 10px !important; }
 
-/* line 108, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description-container {
   display: inline-block;
   margin-left: 5px; }
 
-/* line 112, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 115, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description-header {
   font-weight: bold;
   font-size: 9px;
   margin-bottom: 2px; }
 
-/* line 117, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 120, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description {
   overflow: auto;
   width: 200px;
@@ -270,11 +272,11 @@ table tr:nth-child(even) {
   color: inherit !important;
   font-size: 9px; }
 
-/* line 128, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 131, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 ::-webkit-scrollbar {
   display: none; }
 
-/* line 132, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 135, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .list-view-header {
   margin-top: 10px;
   margin-bottom: 5px; }
@@ -323,11 +325,6 @@ table tr:nth-child(even) {
 .embedded .listing-views {
   padding-top: 80px; }
 
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/countDisplay/styles/countDisplay.scss */
-.count-display {
-  color: #999;
-  margin-right: 10px; }
-
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentSearch/styles/component-search.scss */
 .component-search .search-button {
   margin-left: 1ex; }
@@ -336,6 +333,11 @@ table tr:nth-child(even) {
   min-width: 18em;
   width: auto;
   display: inline-block; }
+
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/countDisplay/styles/countDisplay.scss */
+.count-display {
+  color: #999;
+  margin-right: 10px; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
 .download-button {
@@ -363,15 +365,6 @@ table tr:nth-child(even) {
 .grid-view .download-button + .info-button {
   margin-left: 5px; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
-.paging .previous-page {
-  width: 125px;
-  margin-right: 2ex; }
-/* line 8, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
-.paging .next-page {
-  width: 110px;
-  margin-left: 2ex; }
-
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/infoButton/styles/infoButton.scss */
 .info-button {
   font-weight: normal;
@@ -385,6 +378,18 @@ table tr:nth-child(even) {
 /* line 14, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/infoButton/styles/infoButton.scss */
 .info-text {
   line-height: 1.2; }
+
+/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
+.paging .btn[disabled] {
+  opacity: 0.18; }
+/* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
+.paging .previous-page {
+  width: 60px;
+  margin-right: 2ex; }
+/* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
+.paging .next-page {
+  width: 60px;
+  margin-left: 2ex; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
 .property-table {
@@ -429,13 +434,6 @@ table tr:nth-child(even) {
     cursor: pointer;
     color: #E65100; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/viewSelection/styles/viewSelection.scss */
-.view-selection button.btn {
-  width: 40px; }
-/* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/viewSelection/styles/viewSelection.scss */
-.view-selection button.selected {
-  background-color: #eee; }
-
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showMoreButton/styles/showMoreButton.scss */
 .show-more-button {
   font-weight: normal;
@@ -448,3 +446,10 @@ table tr:nth-child(even) {
   .show-more-button:hover {
     cursor: pointer;
     color: #E65100; }
+
+/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/viewSelection/styles/viewSelection.scss */
+.view-selection button.btn {
+  width: 40px; }
+/* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/viewSelection/styles/viewSelection.scss */
+.view-selection button.selected {
+  background-color: #eee; }
