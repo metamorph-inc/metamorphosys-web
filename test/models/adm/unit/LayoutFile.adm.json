@@ -46,8 +46,8 @@
             "isAbstract": "",
             "isPort": "",
             "position": {
-                "x": null,
-                "y": null
+                "x": 10,
+                "y": 10
             }
         },
         "pointers": {
