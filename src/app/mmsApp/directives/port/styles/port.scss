@@ -5,11 +5,6 @@
     font-size: 70%;
   }
 
-  .port-type-text {
-    font-size: 60%;
-    fill: #fff;
-  }
-
   .port-shape {
     cursor: crosshair;
   }
@@ -21,10 +16,6 @@
   &.right {
 
       .port-label {
-          text-anchor: end;
-      }
-
-      .port-type {
           text-anchor: end;
       }
 

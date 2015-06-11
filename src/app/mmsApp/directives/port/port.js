@@ -143,61 +143,12 @@ angular.module(
 
                 }
 
-                function positionTypeSymbol() {
-
-                    labelEl = labelEl || element[0].querySelector('.port-label');
-                    typeEl = typeEl || element[0].querySelector('.port-type');
-
-                    if (labelEl && typeEl) {
-
-                        $timeout(function(){
-
-                            var boundingBox = labelEl.getBBox(),
-                                dx,
-                                dy = scope.portInstance.portSymbol.labelPosition.y - 1;
-
-                            if (boundingBox) {
-
-                                if (scope.portInstance.portSymbol.side === 'right') {
-
-                                    dx = scope.portInstance.portSymbol.labelPosition.x -
-                                        boundingBox.width -
-                                        TYPE_ELEMENT_SPACING;
-
-                                } else {
-
-                                    dx = scope.portInstance.portSymbol.labelPosition.x +
-                                        boundingBox.width +
-                                        TYPE_ELEMENT_SPACING;
-
-                                }
-
-                                typeEl.setAttribute(
-                                    'transform',
-                                    'translate( ' + dx + ', ' + dy + ' )'
-                                );
-
-                            }
-                        }, 10, false);
-                    }
-
-                }
 
                 replaceWithDirective(
                     element[0].querySelector('.symbol-placeholder'),
                     scope.portInstance.portSymbol.portDirective || 'circle-port'
                 );
 
-                scope.$watch('component.symbol.showPortLabels', function() {
-
-                    replaceWithDirective(
-                        element[0].querySelector('.port-type-symbol-placeholder'),
-                        scope.portInstance.portSymbol.portTypeDirective || 'textual-port-symbol'
-                    );
-
-                    positionTypeSymbol();
-
-                });
             }
         };
     }
@@ -244,63 +195,5 @@ angular.module(
             replace: true,
             templateNamespace: 'SVG',
             templateUrl: '/mmsApp/templates/rectanglePort.html'
-        };
-    })
-    .directive(
-    'textualPortSymbol',
-    function ($timeout) {
-        return {
-            scope: false,
-            restrict: 'E',
-            replace: true,
-            templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/textualPortSymbol.html',
-            link: function(scope, element) {
-
-                $timeout(function(){
-
-                    var boundingBox = element[0].querySelector('.port-type-text').getBBox(),
-                        boxEl = element[0].querySelector('.port-type-text-box'),
-                        TEXT_PADDING = 4;
-
-                    boxEl.setAttribute('x', boundingBox.x - TEXT_PADDING);
-                    boxEl.setAttribute('y', boundingBox.y - TEXT_PADDING / 2);
-                    boxEl.setAttribute('width', boundingBox.width + 2 * TEXT_PADDING);
-                    boxEl.setAttribute('height', boundingBox.height + 2 * TEXT_PADDING / 2 - 1);
-
-                }, 150, false);
-            }
-        };
-    })
-    .directive(
-    'usbConnectorSymbol',
-    function () {
-        return {
-            scope: false,
-            restrict: 'E',
-            replace: true,
-            templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html',
-            link: function(scope, element) {
-
-                var dx,
-                    dy = -8;
-
-                if (scope.portInstance.portSymbol.side === 'right') {
-
-                    dx = -17;
-
-                } else {
-
-                    dx = -3;
-
-                }
-
-                element[0].setAttribute(
-                    'transform',
-                    'translate( ' + dx + ', ' + dy + ' )'
-                );
-
-            }
         };
     });
