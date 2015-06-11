@@ -767,6 +767,9 @@ define([
                 return callback(err);
             }
             if (type === 'RelativeLayoutConstraint' || type === 'RelativeRangeLayoutConstraint') {
+                if (!self.core.hasPointer(node, 'Origin')) {
+                    return callback('Constraint \'' + self.core.getPath(node) + '\' has no Origin');
+                }
                 self.core.loadPointer(node, 'Origin', function (err, o) {
                     if (err) {
                         return callback(err);
