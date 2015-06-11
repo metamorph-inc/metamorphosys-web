@@ -1,9 +1,14 @@
-/*globals angular, $*/
+/*globals angular*/
 
 'use strict';
 
+require('./decoratedPorts.js');
+
 angular.module(
-    'mms.designVisualization.port', []
+    'mms.designVisualization.port',
+    [
+        'mms.designVisualization.port.decoratedPorts'
+    ]
 )
     .controller('PortController', function ($scope) {
 
@@ -69,7 +74,7 @@ angular.module(
     .directive(
     'port',
 
-    function ($compile, $timeout) {
+    function ($compile) {
 
         var TYPE_ELEMENT_SPACING = 6;
 
@@ -143,10 +148,9 @@ angular.module(
 
                 }
 
-
                 replaceWithDirective(
                     element[0].querySelector('.symbol-placeholder'),
-                    scope.portInstance.portSymbol.portDirective || 'circle-port'
+                    scope.component.symbol.portDirective || scope.portInstance.portSymbol.portDirective || 'circle-port'
                 );
 
             }

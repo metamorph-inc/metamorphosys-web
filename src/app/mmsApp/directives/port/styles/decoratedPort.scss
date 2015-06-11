@@ -1,0 +1,24 @@
+.decorated-port {
+
+    .port-shape {
+        rect.decorated-port-box {
+            fill: #AAB8CE;
+        }
+    }
+
+    &:hover {
+        .port-shape {
+
+            rect {
+                fill: #ff7100;
+            }
+        }
+    }
+}
+
+
+.symbol:hover {
+    rect.port-side {
+        fill: #ff7100;
+    }
+}

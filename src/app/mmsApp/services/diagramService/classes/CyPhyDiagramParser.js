@@ -263,11 +263,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             'container-box',
             element.name || element.id, {
                 showPortLabels: true,
-                limitLabelWidthTo: 150
+                limitLabelWidthTo: 150,
+                portDirective: 'decorated-port'
             }, portStuff.portDescriptors, {
-                minWidth: 200,
+                minWidth: 240,
                 portWireLeadInIncrement: 8,
-                portWireLength: 14,
+                portWireLength: 27,
                 topPortPadding: 26
             }
         );
@@ -582,10 +583,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 'box',
                 element.name, {
                     showPortLabels: true,
-                    limitLabelWidthTo: 150
+                    limitLabelWidthTo: 150,
+                    portDirective: 'decorated-port'
                 }, portStuff.portDescriptors, {
-                    minWidth: 200,
-                    portWireLeadInIncrement: 10
+                    minWidth: 240,
+                    portWireLeadInIncrement: 8,
+                    portWireLength: 27
                 });
 
             newModelComponent = new DiagramComponent({
