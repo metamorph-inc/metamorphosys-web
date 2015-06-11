@@ -225,15 +225,20 @@ define(['plugin/PluginConfig',
 
                         var design = designModels.filter(function (design) {
                             return self.core.getAttribute(design, 'name') === testBenches[tb];
-                        })[0]; // TODO check for undefined
-                        self.core.setPointer(tbModel, 'TopLevelSystemUnderTest', design);
+                        })[0];
+                        if (!design) {
+                            self.createMessage(null,
+                                'Could not find design \'' + testBenches[tb] + '\' for testbench \'' + tb + '\'. TopLevelSystemUnderTest will be null', 'error');
+                        } else {
+                            self.core.setPointer(tbModel, 'TopLevelSystemUnderTest', design);
+                        }
                         self.core.setAttribute(tbModel, 'TestBenchFiles', self.artifact.descriptor.content[testbenches_zip].content);
                         self.core.setAttribute(tbModel, 'ID', tb);
 
                         self.core.createNode({
                             base: self.metaTypes.Container,
                             parent: tbModel,
-                            name: self.core.getAttribute(design, 'name')
+                            name: design ? self.core.getAttribute(design, 'name') : tb
                         });
                         return Q([]);
                     });
