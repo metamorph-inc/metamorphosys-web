@@ -537,6 +537,7 @@ Diagram.prototype.selectComponent = function(componentId, silent) {
         if (index === -1) {
 
             this.state.selectedComponentIds.push(componentId);
+            component.selected = true;
 
             if (!silent) {
                 this.afterSelectionChange();

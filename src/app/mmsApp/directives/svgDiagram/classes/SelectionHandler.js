@@ -58,7 +58,9 @@ module.exports = function($scope, diagramService, $timeout) {
     };
 
     onComponentMouseUp = function(component, $event) {
-        toggleComponentSelected(component, $event);
+        $timeout(function() {
+            toggleComponentSelected(component, $event);
+        });
 
     };
 

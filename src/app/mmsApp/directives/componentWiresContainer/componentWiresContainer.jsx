@@ -174,14 +174,14 @@ var ComponentWireSegment = React.createClass({
     },
 
     onMouseDown: function(e) {
-       // console.log('onMouseDown ()', e); 
+        // console.log('onMouseDown ()', e); 
         this.props.diagramCtrl.onWireMouseDown(this.props.wire, this.props.segment, e);
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     },
 
     onMouseUp: function(e) {
-        //console.log('onMouseUp', e);        
+        // console.log('onMouseUp', e);        
         this.props.diagramCtrl.onWireMouseUp(this.props.wire, this.props.segment, e);        
     },
 
