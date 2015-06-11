@@ -1,0 +1,93 @@
+{
+    "/1/42/44/458": {
+        "ID": 458,
+        "attributes": {
+            "name": "LayoutFile",
+            "Description": "A digital triple-axis magnetometer",
+            "Type": "Compound"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        "pointers": {
+            "base": "/12"
+        },
+        "collection": {},
+        "path": "/1/42/44/458",
+        "guid": "/1/42/44/458",
+        "parent": "/1/42/44",
+        "children": [
+            "/1/42/44/458/459",
+            "/1/42/44/458/460"
+        ]
+    },
+    "/1/42/44/458/459": {
+        "ID": 459,
+        "attributes": {
+            "name": "layoutFile",
+            "Path": "layout.json",
+            "Hash": "asdf",
+            "Notes": "note1"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/24"
+        },
+        "collection": {},
+        "path": "/1/42/44/458/459",
+        "guid": "/1/42/44/458/459",
+        "parent": "/1/42/44/458",
+        "children": []
+    },
+    "/1/42/44/458/460": {
+        "ID": 460,
+        "attributes": {
+            "name": "circuitLayout",
+            "Type": "CircuitLayout",
+            "BoundingBoxes": "0,0,10,10"
+        },
+        "registry": {
+            "DisplayFormat": "",
+            "PortSVGIcon": "",
+            "SVGIcon": "",
+            "decorator": "",
+            "isAbstract": "",
+            "isPort": "",
+            "position": {
+                "x": null,
+                "y": null
+            }
+        },
+        "pointers": {
+            "base": "/15",
+            "UsesResource": [
+                "/1/42/44/458/459"
+            ]
+        },
+        "collection": {},
+        "path": "/1/42/44/458/460",
+        "guid": "/1/42/44/458/460",
+        "parent": "/1/42/44/458",
+        "children": []
+    }
+}

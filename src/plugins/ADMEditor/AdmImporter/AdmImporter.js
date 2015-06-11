@@ -231,7 +231,9 @@ define([
         PortInstance: true,
         Role: true,
         Port: true,
-        ContainerFeature: true
+        ContainerFeature: true,
+        ResourceDependency: true,
+        DomainModel: true
     };
 
     /**
@@ -710,7 +712,34 @@ define([
             }
         }
 
+        var resources = {};
+        (containerData.ResourceDependency || []).forEach(function (resource) {
+            resources[resource['@ID']] = self.createResource(resource, container);
+        });
+
+        (containerData.DomainModel || []).forEach(function (domainModel) {
+            AcmImporter.prototype.createNewDomainModel.call(self, domainModel, container, resources);
+        });
+
         return container;
+    };
+
+    AdmImporter.prototype.createResource = function (resourceData, container) {
+        var self = this,
+            resource = self.core.createNode({
+                parent: container,
+                base: self.meta.Resource
+            });
+        self.core.setAttribute(resource, 'name', resourceData['@Name']);
+        self.core.setAttribute(resource, 'Path', resourceData['@Path']);
+        self.core.setAttribute(resource, 'Hash', resourceData['@Hash']);
+        self.core.setAttribute(resource, 'Notes', resourceData['@Notes']);
+        self.core.setRegistry(resource, 'position', {
+            x: parseInt(resourceData['@XPosition'], 10),
+            y: parseInt(resourceData['@YPosition'], 10)
+        });
+
+        return resource;
     };
 
     AdmImporter.prototype.createComponent = function (componentData, parentNode) {

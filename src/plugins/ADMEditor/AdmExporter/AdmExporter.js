@@ -333,6 +333,10 @@ define([
             self.addAssemblyRoot(node, parent, containerData, callback);
         } else if (self.isMetaTypeOf(node, self.meta.LayoutConstraint)) {
             self.addLayoutConstraint(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.Resource)) {
+            self.addResource(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.DomainModel)) {
+            self.addDomainModel(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -783,7 +787,73 @@ define([
         });
     };
 
+    AdmExporter.prototype.addDomainModel = function (node, container, containerData, callback) {
+        var self = this,
+            pos = self.core.getRegistry(node, 'position'),
+            typeAttr = self.core.getAttribute(node, 'Type');
 
+        var types = {
+            'Modelica': { type: 'modelica:ModelicaModel' },
+            'CAD': { type: 'cad:CADModel'},
+            'Manufacturing': { type: 'manufacturing:ManufacturingModel'} ,
+            'Cyber': { type: 'cyber:CyberModel' },
+            'SPICE': { type: 'spice:SPICEModel' },
+            'EDA': { type: 'eda:EDAModel' },
+            'CircuitLayout': { type: 'eda:CircuitLayout', fn: function () {
+                data['@BoundingBoxes'] = self.core.getAttribute(node, 'BoundingBoxes');
+            }
+            },
+            'SystemC': { type: 'systemc:SystemCModel' },
+            'RF': { type: 'rf:RFModel' }
+        };
+        var namespace = 'avm',
+            xsiType = 'DomainModel',
+            type = (types[typeAttr] || {}).types,
+            fn = (types[typeAttr] || {}).fn;
+        if (type) {
+            namespace = type.substr(0, type.lastIndexOf(':'));
+            xsiType = type.substr(type.lastIndexOf(':') + 1);
+        }
+
+        var data = {
+            '@xsi:type': namespace + ':' + xsiType,
+            '@XPosition': Math.floor(pos.x),
+            '@YPosition': Math.floor(pos.y),
+            '@Name': self.core.getAttribute(node, 'name'),
+            '@ID': self.core.getGuid(node)
+        };
+        data['@xmlns:' + namespace] = namespace;
+
+        if (fn) {
+            fn();
+        }
+
+        this.loadSetMembers(node, 'UsesResource', function (err, targetNodes, targetIds) {
+            if (err) {
+                return callback(err);
+            }
+            data['@UsesResource'] = targetNodes.map(function (node) { return self.core.getGuid(node); }).join(' ');
+            containerData.DomainModel.push(data);
+            callback();
+        });
+    };
+
+    AdmExporter.prototype.addResource = function (node, container, containerData, callback) {
+        var self = this,
+            pos = self.core.getRegistry(node, 'position');
+
+        var data = {
+            "@XPosition": Math.floor(pos.x),
+            "@YPosition": Math.floor(pos.y),
+            "@Name": self.core.getAttribute(node, 'name'),
+            "@Path": self.core.getAttribute(node, 'Path'),
+            "@Hash": self.core.getAttribute(node, 'Hash'),
+            "@Notes": self.core.getAttribute(node, 'Notes'),
+            "@ID": self.core.getGuid(node)
+        };
+        containerData.ResourceDependency.push(data);
+        callback();
+    };
     //<editor-fold desc="=========================== Properties/ValueFlows ==========================">
     AdmExporter.prototype.addProperty = function (node, parent, containerData, callback) {
         var self = this,
@@ -1370,7 +1440,9 @@ define([
                 "JoinData": [],
                 "Formula": [],
                 "ValueFlowMux": [],
-                "ContainerFeature": []
+                "ContainerFeature": [],
+                "ResourceDependency": [],
+                "DomainModel": []
             };
 
         if (!isRoot) {
