@@ -15,27 +15,35 @@ angular.module(
                 switch ($scope.portInstance.portSymbol.side) {
 
                     case 'right':
-                        $scope.portOffset = {
-                            x: -13,
-                            y: -8
-                        };
-
+                        $scope.decorationTransform = 'translate(-28, -8)';
                         break;
 
                     default:
                     case 'left':
-                        $scope.portOffset = {
-                            x: -15,
-                            y: -8
-                        };
-
+                        $scope.decorationTransform = 'translate(3, -8)';
                 }
 
             },
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/decoratedPort.html'
+            require: ['^svgDiagram', '^diagramContainer'],
+            templateUrl: '/mmsApp/templates/decoratedPort.html',
+            link: function (scope, element, attributes, controllers) {
+
+                var diagramContainerController = controllers[1];
+
+                if (scope.portInstance.portSymbol.portDecoratorDirective) {
+
+                    diagramContainerController.replaceWithDirective(
+                        element[0].querySelector('.decoration-placeholder'),
+                        scope.portInstance.portSymbol.portDecoratorDirective,
+                        scope
+                    );
+
+                }
+            }
+
         };
     })
     .directive(

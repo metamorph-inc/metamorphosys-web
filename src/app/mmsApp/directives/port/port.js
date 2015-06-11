@@ -74,7 +74,7 @@ angular.module(
     .directive(
     'port',
 
-    function ($compile) {
+    function () {
 
         var TYPE_ELEMENT_SPACING = 6;
 
@@ -110,47 +110,10 @@ angular.module(
                     svgDiagramController.onPortMouseUp(scope.component, port, $event);
                 };
 
-
-                function replaceWithDirective(placeHolderEl, directive) {
-
-                    var compiledSymbol,
-                        templateStr,
-                        template;
-
-                    if (placeHolderEl) {
-
-                        compiledSymbol = diagramContainerController.getCompiledDirective(directive);
-
-                        if (!angular.isFunction(compiledSymbol)) {
-
-                            templateStr = '<' + directive + '>' +
-                            '</' + directive + '>';
-
-                            template = angular.element(templateStr);
-
-                            compiledSymbol = $compile(template);
-
-                            diagramContainerController.setCompiledDirective(directive, compiledSymbol);
-
-                        }
-
-
-                        compiledSymbol(scope, function (clonedElement) {
-
-                            placeHolderEl.parentNode.replaceChild(
-                                clonedElement[0],
-                                placeHolderEl
-                            );
-
-                        });
-
-                    }
-
-                }
-
-                replaceWithDirective(
+                diagramContainerController.replaceWithDirective(
                     element[0].querySelector('.symbol-placeholder'),
-                    scope.component.symbol.portDirective || scope.portInstance.portSymbol.portDirective || 'circle-port'
+                    scope.component.symbol.portDirective || scope.portInstance.portSymbol.portDirective || 'circle-port',
+                    scope
                 );
 
             }
