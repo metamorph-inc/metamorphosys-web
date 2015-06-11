@@ -8,7 +8,7 @@
                   width="5"
                   height="15"
                   class="decorated-port-box"
-                  fill="{{::portColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
                 />
             <rect
                   x="0"
@@ -18,7 +18,7 @@
                   rx="5"
                   ry="5"
                   class="decorated-port-box"
-                  fill="{{::portColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
                 />
             <rect
                   x="23"
@@ -26,7 +26,7 @@
                   width="2"
                   height="15"
                   class="port-side"
-                  fill="#1146a0" stroke-width="0"
+                  ng-attr-fill="#1146a0" stroke-width="0"
                 />
         </g>
         <g ng-if="portInstance.portSymbol.side === 'right'"
@@ -37,7 +37,7 @@
                   width="5"
                   height="15"
                   class="decorated-port-box"
-                  fill="{{::portColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
                 />
             <rect
                 x="0"
@@ -47,7 +47,7 @@
                   rx="5"
                   ry="5"
                   class="decorated-port-box"
-                  fill="{{::portColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
                 />
             <rect
                 x="0"
@@ -55,9 +55,13 @@
                   width="2"
                   height="15"
                   class="port-side"
-                  fill="#1146a0" stroke-width="0"
+                  ng-attr-fill="#1146a0" stroke-width="0"
                 />
         </g>
         <g class="decoration-placeholder"></g>
+        <text class="decorator-label"
+            x="13"
+            y="11"
+            ng-if="::(!decoratorDirective && decoratorLabel)">{{::decoratorLabel}}</text>
     </g>
 </g>

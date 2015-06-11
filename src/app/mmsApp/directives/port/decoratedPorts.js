@@ -33,15 +33,25 @@ angular.module(
 
                 var diagramContainerController = controllers[1];
 
-                if (scope.portInstance.portSymbol.portDecoratorDirective) {
+                if (scope.portInstance.portSymbol.portDecorator) {
 
-                    diagramContainerController.replaceWithDirective(
-                        element[0].querySelector('.decoration-placeholder'),
-                        scope.portInstance.portSymbol.portDecoratorDirective,
-                        scope
-                    );
+                    scope.decoratorColor = scope.portInstance.portSymbol.portDecorator.color;
+                    scope.decoratorLabel = scope.portInstance.portSymbol.portDecorator.label;
+                    scope.decoratorDirective = scope.portInstance.portSymbol.portDecorator.directive;
+
+                    if (scope.portInstance.portSymbol.portDecorator.directive) {
+
+                        diagramContainerController.replaceWithDirective(
+                            element[0].querySelector('.decoration-placeholder'),
+                            scope.portInstance.portSymbol.portDecorator.directive,
+                            scope
+                        );
+
+                    }
 
                 }
+
+                scope.decoratorColor = scope.decoratorColor || '#93A0B5';
             }
 
         };

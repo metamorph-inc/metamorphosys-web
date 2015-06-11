@@ -66,6 +66,10 @@ angular.module(
 
             cssClass = $scope.portInstance.portSymbol.cssClass;
 
+            if ($scope.portInstance.portSymbol.type) {
+                cssClass += ' ' + $scope.portInstance.portSymbol.type;
+            }
+
             return cssClass;
 
         };

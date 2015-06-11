@@ -2,8 +2,15 @@
 
     .port-shape {
         rect.decorated-port-box {
-            fill: #93A0B5;
+//            fill: #93A0B5;
         }
+    }
+
+    .decorator-label {
+        fill: #fff;
+        font-size: 8px;
+        text-anchor: middle;
+        font-weight: bold;
     }
 
     &:hover {
@@ -20,5 +27,18 @@
 .symbol:hover {
     rect.port-side {
         fill: #ff7100;
+    }
+}
+
+.UART {
+    .decorator-label {
+        font-size: 7px;
+    }
+}
+
+.SPI,
+.SPI_ThreeWire {
+    .decorator-label {
+        font-size: 9px;
     }
 }

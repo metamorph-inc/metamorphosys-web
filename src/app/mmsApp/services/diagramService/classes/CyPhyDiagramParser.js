@@ -21,21 +21,46 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         randomConnectorTypes = [
             'I2C',
-            // 'Supply_Single',
-            // 'DigitalSignal',
-            // 'AnalogSignal',
-            // 'ThermalPad',
-            'SPI3',
-            'SPI2',
+            'SPI_ThreeWire',
+            'SPI',
             'GPIO',
-            'USB'
-            // 'AnalogBus',
-            // 'DigitalBus',
-            // 'DigitalClock'
+            'USB',
+            'GND',
+            'UART'
         ],
 
-        connectorTypeToSymbolDirective = {
-            USB: 'usb-connector-symbol'
+        connectorTypeToDecorator = {
+            USB: {
+                directive: 'usb-connector-symbol',
+                color: '#423934',
+                label: null
+            },
+
+            GND: {
+                directive: null,
+                color: '#333',
+                label: 'GND'
+            },
+
+            SPI: {
+                directive: null,
+                color: '#155596',
+                label: 'spi'
+            },
+
+            SPI_ThreeWire: {
+                directive: null,
+                color: '#155596',
+                label: 'spi3'
+            },
+
+            UART: {
+                directive: null,
+                color: '#124576',
+                label: 'UART'
+            }
+
+
         };
 
 
@@ -124,7 +149,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     id: innerConnector.id,
                     label: labelParser(innerConnector.name),
                     type: connectorType,
-                    portDecoratorDirective: connectorTypeToSymbolDirective[ connectorType ]
+                    portDecorator: connectorTypeToDecorator[ connectorType ]
                 };
 
                 if (element.baseName === 'Container') {
