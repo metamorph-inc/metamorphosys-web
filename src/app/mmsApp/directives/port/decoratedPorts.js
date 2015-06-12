@@ -70,4 +70,15 @@ angular.module(
             templateUrl: '/mmsApp/templates/usbConnectorSymbol.html'
         };
     })
+    .directive(
+    'digitalConnectorSymbol',
+    function () {
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateNamespace: 'SVG',
+            templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html'
+        };
+    })
     ;

@@ -26,13 +26,20 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             'GPIO',
             'USB',
             'GND',
-            'UART'
+            'UART',
+            'DigitalSignal'
         ],
 
         connectorTypeToDecorator = {
             USB: {
                 directive: 'usb-connector-symbol',
                 bgColor: '#4d9ac4',
+                label: null
+            },
+
+            DigitalSignal: {
+                directive: 'digital-connector-symbol',
+                bgColor: '#155596',
                 label: null
             },
 
