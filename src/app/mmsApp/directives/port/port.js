@@ -69,6 +69,21 @@ angular.module(
             if ($scope.portInstance.portSymbol.type) {
                 cssClass += ' ' + $scope.portInstance.portSymbol.type;
             }
+            //
+            // if ($scope.svgDiagramController &&
+            //     $scope.svgDiagramController.focusedPort &&
+            //     $scope.svgDiagramController.focusedPort.portSymbol &&
+            //     $scope.svgDiagramController.focusedPort.portSymbol.type) {
+            //
+            //         if (!($scope.portInstance.portSymbol &&
+            //             $scope.portInstance.portSymbol.type === $scope.svgDiagramController.focusedPort.portSymbol.type)) {
+            //                 cssClass += 'fade-out';
+            //             }
+            //
+            //     }
+            //
+            // console.log(cssClass);
+            //
 
             return cssClass;
 
@@ -89,18 +104,18 @@ angular.module(
             replace: true,
             templateUrl: '/mmsApp/templates/port.html',
             templateNamespace: 'SVG',
-            require: ['^svgDiagram', '^diagramContainer'],
+            require: ['^svgDiagram', '^diagramContainer', 'port'],
             link: function (scope, element, attributes, controllers) {
 
-                var svgDiagramController,
-                    diagramContainerController,
+                var svgDiagramController = controllers[0],
+                    diagramContainerController = controllers[1],
+                    portController = controllers[2],
 
                     labelEl,
                     typeEl;
 
-
-                svgDiagramController = controllers[0];
-                diagramContainerController = controllers[1];
+                scope.svgDiagramController = svgDiagramController;
+                scope.element = element[0];
 
                 scope.onPortClick = function (port, $event) {
                     svgDiagramController.onPortClick(scope.component, port, $event);
@@ -114,11 +129,31 @@ angular.module(
                     svgDiagramController.onPortMouseUp(scope.component, port, $event);
                 };
 
+                scope.onPortMouseOver = function (port, $event) {
+                    svgDiagramController.onPortMouseOver(scope.component, port, $event);
+                };
+
+                scope.onPortMouseOut = function (port, $event) {
+                    svgDiagramController.onPortMouseOut(scope.component, port, $event);
+                };
+
                 diagramContainerController.replaceWithDirective(
                     element[0].querySelector('.symbol-placeholder'),
                     scope.component.symbol.portDirective || scope.portInstance.portSymbol.portDirective || 'circle-port',
                     scope
                 );
+
+                if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {
+                    svgDiagramController.registerPortElement(scope.portInstance.portSymbol.type, element[0]);
+                }
+
+                scope.$on('$destroy', function() {
+
+                    if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {
+                        svgDiagramController.deregisterPortElement(scope.portInstance.portSymbol.type, element[0]);
+                    }
+
+                });
 
             }
         };

@@ -91,6 +91,9 @@ angular.module('mms.svgDiagram', [
                 this.acmImportService = acmImportService;
                 this.dndService = dndService;
 
+                this._portElementsByType = null;
+                this._focusedPort = null;
+
                 // Setting up handlers
 
                 componentDragHandler = new ComponentDragHandler(
@@ -493,6 +496,82 @@ angular.module('mms.svgDiagram', [
                     componentElements = componentElements || {};
 
                     delete componentElements[id];
+
+                };
+
+                this.onPortMouseOver = function(component, port) {
+                    this._focusedPort = port;
+                    this.focusPorts();
+                };
+
+                this.onPortMouseOut = function(/*component, port*/) {
+                    this._focusedPort = null;
+                    this.unFocusPorts();
+                };
+
+
+                this.registerPortElement = function(type, element) {
+
+                    this._portElementsByType = this._portElementsByType || {};
+
+                    this._portElementsByType[type] = this._portElementsByType[type] || [];
+
+                    if (this._portElementsByType[type].indexOf(element) === -1) {
+                        this._portElementsByType[type].push(element);
+                    }
+
+                };
+
+                this.deregisterPortElement = function(type, element) {
+
+                    if (this._portElementsByType && this._portElementsByType[type]) {
+
+                        var index = this._portElementsByType[type].indexOf(element);
+
+                        if ( index > -1 ) {
+                            this._portElementsByType[type].splice(index, 1);
+                        }
+
+                    }
+
+                };
+
+                this.focusPorts = function() {
+
+                    var typeToFocus = this._focusedPort &&
+                            this._focusedPort.portSymbol &&
+                            this._focusedPort.portSymbol.type;
+
+                        if (typeToFocus && this._portElementsByType) {
+
+                            for (var type in this._portElementsByType) {
+
+                                if (type !== typeToFocus) {
+
+                                    for (var i = 0; i < this._portElementsByType[type].length; i++) {
+                                        this._portElementsByType[type][i].classList.add('faded');
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                };
+
+                this.unFocusPorts = function() {
+
+                    if (this._portElementsByType) {
+
+                        for (var type in this._portElementsByType) {
+
+                            for (var i = 0; i < this._portElementsByType[type].length; i++) {
+                                this._portElementsByType[type][i].classList.remove('faded');
+                            }
+                        }
+
+                    }
+
 
                 };
 

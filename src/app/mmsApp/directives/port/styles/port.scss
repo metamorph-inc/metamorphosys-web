@@ -6,6 +6,7 @@
   }
 
   .port-shape {
+     transition: fill 200ms;
     cursor: crosshair;
   }
 
@@ -21,5 +22,11 @@
 
   }
 
+  &.faded {
+      .port-shape {
+        fill: #ddd;
+      }
+
+  }
 
 }
