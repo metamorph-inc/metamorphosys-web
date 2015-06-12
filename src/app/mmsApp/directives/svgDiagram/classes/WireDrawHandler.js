@@ -203,9 +203,12 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                         end2: snappedPosition
                     },
                     $scope.selectedRouter.type,
-                    $scope.selectedRouter.params
+                    $scope.selectedRouter.params,
+                    true
                 )
             );
+            console.log($scope.newWireLine.segments.length);
+            console.log($scope.newWireLine.segments);
 
         }
 
