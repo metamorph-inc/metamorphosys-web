@@ -57,7 +57,11 @@ angular.module(
                 scope.decoratorColor = scope.decoratorColor || '#fff';
                 scope.portType = scope.portInstance.portSymbol.type;
 
-                scope.pinCount = scope.portType.split('_')[1];
+                if (scope.portType === 'GPIO') {
+                    scope.pinCount = 'X';
+                } else {
+                    scope.pinCount = scope.portType.split('_')[1];
+                }
             }
 
         };
@@ -93,6 +97,17 @@ angular.module(
             replace: true,
             templateNamespace: 'SVG',
             templateUrl: '/mmsApp/templates/analogConnectorSymbol.html'
+        };
+    })
+    .directive(
+    'supplySingleSymbol',
+    function () {
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateNamespace: 'SVG',
+            templateUrl: '/mmsApp/templates/supplySingleSymbol.html'
         };
     })
     ;

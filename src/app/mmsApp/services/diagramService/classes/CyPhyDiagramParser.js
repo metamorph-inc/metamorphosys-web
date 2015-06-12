@@ -85,7 +85,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             GND: {
                 directive: null,
-                bgColor: '#333',
+                bgColor: '#000',
                 label: 'GND'
             },
 
@@ -105,8 +105,17 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 directive: null,
                 bgColor: digitalPortColorBase,
                 label: 'UART'
-            }
+            },
 
+            DigitalClock: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'CLK'
+            },
+
+            'Supply_Single': {
+                directive: 'supply-single-symbol'
+            }
 
         };
 

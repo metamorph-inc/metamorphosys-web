@@ -2,61 +2,18 @@
     <g ng-attr-transform="{{::decorationTransform}}">
         <g ng-if="portInstance.portSymbol.side === 'left'"
             class="port-shape">
-            <rect
-                  x="22"
-                  y="0"
-                  width="5"
-                  height="15"
-                  class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
-                />
-            <rect
-                  x="0"
-                  y="0"
-                  width="27"
-                  height="15"
-                  rx="5"
-                  ry="5"
-                  class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
-                />
-            <!-- <rect
-                  x="23"
-                  y="0"
-                  width="2"
-                  height="15"
-                  class="port-side"
-                  ng-attr-fill="#1146a0" stroke-width="0"
-                /> -->
+            <path d="M0 0 L18 0 C27 0 27 0 27 9 L27 6 C27 15 27 15 18 15 L0 15 Z"
+            transform="rotate(180) translate(-27, -15)" stroke="none" fill="red" stroke-width="1"
+                class="decorated-port-box"
+                ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
+            />
         </g>
         <g ng-if="portInstance.portSymbol.side === 'right'"
             class="port-shape">
-            <rect
-                x="0"
-                y="0"
-                  width="5"
-                  height="15"
-                  class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
-                />
-            <rect
-                x="0"
-                y="0"
-                  width="27"
-                  height="15"
-                  rx="5"
-                  ry="5"
-                  class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
-                />
-            <!-- <rect
-                x="0"
-                y="0"
-                  width="2"
-                  height="15"
-                  class="port-side"
-                  ng-attr-fill="#1146a0" stroke-width="0"
-                /> -->
+            <path d="M0 0 L18 0 C27 0 27 0 27 9 L27 6 C27 15 27 15 18 15 L0 15 Z"
+                class="decorated-port-box"
+                ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
+            />
         </g>
         <g class="decoration-placeholder"></g>
         <text class="decorator-label"

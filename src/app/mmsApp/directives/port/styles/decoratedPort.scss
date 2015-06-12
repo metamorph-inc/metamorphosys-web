@@ -1,7 +1,7 @@
 .decorated-port {
 
     .port-shape {
-        rect.decorated-port-box {
+        path.decorated-port-box {
 //            fill: #93A0B5;
         }
     }
@@ -16,7 +16,7 @@
     &:hover {
         .port-shape {
 
-            rect {
+            path {
                 fill: #ff7100;
             }
         }
@@ -24,11 +24,11 @@
 }
 
 
-.symbol:hover {
-    rect.port-side {
-        fill: #ff7100;
-    }
-}
+//.symbol:hover {
+//    rect.port-side {
+//        fill: #ff7100;
+//    }
+//}
 
 .UART {
     .decorator-label {
