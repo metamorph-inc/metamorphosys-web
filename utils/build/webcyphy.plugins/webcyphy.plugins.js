@@ -11,7 +11,6 @@ define('webcyphy.plugins',
         'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',
         'plugin/SaveDesertConfigurations/SaveDesertConfigurations/SaveDesertConfigurations'
     ], function (Converters,
-                 ExecutorClient,
                  AcmImporter,
                  AdmImporter,
                  AtmImporter,

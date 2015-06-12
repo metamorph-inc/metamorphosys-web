@@ -69,8 +69,8 @@ angular.module( 'CyPhyApp', [
                 return branchService.selectBranch( connectionId, 'master' );
             } )
             .then( function () {
-                branchService.watchBranchState( 'my-db-connection-id', function ( eventType ) {
-                    console.log( 'watchBranchState: ' + eventType );
+                branchService.watchBranchState( 'my-db-connection-id', function ( eventData ) {
+                    console.log( 'watchBranchState: ' + eventData.status );
                 } );
             } )
             .

@@ -29,6 +29,6 @@ config.requirejsPaths.cyphyDist = './dist';
 
 config.requirejsPaths['panels/ProjectAnalyzer'] = './src/panels/ProjectAnalyzer';
 config.requirejsPaths['widgets/ProjectAnalyzer'] = './src/widgets/ProjectAnalyzer';
-
+//config.storage.loadBucketSize = 100;
 
 module.exports = config;

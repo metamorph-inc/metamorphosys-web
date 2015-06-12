@@ -7,10 +7,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "webgme": "https://github.com/webgme/webgme/tarball/master",
+    "webgme": "https://github.com/webgme/webgme/tarball/issue/392_update_territory",
     "requirejs": "=2.1.11",
     "winreg": "=0.0.12",
-    "ng-gme": "https://github.com/webgme/ng-gme/tarball/master"
+    "ng-gme": "=0.3.0"
   },
   "devDependencies": {
     "angular-markdown-directive": "^0.3.0",
