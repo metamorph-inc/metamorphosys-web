@@ -301,7 +301,8 @@ define([
         self.admData['@DesignID'] = self.core.getGuid(startNode);
         self.rootPath = self.core.getPath(startNode);
         self.logger.info('rootPath is ' + self.rootPath);
-        self.visitAllChildrenFromRootContainer(startNode, callback);
+        return Q.ninvoke(self, 'visitAllChildrenFromRootContainer', startNode)
+            .nodeify(callback);
     };
 
     AdmExporter.prototype.atModelNode = function (node, parent, containerData, callback) {
