@@ -27,8 +27,16 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             'USB',
             'GND',
             'UART',
-            'DigitalSignal'
+            'DigitalSignal',
+            'Analog',
+            'Analog_4',
+            'Analog_8',
+            'Analog_16'
+
         ],
+
+        digitalPortColorBase = '#002285',
+        analogPortColorBase = '#006785',
 
         connectorTypeToDecorator = {
             USB: {
@@ -39,7 +47,31 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             DigitalSignal: {
                 directive: 'digital-connector-symbol',
-                bgColor: '#155596',
+                bgColor: digitalPortColorBase,
+                label: null
+            },
+
+            'Analog': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_4': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_8': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_16': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
                 label: null
             },
 
@@ -51,19 +83,19 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             SPI: {
                 directive: null,
-                bgColor: '#155596',
+                bgColor: digitalPortColorBase,
                 label: 'spi'
             },
 
-            SPI_ThreeWire: {
+            'SPI_ThreeWire': {
                 directive: null,
-                bgColor: '#155596',
+                bgColor: digitalPortColorBase,
                 label: 'spi3'
             },
 
             UART: {
                 directive: null,
-                bgColor: '#124576',
+                bgColor: digitalPortColorBase,
                 label: 'UART'
             }
 

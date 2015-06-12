@@ -55,6 +55,7 @@ angular.module(
 
                 scope.decoratorBGColor = scope.decoratorBGColor || '#93A0B5';
                 scope.decoratorColor = scope.decoratorColor || '#fff';
+                scope.portType = scope.portInstance.portSymbol.type;
             }
 
         };
@@ -79,6 +80,17 @@ angular.module(
             replace: true,
             templateNamespace: 'SVG',
             templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html'
+        };
+    })
+    .directive(
+    'analogConnectorSymbol',
+    function () {
+        return {
+            scope: false,
+            restrict: 'E',
+            replace: true,
+            templateNamespace: 'SVG',
+            templateUrl: '/mmsApp/templates/analogConnectorSymbol.html'
         };
     })
     ;

@@ -14,6 +14,8 @@ var ElbowRouter = function () {
             point1, elbow, point2,
             segments;
 
+        console.log('Simplify:', simplify);
+
         method = method || 'verticalFirst';
 
         if ( angular.isArray( points ) && points.length >= 2 ) {
@@ -28,7 +30,7 @@ var ElbowRouter = function () {
                 if (simplify && point1.x === point2.x) {
 
                     // only drwaing straight line if elbow is not needed
-                    
+
                     segments.push( {
 
                         type: 'line',
@@ -49,7 +51,7 @@ var ElbowRouter = function () {
 
                 } else if (simplify && point1.y === point2.y) {
 
-                    // only drwaing straight line if elbow is not needed                    
+                    // only drwaing straight line if elbow is not needed
 
                     segments.push( {
 

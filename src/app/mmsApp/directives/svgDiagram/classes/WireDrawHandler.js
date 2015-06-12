@@ -22,9 +22,9 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         onPortMouseDown,
 
         getOffsetToMouse,
-        scrollWhenAlongTheEdge,        
+        scrollWhenAlongTheEdge,
         latestMouseEvent,
-        scrollWhenAlongTheEdgeInterval;      
+        scrollWhenAlongTheEdgeInterval;
 
 
     getOffsetToMouse = function ($event) {
@@ -90,7 +90,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         }
 
         if (self.wiring) {
-            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);        
+            scrollWhenAlongTheEdgeInterval = setTimeout(scrollWhenAlongTheEdge, 125);
         }
 
     };
@@ -107,7 +107,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         self.wiring = true;
 
-        scrollWhenAlongTheEdge();        
+        scrollWhenAlongTheEdge();
 
     };
 
