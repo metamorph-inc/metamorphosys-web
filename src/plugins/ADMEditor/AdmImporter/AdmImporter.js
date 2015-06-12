@@ -109,13 +109,13 @@ define([
      */
     AdmImporter.prototype.getConfigStructure = function () {
         return [{
-                'name': 'admFile',
-                'displayName': 'ADM file',
-                'description': 'AVM Design Model.',
-                'value': '',
-                'valueType': 'asset',
-                'readOnly': false
-            },
+            'name': 'admFile',
+            'displayName': 'ADM file',
+            'description': 'AVM Design Model.',
+            'value': '',
+            'valueType': 'asset',
+            'readOnly': false
+        },
             {
                 'name': 'admUrl',
                 'displayName': 'URL to ADM file',
@@ -185,32 +185,32 @@ define([
             }
             //timeStamp = new Date().getTime();
             self.createAdmDesign(admFolder)
-            //self.createMessage(null, 'ExecTime [s] createAdmDesign :: ' +
-            //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                //self.createMessage(null, 'ExecTime [s] createAdmDesign :: ' +
+                //    ((new Date().getTime() - timeStamp) / 1000).toString());
                 .then(function (container) {
                     self.container = container;
-                //timeStamp = new Date().getTime();
-                self.gatherComponentInstanceContent(function (err) {
-                    //self.createMessage(null, 'ExecTime [s] gatherComponentInstanceContent :: ' +
-                    //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                    if (err) {
-                        finnishPlugin(err);
-                    } else {
-                        //timeStamp = new Date().getTime();
-                        self.makeConnectorCompositions();
-                        //self.createMessage(null, 'ExecTime [s] makeConnectorCompositions :: ' +
+                    //timeStamp = new Date().getTime();
+                    self.gatherComponentInstanceContent(function (err) {
+                        //self.createMessage(null, 'ExecTime [s] gatherComponentInstanceContent :: ' +
                         //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                        //timeStamp = new Date().getTime();
-                        self.makeValueFlows();
-                        //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
-                        //    ((new Date().getTime() - timeStamp) / 1000).toString());
-                        self.makePortMaps();
-                        Q.all(self.resourcePromises)
-                            .nodeify(finnishPlugin);
-                    }
-                });
-            }).catch(function (error) {
-                    finnishPlugin(error);
+                        if (err) {
+                            finnishPlugin(err);
+                        } else {
+                            //timeStamp = new Date().getTime();
+                            self.makeConnectorCompositions();
+                            //self.createMessage(null, 'ExecTime [s] makeConnectorCompositions :: ' +
+                            //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                            //timeStamp = new Date().getTime();
+                            self.makeValueFlows();
+                            //self.createMessage(null, 'ExecTime [s] makeValueFlows :: ' +
+                            //    ((new Date().getTime() - timeStamp) / 1000).toString());
+                            self.makePortMaps();
+                            Q.all(self.resourcePromises)
+                                .nodeify(finnishPlugin);
+                        }
+                    });
+                }).catch(function (error) {
+                    finnishPlugin('' + error);
                 });
         });
     };
@@ -231,7 +231,9 @@ define([
         PortInstance: true,
         Role: true,
         Port: true,
-        ContainerFeature: true
+        ContainerFeature: true,
+        ResourceDependency: true,
+        DomainModel: true
     };
 
     /**
@@ -304,45 +306,45 @@ define([
         }
         if (!config.useExistingComponents && !config.componentServerUrl) {
             self.createMessage(null, 'Configuration error: ' +
-                'either useExistingComponents must be true or the componentServerUrl must be specified', 'error');
+            'either useExistingComponents must be true or the componentServerUrl must be specified', 'error');
             callback(null, self.result);
             return;
         }
         var processAdmFile = function (err, xmlArrayBuffer) {
-                if (err) {
-                    self.createMessage(null, '' + err, 'error');
-                    self.result.setSuccess(false);
+            if (err) {
+                self.createMessage(null, '' + err, 'error');
+                self.result.setSuccess(false);
+                return callback(null, self.result);
+            }
+            var magic = Array.prototype.slice.call(new Uint8Array(xmlArrayBuffer), 0, 4);
+            if (magic[0] === 'P'.charCodeAt(0) && magic[1] === 'K'.charCodeAt(0)) {
+                // PK\003\004 , PK\005\006 or PK\007\008
+                var zipFile,
+                    admXml;
+                try {
+                    zipFile = new JSZip(xmlArrayBuffer);
+                } catch (error) {
+                    self.createMessage(null, 'zip file is not valid: ' + error, 'error');
                     return callback(null, self.result);
                 }
-                var magic = Array.prototype.slice.call(new Uint8Array(xmlArrayBuffer), 0, 4);
-                if (magic[0] === 'P'.charCodeAt(0) && magic[1] === 'K'.charCodeAt(0)) {
-                    // PK\003\004 , PK\005\006 or PK\007\008
-                    var zipFile,
-                        admXml;
-                    try {
-                        zipFile = new JSZip(xmlArrayBuffer);
-                    } catch (error) {
-                        self.createMessage(null, 'zip file is not valid: ' + error, 'error');
-                        return callback(null, self.result);
-                    }
 
-                    admXml = zipFile.file(/\.adm$/).filter(function (entry) {
-                        return entry.name.indexOf('__MACOSX') !== 0;
-                    });
-                    self.resourceFiles = zipFile.file(/./).filter(function (entry) {
-                        return entry.name.indexOf('__MACOSX') !== 0 && !/\.adm$/.exec(entry.name);
-                    });
+                admXml = zipFile.file(/\.adm$/).filter(function (entry) {
+                    return entry.name.indexOf('__MACOSX') !== 0;
+                });
+                self.resourceFiles = zipFile.file(/./).filter(function (entry) {
+                    return entry.name.indexOf('__MACOSX') !== 0 && !/\.adm$/.exec(entry.name);
+                });
 
-                    if (admXml.length === 1) {
-                        return self.innerMain(admXml[0].asText(), callback, finnishPlugin);
-                    } else {
-                        self.createMessage(null, 'zip must contain exactly one .adm file, not ' + admXml.length, 'error');
-                        return callback(null, self.result);
-                    }
+                if (admXml.length === 1) {
+                    return self.innerMain(admXml[0].asText(), callback, finnishPlugin);
                 } else {
-                    self.innerMain(xmlArrayBuffer, callback, finnishPlugin);
+                    self.createMessage(null, 'zip must contain exactly one .adm file, not ' + admXml.length, 'error');
+                    return callback(null, self.result);
                 }
-            };
+            } else {
+                self.innerMain(xmlArrayBuffer, callback, finnishPlugin);
+            }
+        };
         if (config.admFile) {
             self.blobClient.getObject(config.admFile, processAdmFile);
         } else {
@@ -574,7 +576,7 @@ define([
             });
     };
 
-    AdmImporter.prototype.createContainersPass1 =  function (containerData, parentNode, depth) {
+    AdmImporter.prototype.createContainersPass1 = function (containerData, parentNode, depth) {
         var self = this,
             container,
             components = [],
@@ -710,7 +712,34 @@ define([
             }
         }
 
+        var resources = {};
+        (containerData.ResourceDependency || []).forEach(function (resource) {
+            resources[resource['@ID']] = self.createResource(resource, container);
+        });
+
+        (containerData.DomainModel || []).forEach(function (domainModel) {
+            AcmImporter.prototype.createNewDomainModel.call(self, domainModel, container, resources);
+        });
+
         return container;
+    };
+
+    AdmImporter.prototype.createResource = function (resourceData, container) {
+        var self = this,
+            resource = self.core.createNode({
+                parent: container,
+                base: self.meta.Resource
+            });
+        self.core.setAttribute(resource, 'name', resourceData['@Name'] || '');
+        self.core.setAttribute(resource, 'Path', resourceData['@Path'] || '');
+        self.core.setAttribute(resource, 'Hash', resourceData['@Hash'] || '');
+        self.core.setAttribute(resource, 'Notes', resourceData['@Notes'] || '');
+        self.core.setRegistry(resource, 'position', {
+            x: parseInt(resourceData['@XPosition'], 10) || 10,
+            y: parseInt(resourceData['@YPosition'], 10) || 10
+        });
+
+        return resource;
     };
 
     AdmImporter.prototype.createComponent = function (componentData, parentNode) {

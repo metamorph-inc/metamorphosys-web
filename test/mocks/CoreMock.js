@@ -50,6 +50,9 @@ define(['./NodeMock'], function (NodeMock) {
     };
 
     CoreMock.prototype.setAttribute = function (node, name, value) {
+        if (value === undefined) {
+            throw new Error();
+        }
         node.attributes[name] = value;
     };
 

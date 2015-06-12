@@ -418,6 +418,13 @@ angular.module('mms.designEditor', [
 
                             };
 
+                        if ((!Array.isArray(selectedComponents) || selectedComponents.length === 0) &&
+                            (!Array.isArray(selectedWires) || selectedWires.length === 0) &&
+                            (!Array.isArray(selectedWireSegmentsWithSelectedEndCorner) || selectedWireSegmentsWithSelectedEndCorner.length === 0)) {
+                            // nothing to do
+                            return;
+                        }
+
                         $rootScope.setProcessing();
                         nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
 
