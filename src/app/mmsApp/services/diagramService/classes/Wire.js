@@ -221,15 +221,44 @@ Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, para
 
 };
 
+Wire.prototype.replaceSegmentsFromParametersArrayById = function(startPosition, parametersArray) {
+
+    var i,
+        l = this._segments.length;
+
+    for (i = 0; i < parametersArray.length; i++) {
+
+        this._segments[Math.min(l, startPosition + i)] = new WireSegment(parametersArray[i], this);
+
+    }
+
+};
+
 Wire.prototype.replaceSegmentFromProperties = function(atPosition, properties) {
 
     this._segments[atPosition] = new WireSegment(properties, this);
 
 };
 
-Wire.prototype.deleteSegment = function(atPosition) {
+Wire.prototype.deleteSegment = function(atPosition, keepIndex) {
 
-    this._segments.splice(atPosition, 1);
+    this._segments.splice(atPosition, 1);    
+
+};
+
+Wire.prototype.deleteSegmentById = function(id) {
+
+    var found = false,
+        idx = this._segments.map( function(x) {
+            return x._id;
+        }).indexOf(id);
+
+    if ( idx > -1 ) {
+        this._segments.splice(idx, 1);
+        found = true; 
+    }
+
+    return found;
 
 };
 
@@ -315,56 +344,61 @@ Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {
     var parameters = segment.getParameters();
     var nextParameters = nextSegment.getParameters();
 
-    wire.deleteSegment(sIndex);
+    // wire.deleteSegment(sIndex);
+    var found = wire.deleteSegmentById(segment._id);
 
-    var newSegments = wiringService.getSegmentsBetweenPositions({
-        end1: {
-            x: parameters.x1,
-            y: parameters.y1
-        },
-        end2: {
-            x: nextParameters.x2,
-            y: nextParameters.y2
+    if ( found ) {
+
+        var newSegments = wiringService.getSegmentsBetweenPositions({
+            end1: {
+                x: parameters.x1,
+                y: parameters.y1
+            },
+            end2: {
+                x: nextParameters.x2,
+                y: nextParameters.y2
+            }
+        }, 'SimpleRouter');
+
+        wire.replaceSegmentsFromParametersArray(
+            sIndex,
+            newSegments
+        );
+
+        if (sIndex > 0 &&
+            parameters.router &&
+            parameters.router.type === 'ElbowRouter' &&
+            parameters.elbowPartOrder === 1) {
+
+            // If it was part of an Elbow routed segment set, set the other part to
+            // simple-routed
+
+            affectedSegmentParameters = segments[sIndex - 1].getParameters();
+            affectedSegmentParameters.router = {
+                type: 'SimpleRouter'
+            };
+
+            delete affectedSegmentParameters.elbowPartOrder;
+
         }
-    }, 'SimpleRouter');
-
-    wire.replaceSegmentsFromParametersArray(
-        sIndex,
-        newSegments
-    );
-
-    if (sIndex > 0 &&
-        parameters.router &&
-        parameters.router.type === 'ElbowRouter' &&
-        parameters.elbowPartOrder === 1) {
-
-        // If it was part of an Elbow routed segment set, set the other part to
-        // simple-routed
-
-        affectedSegmentParameters = segments[sIndex - 1].getParameters();
-        affectedSegmentParameters.router = {
-            type: 'SimpleRouter'
-        };
-
-        delete affectedSegmentParameters.elbowPartOrder;
-
-    }
 
 
-    if (sIndex + 1 < segments.length &&
-        nextParameters.router &&
-        nextParameters.router.type === 'ElbowRouter' &&
-        nextParameters.elbowPartOrder === 0) {
+        if (sIndex + 1 < segments.length &&
+            nextParameters.router &&
+            nextParameters.router.type === 'ElbowRouter' &&
+            nextParameters.elbowPartOrder === 0) {
 
-        // If it was part of an Elbow routed segment set, set the other part to
-        // simple-routed
+            // If it was part of an Elbow routed segment set, set the other part to
+            // simple-routed
 
-        affectedSegmentParameters = segments[sIndex + 1].getParameters();
-        affectedSegmentParameters.router = {
-            type: 'SimpleRouter'
-        };
+            affectedSegmentParameters = segments[sIndex + 1].getParameters();
+            affectedSegmentParameters.router = {
+                type: 'SimpleRouter'
+            };
 
-        delete affectedSegmentParameters.elbowPartOrder;
+            delete affectedSegmentParameters.elbowPartOrder;
+
+        }
 
     }
 

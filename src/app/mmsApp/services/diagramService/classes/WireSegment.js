@@ -4,7 +4,8 @@
 
 var WireSegment = function(parameters, parentWire) {
 
-	this._parameters = parameters;
+	this._id = Math.random().toString(36).substr(2, 7);
+    this._parameters = parameters;
 	this._parentWire = parentWire;
 
 };
