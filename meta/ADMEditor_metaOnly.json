@@ -20,6 +20,7 @@
     "700fb14d-a86b-aefa-d1af-2d18f88fe3c1": null,
     "79f0cc09-f068-284b-5473-efcf5dfa3497": "1949671222",
     "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": "1669293789",
+    "8097ae89-983e-8ea8-6612-eefb6dee9203": "1455709881",
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": "236224320",
     "8b1e277e-0f88-a58b-4aff-51c74250671d": "398267330",
     "9001f172-4258-ceaa-86e9-f6e80b85853d": "891929219",
@@ -60,6 +61,7 @@
       "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
       "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
       "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {},
+      "8097ae89-983e-8ea8-6612-eefb6dee9203": {},
       "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {},
       "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
       "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
@@ -560,16 +562,20 @@
             "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
             "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "8097ae89-983e-8ea8-6612-eefb6dee9203",
             "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
             "97a00dee-7375-3637-ec08-b62588d4d71d",
             "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
             "cb92c02d-84cf-f104-938b-b7de6641f8e5",
             "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
+            "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
             "f0508110-9a11-3b6d-ea42-2193bf0485e0",
             "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
             "f9f20885-6316-a7b6-2196-8299f45692ff"
           ],
           "minItems": [
+            -1,
+            -1,
             -1,
             -1,
             -1,
@@ -589,7 +595,9 @@
             -1,
             -1,
             -1,
+            -1,
             1,
+            -1,
             -1,
             -1,
             -1,
@@ -976,6 +984,16 @@
               "position": {
                 "x": 291,
                 "y": 539
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "8097ae89-983e-8ea8-6612-eefb6dee9203",
+            "registry": {
+              "position": {
+                "x": 999,
+                "y": 376
               }
             }
           },
@@ -1615,6 +1633,16 @@
           },
           {
             "attributes": {},
+            "guid": "8097ae89-983e-8ea8-6612-eefb6dee9203",
+            "registry": {
+              "position": {
+                "x": 999,
+                "y": 376
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "97a00dee-7375-3637-ec08-b62588d4d71d",
             "registry": {
               "position": {
@@ -1670,6 +1698,16 @@
               "position": {
                 "x": 19,
                 "y": 395
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
+            "registry": {
+              "position": {
+                "x": 969,
+                "y": 204
               }
             }
           },
@@ -1938,6 +1976,46 @@
       "sets": {
         "ConstraintTarget": []
       },
+      "constraints": {}
+    },
+    "8097ae89-983e-8ea8-6612-eefb6dee9203": {
+      "attributes": {
+        "Hash": "",
+        "Notes": "",
+        "Path": "",
+        "name": "Resource"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          },
+          "Path": {
+            "type": "string",
+            "default": ""
+          },
+          "Hash": {
+            "type": "string",
+            "default": ""
+          },
+          "Notes": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {},
       "constraints": {}
     },
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
@@ -2951,6 +3029,19 @@
           "name": {
             "type": "string"
           }
+        },
+        "pointers": {
+          "UsesResource": {
+            "items": [
+              "8097ae89-983e-8ea8-6612-eefb6dee9203"
+            ],
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              -1
+            ]
+          }
         }
       },
       "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
@@ -2966,7 +3057,9 @@
           "y": 429
         }
       },
-      "sets": {},
+      "sets": {
+        "UsesResource": []
+      },
       "constraints": {}
     },
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": {

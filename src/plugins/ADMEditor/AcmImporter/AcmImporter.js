@@ -22,7 +22,7 @@ define( [ 'plugin/PluginConfig',
     var AcmImporter = function () {
         // Call base class' constructor.
         PluginBase.call( this );
-        this.metaTypes = MetaTypes;
+        this.metaTypes = this.meta = MetaTypes;
         this.id2NodeMap = {};
         this.valueFlowIdMap = {};
         this.recursionCounter = 0;
@@ -371,7 +371,7 @@ define( [ 'plugin/PluginConfig',
             newAcmNode,
             avmComponent = acmJson[ 'Component' ] || acmJson[ 'avm:Component' ],
             name = avmComponent[ '@Name' ],
-            id = avmComponent[ '@ID' ],
+            id = avmComponent[ '@ID' ] || '',
             schemaVersion = avmComponent[ '@SchemaVersion' ] || null, // 'undefined' causes assert failure with WebGME
             version = avmComponent[ '@Version' ],
             avmProperties,
@@ -461,13 +461,11 @@ define( [ 'plugin/PluginConfig',
         return newAcmNode;
     };
 
-    AcmImporter.prototype.createNewDomainModel = function ( avmDomainModelInfo, newAcmNode ) {
+    AcmImporter.prototype.createNewDomainModel = function ( avmDomainModelInfo, parent, resources ) {
         var self = this,
             newDomainModelNode,
             domainModelName = avmDomainModelInfo[ '@Name' ] || "",
             domainModelType,
-            xPos = parseInt( avmDomainModelInfo[ '@XPosition' ], 10 ),
-            yPos = parseInt( avmDomainModelInfo[ '@YPosition' ], 10 ),
             modelicaClass;
 
         if ( !domainModelName ) {
@@ -476,13 +474,13 @@ define( [ 'plugin/PluginConfig',
         }
 
         newDomainModelNode = self.core.createNode( {
-            parent: newAcmNode,
-            base: MetaTypes.DomainModel
+            parent: parent,
+            base: self.meta.DomainModel
         } );
         self.core.setAttribute( newDomainModelNode, 'name', domainModelName );
         self.core.setRegistry( newDomainModelNode, 'position', {
-            x: xPos,
-            y: yPos
+            x: parseInt( avmDomainModelInfo[ '@XPosition' ], 10 ),
+            y: parseInt( avmDomainModelInfo[ '@YPosition' ], 10 )
         } );
 
         if ( avmDomainModelInfo.hasOwnProperty( '@xsi:type' ) ) {
@@ -500,6 +498,9 @@ define( [ 'plugin/PluginConfig',
                 self.core.setAttribute( newDomainModelNode, 'Type', 'SPICE' );
             } else if ( domainModelType.indexOf( 'EDAModel' ) > -1 ) {
                 self.core.setAttribute( newDomainModelNode, 'Type', 'EDA' );
+            } else if ( domainModelType.indexOf( 'CircuitLayout' ) > -1 ) {
+                self.core.setAttribute( newDomainModelNode, 'Type', 'CircuitLayout' );
+                self.core.setAttribute(newDomainModelNode, 'BoundingBoxes', avmDomainModelInfo['@BoundingBoxes'] || '');
             } else if ( domainModelType.indexOf( 'SystemCModel' ) > -1 ) {
                 self.core.setAttribute( newDomainModelNode, 'Type', 'SystemC' );
             } else if ( domainModelType.indexOf( 'RFModel' ) > -1 ) {
@@ -507,10 +508,18 @@ define( [ 'plugin/PluginConfig',
             }
         }
 
+        (avmDomainModelInfo['@UsesResource'] || '').split(/ +/).filter(function (id) { return id; }).forEach(function (resourceId) {
+            var resource = (resources || {})[resourceId];
+            if (resource) {
+                self.core.addMember(newDomainModelNode, 'UsesResource', resource);
+            } // TODO else warn
+        });
+
         if ( avmDomainModelInfo.hasOwnProperty( '@Class' ) ) {
             modelicaClass = avmDomainModelInfo[ '@Class' ];
             self.core.setAttribute( newDomainModelNode, 'Class', modelicaClass );
         }
+        return newDomainModelNode;
     };
 
     AcmImporter.prototype.createNewConnector = function ( avmConnInfo, newAcmNode ) {
