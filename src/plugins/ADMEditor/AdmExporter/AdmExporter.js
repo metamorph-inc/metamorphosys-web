@@ -706,7 +706,7 @@ define([
                     };
                 }
                 var val = self.core.getAttribute(node, attrName);
-                if (val !== undefined) {
+                if (val !== undefined && val !== null && val !== '') {
                     data['@' + attrName] = xform(val);
                 }
             };
