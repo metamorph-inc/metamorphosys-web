@@ -809,7 +809,7 @@ define([
         };
         var namespace = 'avm',
             xsiType = 'DomainModel',
-            type = (types[typeAttr] || {}).types,
+            type = (types[typeAttr] || {}).type,
             fn = (types[typeAttr] || {}).fn;
         if (type) {
             namespace = type.substr(0, type.lastIndexOf(':'));
@@ -818,8 +818,8 @@ define([
 
         var data = {
             '@xsi:type': namespace + ':' + xsiType,
-            '@XPosition': Math.floor(pos.x),
-            '@YPosition': Math.floor(pos.y),
+            '@XPosition': Math.floor(pos.x) || 0,
+            '@YPosition': Math.floor(pos.y) || 0,
             '@Name': self.core.getAttribute(node, 'name'),
             '@ID': self.core.getGuid(node)
         };
@@ -833,7 +833,7 @@ define([
             if (err) {
                 return callback(err);
             }
-            data['@UsesResource'] = targetNodes.map(function (node) { return self.core.getGuid(node); }).join(' ');
+            data['@UsesResource'] = targetNodes.map(function (node) { return 'res-' + self.core.getGuid(node); }).join(' ');
             containerData.DomainModel.push(data);
             callback();
         });
@@ -850,7 +850,7 @@ define([
             "@Path": self.core.getAttribute(node, 'Path'),
             "@Hash": self.core.getAttribute(node, 'Hash'),
             "@Notes": self.core.getAttribute(node, 'Notes'),
-            "@ID": self.core.getGuid(node)
+            "@ID": 'res-' + self.core.getGuid(node)
         };
         containerData.ResourceDependency.push(data);
         callback();
