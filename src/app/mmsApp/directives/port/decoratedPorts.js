@@ -14,13 +14,13 @@ angular.module(
 
                 switch ($scope.portInstance.portSymbol.side) {
 
-                    case 'right':
-                        $scope.decorationTransform = 'translate(-28, -8)';
+                    case 'left':
+                        $scope.decorationTransform = 'translate(2, -8)';
                         break;
 
                     default:
-                    case 'left':
-                        $scope.decorationTransform = 'translate(3, -8)';
+                    case 'right':
+                        $scope.decorationTransform = 'translate(-29, -8)';
                 }
 
             },
@@ -36,6 +36,8 @@ angular.module(
                 if (scope.portInstance.portSymbol.portDecorator) {
 
                     scope.decoratorColor = scope.portInstance.portSymbol.portDecorator.color;
+                    scope.decoratorBGColor = scope.portInstance.portSymbol.portDecorator.bgColor;
+
                     scope.decoratorLabel = scope.portInstance.portSymbol.portDecorator.label;
                     scope.decoratorDirective = scope.portInstance.portSymbol.portDecorator.directive;
 
@@ -51,7 +53,8 @@ angular.module(
 
                 }
 
-                scope.decoratorColor = scope.decoratorColor || '#93A0B5';
+                scope.decoratorBGColor = scope.decoratorBGColor || '#93A0B5';
+                scope.decoratorColor = scope.decoratorColor || '#fff';
             }
 
         };

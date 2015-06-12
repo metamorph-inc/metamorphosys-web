@@ -3,31 +3,31 @@
         <g ng-if="portInstance.portSymbol.side === 'left'"
             class="port-shape">
             <rect
-                  x="20"
+                  x="22"
                   y="0"
                   width="5"
                   height="15"
                   class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
                 />
             <rect
                   x="0"
                   y="0"
-                  width="25"
+                  width="27"
                   height="15"
                   rx="5"
                   ry="5"
                   class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
                 />
-            <rect
+            <!-- <rect
                   x="23"
                   y="0"
                   width="2"
                   height="15"
                   class="port-side"
                   ng-attr-fill="#1146a0" stroke-width="0"
-                />
+                /> -->
         </g>
         <g ng-if="portInstance.portSymbol.side === 'right'"
             class="port-shape">
@@ -37,30 +37,31 @@
                   width="5"
                   height="15"
                   class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
                 />
             <rect
                 x="0"
                 y="0"
-                  width="25"
+                  width="27"
                   height="15"
                   rx="5"
                   ry="5"
                   class="decorated-port-box"
-                  ng-attr-fill="{{::decoratorColor}}" stroke-width="0"
+                  ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
                 />
-            <rect
+            <!-- <rect
                 x="0"
                 y="0"
                   width="2"
                   height="15"
                   class="port-side"
                   ng-attr-fill="#1146a0" stroke-width="0"
-                />
+                /> -->
         </g>
         <g class="decoration-placeholder"></g>
         <text class="decorator-label"
-            x="13"
+            ng-attr-fill="{{::decoratorColor}}"
+            x="13.5"
             y="11"
             ng-if="::(!decoratorDirective && decoratorLabel)">{{::decoratorLabel}}</text>
     </g>

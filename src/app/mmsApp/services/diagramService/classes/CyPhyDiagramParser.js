@@ -32,31 +32,31 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         connectorTypeToDecorator = {
             USB: {
                 directive: 'usb-connector-symbol',
-                color: '#423934',
+                bgColor: '#4d9ac4',
                 label: null
             },
 
             GND: {
                 directive: null,
-                color: '#333',
+                bgColor: '#333',
                 label: 'GND'
             },
 
             SPI: {
                 directive: null,
-                color: '#155596',
+                bgColor: '#155596',
                 label: 'spi'
             },
 
             SPI_ThreeWire: {
                 directive: null,
-                color: '#155596',
+                bgColor: '#155596',
                 label: 'spi3'
             },
 
             UART: {
                 directive: null,
-                color: '#124576',
+                bgColor: '#124576',
                 label: 'UART'
             }
 
@@ -293,8 +293,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             }, portStuff.portDescriptors, {
                 minWidth: 240,
                 portWireLeadInIncrement: 8,
-                portWireLength: 27,
-                topPortPadding: 23
+                portWireLength: 30,
+                topPortPadding: 20
             }
         );
 
@@ -613,8 +613,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 }, portStuff.portDescriptors, {
                     minWidth: 240,
                     portWireLeadInIncrement: 8,
-                    portWireLength: 27,
-                    topPortPadding: 3
+                    portWireLength: 30,
+                    topPortPadding: 0
                 });
 
             newModelComponent = new DiagramComponent({
