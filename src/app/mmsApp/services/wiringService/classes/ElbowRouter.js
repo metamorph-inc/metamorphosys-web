@@ -14,8 +14,6 @@ var ElbowRouter = function () {
             point1, elbow, point2,
             segments;
 
-        console.log('Simplify:', simplify);
-
         method = method || 'verticalFirst';
 
         if ( angular.isArray( points ) && points.length >= 2 ) {

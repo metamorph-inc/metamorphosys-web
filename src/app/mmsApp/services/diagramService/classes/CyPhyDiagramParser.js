@@ -31,8 +31,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             'Analog',
             'Analog_4',
             'Analog_8',
-            'Analog_16'
-
+            'Analog_16',
+            'DigitalClock',
+            'Supply_Single',
+            'ThermalPad'
         ],
 
         digitalPortColorBase = '#002285',
@@ -46,6 +48,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             },
 
             DigitalSignal: {
+                directive: 'digital-connector-symbol',
+                bgColor: digitalPortColorBase,
+                label: null
+            },
+
+            GPIO: {
                 directive: 'digital-connector-symbol',
                 bgColor: digitalPortColorBase,
                 label: null

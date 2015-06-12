@@ -56,6 +56,8 @@ angular.module(
                 scope.decoratorBGColor = scope.decoratorBGColor || '#93A0B5';
                 scope.decoratorColor = scope.decoratorColor || '#fff';
                 scope.portType = scope.portInstance.portSymbol.type;
+
+                scope.pinCount = scope.portType.split('_')[1];
             }
 
         };
