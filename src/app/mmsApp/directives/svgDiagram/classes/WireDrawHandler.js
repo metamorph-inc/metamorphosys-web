@@ -165,6 +165,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         $scope.newWireLine = null;
 
         self.wiring = false;
+        $scope.ctrl.unFocusPorts();
 
     };
 
@@ -172,6 +173,8 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
         $scope.newWireLine = null;
         wireStart = null;
         self.wiring = false;
+
+        $scope.ctrl.unFocusPorts();
 
         ga('send', 'event', 'wire', 'cancelNewWire');
 

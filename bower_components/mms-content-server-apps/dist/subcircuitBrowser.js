@@ -1461,6 +1461,16 @@ var ConnectorsDescription = React.createClass({
 
         if (Array.isArray(this.props.connectors)) {
 
+            this.props.connectors.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                } else if (a.name === b.name) {
+                    return 0;
+                } else if (a.name > b.name) {
+                    return 1;
+                }
+            });
+
             title = React.createElement(
                 "h3",
                 null,
@@ -1487,12 +1497,13 @@ var ConnectorDescription = React.createClass({
     render: function render() {
 
         var connectorDetails = [],
-            cssClass = "connector-description";
+            cssClass = "connector-description",
+            name = this.props.connector.name.replace("_", " ");
 
         connectorDetails.push(React.createElement(
             "div",
             { className: "connector-name" },
-            this.props.connector.name
+            name
         ));
 
         if (this.props.connector.type) {

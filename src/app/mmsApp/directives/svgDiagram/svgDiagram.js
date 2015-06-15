@@ -79,9 +79,13 @@ angular.module('mms.svgDiagram', [
                     wasPortMouseDowned = false,
                     wasWireCornerMouseDowned = false,
 
-                    $$window;
+                    $$window,
+
+                    self = this;
 
                 $$window = $($window);
+
+                $scope.ctrl = this;
 
                 this.$rootScope = $rootScope;
                 this.componentLibrary = componentLibrary;
@@ -500,13 +504,25 @@ angular.module('mms.svgDiagram', [
                 };
 
                 this.onPortMouseOver = function(component, port) {
-                    this._focusedPort = port;
-                    this.focusPorts();
+
+                    if (!wireDrawHandler.wiring) {
+
+                        this._focusedPort = port;
+                        this.focusPorts();
+
+                    }
+
                 };
 
                 this.onPortMouseOut = function(/*component, port*/) {
-                    this._focusedPort = null;
-                    this.unFocusPorts();
+
+                    if (!wireDrawHandler.wiring) {
+
+                        // only if not drawing a line
+                        this.unFocusPorts();
+
+                    }
+
                 };
 
 
@@ -544,12 +560,22 @@ angular.module('mms.svgDiagram', [
 
                         if (typeToFocus) {
 
-                            var connectorDescriptionEl = document.querySelector(
+                            var connectorDescriptionEls = document.querySelectorAll(
                                 '.connector-description.' + typeToFocus
                             );
 
-                            if (connectorDescriptionEl) {
-                                connectorDescriptionEl.classList.add('focused');
+                            if (connectorDescriptionEls) {
+
+                                Array.prototype.forEach.call(connectorDescriptionEls, function(el) {
+
+                                    var nameEl = el.querySelector('.connector-name');
+
+                                    if (nameEl.textContent === self._focusedPort.portSymbol.label) {
+                                        el.classList.add('focused');
+                                    }
+
+                                });
+
                             }
 
                             if(this._portElementsByType) {
@@ -590,6 +616,8 @@ angular.module('mms.svgDiagram', [
                             el.classList.remove('focused');
                         });
                     }
+
+                    this._focusedPort = null;
 
                 };
 
