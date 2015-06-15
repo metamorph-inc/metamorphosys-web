@@ -95,6 +95,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 label: 'spi'
             },
 
+            I2C: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'I2C'
+            },
+
             'SPI_ThreeWire': {
                 directive: null,
                 bgColor: digitalPortColorBase,
@@ -196,10 +202,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             angular.forEach(allInterConnectors, function(innerConnector) {
 
                 var portSymbol,
-                    connectorType = innerConnector.definition ||
-                        randomConnectorTypes[
-                            Math.round( Math.random() * (randomConnectorTypes.length - 1) )
-                        ];
+                    connectorType = innerConnector.type;
+
+                    //  ||
+                    //     randomConnectorTypes[
+                    //         Math.round( Math.random() * (randomConnectorTypes.length - 1) )
+                    //     ];
 
                 portSymbol = {
                     id: innerConnector.id,

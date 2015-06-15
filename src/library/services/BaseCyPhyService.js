@@ -203,6 +203,7 @@ angular.module( 'cyphy.services' )
                     data.connectors[ id ] = {
                         id: id,
                         name: node.getAttribute( 'name' ),
+                        type: node.getAttribute( 'Definition' ),
                         position: node.getRegistry( 'position' ),
                         domainPorts: {}
                     };
@@ -220,6 +221,7 @@ angular.module( 'cyphy.services' )
 
                         newName,
                         newPos,
+                        newType,
 
                         hadChanges;
 
@@ -229,10 +231,16 @@ angular.module( 'cyphy.services' )
 
                     newName = this.getAttribute( 'name' );
                     newPos = this.getRegistry( 'position' );
+                    newType = this.getAttribute( 'Definition' );
 
 
                     if ( newName !== connector.name ) {
                         connector.name = newName;
+                        hadChanges = true;
+                    }
+
+                    if (newType !== connector.type) {
+                        connector.type = newType;
                         hadChanges = true;
                     }
 
