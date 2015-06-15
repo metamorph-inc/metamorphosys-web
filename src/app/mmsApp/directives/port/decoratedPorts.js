@@ -12,15 +12,32 @@ angular.module(
             scope: false,
             controller: function ($scope) {
 
-                switch ($scope.portInstance.portSymbol.side) {
+                if ($scope.component.symbol.symbolDirective === 'container-box') {
 
-                    case 'left':
-                        $scope.decorationTransform = 'translate(2, -8)';
-                        break;
+                    switch ($scope.portInstance.portSymbol.side) {
 
-                    default:
-                    case 'right':
-                        $scope.decorationTransform = 'translate(-29, -8)';
+                        case 'left':
+                            $scope.decorationTransform = 'translate(3, -8)';
+                            break;
+
+                        default:
+                        case 'right':
+                            $scope.decorationTransform = 'translate(-29, -8)';
+                    }
+
+                } else {
+
+                    switch ($scope.portInstance.portSymbol.side) {
+
+                        case 'left':
+                            $scope.decorationTransform = 'translate(3.5, -8)';
+                            break;
+
+                        default:
+                        case 'right':
+                            $scope.decorationTransform = 'translate(-30.5, -8)';
+                    }
+
                 }
 
             },
