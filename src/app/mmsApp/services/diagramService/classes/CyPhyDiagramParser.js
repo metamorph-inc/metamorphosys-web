@@ -65,6 +65,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 label: null
             },
 
+            'AnalogSignal': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
             'Analog_4': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
