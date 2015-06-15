@@ -219,7 +219,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     id: innerConnector.id,
                     label: labelParser(innerConnector.name),
                     type: connectorType,
-                    portDecorator: connectorTypeToDecorator[ connectorType ]
+                    portDecorator: connectorTypeToDecorator[ connectorType ],
+                    description: innerConnector.description
                 };
 
                 if (element.baseName === 'Container') {

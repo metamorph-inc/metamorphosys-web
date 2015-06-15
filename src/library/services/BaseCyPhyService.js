@@ -204,6 +204,7 @@ angular.module( 'cyphy.services' )
                         id: id,
                         name: node.getAttribute( 'name' ),
                         type: node.getAttribute( 'Definition' ),
+                        description: node.getAttribute( 'Description' ),
                         position: node.getRegistry( 'position' ),
                         domainPorts: {}
                     };
@@ -222,6 +223,7 @@ angular.module( 'cyphy.services' )
                         newName,
                         newPos,
                         newType,
+                        newDescription,
 
                         hadChanges;
 
@@ -232,6 +234,7 @@ angular.module( 'cyphy.services' )
                     newName = this.getAttribute( 'name' );
                     newPos = this.getRegistry( 'position' );
                     newType = this.getAttribute( 'Definition' );
+                    newDescription = this.getAttribute( 'Description' );
 
 
                     if ( newName !== connector.name ) {
@@ -241,6 +244,11 @@ angular.module( 'cyphy.services' )
 
                     if (newType !== connector.type) {
                         connector.type = newType;
+                        hadChanges = true;
+                    }
+
+                    if (newDescription !== connector.description) {
+                        connector.description = newDescription;
                         hadChanges = true;
                     }
 
