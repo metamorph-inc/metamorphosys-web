@@ -790,7 +790,7 @@ define([
 
     AdmExporter.prototype.getComponentOrDesignID = function (node) {
         var self = this;
-        if (self.isMetaTypeOf(node, self.META.AVMComponentModel) === false) {
+        if (self.isMetaTypeOf(node, self.META.AVMComponentModel) === true) {
             return self.core.getAttribute(node, 'InstanceID') || self.core.getGuid(node);
         } else {
             return self.core.getGuid(node);
