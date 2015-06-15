@@ -1486,8 +1486,8 @@ var ConnectorDescription = React.createClass({
 
     render: function render() {
 
-        var self = this,
-            connectorDetails = [];
+        var connectorDetails = [],
+            cssClass = "connector-description";
 
         connectorDetails.push(React.createElement(
             "div",
@@ -1496,11 +1496,13 @@ var ConnectorDescription = React.createClass({
         ));
 
         if (this.props.connector.type) {
+
             connectorDetails.push(React.createElement(
                 "div",
                 { className: "connector-type" },
                 this.props.connector.type
             ));
+            cssClass += " " + this.props.connector.type;
         }
 
         if (this.props.connector.description) {
@@ -1513,7 +1515,7 @@ var ConnectorDescription = React.createClass({
 
         return React.createElement(
             "div",
-            { className: "connector-description" },
+            { className: cssClass },
             connectorDetails
         );
     }

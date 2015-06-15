@@ -26,6 +26,142 @@ body, html {
 .embedded .category-resizer {
   padding-top: 0; }
 
+/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+.content-browser {
+  height: 100%;
+  overflow: hidden;
+  letter-spacing: -0.1px; }
+  /* line 10, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser #morph-logo {
+    width: 240px;
+    margin-top: -10px; }
+  /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .header-panel {
+    width: 100%;
+    height: 100px;
+    position: absolute;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    z-index: 20; }
+    /* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+    .content-browser .header-panel h2 {
+      padding: 10px;
+      margin-bottom: 20px; }
+  /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .top-component-search {
+    position: absolute;
+    right: 10px;
+    z-index: 30;
+    top: 4ex; }
+  /* line 38, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .left-panel {
+    line-height: 30px;
+    width: 20%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding-top: 100px;
+    max-height: 100%;
+    overflow: auto; }
+  /* line 49, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .main-container-panel {
+    width: 80%;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    height: 100%;
+    padding-top: 100px;
+    overflow: auto; }
+  /* line 60, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .components {
+    padding-left: 21%; }
+  /* line 65, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .info-icon {
+    color: #1565C0; }
+  /* line 69, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .panel-info {
+    border-color: #1565C0; }
+  /* line 74, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .no-components-to-list {
+    margin-top: 40px;
+    display: inline-block; }
+  /* line 80, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .count-display {
+    position: absolute;
+    right: 0;
+    margin-top: 0;
+    font-size: 85%;
+    line-height: 110%; }
+  /* line 88, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .paging-buttons.upper {
+    position: absolute;
+    width: 100%;
+    left: 0; }
+  /* line 98, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .not-empty-list-content .component-search {
+    position: absolute;
+    right: 0;
+    top: -65px; }
+  /* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .empty-list-content {
+    margin-top: 80px; }
+    /* line 115, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+    .content-browser .empty-list-content .component-search {
+      width: 100%; }
+      /* line 119, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+      .content-browser .empty-list-content .component-search .form-control.search-field {
+        width: 100%;
+        max-width: 30em; }
+  /* line 128, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .error-message {
+    display: inline-block;
+    margin-top: 40px; }
+  /* line 136, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser.embedded .top-component-search {
+    display: none; }
+  /* line 140, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser.embedded .main-container-panel {
+    padding-top: 0; }
+  /* line 145, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser.embedded .left-panel {
+    padding-top: 0; }
+
+/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator {
+  border-top: 1px dotted #eee; }
+  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator .extra-info-content {
+    color: #999; }
+  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator header {
+    display: none; }
+/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories h4 {
+  padding-left: 10px; }
+/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .selected-node > .node-label {
+  background-color: #90CAF9; }
+/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .icon-arrow-right:after {
+  border-left-color: #0D47A1; }
+/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-label {
+  padding-left: 12px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 2;
+  text-transform: uppercase;
+  font-size: 85%; }
+/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-expander {
+  margin-left: -12px; }
+/* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-right:after {
+  margin-left: 5px; }
+/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-down:after {
+  margin-left: 0; }
+
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .content-list-view .list-group-item:first-child {
   border-top-left-radius: 0;
@@ -145,106 +281,6 @@ table tr:nth-child(even) {
   margin-top: 10px;
   margin-bottom: 5px; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-.content-browser {
-  height: 100%;
-  overflow: hidden;
-  letter-spacing: -0.1px; }
-  /* line 10, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser #morph-logo {
-    width: 240px;
-    margin-top: -10px; }
-  /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .header-panel {
-    width: 100%;
-    height: 100px;
-    position: absolute;
-    border-bottom: 1px solid #eee;
-    background-color: #fff;
-    z-index: 20; }
-    /* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-    .content-browser .header-panel h2 {
-      padding: 10px;
-      margin-bottom: 20px; }
-  /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .top-component-search {
-    position: absolute;
-    right: 10px;
-    z-index: 30;
-    top: 4ex; }
-  /* line 38, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .left-panel {
-    line-height: 30px;
-    width: 20%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding-top: 100px;
-    max-height: 100%;
-    overflow: auto; }
-  /* line 49, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .main-container-panel {
-    width: 80%;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    height: 100%;
-    padding-top: 100px;
-    overflow: auto; }
-  /* line 60, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .components {
-    padding-left: 21%; }
-  /* line 65, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .info-icon {
-    color: #1565C0; }
-  /* line 69, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .panel-info {
-    border-color: #1565C0; }
-  /* line 74, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .no-components-to-list {
-    margin-top: 40px;
-    display: inline-block; }
-  /* line 80, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .count-display {
-    position: absolute;
-    right: 0;
-    margin-top: 0;
-    font-size: 85%;
-    line-height: 110%; }
-  /* line 88, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .paging-buttons.upper {
-    position: absolute;
-    width: 100%;
-    left: 0; }
-  /* line 98, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .not-empty-list-content .component-search {
-    position: absolute;
-    right: 0;
-    top: -65px; }
-  /* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .empty-list-content {
-    margin-top: 80px; }
-    /* line 115, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-    .content-browser .empty-list-content .component-search {
-      width: 100%; }
-      /* line 119, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-      .content-browser .empty-list-content .component-search .form-control.search-field {
-        width: 100%;
-        max-width: 30em; }
-  /* line 128, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser .error-message {
-    display: inline-block;
-    margin-top: 40px; }
-  /* line 136, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser.embedded .top-component-search {
-    display: none; }
-  /* line 140, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser.embedded .main-container-panel {
-    padding-top: 0; }
-  /* line 145, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
-  .content-browser.embedded .left-panel {
-    padding-top: 0; }
-
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
 .content-listing {
   height: 100%;
@@ -289,42 +325,6 @@ table tr:nth-child(even) {
 .embedded .listing-views {
   padding-top: 80px; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator {
-  border-top: 1px dotted #eee; }
-  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator .extra-info-content {
-    color: #999; }
-  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator header {
-    display: none; }
-/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories h4 {
-  padding-left: 10px; }
-/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .selected-node > .node-label {
-  background-color: #90CAF9; }
-/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .icon-arrow-right:after {
-  border-left-color: #0D47A1; }
-/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-label {
-  padding-left: 12px;
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: 2;
-  text-transform: uppercase;
-  font-size: 85%; }
-/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-expander {
-  margin-left: -12px; }
-/* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-right:after {
-  margin-left: 5px; }
-/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-down:after {
-  margin-left: 0; }
-
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentSearch/styles/component-search.scss */
 .component-search .search-button {
   margin-left: 1ex; }
@@ -338,6 +338,17 @@ table tr:nth-child(even) {
 .count-display {
   color: #999;
   margin-right: 10px; }
+
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
+.download-button {
+  color: #1976D2;
+  display: inline-block;
+  font-size: 22px;
+  vertical-align: middle; }
+  /* line 8, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
+  .download-button:hover {
+    cursor: pointer;
+    color: #E65100; }
 
 /* line 2, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/gridView/styles/gridView.scss */
 .grid-view .ui-grid {
@@ -353,17 +364,6 @@ table tr:nth-child(even) {
 /* line 17, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/gridView/styles/gridView.scss */
 .grid-view .download-button + .info-button {
   margin-left: 5px; }
-
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
-.download-button {
-  color: #1976D2;
-  display: inline-block;
-  font-size: 22px;
-  vertical-align: middle; }
-  /* line 8, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/downloadButton/styles/downloadButton.scss */
-  .download-button:hover {
-    cursor: pointer;
-    color: #E65100; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/infoButton/styles/infoButton.scss */
 .info-button {
@@ -390,19 +390,6 @@ table tr:nth-child(even) {
 .paging .next-page {
   width: 60px;
   margin-left: 2ex; }
-
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showLessButton/styles/showLessButton.scss */
-.show-less-button {
-  font-weight: normal;
-  color: #1976D2;
-  font-size: 12px;
-  border-radius: .5ex;
-  padding: 0.5ex 1ex 0.5ex 2ex;
-  display: inline-block; }
-  /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showLessButton/styles/showLessButton.scss */
-  .show-less-button:hover {
-    cursor: pointer;
-    color: #E65100; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
 .property-table {
@@ -433,6 +420,19 @@ table tr:nth-child(even) {
       /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
       .property-table .property-table-item .property-value:hover {
         overflow-x: visible; }
+
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showLessButton/styles/showLessButton.scss */
+.show-less-button {
+  font-weight: normal;
+  color: #1976D2;
+  font-size: 12px;
+  border-radius: .5ex;
+  padding: 0.5ex 1ex 0.5ex 2ex;
+  display: inline-block; }
+  /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showLessButton/styles/showLessButton.scss */
+  .show-less-button:hover {
+    cursor: pointer;
+    color: #E65100; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showMoreButton/styles/showMoreButton.scss */
 .show-more-button {

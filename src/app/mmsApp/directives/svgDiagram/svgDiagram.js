@@ -542,16 +542,27 @@ angular.module('mms.svgDiagram', [
                             this._focusedPort.portSymbol &&
                             this._focusedPort.portSymbol.type;
 
-                        if (typeToFocus && this._portElementsByType) {
+                        if (typeToFocus) {
 
-                            for (var type in this._portElementsByType) {
+                            var connectorDescriptionEl = document.querySelector(
+                                '.connector-description.' + typeToFocus
+                            );
 
-                                if (type !== typeToFocus) {
+                            if (connectorDescriptionEl) {
+                                connectorDescriptionEl.classList.add('focused');
+                            }
 
-                                    for (var i = 0; i < this._portElementsByType[type].length; i++) {
-                                        this._portElementsByType[type][i].classList.add('faded');
+                            if(this._portElementsByType) {
+
+                                for (var type in this._portElementsByType) {
+
+                                    if (type !== typeToFocus) {
+
+                                        for (var i = 0; i < this._portElementsByType[type].length; i++) {
+                                            this._portElementsByType[type][i].classList.add('faded');
+                                        }
+
                                     }
-
                                 }
                             }
 
@@ -572,6 +583,13 @@ angular.module('mms.svgDiagram', [
 
                     }
 
+                    var portDescriptors = document.querySelectorAll('.connector-description');
+
+                    if (portDescriptors) {
+                        Array.prototype.map.call(portDescriptors, function(el) {
+                            el.classList.remove('focused');
+                        });
+                    }
 
                 };
 
