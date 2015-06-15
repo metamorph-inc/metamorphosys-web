@@ -4,7 +4,7 @@ angular.module('mms.designEditor.footerDrawer', [
         'mms.utils',
         'ngCookies'
     ])
-    .directive('footerDrawer', 
+    .directive('footerDrawer',
         function(mmsUtils, $cookies) {
 
             function DrawerController() {
@@ -28,16 +28,16 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
-                
+
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
                 } else {
                     this._userPreferences = null;
                 }
 
-                console.log('User preferences:', this._userPreferences);
+                //console.log('User preferences:', this._userPreferences);
 
-                this.toggle();                
+                this.toggle();
 
             }
 
@@ -71,9 +71,9 @@ angular.module('mms.designEditor.footerDrawer', [
             DrawerController.prototype.toggle = function() {
 
                 if (this._expanded) {
-                	this.collapse();
+                    this.collapse();
                 } else {
-                	this.expand();                	
+                    this.expand();
                 }
 
             };
@@ -156,8 +156,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._headerDragging = true;
                 this._heightBeforeHeaderDragging = this.getHeight();
-                this._heightAllowance = 
-                    window.innerHeight - 
+                this._heightAllowance =
+                    window.innerHeight -
                     parseInt(getComputedStyle(this._screenHeaderEl).height.slice(0, -2), 10);
 
             };
@@ -182,7 +182,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 if (!this._headerDragging && this._potentialHeaderDragStart != null) {
                     this._startHeaderDragging();
-                } 
+                }
 
                 if (this._headerDragging) {
 
@@ -236,7 +236,7 @@ angular.module('mms.designEditor.footerDrawer', [
                             panel.height = height;
                         }
 
-                    } 
+                    }
 
                     if (this._expanded) {
                         this.setHeight(panel.height);
@@ -271,7 +271,7 @@ angular.module('mms.designEditor.footerDrawer', [
                     ctrl.registerParentEditor(designEditorCtrl);
 
                     document.addEventListener('mouseup', boundDocumentMouseUp);
-                    document.addEventListener('mousemove', boundDocumentMouseMove);                    
+                    document.addEventListener('mousemove', boundDocumentMouseMove);
 
                     scope.$on('$destroy', function() {
 
@@ -286,7 +286,7 @@ angular.module('mms.designEditor.footerDrawer', [
             };
         }
     )
-    .directive('drawerPanel', 
+    .directive('drawerPanel',
         function() {
 
             function DrawerPanelController() {
@@ -321,7 +321,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                     if (attributes.hasOwnProperty('height') && !isNaN(attributes.height)) {
                         ctrl.height = attributes.height;
-                    } 
+                    }
 
                     footerDrawerCtrl.registerPanel(ctrl);
 
@@ -329,4 +329,3 @@ angular.module('mms.designEditor.footerDrawer', [
             };
         }
     );
-
