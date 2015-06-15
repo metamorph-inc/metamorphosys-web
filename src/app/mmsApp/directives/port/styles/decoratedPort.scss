@@ -2,7 +2,7 @@
 
     .port-shape {
         path {
-            transition: fill 200ms;
+//            transition: fill 200ms;
         }
     }
 
@@ -38,7 +38,7 @@
 
 .supply-single-symbol:hover {
     path.bg-part {
-        transition: fill 200ms;
+//        transition: fill 200ms;
         fill: #ff7100;
     }
 }
