@@ -576,6 +576,16 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     numberOfPortsMapped++;
                 }
 
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'C') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'A') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
+
             }
 
             if (numberOfPortsMapped === 2) {
