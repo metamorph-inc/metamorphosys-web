@@ -6,5 +6,6 @@
     "showBuildHash": false,
     "projectsToDisableComponentBrowser": [
         "arduino_due_shield_advanced",
-        "arduino_due_shield_basic"]    
+        "arduino_due_shield_basic",
+        "bluetooth system"]    
 }
