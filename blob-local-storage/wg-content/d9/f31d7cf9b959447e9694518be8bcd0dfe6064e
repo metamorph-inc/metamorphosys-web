@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Analog Breakout" DesignID="{3978ec8a-7e2a-4a65-94d7-9d89b32b6d3a}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="10" Description="This splits the analog signal bus into individual ports for connecting to your circuit." Name="Analog Breakout" xmlns="">
+    <Connector ConnectorComposition="" ID="id-2e63a38c-3c23-4186-82bf-9fd95d65d4a9" ApplyJoinData="" XPosition="602" YPosition="42" Notes="Maps to Analog pin 0 on the Arduino DUE motherboard" Definition="AnalogSignal" Name="Signal 0">
+      <Role xmlns:q2="schematic" xsi:type="q2:Pin" ID="id-8fb4ac52-0461-4a50-a2ac-10b05f2be213" PortMap="id-d1f2888b-a74c-44fe-82a3-045bfb89b323" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-56d9ffb0-6db7-459d-b5c9-746478206d91" ApplyJoinData="" XPosition="602" YPosition="140" Notes="Maps to Analog pin 1 on the Arduino DUE motherboard" Definition="AnalogSignal" Name="Signal 1">
+      <Role xmlns:q3="schematic" xsi:type="q3:Pin" ID="id-8f910673-08df-4665-9638-3f89252845a0" PortMap="id-06ed6d5a-cbf2-4171-8adf-cdca1e7b5648" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-81a5b792-312c-4558-a7ce-663c127b79f9" ApplyJoinData="" XPosition="42" YPosition="56" Notes="Maps the individual signals to a bus that connects to the Arduino DUE motherboard." Definition="Analog_6" Name="AnalogBus_4">
+      <Role xmlns:q4="schematic" xsi:type="q4:Pin" ID="id-d1f2888b-a74c-44fe-82a3-045bfb89b323" PortMap="id-8fb4ac52-0461-4a50-a2ac-10b05f2be213" Notes="" XPosition="735" Definition="" YPosition="105" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q5="schematic" xsi:type="q5:Pin" ID="id-76bd89e8-a2e6-432a-908e-701b98fea40e" PortMap="id-ce598827-0ab3-4793-8839-a4e6fb8cc922" Notes="" XPosition="735" Definition="" YPosition="259" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q6="schematic" xsi:type="q6:Pin" ID="id-06ed6d5a-cbf2-4171-8adf-cdca1e7b5648" PortMap="id-8f910673-08df-4665-9638-3f89252845a0" Notes="" XPosition="735" Definition="" YPosition="182" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q7="schematic" xsi:type="q7:Pin" ID="id-f02e13a9-fc9e-413d-aede-dbd88fefa2bd" PortMap="id-3b466fce-3edf-4a8b-a227-ceb3bbf3cc8e" Notes="" XPosition="735" Definition="" YPosition="336" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-0a1bc78c-c7ce-41d8-9a81-3f015177e41a" ApplyJoinData="" XPosition="602" YPosition="238" Notes="Maps to Analog pin 2 on the Arduino DUE motherboard" Definition="AnalogSignal" Name="Signal 2">
+      <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-ce598827-0ab3-4793-8839-a4e6fb8cc922" PortMap="id-76bd89e8-a2e6-432a-908e-701b98fea40e" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-2e1ab8dd-cc11-4db7-a4f7-0e1a1fdf77fc" ApplyJoinData="" XPosition="602" YPosition="336" Notes="Maps to Analog pin 3 on the Arduino DUE motherboard" Definition="AnalogSignal" Name="Signal 3">
+      <Role xmlns:q9="schematic" xsi:type="q9:Pin" ID="id-3b466fce-3edf-4a8b-a227-ceb3bbf3cc8e" PortMap="id-f02e13a9-fc9e-413d-aede-dbd88fefa2bd" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+  </RootContainer>
+</Design>

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Basic_Uno_Shield" DesignID="{2b136b12-47c6-4ea4-bdef-6d2e4dabcb20}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="15" Name="Basic_Uno_Shield" xmlns="">
+    <ComponentInstance XPosition="1050" YPosition="1358" ComponentID="cff76494-e30d-4995-b027-e6064238a8d8" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}" Name="ICSP1">
+      <PrimitivePropertyInstance IDinComponentModel="id-fe4fe499-6f50-448b-ba1e-453cad12c4b7">
+        <Value ID="eec21408-7bc9-4f25-8310-001ac139d92e" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-9a673281-a8a2-4b14-993d-dede909ee26c">
+        <Value ID="f43298d5-cda2-4006-8b1f-beb8dcd4d5d2" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <PrimitivePropertyInstance IDinComponentModel="id-4c349e78-ff0b-459b-ae93-f962ec9e6325">
+        <Value ID="67d5972c-bde3-4d9d-9edb-c177d5b52962" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-916b4ddd-2f80-4547-96fa-750eaebc1ef1" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-872a0eaf-26ee-4170-9476-bd5fea8b375b" ApplyJoinData="" IDinComponentModel="id-872a0eaf-26ee-4170-9476-bd5fea8b375b" />
+      <ConnectorInstance ConnectorComposition="id-de1e7434-c9bf-4e7a-9705-792fa007d4c1" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-6c358b95-b40d-466f-a46f-8997025bed5d" ApplyJoinData="" IDinComponentModel="id-6c358b95-b40d-466f-a46f-8997025bed5d" />
+      <ConnectorInstance ConnectorComposition="id-99863455-2fdc-4a28-9fb8-be6fe8ed2115" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-0f9cb48b-c3b4-4ce3-b5d8-33debb9e5554" ApplyJoinData="" IDinComponentModel="id-0f9cb48b-c3b4-4ce3-b5d8-33debb9e5554" />
+      <ConnectorInstance ConnectorComposition="id-e2ded65d-c889-4495-bb4b-177686832547" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-aa709d8e-e32a-4a96-ae76-fcf46300a091" ApplyJoinData="" IDinComponentModel="id-aa709d8e-e32a-4a96-ae76-fcf46300a091" />
+      <ConnectorInstance ConnectorComposition="id-787eed8f-b759-4165-964e-aabdb635dd10" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-4d8cd4b1-8b8e-477a-953a-8c6b84e70791" ApplyJoinData="" IDinComponentModel="id-4d8cd4b1-8b8e-477a-953a-8c6b84e70791" />
+      <ConnectorInstance ConnectorComposition="id-2c5dfe6d-8fe9-47bb-a188-8ccac15cc81f" ID="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-f30a0956-7196-4077-876b-09e7b13c4b82" ApplyJoinData="" IDinComponentModel="id-f30a0956-7196-4077-876b-09e7b13c4b82" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="1274" YPosition="42" ComponentID="3b994b2a-928c-4502-b6a8-909f4cb5804e" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}" Name="IOH">
+      <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+        <Value ID="0d9b4bad-4800-4f7c-8d5f-1a781656bf37" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-4c75582d-316f-4673-a16c-20ca09b7dcaf" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-55535e6f-e090-44ed-80ac-bde2cd40edb2" ApplyJoinData="" IDinComponentModel="id-55535e6f-e090-44ed-80ac-bde2cd40edb2" />
+      <ConnectorInstance ConnectorComposition="id-26f04032-7682-4884-a3ca-4b998ecb0a6a" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-aae8441a-39b7-4a06-b0ee-3a9a573d08ae" ApplyJoinData="" IDinComponentModel="id-aae8441a-39b7-4a06-b0ee-3a9a573d08ae" />
+      <ConnectorInstance ConnectorComposition="id-fe1e426b-3c7c-4da0-a6b6-ab70dddb7ba9" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-f5140824-d1e7-4928-acf6-f978a1daefe3" ApplyJoinData="" IDinComponentModel="id-f5140824-d1e7-4928-acf6-f978a1daefe3" />
+      <ConnectorInstance ConnectorComposition="id-416cf042-c3a8-4b5c-a454-a977033abd1a" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-9b9c2f80-75b4-47f6-815c-4e38c24ebd5e" ApplyJoinData="" IDinComponentModel="id-9b9c2f80-75b4-47f6-815c-4e38c24ebd5e" />
+      <ConnectorInstance ConnectorComposition="id-537296c0-62d3-462c-8406-38fb2215f34e" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-6a4fd064-cab1-4bb3-817f-bc13223c1a67" ApplyJoinData="" IDinComponentModel="id-6a4fd064-cab1-4bb3-817f-bc13223c1a67" />
+      <ConnectorInstance ConnectorComposition="id-713bca5a-5fe0-4a0d-869b-6c5c830cb1b5" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-baa5dadd-9e78-4de7-aec8-76e80b47fab8" ApplyJoinData="" IDinComponentModel="id-baa5dadd-9e78-4de7-aec8-76e80b47fab8" />
+      <ConnectorInstance ConnectorComposition="id-d89e8523-e238-424c-8406-ccd1a074bd30" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-dcae5d6a-3c74-41a8-b15e-330a735709c2" ApplyJoinData="" IDinComponentModel="id-dcae5d6a-3c74-41a8-b15e-330a735709c2" />
+      <ConnectorInstance ConnectorComposition="id-a98704ea-3ee3-447a-a6d1-cfe42765c7bc" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-5b42ea01-ad2d-4715-861e-c375d05c15f5" ApplyJoinData="" IDinComponentModel="id-5b42ea01-ad2d-4715-861e-c375d05c15f5" />
+      <ConnectorInstance ConnectorComposition="id-e75e63e9-e1fb-4855-8c71-080dd9f6fcd8" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-d8a7a37d-05a8-4b14-ab0b-11ccec1521e7" ApplyJoinData="" IDinComponentModel="id-d8a7a37d-05a8-4b14-ab0b-11ccec1521e7" />
+      <ConnectorInstance ConnectorComposition="id-c3ab548f-0d1a-45fd-aa70-f6ce85f00bfd" ID="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-1a7ce78b-840d-43cf-b22e-fde84ad6a4f8" ApplyJoinData="" IDinComponentModel="id-1a7ce78b-840d-43cf-b22e-fde84ad6a4f8" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="826" YPosition="728" ComponentID="0b909b10-42dc-4510-bf65-b01443d45d43" ID="{58986f5d-d524-49b5-a6ca-d4fa37141413}" Name="META_LOGO" />
+    <ComponentInstance XPosition="2191" YPosition="21" ComponentID="177b19ae-4ec7-4a6f-8dea-79e8ff0c7fde" ID="{87e2554e-4d7f-40f4-92f7-d2711e5172cc}" Name="Fiducial_1mm" />
+    <ComponentInstance XPosition="1351" YPosition="329" ComponentID="1353bb8b-72f5-4279-8b1c-c12f389dfd8b" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" Name="IOL">
+      <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+        <Value ID="aadacfa9-4265-4787-840c-cbb0c28905fa" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-0f79611b-0c23-4c0e-b0b6-ad642046605e" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-16fb64e5-4428-4049-b598-152ce2a87c70" ApplyJoinData="" IDinComponentModel="id-16fb64e5-4428-4049-b598-152ce2a87c70" />
+      <ConnectorInstance ConnectorComposition="id-67a760b3-5118-411c-a71d-c37541f5f457" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-f9ff7003-6311-4a2a-8a1f-18016366593d" ApplyJoinData="" IDinComponentModel="id-f9ff7003-6311-4a2a-8a1f-18016366593d" />
+      <ConnectorInstance ConnectorComposition="id-1561327c-8f03-4848-b48c-ebb97f0494aa" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" ApplyJoinData="" IDinComponentModel="id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" />
+      <ConnectorInstance ConnectorComposition="id-7b68c3f0-0f0e-4321-9d60-060d8a4e7c73" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" ApplyJoinData="" IDinComponentModel="id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" />
+      <ConnectorInstance ConnectorComposition="id-e9b8a4eb-a5c0-477f-b9aa-cf4e39d07242" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-142af034-aa4c-41c9-ac77-d86362c43403" ApplyJoinData="" IDinComponentModel="id-142af034-aa4c-41c9-ac77-d86362c43403" />
+      <ConnectorInstance ConnectorComposition="id-3dceb6c9-5b67-4cab-87f0-773ab2d7b038" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-35ede941-06fb-48d5-b12d-76ad94472db4" ApplyJoinData="" IDinComponentModel="id-35ede941-06fb-48d5-b12d-76ad94472db4" />
+      <ConnectorInstance ConnectorComposition="id-e1b0e3fc-e605-4716-864a-09748135b759" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-5971b318-8d91-4717-9198-91e8af0c3030" ApplyJoinData="" IDinComponentModel="id-5971b318-8d91-4717-9198-91e8af0c3030" />
+      <ConnectorInstance ConnectorComposition="id-a35e5069-c106-4099-a3eb-31dd101b4e5f" ID="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-ac37ab65-de6d-4c55-aab0-3265053cb943" ApplyJoinData="" IDinComponentModel="id-ac37ab65-de6d-4c55-aab0-3265053cb943" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="91" YPosition="7" ComponentID="177b19ae-4ec7-4a6f-8dea-79e8ff0c7fde" ID="{0c449330-74da-480d-b564-4ac679c705ea}" Name="Fiducial_1mm" />
+    <ComponentInstance XPosition="168" YPosition="1701" ComponentID="177b19ae-4ec7-4a6f-8dea-79e8ff0c7fde" ID="{16dc8593-9228-46ff-b242-aa3859ef92a3}" Name="Fiducial_1mm" />
+    <ComponentInstance XPosition="749" YPosition="1085" ComponentID="f0169bd6-1244-4698-8ab9-d5872a54a484" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}" Name="AD">
+      <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+        <Value ID="5a125ee9-71be-4826-bb6c-d92369443558" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-383885f6-8bee-498a-aa31-c11f5b532fb7" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-dd6506c4-6cd0-46ef-9b7d-901eef109b19" ApplyJoinData="" IDinComponentModel="id-dd6506c4-6cd0-46ef-9b7d-901eef109b19" />
+      <ConnectorInstance ConnectorComposition="id-325281e2-0e8d-40e1-bd97-f5561f7d6e24" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-15f54d67-775c-454a-8150-5b7d88cc06e8" ApplyJoinData="" IDinComponentModel="id-15f54d67-775c-454a-8150-5b7d88cc06e8" />
+      <ConnectorInstance ConnectorComposition="id-aa4ebc3b-feea-4639-8870-94457efe893e" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-cb29e186-2156-46d2-80ca-72f811adae45" ApplyJoinData="" IDinComponentModel="id-cb29e186-2156-46d2-80ca-72f811adae45" />
+      <ConnectorInstance ConnectorComposition="id-0397d750-9d7e-4486-ba5c-4ed126bb0a28" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-9c258bf5-2d2e-4f93-b5e8-f84085966834" ApplyJoinData="" IDinComponentModel="id-9c258bf5-2d2e-4f93-b5e8-f84085966834" />
+      <ConnectorInstance ConnectorComposition="id-d6fca088-559d-4641-9a86-db19a2bc5ec7" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-ceaa8701-4846-4989-990d-c104903da759" ApplyJoinData="" IDinComponentModel="id-ceaa8701-4846-4989-990d-c104903da759" />
+      <ConnectorInstance ConnectorComposition="id-5596b2a1-9111-49b5-8f84-07d28f212c62" ID="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-3bd60db9-db14-4463-8b6e-a45f3c19a1a9" ApplyJoinData="" IDinComponentModel="id-3bd60db9-db14-4463-8b6e-a45f3c19a1a9" />
+    </ComponentInstance>
+    <ComponentInstance XPosition="728" YPosition="154" ComponentID="1353bb8b-72f5-4279-8b1c-c12f389dfd8b" ID="{de78509b-82b9-46bd-be68-52f73c960f45}" Name="POWER">
+      <PrimitivePropertyInstance IDinComponentModel="id-92786080-0470-4b97-859a-93241b5e15f2">
+        <Value ID="669a910d-1174-4a68-b6c0-5d91fd5e5235" DimensionType="Scalar" Dimensions="" DataType="String" />
+      </PrimitivePropertyInstance>
+      <ConnectorInstance ConnectorComposition="id-7a3b6775-5433-4141-b6d0-67ab5958a0a3" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-f9ff7003-6311-4a2a-8a1f-18016366593d" ApplyJoinData="" IDinComponentModel="id-f9ff7003-6311-4a2a-8a1f-18016366593d" />
+      <ConnectorInstance ConnectorComposition="id-de2b6b69-7ba4-456d-9cf7-edf3dc1307e7" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" ApplyJoinData="" IDinComponentModel="id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" />
+      <ConnectorInstance ConnectorComposition="id-f90657c9-401a-4fe3-a906-afa49c5ef038" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-35ede941-06fb-48d5-b12d-76ad94472db4" ApplyJoinData="" IDinComponentModel="id-35ede941-06fb-48d5-b12d-76ad94472db4" />
+      <ConnectorInstance ConnectorComposition="id-fb77f599-f99b-46cd-a54b-4f1a63d05bd0" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" ApplyJoinData="" IDinComponentModel="id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" />
+      <ConnectorInstance ConnectorComposition="" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-16fb64e5-4428-4049-b598-152ce2a87c70" ApplyJoinData="" IDinComponentModel="id-16fb64e5-4428-4049-b598-152ce2a87c70" />
+      <ConnectorInstance ConnectorComposition="id-81e28399-8e32-4a3a-8354-7e8c6e671e53" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-ac37ab65-de6d-4c55-aab0-3265053cb943" ApplyJoinData="" IDinComponentModel="id-ac37ab65-de6d-4c55-aab0-3265053cb943" />
+      <ConnectorInstance ConnectorComposition="id-37a94a91-ed2b-4fd2-9494-f105858058ec" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-142af034-aa4c-41c9-ac77-d86362c43403" ApplyJoinData="" IDinComponentModel="id-142af034-aa4c-41c9-ac77-d86362c43403" />
+      <ConnectorInstance ConnectorComposition="id-1194da2b-b8d1-4e49-9597-a2ea971ad233" ID="{de78509b-82b9-46bd-be68-52f73c960f45}-id-5971b318-8d91-4717-9198-91e8af0c3030" ApplyJoinData="" IDinComponentModel="id-5971b318-8d91-4717-9198-91e8af0c3030" />
+    </ComponentInstance>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-5b42ea01-ad2d-4715-861e-c375d05c15f5" ID="id-a98704ea-3ee3-447a-a6d1-cfe42765c7bc" ApplyJoinData="" XPosition="1925" YPosition="14" Notes="" Definition="DigitalClock" Name="AD5/SCL">
+      <Role xmlns:q2="schematic" xsi:type="q2:Pin" ID="id-4e7074ee-97c7-43b1-9793-5f2f409f4e14" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-6c358b95-b40d-466f-a46f-8997025bed5d" ID="id-de1e7434-c9bf-4e7a-9705-792fa007d4c1" ApplyJoinData="" XPosition="1834" YPosition="1379" Notes="" Definition="DigitalSignal" Name="MOSI">
+      <Role xmlns:q3="schematic" xsi:type="q3:Pin" ID="id-c59da6b2-4ee4-4f3b-9693-86e22c425458" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-35ede941-06fb-48d5-b12d-76ad94472db4" ID="id-f90657c9-401a-4fe3-a906-afa49c5ef038" ApplyJoinData="" XPosition="98" YPosition="616" Notes="" Definition="GND" Name="GND">
+      <Role xmlns:q4="schematic" xsi:type="q4:Pin" ID="id-3823aa35-ebab-4198-931f-c22cb790bc2d" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-4d8cd4b1-8b8e-477a-953a-8c6b84e70791" ID="id-787eed8f-b759-4165-964e-aabdb635dd10" ApplyJoinData="" XPosition="175" YPosition="1386" Notes="" Definition="DigitalClock" Name="SCK">
+      <Role xmlns:q5="schematic" xsi:type="q5:Pin" ID="id-30fbd145-701d-42a0-a057-3d5cc1adf4c1" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-5971b318-8d91-4717-9198-91e8af0c3030" ID="id-1194da2b-b8d1-4e49-9597-a2ea971ad233" ApplyJoinData="" XPosition="98" YPosition="714" Notes="" Definition="AnalogSignal" Name="Vin">
+      <Role xmlns:q6="schematic" xsi:type="q6:Pin" ID="id-47908292-bab9-4971-ba0a-998af6464f13" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-872a0eaf-26ee-4170-9476-bd5fea8b375b" ID="id-916b4ddd-2f80-4547-96fa-750eaebc1ef1" ApplyJoinData="" XPosition="1834" YPosition="1246" Notes="" Definition="AnalogSignal" Name="5V">
+      <Role xmlns:q7="schematic" xsi:type="q7:Pin" ID="id-39221c8c-1ce2-4ffb-8973-0f8fc257e803" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" ID="id-fb77f599-f99b-46cd-a54b-4f1a63d05bd0" ApplyJoinData="" XPosition="98" YPosition="525" Notes="" Definition="GND" Name="GND">
+      <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-12c7e8f2-41a7-40aa-86c0-575211ea97f0" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-f30a0956-7196-4077-876b-09e7b13c4b82" ID="id-2c5dfe6d-8fe9-47bb-a188-8ccac15cc81f" ApplyJoinData="" XPosition="1834" YPosition="1477" Notes="" Definition="GND" Name="GND">
+      <Role xmlns:q9="schematic" xsi:type="q9:Pin" ID="id-e35f07f4-aec4-402a-9c9d-27b464cc61a2" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-f9ff7003-6311-4a2a-8a1f-18016366593d" ID="id-7a3b6775-5433-4141-b6d0-67ab5958a0a3" ApplyJoinData="" XPosition="98" YPosition="434" Notes="" Definition="AnalogSignal" Name="5V">
+      <Role xmlns:q10="schematic" xsi:type="q10:Pin" ID="id-34768493-d0d5-4c5d-b5b0-b4b0b9c267fb" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-f5140824-d1e7-4928-acf6-f978a1daefe3" ID="id-fe1e426b-3c7c-4da0-a6b6-ab70dddb7ba9" ApplyJoinData="" XPosition="1799" YPosition="84" Notes="" Definition="DigitalSignal" Name="AD4/SDA">
+      <Role xmlns:q11="schematic" xsi:type="q11:Pin" ID="id-2ca705e5-4f3b-4be8-8895-ba7f5112e89e" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-0f9cb48b-c3b4-4ce3-b5d8-33debb9e5554" ID="id-99863455-2fdc-4a28-9fb8-be6fe8ed2115" ApplyJoinData="" XPosition="168" YPosition="1288" Notes="" Definition="DigitalSignal" Name="MISO">
+      <Role xmlns:q12="schematic" xsi:type="q12:Pin" ID="id-31d53f73-5723-4eb4-aa3b-f3c81c1d4a98" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-9b9c2f80-75b4-47f6-815c-4e38c24ebd5e" ID="id-416cf042-c3a8-4b5c-a454-a977033abd1a" ApplyJoinData="" XPosition="1813" YPosition="504" Notes="" Definition="DigitalSignal" Name="10~">
+      <Role xmlns:q13="schematic" xsi:type="q13:Pin" ID="id-3862ac1e-dc53-4cf8-b62e-10a5bbcb03f0" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-15f54d67-775c-454a-8150-5b7d88cc06e8" ID="id-325281e2-0e8d-40e1-bd97-f5561f7d6e24" ApplyJoinData="" XPosition="119" YPosition="994" Notes="" Definition="AnalogSignal" Name="AD2">
+      <Role xmlns:q14="schematic" xsi:type="q14:Pin" ID="id-11d58079-bcad-4f4f-a7ec-a8c238d94aba" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-5971b318-8d91-4717-9198-91e8af0c3030" ID="id-e1b0e3fc-e605-4716-864a-09748135b759" ApplyJoinData="" XPosition="1820" YPosition="1064" Notes="" Definition="DigitalSignal" Name="0">
+      <Role xmlns:q15="schematic" xsi:type="q15:Pin" ID="id-bb704155-cf74-4ce6-9a61-15f45ae42cad" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-ceaa8701-4846-4989-990d-c104903da759" ID="id-d6fca088-559d-4641-9a86-db19a2bc5ec7" ApplyJoinData="" XPosition="119" YPosition="896" Notes="" Definition="AnalogSignal" Name="AD0">
+      <Role xmlns:q16="schematic" xsi:type="q16:Pin" ID="id-943f1224-0f92-49fd-9806-8ea740e4f487" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-9c258bf5-2d2e-4f93-b5e8-f84085966834" ID="id-0397d750-9d7e-4486-ba5c-4ed126bb0a28" ApplyJoinData="" XPosition="245" YPosition="1036" Notes="" Definition="AnalogSignal" Name="AD3">
+      <Role xmlns:q17="schematic" xsi:type="q17:Pin" ID="id-d6b791d2-c52a-4588-9e74-9e91e4147890" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-142af034-aa4c-41c9-ac77-d86362c43403" ID="id-37a94a91-ed2b-4fd2-9494-f105858058ec" ApplyJoinData="" XPosition="98" YPosition="140" Notes="" Definition="DigitalSignal" Name="IOREF">
+      <Role xmlns:q18="schematic" xsi:type="q18:Pin" ID="id-7dd71fbe-a8aa-47af-bb84-30aa49568601" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-dcae5d6a-3c74-41a8-b15e-330a735709c2" ID="id-d89e8523-e238-424c-8406-ccd1a074bd30" ApplyJoinData="" XPosition="1946" YPosition="448" Notes="" Definition="DigitalSignal" Name="11~">
+      <Role xmlns:q19="schematic" xsi:type="q19:Pin" ID="id-40691bbb-0c1a-4a4f-afbc-b4f57a73e7f3" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-ac37ab65-de6d-4c55-aab0-3265053cb943" ID="id-a35e5069-c106-4099-a3eb-31dd101b4e5f" ApplyJoinData="" XPosition="1953" YPosition="784" Notes="" Definition="DigitalSignal" Name="5~">
+      <Role xmlns:q20="schematic" xsi:type="q20:Pin" ID="id-54967c85-91bc-405d-9e8b-0b1b8a4220b1" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-d8a7a37d-05a8-4b14-ab0b-11ccec1521e7" ID="id-e75e63e9-e1fb-4855-8c71-080dd9f6fcd8" ApplyJoinData="" XPosition="1813" YPosition="616" Notes="" Definition="DigitalSignal" Name="8">
+      <Role xmlns:q21="schematic" xsi:type="q21:Pin" ID="id-6b6e4e0f-55f8-4e4c-9396-b886f1755586" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-35ede941-06fb-48d5-b12d-76ad94472db4" ID="id-3dceb6c9-5b67-4cab-87f0-773ab2d7b038" ApplyJoinData="" XPosition="1953" YPosition="1008" Notes="" Definition="DigitalSignal" Name="1">
+      <Role xmlns:q22="schematic" xsi:type="q22:Pin" ID="id-c7ed8410-9829-4b20-9c51-8afe57e4f792" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-6a4fd064-cab1-4bb3-817f-bc13223c1a67" ID="id-537296c0-62d3-462c-8406-38fb2215f34e" ApplyJoinData="" XPosition="1946" YPosition="553" Notes="" Definition="DigitalSignal" Name="9~">
+      <Role xmlns:q23="schematic" xsi:type="q23:Pin" ID="id-ae12a5ef-d65f-4d5d-8729-123dacac07c1" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-ea2b309c-ca84-4de2-adc0-ab90ea4a6df6" ID="id-1561327c-8f03-4848-b48c-ebb97f0494aa" ApplyJoinData="" XPosition="1820" YPosition="952" Notes="" Definition="DigitalSignal" Name="2">
+      <Role xmlns:q24="schematic" xsi:type="q24:Pin" ID="id-538b0d4b-20e3-479b-9753-940756cadd2b" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-ac37ab65-de6d-4c55-aab0-3265053cb943" ID="id-81e28399-8e32-4a3a-8354-7e8c6e671e53" ApplyJoinData="" XPosition="98" YPosition="245" Notes="" Definition="DigitalSignal" Name="RESET">
+      <Role xmlns:q25="schematic" xsi:type="q25:Pin" ID="id-f06f90c3-0eb3-411f-b329-0a851bfd9b58" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-16fb64e5-4428-4049-b598-152ce2a87c70" ID="id-0f79611b-0c23-4c0e-b0b6-ad642046605e" ApplyJoinData="" XPosition="1953" YPosition="665" Notes="" Definition="DigitalSignal" Name="7">
+      <Role xmlns:q26="schematic" xsi:type="q26:Pin" ID="id-aafeda58-696b-44f0-9606-1a00508068ca" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-142af034-aa4c-41c9-ac77-d86362c43403" ID="id-e9b8a4eb-a5c0-477f-b9aa-cf4e39d07242" ApplyJoinData="" XPosition="1820" YPosition="721" Notes="" Definition="DigitalSignal" Name="6~">
+      <Role xmlns:q27="schematic" xsi:type="q27:Pin" ID="id-afb2b10a-604d-486e-8f1f-ea0b80f2b31c" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" ID="id-7b68c3f0-0f0e-4321-9d60-060d8a4e7c73" ApplyJoinData="" XPosition="1820" YPosition="840" Notes="" Definition="DigitalSignal" Name="4">
+      <Role xmlns:q28="schematic" xsi:type="q28:Pin" ID="id-527f4acb-de60-4d6a-9774-743bcf2118ea" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}-id-aa709d8e-e32a-4a96-ae76-fcf46300a091" ID="id-e2ded65d-c889-4495-bb4b-177686832547" ApplyJoinData="" XPosition="175" YPosition="1519" Notes="" Definition="DigitalSignal" Name="RESET">
+      <Role xmlns:q29="schematic" xsi:type="q29:Pin" ID="id-e004e91d-1b2e-4075-8965-fbccd4a0d91d" PortMap="" Notes="" XPosition="100" Definition="" YPosition="100" Name="5" EDAGate="A" EDASymbolLocationX="-2.54" EDASymbolLocationY="-2.54" EDASymbolRotation="0" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-55535e6f-e090-44ed-80ac-bde2cd40edb2" ID="id-4c75582d-316f-4673-a16c-20ca09b7dcaf" ApplyJoinData="" XPosition="1806" YPosition="378" Notes="" Definition="DigitalSignal" Name="12">
+      <Role xmlns:q30="schematic" xsi:type="q30:Pin" ID="id-c501ff25-338e-4f28-ad07-c0b298926d63" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-aae8441a-39b7-4a06-b0ee-3a9a573d08ae" ID="id-26f04032-7682-4884-a3ca-4b998ecb0a6a" ApplyJoinData="" XPosition="1932" YPosition="147" Notes="" Definition="AnalogSignal" Name="AREF">
+      <Role xmlns:q31="schematic" xsi:type="q31:Pin" ID="id-dbedf0cc-42eb-47e3-9682-77b859b6f5b6" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-1a7ce78b-840d-43cf-b22e-fde84ad6a4f8" ID="id-c3ab548f-0d1a-45fd-aa70-f6ce85f00bfd" ApplyJoinData="" XPosition="1939" YPosition="329" Notes="" Definition="DigitalSignal" Name="13">
+      <Role xmlns:q32="schematic" xsi:type="q32:Pin" ID="id-525968ff-ca9d-4d21-8a70-0fc30abe5284" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-3bd60db9-db14-4463-8b6e-a45f3c19a1a9" ID="id-5596b2a1-9111-49b5-8f84-07d28f212c62" ApplyJoinData="" XPosition="119" YPosition="1099" Notes="" Definition="AnalogSignal" Name="AD4">
+      <Role xmlns:q33="schematic" xsi:type="q33:Pin" ID="id-1b33e188-003a-4252-9480-94839b78ef92" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{de78509b-82b9-46bd-be68-52f73c960f45}-id-5b9e75ae-516d-4b2d-9029-34fff5dd521e" ID="id-de2b6b69-7ba4-456d-9cf7-edf3dc1307e7" ApplyJoinData="" XPosition="98" YPosition="336" Notes="" Definition="AnalogSignal" Name="3V3">
+      <Role xmlns:q34="schematic" xsi:type="q34:Pin" ID="id-688fc258-b380-46db-9706-2d29dcaa08d7" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}-id-baa5dadd-9e78-4de7-aec8-76e80b47fab8" ID="id-713bca5a-5fe0-4a0d-869b-6c5c830cb1b5" ApplyJoinData="" XPosition="1799" YPosition="217" Notes="" Definition="GND" Name="GND">
+      <Role xmlns:q35="schematic" xsi:type="q35:Pin" ID="id-feaefe4d-676e-4115-9f46-5c33f083c12e" PortMap="" Notes="" XPosition="70" Definition="" YPosition="35" Name="GND" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-dd6506c4-6cd0-46ef-9b7d-901eef109b19" ID="id-383885f6-8bee-498a-aa31-c11f5b532fb7" ApplyJoinData="" XPosition="245" YPosition="1141" Notes="" Definition="AnalogSignal" Name="AD5">
+      <Role xmlns:q36="schematic" xsi:type="q36:Pin" ID="id-112f5fc6-f0bb-47b0-8026-fc917b9eb2c6" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{0560bc02-edc6-4a02-af18-9a74d171f4a7}-id-f9ff7003-6311-4a2a-8a1f-18016366593d" ID="id-67a760b3-5118-411c-a71d-c37541f5f457" ApplyJoinData="" XPosition="1953" YPosition="889" Notes="" Definition="DigitalSignal" Name="3~">
+      <Role xmlns:q37="schematic" xsi:type="q37:Pin" ID="id-638635d4-c2e5-4c15-bdb9-95467efa2457" PortMap="" Notes="" XPosition="35" Definition="" YPosition="28" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="{d85e8674-1012-4bf9-a799-cb95464aa206}-id-cb29e186-2156-46d2-80ca-72f811adae45" ID="id-aa4ebc3b-feea-4639-8870-94457efe893e" ApplyJoinData="" XPosition="245" YPosition="938" Notes="" Definition="AnalogSignal" Name="AD1">
+      <Role xmlns:q38="schematic" xsi:type="q38:Pin" ID="id-a2225808-c2d2-45fc-acf0-9ddb44ea2fa7" PortMap="" Notes="" XPosition="42" Definition="" YPosition="42" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <ContainerFeature xmlns:q39="eda" xsi:type="q39:RelativeLayoutConstraint" XPosition="2366" YPosition="581" XOffset="3" YOffset="-48.2" ConstraintTarget="{d85e8674-1012-4bf9-a799-cb95464aa206}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q40="eda" xsi:type="q40:RelativeLayoutConstraint" XPosition="875" YPosition="966" XOffset="-52.6" YOffset="0.2" ConstraintTarget="{0c449330-74da-480d-b564-4ac679c705ea}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q41="eda" xsi:type="q41:RelativeLayoutConstraint" XPosition="1295" YPosition="945" XOffset="-17.8" YOffset="-48.2" ConstraintTarget="{de78509b-82b9-46bd-be68-52f73c960f45}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q42="eda" xsi:type="q42:RelativeLayoutConstraint" XPosition="903" YPosition="336" XOffset="10.7" YOffset="-22.8" ConstraintTarget="{f8a59d34-4f5c-4277-b374-442f1b1c6de5}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q43="eda" xsi:type="q43:RelativeLayoutConstraint" XPosition="2345" YPosition="434" XOffset="-24.1" YOffset="0" ConstraintTarget="{853ebaea-c615-4ce1-ab5e-43eda56eea8e}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q44="eda" xsi:type="q44:RelativeLayoutConstraint" XPosition="560" YPosition="532" XOffset="12.4" YOffset="0.2" ConstraintTarget="{87e2554e-4d7f-40f4-92f7-d2711e5172cc}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q45="eda" xsi:type="q45:RelativeLayoutConstraint" XPosition="175" YPosition="259" XOffset="-40.1" YOffset="-39.6" ConstraintTarget="{58986f5d-d524-49b5-a6ca-d4fa37141413}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r90" />
+    <ContainerFeature xmlns:q46="eda" xsi:type="q46:RelativeLayoutConstraint" XPosition="2373" YPosition="693" XOffset="-52.6" YOffset="-48.8" ConstraintTarget="{16dc8593-9228-46ff-b242-aa3859ef92a3}" Origin="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" RelativeLayer="Same" RelativeRotation="r0" />
+    <ContainerFeature xmlns:q47="eda" xsi:type="q47:ExactLayoutConstraint" XPosition="1778" YPosition="490" X="54.6" Y="50.8" Rotation="r0" ConstraintTarget="{0560bc02-edc6-4a02-af18-9a74d171f4a7}" ContainerConstraintTarget="" />
+  </RootContainer>
+</Design>
