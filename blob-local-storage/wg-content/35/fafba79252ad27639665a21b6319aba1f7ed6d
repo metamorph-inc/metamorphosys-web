@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="GPIO Breakout" DesignID="{465c3a0f-d1a7-4a6a-90f3-36adcc299cfb}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="7" Description="This splits the analog GPIO digital signal bus into individual ports for connecting to your circuit." Name="GPIO Breakout" xmlns="">
+    <Connector ConnectorComposition="" ID="id-f0f63193-f04e-402a-8746-621c909cf909" ApplyJoinData="" XPosition="504" YPosition="49" Notes="Maps to GPIO pin 0 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 0">
+      <Role xmlns:q2="schematic" xsi:type="q2:Pin" ID="id-86f1d891-791d-4b1e-9c7a-a410e76c8127" PortMap="id-8059b656-4923-41b7-8101-1074bbc5ad93" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-0ccca4ff-76c2-4207-82bb-c3da70d308d5" ApplyJoinData="" XPosition="504" YPosition="147" Notes="Maps to GPIO pin 1 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 1">
+      <Role xmlns:q3="schematic" xsi:type="q3:Pin" ID="id-da7eaa28-6a17-4229-b0b0-1f251ddb075f" PortMap="id-3ea0b3f6-5730-4926-8328-f4f02798cbb0" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-0b3d6fbc-3bed-43b7-9a3e-7a80f824e0c4" ApplyJoinData="" XPosition="504" YPosition="441" Notes="Maps to GPIO pin 4 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 4">
+      <Role xmlns:q4="schematic" xsi:type="q4:Pin" ID="id-554f6e57-e8f2-4078-8377-7e88c84e954a" PortMap="id-3781c8f0-a50a-4cc0-a1e9-25a556994530" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-8a207e92-e9e5-40f3-81a1-70b47e4d429f" ApplyJoinData="" XPosition="504" YPosition="245" Notes="Maps to GPIO pin 2 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 2">
+      <Role xmlns:q5="schematic" xsi:type="q5:Pin" ID="id-7a412997-8293-4c2e-b110-232b3983c2be" PortMap="id-052f0428-e073-4a4b-b296-2d3edf35c266" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-04e07561-3e23-4a40-ae4c-e69ebdad700e" ApplyJoinData="" XPosition="504" YPosition="343" Notes="Maps to GPIO pin 3 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 3">
+      <Role xmlns:q6="schematic" xsi:type="q6:Pin" ID="id-d6606b20-16a0-4a66-a9f2-06328a4ec12c" PortMap="id-3ed0f9cf-6e33-4b50-8cfd-fb2362969760" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-ee436d7e-5f46-4dec-a0bb-ad483fab1b1a" ApplyJoinData="" XPosition="504" YPosition="637" Notes="Maps to GPIO pin 6 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 6">
+      <Role xmlns:q7="schematic" xsi:type="q7:Pin" ID="id-71edb754-944c-4164-af13-60b674c10d06" PortMap="id-6aa0628e-dbf8-4cb4-9341-db2a22c2772f" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-281e9590-e378-46d8-ad0b-160ef48255a0" ApplyJoinData="" XPosition="56" YPosition="70" Notes="Maps the individual signals to a bus that connects to the Arduino DUE motherboard." Definition="GPIO" Name="GPIO_Bus8">
+      <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-fce88c6c-19b5-465c-9a40-6de085e29ee3" PortMap="id-3e81d23c-b901-432b-9841-6a3f78ec772c" Notes="" XPosition="490" Definition="" YPosition="441" Name="P5" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q9="schematic" xsi:type="q9:Pin" ID="id-3781c8f0-a50a-4cc0-a1e9-25a556994530" PortMap="id-554f6e57-e8f2-4078-8377-7e88c84e954a" Notes="" XPosition="490" Definition="" YPosition="371" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q10="schematic" xsi:type="q10:Pin" ID="id-6aa0628e-dbf8-4cb4-9341-db2a22c2772f" PortMap="id-71edb754-944c-4164-af13-60b674c10d06" Notes="" XPosition="490" Definition="" YPosition="511" Name="P6" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q11="schematic" xsi:type="q11:Pin" ID="id-3ea0b3f6-5730-4926-8328-f4f02798cbb0" PortMap="id-da7eaa28-6a17-4229-b0b0-1f251ddb075f" Notes="" XPosition="490" Definition="" YPosition="140" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q12="schematic" xsi:type="q12:Pin" ID="id-b5772f8a-c250-47a0-9256-6a988af64655" PortMap="id-634b65ef-0c26-4e3d-a261-e4160eb9f609" Notes="" XPosition="490" Definition="" YPosition="574" Name="P7" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q13="schematic" xsi:type="q13:Pin" ID="id-3ed0f9cf-6e33-4b50-8cfd-fb2362969760" PortMap="id-d6606b20-16a0-4a66-a9f2-06328a4ec12c" Notes="" XPosition="490" Definition="" YPosition="294" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q14="schematic" xsi:type="q14:Pin" ID="id-8059b656-4923-41b7-8101-1074bbc5ad93" PortMap="id-86f1d891-791d-4b1e-9c7a-a410e76c8127" Notes="" XPosition="490" Definition="" YPosition="63" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q15="schematic" xsi:type="q15:Pin" ID="id-052f0428-e073-4a4b-b296-2d3edf35c266" PortMap="id-7a412997-8293-4c2e-b110-232b3983c2be" Notes="" XPosition="490" Definition="" YPosition="217" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-84fefd55-bb10-4252-8e44-23953e7b5e8b" ApplyJoinData="" XPosition="504" YPosition="735" Notes="Maps to GPIO pin 7 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 7">
+      <Role xmlns:q16="schematic" xsi:type="q16:Pin" ID="id-634b65ef-0c26-4e3d-a261-e4160eb9f609" PortMap="id-b5772f8a-c250-47a0-9256-6a988af64655" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-1e5d3bfa-3b71-4972-940c-a1b11c64ba1f" ApplyJoinData="" XPosition="504" YPosition="539" Notes="Maps to GPIO pin 5 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="GPIO 5">
+      <Role xmlns:q17="schematic" xsi:type="q17:Pin" ID="id-3e81d23c-b901-432b-9841-6a3f78ec772c" PortMap="id-fce88c6c-19b5-465c-9a40-6de085e29ee3" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+  </RootContainer>
+</Design>

@@ -23,8 +23,8 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         searchTerm = '12',
         searchTermX = 'xy',
-        categoryToUnfold = 'Ara (8)',
-        subCategoryToUnfold = 'Semiconductors and actives (4)',
+        categoryToUnfold = 'Ara',
+        subCategoryToUnfold = 'Semiconductors and actives',
         componentToDrag = 'TEA10201V15A0',
         targetComponentLabel = 'TEA10201V15A0',
 

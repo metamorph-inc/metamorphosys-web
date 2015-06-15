@@ -64,7 +64,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{82a83ae1-8255-418b-9ced-25cd0924047b}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -634,7 +635,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{2f21897c-7503-4b26-8f91-201bd4618533}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -1198,7 +1200,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{c77191ac-ac7c-46f0-95c1-3f42f32f00ce}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -1762,7 +1765,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{c77191ac-ac7c-46f0-95c1-3f42f32f0000}"
         },
         "registry": {
             "DisplayFormat": "",

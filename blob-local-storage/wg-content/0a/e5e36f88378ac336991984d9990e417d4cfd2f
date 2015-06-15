@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="HID Breakout" DesignID="{d40956d5-75ff-485a-bc3d-ba4b51b1258b}" xmlns="avm">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="26908" Description="This splits the HID digital signal bus into individual ports for connecting to your circuit." Name="HID Breakout" xmlns="">
+    <Connector ConnectorComposition="" ID="id-cb6b8ac6-203d-4caf-8e92-f9e37b99775b" ApplyJoinData="" XPosition="532" YPosition="154" Notes="Maps to HID pin 1 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="HID 1">
+      <Role xmlns:q2="schematic" xsi:type="q2:Pin" ID="id-f571bb5d-1ad0-4da3-ad83-4d64baebbf4c" PortMap="id-f230ca47-57f6-47f8-bc64-d5f582eda75b" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-cc9eae4d-f714-42e1-b63a-b84bdeeda8db" ApplyJoinData="" XPosition="63" YPosition="35" Notes="Maps the individual signals to a bus that connects to the Arduino DUE motherboard." Definition="GPIO" Name="HID_Bus5">
+      <Role xmlns:q3="schematic" xsi:type="q3:Pin" ID="id-2fac8145-ef47-4e3e-ac88-8cf589862663" PortMap="id-3fbafa91-dd3a-40dc-81f8-14239d5f0dd8" Notes="" XPosition="539" Definition="" YPosition="371" Name="P4" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q4="schematic" xsi:type="q4:Pin" ID="id-ee3e66c4-1cda-4759-bc06-49df31471d20" PortMap="id-4625902d-6a54-4a44-8ea2-2f71946f6438" Notes="" XPosition="539" Definition="" YPosition="294" Name="P3" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q5="schematic" xsi:type="q5:Pin" ID="id-f230ca47-57f6-47f8-bc64-d5f582eda75b" PortMap="id-f571bb5d-1ad0-4da3-ad83-4d64baebbf4c" Notes="" XPosition="539" Definition="" YPosition="140" Name="P1" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q6="schematic" xsi:type="q6:Pin" ID="id-49b1317f-f4f9-4169-bdd2-9187b1e939b8" PortMap="id-0879c11b-b1a0-4d2f-857c-b797b08fa76e" Notes="" XPosition="539" Definition="" YPosition="217" Name="P2" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+      <Role xmlns:q7="schematic" xsi:type="q7:Pin" ID="id-d393c9dd-ee8e-47ad-b5c2-1b5cbfde36dd" PortMap="id-8dc7b354-c820-4b21-8fd3-ce5a07f7e13b" Notes="" XPosition="539" Definition="" YPosition="63" Name="P0" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-bdce6afb-180a-4f8b-a13f-5dd6b4bba8b5" ApplyJoinData="" XPosition="532" YPosition="469" Notes="Maps to HID pin 4 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="HID 4">
+      <Role xmlns:q8="schematic" xsi:type="q8:Pin" ID="id-3fbafa91-dd3a-40dc-81f8-14239d5f0dd8" PortMap="id-2fac8145-ef47-4e3e-ac88-8cf589862663" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-7b54f1b8-ef90-4a6c-a82b-9c0125935a10" ApplyJoinData="" XPosition="532" YPosition="49" Notes="Maps to HID pin 0 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="HID 0">
+      <Role xmlns:q9="schematic" xsi:type="q9:Pin" ID="id-8dc7b354-c820-4b21-8fd3-ce5a07f7e13b" PortMap="id-d393c9dd-ee8e-47ad-b5c2-1b5cbfde36dd" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-dac54732-75c2-4cb7-a9d1-485c10b761cb" ApplyJoinData="" XPosition="532" YPosition="364" Notes="Maps to HID pin 3 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="HID 3">
+      <Role xmlns:q10="schematic" xsi:type="q10:Pin" ID="id-4625902d-6a54-4a44-8ea2-2f71946f6438" PortMap="id-ee3e66c4-1cda-4759-bc06-49df31471d20" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+    <Connector ConnectorComposition="" ID="id-d091fefd-f2cd-4d40-99cf-6e89814ae2fd" ApplyJoinData="" XPosition="532" YPosition="259" Notes="Maps to HID pin 2 on the Arduino DUE motherboard" Definition="DigitalSignal" Name="HID 2">
+      <Role xmlns:q11="schematic" xsi:type="q11:Pin" ID="id-0879c11b-b1a0-4d2f-857c-b797b08fa76e" PortMap="id-49b1317f-f4f9-4169-bdd2-9187b1e939b8" Notes="" XPosition="35" Definition="" YPosition="28" Name="P" EDAGate="" EDASymbolLocationX="" EDASymbolLocationY="" EDASymbolRotation="" SPICEPortNumber="0" />
+    </Connector>
+  </RootContainer>
+</Design>

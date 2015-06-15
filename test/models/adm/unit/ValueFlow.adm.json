@@ -97,7 +97,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{117fa808-d54f-497d-8781-126cb5da02f9}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -667,7 +668,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{08fc2ad0-3b24-4ae1-a7c4-038b16acc811}"
         },
         "registry": {
             "DisplayFormat": "",

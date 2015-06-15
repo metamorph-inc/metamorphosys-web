@@ -2568,6 +2568,7 @@
         "Classifications": "",
         "ID": "",
         "INFO": "Component model with resources.",
+        "InstanceID": "",
         "Resource": "",
         "SchemaVersion": "",
         "Version": "",
@@ -2598,6 +2599,10 @@
           },
           "name": {
             "type": "string"
+          },
+          "InstanceID": {
+            "type": "string",
+            "default": ""
           }
         },
         "children": {
