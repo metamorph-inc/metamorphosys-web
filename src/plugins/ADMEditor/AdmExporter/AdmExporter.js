@@ -352,7 +352,7 @@ define([
             data = {
                 "@Name": nodeName,
                 "@ComponentID": componentID,
-                "@ID": self.core.getGuid(node),
+                "@ID": self.getComponentOrDesignID(node),
                 "@XPosition": pos.x,
                 "@YPosition": pos.y,
                 "PortInstance": [],
@@ -714,7 +714,7 @@ define([
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 copyAttrIfSet('RelativeRotation');
-                data['@Origin'] = self.core.getGuid(origin);
+                data['@Origin'] = self.getComponentOrDesignID(origin);
 
                 var val = self.core.getAttribute(node, 'RelativeLayer');
                 if (val !== undefined && val !== 'Either') {
@@ -728,7 +728,7 @@ define([
                 }
                 setRange('X', 'RelativeRange');
                 setRange('Y', 'RelativeRange');
-                data['@Origin'] = self.core.getGuid(origin);
+                data['@Origin'] = self.getComponentOrDesignID(origin);
             }
             if (type === 'RangeLayoutConstraint') {
                 copyAttrIfSet('LayerRange');
@@ -760,7 +760,7 @@ define([
                     return node;
                 })
                 .map(function (node) {
-                    return self.core.getGuid(node);
+                    return self.getComponentOrDesignID(node);
                 })
                 .join(' ');
 
@@ -786,6 +786,15 @@ define([
                 addConstraintData(targetNodes);
             }
         });
+    };
+
+    AdmExporter.prototype.getComponentOrDesignID = function (node) {
+        var self = this;
+        if (self.isMetaTypeOf(node, self.META.AVMComponentModel) === false) {
+            return self.core.getAttribute(node, 'InstanceID') || self.core.getGuid(node);
+        } else {
+            return self.core.getGuid(node);
+        }
     };
 
     AdmExporter.prototype.addDomainModel = function (node, container, containerData, callback) {
@@ -1099,8 +1108,7 @@ define([
                                 'name');
                             if (parentMetaType === 'AVMComponentModel') {
                                 if (self.shouldBeGenerated(valueSourceParent)) {
-                                    valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' +
-                                    self.core.getAttribute(valueSource, 'ID');
+                                    valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                                 }
                             } else if (parentMetaType === 'Container') {
                                 //If parent of parent is alternative, then only add if parent is in AA.
@@ -1175,8 +1183,7 @@ define([
                     valueSourceParent = self.core.getParent(valueSource);
                     parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
                     if (parentMetaType === 'AVMComponentModel') {
-                        valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(
-                            valueSource, 'ID');
+                        valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                     } else if (parentMetaType === 'Container') {
                         valueSourceId = self.core.getGuid(valueSource);
                     } else {
@@ -1337,14 +1344,13 @@ define([
                                 self.logger.warn(
                                     'Only one AssemblyRoot can be exported, an arbitrary selection will be made!'
                                 );
-                                self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.core.getGuid(
-                                    componentNode);
+                                self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.getComponentOrDesignID(componentNode);
                             } else {
                                 self.admData.DomainFeature = {
                                     '@xmlns:q1': 'cad',
                                     '@xmlns': '',
                                     '@xsi:type': 'q1:AssemblyRoot',
-                                    '@AssemblyRootComponentInstance': self.core.getGuid(componentNode)
+                                    '@AssemblyRootComponentInstance': self.getComponentOrDesignID(componentNode)
                                 };
                             }
                         } else {
