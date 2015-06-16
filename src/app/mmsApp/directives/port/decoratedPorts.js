@@ -70,7 +70,7 @@ angular.module(
 
                 }
 
-                scope.decoratorBGColor = scope.decoratorBGColor || '#93A0B5';
+                scope.decoratorBGColor = scope.decoratorBGColor || '#747f8d';
                 scope.decoratorColor = scope.decoratorColor || '#fff';
                 scope.portType = scope.portInstance.portSymbol.type;
 
