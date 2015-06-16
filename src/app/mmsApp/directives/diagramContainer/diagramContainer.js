@@ -11,15 +11,8 @@ angular.module('mms.diagramContainer', [
         'isis.ui.contextmenu'
 
     ])
-    .controller('DiagramContainerController', [
-        '$scope',
-        '$timeout',
-        '$log',
-        '$window',
-        '$rootScope',
-        'contentServerUrl',
-        'acmImportService',
-        function($scope, $timeout, $log, $window, $rootScope) {
+    .controller('DiagramContainerController',
+        function($scope, $timeout, $log, $window, $rootScope, $compile) {
 
             var self = this,
 
@@ -120,7 +113,7 @@ angular.module('mms.diagramContainer', [
                     x + $scope.visibleArea.width <= $scope.diagram.config.width + 15 &&
                     y >= 0 &&
                     y + $scope.visibleArea.height <= $scope.diagram.config.height + 15) {
-                    
+
                     jsp.scrollTo(x, y, false);
 
                     result = true;
@@ -133,8 +126,46 @@ angular.module('mms.diagramContainer', [
 
             };
 
+            this.replaceWithDirective = function(placeHolderEl, directive, scope) {
+
+                var compiledSymbol,
+                    templateStr,
+                    template;
+
+                if (placeHolderEl) {
+
+                    compiledSymbol = this.getCompiledDirective(directive);
+
+                    if (!angular.isFunction(compiledSymbol)) {
+
+                        templateStr = '<' + directive + '>' +
+                        '</' + directive + '>';
+
+                        template = angular.element(templateStr);
+
+                        compiledSymbol = $compile(template);
+
+                        this.setCompiledDirective(directive, compiledSymbol);
+
+                    }
+
+
+                    compiledSymbol(scope, function (clonedElement) {
+
+                        placeHolderEl.parentNode.replaceChild(
+                            clonedElement[0],
+                            placeHolderEl
+                        );
+
+                    });
+
+                }
+
+            }
+
+
         }
-    ])
+    )
     .directive('diagramContainer', [
         '$rootScope', 'diagramService', '$log', '$timeout', '$window',
         function($rootScope, diagramService, $log, $timeout, $window) {

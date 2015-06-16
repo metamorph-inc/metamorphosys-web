@@ -45,7 +45,10 @@ define(['mocks/NodeMock', 'mocks/LoggerMock', 'plugin/AdmImporter/AdmImporter/Ad
                 'activeSelection': [],
                 'META': META
             });
-            var callback_ = function (err) {
+            var callback_ = function (err, pluginResult) {
+                if (pluginResult.success === false) {
+                    err = "Plugin failed: " + pluginResult.messages.map(function (message) { return message.message; }).join('\n');
+                }
                 Object.keys(core._nodes).forEach(function (path) {
                     core._nodes[path].guid = core._nodes[path].path;
                 });

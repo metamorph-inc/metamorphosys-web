@@ -1,0 +1,60 @@
+<g class="analog-port-type">
+    <g ng-if="::(!pinCount)">
+        <svg
+        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+        x="6px" y="3px"
+        width="13px"
+        height="9px"
+        viewBox="0 0 13 9">
+            <path d="M0.5 4.5 c0 -5 3 -5 3 0 s 3 5 3 0 s 3 -5 3 0 s 3 5 3 0" stroke="#fff" fill="none" stroke-width="1"/>
+        </svg>
+    </g>
+    <g ng-if="::pinCount">
+        <svg
+        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+        x="3px" y="3px"
+        width="13px"
+        height="9px"
+        viewBox="0 0 13 9">
+            <path d="M0.5 4.5 c0 -5 3 -5 3 0 s 3 5 3 0 s 3 -5 3 0 s 3 5 3 0" stroke="#fff" fill="none" stroke-width="1"/>
+        </svg>
+        <text class="decorator-label"
+            ng-attr-fill="{{::decoratorColor}}"
+            x="20"
+            y="10">{{::pinCount}}</text>
+    </g>
+
+
+    <!-- <svg
+    ng-if="::(portType === 'Analog_4')"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+    x="4.5px" y="3.5px"
+    width="20px"
+    height="9px"
+    viewBox="0 0 20 9">
+        <path d="M0.5 4.5 c0 -5 3 -5 3 0 s 3 5 3 0 s 3 -5 3 0 s 3 5 3 0" stroke="#fff" fill="none" stroke-width="1"/>
+        <path d="M15 0 v5 h4 v-3 v8" stroke="#fff" fill="none" stroke-width="1"/>
+    </svg>
+
+    <svg
+    ng-if="::(portType === 'Analog_8')"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+    x="4.5px" y="3.5px"
+    width="20px"
+    height="9px"
+    viewBox="0 0 20 9">
+        <path d="M0.5 4.5 c0 -5 3 -5 3 0 s 3 5 3 0 s 3 -5 3 0 s 3 5 3 0" stroke="#fff" fill="none" stroke-width="1"/>
+        <path d="M15 1 v7 h4 v-7 h-4.5 m 0 3 h4" stroke="#fff" fill="none" stroke-width="1"/>
+    </svg>
+
+    <svg
+    ng-if="::(portType === 'Analog_16')"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+    x="2.5px" y="3px"
+    width="23px"
+    height="9px"
+    viewBox="0 0 23 9">
+        <path d="M0.5 4.5 c0 -5 3 -5 3 0 s 3 5 3 0 s 3 -5 3 0 s 3 5 3 0" stroke="#fff" fill="none" stroke-width="1"/>
+        <path d="M15 0 v9 m3 -0.5 h4 v-4 h-4 v-4.5 v9" stroke="#fff" fill="none" stroke-width="1"/>
+    </svg -->
+<g>

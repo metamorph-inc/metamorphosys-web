@@ -29,6 +29,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
+
                 this._projectsToDisableComponentBrowser = [];
                 this._currentDesign = projectHandling.getSelectedDesign().name.toLowerCase();
 
@@ -37,14 +38,13 @@ angular.module('mms.designEditor.footerDrawer', [
                     this._projectsToDisableComponentBrowser = $injector.get('projectsToDisableComponentBrowser');
                 }
 
-
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
                 } else {
                     this._userPreferences = null;
                 }
 
-                console.log('User preferences:', this._userPreferences);
+                //console.log('User preferences:', this._userPreferences);
 
                 this.toggle();
 
@@ -80,9 +80,9 @@ angular.module('mms.designEditor.footerDrawer', [
             DrawerController.prototype.toggle = function() {
 
                 if (this._expanded) {
-                	this.collapse();
+                    this.collapse();
                 } else {
-                	this.expand();
+                    this.expand();
                 }
 
             };
@@ -278,6 +278,22 @@ angular.module('mms.designEditor.footerDrawer', [
 
             };
 
+            DrawerController.prototype.activePanelByName = function(panelName) {
+
+                var self = this;
+
+                if (this._panels) {
+
+                    this._panels.forEach(function(panel) {
+                        if (panel.name === panelName) {
+                            self.activatePanel(panel);
+                        }
+                    });
+
+                }
+
+            };
+
             return {
                 restrict: 'E',
                 controller: DrawerController,
@@ -301,12 +317,15 @@ angular.module('mms.designEditor.footerDrawer', [
                     ctrl.registerElement(element[0]);
                     ctrl.registerParentEditor(designEditorCtrl);
 
+                    designEditorCtrl._footerDrawerCtrl = ctrl;
+
                     document.addEventListener('mouseup', boundDocumentMouseUp);
                     document.addEventListener('mousemove', boundDocumentMouseMove);
 
                     scope.$on('$destroy', function() {
 
                         ctrl.unregisterElement(element[0]);
+                        designEditorCtrl._footerDrawerCtrl = null;
 
                         document.removeEventListener('mouseup', boundDocumentMouseUp);
                         document.removeEventListener('mousemove', boundDocumentMouseMove);
@@ -318,6 +337,7 @@ angular.module('mms.designEditor.footerDrawer', [
         }
     )
     .directive('drawerPanel',
+
         function(projectHandling, $rootScope) {
 
             function DrawerPanelController() {

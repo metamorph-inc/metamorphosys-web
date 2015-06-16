@@ -1,0 +1,25 @@
+<g class="decorated-port">
+    <g ng-attr-transform="{{::decorationTransform}}">
+        <g ng-if="portInstance.portSymbol.side === 'left'"
+            class="port-shape">
+            <path d="M0 0 L18 0 C27 0 27 0 27 9 L27 6 C27 15 27 15 18 15 L0 15 Z"
+            transform="rotate(180) translate(-27, -15)" stroke="none" fill="red" stroke-width="1"
+                class="decorated-port-box"
+                ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
+            />
+        </g>
+        <g ng-if="portInstance.portSymbol.side === 'right'"
+            class="port-shape">
+            <path d="M0 0 L18 0 C27 0 27 0 27 9 L27 6 C27 15 27 15 18 15 L0 15 Z"
+                class="decorated-port-box"
+                ng-attr-fill="{{::decoratorBGColor}}" stroke-width="0"
+            />
+        </g>
+        <g class="decoration-placeholder"></g>
+        <text class="decorator-label"
+            ng-attr-fill="{{::decoratorColor}}"
+            x="14"
+            y="10"
+            ng-if="::(!decoratorDirective && decoratorLabel)">{{::decoratorLabel}}</text>
+    </g>
+</g>

@@ -1,0 +1,8 @@
+<svg
+    viewBox="0 0 27 15">
+    <path d="M0 0 L18 0 C27 0 27 0 27 9 L27 6 C27 15 27 15 18 15 L0 15 Z" fill="#000" transform="rotate(180) translate(-27, -15)"/>
+    <path d="M13 15 L13 0 L27 0 L 27 15 Z" fill="#f03"/>
+    <path d="M13 0 v15 h1 v-15Z" fill="#fff"/>
+    <text x="20" y="10" text-anchor="middle" fill="#fff" font-size="10">+</text>
+    <text x="6" y="11" text-anchor="middle" fill="#fff" fon-size="10">-</text>
+</svg>

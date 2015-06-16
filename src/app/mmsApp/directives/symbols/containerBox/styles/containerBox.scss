@@ -22,13 +22,6 @@ $blue: #0D47A1;
             fill: $blue;
         }
 
-        &.right {
-
-            .port-label {
-                text-anchor: end;
-            }
-        }
-
     }
 
     .box-box {
@@ -41,7 +34,7 @@ $blue: #0D47A1;
 
     .port-wire {
         stroke-width:1;
-        stroke:rgb(0,0,0);
+        stroke: $blue;
     }
 
     .port-shape {

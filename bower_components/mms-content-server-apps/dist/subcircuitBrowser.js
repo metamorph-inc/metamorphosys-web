@@ -781,8 +781,6 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
                     details.documentation.icon = json.data.icon;
 
-                    console.log(json.data);
-
                     details.markdown = (function (markdownHtml) {
                         if (markdownHtml) {
                             var el = document.createElement("html"),
@@ -1463,6 +1461,16 @@ var ConnectorsDescription = React.createClass({
 
         if (Array.isArray(this.props.connectors)) {
 
+            this.props.connectors.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                } else if (a.name === b.name) {
+                    return 0;
+                } else if (a.name > b.name) {
+                    return 1;
+                }
+            });
+
             title = React.createElement(
                 "h3",
                 null,
@@ -1488,21 +1496,24 @@ var ConnectorDescription = React.createClass({
 
     render: function render() {
 
-        var self = this,
-            connectorDetails = [];
+        var connectorDetails = [],
+            cssClass = "connector-description",
+            name = this.props.connector.name.replace("_", " ");
 
         connectorDetails.push(React.createElement(
             "div",
             { className: "connector-name" },
-            this.props.connector.name
+            name
         ));
 
         if (this.props.connector.type) {
+
             connectorDetails.push(React.createElement(
                 "div",
                 { className: "connector-type" },
                 this.props.connector.type
             ));
+            cssClass += " " + this.props.connector.type;
         }
 
         if (this.props.connector.description) {
@@ -1515,7 +1526,7 @@ var ConnectorDescription = React.createClass({
 
         return React.createElement(
             "div",
-            { className: "connector-description" },
+            { className: cssClass },
             connectorDetails
         );
     }

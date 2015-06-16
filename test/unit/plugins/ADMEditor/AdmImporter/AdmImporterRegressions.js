@@ -224,6 +224,7 @@ describe('AdmImporterRegressions', function () {
         var dm = RootContainer.DomainModel[0];
         expect(dm['@Name']).to.equal('circuitLayout');
         expect(dm['@BoundingBoxes']).to.equal('0,0,10,10');
+        expect(dm['@xsi:type']).to.equal('eda:CircuitLayout');
 
         var resource = RootContainer.ResourceDependency[0];
         expect(resource['@Name']).to.equal('layoutFile');

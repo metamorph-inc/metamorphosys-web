@@ -819,6 +819,7 @@ define([
                 portIdInModel2ID: portIdInModel2ID
             });
             self.core.setAttribute(component, 'name', componentData['@Name']);
+            self.core.setAttribute(component, 'InstanceID', componentData['@ID']);
             self.core.setRegistry(component, 'position', {
                 x: parseInt(componentData['@XPosition'], 10),
                 y: parseInt(componentData['@YPosition'], 10)

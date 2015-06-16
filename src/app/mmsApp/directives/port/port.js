@@ -1,9 +1,14 @@
-/*globals angular, $*/
+/*globals angular*/
 
 'use strict';
 
+require('./decoratedPorts.js');
+
 angular.module(
-    'mms.designVisualization.port', []
+    'mms.designVisualization.port',
+    [
+        'mms.designVisualization.port.decoratedPorts'
+    ]
 )
     .controller('PortController', function ($scope) {
 
@@ -39,11 +44,46 @@ angular.module(
 
         };
 
+        $scope.getTypeText = function() {
+
+            var type;
+
+            if (angular.isString($scope.portInstance.type)) {
+                type = $scope.portInstance.type;
+            } else if (angular.isFunction($scope.portInstance.type)) {
+                type = $scope.portInstance.type();
+            } else {
+                type = $scope.portInstance.portSymbol.type;
+            }
+
+            return type;
+
+        };
+
         $scope.getCssClass = function () {
 
             var cssClass;
 
             cssClass = $scope.portInstance.portSymbol.cssClass;
+
+            if ($scope.portInstance.portSymbol.type) {
+                cssClass += ' ' + $scope.portInstance.portSymbol.type;
+            }
+            //
+            // if ($scope.svgDiagramController &&
+            //     $scope.svgDiagramController.focusedPort &&
+            //     $scope.svgDiagramController.focusedPort.portSymbol &&
+            //     $scope.svgDiagramController.focusedPort.portSymbol.type) {
+            //
+            //         if (!($scope.portInstance.portSymbol &&
+            //             $scope.portInstance.portSymbol.type === $scope.svgDiagramController.focusedPort.portSymbol.type)) {
+            //                 cssClass += 'fade-out';
+            //             }
+            //
+            //     }
+            //
+            // console.log(cssClass);
+            //
 
             return cssClass;
 
@@ -53,7 +93,9 @@ angular.module(
     .directive(
     'port',
 
-    function ($compile) {
+    function () {
+
+        var TYPE_ELEMENT_SPACING = 6;
 
         return {
             scope: false,
@@ -62,19 +104,18 @@ angular.module(
             replace: true,
             templateUrl: '/mmsApp/templates/port.html',
             templateNamespace: 'SVG',
-            require: ['^svgDiagram', '^diagramContainer'],
+            require: ['^svgDiagram', '^diagramContainer', 'port'],
             link: function (scope, element, attributes, controllers) {
 
-                var svgDiagramController,
-                    portDirective,
-                    compiledSymbol,
-                    templateStr,
-                    template,
-                    diagramContainerController,
-                    $el;
+                var svgDiagramController = controllers[0],
+                    diagramContainerController = controllers[1],
+                    portController = controllers[2],
 
-                svgDiagramController = controllers[0];
-                diagramContainerController = controllers[1];
+                    labelEl,
+                    typeEl;
+
+                scope.svgDiagramController = svgDiagramController;
+                scope.element = element[0];
 
                 scope.onPortClick = function (port, $event) {
                     svgDiagramController.onPortClick(scope.component, port, $event);
@@ -88,30 +129,31 @@ angular.module(
                     svgDiagramController.onPortMouseUp(scope.component, port, $event);
                 };
 
-                portDirective = scope.portInstance.portSymbol.portDirective || 'circle-port';
+                scope.onPortMouseOver = function (port, $event) {
+                    svgDiagramController.onPortMouseOver(scope.component, port, $event);
+                };
 
-                compiledSymbol = diagramContainerController.getCompiledDirective(portDirective);
+                scope.onPortMouseOut = function (port, $event) {
+                    svgDiagramController.onPortMouseOut(scope.component, port, $event);
+                };
 
-                if (!angular.isFunction(compiledSymbol)) {
+                diagramContainerController.replaceWithDirective(
+                    element[0].querySelector('.symbol-placeholder'),
+                    scope.component.symbol.portDirective || scope.portInstance.portSymbol.portDirective || 'circle-port',
+                    scope
+                );
 
-                    templateStr = '<' + portDirective + '>' +
-                    '</' + portDirective + '>';
-
-                    template = angular.element(templateStr);
-
-                    compiledSymbol = $compile(template);
-
-                    diagramContainerController.setCompiledDirective(portDirective, compiledSymbol);
-
+                if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {
+                    svgDiagramController.registerPortElement(scope.portInstance.portSymbol.type, element[0]);
                 }
 
-                $el = $(element);
+                scope.$on('$destroy', function() {
 
-                compiledSymbol(scope, function (clonedElement) {
-                    $el.find('.symbol-placeholder')
-                        .replaceWith(clonedElement);
+                    if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {
+                        svgDiagramController.deregisterPortElement(scope.portInstance.portSymbol.type, element[0]);
+                    }
+
                 });
-
 
             }
         };

@@ -17,7 +17,119 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         ComponentPort,
         Wire,
 
-        minePortsFromInterfaces;
+        minePortsFromInterfaces,
+
+        randomConnectorTypes = [
+            'I2C',
+            'SPI_ThreeWire',
+            'SPI',
+            'GPIO',
+            'USB',
+            'GND',
+            'UART',
+            'DigitalSignal',
+            'Analog',
+            'Analog_4',
+            'Analog_8',
+            'Analog_16',
+            'DigitalClock',
+            'Supply_Single',
+            'ThermalPad'
+        ],
+
+        digitalPortColorBase = '#002285',
+        analogPortColorBase = '#006785',
+
+        connectorTypeToDecorator = {
+            USB: {
+                directive: 'usb-connector-symbol',
+                bgColor: '#4d9ac4',
+                label: null
+            },
+
+            DigitalSignal: {
+                directive: 'digital-connector-symbol',
+                bgColor: digitalPortColorBase,
+                label: null
+            },
+
+            GPIO: {
+                directive: 'digital-connector-symbol',
+                bgColor: digitalPortColorBase,
+                label: null
+            },
+
+            'Analog': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'AnalogSignal': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_4': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_8': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            'Analog_16': {
+                directive: 'analog-connector-symbol',
+                bgColor: analogPortColorBase,
+                label: null
+            },
+
+            GND: {
+                directive: null,
+                bgColor: '#000',
+                label: 'GND'
+            },
+
+            SPI: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'spi'
+            },
+
+            I2C: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'I2C'
+            },
+
+            'SPI_ThreeWire': {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'spi3'
+            },
+
+            UART: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'UART'
+            },
+
+            DigitalClock: {
+                directive: null,
+                bgColor: digitalPortColorBase,
+                label: 'CLK'
+            },
+
+            'Supply_Single': {
+                directive: 'supply-single-symbol'
+            }
+
+        };
 
 
 
@@ -95,11 +207,20 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             angular.forEach(allInterConnectors, function(innerConnector) {
 
-                var portSymbol;
+                var portSymbol,
+                    connectorType = innerConnector.type;
+
+                    //  ||
+                    //     randomConnectorTypes[
+                    //         Math.round( Math.random() * (randomConnectorTypes.length - 1) )
+                    //     ];
 
                 portSymbol = {
                     id: innerConnector.id,
-                    label: labelParser(innerConnector.name)
+                    label: labelParser(innerConnector.name),
+                    type: connectorType,
+                    portDecorator: connectorTypeToDecorator[ connectorType ],
+                    description: innerConnector.description
                 };
 
                 if (element.baseName === 'Container') {
@@ -238,12 +359,13 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             'container-box',
             element.name || element.id, {
                 showPortLabels: true,
-                limitLabelWidthTo: 150
+                limitLabelWidthTo: 150,
+                portDirective: 'decorated-port'
             }, portStuff.portDescriptors, {
-                minWidth: 200,
+                minWidth: 240,
                 portWireLeadInIncrement: 8,
-                portWireLength: 14,
-                topPortPadding: 26
+                portWireLength: 30,
+                topPortPadding: 20
             }
         );
 
@@ -455,6 +577,16 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     numberOfPortsMapped++;
                 }
 
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'C') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.C;
+                    numberOfPortsMapped++;
+                }
+
+                if (portStuff.portInstances[zIndex].portSymbol.label === 'A') {
+                    portStuff.portInstances[zIndex].portSymbol = symbol.ports.A;
+                    numberOfPortsMapped++;
+                }
+
             }
 
             if (numberOfPortsMapped === 2) {
@@ -557,10 +689,13 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 'box',
                 element.name, {
                     showPortLabels: true,
-                    limitLabelWidthTo: 150
+                    limitLabelWidthTo: 150,
+                    portDirective: 'decorated-port'
                 }, portStuff.portDescriptors, {
-                    minWidth: 200,
-                    portWireLeadInIncrement: 10
+                    minWidth: 240,
+                    portWireLeadInIncrement: 8,
+                    portWireLength: 30,
+                    topPortPadding: 0
                 });
 
             newModelComponent = new DiagramComponent({
@@ -616,8 +751,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     var boundingBox = component.getGridBoundingBox();
 
                     diagram.config.width = Math.max(diagram.config.width, boundingBox.x + boundingBox.width);
-                    diagram.config.height = Math.max(diagram.config.height, boundingBox.y + boundingBox.height);            
-                    
+                    diagram.config.height = Math.max(diagram.config.height, boundingBox.y + boundingBox.height);
+
                 }
 
             };
@@ -647,7 +782,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 diagram.addComponent(newDiagramComponent);
 
-                checkMaxSizes(newDiagramComponent);                
+                checkMaxSizes(newDiagramComponent);
 
                 i++;
 
@@ -659,7 +794,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 diagram.addComponent(newDiagramComponent);
 
-                checkMaxSizes(newDiagramComponent);                
+                checkMaxSizes(newDiagramComponent);
 
                 i++;
 

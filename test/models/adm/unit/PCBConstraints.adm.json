@@ -81,7 +81,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{b4d3c661-d195-4668-ab87-72fe77d80ca6}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -645,7 +646,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{b6cb0c71-948f-4470-85cb-977995b08f84}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -1209,7 +1211,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{0edec3de-2471-4afc-9248-121ad09a3e9a}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -1773,7 +1776,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{3c1c5950-a02a-4946-903b-e52c87e24bc7}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -2337,7 +2341,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{a70dacfc-a7e3-45eb-bed6-aa68baaec520}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -2901,7 +2906,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{0bcbee7a-b3a4-42cd-88d8-b3cdc0aecd58}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -3465,7 +3471,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{563e7131-792e-4b0a-a3ef-a6b6d45b2eed}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -4029,7 +4036,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{a2c993dd-ac29-448a-a9c6-69fa653a3f91}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -4597,7 +4605,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{5f2aea49-1ca5-4635-884d-37d542799ba2}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -5161,7 +5170,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{26b60538-fc95-420e-bd2a-a6a3c44b5651}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -5729,7 +5739,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "{2846e659-9868-49eb-8048-b531e7f69086}"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6297,7 +6308,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "g1"
         },
         "registry": {
             "DisplayFormat": "",
@@ -6861,7 +6873,8 @@
             "SchemaVersion": "2.5",
             "Version": "",
             "ID": "c4f5a9cb-85ca-4db0-a98c-d37d02408b0a",
-            "Resource": "hash"
+            "Resource": "hash",
+            "InstanceID": "g2"
         },
         "registry": {
             "DisplayFormat": "",
