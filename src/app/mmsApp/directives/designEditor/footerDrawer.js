@@ -5,8 +5,8 @@ angular.module('mms.designEditor.footerDrawer', [
         'mms.utils',
         'ngCookies'
     ])
-    .directive('footerDrawer', 
-        function(projectHandling, mmsUtils, $cookies, projectsToDisableComponentBrowser) {
+    .directive('footerDrawer',
+        function(projectHandling, mmsUtils, $cookies, $injector) {
 
             function DrawerController() {
 
@@ -29,10 +29,15 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
-                this._projectsToDisableComponentBrowser = projectsToDisableComponentBrowser;
+                this._projectsToDisableComponentBrowser = [];
                 this._currentDesign = projectHandling.getSelectedDesign().name.toLowerCase();
 
-                
+
+                if ($injector.has('projectsToDisableComponentBrowser')) {
+                    this._projectsToDisableComponentBrowser = $injector.get('projectsToDisableComponentBrowser');
+                }
+
+
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
                 } else {
@@ -41,7 +46,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 console.log('User preferences:', this._userPreferences);
 
-                this.toggle();                
+                this.toggle();
 
             }
 
@@ -77,7 +82,7 @@ angular.module('mms.designEditor.footerDrawer', [
                 if (this._expanded) {
                 	this.collapse();
                 } else {
-                	this.expand();                	
+                	this.expand();
                 }
 
             };
@@ -160,8 +165,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._headerDragging = true;
                 this._heightBeforeHeaderDragging = this.getHeight();
-                this._heightAllowance = 
-                    window.innerHeight - 
+                this._heightAllowance =
+                    window.innerHeight -
                     parseInt(getComputedStyle(this._screenHeaderEl).height.slice(0, -2), 10);
 
             };
@@ -186,7 +191,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 if (!this._headerDragging && this._potentialHeaderDragStart != null) {
                     this._startHeaderDragging();
-                } 
+                }
 
                 if (this._headerDragging) {
 
@@ -209,7 +214,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 var disableComponentBrowser = this._projectsToDisableComponentBrowser.indexOf(this._currentDesign) !== -1;
 
-                if (panelCtrl && panelCtrl.name) { 
+                if (panelCtrl && panelCtrl.name) {
                     if (panelCtrl.name.toLowerCase() !== "components" && disableComponentBrowser || !disableComponentBrowser) {
 
                         if ( this._panels.map( function(x) {
@@ -226,7 +231,7 @@ angular.module('mms.designEditor.footerDrawer', [
                     }
 
                     else {
-                        
+
                         var componentPanelIndex = this._panels.map( function(x) {
                                 return x.name.toLowerCase();
                             }).indexOf("components");
@@ -262,7 +267,7 @@ angular.module('mms.designEditor.footerDrawer', [
                             panel.height = height;
                         }
 
-                    } 
+                    }
 
                     if (this._expanded) {
                         this.setHeight(panel.height);
@@ -297,7 +302,7 @@ angular.module('mms.designEditor.footerDrawer', [
                     ctrl.registerParentEditor(designEditorCtrl);
 
                     document.addEventListener('mouseup', boundDocumentMouseUp);
-                    document.addEventListener('mousemove', boundDocumentMouseMove);                    
+                    document.addEventListener('mousemove', boundDocumentMouseMove);
 
                     scope.$on('$destroy', function() {
 
@@ -312,7 +317,7 @@ angular.module('mms.designEditor.footerDrawer', [
             };
         }
     )
-    .directive('drawerPanel', 
+    .directive('drawerPanel',
         function(projectHandling, $rootScope) {
 
             function DrawerPanelController() {
@@ -354,7 +359,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                     if (attributes.hasOwnProperty('height') && !isNaN(attributes.height)) {
                         ctrl.height = attributes.height;
-                    } 
+                    }
 
                     footerDrawerCtrl.registerPanel(ctrl);
 
@@ -372,4 +377,3 @@ angular.module('mms.designEditor.footerDrawer', [
             };
         }
     );
-
