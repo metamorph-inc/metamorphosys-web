@@ -267,7 +267,7 @@ angular.module('CyPhyApp').config(function(
 
                 $log.debug('No design specified - have to pick one');
 
-                $rootScope.openDesignSelector();
+                $rootScope.openDesignSelector(null, true);
 
                 // designs = projectHandling.getAvailableDesigns();
                 //

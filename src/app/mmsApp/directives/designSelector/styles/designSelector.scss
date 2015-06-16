@@ -5,18 +5,32 @@
     min-width: 675px;
 
     md-content {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 24px;
+        padding-right: 24px;
         height: 480px;
         margin-bottom: 1px;
         overflow-y: scroll;
     }
 
+    .welcome-message {
+        padding: 0;
+
+        h2 {
+            margin-top: 0;
+        }
+    }
+
     .design-list {
         padding-left: 0;
         list-style-type: none;
-        margin: 8px;
+        margin: 8px -10px;
         text-align: center;
+    }
+
+    .design-group-label {
+        border-bottom: 1px solid $baseBGColor;
+        margin-bottom: 0.5em;
+        padding-bottom: .25ex;
     }
 
     .design-tile {
@@ -61,7 +75,7 @@
 
             z-index: 10;
 
-            text-shadow: 0 0 10px rgba(255,255,255,1);
+            text-shadow: 0 0 6px rgba(255,255,255,1);
 
             .open-icon {
                 font-size: 300%;
@@ -76,7 +90,7 @@
             padding: 10px 10px 10px 125px;
             text-align: left;
             font-size: 85%;
-            height: 130px;
+            height: 155px;
         }
 
         .design-visual {

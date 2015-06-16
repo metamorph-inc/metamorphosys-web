@@ -230,7 +230,7 @@ CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, 
 
         console.log('Go to design', design.id);
 
-        if (design && design.id !== projectHandling.getSelectedContainerId()) {
+        if (design && design.id !== projectHandling.getSelectedDesignId()) {
 
             $rootScope.setProcessing();
             $timeout(function() {

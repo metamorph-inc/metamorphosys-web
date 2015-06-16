@@ -5,20 +5,23 @@
 angular.module( 'mms.designSelector', [] )
     .run(function($rootScope, $mdDialog) {
 
-        $rootScope.openDesignSelector = function(ev) {
-
-            $rootScope.cover();
+        $rootScope.openDesignSelector = function(ev, isWelcomeScreen) {
 
             function DialogController($scope) {
 
                 $scope.designsToSelect = require('./designsToSelect.js');
+                $scope.isWelcomeScreen = isWelcomeScreen;
 
             }
 
             $mdDialog.show({
                     controller: DialogController,
-                    template: '<md-dialog class="design-selector-dialog"><design-selector designs="::designsToSelect"></design-selector></md-dialog>',
-                    targetEvent: ev
+                    template: '<md-dialog class="design-selector-dialog">' +
+                    '<design-selector designs="::designsToSelect" is-welcome-screen="::isWelcomeScreen"></design-selector>' +
+                    '</md-dialog>',
+                    targetEvent: ev,
+                    clickOutsideToClose: !isWelcomeScreen,
+                    escapeToClose: !isWelcomeScreen
                 })
                 .then(function() {});
         };
@@ -26,13 +29,14 @@ angular.module( 'mms.designSelector', [] )
 
     })
     .directive( 'designSelector', [ '$rootScope',
-        function ($rootScope, $mdDialog) {
+        function () {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    designs: '='
+                    designs: '=',
+                    isWelcomeScreen: '='
                 },
                 templateUrl: '/mmsApp/templates/designSelector.html',
                 controller: function($mdDialog, projectHandling, $rootScope) {
@@ -46,17 +50,14 @@ angular.module( 'mms.designSelector', [] )
 
                         design = availableDesigns[designId];
 
-                        if (design) {
+                        if (design && projectHandling.getSelectedDesignId() !== design.id) {
                             $rootScope.$emit('designMustBeOpened', design);
                         }
 
-                        $rootScope.unCover();
                         $mdDialog.cancel();
-
                     };
 
                     this.close = function () {
-                        $rootScope.unCover();
                         $mdDialog.cancel();
                     };
 
