@@ -1,20 +1,12 @@
-<div class="desitgn-selector">
+<div class="design-selector">
     <h1 class="md-sticky-no-effect">Demo designs</h1>
     <md-content>
-        <md-grid-list
-            md-cols-sm="2"
-            md-cols-md="2"
-            md-cols-gt-md="2"
-            md-row-height-gt-md="1:1" md-row-height="2:2"
-            md-gutter="12x" md-gutter-gt-sm="8px">
-            <md-grid-tile ng-repeat="design in ctrl.designs"
-                          ng-click="ctrl.openDesign(design.id)"
-                          md-rowspan="1">
-
-                <md-grid-tile-header>
-                    <h3>{{design.name}}</h3>
-                </md-grid-tile-header>
-
+        <ul class="design-list">
+            <li class="design-tile"
+                ng-repeat="design in ctrl.designs"
+                ng-click="ctrl.openDesign(design.id)"
+                md-rowspan="1">
+                <h3 class="design-tile-header">{{design.name}}</h3>
                 <div class="design-description">
                     <div class="open-tip">
                         <i class="open-icon glyphicon glyphicon-chevron-right"></i>
@@ -25,9 +17,8 @@
                     </div>
                     {{design.description}}
                 </div>
-            </md-grid-tile>
-
-        </md-grid-list>
+            </li>
+        </ul>
     </md-content>
     <div class="md-actions" layout="row">
         <span flex></span>

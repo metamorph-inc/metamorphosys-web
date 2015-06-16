@@ -2,12 +2,8 @@
 
 'use strict';
 
-require('../designSelector/designSelector');
-
 angular.module(
-    'mms.mainNavigator', [
-        'mms.designSelector'
-    ])
+    'mms.mainNavigator', [])
 
 .directive(
     'mainNavigator',
@@ -30,20 +26,7 @@ angular.module(
                     label: '',
                     itemClass: 'cyphy-root',
                     action: function(item, ev) {
-
-                        function DialogController($scope) {
-
-                            $scope.designsToSelect = require('./designsToSelect.js');
-
-                        }
-
-                        $mdDialog.show({
-                                controller: DialogController,
-                                template: '<md-dialog class="design-selector-dialog"><design-selector designs="::designsToSelect"></design-selector></md-dialog>',
-                                targetEvent: ev
-                            })
-                            .then(function() {});
-
+                        $rootScope.openDesignSelector(ev);
                     }
                 }];
 

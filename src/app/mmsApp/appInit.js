@@ -173,9 +173,7 @@ angular.module('CyPhyApp').config(function(
             abstract: true,
 
             views: {
-                'mainView@': {
-                    templateUrl: '/mmsApp/templates/editor.html'
-                },
+                'mainView@': {},
                 'onCover@': {}
             }
 
@@ -183,9 +181,7 @@ angular.module('CyPhyApp').config(function(
         .state('editor.project', {
             url: '/{projectId:string}',
             views: {
-                'mainView@': {
-                    templateUrl: '/mmsApp/templates/editor.html'
-                },
+                'mainView@': {},
                 'onCover@': {}
             },
             resolve: {
@@ -264,49 +260,51 @@ angular.module('CyPhyApp').config(function(
                 givenBranchId: retrieveGivenBranch,
                 givenWorkspaceId: retrieveGivenWorkspace
             },
-            onEnter: function(projectHandling, $log, $stateParams, $state, errorReporter) {
+            onEnter: function(projectHandling, $log, $stateParams, $state, errorReporter, $rootScope) {
 
                 var designs,
                     designIds;
 
                 $log.debug('No design specified - have to pick one');
 
-                designs = projectHandling.getAvailableDesigns();
+                $rootScope.openDesignSelector();
 
-                if (angular.isObject(designs)) {
-
-                    if (angular.isObject(designs['/1922727130/1620862711/1365227561'])) {
-
-                        // For demo releses, this should be 'Template Module 1x2'
-
-                        $state.go('editor.design', {
-                            projectId: $stateParams.projectId,
-                            branchId: $stateParams.branchId,
-                            workspaceId: $stateParams.workspaceId,
-                            designId: '/1922727130/1620862711/1365227561'
-                        });
-
-
-                    } else {
-
-                        designIds = Object.keys(designs);
-
-                        if (designIds.length > 0) {
-
-                            $state.go('editor.design', {
-                                projectId: $stateParams.projectId,
-                                branchId: $stateParams.branchId,
-                                workspaceId: $stateParams.workspaceId,
-                                designId: designIds[0]
-                            });
-
-                        }
-                    }
-
-                } else {
-                    errorReporter.log('No designs in project');
-                    $state.go('404');
-                }
+                // designs = projectHandling.getAvailableDesigns();
+                //
+                // if (angular.isObject(designs)) {
+                //
+                //     if (angular.isObject(designs['/1922727130/1620862711/1365227561'])) {
+                //
+                //         // For demo releses, this should be 'Template Module 1x2'
+                //
+                //         $state.go('editor.design', {
+                //             projectId: $stateParams.projectId,
+                //             branchId: $stateParams.branchId,
+                //             workspaceId: $stateParams.workspaceId,
+                //             designId: '/1922727130/1620862711/1365227561'
+                //         });
+                //
+                //
+                //     } else {
+                //
+                //         designIds = Object.keys(designs);
+                //
+                //         if (designIds.length > 0) {
+                //
+                //             $state.go('editor.design', {
+                //                 projectId: $stateParams.projectId,
+                //                 branchId: $stateParams.branchId,
+                //                 workspaceId: $stateParams.workspaceId,
+                //                 designId: designIds[0]
+                //             });
+                //
+                //         }
+                //     }
+                //
+                // } else {
+                //     errorReporter.log('No designs in project');
+                //     $state.go('404');
+                // }
 
             }
 
@@ -314,6 +312,12 @@ angular.module('CyPhyApp').config(function(
         })
         .state('editor.design', {
             url: '/{projectId:string}/{branchId:string}/{workspaceId:string}/{designId:string}/{containerId:string}',
+            views: {
+                'mainView@': {
+                    templateUrl: '/mmsApp/templates/editor.html'
+                },
+                'onCover@': {}
+            },
             resolve: {
                 givenProjectId: retrieveGivenProject,
                 givenBranchId: retrieveGivenBranch,
@@ -361,10 +365,10 @@ angular.module('CyPhyApp').config(function(
         });
     }
 
-    // Adopted from: 
+    // Adopted from:
     // http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
 
-    function shadeColor(color, percent) {   
+    function shadeColor(color, percent) {
         var f = parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF,
             color = '#' + (0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 
@@ -391,9 +395,9 @@ angular.module('CyPhyApp').config(function(
         '800': shadeColor(baseBGColor, -0.3),
         '900': shadeColor(baseBGColor, -0.4),
         'A100': 'ff7100',
-        'A200': '428bca',                
+        'A200': '428bca',
         'A400': '3894fd',
-        'A700': '0D47A1',        
+        'A700': '0D47A1',
         'contrastDefaultColor': 'light', // whether, by default, text (contrast)
         // on this palette should be dark or light
         'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
