@@ -368,13 +368,12 @@ define([
 
         if (self.includeAcms) {
             acmHash = self.core.getAttribute(node, 'Resource');
-            if (acmHash) {
-                if (self.gatheredAcms[acmHash]) {
+            if (componentID) {
+                if (self.gatheredAcms[componentID]) {
                     self.logger.info('ACM of "' + nodeName + '" used twice. Not adding again..');
                 } else {
-                    self.acmFiles['ACMs/' + nodeName + '__' + componentID.replace(/[^\w]/gi, '_') + '.zip'] =
-                        acmHash;
-                    self.gatheredAcms[acmHash] = true;
+                    self.acmFiles['ACMs/' + nodeName + '__' + componentID.replace(/[^\w]/gi, '_') + '.zip'] = acmHash;
+                    self.gatheredAcms[componentID] = acmHash;
                 }
             } else {
                 self.logger.error('ACM was not specified for ' + nodeName);
