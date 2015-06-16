@@ -4,22 +4,29 @@
     .dropdown-navigator {
 
         overflow: visible;
-        padding-bottom: 2px;
+        padding-bottom: 0;
         margin-bottom: 0;
 
         background-color: $c-background-dark;
 
         color: #f0f0f0;
+        height: 53px;
+
+        width: 100%;
+        padding-right: 350px;
+        white-space: nowrap;
 
         > li {
 
             padding: 0 0;
             transition: background-color 200ms;
-            
-            font-size: 105%;
+
+            font-size: 95%;
+            height: 53px;
+            line-height: 53px;
 
             .label-container {
-                padding: .5ex .5ex;
+                padding: 0 .5ex;
             }
 
             .item-label {
