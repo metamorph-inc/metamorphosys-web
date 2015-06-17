@@ -1,41 +1,81 @@
 @import '../../../styles/_colors';
 
 .design-selector-dialog {
-    width: 675px;
+    width: 80%;
     min-width: 675px;
 
-    md-grid-list {
-        margin: 8px;
+    md-content {
+        padding-left: 24px;
+        padding-right: 24px;
+        height: 480px;
+        margin-bottom: 1px;
+        overflow-y: scroll;
     }
 
-    md-grid-tile {
+    .welcome-message {
+        padding: 0;
+
+        h2 {
+            margin-top: 0;
+        }
+    }
+
+    .design-list {
+        padding-left: 0;
+        list-style-type: none;
+        margin: 8px -10px;
+        text-align: center;
+    }
+
+    .design-group-label {
+        border-bottom: 1px solid $baseBGColor;
+        margin-bottom: 0.5em;
+        padding-bottom: .25ex;
+    }
+
+    .design-tile {
+        width: 360px;
+        display: inline-block;
         background: #fff;
         cursor: pointer;
         transition: all 400ms ease-out 50ms;
+        margin: 1ex;
+        vertical-align: top;
+        position: relative;
 
-        md-grid-tile-header {
+        .design-tile-header {
             transition: all 400ms ease-out 50ms;
-            background-color: $baseFrontColor;
+            background-color: $baseBGColor;
             color: #fff;
+            margin: 0;
+            padding: 0 10px;
+            line-height: 35px;
+            height: 35px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: left;
 
-            h3 {
-                color: #fff;                
-            }
         }
 
-        border-left: 1px solid transparent;
-        border-right: 1px solid transparent;
-        border-bottom: 1px solid transparent;
+        border-left: 1px solid $baseBGColor;
+        border-right: 1px solid $baseBGColor;
+        border-bottom: 1px solid $baseBGColor;
 
         .open-tip {
             position: absolute;
-            right: 40px;
-            margin-top: 20px;
+            left: 28px;
+            top: 70px;
+            margin-top: 0;
             text-align: center;
             color: $accentColor;
 
             opacity: 0;
             transition: opacity 400ms ease-out 50ms;
+
+            z-index: 10;
+
+            text-shadow: 0 0 6px rgba(255,255,255,1);
 
             .open-icon {
                 font-size: 300%;
@@ -46,11 +86,31 @@
             }
         }
 
+        .design-description {
+            padding: 10px 10px 10px 125px;
+            text-align: left;
+            font-size: 85%;
+            height: 155px;
+        }
+
+        .design-visual {
+            display: block;
+            position: absolute;
+            top: 48px;
+            left: 13px;
+            max-height: 100px;
+            max-width: 100%;
+            margin-bottom: 1em;
+            opacity: 1;
+            transition: opacity 200ms;
+        }
+
+
         &:hover {
 
             border-color: $accentColor;
 
-             md-grid-tile-header {
+             .design-tile-header {
                  background-color: $accentColor;
                  color: #fff;
              }
@@ -59,20 +119,11 @@
                 opacity: 1;
             }
 
+            .design-visual {
+                opacity: .4;
+            }
+
         }
-    }
-
-    .design-description {
-        padding: 70px 10px 10px;
-        font-size: 95%;
-        height: 100%;
-    }
-
-    .design-visual {
-        display: block;
-        max-height: 100px;
-        max-width: 100%;
-        margin-bottom: 2em;
     }
 
 

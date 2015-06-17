@@ -6,10 +6,27 @@
   }
 
   .port-shape {
+     transition: fill 200ms;
     cursor: crosshair;
   }
 
   .port-shape:hover {
     fill: #ff7100;
   }
+
+  &.right {
+
+      .port-label {
+          text-anchor: end;
+      }
+
+  }
+
+  &.faded {
+      .port-shape {
+        fill: #ddd;
+      }
+
+  }
+
 }

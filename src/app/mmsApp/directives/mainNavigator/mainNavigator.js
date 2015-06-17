@@ -2,12 +2,8 @@
 
 'use strict';
 
-require('../designSelector/designSelector');
-
 angular.module(
-    'mms.mainNavigator', [
-        'mms.designSelector'
-    ])
+    'mms.mainNavigator', [])
 
 .directive(
     'mainNavigator',
@@ -30,20 +26,7 @@ angular.module(
                     label: '',
                     itemClass: 'cyphy-root',
                     action: function(item, ev) {
-
-                        function DialogController($scope) {
-
-                            $scope.designsToSelect = require('./designsToSelect.js');
-
-                        }
-
-                        $mdDialog.show({
-                                controller: DialogController,
-                                template: '<md-dialog class="design-selector-dialog"><design-selector designs="::designsToSelect"></design-selector></md-dialog>',
-                                targetEvent: ev
-                            })
-                            .then(function() {});
-
+                        $rootScope.openDesignSelector(ev);
                     }
                 }];
 
@@ -95,6 +78,19 @@ angular.module(
                             });
                         });
 
+                        designMenu.items.sort(function(a, b) {
+
+                            if (a.label < b.label) {
+                                return -1;
+                            }
+
+                            if (a.label === b.label) {
+                                return 0;
+                            }
+
+                            return 1;
+                        });
+
                         if (designMenu.items.length) {
 
                             self.navigator.items[0].menu = [];
@@ -139,6 +135,20 @@ angular.module(
                                         }
                                     });
                                 });
+
+                                submenu.items.sort(function(a, b) {
+
+                                    if (a.label < b.label) {
+                                        return -1;
+                                    }
+
+                                    if (a.label === b.label) {
+                                        return 0;
+                                    }
+
+                                    return 1;
+                                });
+
 
                                 if (submenu.items.length) {
 

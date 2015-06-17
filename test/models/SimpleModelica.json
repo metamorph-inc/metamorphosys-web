@@ -16,6 +16,7 @@
     "113159c3-1cae-38f5-8fd4-5b356a2f5e3d": "1591506645",
     "15e3558a-b564-8ebd-b330-5cfc5172941f": "1740267662",
     "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": "1008889918",
+    "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": "1103499805",
     "1c43e1a1-d510-2b57-f061-791daede321a": "1684641785",
     "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
     "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
@@ -37,6 +38,7 @@
     "79f0cc09-f068-284b-5473-efcf5dfa3497": "1949671222",
     "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": "1669293789",
     "7fd023cc-47ef-948a-a258-14c2d8c612cf": "1659905525",
+    "8097ae89-983e-8ea8-6612-eefb6dee9203": "1455709881",
     "818a8efa-a6d8-47b5-8d1a-c0d8212fd194": "1059726760",
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": "236224320",
     "8b1e277e-0f88-a58b-4aff-51c74250671d": "398267330",
@@ -54,6 +56,7 @@
     "be02d298-2892-180a-ed1a-138dc589dd5c": "1299690106",
     "cb92c02d-84cf-f104-938b-b7de6641f8e5": "1998840078",
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": "1",
+    "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": "1226873745",
     "d5fc3678-2722-5112-c0bb-fa758f113246": "1328879441",
     "d83e8c50-5eb6-ffdc-6822-0e884265bfcf": "693822654",
     "db059935-fd26-a01d-fc92-5df61aa21f95": "686890673",
@@ -113,6 +116,7 @@
       "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {},
       "07d79d42-e631-fb69-a1f7-25b044d94fbb": {},
       "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {},
+      "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {},
       "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
       "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
       "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
@@ -122,6 +126,7 @@
       "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {},
       "79f0cc09-f068-284b-5473-efcf5dfa3497": {},
       "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {},
+      "8097ae89-983e-8ea8-6612-eefb6dee9203": {},
       "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {},
       "8b1e277e-0f88-a58b-4aff-51c74250671d": {},
       "9001f172-4258-ceaa-86e9-f6e80b85853d": {},
@@ -133,6 +138,7 @@
       "ab281360-2719-c4e0-c3c6-4eea03401141": {},
       "be02d298-2892-180a-ed1a-138dc589dd5c": {},
       "cb92c02d-84cf-f104-938b-b7de6641f8e5": {},
+      "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {},
       "d5fc3678-2722-5112-c0bb-fa758f113246": {},
       "dd35b139-3346-08f0-013c-1e3a8a522f7f": {},
       "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {},
@@ -274,6 +280,16 @@
           },
           {
             "attributes": {},
+            "guid": "1bf0e0e7-d4f1-a36d-416b-8af0651f138b",
+            "registry": {
+              "position": {
+                "x": 1031,
+                "y": 499
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "1deced2f-f026-ca87-711c-d8148b1dfd3c",
             "registry": {
               "position": {
@@ -359,6 +375,16 @@
               "position": {
                 "x": 291,
                 "y": 539
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "8097ae89-983e-8ea8-6612-eefb6dee9203",
+            "registry": {
+              "position": {
+                "x": 999,
+                "y": 376
               }
             }
           },
@@ -479,6 +505,16 @@
               "position": {
                 "x": 100,
                 "y": 100
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28",
+            "registry": {
+              "position": {
+                "x": 1319,
+                "y": 502
               }
             }
           },
@@ -690,6 +726,16 @@
         "MetaAspectSet_24afaa72-3d6c-6972-a352-bd784001bc35": [
           {
             "attributes": {},
+            "guid": "1bf0e0e7-d4f1-a36d-416b-8af0651f138b",
+            "registry": {
+              "position": {
+                "x": 1031,
+                "y": 489
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "registry": {
               "position": {
@@ -735,6 +781,16 @@
               "position": {
                 "x": 577,
                 "y": 105
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28",
+            "registry": {
+              "position": {
+                "x": 1294,
+                "y": 490
               }
             }
           },
@@ -980,6 +1036,16 @@
           },
           {
             "attributes": {},
+            "guid": "8097ae89-983e-8ea8-6612-eefb6dee9203",
+            "registry": {
+              "position": {
+                "x": 999,
+                "y": 376
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "97a00dee-7375-3637-ec08-b62588d4d71d",
             "registry": {
               "position": {
@@ -1035,6 +1101,16 @@
               "position": {
                 "x": 19,
                 "y": 395
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
+            "registry": {
+              "position": {
+                "x": 969,
+                "y": 204
               }
             }
           },
@@ -1201,7 +1277,8 @@
             }
           }
         ]
-      }
+      },
+      "constraints": {}
     },
     "0375e1c1-1217-7aa9-5e14-53c709a2abbe": {
       "attributes": {
@@ -1211,6 +1288,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1218,9 +1298,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -1247,7 +1324,8 @@
           "y": 233
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "051e2614-8618-ce58-2fe0-41f94ccaf98b": {
       "attributes": {},
@@ -1289,7 +1367,8 @@
       "parent": "220fe464-ca92-9f68-89cc-1cf4848c14aa",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "07d79d42-e631-fb69-a1f7-25b044d94fbb": {
       "attributes": {
@@ -1324,6 +1403,9 @@
             "default": 0.00001,
             "type": "float"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1331,9 +1413,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -1348,7 +1427,8 @@
           "y": 524
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "0bced7fe-4c88-f3c1-f877-6a0d0f344c46": {
       "attributes": {
@@ -1371,6 +1451,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1378,9 +1461,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -1397,7 +1477,8 @@
           "y": 661
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "0cbe923f-e66c-6bb2-6cb1-6418b3665f8e": {
       "attributes": {
@@ -1482,7 +1563,8 @@
           "y": 392
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "0e9a7224-3fb6-bdc9-b9ec-1b56696d34ec": {
       "attributes": {
@@ -1538,7 +1620,8 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "0f8fa428-4f7e-3e83-1acd-141b22b417cf": {
       "attributes": {},
@@ -1568,7 +1651,8 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "113159c3-1cae-38f5-8fd4-5b356a2f5e3d": {
       "attributes": {},
@@ -1594,6 +1678,14 @@
           },
           "name": {
             "type": "string"
+          },
+          "Description": {
+            "default": "",
+            "type": "string"
+          },
+          "Resource": {
+            "default": "",
+            "type": "asset"
           }
         }
       },
@@ -1607,7 +1699,8 @@
           "y": 147
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "15e3558a-b564-8ebd-b330-5cfc5172941f": {
       "attributes": {
@@ -1661,7 +1754,8 @@
           "y": 200
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "1b2720ba-040c-e5ac-bb4c-4bd502ee3353": {
       "attributes": {
@@ -1670,6 +1764,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1677,9 +1774,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -1704,7 +1798,83 @@
           "y": 292
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
+    },
+    "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {
+      "attributes": {
+        "RelativeLayer": "No Restriction",
+        "XRelativeRange": "",
+        "YRelativeRange": "",
+        "name": "RelativeRangeLayoutConstraint"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "RelativeLayer": {
+            "default": "No Restriction",
+            "enum": [
+              "No Restriction",
+              "Same",
+              "Opposite"
+            ],
+            "type": "string"
+          },
+          "XOffsetRange": {
+            "default": "",
+            "type": "string"
+          },
+          "YOffsetRange": {
+            "default": "",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          }
+        },
+        "pointers": {
+          "OriginComponent": {
+            "items": [
+              "cb92c02d-84cf-f104-938b-b7de6641f8e5"
+            ],
+            "min": 1,
+            "max": 1,
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              1
+            ]
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "OriginComponent": null,
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      },
+      "constraints": {}
     },
     "1c43e1a1-d510-2b57-f061-791daede321a": {
       "attributes": {},
@@ -1773,7 +1943,8 @@
       "parent": "768a6ddd-0cca-fd2c-253c-065374d55978",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "1deced2f-f026-ca87-711c-d8148b1dfd3c": {
       "attributes": {
@@ -1787,12 +1958,11 @@
             "default": 0,
             "type": "integer"
           },
-          "weightPos": {
-            "default": 1,
-            "type": "float"
-          },
           "description": {
             "default": "",
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "weight": {
@@ -1803,6 +1973,10 @@
             "default": 1,
             "type": "float"
           },
+          "weightPos": {
+            "default": 1,
+            "type": "float"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1810,9 +1984,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -1842,7 +2013,8 @@
           "y": 449
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "1f35a3aa-321d-359f-7838-242bc2d08ae5": {
       "attributes": {
@@ -1852,6 +2024,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1859,9 +2034,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -1891,7 +2063,8 @@
           "y": 223
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "220fe464-ca92-9f68-89cc-1cf4848c14aa": {
       "attributes": {},
@@ -1912,13 +2085,22 @@
           },
           "name": {
             "type": "string"
+          },
+          "Definition": {
+            "default": "",
+            "type": "string"
+          },
+          "Description": {
+            "default": "",
+            "type": "string"
           }
         }
       },
       "parent": "768a6ddd-0cca-fd2c-253c-065374d55978",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
       "attributes": {
@@ -1964,8 +2146,8 @@
             "type": "string"
           },
           "OnDataSheet": {
-            "type": "boolean",
-            "default": false
+            "default": false,
+            "type": "boolean"
           },
           "Unit": {
             "default": "",
@@ -1983,6 +2165,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -1990,9 +2175,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -2020,7 +2202,8 @@
           "y": 423
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "31210b37-0234-e1f7-e194-17c772f79295": {
       "attributes": {
@@ -2105,7 +2288,8 @@
           "y": 279
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "32f297fa-f9ee-df8d-151c-01f19934793e": {
       "attributes": {
@@ -2129,6 +2313,14 @@
           },
           "name": {
             "type": "string"
+          },
+          "Definition": {
+            "default": "",
+            "type": "string"
+          },
+          "Description": {
+            "default": "",
+            "type": "string"
           }
         }
       },
@@ -2142,17 +2334,28 @@
           "y": 231
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "3317c9c6-6c44-1a06-a476-11f77d722b34": {
       "attributes": {
+        "Description": "",
         "INFO": "System of components and sub-systems.",
+        "Resource": "",
         "Type": "Compound",
         "name": "Container"
       },
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "Description": {
+            "default": "",
+            "type": "string"
+          },
+          "Resource": {
+            "default": "",
+            "type": "asset"
+          },
           "Type": {
             "default": "Compound",
             "enum": [
@@ -2162,6 +2365,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2169,9 +2375,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -2180,16 +2383,20 @@
             "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
             "65dcb250-dcb6-4cad-4617-0518a9a37d2e",
+            "8097ae89-983e-8ea8-6612-eefb6dee9203",
             "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
             "97a00dee-7375-3637-ec08-b62588d4d71d",
             "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f",
             "cb92c02d-84cf-f104-938b-b7de6641f8e5",
             "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454",
+            "e9bd3f99-c925-8bc0-6bd5-15ac083d1028",
             "f0508110-9a11-3b6d-ea42-2193bf0485e0",
             "f8d9bcd3-5655-7ddb-850d-28046a9dfba5",
             "f9f20885-6316-a7b6-2196-8299f45692ff"
           ],
           "minItems": [
+            -1,
+            -1,
             -1,
             -1,
             -1,
@@ -2209,7 +2416,9 @@
             -1,
             -1,
             -1,
+            -1,
             1,
+            -1,
             -1,
             -1,
             -1,
@@ -2238,7 +2447,8 @@
           "y": 354
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "386ee9e0-cd9b-25f0-2944-89587dd90484": {
       "attributes": {},
@@ -2274,7 +2484,8 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "3e223dbc-998f-e965-9d15-99085fd445ff": {
       "attributes": {
@@ -2295,6 +2506,10 @@
             ],
             "type": "string"
           },
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
           "Rotation": {
             "default": "",
             "enum": [
@@ -2313,6 +2528,9 @@
             "default": null,
             "type": "float"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2320,9 +2538,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -2338,7 +2553,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "40339fcc-164f-f128-a43c-00afde9077c1": {
       "attributes": {
@@ -2422,7 +2638,8 @@
           "y": 138
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "428911c8-137b-2fc7-2388-8266e7aeff44": {
       "attributes": {
@@ -2507,10 +2724,13 @@
           "y": 341
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "58fcb797-8a06-2976-9632-d281b3c1ddd2": {
       "attributes": {
+        "Definition": "",
+        "Description": "",
         "ID": "",
         "INFO": "Container of domain connectors.",
         "name": "Connector"
@@ -2518,8 +2738,19 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "Definition": {
+            "default": "",
+            "type": "string"
+          },
+          "Description": {
+            "default": "",
+            "type": "string"
+          },
           "ID": {
             "default": "",
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "INFO": {
@@ -2529,9 +2760,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -2557,7 +2785,8 @@
           "y": 429
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "5ecd04c4-44b3-ae27-e0ee-6cbc95f35464": {
       "attributes": {},
@@ -2583,6 +2812,14 @@
           },
           "name": {
             "type": "string"
+          },
+          "Description": {
+            "default": "",
+            "type": "string"
+          },
+          "Resource": {
+            "default": "",
+            "type": "asset"
           }
         }
       },
@@ -2596,7 +2833,8 @@
           "y": 525
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "64e8bdb8-06da-4380-1569-4e9bcbb3e9bd": {
       "attributes": {
@@ -2644,7 +2882,10 @@
           "y": 168
         }
       },
-      "sets": {}
+      "sets": {
+        "UsesResource": []
+      },
+      "constraints": {}
     },
     "65dcb250-dcb6-4cad-4617-0518a9a37d2e": {
       "attributes": {
@@ -2653,6 +2894,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2660,9 +2904,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -2677,7 +2918,8 @@
           "y": 569
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "7415ce26-35a6-0365-89b9-539ed60b8429": {
       "attributes": {},
@@ -2714,7 +2956,10 @@
       "parent": "768a6ddd-0cca-fd2c-253c-065374d55978",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {
+        "UsesResource": []
+      },
+      "constraints": {}
     },
     "768a6ddd-0cca-fd2c-253c-065374d55978": {
       "attributes": {},
@@ -2764,7 +3009,8 @@
           "y": 245
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "79f0cc09-f068-284b-5473-efcf5dfa3497": {
       "attributes": {
@@ -2778,6 +3024,9 @@
             "default": "[]",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2785,9 +3034,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -2812,11 +3058,13 @@
           "y": 424
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "79f7f205-38e6-9ca1-0fde-c0ca16f622f7": {
       "attributes": {
         "LayerRange": "",
+        "Type": "Inclusion",
         "XRange": "",
         "YRange": "",
         "name": "RangeLayoutConstraint"
@@ -2833,12 +3081,27 @@
             ],
             "type": "string"
           },
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "Type": {
+            "default": "Inclusion",
+            "enum": [
+              "Inclusion",
+              "Exclusion"
+            ],
+            "type": "string"
+          },
           "XRange": {
             "default": "",
             "type": "string"
           },
           "YRange": {
             "default": "",
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "INFO": {
@@ -2848,9 +3111,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -2866,7 +3126,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "7fd023cc-47ef-948a-a258-14c2d8c612cf": {
       "attributes": {},
@@ -2896,7 +3157,56 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
+    },
+    "8097ae89-983e-8ea8-6612-eefb6dee9203": {
+      "attributes": {
+        "Hash": "",
+        "Notes": "",
+        "Path": "",
+        "name": "Resource"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "Hash": {
+            "default": "",
+            "type": "string"
+          },
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "Path": {
+            "default": "",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "sets": {},
+      "constraints": {}
     },
     "818a8efa-a6d8-47b5-8d1a-c0d8212fd194": {
       "attributes": {},
@@ -2930,15 +3240,24 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "87018874-0598-6ca4-a7b3-4e1dd2bfe926": {
       "attributes": {
+        "Notes": "",
         "name": "LayoutConstraint"
       },
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2946,9 +3265,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -2977,7 +3293,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "8b1e277e-0f88-a58b-4aff-51c74250671d": {
       "attributes": {
@@ -2987,6 +3304,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -2994,9 +3314,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -3026,7 +3343,8 @@
           "y": 230
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "8e59be89-5899-3619-872d-c2222292cd73": {
       "attributes": {},
@@ -3056,7 +3374,8 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "9001f172-4258-ceaa-86e9-f6e80b85853d": {
       "attributes": {
@@ -3066,6 +3385,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3073,9 +3395,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -3101,7 +3420,8 @@
           "y": 449
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "959e8751-e668-4b22-2620-67135dd47611": {
       "attributes": {},
@@ -3137,7 +3457,8 @@
           "y": 100
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "97a00dee-7375-3637-ec08-b62588d4d71d": {
       "attributes": {
@@ -3146,6 +3467,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3153,9 +3477,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -3185,7 +3506,8 @@
       },
       "sets": {
         "Selection": []
-      }
+      },
+      "constraints": {}
     },
     "9a64640a-d8d6-9efa-cf2f-b622aaa6e5ae": {
       "attributes": {
@@ -3207,6 +3529,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "weight": {
             "default": 1,
             "type": "float"
@@ -3222,9 +3547,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -3240,7 +3562,8 @@
           "y": 353
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "9fab1244-f449-d3c0-bfdc-f166f724e3f2": {
       "attributes": {
@@ -3265,6 +3588,9 @@
             "default": "",
             "type": "asset"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3272,9 +3598,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -3348,7 +3671,8 @@
           "y": 349
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "a0399d5f-26ab-3fac-def4-3834f5decac9": {
       "attributes": {
@@ -3358,6 +3682,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3365,9 +3692,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -3402,7 +3726,8 @@
           "y": 43
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "a1e4a35d-de60-0fec-ba6d-e2bd8897e16f": {
       "attributes": {
@@ -3417,6 +3742,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3424,9 +3752,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -3478,7 +3803,8 @@
           "y": 741
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "a76adaab-3039-cfb6-c88c-bfd71aaf5389": {
       "attributes": {},
@@ -3547,7 +3873,8 @@
       "parent": "768a6ddd-0cca-fd2c-253c-065374d55978",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "ab281360-2719-c4e0-c3c6-4eea03401141": {
       "attributes": {
@@ -3569,8 +3896,15 @@
             "default": 0,
             "type": "integer"
           },
+          "description": {
+            "default": "",
+            "type": "string"
+          },
           "function": {
             "default": "",
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "objective": {
@@ -3580,10 +3914,6 @@
           "threshold": {
             "default": 0,
             "type": "float"
-          },
-          "description": {
-            "default": "",
-            "type": "string"
           },
           "weight": {
             "default": 1,
@@ -3600,9 +3930,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -3634,7 +3961,8 @@
           "y": 450
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "b797a935-0345-8f53-545c-a2d207173e1d": {
       "attributes": {
@@ -3718,7 +4046,8 @@
           "y": 462
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "be02d298-2892-180a-ed1a-138dc589dd5c": {
       "attributes": {
@@ -3733,6 +4062,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3740,9 +4072,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -3759,7 +4088,8 @@
           "y": 664
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "cb92c02d-84cf-f104-938b-b7de6641f8e5": {
       "attributes": {
@@ -3794,6 +4124,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3801,9 +4134,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -3849,7 +4179,8 @@
           "y": 337
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045": {
       "attributes": {
@@ -3896,7 +4227,56 @@
           "y": 141
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
+    },
+    "d3bdeaca-590c-cbc0-24ff-d7a070ed8f28": {
+      "attributes": {
+        "Constraint": "Board Edge Spacing",
+        "name": "GlobalLayoutConstraintException"
+      },
+      "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
+      "meta": {
+        "attributes": {
+          "Constraint": {
+            "default": "Board Edge Spacing",
+            "enum": [
+              "Board Edge Spacing",
+              "Inter-Chip Spacing"
+            ],
+            "type": "string"
+          },
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          }
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926"
+      },
+      "registry": {
+        "position": {
+          "x": 936,
+          "y": 672
+        }
+      },
+      "sets": {
+        "ConstraintTarget": []
+      },
+      "constraints": {}
     },
     "d5fc3678-2722-5112-c0bb-fa758f113246": {
       "attributes": {
@@ -3911,6 +4291,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -3918,9 +4301,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -3935,7 +4315,8 @@
           "y": 449
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "d83e8c50-5eb6-ffdc-6822-0e884265bfcf": {
       "attributes": {
@@ -4019,7 +4400,8 @@
           "y": 218
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "db059935-fd26-a01d-fc92-5df61aa21f95": {
       "attributes": {
@@ -4065,7 +4447,8 @@
           "y": 240
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "dd35b139-3346-08f0-013c-1e3a8a522f7f": {
       "attributes": {
@@ -4080,6 +4463,9 @@
             "default": "",
             "type": "asset"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4087,9 +4473,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -4135,7 +4518,8 @@
           "y": 229
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "dfe3df16-dfc2-d4b5-09f8-ca4758ae1454": {
       "attributes": {
@@ -4149,6 +4533,9 @@
             "default": "",
             "type": "asset"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4156,9 +4543,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -4183,7 +4567,8 @@
           "y": 355
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e0bd7189-5dc8-9e2c-d4d6-2f61fa416ff1": {
       "attributes": {},
@@ -4225,7 +4610,8 @@
       "parent": "768a6ddd-0cca-fd2c-253c-065374d55978",
       "pointers": {},
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e544f3e4-e550-5750-8540-5598bbbf343c": {
       "attributes": {
@@ -4254,6 +4640,9 @@
             "default": "",
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4261,9 +4650,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -4293,7 +4679,8 @@
           "y": 503
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e87743ed-b89e-d8ce-7b87-7b9aadcb4961": {
       "attributes": {
@@ -4314,6 +4701,9 @@
             "default": false,
             "type": "boolean"
           },
+          "name": {
+            "type": "string"
+          },
           "plugins": {
             "default": "",
             "type": "string"
@@ -4329,9 +4719,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "children": {
@@ -4373,7 +4760,8 @@
           "y": 61
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "e9bd3f99-c925-8bc0-6bd5-15ac083d1028": {
       "attributes": {
@@ -4403,6 +4791,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4410,9 +4801,19 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
+          }
+        },
+        "pointers": {
+          "UsesResource": {
+            "items": [
+              "8097ae89-983e-8ea8-6612-eefb6dee9203"
+            ],
+            "minItems": [
+              -1
+            ],
+            "maxItems": [
+              -1
+            ]
           }
         }
       },
@@ -4429,7 +4830,10 @@
           "y": 429
         }
       },
-      "sets": {}
+      "sets": {
+        "UsesResource": []
+      },
+      "constraints": {}
     },
     "edf95f43-efbd-5c2c-6384-6ab74c160c17": {
       "attributes": {
@@ -4458,6 +4862,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4465,9 +4872,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -4481,7 +4885,8 @@
           "y": 519
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f0400217-6eb4-dec9-4806-3264e7f90265": {
       "attributes": {
@@ -4530,7 +4935,8 @@
         "base": "f0508110-9a11-3b6d-ea42-2193bf0485e0"
       },
       "registry": {},
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f0508110-9a11-3b6d-ea42-2193bf0485e0": {
       "attributes": {
@@ -4565,6 +4971,9 @@
             ],
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4572,9 +4981,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         }
       },
@@ -4593,10 +4999,13 @@
           "y": 502
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f26a44de-edb5-57c8-fd0f-242811b7816c": {
       "attributes": {
+        "RelativeLayer": "Either",
+        "RelativeRotation": "r0",
         "XOffset": null,
         "YOffset": null,
         "name": "RelativeLayoutConstraint"
@@ -4604,6 +5013,30 @@
       "base": "87018874-0598-6ca4-a7b3-4e1dd2bfe926",
       "meta": {
         "attributes": {
+          "Notes": {
+            "default": "",
+            "type": "string"
+          },
+          "RelativeLayer": {
+            "default": "Either",
+            "enum": [
+              "Either",
+              "Same",
+              "Opposite"
+            ],
+            "type": "string"
+          },
+          "RelativeRotation": {
+            "default": "r0",
+            "enum": [
+              "r0",
+              "r90",
+              "r180",
+              "r270",
+              "NoRestriction"
+            ],
+            "type": "string"
+          },
           "XOffset": {
             "default": null,
             "type": "float"
@@ -4612,6 +5045,9 @@
             "default": null,
             "type": "float"
           },
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4619,9 +5055,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -4653,7 +5086,8 @@
       },
       "sets": {
         "ConstraintTarget": []
-      }
+      },
+      "constraints": {}
     },
     "f8d9bcd3-5655-7ddb-850d-28046a9dfba5": {
       "attributes": {
@@ -4663,6 +5097,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4670,9 +5107,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -4719,7 +5153,8 @@
           "y": 582
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     },
     "f9f20885-6316-a7b6-2196-8299f45692ff": {
       "attributes": {
@@ -4728,6 +5163,9 @@
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {
         "attributes": {
+          "name": {
+            "type": "string"
+          },
           "INFO": {
             "default": "",
             "type": "string"
@@ -4735,9 +5173,6 @@
           "ReadMe": {
             "default": "",
             "type": "asset"
-          },
-          "name": {
-            "type": "string"
           }
         },
         "pointers": {
@@ -4782,7 +5217,8 @@
           "y": 657
         }
       },
-      "sets": {}
+      "sets": {},
+      "constraints": {}
     }
   },
   "metaSheets": {}

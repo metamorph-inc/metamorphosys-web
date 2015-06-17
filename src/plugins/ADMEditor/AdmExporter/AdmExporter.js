@@ -301,7 +301,8 @@ define([
         self.admData['@DesignID'] = self.core.getGuid(startNode);
         self.rootPath = self.core.getPath(startNode);
         self.logger.info('rootPath is ' + self.rootPath);
-        self.visitAllChildrenFromRootContainer(startNode, callback);
+        return Q.ninvoke(self, 'visitAllChildrenFromRootContainer', startNode)
+            .nodeify(callback);
     };
 
     AdmExporter.prototype.atModelNode = function (node, parent, containerData, callback) {
@@ -333,6 +334,10 @@ define([
             self.addAssemblyRoot(node, parent, containerData, callback);
         } else if (self.isMetaTypeOf(node, self.meta.LayoutConstraint)) {
             self.addLayoutConstraint(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.Resource)) {
+            self.addResource(node, parent, containerData, callback);
+        } else if (self.isMetaTypeOf(node, self.meta.DomainModel)) {
+            self.addDomainModel(node, parent, containerData, callback);
         } else {
             callback(null);
         }
@@ -347,7 +352,7 @@ define([
             data = {
                 "@Name": nodeName,
                 "@ComponentID": componentID,
-                "@ID": self.core.getGuid(node),
+                "@ID": self.getComponentOrDesignID(node),
                 "@XPosition": pos.x,
                 "@YPosition": pos.y,
                 "PortInstance": [],
@@ -363,13 +368,12 @@ define([
 
         if (self.includeAcms) {
             acmHash = self.core.getAttribute(node, 'Resource');
-            if (acmHash) {
-                if (self.gatheredAcms[acmHash]) {
+            if (componentID) {
+                if (self.gatheredAcms[componentID]) {
                     self.logger.info('ACM of "' + nodeName + '" used twice. Not adding again..');
                 } else {
-                    self.acmFiles['ACMs/' + nodeName + '__' + componentID.replace(/[^\w]/gi, '_') + '.zip'] =
-                        acmHash;
-                    self.gatheredAcms[acmHash] = true;
+                    self.acmFiles['ACMs/' + nodeName + '__' + componentID.replace(/[^\w]/gi, '_') + '.zip'] = acmHash;
+                    self.gatheredAcms[componentID] = acmHash;
                 }
             } else {
                 self.logger.error('ACM was not specified for ' + nodeName);
@@ -701,7 +705,7 @@ define([
                     };
                 }
                 var val = self.core.getAttribute(node, attrName);
-                if (val !== undefined) {
+                if (val !== undefined && val !== null && val !== '') {
                     data['@' + attrName] = xform(val);
                 }
             };
@@ -709,7 +713,7 @@ define([
                 copyAttrIfSet('XOffset');
                 copyAttrIfSet('YOffset');
                 copyAttrIfSet('RelativeRotation');
-                data['@Origin'] = self.core.getGuid(origin);
+                data['@Origin'] = self.getComponentOrDesignID(origin);
 
                 var val = self.core.getAttribute(node, 'RelativeLayer');
                 if (val !== undefined && val !== 'Either') {
@@ -723,7 +727,7 @@ define([
                 }
                 setRange('X', 'RelativeRange');
                 setRange('Y', 'RelativeRange');
-                data['@Origin'] = self.core.getGuid(origin);
+                data['@Origin'] = self.getComponentOrDesignID(origin);
             }
             if (type === 'RangeLayoutConstraint') {
                 copyAttrIfSet('LayerRange');
@@ -755,7 +759,7 @@ define([
                     return node;
                 })
                 .map(function (node) {
-                    return self.core.getGuid(node);
+                    return self.getComponentOrDesignID(node);
                 })
                 .join(' ');
 
@@ -767,6 +771,9 @@ define([
                 return callback(err);
             }
             if (type === 'RelativeLayoutConstraint' || type === 'RelativeRangeLayoutConstraint') {
+                if (!self.core.hasPointer(node, 'Origin')) {
+                    return callback('Constraint \'' + self.core.getPath(node) + '\' has no Origin');
+                }
                 self.core.loadPointer(node, 'Origin', function (err, o) {
                     if (err) {
                         return callback(err);
@@ -780,7 +787,82 @@ define([
         });
     };
 
+    AdmExporter.prototype.getComponentOrDesignID = function (node) {
+        var self = this;
+        if (self.isMetaTypeOf(node, self.META.AVMComponentModel) === true) {
+            return self.core.getAttribute(node, 'InstanceID') || self.core.getGuid(node);
+        } else {
+            return self.core.getGuid(node);
+        }
+    };
 
+    AdmExporter.prototype.addDomainModel = function (node, container, containerData, callback) {
+        var self = this,
+            pos = self.core.getRegistry(node, 'position'),
+            typeAttr = self.core.getAttribute(node, 'Type');
+
+        var types = {
+            'Modelica': { type: 'modelica:ModelicaModel' },
+            'CAD': { type: 'cad:CADModel'},
+            'Manufacturing': { type: 'manufacturing:ManufacturingModel'} ,
+            'Cyber': { type: 'cyber:CyberModel' },
+            'SPICE': { type: 'spice:SPICEModel' },
+            'EDA': { type: 'eda:EDAModel' },
+            'CircuitLayout': { type: 'eda:CircuitLayout', fn: function () {
+                data['@BoundingBoxes'] = self.core.getAttribute(node, 'BoundingBoxes');
+            }
+            },
+            'SystemC': { type: 'systemc:SystemCModel' },
+            'RF': { type: 'rf:RFModel' }
+        };
+        var namespace = 'avm',
+            xsiType = 'DomainModel',
+            type = (types[typeAttr] || {}).type,
+            fn = (types[typeAttr] || {}).fn;
+        if (type) {
+            namespace = type.substr(0, type.lastIndexOf(':'));
+            xsiType = type.substr(type.lastIndexOf(':') + 1);
+        }
+
+        var data = {
+            '@xsi:type': namespace + ':' + xsiType,
+            '@XPosition': Math.floor(pos.x) || 0,
+            '@YPosition': Math.floor(pos.y) || 0,
+            '@Name': self.core.getAttribute(node, 'name'),
+            '@ID': self.core.getGuid(node)
+        };
+        data['@xmlns:' + namespace] = namespace;
+
+        if (fn) {
+            fn();
+        }
+
+        this.loadSetMembers(node, 'UsesResource', function (err, targetNodes, targetIds) {
+            if (err) {
+                return callback(err);
+            }
+            data['@UsesResource'] = targetNodes.map(function (node) { return 'res-' + self.core.getGuid(node); }).join(' ');
+            containerData.DomainModel.push(data);
+            callback();
+        });
+    };
+
+    AdmExporter.prototype.addResource = function (node, container, containerData, callback) {
+        var self = this,
+            pos = self.core.getRegistry(node, 'position');
+
+        var data = {
+            "@XPosition": Math.floor(pos.x),
+            "@YPosition": Math.floor(pos.y),
+            "@Name": self.core.getAttribute(node, 'name'),
+            "@Path": self.core.getAttribute(node, 'Path'),
+            "@Hash": self.core.getAttribute(node, 'Hash'),
+            "@Notes": self.core.getAttribute(node, 'Notes'),
+            "@ID": 'res-' + self.core.getGuid(node)
+        };
+        containerData.ResourceDependency.push(data);
+        callback();
+    };
     //<editor-fold desc="=========================== Properties/ValueFlows ==========================">
     AdmExporter.prototype.addProperty = function (node, parent, containerData, callback) {
         var self = this,
@@ -1025,8 +1107,7 @@ define([
                                 'name');
                             if (parentMetaType === 'AVMComponentModel') {
                                 if (self.shouldBeGenerated(valueSourceParent)) {
-                                    valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' +
-                                    self.core.getAttribute(valueSource, 'ID');
+                                    valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                                 }
                             } else if (parentMetaType === 'Container') {
                                 //If parent of parent is alternative, then only add if parent is in AA.
@@ -1101,8 +1182,7 @@ define([
                     valueSourceParent = self.core.getParent(valueSource);
                     parentMetaType = self.core.getAttribute(self.getMetaType(valueSourceParent), 'name');
                     if (parentMetaType === 'AVMComponentModel') {
-                        valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(
-                            valueSource, 'ID');
+                        valueSourceId = 'id-' + self.core.getGuid(valueSourceParent) + '-' + self.core.getAttribute(valueSource, 'ID');
                     } else if (parentMetaType === 'Container') {
                         valueSourceId = self.core.getGuid(valueSource);
                     } else {
@@ -1263,14 +1343,13 @@ define([
                                 self.logger.warn(
                                     'Only one AssemblyRoot can be exported, an arbitrary selection will be made!'
                                 );
-                                self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.core.getGuid(
-                                    componentNode);
+                                self.admData.DomainFeature['@AssemblyRootComponentInstance'] = self.getComponentOrDesignID(componentNode);
                             } else {
                                 self.admData.DomainFeature = {
                                     '@xmlns:q1': 'cad',
                                     '@xmlns': '',
                                     '@xsi:type': 'q1:AssemblyRoot',
-                                    '@AssemblyRootComponentInstance': self.core.getGuid(componentNode)
+                                    '@AssemblyRootComponentInstance': self.getComponentOrDesignID(componentNode)
                                 };
                             }
                         } else {
@@ -1367,7 +1446,9 @@ define([
                 "JoinData": [],
                 "Formula": [],
                 "ValueFlowMux": [],
-                "ContainerFeature": []
+                "ContainerFeature": [],
+                "ResourceDependency": [],
+                "DomainModel": []
             };
 
         if (!isRoot) {

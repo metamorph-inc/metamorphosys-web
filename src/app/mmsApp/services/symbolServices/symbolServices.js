@@ -237,14 +237,14 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     symbolDirective: symbolDirective,
                     svgDecoration: null,
                     labelPosition: {
-                        x: portsAndSizes.width/2,
+                        x: portsAndSizes.width / 2,
                         y: parameters.portWireLength + 24
                     },
                     portWireLength: parameters.portWireLength,
                     width: portsAndSizes.width,
                     height: portsAndSizes.height,
                     ports: portsAndSizes.ports,
-                    boxHeight: portsAndSizes.height - 2 * parameters.portWireLength,
+                    boxHeight: portsAndSizes.height - parameters.portWireLength,
                     boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
                 });
 

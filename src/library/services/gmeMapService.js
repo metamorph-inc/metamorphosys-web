@@ -79,21 +79,23 @@ angular.module('cyphy.services')
                 })();
             };
             // TODO GmeMapping.prototype.destroy: unregister watchers, unload nodes
-            GmeMapping.prototype._onUnload = function GmeMappingOnUnload(id) {
+            GmeMapping.prototype._onUnload = function GmeMappingOnUnload(id, kind) {
                 var self = this;
                 if (id === self.rootId) {
                     // TODO check this
                     angular.copy({}, self.data);
                     self.nodes = {};
                 } else {
-                    var kind = self.nodes[id].getMetaTypeName(self.meta);
                     var ids = id.split('/');
                     ids.pop();
                     var parentId = ids.join('/');
-                    var parentData = self._getNodeData(self.nodes[parentId]);
-                    parentData[kind] = parentData[kind].filter(function (child) {
-                        return child._id !== id;
-                    });
+                    var parent = self.nodes[parentId];
+                    if (parent) { // could be deleted already
+                        var parentData = self._getNodeData(parent);
+                        parentData[kind] = parentData[kind].filter(function (child) {
+                            return child._id !== id;
+                        });
+                    }
                     delete self.nodes[id];
                 }
 
@@ -136,8 +138,9 @@ angular.module('cyphy.services')
                     return;
                 }
                 var self = this,
+                    kind = node.getMetaTypeName(self.meta),
                     onUnload = function (id) {
-                        self._onUnload(id);
+                        self._onUnload(id, kind);
                     },
                     data;
                 self.nodes[node.getId()] = node;

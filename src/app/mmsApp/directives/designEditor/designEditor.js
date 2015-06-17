@@ -73,7 +73,8 @@ angular.module('mms.designEditor', [
             selectionHandler = function(event) {
 
                 var selectedComponentIds = event.message.selectedComponentIds,
-                    selectedWireIds = event.message.selectedWireIds;
+                    selectedWireIds = event.message.selectedWireIds,
+                    shouldSelectInspector = false;
 
                 self.inspectableComponent = null;
                 self.inspectableWire = null;
@@ -81,13 +82,19 @@ angular.module('mms.designEditor', [
                 if (selectedComponentIds.length === 1) {
 
                     self.inspectableComponent = self.diagram.getComponentById(selectedComponentIds[0]);
+                    shouldSelectInspector = true;
 
                 } else if (selectedWireIds.length === 1) {
 
                     self.inspectableWire = self.diagram.getWireById(selectedWireIds[0]);
 
                     $log.debug('inspectableWire', self.inspectableWire);
+                    shouldSelectInspector = true;
 
+                }
+
+                if (shouldSelectInspector && self._footerDrawerCtrl) {
+                    self._footerDrawerCtrl.activePanelByName('Inspector');
                 }
 
             };
@@ -273,11 +280,11 @@ angular.module('mms.designEditor', [
                     addRootScopeEventListener('wiresMustBeSaved', function($event, wires, message) {
                         nodeService.startTransaction(layoutContext, message || 'Saving wires');
 
-                        wires.forEach(function(wire) {
-                            designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+                        $q.all(wires.map(function(wire) {
+                            return designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+                        })).then(function () {
+                            nodeService.completeTransaction(layoutContext);
                         });
-
-                        nodeService.completeTransaction(layoutContext);
                     });
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
@@ -418,6 +425,13 @@ angular.module('mms.designEditor', [
 
                             };
 
+                        if ((!Array.isArray(selectedComponents) || selectedComponents.length === 0) &&
+                            (!Array.isArray(selectedWires) || selectedWires.length === 0) &&
+                            (!Array.isArray(selectedWireSegmentsWithSelectedEndCorner) || selectedWireSegmentsWithSelectedEndCorner.length === 0)) {
+                            // nothing to do
+                            return;
+                        }
+
                         $rootScope.setProcessing();
                         nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
 
@@ -522,7 +536,7 @@ angular.module('mms.designEditor', [
                                                             layoutContext,
                                                             designStructureUpdateObject.data.id,
                                                             justDuplicatedComponentNewPosition
-                                                        );                                                       
+                                                        );
 
                                                     }
 

@@ -72,6 +72,9 @@ describe('AdmImporterRegressions', function () {
     function regression(admFilename, callback) {
         it('regressions on ' + admFilename, function (done) {
                 AdmImporterTestLib.runAdmImporterRegression(model, admFolder, AdmTemplates, admFilename, expect, function (err, container) {
+                    if (err) {
+                        return done(err);
+                    }
                     AdmImporterTestLib.runAdmExporter(model.core, model.META, container, model.core._rootNode, expect, function (err, design) {
                         if (err) {
                             return done(err);
@@ -213,4 +216,24 @@ describe('AdmImporterRegressions', function () {
         done();
     });
 
+    regression("LayoutFile.adm", function (design, done) {
+        var RootContainer = design.RootContainer;
+        expect(RootContainer.DomainModel.length).to.equal(1);
+        expect(RootContainer.ResourceDependency.length).to.equal(1);
+
+        var dm = RootContainer.DomainModel[0];
+        expect(dm['@Name']).to.equal('circuitLayout');
+        expect(dm['@BoundingBoxes']).to.equal('0,0,10,10');
+        expect(dm['@xsi:type']).to.equal('eda:CircuitLayout');
+
+        var resource = RootContainer.ResourceDependency[0];
+        expect(resource['@Name']).to.equal('layoutFile');
+        expect(resource['@Path']).to.equal('layout.json');
+        expect(resource['@Notes']).to.equal('note1');
+        expect(resource['@Hash']).to.equal('asdf');
+
+        expect(dm['@UsesResource']).to.equal(resource['@ID']);
+
+        done();
+    });
 });

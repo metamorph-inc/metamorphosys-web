@@ -1,13 +1,16 @@
 'use strict';
 
 angular.module('mms.designEditor.footerDrawer', [
+        'mms.projectHandling',
         'mms.utils',
         'ngCookies'
     ])
-    .directive('footerDrawer', 
-        function(mmsUtils, $cookies) {
+    .directive('footerDrawer',
+        function(projectHandling, mmsUtils, $cookies, $injector) {
 
             function DrawerController() {
+
+                var self = this;
 
                 this._AUTO_HEIGHT = 200;
                 this._COLLAPSED_HEIGHT = 26;
@@ -28,16 +31,35 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._panels = [];
                 this._activePanel = null;
-                
+
+                this._projectsToDisableComponentBrowser = [];
+                this._currentDesign = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
+
+                if ($injector.has('designsToSelect')) {
+
+                    var designsToSelect = $injector.get('designsToSelect');
+
+                    designsToSelect.forEach(function(groupOfDesigns) {
+                        groupOfDesigns.designs.forEach(function(design) {
+
+                            if (design.noComponentBrowser) {
+                                self._projectsToDisableComponentBrowser.push(design.name);
+                            }
+
+                        });
+                    });
+
+                }
+
                 if ($cookies.footerDrawerUserPreferences) {
                     this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
                 } else {
                     this._userPreferences = null;
                 }
 
-                console.log('User preferences:', this._userPreferences);
+                //console.log('User preferences:', this._userPreferences);
 
-                this.toggle();                
+                this.toggle();
 
             }
 
@@ -71,9 +93,9 @@ angular.module('mms.designEditor.footerDrawer', [
             DrawerController.prototype.toggle = function() {
 
                 if (this._expanded) {
-                	this.collapse();
+                    this.collapse();
                 } else {
-                	this.expand();                	
+                    this.expand();
                 }
 
             };
@@ -156,8 +178,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 this._headerDragging = true;
                 this._heightBeforeHeaderDragging = this.getHeight();
-                this._heightAllowance = 
-                    window.innerHeight - 
+                this._heightAllowance =
+                    window.innerHeight -
                     parseInt(getComputedStyle(this._screenHeaderEl).height.slice(0, -2), 10);
 
             };
@@ -182,7 +204,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 if (!this._headerDragging && this._potentialHeaderDragStart != null) {
                     this._startHeaderDragging();
-                } 
+                }
 
                 if (this._headerDragging) {
 
@@ -203,12 +225,34 @@ angular.module('mms.designEditor.footerDrawer', [
 
             DrawerController.prototype.registerPanel = function(panelCtrl) {
 
+                var disableComponentBrowser = this._projectsToDisableComponentBrowser.indexOf(this._currentDesign) !== -1;
+
                 if (panelCtrl && panelCtrl.name) {
+                    if (panelCtrl.name.toLowerCase() !== "components" && disableComponentBrowser || !disableComponentBrowser) {
 
-                    this._panels.push(panelCtrl);
+                        if ( this._panels.map( function(x) {
+                            return x.name.toLowerCase();
+                        }).indexOf(panelCtrl.name.toLowerCase()) === -1 ) {
 
-                    if (panelCtrl.active) {
-                        this.activatePanel(panelCtrl);
+                            this._panels.push(panelCtrl);
+
+                            if (panelCtrl.active) {
+                                this.activatePanel(panelCtrl);
+                            }
+                        }
+
+                    }
+
+                    else {
+
+                        var componentPanelIndex = this._panels.map( function(x) {
+                                return x.name.toLowerCase();
+                            }).indexOf("components");
+
+                        if (componentPanelIndex !== -1) {
+                            this._panels.splice(componentPanelIndex, 1);
+                        }
+
                     }
 
                 }
@@ -236,12 +280,28 @@ angular.module('mms.designEditor.footerDrawer', [
                             panel.height = height;
                         }
 
-                    } 
+                    }
 
                     if (this._expanded) {
                         this.setHeight(panel.height);
                     }
 
+
+                }
+
+            };
+
+            DrawerController.prototype.activePanelByName = function(panelName) {
+
+                var self = this;
+
+                if (this._panels) {
+
+                    this._panels.forEach(function(panel) {
+                        if (panel.name === panelName) {
+                            self.activatePanel(panel);
+                        }
+                    });
 
                 }
 
@@ -270,12 +330,15 @@ angular.module('mms.designEditor.footerDrawer', [
                     ctrl.registerElement(element[0]);
                     ctrl.registerParentEditor(designEditorCtrl);
 
+                    designEditorCtrl._footerDrawerCtrl = ctrl;
+
                     document.addEventListener('mouseup', boundDocumentMouseUp);
-                    document.addEventListener('mousemove', boundDocumentMouseMove);                    
+                    document.addEventListener('mousemove', boundDocumentMouseMove);
 
                     scope.$on('$destroy', function() {
 
                         ctrl.unregisterElement(element[0]);
+                        designEditorCtrl._footerDrawerCtrl = null;
 
                         document.removeEventListener('mouseup', boundDocumentMouseUp);
                         document.removeEventListener('mousemove', boundDocumentMouseMove);
@@ -286,8 +349,9 @@ angular.module('mms.designEditor.footerDrawer', [
             };
         }
     )
-    .directive('drawerPanel', 
-        function() {
+    .directive('drawerPanel',
+
+        function(projectHandling, $rootScope) {
 
             function DrawerPanelController() {
                 this.name = null;
@@ -313,6 +377,13 @@ angular.module('mms.designEditor.footerDrawer', [
                     ctrl.name = attributes.name;
                     ctrl.iconClass = attributes.iconClass;
 
+                    if (ctrl.name.toLowerCase() === "inspector" ) {
+                        ctrl.contentPanel = false;
+                    }
+                    else {
+                        ctrl.contentPanel = true;
+                    }
+
                     if (attributes.hasOwnProperty('active')) {
                         ctrl.active = true;
                     } else {
@@ -321,12 +392,21 @@ angular.module('mms.designEditor.footerDrawer', [
 
                     if (attributes.hasOwnProperty('height') && !isNaN(attributes.height)) {
                         ctrl.height = attributes.height;
-                    } 
+                    }
 
                     footerDrawerCtrl.registerPanel(ctrl);
+
+                    $rootScope.$on('designMustBeOpened', function(event, design) {
+
+                        footerDrawerCtrl._currentDesign = design.name.toLowerCase();
+                        footerDrawerCtrl.registerPanel(ctrl);
+                        footerDrawerCtrl.activatePanel(footerDrawerCtrl._panels[footerDrawerCtrl._panels.map( function(x) {
+                                return x.name.toLowerCase();
+                            }).indexOf("inspector")]);
+
+                    });
 
                 }
             };
         }
     );
-

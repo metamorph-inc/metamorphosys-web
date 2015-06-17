@@ -3,16 +3,19 @@
    class="port"
    ng-class="::getCssClass()">
     <text class="port-label"
-          ng-if="::isPortLabelVisible()"
-          ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
-          ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
+        ng-if="::isPortLabelVisible()"
+        ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
+        ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
         >{{getLabel()}}
     </text>
     <g
         ng-click="onPortClick(portInstance, $event)"
         ng-mousedown="onPortMouseDown(portInstance, $event)"
         ng-mouseup="onPortMouseUp(portInstance, $event)"
+        ng-mouseover="onPortMouseOver(portInstance, $event)"
+        ng-mouseout="onPortMouseOut(portInstance, $event)"
         >
+        <title>{{::(portInstance.portSymbol.description || portInstance.portSymbol.type)}}</title>
         <g class="symbol-placeholder"></g>
     </g>
 </g>

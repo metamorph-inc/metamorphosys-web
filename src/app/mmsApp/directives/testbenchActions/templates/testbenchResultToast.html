@@ -9,13 +9,13 @@
           ng-if="success !== true"
         ><i class="fa fa-exclamation-circle" style="margin-right: 10px"></i> {{progressMessage}}</span>
     <md-button
-        class="md-raised"
+        class="md-raised toast-bttn"
         ng-if="!(result.status=='SUCCESS')"
         ng-click="closeToast()">
         Close
     </md-button>
     <md-button
-        class="md-raised"
+        class="md-raised toast-bttn"
         ng-if="result.status=='SUCCESS'"
         ng-click="showResult($event)">
         Show it

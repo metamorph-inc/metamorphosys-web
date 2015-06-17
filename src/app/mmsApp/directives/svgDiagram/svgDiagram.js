@@ -79,9 +79,13 @@ angular.module('mms.svgDiagram', [
                     wasPortMouseDowned = false,
                     wasWireCornerMouseDowned = false,
 
-                    $$window;
+                    $$window,
+
+                    self = this;
 
                 $$window = $($window);
+
+                $scope.ctrl = this;
 
                 this.$rootScope = $rootScope;
                 this.componentLibrary = componentLibrary;
@@ -90,6 +94,9 @@ angular.module('mms.svgDiagram', [
                 this.$log = $log;
                 this.acmImportService = acmImportService;
                 this.dndService = dndService;
+
+                this._portElementsByType = null;
+                this._focusedPort = null;
 
                 // Setting up handlers
 
@@ -493,6 +500,124 @@ angular.module('mms.svgDiagram', [
                     componentElements = componentElements || {};
 
                     delete componentElements[id];
+
+                };
+
+                this.onPortMouseOver = function(component, port) {
+
+                    if (!wireDrawHandler.wiring) {
+
+                        this._focusedPort = port;
+                        this.focusPorts();
+
+                    }
+
+                };
+
+                this.onPortMouseOut = function(/*component, port*/) {
+
+                    if (!wireDrawHandler.wiring) {
+
+                        // only if not drawing a line
+                        this.unFocusPorts();
+
+                    }
+
+                };
+
+
+                this.registerPortElement = function(type, element) {
+
+                    this._portElementsByType = this._portElementsByType || {};
+
+                    this._portElementsByType[type] = this._portElementsByType[type] || [];
+
+                    if (this._portElementsByType[type].indexOf(element) === -1) {
+                        this._portElementsByType[type].push(element);
+                    }
+
+                };
+
+                this.deregisterPortElement = function(type, element) {
+
+                    if (this._portElementsByType && this._portElementsByType[type]) {
+
+                        var index = this._portElementsByType[type].indexOf(element);
+
+                        if ( index > -1 ) {
+                            this._portElementsByType[type].splice(index, 1);
+                        }
+
+                    }
+
+                };
+
+                this.focusPorts = function() {
+
+                    var typeToFocus = this._focusedPort &&
+                            this._focusedPort.portSymbol &&
+                            this._focusedPort.portSymbol.type;
+
+                        if (typeToFocus) {
+
+                            var connectorDescriptionEls = document.querySelectorAll(
+                                '.connector-description.' + typeToFocus
+                            );
+
+                            if (connectorDescriptionEls) {
+
+                                Array.prototype.forEach.call(connectorDescriptionEls, function(el) {
+
+                                    var nameEl = el.querySelector('.connector-name');
+
+                                    if (nameEl.textContent === self._focusedPort.portSymbol.label) {
+                                        el.classList.add('focused');
+                                    }
+
+                                });
+
+                            }
+
+                            if(this._portElementsByType) {
+
+                                for (var type in this._portElementsByType) {
+
+                                    if (type !== typeToFocus) {
+
+                                        for (var i = 0; i < this._portElementsByType[type].length; i++) {
+                                            this._portElementsByType[type][i].classList.add('faded');
+                                        }
+
+                                    }
+                                }
+                            }
+
+                        }
+
+                };
+
+                this.unFocusPorts = function() {
+
+                    if (this._portElementsByType) {
+
+                        for (var type in this._portElementsByType) {
+
+                            for (var i = 0; i < this._portElementsByType[type].length; i++) {
+                                this._portElementsByType[type][i].classList.remove('faded');
+                            }
+                        }
+
+                    }
+
+                    var portDescriptors = document.querySelectorAll('.connector-description');
+
+                    if (portDescriptors) {
+                        Array.prototype.map.call(portDescriptors, function(el) {
+                            el.classList.remove('focused');
+                        });
+                    }
+
+                    this._focusedPort = null;
 
                 };
 

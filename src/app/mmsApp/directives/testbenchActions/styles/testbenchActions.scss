@@ -118,3 +118,9 @@
         position: relative;
     }
 }
+
+.toast-bttn {
+    &:hover {
+        background-color: rgb(144, 144, 144) !important;
+    }
+}

@@ -8,7 +8,7 @@
     overflow: hidden;
     -moz-user-select: none;
     -webkit-user-select: none;
-    -ms-user-select: none;    
+    -ms-user-select: none;
 }
 
 .md-dialog-container h1 {
@@ -103,6 +103,7 @@ md-tabs.md-default-theme md-tabs-ink-bar {
 
 .md-dialog-container {
     background-color: rgba(0, 0, 0, .6) !important;
+    z-index: 20000;
 }
 
 img.scale-it {
@@ -127,6 +128,10 @@ img.bordered {
     color: $mmsRed;
 }
 
+.has-error .help-block, .has-error .control-label, .has-error .radio, .has-error .checkbox, .has-error .radio-inline, .has-error .checkbox-inline {
+    color: $mmsRed;
+}
+
 .editable-controls {
     button {
         padding: .5ex 1ex;
@@ -134,7 +139,7 @@ img.bordered {
 
     input {
         padding: 0 1ex;
-        height: 26px;        
+        height: 26px;
     }
 }
 
@@ -143,5 +148,5 @@ img.bordered {
   opacity: 0.9;
   cursor: pointer;
   position: absolute;
-  top: 53px;    
+  top: 53px;
 }

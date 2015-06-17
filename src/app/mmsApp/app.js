@@ -35,6 +35,9 @@ require('./directives/designEditor/designEditor');
 
 require('./directives/mainNavigator/mainNavigator');
 
+require('./directives/designSelector/designSelector');
+
+
 
 var CyPhyApp = angular.module('CyPhyApp', [
 
@@ -79,10 +82,13 @@ var CyPhyApp = angular.module('CyPhyApp', [
 
     'xeditable',
 
+
+    'mms.designSelector',
+
     // Component Browser
 
     'mms.componentBrowser',
-    'mms.componentBrowser.componentLibrary',    
+    'mms.componentBrowser.componentLibrary',
 
     // Subcircuit Browser
 
@@ -224,7 +230,7 @@ CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, 
 
         console.log('Go to design', design.id);
 
-        if (design && design.id !== projectHandling.getSelectedContainerId()) {
+        if (design && design.id !== projectHandling.getSelectedDesignId()) {
 
             $rootScope.setProcessing();
             $timeout(function() {
