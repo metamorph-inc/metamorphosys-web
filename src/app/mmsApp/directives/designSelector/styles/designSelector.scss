@@ -7,7 +7,7 @@
     md-content {
         padding-left: 24px;
         padding-right: 24px;
-        height: 480px;
+        height: 350px;
         margin-bottom: 1px;
         overflow-y: scroll;
     }
@@ -34,7 +34,7 @@
     }
 
     .design-tile {
-        width: 360px;
+        width: 390px;
         display: inline-block;
         background: #fff;
         cursor: pointer;
@@ -90,7 +90,7 @@
             padding: 10px 10px 10px 125px;
             text-align: left;
             font-size: 85%;
-            height: 155px;
+            height: 175px;
         }
 
         .design-visual {
@@ -103,6 +103,10 @@
             margin-bottom: 1em;
             opacity: 1;
             transition: opacity 200ms;
+        }
+
+        .md-actions {
+            padding: 0;
         }
 
 

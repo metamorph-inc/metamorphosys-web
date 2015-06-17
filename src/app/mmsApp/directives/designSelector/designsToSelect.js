@@ -8,20 +8,20 @@ module.exports = [
             {
                 id: '/1922727130/1620862711/536930709',
                 name: 'Bluetooth System',
-                description: 'Missing description. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
-                visual: 'http://placehold.it/200x200'
+                description: "This model is a template that can be used to make a fully functional Bluetooth device. Just add your desired subcircuit(s) to the model and hook it up to the provided ports to allow for the sending and receiving of sensor data using Cypress' PSoC\xAE 4 BLE technology after connecting it to a BLE motherboard.",
+                visual: 'images/bluetooth_icon300x300.png'
             },
             {
                 id: '/1922727130/1620862711/1676796655',
                 name: 'Arduino DUE Shield Basic',
-                description: 'Missing description. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
-                visual: 'http://placehold.it/200x200'
+                description: "This model represents a limited-featured Arduino shield, which connects to your Arduino to extend its capabilities.  Simply add your subcircuit(s) and hook it up to the shield's exposed ports. It is a great starting point for less experienced Arduino users as it hides some of the more advanced connectors. The shield is a separate component that pairs well with an Arduino DUE.",
+                visual: 'images/arduino_due_shield.png'
             },
             {
                 id: '/1922727130/1620862711/529144610',
                 name: 'Arduino DUE Shield Advanced',
-                description: 'Missing description. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
-                visual: 'http://placehold.it/200x200'
+                description: 'This design extends the Arduino Shield Basic project by exposing the full functionality of the Arduino to allow you to hook up more complex systems. The template adds a 5-HID connector, as well as 5V Power/Ground, IOREF, AREF, and Vin pins. It is intended for more experienced users. Similar to the basic project, this shield is a separate component from an Arduino.',
+                visual: 'images/arduino_due_shield.png'
             }
 
         ]
