@@ -74,11 +74,41 @@ angular.module('mms.headerButtons', [])
 
         $rootScope.openHelpDialog = $scope.openHelpDialog = function (ev) {
 
-            function DialogController($scope, $mdDialog) {
+            function DialogController($scope, projectHandling) {
 
                 $scope.user = {};
 
                 $scope.buildHash = $rootScope.buildHash;
+
+                $scope.tutorial = null;
+
+                if ($injector.has('designsToSelect')) {
+
+                    var designsToSelect = $injector.get('designsToSelect');
+
+                    var designName = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
+
+                    $scope.designName = designName;
+
+                    if (designsToSelect) {
+
+                        designsToSelect.forEach(function(designGroup){
+
+                            designGroup.designs.forEach(function(design) {
+
+                                if (!$scope.tutorial &&
+
+                                    design.name === designName) {
+                                    $scope.tutorial = design.tutorial;
+
+                                }
+                            });
+
+                        });
+                    }
+
+                }
+
 
 
                 $scope.hide = function () {

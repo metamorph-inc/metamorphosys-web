@@ -41,7 +41,7 @@ angular.module('mms.designEditor', [
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager, wiringService, $q) {
+            acmImportService, mmsUtils, operationsManager, wiringService, $q, $injector) {
 
             var justCreatedWires,
                 layoutContext,
@@ -641,10 +641,39 @@ angular.module('mms.designEditor', [
                                 $rootScope.unCover();
                                 $rootScope.stopProcessing();
 
-                                if ($cookies.seenMMSWelcome !== 'true') {
+                                if ($injector.has('designsToSelect')) {
 
-                                    $rootScope.openHelpDialog();
-                                    $cookies.seenMMSWelcome = 'true';
+                                    var designsToSelect = $injector.get('designsToSelect');
+
+                                    var designName = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
+
+                                    $scope.designName = designName;
+
+                                    var tutorial;
+
+                                    if (designsToSelect) {
+
+                                        designsToSelect.forEach(function(designGroup){
+
+                                            designGroup.designs.forEach(function(design) {
+
+                                                if (!tutorial &&
+
+                                                    design.name === designName) {
+                                                    tutorial = design.tutorial;
+
+                                                }
+                                            });
+
+                                        });
+                                    }
+
+                                    if (tutorial && $cookies['seenTutorialFor' + designName] !== 'true') {
+
+                                        $rootScope.openHelpDialog();
+                                        $cookies['seenTutorialFor' + designName] = 'true';
+
+                                    }
 
                                 }
 

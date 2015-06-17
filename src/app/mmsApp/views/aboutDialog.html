@@ -3,78 +3,25 @@
     <md-content>
         <div class="clearfix"></div>
         <p>
-            The <b>Metamorphosys</b> tools are used for the design and analysis of electronics. In this tech demo,
-            you'll be able to quickly generate a circuit board design for an Ara Module with a 1x2 form-factor.
+            The <b>Metamorphosys</b> tools are used for the design and analysis of electronics.
         </p>
 
-        <h3 class="md-sticky-no-effect">Tutorial exercise:</h3>
-        <md-card>
-            <div layout="row" layout-align="center center">
-                <div flex="55">
-                    <p>
-                        Grab a sensor component from the <b>SENSORS</b> folder and drag it onto the canvas.
-                    </p>
-
-                    <p>
-                        As an alternate method, you can also right-click on the chosen component and select
-                        <i>"Add to design"</i> from the context-menu.
-                    </p>
-                </div>
-
-                <p flex="5"></p>
-
-                <p flex="40">
-                    <img src="images/add_sensor.png" class="scale-it bordered"/>
-                </p>
-            </div>
-        </md-card>
-        <md-card>
-            <div layout="row" layout-align="center center">
-                <p flex="40">
-                    <img src="images/connect_stuff.png" class="scale-it bordered"/>
-                </p>
-
-                <p flex="5"></p>
-
-                <div flex="55">
-                    <p>
-                        Connect the sensor's power ports to the corresponding interfaces of the <b>Power System</b>.
-                        Then
-                        connect its communication interface to the corresponding interface on the <b>GP ASIC</b>.
+        <div class="tutorial" ng-if="tutorial">
+            <h3 class="md-sticky-no-effect">Totorial exercise for <i>{{::designName}}</i>:</h3>
+            <p>{{::tutorial.intro}}</p>
+            <div class="tutorial-steps">
+                <div class="tutorial-step" layout="row" layout-align="center center" ng-repeat="step in ::tutorial.steps">
+                    <div flex="55" ng-bind-html="::step.description"></div>
+                    <p flex="5"></p>
+                    <p flex="40">
+                        <img ng-attr-src="{{::step.visual}}" class="scale-it bordered"/>
                     </p>
                 </div>
             </div>
-        </md-card>
-        <md-card>
-            <div layout="row" layout-align="center center">
-                <p flex="55">
-                    Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit
-                    board)</i>. This can take a few minutes.
-                </p>
 
-                <p flex="5"></p>
+            <div class="clearfix"></div>
+        </div>
 
-                <p flex="40">
-                    <img src="images/run_testbench.png" class="scale-it bordered"/>
-                </p>
-            </div>
-        </md-card>
-        <md-card>
-            <div layout="row" layout-align="center center">
-                <p flex="40">
-                    <img src="images/show_results.png" class="scale-it bordered"/>
-                </p>
-
-                <p flex="5"></p>
-
-                <p flex="55">
-                    After reviewing the results, iterate on your design by making changes, adding more components, and
-                    generating new PCBs.
-                </p>
-            </div>
-        </md-card>
-
-        <div class="clearfix"></div>
         <h3 class="md-sticky-no-effect">A Note About the Tech Demo:</h3>
         <p>
             This is a limited prototype aimed at showing the new <b>editing, collaboration, and cloud-based
