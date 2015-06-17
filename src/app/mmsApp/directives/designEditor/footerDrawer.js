@@ -10,6 +10,8 @@ angular.module('mms.designEditor.footerDrawer', [
 
             function DrawerController() {
 
+                var self = this;
+
                 this._AUTO_HEIGHT = 200;
                 this._COLLAPSED_HEIGHT = 26;
 
@@ -31,11 +33,22 @@ angular.module('mms.designEditor.footerDrawer', [
                 this._activePanel = null;
 
                 this._projectsToDisableComponentBrowser = [];
-                this._currentDesign = projectHandling.getSelectedDesign().name.toLowerCase();
+                this._currentDesign = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
 
+                if ($injector.has('designsToSelect')) {
 
-                if ($injector.has('projectsToDisableComponentBrowser')) {
-                    this._projectsToDisableComponentBrowser = $injector.get('projectsToDisableComponentBrowser');
+                    var designsToSelect = $injector.get('designsToSelect');
+
+                    designsToSelect.forEach(function(groupOfDesigns) {
+                        groupOfDesigns.designs.forEach(function(design) {
+
+                            if (design.noComponentBrowser) {
+                                self._projectsToDisableComponentBrowser.push(design.name);
+                            }
+
+                        });
+                    });
+
                 }
 
                 if ($cookies.footerDrawerUserPreferences) {

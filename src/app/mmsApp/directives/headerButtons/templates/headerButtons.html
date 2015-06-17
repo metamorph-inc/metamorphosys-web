@@ -1,7 +1,15 @@
 <div class="header-buttons dark-bg">
-	<span ng-if="showBuildHash" class="build-hash">{{::buildHash}}</span>	
-    <md-button ng-click="openShareDialog($event)" class="button-bordered md-button md-default-theme"><i class="fa fa-share-alt"></i></i> Save & Share</md-button>
-    <md-button ng-click="openSubscribeDialog($event)" class="button-bordered md-button md-default-theme"><i class="fa fa-star"></i> Sign up</md-button>
-    <md-button ng-click="openHelpDialog($event)" class="md-raised md-primary help"><i class="fa fa-question"></i> </md-button>
+    <span ng-if="showBuildHash" class="build-hash">{{::buildHash}}</span>
+    <md-button ng-click="openShareDialog($event)" class="button-bordered md-button md-default-theme"><i class="fa fa-share-alt"></i>
+        <md-tooltip class="header-menu-tooltip">
+            Save & Share
+        </md-tooltip>
+    </md-button>
+    <md-button ng-click="openSubscribeDialog($event)" class="button-bordered md-button md-default-theme"><i class="fa fa-star"></i>
+        <md-tooltip class="header-menu-tooltip">
+            Sign up
+        </md-tooltip>
+    </md-button>
+    <md-button ng-click="openHelpDialog($event)" class="md-raised md-primary help"><i class="fa fa-question"></i>
+    </md-button>
 </div>
-

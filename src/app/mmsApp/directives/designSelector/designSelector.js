@@ -7,9 +7,14 @@ angular.module( 'mms.designSelector', [] )
 
         $rootScope.openDesignSelector = function(ev, isWelcomeScreen) {
 
-            function DialogController($scope) {
+            function DialogController($scope, $injector) {
 
-                $scope.designsToSelect = require('./designsToSelect.js');
+                if ($injector.has('designsToSelect')) {
+
+                    $scope.designsToSelect = $injector.get('designsToSelect');
+
+                }
+
                 $scope.isWelcomeScreen = isWelcomeScreen;
 
             }
@@ -28,8 +33,8 @@ angular.module( 'mms.designSelector', [] )
 
 
     })
-    .directive( 'designSelector', [ '$rootScope',
-        function () {
+    .directive( 'designSelector',
+        function ($rootScope, $log) {
 
             return {
                 restrict: 'E',
@@ -39,19 +44,30 @@ angular.module( 'mms.designSelector', [] )
                     isWelcomeScreen: '='
                 },
                 templateUrl: '/mmsApp/templates/designSelector.html',
-                controller: function($mdDialog, projectHandling, $rootScope) {
+                controller: function($mdDialog, projectHandling) {
 
-                    this.openDesign = function(designId) {
+                    this.openDesign = function(designName) {
 
                         var availableDesigns,
                             design;
 
                         availableDesigns = projectHandling.getAvailableDesigns();
 
-                        design = availableDesigns[designId];
+                        for (var i in availableDesigns) {
+
+                            var d = availableDesigns[i];
+
+                            //console.log(d.name.replace(/_/g, ' ') === designName);
+
+                            if (!design && d.name.replace(/_/g, ' ') === designName) {
+                                design = d;
+                            }
+                        }
 
                         if (design && projectHandling.getSelectedDesignId() !== design.id) {
                             $rootScope.$emit('designMustBeOpened', design);
+                        } else {
+                            $log.error('No design found by name', designName, availableDesigns);
                         }
 
                         $mdDialog.cancel();
@@ -67,4 +83,4 @@ angular.module( 'mms.designSelector', [] )
                 bindToController: true
             };
 
-        }] );
+        } );

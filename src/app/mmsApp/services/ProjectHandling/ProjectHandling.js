@@ -6,7 +6,8 @@ angular.module('mms.projectHandling', [])
     .service('projectHandling', function($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
         mmsUtils, designService, testBenchService, designLayoutService, $timeout, dataStoreService) {
 
-        var selectedProjectId,
+        var self = this,
+            selectedProjectId,
             selectedBranchId,
             selectedWorkspaceId,
             selectedDesignId,
@@ -759,28 +760,68 @@ angular.module('mms.projectHandling', [])
 
             deferred = $q.defer();
 
-            if (!containerId || !angular.isObject(availableContainers) || !availableContainers[containerId]) {
-                deferred.reject('Non-existing containerId');
+            if (!containerId) {
+
+                deferred.reject('Invalid containerId');
+
+            } else if (!availableContainers) {
+
+                deferred.reject('No containers available');
+
+            } else if (containerId === selectedContainerId) {
+
+                $log.debug('Container was already selected', availableContainers[containerId]);
+                deferred.resolve(containerId);
+
+
+            } else if (availableContainers[containerId]){
+
+                self.leaveContainer();
+                selectedContainerId = containerId;
+
+                setupContainerInternalsWatcher(containerId).then(function() {
+
+                    $log.debug('Container selected', availableContainers[containerId]);
+                    deferred.resolve(containerId);
+
+                });
+
+
             } else {
 
-                if (containerId !== selectedContainerId) {
+                var path = containerId.split('/');
 
-                    this.leaveContainer();
+                if (path.length > 1) {
 
-                    selectedContainerId = containerId;
+                    path.pop();
 
-                    setupContainerInternalsWatcher(containerId).then(function() {
+                    self.selectContainer(path.join('/'))
+                    .then(function() {
 
-                        $log.debug('Container selected', availableContainers[containerId]);
+                        if (availableContainers[containerId]) {
 
-                        deferred.resolve(containerId);
+                            self.leaveContainer();
+                            selectedContainerId = containerId;
 
+                            setupContainerInternalsWatcher(containerId).then(function() {
+
+                                $log.debug('Container selected', availableContainers[containerId]);
+                                deferred.resolve(containerId);
+
+                            });
+
+                        } else {
+                            deferred.reject('Could not find container through parent');
+                        }
+
+                    })
+                    .catch(function(e) {
+                        deferred.reject(e);
                     });
 
-                    deferred.resolve(containerId);
 
                 } else {
-                    deferred.resolve(containerId);
+                    deferred.reject('Could not find parent conainer for container to be loded');
                 }
 
             }
@@ -884,7 +925,7 @@ angular.module('mms.projectHandling', [])
                 .then(function(connectionId) {
 
                     var dbConn = dataStoreService.getDatabaseConnection(connectionId);
-                    
+
                     dbConn.client.undo(self.getSelectedBranchId(), function() {
                         console.log('Undo is done:', arguments);
                     });
