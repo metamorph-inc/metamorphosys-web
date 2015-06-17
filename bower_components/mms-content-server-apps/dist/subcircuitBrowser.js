@@ -1543,10 +1543,7 @@ require("../../../componentBrowser/directives/showLessButton/showLessButton.js")
 
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.subcircuitDetails.react"]).controller("SubcircuitListViewItemController", function ($scope) {
-    console.log($scope);
-    //debugger;
-}).directive("subcircuitListView", function () {
+angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.subcircuitDetails.react"]).controller("SubcircuitListViewItemController", function () {}).directive("subcircuitListView", function () {
 
     function SubcircuitDetailsController($scope) {
 
@@ -1630,6 +1627,8 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
  */
 
 /*global angular*/
+
+//debugger;
 
 },{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/showLessButton/showLessButton.js":8,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":9,"../../services/subcircuitLibrary.js":17,"..//subcircuitDetails/subcircuitDetails.jsx":14}],16:[function(require,module,exports){
 "use strict";
