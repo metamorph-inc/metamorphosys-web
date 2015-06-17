@@ -2,8 +2,13 @@
     <h1 class="md-sticky-no-effect">Demo designs</h1>
     <md-content>
         <div ng-if="ctrl.isWelcomeScreen" class="welcome-message">
-            <h2>Hola!</h2>
-            <p>This is the end my Friend!</p>
+            <h2>Hey there!</h2>
+            <p>
+                Select one of the featured projects below to get started.
+                If you'd like to take a look at some other designs in the works,
+                choose one of the experimental projects. But beware, These may
+                result in a bug or two!
+            </p>
         </div>
         <div class="design-group" ng-class="group.id" ng-repeat="group in ctrl.designs">
             <h3 class="design-group-label">{{group.label}}</h3>
