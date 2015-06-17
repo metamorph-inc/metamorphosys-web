@@ -10,6 +10,15 @@
 
 	padding: 10px;
 
+    .inspectable-name {
+        margin-top: .5ex;
+
+        .editable-text {
+            margin-bottom: 1em;
+        }
+
+    }
+
 	.editable-click, a.editable-click {
 		color: $linkColorOnDark;
 	}
