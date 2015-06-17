@@ -7,9 +7,14 @@ angular.module( 'mms.designSelector', [] )
 
         $rootScope.openDesignSelector = function(ev, isWelcomeScreen) {
 
-            function DialogController($scope) {
+            function DialogController($scope, $injector) {
 
-                $scope.designsToSelect = require('./designsToSelect.js');
+                if ($injector.has('designsToSelect')) {
+
+                    $scope.designsToSelect = $injector.get('designsToSelect');
+
+                }
+
                 $scope.isWelcomeScreen = isWelcomeScreen;
 
             }

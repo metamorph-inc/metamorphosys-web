@@ -78,6 +78,19 @@ angular.module(
                             });
                         });
 
+                        designMenu.items.sort(function(a, b) {
+
+                            if (a.label < b.label) {
+                                return -1;
+                            }
+
+                            if (a.label === b.label) {
+                                return 0;
+                            }
+
+                            return 1;
+                        });
+
                         if (designMenu.items.length) {
 
                             self.navigator.items[0].menu = [];
@@ -122,6 +135,20 @@ angular.module(
                                         }
                                     });
                                 });
+
+                                submenu.items.sort(function(a, b) {
+
+                                    if (a.label < b.label) {
+                                        return -1;
+                                    }
+
+                                    if (a.label === b.label) {
+                                        return 0;
+                                    }
+
+                                    return 1;
+                                });
+
 
                                 if (submenu.items.length) {
 
