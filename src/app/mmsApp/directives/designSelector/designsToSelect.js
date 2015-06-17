@@ -12,13 +12,13 @@ module.exports = [
                 visual: 'http://placehold.it/200x200'
             },
             {
-                id: '/1922727130/1620862711/1383029990',
+                id: '/1922727130/1620862711/1676796655',
                 name: 'Arduino DUE Shield Basic',
                 description: 'Missing description. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
                 visual: 'http://placehold.it/200x200'
             },
             {
-                id: '/1922727130/1620862711/312125244',
+                id: '/1922727130/1620862711/529144610',
                 name: 'Arduino DUE Shield Advanced',
                 description: 'Missing description. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
                 visual: 'http://placehold.it/200x200'

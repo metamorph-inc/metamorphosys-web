@@ -280,11 +280,11 @@ angular.module('mms.designEditor', [
                     addRootScopeEventListener('wiresMustBeSaved', function($event, wires, message) {
                         nodeService.startTransaction(layoutContext, message || 'Saving wires');
 
-                        wires.forEach(function(wire) {
-                            designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+                        $q.all(wires.map(function(wire) {
+                            return designLayoutService.setWireSegments(layoutContext, wire.getId(), wire.getCopyOfSegmentsParameters(), message || 'Updating wire');
+                        })).then(function () {
+                            nodeService.completeTransaction(layoutContext);
                         });
-
-                        nodeService.completeTransaction(layoutContext);
                     });
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
