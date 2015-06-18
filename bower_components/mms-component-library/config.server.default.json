@@ -1,7 +1,0 @@
-{
-    "port": 3000,
-    "componentPath": "../tonkalib.git/components",
-    "subCircuitPath": "",
-    "autoRescan": true,
-    "elasticSearchURI": "localhost:9200"
-}

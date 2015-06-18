@@ -1,5 +1,0 @@
-{
-    "port": 3000,
-    "componentPath": "/component-server/components/",
-    "elasticSearchURI": "localhost:9200"
-}
