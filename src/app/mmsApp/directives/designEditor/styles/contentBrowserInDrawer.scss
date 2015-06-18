@@ -50,6 +50,8 @@ $hover-color: rgba(158, 158, 158, 0.1);
 
 	.content-browser{
 
+		-ms-overflow-style: none;
+
 		.item-title {
 			font-weight: bold;
 			font-size: 16px;
