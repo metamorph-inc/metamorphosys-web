@@ -5,7 +5,7 @@ set -e
 npm install -g bower@1.3.12
 npm install -g gulp@3.8.11
 
-echo '{"componentServerUrl": "http://components.metamorphsoftware.com"}' > client_apps/componentBrowser/config.client.json
+# echo '{"componentServerUrl": "http://components.metamorphsoftware.com"}' > client_apps/componentBrowser/config.client.json
 
 [ -d node_modules ] && rm -rf node_modules
 npm install --production

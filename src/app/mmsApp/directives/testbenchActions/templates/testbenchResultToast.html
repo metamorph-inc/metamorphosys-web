@@ -3,9 +3,9 @@
         'failure': success !== true,
         'success': success === true
         }">
-    <span flex
+    <span class="toast-box"flex
         ng-if="success === true"><i class="glyphicon glyphicon-ok" style="margin-right: 10px"></i> {{progressMessage}}</span>
-    <span flex
+    <span class="toast-box" flex
           ng-if="success !== true"
         ><i class="fa fa-exclamation-circle" style="margin-right: 10px"></i> {{progressMessage}}</span>
     <md-button

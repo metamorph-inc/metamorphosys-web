@@ -1,17 +1,17 @@
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/styles/subcircuitBrowserApp.scss */
+/* line 1, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/styles/subcircuitBrowserApp.scss */
 body, html {
   height: 100%; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+/* line 3, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
 .content-browser {
   height: 100%;
   overflow: hidden;
   letter-spacing: -0.1px; }
-  /* line 10, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 10, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser #morph-logo {
     width: 240px;
     margin-top: -10px; }
-  /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 15, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .header-panel {
     width: 100%;
     height: 100px;
@@ -19,17 +19,38 @@ body, html {
     border-bottom: 1px solid #eee;
     background-color: #fff;
     z-index: 20; }
-    /* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+    /* line 24, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
     .content-browser .header-panel h2 {
       padding: 10px;
       margin-bottom: 20px; }
-  /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 30, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .top-component-search {
     position: absolute;
     right: 10px;
     z-index: 30;
     top: 4ex; }
-  /* line 38, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 37, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .app-booting {
+    width: 100%; }
+  /* line 41, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .app-booting-message {
+    position: absolute;
+    top: 25%;
+    text-align: center;
+    width: 100%; }
+  /* line 48, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  .content-browser .diagram-container-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+    display: block;
+    transition: opacity 200ms ease-out 600ms; }
+    /* line 57, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+    .content-browser .diagram-container-spinner.initialized {
+      display: none; }
+  /* line 63, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .left-panel {
     line-height: 30px;
     width: 20%;
@@ -39,7 +60,7 @@ body, html {
     padding-top: 100px;
     max-height: 100%;
     overflow: auto; }
-  /* line 49, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 74, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .main-container-panel {
     width: 80%;
     padding: 0;
@@ -48,81 +69,169 @@ body, html {
     height: 100%;
     padding-top: 100px;
     overflow: auto; }
-  /* line 60, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 85, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .components {
     padding-left: 21%; }
-  /* line 65, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 90, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .info-icon {
     color: #1565C0; }
-  /* line 69, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 94, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .panel-info {
     border-color: #1565C0; }
-  /* line 74, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 99, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .no-components-to-list {
     margin-top: 40px;
     display: inline-block; }
-  /* line 80, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 105, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .count-display {
     position: absolute;
     right: 0;
     margin-top: 0;
     font-size: 85%;
     line-height: 110%; }
-  /* line 88, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 113, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .paging-buttons.upper {
     position: absolute;
     width: 100%;
     left: 0; }
-  /* line 98, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 123, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .not-empty-list-content .component-search {
     position: absolute;
     right: 0;
     top: -65px; }
-  /* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 136, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .empty-list-content {
     margin-top: 80px; }
-    /* line 115, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+    /* line 140, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
     .content-browser .empty-list-content .component-search {
       width: 100%; }
-      /* line 119, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+      /* line 144, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
       .content-browser .empty-list-content .component-search .form-control.search-field {
         width: 100%;
         max-width: 30em; }
-  /* line 128, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 153, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser .error-message {
     display: inline-block;
     margin-top: 40px; }
-  /* line 136, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 161, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser.embedded .top-component-search {
     display: none; }
-  /* line 140, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 165, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser.embedded .main-container-panel {
     padding-top: 0; }
-  /* line 145, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
+  /* line 170, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser.embedded .left-panel {
     padding-top: 0; }
 
-/* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+/* line 3, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator {
+  border-top: 1px dotted #eee; }
+  /* line 5, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator .extra-info-content {
+    color: #999; }
+  /* line 11, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator header {
+    display: none; }
+/* line 16, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories h4 {
+  padding-left: 10px; }
+/* line 20, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .selected-node > .node-label {
+  background-color: #90CAF9; }
+/* line 24, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .icon-arrow-right:after {
+  border-left-color: #0D47A1; }
+/* line 28, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-label {
+  padding-left: 12px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 2;
+  text-transform: uppercase;
+  font-size: 85%; }
+/* line 37, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-expander {
+  margin-left: -12px; }
+/* line 41, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-right:after {
+  margin-left: 5px; }
+/* line 45, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-down:after {
+  margin-left: 0; }
+
+/* line 4, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+.content-listing {
+  height: 100%;
+  width: 100%;
+  min-width: 615px;
+  overflow-y: hidden; }
+  /* line 11, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .content-listing .listing-header {
+    position: absolute;
+    background-color: #fff;
+    z-index: 2;
+    height: 90px;
+    width: 100%;
+    min-width: 615px;
+    padding: 40px 10px 0 10px; }
+    /* line 20, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+    .content-listing .listing-header button.btn {
+      font-size: 13px;
+      padding: 1ex;
+      line-height: 16px; }
+  /* line 27, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .content-listing .listing-subheader {
+    position: absolute;
+    left: 10px;
+    top: 10px; }
+  /* line 33, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .content-listing .listing-views {
+    margin-top: 0;
+    position: absolute;
+    top: 0;
+    padding-top: 190px;
+    height: 100%;
+    width: 100%;
+    min-width: 615px;
+    overflow-x: hidden;
+    overflow-y: auto; }
+  /* line 48, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+  .content-listing .actions {
+    text-align: center; }
+
+/* line 55, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
+.embedded .listing-views {
+  padding-top: 100px; }
+
+/* line 3, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+.content-listing.subcircuit-listing .listing-views {
+  padding-top: 90px; }
+
+/* line 9, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
+.embedded .content-listing.subcircuit-listing .listing-views {
+  padding-top: 0; }
+
+/* line 7, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
 .subcircuit-details-grid {
   position: relative;
   font-size: 92%; }
-  /* line 9, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 9, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid h3 {
     margin-top: 2ex;
     margin-bottom: .5ex;
     fonr-size: 120%; }
-  /* line 18, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 18, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .connectors-description {
     display: inline-block; }
-  /* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 24, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .subcircuit-description .subcircuit-description-text {
     padding-right: 90px;
     min-height: 80px; }
-  /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 30, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .subcircuit-description.no-icon .subcircuit-description-text {
     padding-right: 0;
     min-height: 0; }
-  /* line 38, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 38, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .subcircuit-icon-container {
     position: absolute;
     top: 10px;
@@ -130,12 +239,12 @@ body, html {
     width: 80px;
     height: 80px;
     text-align: center; }
-    /* line 46, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+    /* line 46, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
     .subcircuit-details-grid .subcircuit-icon-container .subcircuit-icon {
       display: block;
       max-width: 100%;
       max-height: 100%; }
-  /* line 53, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 53, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .subcircuit-visuals {
     margin-top: 2ex;
     position: absolute;
@@ -143,18 +252,18 @@ body, html {
     height: 200px;
     text-align: center;
     padding: 2px; }
-    /* line 61, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+    /* line 61, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
     .subcircuit-details-grid .subcircuit-visuals .subcircuit-visual {
       max-width: 296px;
       max-height: 196px;
       display: none; }
-      /* line 66, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+      /* line 66, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
       .subcircuit-details-grid .subcircuit-visuals .subcircuit-visual.active {
         display: inline-block; }
-  /* line 74, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 74, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid .connectors-description {
     padding-left: 310px; }
-    /* line 78, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+    /* line 78, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
     .subcircuit-details-grid .connectors-description .connector-description {
       display: inline-block;
       position: relative;
@@ -164,10 +273,10 @@ body, html {
       margin-right: .5ex;
       transition: background-color 200ms;
       background-color: transparent; }
-      /* line 89, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+      /* line 89, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
       .subcircuit-details-grid .connectors-description .connector-description.focused {
         background-color: rgba(200, 200, 255, 0.1); }
-      /* line 93, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+      /* line 93, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
       .subcircuit-details-grid .connectors-description .connector-description .connector-name {
         display: inline-block;
         font-size: 92%;
@@ -175,7 +284,7 @@ body, html {
         margin-right: 1ex;
         border-bottom: 1px solid transparent;
         padding: 0; }
-      /* line 102, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+      /* line 102, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
       .subcircuit-details-grid .connectors-description .connector-description .connector-type {
         display: inline-block;
         font-size: 85%;
@@ -183,69 +292,33 @@ body, html {
         padding: 0.2ex 1ex;
         color: #fff;
         border-radius: 3px; }
-      /* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+      /* line 111, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
       .subcircuit-details-grid .connectors-description .connector-description .connector-description-text {
         font-size: 11px;
         border-radius: .5ex;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
         width: 240px; }
-  /* line 124, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
+  /* line 124, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
   .subcircuit-details-grid.no-visuals .connectors-description {
     padding-left: 0; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator {
-  border-top: 1px dotted #eee; }
-  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator .extra-info-content {
-    color: #999; }
-  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator header {
-    display: none; }
-/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories h4 {
-  padding-left: 10px; }
-/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .selected-node > .node-label {
-  background-color: #90CAF9; }
-/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .icon-arrow-right:after {
-  border-left-color: #0D47A1; }
-/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-label {
-  padding-left: 12px;
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: 2;
-  text-transform: uppercase;
-  font-size: 85%; }
-/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-expander {
-  margin-left: -12px; }
-/* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-right:after {
-  margin-left: 5px; }
-/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-down:after {
-  margin-left: 0; }
-
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 3, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .content-list-view .list-group-item:first-child {
   border-top-left-radius: 0;
   border-top-right-radius: 0; }
-/* line 8, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 8, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .content-list-view .item-list ul.list-group li.item-list-item {
   border-left: none;
   border-right: none;
   padding-right: 125px; }
-  /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  /* line 15, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
   .content-list-view .item-list ul.list-group li.item-list-item.context-menu-trigger {
     cursor: default; }
-  /* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  /* line 20, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
   .content-list-view .item-list ul.list-group li.item-list-item:hover .info-button {
     opacity: 1; }
-/* line 27, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 27, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .content-list-view .info-button {
   text-align: center;
   display: inline-block;
@@ -259,46 +332,46 @@ body, html {
   transition: background-color 200ms, opacity 200ms;
   z-index: 10;
   opacity: 0; }
-  /* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+  /* line 41, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
   .content-list-view .info-button:hover {
     color: #fff;
     background-color: #E65100; }
 
-/* line 48, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 48, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-name, .detail-value {
   font-size: 8px; }
 
-/* line 54, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 54, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-name {
   font-weight: bold;
   width: 8em;
   text-align: right; }
 
-/* line 60, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 60, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .detail-value {
   width: 10em;
   text-align: left; }
 
-/* line 65, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 65, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .property-table {
   display: inline-table;
   vertical-align: top;
   margin-right: 3px; }
 
-/* line 71, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 71, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 td {
   border-collapse: collapse;
   padding: 1px; }
 
-/* line 76, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 76, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 table tr:nth-child(odd), .icon-header {
   background-color: transparent; }
 
-/* line 80, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 80, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 table tr:nth-child(even) {
   background: rgba(0, 0, 0, 0.08); }
 
-/* line 84, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 84, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .icon-container {
   display: block;
   position: absolute;
@@ -309,28 +382,28 @@ table tr:nth-child(even) {
   line-height: 60px;
   text-align: center; }
 
-/* line 101, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 101, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .icon {
   max-width: 100%;
   max-height: 100%;
   display: inline-block; }
 
-/* line 107, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 107, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .item-details {
   margin-bottom: 10px !important; }
 
-/* line 111, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 111, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description-container {
   display: inline-block;
   margin-left: 5px; }
 
-/* line 115, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 115, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description-header {
   font-weight: bold;
   font-size: 9px;
   margin-bottom: 2px; }
 
-/* line 120, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 120, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .description {
   overflow: auto;
   width: 200px;
@@ -340,91 +413,39 @@ table tr:nth-child(even) {
   color: inherit !important;
   font-size: 9px; }
 
-/* line 131, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 131, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 ::-webkit-scrollbar {
   display: none; }
 
-/* line 135, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
+/* line 135, C:/Users/kevin/Documents/component-server/client_apps/componentBrowser/directives/componentListView/styles/componentListView.scss */
 .list-view-header {
   margin-top: 10px;
   margin-bottom: 5px; }
 
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+/* line 3, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
 .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item {
   padding-right: 10px; }
-  /* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+  /* line 7, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
   .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .subcircuit-details-grid {
     margin-bottom: 1ex; }
-    /* line 9, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+    /* line 9, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
     .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .subcircuit-details-grid .subcircuit-description.no-icon .subcircuit-description-text {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap; }
-    /* line 15, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+    /* line 15, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
     .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .subcircuit-details-grid .connectors-description {
       display: none; }
-    /* line 19, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+    /* line 19, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
     .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .subcircuit-details-grid .subcircuit-visuals {
       display: none; }
-  /* line 31, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+  /* line 31, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
   .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .expanded-details .subcircuit-details-grid .subcircuit-description.no-icon .subcircuit-description-text {
     max-height: none;
     white-space: normal; }
-  /* line 36, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+  /* line 36, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
   .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .expanded-details .subcircuit-details-grid .connectors-description {
     display: block; }
-  /* line 40, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
+  /* line 40, C:/Users/kevin/Documents/component-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
   .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .expanded-details .subcircuit-details-grid .subcircuit-visuals {
     display: block; }
-
-/* line 4, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-.content-listing {
-  height: 100%;
-  width: 100%;
-  min-width: 615px;
-  overflow-y: hidden; }
-  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .content-listing .listing-header {
-    position: absolute;
-    background-color: #fff;
-    z-index: 2;
-    height: 90px;
-    width: 100%;
-    min-width: 615px;
-    padding: 40px 10px 0 10px; }
-    /* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-    .content-listing .listing-header button.btn {
-      font-size: 13px;
-      padding: 1ex;
-      line-height: 16px; }
-  /* line 27, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .content-listing .listing-subheader {
-    position: absolute;
-    left: 10px;
-    top: 10px; }
-  /* line 33, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .content-listing .listing-views {
-    margin-top: 0;
-    position: absolute;
-    top: 0;
-    padding-top: 190px;
-    height: 100%;
-    width: 100%;
-    min-width: 615px;
-    overflow-x: hidden;
-    overflow-y: auto; }
-  /* line 48, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-  .content-listing .actions {
-    text-align: center; }
-
-/* line 55, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
-.embedded .listing-views {
-  padding-top: 100px; }
-
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
-.content-listing.subcircuit-listing .listing-views {
-  padding-top: 90px; }
-
-/* line 9, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListing/styles/subcircuitListing.scss */
-.embedded .content-listing.subcircuit-listing .listing-views {
-  padding-top: 0; }

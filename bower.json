@@ -19,7 +19,7 @@
     "angular-material": "0.8.3",
     "angular-xeditable": "~0.1.9",
     "react": "~0.13.1",
-    "mms-component-library": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
+    "mms-content-server-apps": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
   },
   "resolutions": {
     "angular": "~1.3.12",

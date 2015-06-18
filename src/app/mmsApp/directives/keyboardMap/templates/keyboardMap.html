@@ -1,7 +1,7 @@
 <md-dialog class="keyboard-map-dialog">
     <h1 class="md-sticky-no-effect"> Design Editor Keyboard Map</h1>
     <md-list>
-        <md-item ng-repeat="category in keyboardMap.categories">
+        <md-item ng-repeat="category in keyboardMap.categories" ng-if="category.title != 'Component Browser'">
             <md-item-content>
                 <div class="md-tile-content">
                     <h3>{{category.title}} <span class="sub-title" ng-if="category.subTitle"> - {{category.subTitle}}</span></h3>
