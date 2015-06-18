@@ -106,7 +106,7 @@ CyPhyApp.run(function(editableOptions, editableThemes) {
 });
 
 CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, $log,
-    $timeout, projectHandling, $animate, $injector) {
+    $timeout, projectHandling, $animate, $injector, $mdDialog) {
 
     var stateBeforeWentWrong;
 
@@ -184,6 +184,8 @@ CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, 
 
 
     $rootScope.$on('$stateChangeStart', function(ev, to) {
+
+        $mdDialog.hide();
 
         $log.debug('stateChangeStart', to);
 
