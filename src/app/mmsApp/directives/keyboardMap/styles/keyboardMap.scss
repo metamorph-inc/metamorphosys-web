@@ -21,6 +21,8 @@
 .keyboard-map-dialog {
     max-width: 800px;
     min-width: 600px;
+    height: 600px;
+    overflow: scroll;
 
   .keyboard-action,
   .keyboard-action-name,

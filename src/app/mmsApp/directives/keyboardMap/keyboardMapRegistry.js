@@ -61,6 +61,17 @@ module.exports = {
                 }
 
             ]
+        }, {
+            title: 'Wire Operations',
+            subTitle: 'When drawing a wire',
+            actions: [
+
+                {
+                    name: 'Cancel',
+                    key: 'Esc'
+                }
+
+            ]
         },
 
         {
