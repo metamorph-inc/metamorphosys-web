@@ -1,6 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*globals angular*/
-
 "use strict";
 
 require("./directives/subcircuitBrowser/subcircuitBrowser");
@@ -22,8 +20,9 @@ angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcir
         console.log("Finish dragging", e, item);
     };
 });
+/*globals angular*/
 
-},{"./appConfig":11,"./directives/subcircuitBrowser/subcircuitBrowser":12,"./services/subcircuitLibrary.js":17}],2:[function(require,module,exports){
+},{"./appConfig":12,"./directives/subcircuitBrowser/subcircuitBrowser":13,"./services/subcircuitLibrary.js":18}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -59,9 +58,19 @@ module.exports = function ($scope, contentLibraryService) {
         },
 
         itemInfo: function itemInfo(event, item) {
+
+            var url, win;
+
             if (item.octopart !== undefined) {
-                var url = "http://octopart.com/search?q=" + item.octopart + "&view=list";
-                var win = window.open(url, "_blank");
+                url = "http://octopart.com/search?q=" + item.octopart + "&view=list";
+            } else if (item.subcircuitSourceURL !== undefined) {
+                url = item.subcircuitSourceURL;
+            }
+
+            if (url) {
+
+                url = "http://octopart.com/search?q=" + item.octopart + "&view=list";
+                win = window.open(url, "_blank");
                 win.focus();
             }
         },
@@ -185,7 +194,8 @@ module.exports = function ($scope, contentLibraryService) {
             toolTip: "Open item",
             headerTemplateUrl: templateUrlBase + "itemHeader.html",
             detailsTemplateUrl: templateUrlBase + "itemDetail.html",
-            details: details
+            details: details,
+            subcircuitSourceURL: item.subcircuitSourceURL
         };
     };
 
@@ -197,9 +207,7 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":10,"../subcircuitBrowser/services/subcircuitLibrary.js":17}],3:[function(require,module,exports){
-/*global angular*/
-
+},{"../componentBrowser/services/componentLibrary.js":11,"../subcircuitBrowser/services/subcircuitLibrary.js":18}],3:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
@@ -368,14 +376,9 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
         }
     };
 });
+/*global angular*/
 
 },{}],4:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
-
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -407,10 +410,13 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
 
 },{}],5:[function(require,module,exports){
-/*global angular, alert, numeral*/
-
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -442,12 +448,11 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
+/*global angular, alert, numeral*/
 
 },{}],6:[function(require,module,exports){
-
-/*global angular*/
-
 "use strict";
+
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -459,13 +464,31 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
+/*global angular*/
+
 },{}],7:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
+
+    return {
+        scope: {
+            label: "="
+        },
+        restrict: "E",
+        replace: true,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/infoButton.html"
+    };
+});
 /**
- * Created by Blake McBride on 2/24/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
+},{}],8:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -526,11 +549,15 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/24/15.
+ */
 
-},{}],8:[function(require,module,exports){
 /*global angular*/
 
+},{}],9:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.showLessButton", []).directive("showLessButton", function () {
 
     return {
@@ -541,11 +568,11 @@ angular.module("mms.componentBrowser.showLessButton", []).directive("showLessBut
         templateUrl: "/componentBrowser/templates/showLessButton.html"
     };
 });
-
-},{}],9:[function(require,module,exports){
 /*global angular*/
 
+},{}],10:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreButton", function () {
 
     return {
@@ -556,10 +583,9 @@ angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreBut
         templateUrl: "/componentBrowser/templates/showMoreButton.html"
     };
 });
+/*global angular*/
 
-},{}],10:[function(require,module,exports){
-/*globals angular*/
-
+},{}],11:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -812,16 +838,15 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         return new ComponentLibrary();
     }];
 });
-
-},{}],11:[function(require,module,exports){
 /*globals angular*/
-"use strict";
-
-angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "");
 
 },{}],12:[function(require,module,exports){
-/*global angular*/
+"use strict";
 
+/*globals angular*/
+angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000");
+
+},{}],13:[function(require,module,exports){
 "use strict";
 
 require("../subcircuitCategories/subcircuitCategories.js");
@@ -1131,18 +1156,19 @@ angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCatego
                 ctrl.noDownload = false;
             }
 
+            var itemsPerPage = parseInt(attributes.listViewItemsPerPage, 10);
+
+            if (!isNaN(itemsPerPage)) {
+                ctrl.pagingParameters.itemsPerPage = itemsPerPage;
+            }
+
             ctrl.init();
         }
     };
 });
-
-},{"../../../componentBrowser/directives/categoryResizer/categoryResizer.js":3,"../../../componentBrowser/directives/componentSearch/componentSearch.js":4,"../../services/subcircuitLibrary.js":17,"../subcircuitCategories/subcircuitCategories.js":13,"../subcircuitListing/subcircuitListing.js":16}],13:[function(require,module,exports){
 /*global angular*/
 
-/**
- * Created by Blake McBride on 2/9/15.
- */
-
+},{"../../../componentBrowser/directives/categoryResizer/categoryResizer.js":3,"../../../componentBrowser/directives/componentSearch/componentSearch.js":4,"../../services/subcircuitLibrary.js":18,"../subcircuitCategories/subcircuitCategories.js":14,"../subcircuitListing/subcircuitListing.js":17}],14:[function(require,module,exports){
 "use strict";
 
 require("../../services/subcircuitLibrary.js");
@@ -1331,8 +1357,13 @@ angular.module("mms.subcircuitBrowser.subcircuitCategories", ["isis.ui.treeNavig
         }
     };
 });
+/*global angular*/
 
-},{"../../services/subcircuitLibrary.js":17}],14:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
+},{"../../services/subcircuitLibrary.js":18}],15:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitDetails.react", []).directive("subcircuitDetails", function () {
@@ -1544,13 +1575,7 @@ var ConnectorDescription = React.createClass({
     }
 });
 
-},{}],15:[function(require,module,exports){
-/**
- * Created by Robert Boyles on 5/28/15.
- */
-
-/*global angular*/
-
+},{}],16:[function(require,module,exports){
 "use strict";
 
 require("..//subcircuitDetails/subcircuitDetails.jsx");
@@ -1558,10 +1583,11 @@ require("../../services/subcircuitLibrary.js");
 require("../../../componentBrowser/directives/downloadButton/downloadButton.js");
 require("../../../componentBrowser/directives/showMoreButton/showMoreButton.js");
 require("../../../componentBrowser/directives/showLessButton/showLessButton.js");
+require("../../../componentBrowser/directives/infoButton/infoButton.js");
 
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.subcircuitDetails.react"]).controller("SubcircuitListViewItemController", function () {}).directive("subcircuitListView", function () {
+angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.componentBrowser.infoButton", "mms.subcircuitDetails.react"]).controller("SubcircuitListViewItemController", function () {}).directive("subcircuitListView", function () {
 
     function SubcircuitDetailsController($scope) {
 
@@ -1640,16 +1666,15 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
         }
     };
 });
+/**
+ * Created by Robert Boyles on 5/28/15.
+ */
+
+/*global angular*/
 
 //debugger;
 
-},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/showLessButton/showLessButton.js":8,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":9,"../../services/subcircuitLibrary.js":17,"..//subcircuitDetails/subcircuitDetails.jsx":14}],16:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
-
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/infoButton/infoButton.js":7,"../../../componentBrowser/directives/showLessButton/showLessButton.js":9,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":10,"../../services/subcircuitLibrary.js":18,"..//subcircuitDetails/subcircuitDetails.jsx":15}],17:[function(require,module,exports){
 "use strict";
 
 require("../subcircuitListView/subcircuitListView.js");
@@ -1713,10 +1738,13 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowse
         templateUrl: "/subcircuitBrowser/templates/subcircuitListing.html"
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
 
-},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":5,"../../../componentBrowser/directives/paging/paging.js":7,"../../services/subcircuitLibrary.js":17,"../subcircuitListView/subcircuitListView.js":15}],17:[function(require,module,exports){
-/*globals angular*/
+/*global angular, alert*/
 
+},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":5,"../../../componentBrowser/directives/paging/paging.js":8,"../../services/subcircuitLibrary.js":18,"../subcircuitListView/subcircuitListView.js":16}],18:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1861,6 +1889,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         return new SubcircuitLibrary();
     }];
 });
+/*globals angular*/
 
 },{}]},{},[1])
 
