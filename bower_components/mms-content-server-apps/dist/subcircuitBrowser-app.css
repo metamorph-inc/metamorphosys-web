@@ -123,6 +123,42 @@ body, html {
   .content-browser.embedded .left-panel {
     padding-top: 0; }
 
+/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator {
+  border-top: 1px dotted #eee; }
+  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator .extra-info-content {
+    color: #999; }
+  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+  .content-categories .tree-navigator header {
+    display: none; }
+/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories h4 {
+  padding-left: 10px; }
+/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .selected-node > .node-label {
+  background-color: #90CAF9; }
+/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .icon-arrow-right:after {
+  border-left-color: #0D47A1; }
+/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-label {
+  padding-left: 12px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 2;
+  text-transform: uppercase;
+  font-size: 85%; }
+/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories .tree-navigator .node-expander {
+  margin-left: -12px; }
+/* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-right:after {
+  margin-left: 5px; }
+/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
+.content-categories i.icon-arrow-down:after {
+  margin-left: 0; }
+
 /* line 7, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitDetails/styles/subcircuitDetails.scss */
 .subcircuit-details-grid {
   position: relative;
@@ -361,42 +397,6 @@ table tr:nth-child(even) {
   /* line 40, /Users/laszlojuracz/Projects/morph/content-server/client_apps/subcircuitBrowser/directives/subcircuitListView/styles/subcircuitListView.scss */
   .subcircuit-list-view.content-list-view .item-list ul.list-group li.item-list-item .expanded-details .subcircuit-details-grid .subcircuit-visuals {
     display: block; }
-
-/* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator {
-  border-top: 1px dotted #eee; }
-  /* line 5, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator .extra-info-content {
-    color: #999; }
-  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-  .content-categories .tree-navigator header {
-    display: none; }
-/* line 16, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories h4 {
-  padding-left: 10px; }
-/* line 20, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .selected-node > .node-label {
-  background-color: #90CAF9; }
-/* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .icon-arrow-right:after {
-  border-left-color: #0D47A1; }
-/* line 28, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-label {
-  padding-left: 12px;
-  padding-top: 0;
-  padding-bottom: 0;
-  line-height: 2;
-  text-transform: uppercase;
-  font-size: 85%; }
-/* line 37, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories .tree-navigator .node-expander {
-  margin-left: -12px; }
-/* line 41, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-right:after {
-  margin-left: 5px; }
-/* line 45, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
-.content-categories i.icon-arrow-down:after {
-  margin-left: 0; }
 
 /* line 4, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentListing/styles/componentListing.scss */
 .content-listing {
