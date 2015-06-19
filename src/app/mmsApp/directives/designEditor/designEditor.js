@@ -41,7 +41,7 @@ angular.module('mms.designEditor', [
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager, wiringService, $q, $injector) {
+            acmImportService, mmsUtils, operationsManager, wiringService, $q, $injector, $mdToast) {
 
             var justCreatedWires,
                 layoutContext,
@@ -212,6 +212,10 @@ angular.module('mms.designEditor', [
                                     subcircuitUrl, position, contentServerUrl)
                                 .catch(function(err) {
                                     $log.error(err);
+                                    $mdToast.show(
+                                        $mdToast.simple()
+                                            .content('Creating subcircuit failed')
+                                    );
                                     $rootScope.stopProcessing();
                                 });
                         }
