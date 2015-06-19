@@ -210,8 +210,6 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                     true
                 )
             );
-            console.log($scope.newWireLine.segments.length);
-            console.log($scope.newWireLine.segments);
 
         }
 
