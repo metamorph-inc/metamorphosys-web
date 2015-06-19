@@ -9,7 +9,7 @@
         {
 
             "id": "featured-designs",
-            "label": "Featured",
+            "label": "Featured Projects",
             "designs": [
 
                 {
@@ -18,21 +18,26 @@
                     "visual": "images/bluetooth_icon300x300.png",
                     "noComponentBrowser": true,
                     "tutorial": {
-                        "intro": "This is an awesome exercise. You'll build something cheaper and faster than it flies! Extraordinary form factor. You'd better pull your shoe laces tight.",
+                        "intro": "In this tutorial you'll be able to quickly generate a circuit board that will allow subcircuit data to be sent and received wirelessly.",
                         "steps": [
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 1",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Grab a sensor from the <b>SUBCIRCUITS</b> panel and drag it onto the canvas.",
+                                "visual": "images/add_sc_bluetooth.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 2",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Connect the subcircuit's power ports and communication interfaces to the corresponding interfaces on the <b>Bluetooth Daughtercard</b>. When you begin to create a wire by selecting a port, other similarly labeled ports in the design will remain highlighted.",
+                                "visual": "images/connect_stuff_bluetooth.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 3",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit board)</i>. This can take a few minutes depending on the number of subcircuits in your design.",
+                                "visual": "images/click_play_bluetooth.png"
+                            },
+                            {
+                                "description": "After reviewing the results, iterate on your design by making changes, adding more subcircuits, and generating new PCBs.",
+                                "visual": "images/show_results_bluetooth.png"
                             }
-                        ]
+                        ],
+                        "outro": "A completed Bluetooth Daughtercard + subcircuit design could then be sent to manufacturing to build the PCB. Connect the manufactured device to a Cypress BLE Motherboard and watch your sensor's data being transmitted over a bluetooth connection!"
                     }
                 },
                 {
@@ -41,21 +46,26 @@
                     "visual": "images/arduino_due_shield.png",
                     "noComponentBrowser": true,
                     "tutorial": {
-                        "intro": "This is an awesome exercise. You'll build something cheaper and faster than it flies! Extraordinary form factor. You'd better pull your shoe laces tight.",
+                        "intro": "In this tutorial you'll be able to quickly generate a circuit board that can extend the capabilities of an Arduino DUE by connecting a subcircuit to an Arduino Shield. This basic version of the shield only has the 3V3 Power/Ground port exposed, so only 3V3 Power/Ground subcircuits are compatible.",
                         "steps": [
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 1",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Grab a sensor from the <b>SUBCIRCUITS</b> panel and drag it onto the canvas. Check the subcircuit's properties to ensure that your desired subcircuit has a <b>Power/Ground</b> port that is compatible with the Basic Shield.",
+                                "visual": "images/add_sc_arduino_basic.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 2",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Connect the subcircuit's power ports to the interface on the <b>Arduino Interface</b>, and the Analog/Digital communication interfaces to the corresponding interfaces on either the <b>Analog Breakout</b> or <b>GPIO Breakout</b>, respectively. When you begin to create a wire by selecting a port, other similarly labeled ports in the design will remain highlighted.",
+                                "visual": "images/connect_stuff_arduino_basic.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 3",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit board)</i>. This can take a few minutes depending on the number of subcircuits in your design.",
+                                "visual": "images/click_play_arduino_basic.png"
+                            },
+                            {
+                                "description": "After reviewing the results, iterate on your design by making changes, adding more subcircuits, and generating new PCBs.",
+                                "visual": "images/show_results_arduino_basic.png"
                             }
-                        ]
+                        ],
+                        "outro": "A manufactured design of the shield + subcircuit could then be connected to an Arduino DUE, allowing you to add any number of features to your Arduino!"
                     }
 
                 },
@@ -65,21 +75,26 @@
                     "visual": "images/arduino_due_shield.png",
                     "noComponentBrowser": true,
                     "tutorial": {
-                        "intro": "This is an awesome exercise. You'll build something cheaper and faster than it flies! Extraordinary form factor. You'd better pull your shoe laces tight.",
+                        "intro": "In this tutorial you'll be able to quickly generate a circuit board that can extend the capabilities of an Arduino by connecting a subcircuit to an Arduino Shield. This advanced version of the shield exposes all ports and functionality featured by the Arduino Shield. As such, it is compatible with subcircuits using either 3V3 and 5V Power/Ground connectors.",
                         "steps": [
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 1",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Grab a sensor from the <b>SUBCIRCUITS</b> panel and drag it onto the canvas.",
+                                "visual": "images/add_sc_arduino_adv.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 2",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Connect the subcircuit's power ports to the interface on the <b>Arduino Interface</b>. Then connect any Analog communication interfaces to the corresponding interfaces on the <b>Analog Breakout</b>. In addition to the <b>GPIO Breakout</b> provided with the Arduino Shield Basic, digital subcircuit communication interfaces can be connected to any ports in the <b>HID Breakout</b>. When you begin to create a wire by selecting a port, other similarly labeled ports in the design will remain highlighted.",
+                                "visual": "images/connect_stuff_arduino_adv.png"
                             },
                             {
-                                "description": "Grab a sensor from your <b>pocket</b> and hope for the best. 3",
-                                "visual": "images/connect_stuff.png"
+                                "description": "Click the <b><i>play</i></b> button to automatically generate a <b>PCB</b> <i>(printed circuit board)</i>. This can take a few minutes depending on the number of subcircuits in your design.",
+                                "visual": "images/click_play_arduino_adv.png"
+                            },
+                            {
+                                "description": "After reviewing the results, iterate on your design by making changes, adding more subcircuits, and generating new PCBs.",
+                                "visual": "images/show_results_arduino_adv.png"
                             }
-                        ]
+                        ],
+                        "outro": "Since this shield has both a 3V3 and 5V Power/Ground port, a manufactured PCB of this model should be compatible with any standard Arduino, giving you even more freedom in designing!"
                     }
                 }
 
@@ -90,7 +105,7 @@
         {
 
             "id": "experimental",
-            "label": "Experimental projects",
+            "label": "Experimental Projects",
             "designs": [
 
                 {
