@@ -508,7 +508,7 @@ Diagram.prototype.getWireSegmentsWithSelectedEndCorner = function() {
         idPair = this.state.selectedSegmentEndcornerIds[i].split('_');
         wire = this.getWireById(idPair[0]);
         if (wire) {
-            segment = wire.getSegments()[idPair[1]];
+            segment = wire.getSegmentById(idPair[1]);
             if(segment) {
                 segments.push(segment);
             }
@@ -573,11 +573,11 @@ Diagram.prototype.selectWire = function(wireId, silent) {
 
 };
 
-Diagram.prototype.selectSegmentEndCorner = function(wireId, segmentIndex, silent) {
+Diagram.prototype.selectSegmentEndCorner = function(wireId, segmentId, silent) {
 
     var wire = this.getWireById(wireId),
-        segment = wire.getSegments()[segmentIndex],
-        id = wireId + '_' + segmentIndex,
+        segment = wire.getSegmentById(segmentId),
+        id = wireId + '_' + segmentId,
         index;
 
     if (segment && this.config.disallowSelection !== true && wire && wire.nonSelectable !== true) {
@@ -697,7 +697,7 @@ Diagram.prototype.clearSelection = function(silent) {
                 segment;
 
             if (wire) {
-                segment = wire.getSegments()[idPair[1]];
+                segment = wire.getSegmentById(idPair[1]);
 
                 if (segment) {
                     segment.deselectEndCorner();
@@ -1027,7 +1027,7 @@ Diagram.prototype.selectWireCornersInViewport = function(viewport, padding, sile
                 var segment = segments[j];
 
                 if (segment && segment.isEndCornerInViewport(viewport, padding)) {
-                    this.selectSegmentEndCorner(wire.getId(), j, true);
+                    this.selectSegmentEndCorner(wire.getId(), segment.getId(), true);
                 }
 
             }

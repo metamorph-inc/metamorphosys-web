@@ -10,6 +10,10 @@ var WireSegment = function(parameters, parentWire) {
 
 };
 
+WireSegment.prototype.getId = function() {
+    return this._id;
+}
+
 WireSegment.prototype.translate = function(translation) {
 
     this.translateEnd1(translation);

@@ -262,6 +262,16 @@ Wire.prototype.deleteSegmentById = function(id) {
 
 };
 
+Wire.prototype.getSegmentById = function(id) {
+
+    var idx = this._segments.map( function(x) {
+                return x._id;
+          }).indexOf(id);
+
+    return this._segments[idx];
+
+}
+
 Wire.prototype.insertSegment = function(atPosition, segment) {
 
     segment.setParentWire(this);
