@@ -56,13 +56,14 @@
     "JS",
     "Metamorph"
   ],
-  "_release": "814fd0d69d",
+  "_release": "cea11d6845",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "814fd0d69df087972246fa52e4fc199e7d23ac1c"
+    "commit": "cea11d68455bccfc95ddeb7d7018d6216a007a96"
   },
   "_source": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
   "_target": "*",
-  "_originalSource": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
+  "_originalSource": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
+  "_direct": true
 }
