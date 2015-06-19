@@ -65,11 +65,9 @@ module.exports = function ($scope, contentLibraryService) {
 
             var url, win;
 
-            debugger;
-
-            if (item.octopart !== undefined) {
+            if (item.octopart) {
                 url = "http://octopart.com/search?q=" + item.octopart + "&view=list";
-            } else if (item.subcircuitSourceURL !== undefined) {
+            } else if (item.subcircuitSourceURL) {
                 url = item.subcircuitSourceURL;
             }
 

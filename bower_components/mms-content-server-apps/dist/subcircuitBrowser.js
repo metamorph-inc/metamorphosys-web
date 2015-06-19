@@ -62,11 +62,9 @@ module.exports = function ($scope, contentLibraryService) {
 
             var url, win;
 
-            debugger;
-
-            if (item.octopart !== undefined) {
+            if (item.octopart) {
                 url = "http://octopart.com/search?q=" + item.octopart + "&view=list";
-            } else if (item.subcircuitSourceURL !== undefined) {
+            } else if (item.subcircuitSourceURL) {
                 url = item.subcircuitSourceURL;
             }
 
@@ -1635,7 +1633,9 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
 
             var comps = [];
 
-            for (var i in self.components) {
+            for (var i in self.components.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            })) {
 
                 var comp = self.components[i],
                     item = commonList.itemGenerator(comp, "subcircuit", "/subcircuitBrowser/templates/");

@@ -22,9 +22,9 @@
     "mms-content-server-apps": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
   },
   "resolutions": {
-    "angular": ">=1.0.0 <1.4.0",
+    "angular": "1.3.x",
     "isis-ui-components": "0.2.15",
     "angular-material": "0.8.3",
-    "angular-aria": "1.3.x"
+    "angular-aria": "^1.3.15 || >1.4.0-beta.0"
   }
 }
