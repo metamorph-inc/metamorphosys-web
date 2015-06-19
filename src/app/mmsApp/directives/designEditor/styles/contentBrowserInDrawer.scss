@@ -401,7 +401,7 @@ $hover-color: rgba(158, 158, 158, 0.1);
 		.content-listing {
 			.listing-views {
 				margin-top: 0;
-				padding-top: 0;	
+				padding-top: 0;
 			}
 		}
 
@@ -433,6 +433,9 @@ $hover-color: rgba(158, 158, 158, 0.1);
 	.show-more-button,
 	.show-less-button{
 		color: #ffa;
+		margin-bottom: 8px;
+		position: relative;
+		top: -5px;
 	}
 
 	.show-more-button:hover,
