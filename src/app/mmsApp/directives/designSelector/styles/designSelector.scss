@@ -7,9 +7,15 @@
     md-content {
         padding-left: 24px;
         padding-right: 24px;
-        height: 350px;
+        height: 560px;
         margin-bottom: 1px;
         overflow-y: scroll;
+    }
+
+    @media (max-height: 760px) {
+      md-content {
+        height: 400px;
+      }
     }
 
     .welcome-message {
