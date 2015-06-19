@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="LayoutFile" DesignID="{5dc46964-dffd-443a-a8a0-d7f11bde9a1c}" xmlns="avm">
-  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="14" Description="A digital triple-axis magnetometer" Name="LayoutFile" xmlns="">
+  <RootContainer xmlns:q1="avm" xsi:type="q1:Compound" ID="14" Description="A digital triple-axis 6'1&quot; magnetometer" Name="LayoutFile" xmlns="">
     <ResourceDependency Name="layoutFile" Path="layout.json" ID="layoutFile-14" Hash="asdf" Notes="note1"/>
     <DomainModel xmlns:q2="eda" xsi:type="q2:CircuitLayout" UsesResource="layoutFile-14" Name="circuitLayout" ID="circuitLayout-14" BoundingBoxes="0,0,10,10" />
   </RootContainer>

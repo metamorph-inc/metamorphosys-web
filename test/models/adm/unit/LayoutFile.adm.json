@@ -3,7 +3,7 @@
         "ID": 458,
         "attributes": {
             "name": "LayoutFile",
-            "Description": "A digital triple-axis magnetometer",
+            "Description": "A digital triple-axis 6'1\" magnetometer",
             "Type": "Compound"
         },
         "registry": {

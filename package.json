@@ -12,7 +12,7 @@
     "jszip": "^2.5.0",
     "mongodb": "=1.4.34",
     "ng-gme": "=0.1.1",
-    "parseddp": "git+https://bitbucket.org/metamorphsoftwareinc/parseddp.git#a1ca44d9221acba6b962861029a8b515659036f9",
+    "parseddp": "git+https://bitbucket.org/metamorphsoftwareinc/parseddp.git#12a7ecee9c38a67368af06b9b8887f83f156a881",
     "requirejs": "=2.1.11",
     "webgme": "https://github.com/metamorph-inc/webgme/tarball/9c627b00b3708c60d5d06f3b056ee7bcc7356fc0",
     "winreg": "=0.0.12"
