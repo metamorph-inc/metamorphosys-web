@@ -82,34 +82,12 @@ angular.module('mms.headerButtons', [])
 
                 $scope.tutorial = null;
 
-                if ($injector.has('designsToSelect')) {
+                var designConfig = projectHandling.getSelectedDesignConfig();
 
-                    var designsToSelect = $injector.get('designsToSelect');
+                if (designConfig) {
 
-                    var designName = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
-
-                    $scope.designName = designName;
-
-                    if (designsToSelect) {
-
-                        designsToSelect.forEach(function(designGroup){
-
-                            designGroup.designs.forEach(function(design) {
-
-                                if (!$scope.tutorial &&
-
-                                    design.name === designName) {
-                                    $scope.tutorial = design.tutorial;
-
-                                }
-                            });
-
-                        });
-                    }
-
+                    $scope.tutorial = designConfig.tutorial;
                 }
-
-
 
                 $scope.hide = function () {
                     $mdDialog.hide();

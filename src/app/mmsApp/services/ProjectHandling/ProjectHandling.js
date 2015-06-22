@@ -4,7 +4,7 @@
 
 angular.module('mms.projectHandling', [])
     .service('projectHandling', function($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
-        mmsUtils, designService, testBenchService, designLayoutService, $timeout, dataStoreService) {
+        mmsUtils, designService, testBenchService, designLayoutService, $timeout, dataStoreService, $injector) {
 
         var self = this,
             selectedProjectId,
@@ -36,7 +36,24 @@ angular.module('mms.projectHandling', [])
             cleanDesignInternalsWatcher,
 
             setupContainerInternalsWatcher,
-            cleanContainerInternalsWatcher;
+            cleanContainerInternalsWatcher,
+
+            _designConfigs = {};
+
+
+        if ($injector.has('designsToSelect')) {
+
+            var designsToSelect = $injector.get('designsToSelect');
+
+            designsToSelect.forEach(function(groupOfDesigns) {
+                groupOfDesigns.designs.forEach(function(design) {
+
+                    _designConfigs[design.name] = design;
+
+                });
+            });
+
+        }
 
 
         this.leaveProject = function() {
@@ -704,6 +721,14 @@ angular.module('mms.projectHandling', [])
             }
 
             return result;
+        };
+
+        this.getSelectedDesignConfig = function() {
+
+            var currentDesignName = this.getSelectedDesign().name.replace(/_/g, ' ');
+
+            return _designConfigs[currentDesignName];
+
         };
 
         this.selectDesign = function(designId) {

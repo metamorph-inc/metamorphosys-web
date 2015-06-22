@@ -645,41 +645,16 @@ angular.module('mms.designEditor', [
                                 $rootScope.unCover();
                                 $rootScope.stopProcessing();
 
-                                if ($injector.has('designsToSelect')) {
 
-                                    var designsToSelect = $injector.get('designsToSelect');
+                                var designConfig = projectHandling.getSelectedDesignConfig();
 
-                                    var designName = projectHandling.getSelectedDesign().name.replace(/_/g, ' ');
+                                if (designConfig.tutorial && $cookies['seenTutorialFor' + designConfig.name] !== 'true') {
 
-                                    $scope.designName = designName;
-
-                                    var tutorial;
-
-                                    if (designsToSelect) {
-
-                                        designsToSelect.forEach(function(designGroup){
-
-                                            designGroup.designs.forEach(function(design) {
-
-                                                if (!tutorial &&
-
-                                                    design.name === designName) {
-                                                    tutorial = design.tutorial;
-
-                                                }
-                                            });
-
-                                        });
-                                    }
-
-                                    if (tutorial && $cookies['seenTutorialFor' + designName] !== 'true') {
-
-                                        $rootScope.openHelpDialog();
-                                        $cookies['seenTutorialFor' + designName] = 'true';
-
-                                    }
+                                    $rootScope.openHelpDialog();
+                                    $cookies['seenTutorialFor' + designConfig.name] = 'true';
 
                                 }
+
 
                             }, 200);
 

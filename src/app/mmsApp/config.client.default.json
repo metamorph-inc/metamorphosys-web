@@ -17,6 +17,7 @@
                     "description": "This model is a template that can be used to make a fully functional Bluetooth device. Just add your desired subcircuit(s) to the model and hook it up to the provided ports to allow for the sending and receiving of sensor data using Cypress' PSoC® 4 BLE technology after connecting it to a BLE motherboard.",
                     "visual": "images/bluetooth_icon300x300.png",
                     "noComponentBrowser": true,
+                    "noAutoRouter": true,
                     "tutorial": {
                         "intro": "In this tutorial you'll be able to quickly generate a circuit board that will allow subcircuit data to be sent and received wirelessly.",
                         "steps": [
@@ -45,6 +46,7 @@
                     "description": "This model represents a limited-featured Arduino shield, which connects to your Arduino to extend its capabilities.  Simply add your subcircuit(s) and hook it up to the shield's exposed ports. It is a great starting point for less experienced Arduino users as it hides some of the more advanced connectors. The shield is a separate component that pairs well with an Arduino DUE.",
                     "visual": "images/arduino_due_shield.png",
                     "noComponentBrowser": true,
+                    "noAutoRouter": true,
                     "tutorial": {
                         "intro": "In this tutorial you'll be able to quickly generate a circuit board that can extend the capabilities of an Arduino DUE by connecting a subcircuit to an Arduino Shield. This basic version of the shield only has the 3V3 Power/Ground port exposed, so only 3V3 Power/Ground subcircuits are compatible.",
                         "steps": [
@@ -74,6 +76,7 @@
                     "description": "This design extends the Arduino Shield Basic project by exposing the full functionality of the Arduino to allow you to hook up more complex systems. The template adds 5 connectors, as well as 5V Power/Ground, IOREF, AREF, and Vin pins. It is intended for more experienced users. Similar to the basic project, this shield is a separate component from an Arduino.",
                     "visual": "images/arduino_due_shield.png",
                     "noComponentBrowser": true,
+                    "noAutoRouter": true,
                     "tutorial": {
                         "intro": "In this tutorial you'll be able to quickly generate a circuit board that can extend the capabilities of an Arduino by connecting a subcircuit to an Arduino Shield. This advanced version of the shield exposes all ports and functionality featured by the Arduino Shield. As such, it is compatible with subcircuits using either 3V3 and 5V Power/Ground connectors.",
                         "steps": [

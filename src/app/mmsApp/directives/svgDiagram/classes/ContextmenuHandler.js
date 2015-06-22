@@ -126,7 +126,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-minus',
                     action: function() {
 
-                        wire.destroyEndCornerOfSegment(segment, wiringService);                      
+                        wire.destroyEndCornerOfSegment(segment, wiringService);
 
                         $scope.diagram.updateWireSegments(wire);
 
@@ -440,18 +440,27 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 id: 'wiringMethods',
                 label: 'Wiring method',
                 items: wiringMenu
-            }, {
-                id: 'diagramRouteMenu',
-                items: [{
-                    id: 'rerouteDiagram',
-                    label: 'Reroute diagram',
-                    iconClass: 'glyphicon glyphicon-random',
-                    action: function() {
-                        wiringService.routeDiagram($scope.diagram, 'OrthogonalRouter');
-                        $rootScope.$emit('wiresMustBeSaved', $scope.diagram.getWires());
-                    }
-                }]
-            }, {
+            }];
+
+            var designConfig = projectHandling.getSelectedDesignConfig();
+
+            if (!(designConfig && designConfig.noAutoRouter)) {
+
+                $scope.contextMenuData.push({
+                    id: 'diagramRouteMenu',
+                    items: [{
+                        id: 'rerouteDiagram',
+                        label: 'Reroute diagram',
+                        iconClass: 'glyphicon glyphicon-random',
+                        action: function() {
+                            wiringService.routeDiagram($scope.diagram, 'OrthogonalRouter');
+                            $rootScope.$emit('wiresMustBeSaved', $scope.diagram.getWires());
+                        }
+                    }]
+                });
+            }
+
+            $scope.contextMenuData.push({
                 id: 'projectMenu',
                 label: 'Project',
                 items: [{
@@ -492,7 +501,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                             });
                     }
                 }]
-            }
+            });
             // , {
             //     id: 'printMenu',
             //     items: [{
@@ -504,7 +513,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
             //         }
             //     }]
             // }
-            ];
+
 
         openMenu($event);
 
