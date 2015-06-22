@@ -8,7 +8,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         getOffsetToMouse,
 
         onDiagramMouseDown,
-        onDiagramMouseUp,        
+        onDiagramMouseUp,
         onDiagramMouseMove,
 
         updateSelectionRect,
@@ -62,7 +62,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
                 viewport.right = endCorner.x;
 
             } else {
-                
+
                 $scope.drawnSelection.x = endCorner.x;
                 $scope.drawnSelection.width = startCorner.x - endCorner.x;
 
@@ -90,7 +90,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
             }
 
             $scope.diagram.selectComponentsInViewport(viewport, VIEWPORT_PADDING, false);
-            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 }, false);            
+            $scope.diagram.selectWireCornersInViewport(viewport, { x:0, y:0 }, false);
 
         }
 
@@ -112,19 +112,21 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
     };
 
     cancel = function () {
-        
+
         if (self.drawing) {
-            $scope.diagram.clearSelection();        
+            $scope.diagram.clearSelection();
             self.drawing = false;
-            $scope.drawnSelection = null;        
+            $scope.drawnSelection = null;
         }
 
     };
 
     finishDraw = function () {
-        self.drawing = false; 
-        $scope.drawnSelection = null;  
-        $scope.diagram.afterSelectionChange();
+        if (self.drawing) {
+            self.drawing = false;
+            $scope.drawnSelection = null;
+            $scope.diagram.afterSelectionChange();
+        }
     };
 
     onDiagramMouseMove = function ($event) {
@@ -144,7 +146,7 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
         $event.stopPropagation();
 
     };
-  
+
     onDiagramMouseUp = function ($event) {
 
         finishDraw();

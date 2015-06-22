@@ -220,8 +220,6 @@ angular.module('mms.svgDiagram', [
 
                         var target = event.srcElement || event.target;
 
-                        //console.log('diagram mouse up');
-
                         drawSelectionHandler.onDiagramMouseUp(event);
 
                         if (target === $scope.svgContainer) {
@@ -397,21 +395,21 @@ angular.module('mms.svgDiagram', [
                     }
                 };
 
-                this.onWireMouseUp = function(wire, segment, $event) {
+                this.onWireMouseUp = function(wire, segment, event) {
 
                     if (wasWireMouseDowned) {
 
                         if (!componentDragHandler.dragging && !wireDrawHandler.wiring && !wireDragHandler.dragging && !panHandler.panning &&
-                            $event.which !== 3) {
+                        event.button !== 2) {
 
-                            selectionHandler.onWireMouseUp(wire, $event);
-                            $event.stopPropagation();
+                            selectionHandler.onWireMouseUp(wire, event);
+                            event.stopPropagation();
 
-                            wireDragHandler.onWireMouseUp(wire, segment, $event);
+                            wireDragHandler.onWireMouseUp(wire, segment, event);
 
                         } else {
-                            wireDragHandler.onWireMouseUp(wire, segment, $event);
-                            $event.stopPropagation();
+                            wireDragHandler.onWireMouseUp(wire, segment, event);
+                            event.stopPropagation();
                         }
 
                         wasWireMouseDowned = false;
