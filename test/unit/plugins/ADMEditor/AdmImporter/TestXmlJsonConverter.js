@@ -15,7 +15,7 @@ if (typeof window === 'undefined') {
         expect = chai.expect;
 }
 
-describe.only('xmljsonconverter', function () {
+describe('xmljsonconverter', function () {
     var xmljsonconverter;
 
     before(function (done) {
