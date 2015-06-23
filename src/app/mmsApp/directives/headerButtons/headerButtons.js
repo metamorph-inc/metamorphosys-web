@@ -116,7 +116,7 @@ angular.module('mms.headerButtons', [])
                 $scope.designUrl = $window.location.href;
 
                 $scope.mailtoUrl =
-                    'mailto:?subject=Check out my ARA module design&body=' + $scope.designUrl;
+                    'mailto:?subject=Check out my circuit design&body=' + encodeURI($scope.designUrl);
 
                 $scope.emailDesign = function() {
                     ga('send', 'event', 'emailDesign', 'click');
