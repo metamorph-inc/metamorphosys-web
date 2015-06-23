@@ -12,7 +12,7 @@ if (typeof window === 'undefined') {
     var chai = require('chai');
 }
 
-describe('TestTesting', function () {
+describe.skip('TestTesting', function () {
     'use strict';
     var projectName = 'TestTesting',
         updateMeta,

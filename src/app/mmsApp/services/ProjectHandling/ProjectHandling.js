@@ -154,40 +154,25 @@ angular.module('mms.projectHandling', [])
 
                             $log.debug('Available branches', branches);
 
-                            if (!branches.length) {
+                            hashId = branches['master'];
 
-                                $log.error('No branches, what now?');
-                                deferred.reject();
-
-                            } else {
-
-                                for (i = 0; i < branches.length; i++) {
-
-                                    if (branches[i].name === 'master') {
-                                        hashId = branches[i].commitId;
-                                    }
-                                }
-
-                                if (!hashId) {
-                                    deferred.reject('Could not find master branch!');
-                                }
-
-                                newBranchId = mmsUtils.randomString(6) + (new Date()).getTime();
-
-                                branchService.createBranch(
-                                        connectionId,
-                                        newBranchId,
-                                        hashId
-                                    )
-                                    .then(function() {
-                                        deferred.resolve(newBranchId);
-                                    })
-                                    .catch(function(err) {
-                                        deferred.reject(err);
-                                    });
-
-
+                            if (!hashId) {
+                                deferred.reject('Could not find master branch!');
                             }
+
+                            newBranchId = mmsUtils.randomString(6) + (new Date()).getTime();
+
+                            branchService.createBranch(
+                                    connectionId,
+                                    newBranchId,
+                                    hashId
+                                )
+                                .then(function() {
+                                    deferred.resolve(newBranchId);
+                                })
+                                .catch(function(err) {
+                                    deferred.reject(err);
+                                });
 
                             $rootScope.loading = false;
 
@@ -218,15 +203,9 @@ angular.module('mms.projectHandling', [])
 
                     $log.debug('Available branches', branches);
 
-                    if (!branches.length) {
-
-                        $log.error('No branches, what now?');
-                        deferred.reject();
-
-                    } else {
-
-                        deferred.resolve(branches[0].name);
-
+                    for (var branch in branches) {
+                        deferred.resolve(branch);
+                        break;
                     }
 
                 });

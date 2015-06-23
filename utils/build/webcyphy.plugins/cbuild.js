@@ -15,7 +15,7 @@
         ejs: './node_modules/webgme/src/common/util/ejs',
         q: './node_modules/q/q',
         executor: './node_modules/webgme/src/common/executor',
-        superagent: './node_modules/webgme/src/client/lib/superagent/superagent-1.1.0',
+        superagent: './node_modules/webgme/src/client/lib/superagent/superagent-1.2.0',
         'plugin/AdmExporter': './src/plugins/ADMEditor',
         'plugin/TestBenchRunner': './src/plugins/ADMEditor',
         'plugin/AtmExporter': './src/plugins/ADMEditor',

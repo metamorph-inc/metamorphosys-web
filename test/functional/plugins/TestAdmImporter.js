@@ -10,6 +10,8 @@ if (typeof window === 'undefined') {
     var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
+
+    var testFixture = require('../../../node_modules/webgme/test/_globals');
 }
 
 describe('TestAdmImporter', function () {
@@ -22,7 +24,15 @@ describe('TestAdmImporter', function () {
     var jszip;
     var Core;
 
+    var logger = testFixture.logger.fork('ProjectImporterTest'),
+        gmeConfig = testFixture.getGmeConfig(),
+        project,
+        projectName = 'TestAdmImporter',
+        commitHash,
+        PluginCliManager = require('../../../node_modules/webgme/src/plugin/climanager');
+
     testConf.useServer(before, after);
+    testConf.useStorage(projectName, before, after);
 
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/adm/functional/Templates', 'jszip', 'common/core/core'], function (BlobClient_, Artifact_, admTemplates_, jszip_, Core_) {
@@ -35,23 +45,24 @@ describe('TestAdmImporter', function () {
         }, done);
     });
 
-    var projectName = 'TestAdmImporter';
-    var updateMeta;
-    before(function (done) {
-        requirejs(['utils/update_meta.js'],
-            function (updateMeta_) {
-                updateMeta = updateMeta_;
+    beforeEach(function (done) {
+        var importParam = {
+            projectSeed: './test/models/SimpleModelica.json',
+            projectName: projectName,
+            logger: logger,
+            gmeConfig: gmeConfig
+        };
 
-                updateMeta.withProject(CONFIG, projectName, function (err, project) {
-                    if (err) {
-                        return done(err);
-                    }
-                    return updateMeta.importLibrary(CONFIG, projectName, 'master', 'test/models/SimpleModelica.json', project)
-                        .then(function (/*commitHash*/) {
-                            done();
-                        });
-                });
-            }, done);
+        testConf.storage.deleteProject({projectName: projectName})
+            .then(function () {
+                return testFixture.importProject(testConf.storage, importParam);
+            })
+            .then(function (importResult) {
+                project = importResult.project;
+                commitHash = importResult.commitHash;
+                done();
+            })
+            .catch(done);
     });
 
     it('use zips', function (done) {
@@ -65,52 +76,47 @@ describe('TestAdmImporter', function () {
             if (err) {
                 return done(err);
             }
-            var storage = undefined,
-                config = {admFile: hash};
 
             // console.log(hash); // 95f5f253ec1bd748cf668024c0d51b9cc9f565f3
-
-            webgme.runPlugin.main(
-                storage,
-                CONFIG, {
-                    projectName: projectName,
-                    pluginName: 'AdmImporter',
-                    branchName: 'master',
+            var pluginContext = {
+                    commitHash: commitHash,
                     activeNode: testPoint,
-                    pluginConfig: config
-                }, config, function (err, result) {
-                    chai.expect(err).to.equal(null);
-                    chai.expect(result.getSuccess()).to.equal(true);
-                    updateMeta.withProject(CONFIG, projectName, function (err, project) {
-                        if (err) {
-                            return done(err);
-                        }
-                        var q = require('q');
-                        var core = new Core(project, {
-                            globConf: CONFIG,
-                            logger: require('webgme').Logger.create('TestAdmImporter', CONFIG.bin.log, false)
-                        });
+                    branchName: 'master'
+                },
+                pluginConfig = {
+                    admFile: hash,
+                    useExistingComponents: true
+                },
+                pluginManager = new PluginCliManager(project, logger, gmeConfig);
 
-                        return q.ninvoke(project, 'getBranchNames')
-                            .then(function (branchNames) {
-                                chai.expect(result.messages["0"].commitHash).to.not.equal(branchNames.master);
-                                return q.ninvoke(project, 'loadObject', branchNames.master);
-                            }).then(function (commit) {
-                                return q.ninvoke(core, 'loadRoot', commit.root);
-                            }).then(function (root) {
-                                return q.ninvoke(core, 'loadByPath', root, testPoint);
-                            }).then(function (admFolder) {
-                                return q.ninvoke(core, 'loadChildren', admFolder);
-                            }).then(function (children) {
-                                chai.expect(children.length).to.equal(2);
-                                // TODO: test Resource for o-umlaut
-                            }).then(function () {
-                                done();
-                            }).catch(function (err) {
-                                done(err);
-                            });
-                    });
+            pluginManager.executePlugin('AdmImporter', pluginConfig, pluginContext, testConf.callbackImmediate(function (err, result) {
+                chai.expect(err).to.equal(null);
+                chai.expect(result.getSuccess()).to.equal(true);
+                var q = require('q');
+                var core = new Core(project, {
+                    globConf: CONFIG,
+                    logger: require('webgme').Logger.create('TestAdmImporter', CONFIG.bin.log, false)
                 });
+
+                return project.getBranches()
+                    .then(function (branchNames) {
+                        chai.expect(result.messages["0"].commitHash).to.not.equal(branchNames.master);
+                        return q.ninvoke(project, 'loadObject', branchNames.master);
+                    }).then(function (commit) {
+                        return q.ninvoke(core, 'loadRoot', commit.root);
+                    }).then(function (root) {
+                        return q.ninvoke(core, 'loadByPath', root, testPoint);
+                    }).then(function (admFolder) {
+                        return q.ninvoke(core, 'loadChildren', admFolder);
+                    }).then(function (children) {
+                        chai.expect(children.length).to.equal(2);
+                        // TODO: test Resource for o-umlaut
+                    }).then(function () {
+                        done();
+                    }).catch(function (err) {
+                        done(err);
+                    });
+            }));
         });
     });
 

@@ -10,7 +10,7 @@
 
 var PATH = require('path');
 
-var CONFIG = require('./config.js');
+var CONFIG = JSON.parse(JSON.stringify(require('./config.js')));
 CONFIG.server.log.transports.forEach(function (transport) {
     transport.options.handleExceptions = false;
     if (transport.transportType === 'Console') {
@@ -19,6 +19,7 @@ CONFIG.server.log.transports.forEach(function (transport) {
 });
 
 exports.config = CONFIG;
+CONFIG.blob.fsDir = './blob-local-storage';
 CONFIG.server.port = 49049;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
 CONFIG.mongo.options.server = CONFIG.mongo.options.server || {};
@@ -29,7 +30,7 @@ var requirejs = webgme.requirejs;
 webgme.addToRequireJsPaths(CONFIG);
 var requirejsBase = webgme.requirejs.s.contexts._.config.baseUrl;
 requirejs.define('gmeConfig', function () {
-    return CONFIG;
+    return JSON.parse(JSON.stringify(CONFIG));
 });
 requirejs.define('test-conf', function () {
     return exports;
@@ -65,6 +66,51 @@ exports.useServer = function useServer(before, after) {
         server.start(done);
     });
 };
+
+exports.useStorage = function useStorage(projectName, before, after) {
+    var testFixture = require('./node_modules/webgme/test/_globals');
+    var Q = testFixture.Q;
+    var deferred = Q.defer();
+    var logger = testFixture.logger.fork('ProjectImporterTest');
+
+    var gmeAuth, storage;
+    before(function (done) {
+        testFixture.clearDBAndGetGMEAuth(CONFIG, projectName)
+            .then(function (gmeAuth_) {
+                gmeAuth = gmeAuth_;
+                storage = testFixture.getMemoryStorage(logger, CONFIG, gmeAuth);
+                return storage.openDatabase();
+            }).then(function () {
+                exports.gmeAuth = gmeAuth;
+                exports.storage = storage;
+                deferred.resolve([gmeAuth, storage]);
+            }).nodeify(done);
+    });
+
+    after(function (done) {
+        exports.gmeAuth = null;
+        exports.storage = null;
+        Q.all([
+            storage.closeDatabase(),
+            gmeAuth.unload()
+        ])
+        .nodeify(done);
+    });
+
+    return deferred.promise;
+};
+
+exports.callbackImmediate = function (callback) {
+    // 'expect' throws exceptions that must not be caught by q
+    var self = this;
+    return function () {
+        var args = arguments;
+        setImmediate(function () {
+            callback.apply(self, args);
+        });
+    };
+};
+
 
 if (require.main === module) {
     console.log(JSON.stringify(CONFIG, null, 4));

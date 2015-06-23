@@ -11,10 +11,10 @@
     "content-disposition": "^0.5.0",
     "jszip": "^2.5.0",
     "mongodb": "=1.4.34",
-    "ng-gme": "=0.1.1",
+    "ng-gme": "=0.2.0",
     "parseddp": "git+https://bitbucket.org/metamorphsoftwareinc/parseddp.git#12a7ecee9c38a67368af06b9b8887f83f156a881",
     "requirejs": "=2.1.11",
-    "webgme": "https://github.com/metamorph-inc/webgme/tarball/9c627b00b3708c60d5d06f3b056ee7bcc7356fc0",
+    "webgme": "https://github.com/metamorph-inc/webgme/tarball/921a37632944382403c2c5ef6dbed5e47bd5f336",
     "winreg": "=0.0.12"
   },
   "devDependencies": {

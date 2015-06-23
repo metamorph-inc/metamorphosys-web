@@ -1,4 +1,4 @@
-/*globals window, require, describe, it,before, after */
+/*globals window, require, describe, it,before, after, beforeEach */
 
 
 if (typeof window === 'undefined') {
@@ -10,49 +10,59 @@ if (typeof window === 'undefined') {
     var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
+
+    var testFixture = require('../../../node_modules/webgme/test/_globals');
 }
 
 describe('ProjectImporter', function () {
     'use strict';
 
+
+    var logger = testFixture.logger.fork('ProjectImporterTest'),
+        gmeConfig = testFixture.getGmeConfig(),
+        project,
+        projectName = 'ProjectImporterTest',
+        commitHash,
+        Q = testFixture.Q,
+        PluginCliManager = require('../../../node_modules/webgme/src/plugin/climanager');
+
     var path = require('path');
     var fs = require('fs');
     var BlobClient;
     var Artifact;
-    var acmTemplates;
-    var admTemplates;
     var jszip;
 
     testConf.useServer(before, after);
+    testConf.useStorage(projectName, before, after);
+
 
     before(function (done) {
-        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates', 'jszip'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_, jszip_) {
+        requirejs(['blob/BlobClient', 'blob/Artifact', 'jszip'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_, jszip_) {
             BlobClient = BlobClient_;
             Artifact = Artifact_;
-            acmTemplates = acmTemplates_;
-            admTemplates = admTemplates_;
             jszip = jszip_;
             done();
         }, done);
     });
 
-    var projectName = 'ProjectImporterTest';
-    var updateMeta;
-    before(function (done) {
-        requirejs(['utils/update_meta.js'],
-            function (updateMeta_) {
-                updateMeta = updateMeta_;
+    beforeEach(function (done) {
+        var importParam = {
+            projectSeed: './meta/ADMEditor_metaOnly.json',
+            projectName: projectName,
+            logger: logger,
+            gmeConfig: gmeConfig
+        };
 
-                updateMeta.withProject(CONFIG, projectName, function (err, project) {
-                    if (err) {
-                        return done(err);
-                    }
-                    return updateMeta.importLibrary(CONFIG, projectName, 'master', 'meta/ADMEditor_metaOnly.json', project)
-                        .then(function (/*commitHash*/) {
-                            done();
-                        });
-                });
-            }, done);
+        testConf.storage.deleteProject({projectName: projectName})
+            .then(function () {
+                return testFixture.importProject(testConf.storage, importParam);
+            })
+            .then(function (importResult) {
+                project = importResult.project;
+                commitHash = importResult.commitHash;
+                done();
+            })
+            .catch(done);
     });
 
     it('should run on small_export', function (done) {
@@ -70,17 +80,17 @@ describe('ProjectImporter', function () {
                 if (err) {
                     return done(err);
                 }
-                var storage = undefined;
-                webgme.runPlugin.main(
-                    storage,
-                    CONFIG, {
-                        projectName: projectName,
-                        pluginName: 'ProjectImporter',
-                        activeNode: '/',
-                        pluginConfig: {
-                            UploadedFile: hash
-                        }
-                    }, {UploadedFile: hash}, function (err, result) {
+                var pluginContext = {
+                        commitHash: commitHash,
+                        activeNode: '/1',
+                        branchName: 'master'
+                    },
+                    pluginConfig = {
+                        UploadedFile: hash
+                    },
+                    pluginManager = new PluginCliManager(project, logger, gmeConfig);
+
+                pluginManager.executePlugin('ProjectImporter', pluginConfig, pluginContext, function (err, result) {
                         chai.expect(err).to.equal(null);
                         chai.expect(result.getSuccess()).to.equal(true);
                         // TODO: look at model
