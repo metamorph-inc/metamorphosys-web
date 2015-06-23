@@ -39,8 +39,8 @@ require( './SimpleModal/SimpleModal' );
 
 require( './WorkspaceList/WorkspaceList' );
 
-require( './ComponentList/ComponentDetails' );
-require( './ComponentList/ComponentList' );
+//require( './ComponentList/ComponentDetails' );
+//require( './ComponentList/ComponentList' );
 
 require( './DesignList/DesignDetails' );
 require( './DesignList/DesignList' );

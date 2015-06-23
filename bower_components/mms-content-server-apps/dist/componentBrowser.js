@@ -1,9 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*globals angular*/
-/**
- * Created by blake on 2/9/15.
- */
-
 "use strict";
 
 require("./directives/componentBrowser/componentBrowser");
@@ -25,8 +20,12 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
         console.log("Finish dragging", e, item);
     };
 });
+/*globals angular*/
+/**
+ * Created by blake on 2/9/15.
+ */
 
-},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":17}],2:[function(require,module,exports){
+},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":18}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -210,15 +209,13 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":17,"../subcircuitBrowser/services/subcircuitLibrary.js":18}],3:[function(require,module,exports){
-/*globals angular*/
+},{"../componentBrowser/services/componentLibrary.js":18,"../subcircuitBrowser/services/subcircuitLibrary.js":19}],3:[function(require,module,exports){
 "use strict";
 
-angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "");
+/*globals angular*/
+angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "http://localhost:3000");
 
 },{}],4:[function(require,module,exports){
-/*global angular*/
-
 "use strict";
 
 angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
@@ -387,10 +384,9 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
         }
     };
 });
-
-},{}],5:[function(require,module,exports){
 /*global angular*/
 
+},{}],5:[function(require,module,exports){
 "use strict";
 
 require("../componentCategories/componentCategories.js");
@@ -710,14 +706,9 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         }
     };
 });
-
-},{"../../services/componentLibrary.js":17,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":8,"../componentSearch/componentSearch.js":9}],6:[function(require,module,exports){
 /*global angular*/
 
-/**
- * Created by Blake McBride on 2/9/15.
- */
-
+},{"../../services/componentLibrary.js":18,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":9,"../componentSearch/componentSearch.js":10}],6:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -904,24 +895,117 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         }
     };
 });
-
-},{"../../services/componentLibrary.js":17}],7:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/16/15.
- */
-
 /*global angular*/
 
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
+},{"../../services/componentLibrary.js":18}],7:[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var PropertyTable = require("../propertyTable/propertyTable.jsx");
+
+angular.module("mms.componentDetails.react", []).directive("componentDetails", function () {
+
+    function ComponentDetailsController() {}
+
+    return {
+        restrict: "E",
+        controller: ComponentDetailsController,
+        controllerAs: "ctrl",
+        bindToController: true,
+        replace: true,
+        transclude: false,
+        template: "<div class=\"component-details\"></div>",
+        scope: {
+            details: "="
+        },
+        require: ["componentDetails"],
+        link: function link(scope, element, attr, controllers) {
+
+            var ctrl = controllers[0];
+
+            function cleanup() {
+                React.unmountComponentAtNode(element[0]);
+            }
+
+            function render() {
+                React.render(React.createElement(ComponentDetailsGrid, { details: ctrl.details }), element[0]);
+            }
+
+            scope.$watch(function () {
+                if (ctrl.details) {
+                    return ctrl.details;
+                }
+            }, function (newO, oldO) {
+
+                if ((oldO !== newO || oldO != null) && newO != null) {
+
+                    cleanup();
+                    render();
+                }
+            });
+
+            scope.$on("$destroy", cleanup());
+        }
+    };
+});
+
+var ComponentDetailsGrid = (function (_React$Component) {
+    function ComponentDetailsGrid(props) {
+        _classCallCheck(this, ComponentDetailsGrid);
+
+        _get(Object.getPrototypeOf(ComponentDetailsGrid.prototype), "constructor", this).call(this, props);
+    }
+
+    _inherits(ComponentDetailsGrid, _React$Component);
+
+    _createClass(ComponentDetailsGrid, {
+        render: {
+            value: function render() {
+
+                var className = "component-details-grid",
+                    icon;
+
+                if (this.props.details.documentation && this.props.details.documentation.icon) {}
+
+                return React.createElement(
+                    "div",
+                    { className: className },
+                    React.createElement(PropertyTable, { properties: this.props.details.properties }),
+                    icon
+                );
+            }
+        }
+    });
+
+    return ComponentDetailsGrid;
+})(React.Component);
+
+// icon = <div className="icon-container">
+//     <img className="icon" src={this.props.details.documentation.icon}/>
+// </div>;
+
+},{"../propertyTable/propertyTable.jsx":16}],8:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
 require("../downloadButton/downloadButton.js");
 require("../infoButton/infoButton.js");
-require("../propertyTable/propertyTable.js");
+require("../componentDetails/componentDetails.jsx");
 
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton", "mms.propertyTable"]).controller("ComponentListViewItemController", function ($scope) {}).directive("componentListView", function () {
+angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton", "mms.componentDetails.react"]).controller("ComponentListViewItemController", function () {}).directive("componentListView", function () {
 
     function ComponentDetailsController($scope) {
 
@@ -1018,17 +1102,16 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/16/15.
+ */
+
+/*global angular*/
 
 // console.log($scope);
 //debugger;
 
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":17,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13,"../propertyTable/propertyTable.js":15}],8:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
-
+},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":18,"../componentDetails/componentDetails.jsx":7,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],9:[function(require,module,exports){
 "use strict";
 
 require("../componentListView/componentListView.js");
@@ -1087,14 +1170,13 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
         templateUrl: "/componentBrowser/templates/componentListing.html"
     };
 });
-
-},{"../../services/componentLibrary.js":17,"../componentListView/componentListView.js":7,"../countDisplay/countDisplay.js":10,"../gridView/gridView.js":12,"../paging/paging.js":14,"../viewSelection/viewSelection.js":16}],9:[function(require,module,exports){
 /**
  * Created by Blake McBride on 2/23/15.
  */
 
 /*global angular, alert*/
 
+},{"../../services/componentLibrary.js":18,"../componentListView/componentListView.js":8,"../countDisplay/countDisplay.js":11,"../gridView/gridView.js":13,"../paging/paging.js":15,"../viewSelection/viewSelection.js":17}],10:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -1126,10 +1208,13 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
 
-},{}],10:[function(require,module,exports){
-/*global angular, alert, numeral*/
+/*global angular, alert*/
 
+},{}],11:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -1161,12 +1246,11 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
+/*global angular, alert, numeral*/
 
-},{}],11:[function(require,module,exports){
-
-/*global angular*/
-
+},{}],12:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -1178,13 +1262,9 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
-},{}],12:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/26/15.
- */
-
 /*global angular*/
 
+},{}],13:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -1330,11 +1410,11 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
 
         if (!this.noDownload) {
 
-            cellTemplate = "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\"></download-button>" + "<info-button ng-if=\"row.entity.octopart!==undefined\" label=\"\"View on Octopart\"\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
+            cellTemplate = "<div class=\"text-center\"><download-button ng-click=\"grid.appScope.clickHandler(row)\"></download-button>" + "<info-button ng-if=\"row.entity.octopart!==undefined\" label=\"'View on Octopart'\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
             cellWidth = 70;
         } else {
 
-            cellTemplate = "<info-button ng-if=\"row.entity.octopart!==undefined\" label=\"\"View on Octopart\"\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
+            cellTemplate = "<info-button ng-if=\"row.entity.octopart!==undefined\" label=\"'View on Octopart'\" ng-click=\"grid.appScope.infoHandler(row)\"></info-button></div>";
             cellWidth = 30;
         }
 
@@ -1546,15 +1626,15 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
         }
     };
 });
-
-},{"../../services/componentLibrary.js":17,"../downloadButton/downloadButton.js":11,"../infoButton/infoButton.js":13}],13:[function(require,module,exports){
 /**
- * Created by Blake McBride on 3/27/15.
+ * Created by Blake McBride on 2/26/15.
  */
 
 /*global angular*/
 
+},{"../../services/componentLibrary.js":18,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],14:[function(require,module,exports){
 "use strict";
+
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -1568,14 +1648,13 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
-
-},{}],14:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/24/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
+},{}],15:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -1636,181 +1715,155 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
-
-},{}],15:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/26/15.
+ * Created by Blake McBride on 2/24/15.
  */
 
 /*global angular*/
 
+},{}],16:[function(require,module,exports){
 "use strict";
 
-angular.module("mms.propertyTable", []).directive("propertyTable", function ($timeout) {
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-    function PropertyTableController() {
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
-        this._items = [];
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var PropertyTable = (function (_React$Component) {
+    function PropertyTable() {
+        _classCallCheck(this, PropertyTable);
+
+        if (_React$Component != null) {
+            _React$Component.apply(this, arguments);
+        }
     }
 
-    PropertyTableController.prototype.registerItem = function (element) {
-        this._items.push(element);
-    };
+    _inherits(PropertyTable, _React$Component);
 
-    PropertyTableController.prototype.deRegisterItem = function (element) {
+    _createClass(PropertyTable, {
+        render: {
+            value: function render() {
 
-        var index = this._items.indexOf(element);
+                this.items = this.props.properties.map(function (item, index) {
 
-        if (index > -1) {
-            this._items.splice(index, 1);
-        }
-    };
-
-    return {
-        restrict: "E",
-        scope: {
-            properties: "=",
-            nameMaxWidth: "@",
-            valueMaxWidth: "@"
-        },
-        replace: true,
-        controller: PropertyTableController,
-        bindToController: true,
-        controllerAs: "ctrl",
-        templateUrl: "/componentBrowser/templates/propertyTable.html",
-        require: "propertyTable",
-        link: function link(scope, $element, attributes, ctrl) {
-
-            function layoutInternals() {
-                var nameWidth,
-                    valueWidth,
-                    widestNameWidth = 0,
-                    widestValueWidth = 0;
-
-                ctrl._items.forEach(function (item) {
-
-                    item.resetSizes();
-
-                    nameWidth = item.getNameWidth();
-                    valueWidth = item.getValueWidth();
-
-                    widestNameWidth = Math.max(nameWidth, widestNameWidth);
-                    widestValueWidth = Math.max(valueWidth, widestValueWidth);
+                    return React.createElement(PropertyTableItem, { property: item, ref: index, key: index });
                 });
 
-                if (!isNaN(ctrl.nameMaxWidth)) {
-                    widestNameWidth = Math.min(ctrl.nameMaxWidth, widestNameWidth);
+                return React.createElement(
+                    "div",
+                    { className: "property-table" },
+                    this.items
+                );
+            }
+        },
+        componentDidMount: {
+            value: function componentDidMount() {
+
+                var nameWidths = [],
+                    valueWidths = [];
+
+                for (var i in this.refs) {
+
+                    // let itemEl = React.findDOMNode(this.refs[i]);
+                    //
+                    // itemEls.push(itemEl);
+
+                    var item = this.refs[i];
+
+                    nameWidths.push(item.getNameWidth());
+                    valueWidths.push(item.getValueWidth());
                 }
 
-                //console.log(widestNameWidth);
+                var widestNameWidth = Math.max.apply(null, nameWidths);
+                var widestValueWidth = Math.max.apply(null, valueWidths);
 
-                if (!isNaN(ctrl.valueMaxWidth)) {
-                    widestValueWidth = Math.min(ctrl.valueMaxWidth, widestValueWidth);
-                }
+                //let itemWidth = widestNameWidth + widestValueWidth;
 
-                var itemWidth = widestNameWidth + widestValueWidth;
+                for (var i in this.refs) {
 
-                ctrl._items.forEach(function (item) {
+                    var item = this.refs[i];
 
                     item.setNameWidth(widestNameWidth);
                     item.setValueWidth(widestValueWidth);
-                    item.setWidth(itemWidth);
-                });
+                }
             }
-
-            $timeout(function () {
-                layoutInternals();
-            }, false);
-
-            scope.$watchCollection(function () {
-                return ctrl.properties;
-            }, function () {
-                layoutInternals();
-            });
         }
-    };
-}).directive("propertyTableItem", function () {
+    });
 
-    function PropertyItemController() {
+    return PropertyTable;
+})(React.Component);
 
-        this._element = null;
+var PropertyTableItem = (function (_React$Component2) {
+    function PropertyTableItem() {
+        _classCallCheck(this, PropertyTableItem);
+
+        if (_React$Component2 != null) {
+            _React$Component2.apply(this, arguments);
+        }
     }
 
-    PropertyItemController.prototype.setWidth = function (w) {
-        this._element.style.width = w + "px";
-    };
+    _inherits(PropertyTableItem, _React$Component2);
 
-    PropertyItemController.prototype.getNameWidth = function () {
+    _createClass(PropertyTableItem, {
+        render: {
+            value: function render() {
 
-        var nameElement = this._element.querySelector(".property-name");
+                var nameEl = React.createElement(
+                    "div",
+                    { className: "property-name", title: this.props.property.name, ref: "name" },
+                    this.props.property.name
+                );
 
-        return Math.ceil(parseFloat(getComputedStyle(nameElement).width));
-    };
+                var valueEl = React.createElement(
+                    "div",
+                    { className: "property-value", title: this.props.property.value, ref: "value" },
+                    this.props.property.value
+                );
 
-    PropertyItemController.prototype.setNameWidth = function (w) {
-
-        var nameElement = this._element.querySelector(".property-name");
-
-        nameElement.style.width = w + "px";
-    };
-
-    PropertyItemController.prototype.getValueWidth = function () {
-
-        var valueElement = this._element.querySelector(".property-value");
-
-        return Math.ceil(parseFloat(getComputedStyle(valueElement).width));
-    };
-
-    PropertyItemController.prototype.setValueWidth = function (w) {
-
-        var valueElement = this._element.querySelector(".property-value");
-
-        valueElement.style.width = w + "px";
-    };
-
-    PropertyItemController.prototype.resetSizes = function () {
-
-        var valueElement = this._element.querySelector(".property-value"),
-            nameElement = this._element.querySelector(".property-name");
-
-        valueElement.style.width = null;
-        nameElement.style.width = null;
-        this._element.style.width = null;
-    };
-
-    return {
-        restrict: "E",
-        scope: {
-            property: "="
+                return React.createElement(
+                    "div",
+                    { className: "property-table-item" },
+                    nameEl,
+                    valueEl
+                );
+            }
         },
-        replace: true,
-        controller: PropertyItemController,
-        bindToController: true,
-        controllerAs: "ctrl",
-        templateUrl: "/componentBrowser/templates/propertyTableItem.html",
-        require: ["propertyTableItem", "^propertyTable"],
-        link: function link(scope, $element, attributes, ctrls) {
+        getNameWidth: {
+            value: function getNameWidth() {
 
-            var ctrl = ctrls[0],
-                propertyTable = ctrls[1];
+                return Math.ceil(parseFloat(getComputedStyle(React.findDOMNode(this.refs.name)).width));
+            }
+        },
+        getValueWidth: {
+            value: function getValueWidth() {
 
-            ctrl._element = $element[0];
-            propertyTable.registerItem(ctrl);
-
-            scope.$on("$destroy", function () {
-                propertyTable.deRegisterItem(ctrl);
-            });
+                return Math.ceil(parseFloat(getComputedStyle(React.findDOMNode(this.refs.value)).width));
+            }
+        },
+        setNameWidth: {
+            value: function setNameWidth(w) {
+                React.findDOMNode(this.refs.name).style.width = w + "px";
+            }
+        },
+        setValueWidth: {
+            value: function setValueWidth(w) {
+                React.findDOMNode(this.refs.value).style.width = w + "px";
+            }
+        },
+        setWidth: {
+            value: function setWidth(w) {
+                React.findDOMNode(this).style.width = w + "px";
+            }
         }
-    };
-});
+    });
 
-},{}],16:[function(require,module,exports){
-/**
- * Created by Blake McBride on 2/26/15.
- */
+    return PropertyTableItem;
+})(React.Component);
 
-/*global angular*/
+module.exports = PropertyTable;
 
+},{}],17:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
@@ -1844,10 +1897,13 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
         templateUrl: "/componentBrowser/templates/viewSelection.html"
     };
 });
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
 
-},{}],17:[function(require,module,exports){
-/*globals angular*/
+/*global angular*/
 
+},{}],18:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -2100,10 +2156,9 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         return new ComponentLibrary();
     }];
 });
-
-},{}],18:[function(require,module,exports){
 /*globals angular*/
 
+},{}],19:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -2248,6 +2303,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         return new SubcircuitLibrary();
     }];
 });
+/*globals angular*/
 
 },{}]},{},[1])
 
