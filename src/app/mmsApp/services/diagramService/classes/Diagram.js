@@ -50,7 +50,7 @@ var Diagram = function() {
     this.config = {
         editable: true,
         disallowSelection: false,
-        width: 2500,
+        width: 3500,
         height: 2500
     };
 
@@ -585,10 +585,10 @@ Diagram.prototype.selectSegmentEndCorner = function(wireId, segmentId, silent) {
         index = this.state.selectedSegmentEndcornerIds.indexOf(id);
 
         if (index === -1) {
-            
+
             this.state.selectedSegmentEndcornerIds.push(id);
             segment.selectEndCorner();
-            
+
             if (!silent) {
                 this.afterSelectionChange();
             }
@@ -759,13 +759,13 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                     segment = segments[j];
                     parameters = segment.getParameters();
 
-                    if (segment._crossOvers) { 
+                    if (segment._crossOvers) {
                         segment._crossOvers = null;
                         segment._crossOversTimeStamp = null;
                     }
 
                     if (parameters) {
-                        
+
                         if (parameters.y1 === parameters.y2) {
 
                             // Horizontal
@@ -782,7 +782,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                                 segment._loX = parameters.x2;
                                 segment._hiX = parameters.x1;
 
-                                loVal = parameters.x2;                                
+                                loVal = parameters.x2;
 
                             }
 
@@ -809,7 +809,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                                 segment._loY = parameters.y2;
                                 segment._hiY = parameters.y1;
 
-                                loVal = parameters.y2;                                
+                                loVal = parameters.y2;
 
                             }
 
@@ -833,7 +833,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                                 segment._loX = parameters.x2;
                                 segment._hiX = parameters.x1;
 
-                                loVal = parameters.x2;                                
+                                loVal = parameters.x2;
 
                             }
 
@@ -897,7 +897,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
                                 hSegment._crossOvers = hSegment._crossOvers || [];
 
                                 if (!crossOversByX[vSegment._parameters.x1]) {
-                                    
+
                                     hSegment._crossOvers.push({
                                         type: 'horizontal',
                                         crossingSegment: vSegment,
@@ -920,7 +920,7 @@ Diagram.prototype._updateWireSegmentsIndex = function( /*wires*/ ) {
 
                 if (Array.isArray(hSegment._crossOvers)) {
                     hSegment._crossOvers.sort(crossOverSorter);
-                    hSegment._crossOversTimeStamp = Date.now().toString(); 
+                    hSegment._crossOversTimeStamp = Date.now().toString();
                 }
 
             }
@@ -1005,7 +1005,7 @@ Diagram.prototype.selectComponentsInViewport = function(viewport, padding, silen
                 this.selectComponent(component.id, true);
             }
 
-        }    
+        }
 
         if (!silent) {
             this.afterSelectionChange();
@@ -1031,12 +1031,12 @@ Diagram.prototype.selectWireCornersInViewport = function(viewport, padding, sile
                 }
 
             }
-        }    
+        }
 
         if (!silent) {
             this.afterSelectionChange();
         }
-        
+
 };
 
 EventDispatcher.prototype.apply(Diagram.prototype);
