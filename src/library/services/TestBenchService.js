@@ -9,7 +9,140 @@ angular.module('cyphy.services')
     .service('testBenchService', function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService) {
         'use strict';
         var self = this,
-            watchers = {};
+            watchers = {},
+            testBenches = [],
+            testBenchResults = [];
+
+        // TODO: add notifications: TestBench list updated, Result created, Result status changed.
+
+        function compareResult(a, b) {
+            if (a.endTime < b.endTime) {
+                return -1;
+            }
+            if (a.endTime > b.endTime) {
+                return 1;
+            }
+            if (a.startTime < b.startTime) {
+                return -1;
+            }
+            if (a.startTime > b.startTime) {
+                return 1;
+            }
+            return 0;
+        }
+
+        function compareTestBench(a, b) {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            if (a.id < b.id) {
+                return -1;
+            }
+            if (a.id > b.id) {
+                return 1;
+            }
+            return 0;
+        }
+
+        function addResult(result) {
+            testBenchResults.push(result);
+
+            testBenches.map(function (testBench) {
+                if (testBench.id === result.testBenchId) {
+                    // add result object to test bench
+                    testBench.result.push(result);
+
+                    // update last result, if result is finished and it is newer
+                    if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {
+                        testBench.lastResult = result;
+                    }
+                }
+            });
+        }
+
+        this.getTestBenches = function () {
+            var i;
+
+            // dummy data
+            for (i = 0; i < 10; i += 1) {
+                testBenches.push({
+                    id: i,
+                    name: 'Test bench ' + i,
+                    config: [
+                        {
+                            id: 1,
+                            name: 'quantity',
+                            value: 600
+                        }
+                    ],
+                    results: [],
+                    lastResult: null
+                });
+            }
+
+            testBenches.sort(compareTestBench);
+
+            return testBenches;
+        };
+
+        this.getTestBenchResults = function (id) {
+            var results = [],
+                i;
+
+            // dummy data
+            var status = ['Running', 'Failed', 'Succeeded'];
+            for (i = 0; i < 100; i += 1) {
+                addResult({
+                    id: i,
+                    testBenchId: i % 10,
+                    config: [
+                        {
+                            id: 1,
+                            name: 'quantity',
+                            value: 600
+                        }
+                    ],
+                    startTime: (new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000),
+                    endTime: (new Date()).getTime() - Math.floor(Math.random() * 15000),
+                    status: status[Math.floor(Math.random() * status.length)],
+                    resultUrl: 'something_' + i + '.zip'
+                });
+                if (testBenchResults[i].status === 'Running') {
+                    testBenchResults[i].endTime = null;
+                }
+            }
+
+            testBenchResults.map(function (testBenchResult) {
+                if (id) {
+                    // test bench result only for the requested test bench
+                    if (id === testBenchResult.id) {
+                        results.push(testBenchResult);
+                    }
+                } else {
+                    // all results
+                    results.push(testBenchResult);
+                }
+            });
+
+            results.sort(compareResult);
+
+            return results;
+        };
+
+        this.setTestBenchConfig = function (id, config) {
+            testBenches.map(function (testBench) {
+                if (id) {
+                    // test bench result only for the requested test bench
+                    if (id === testBenches.id) {
+                        testBenches.config = config;
+                    }
+                }
+            });
+        };
+
 
         this.editTestBenchFn = function (data) {
             var modalInstance = data.modal.open({
@@ -106,7 +239,20 @@ angular.module('cyphy.services')
                         save: true,
                         configurationPath: configurationId
                     }
+                },
+                testBenchResult = {
+                    id: (new Date()).getTime(),
+                    testBenchId: testBenchId,
+                    config: [],
+                    startTime: (new Date()).getTime(),
+                    endTime: null,
+                    status: 'Running',
+                    resultUrl: null
                 };
+
+            // add result object
+            addResult(testBenchResult);
+
             //console.log(JSON.stringify(config));
             pluginService.runPlugin(context, 'TestBenchRunner', config)
                 .then(function (result) {
@@ -118,6 +264,24 @@ angular.module('cyphy.services')
                     //console.log( 'Result', result );
                     pluginService.getPluginArtifacts(result.artifacts)
                         .then(function (artifactsByName) {
+
+                            // update result object
+                            testBenchResult.startTime = result.startTime;
+                            testBenchResult.endTime = result.finishTime;
+                            testBenchResult.status = result.success ? 'Succeeded' : 'Failed';
+                            testBenchResult.resultUrl = '/rest/blob/download/' + artifactsByName['all.zip'].hash;
+
+
+                            testBenches.map(function (testBench) {
+                                if (testBench.id === result.testBenchId) {
+                                    // update last result, if result is finished and it is newer
+                                    if (testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
+                                        testBench.lastResult = testBenchResult;
+                                    }
+                                }
+                            });
+
+
                             extendedResult.artifacts = artifactsByName;
                             deferred.resolve(extendedResult);
                         });
