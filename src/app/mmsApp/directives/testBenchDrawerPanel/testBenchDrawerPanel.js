@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('mms.testBenchFooterPanel', [
+angular.module('mms.testBenchDrawerPanel', [
 
 ])
 
-.directive('testBenchFooterPanel', function() {
+.directive('testBenchDrawerPanel', function() {
 
-    class TestBenchFooterPanelController {
+    class TestBenchDrawerPanelController {
 
         constructor() {
 
@@ -16,17 +16,17 @@ angular.module('mms.testBenchFooterPanel', [
 
     return {
         restrict: 'E',
-        controller: TestBenchFooterPanelController.constructor,
+        controller: TestBenchDrawerPanelController.constructor,
         controlerAs: 'ctrl',
         bindToController: true,
         scope: true,
         replace: true,
         transclude: false,
-        templateUrl: '/mmsApp/templates/testBenchFooterPanel.html'
+        templateUrl: '/mmsApp/templates/testBenchDrawerPanel.html'
     };
 })
 
-.directive('testBenchFooterPanelTestList', function() {
+.directive('testBenchDrawerPanelTestList', function() {
 
     class TestListController {
 
@@ -46,11 +46,11 @@ angular.module('mms.testBenchFooterPanel', [
         },
         replace: true,
         transclude: false,
-        templateUrl: '/mmsApp/templates/testBenchFooterPanelTestList.html'
+        templateUrl: '/mmsApp/templates/testBenchDrawerPanelTestList.html'
     };
 })
 
-.directive('testBenchFooterPanelResultList', function() {
+.directive('testBenchDrawerPanelResultList', function() {
 
     class ResultListController {
 
@@ -70,6 +70,6 @@ angular.module('mms.testBenchFooterPanel', [
         },
         replace: true,
         transclude: false,
-        templateUrl: '/mmsApp/templates/testBenchFooterPanelResultList.html'
+        templateUrl: '/mmsApp/templates/testBenchDrawerPanelResultList.html'
     };
 });
