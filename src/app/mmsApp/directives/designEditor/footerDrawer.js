@@ -390,8 +390,16 @@ angular.module('mms.designEditor.footerDrawer', [
 
                         this._panels.push(panelCtrl);
 
-                        if (panelCtrl.active) {
+                        var preferences = this._footerDrawerCtrl.getPanelUserPreferencesByPanelName(this.name);
+
+                        console.log(preferences);
+
+                        if ( preferences.activeSubPanel === panelCtrl.name ||
+                            ( preferences.activeSubPanel === undefined && panelCtrl.active)
+                        ) {
                             this.activateSubPanel(panelCtrl);
+                        } else {
+                            panelCtrl.active = false;
                         }
 
                     }

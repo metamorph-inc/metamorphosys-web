@@ -56,7 +56,12 @@ $header-height: 38px;
     }
 
     .drawer-sub-navigator {
-        font-size: 90%;
+
+        font-size: 100%;
+
+        button.btn, .md-button {
+            text-transform: none;
+        }
     }
 
     > header {
