@@ -2,16 +2,21 @@
 	<header
 		ng-mousedown="::ctrl.headerMouseDown($event)"
 		ng-dblclick="::ctrl.toggle()">
-		<ul class="drawer-main-navigator">
+		<ul class="drawer-navigator drawer-main-navigator">
 			<li ng-repeat="panel in ctrl._panels" ng-class="{'active-panel': panel.active}">
 				<md-button ng-disabled="panel.active" ng-click="ctrl.activatePanel(panel)"><i ng-class="::panel.iconClass"></i> {{::panel.name}}</li></md-button>
-			</li>			
+			</li>
 		</ul>
 		<div class="drawer-expander" ng-switch on="ctrl._expanded">
 			<a hrer="#" ng-switch-when="false" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-up"></i></a>
-			<a hrer="#" ng-switch-when="true" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-down"></i></a>				
-		</div>		
+			<a hrer="#" ng-switch-when="true" ng-click="::ctrl.toggle();"><i class="glyphicon glyphicon-chevron-down"></i></a>
+		</div>
 	</header>
+	<ul class="drawer-navigator drawer-sub-navigator" ng-if="ctrl._activePanel._panels.length">
+		<li ng-repeat="subPanel in ctrl._activePanel._panels" ng-class="{'active-panel': subPanel.active}">
+			<md-button ng-disabled="subPanel.active" ng-click="ctrl._activePanel.activateSubPanel(subPanel)"><i ng-class="::subPanel.iconClass"></i> {{::subPanel.name}}</li></md-button>
+		</li>
+	</ul>
 	<div class="drawer-content">
 		<ng-transclude></ng-transclude>
 	</div>

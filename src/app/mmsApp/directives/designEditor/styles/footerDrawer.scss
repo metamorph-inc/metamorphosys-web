@@ -17,6 +17,48 @@ $header-height: 38px;
     z-index: 10;
     left: 0;
     padding-top: $header-height;
+
+    .drawer-navigator {
+        padding: 0;
+        list-style-type: none;
+
+        > li {
+            color: #555;
+            display: inline-block;
+
+            i {
+                font-size: 85%;
+            }
+            margin-right: 0.5ex;
+
+
+            button {
+                border-radius: 0;
+            }
+
+            .md-button.md-default-theme[disabled],
+            .md-button.md-default-theme.md-raised[disabled],
+            .md-button.md-default-theme.md-fab[disabled] {
+                cursor: default;
+                color: $linkColorOnDark;
+            }
+
+        }
+
+            .active-panel {
+
+                button {
+                    border-bottom: 3px solid #3894fd;
+                }
+
+            }
+
+    }
+
+    .drawer-sub-navigator {
+        font-size: 90%;
+    }
+
     > header {
         height: $header-height;
         border-bottom: 1px solid #4e5a68;
@@ -33,44 +75,6 @@ $header-height: 38px;
         -ms-user-select: none;
         -o-user-select: none;
         user-select: none;
-
-		.drawer-main-navigator {
-			padding: 0;
-			list-style-type: none;
-
-			> li {
-				color: #555;
-                display: inline-block;
-
-				i {
-					font-size: 85%;
-				}
-                margin-right: 0.5ex;
-
-
-                button {
-                    border-radius: 0;
-                }
-
-                .md-button.md-default-theme[disabled],
-                .md-button.md-default-theme.md-raised[disabled],
-                .md-button.md-default-theme.md-fab[disabled] {
-                    cursor: default;
-                    color: $linkColorOnDark;
-                }
-
-            }
-
-                .active-panel {
-
-                    button {
-                        border-bottom: 3px solid #3894fd;
-                    }
-
-                }
-
-		}
-
         .drawer-expander {
             position: absolute;
             right: 10px;

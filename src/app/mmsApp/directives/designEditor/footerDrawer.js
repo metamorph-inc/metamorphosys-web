@@ -51,13 +51,9 @@ angular.module('mms.designEditor.footerDrawer', [
 
                 }
 
-                if ($cookies.footerDrawerUserPreferences) {
-                    this._userPreferences = JSON.parse($cookies.footerDrawerUserPreferences);
-                } else {
-                    this._userPreferences = null;
-                }
+                this.$cookies = $cookies;
 
-                //console.log('User preferences:', this._userPreferences);
+                this.loadPreferences();
 
                 this.toggle();
 
@@ -127,9 +123,11 @@ angular.module('mms.designEditor.footerDrawer', [
                             this._userPreferences.panels = this._userPreferences.panels || {};
 
                             this._userPreferences.panels[this._activePanel.name] = this._userPreferences.panels[this._activePanel.name] || {};
-                            this._userPreferences.panels[this._activePanel.name].height = this._height;
 
-                            $cookies.footerDrawerUserPreferences = JSON.stringify(this._userPreferences);
+                            // Remembering height
+
+                            this.getPanelUserPreferencesByPanelName(this._activePanel.name).height = this._height;
+                            this.savePreferences();
 
                         }
 
@@ -137,6 +135,31 @@ angular.module('mms.designEditor.footerDrawer', [
                         this._expanded = false;
                     }
                 }
+
+            };
+
+            DrawerController.prototype.getPanelUserPreferencesByPanelName = function(aName) {
+
+                this._userPreferences.panels = this._userPreferences.panels || {};
+
+                this._userPreferences.panels[aName] = this._userPreferences.panels[aName] || {};
+
+                return this._userPreferences.panels[aName];
+
+            };
+
+            DrawerController.prototype.savePreferences = function() {
+                $cookies.footerDrawerUserPreferences = JSON.stringify(this._userPreferences);
+            };
+
+            DrawerController.prototype.loadPreferences = function() {
+
+                if (this.$cookies.footerDrawerUserPreferences) {
+                    this._userPreferences = JSON.parse(this.$cookies.footerDrawerUserPreferences);
+                } else {
+                    this._userPreferences = null;
+                }
+
 
             };
 
@@ -150,7 +173,7 @@ angular.module('mms.designEditor.footerDrawer', [
 
             };
 
-            DrawerController.prototype.unregisterElement = function(element) {
+            DrawerController.prototype.unregisterElement = function() {
 
                 this._element = null;
 
@@ -356,7 +379,60 @@ angular.module('mms.designEditor.footerDrawer', [
             function DrawerPanelController() {
                 this.name = null;
                 this.iconClass = null;
+
+                this._panels = [];
             }
+
+
+            DrawerPanelController.prototype.registerSubPanel = function(panelCtrl) {
+
+                if (panelCtrl && panelCtrl.name) {
+
+                        this._panels.push(panelCtrl);
+
+                        if (panelCtrl.active) {
+                            this.activateSubPanel(panelCtrl);
+                        }
+
+                    }
+
+            };
+
+            DrawerPanelController.prototype.unregisterSubPanel = function(panelCtr) {
+
+                var index = this._panels.indexOf(panelCtr);
+
+                if (index !== -1) {
+                    this._panels.splice(index, 1);
+                }
+
+            };
+
+            DrawerPanelController.prototype.activateSubPanel = function(panel) {
+
+                if (panel) {
+
+                    if (this._activePanel && this._activePanel !== panel) {
+                        this._activePanel.active = false;
+                    }
+
+                    panel.active = true;
+                    this._activePanel = panel;
+
+                    this._userPreferences = this._userPreferences || {};
+
+                    this._userPreferences.activeSubPanel = this._activePanel.name;
+
+                    // Remembering wich subpanel is active
+
+                    this._footerDrawerCtrl.getPanelUserPreferencesByPanelName(this.name)
+                        .activeSubPanel = this._activePanel.name;
+
+                    this._footerDrawerCtrl.savePreferences();
+
+                }
+
+            };
 
 
             return {
@@ -367,22 +443,17 @@ angular.module('mms.designEditor.footerDrawer', [
                 replace: true,
                 transclude: true,
                 scope: true,
-                template: '<div class="drawer-panel"><ng-transclude ng-if="ctrl.active"></ng-transclude></div>',
+                templateUrl: '/mmsApp/templates/drawerPanel.html',
                 require: ['drawerPanel', '^footerDrawer'],
                 link: function(scope, element, attributes, controllers) {
 
                     var ctrl = controllers[0],
                         footerDrawerCtrl = controllers[1];
 
+                    ctrl._footerDrawerCtrl = footerDrawerCtrl;
+
                     ctrl.name = attributes.name;
                     ctrl.iconClass = attributes.iconClass;
-
-                    if (ctrl.name.toLowerCase() === "inspector" ) {
-                        ctrl.contentPanel = false;
-                    }
-                    else {
-                        ctrl.contentPanel = true;
-                    }
 
                     if (attributes.hasOwnProperty('active')) {
                         ctrl.active = true;
@@ -404,6 +475,51 @@ angular.module('mms.designEditor.footerDrawer', [
                                 return x.name.toLowerCase();
                             }).indexOf("inspector")]);
 
+                    });
+
+                }
+            };
+        }
+    )
+    .directive('drawerSubPanel',
+
+        function() {
+
+            function DrawerSubPanelController() {
+                this.name = null;
+                this.iconClass = null;
+            }
+
+
+            return {
+                restrict: 'E',
+                controller: DrawerSubPanelController,
+                controllerAs: 'ctrl',
+                bindToController: true,
+                replace: true,
+                transclude: true,
+                scope: true,
+                template: '<div class="drawer-sub-panel"><ng-transclude ng-if="ctrl.active"></ng-transclude></div>',
+                require: ['drawerSubPanel', '^drawerPanel', '^footerDrawer'],
+                link: function(scope, element, attributes, controllers) {
+
+                    var ctrl = controllers[0],
+                        panelCtrl = controllers[1],
+                        footerDrawerCtrl = controllers[2];
+
+                    ctrl.name = attributes.name;
+                    ctrl.iconClass = attributes.iconClass;
+
+                    if (attributes.hasOwnProperty('active')) {
+                        ctrl.active = true;
+                    } else {
+                        ctrl.active = false;
+                    }
+
+                    panelCtrl.registerSubPanel(ctrl);
+
+                    scope.$on('$destroy', function() {
+                        panelCtrl.unregisterSubPanel(ctrl);
                     });
 
                 }

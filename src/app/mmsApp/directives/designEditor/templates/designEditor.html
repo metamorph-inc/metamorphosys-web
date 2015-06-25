@@ -34,7 +34,12 @@
             ></subcircuit-browser>
         </drawer-panel>
         <drawer-panel name="Tests" active height="300">
-            <test-bench-drawer-panel/>
+            <drawer-sub-panel name="Test benches" active>
+                <test-bench-drawer-panel-test-list tests="ctrl.tests"></test-bench-drawer-panel-test-list>
+            </drawer-sub-panel>
+            <drawer-sub-panel name="Results">
+                <test-bench-drawer-panel-result-list results="ctrl.results"></test-bench-drawer-panel-result-list>
+            </drawer-sub-panel>
         </drawer-panel>
     </footer-drawer>
 </div>
