@@ -10,6 +10,24 @@ angular.module('mms.testBenchDrawerPanel', [
 
         constructor() {
 
+            this.listData = {
+                items: []
+            };
+
+            this.config = {
+
+                sortable: false,
+                secondaryItemMenu: false,
+                detailsCollapsible: true,
+
+                itemClick: function (event, item) {
+                    console.log('Clicked: ' + item);
+                },
+                detailsRenderer: function (item) {
+                    item.details = 'My details are here now!';
+                }
+
+            };
         }
 
     }
@@ -33,6 +51,25 @@ angular.module('mms.testBenchDrawerPanel', [
     class ResultListController {
 
         constructor() {
+
+            this.listData = {
+                items: []
+            };
+
+            this.config = {
+
+                sortable: false,
+                secondaryItemMenu: false,
+                detailsCollapsible: true,
+
+                itemClick: function (event, item) {
+                    console.log('Clicked: ' + item);
+                },
+                detailsRenderer: function (item) {
+                    item.details = 'My details are here now!';
+                }
+
+            };
 
         }
 
