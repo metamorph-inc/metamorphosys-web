@@ -104,7 +104,8 @@
                     "name": "Photon Shield Template",
                     "description": "This template allows you to connect to Particle’s WiFi Photon device. The Photon is a tiny Wi-Fi development kit for creating connected projects and products for the Internet of Things.The board uses a Broadcom Wi-Fi chip alongside a powerful ARM Cortex M3 micro controller. It has a 3.3VDC SMP power supply, RF and user interface components on a small single-sided PCB.",
                     "visual": "images/photon_wifi.png",
-                    "noComponentBrowser": true
+                    "noComponentBrowser": true,
+                    "noAutoRouter": true
                 }
 
             ]
