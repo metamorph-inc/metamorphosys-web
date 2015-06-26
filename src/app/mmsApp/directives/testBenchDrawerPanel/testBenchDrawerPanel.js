@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('mms.testBenchDrawerPanel', [
-
+    'cyphy.services'
 ])
 
 .directive('testBenchDrawerPanelTestList', function() {
@@ -50,7 +50,9 @@ angular.module('mms.testBenchDrawerPanel', [
 
     class ResultListController {
 
-        constructor() {
+        constructor(testbenchService) {
+
+
 
             this.listData = {
                 items: []
