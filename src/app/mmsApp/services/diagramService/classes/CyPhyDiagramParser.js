@@ -695,7 +695,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     minWidth: 240,
                     portWireLeadInIncrement: 8,
                     portWireLength: 30,
-                    topPortPadding: 0
+                    topPortPadding: 20
                 });
 
             newModelComponent = new DiagramComponent({

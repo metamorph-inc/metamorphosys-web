@@ -76,7 +76,7 @@ define(['plugin/PluginConfig',
         return [{
             'name': 'UploadedFile', // May be a single .acm or a zip containing several
             'displayName': 'Exported files',
-            'description': 'Upload .zips containing .acms, .adms, and testbenches.zip',
+            'description': 'Upload .zips containing .acms, .adps, and testbenches.zip',
             'value': '',
             'valueType': 'asset',
             'readOnly': false
@@ -137,16 +137,39 @@ define(['plugin/PluginConfig',
             }
         }).then(function (workSpace) {
             self.workSpace = workSpace;
+            return Q.ninvoke(self.core, 'loadChildren', workSpace);
+        }).then(function (workSpaceChildren) {
+            var getFirstByKind = function(kind) {
+                return workSpaceChildren.filter(function (node) {
+                    return self.isMetaTypeOf(node, self.metaTypes[kind]);
+                })[0];
+            };
+            if (!(self.acmFolder = getFirstByKind('ACMFolder'))) {
+                self.acmFolder = self.core.createNode({
+                    base: self.metaTypes.ACMFolder,
+                    parent: self.workSpace
+                });
+                self.core.setAttribute(self.acmFolder, 'name', 'Components');
+            }
+            if (!(self.admFolder = getFirstByKind('ADMFolder'))) {
+                self.admFolder = self.core.createNode({
+                    base: self.metaTypes.ADMFolder,
+                    parent: self.workSpace
+                });
+                self.core.setAttribute(self.admFolder, 'name', 'Designs');
+            }
+            if (!(self.atmFolder = getFirstByKind('ATMFolder'))) {
+                self.atmFolder = self.core.createNode({
+                    base: self.metaTypes.ATMFolder,
+                    parent: self.workSpace
+                });
+                self.core.setAttribute(self.atmFolder, 'name', 'TestBenches');
+            }
         }).then(function () {
             return Q.ninvoke(self.blobClient, 'getArtifact', uploadedFileHash);
         }).then(function (artifact) {
             self.artifact = artifact;
         }).then(function () {
-            self.acmFolder = self.core.createNode({
-                base: self.metaTypes.ACMFolder,
-                parent: self.workSpace,
-            });
-            self.core.setAttribute(self.acmFolder, 'name', 'Components');
 
             var acmZips = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
@@ -163,15 +186,9 @@ define(['plugin/PluginConfig',
                 return AdmImporter.prototype.runPlugin.call(self, AcmImporter, config, {activeNode: self.acmFolder});
             });
         }).then(function () {
-            self.admFolder = self.core.createNode({
-                base: self.metaTypes.ADMFolder,
-                parent: self.workSpace
-            });
-            self.core.setAttribute(self.admFolder, 'name', 'Designs');
-
             var adms = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
-                    return (filename.lastIndexOf('.adm') === filename.length - 4);
+                    return (filename.lastIndexOf('.adp') === filename.length - 4);
                 });
 
             return throttle(adms, function (adm) {
@@ -182,11 +199,6 @@ define(['plugin/PluginConfig',
                 return AdmImporter.prototype.runPlugin.call(self, AdmImporter, config, {activeNode: self.admFolder});
             });
         }).then(function () {
-            self.atmFolder = self.core.createNode({
-                base: self.metaTypes.ATMFolder,
-                parent: self.workSpace
-            });
-            self.core.setAttribute(self.atmFolder, 'name', 'TestBenches');
 
             var testbenches_zip = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {

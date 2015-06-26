@@ -381,6 +381,8 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
         ga('send', 'event', 'diagram', 'contextmenu');
 
+        $event.stopPropagation();        
+
         angular.forEach($scope.routerTypes, function(routerType) {
             var selected;
 
@@ -516,8 +518,6 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
 
         openMenu($event);
-
-        $event.stopPropagation();
 
     };
 

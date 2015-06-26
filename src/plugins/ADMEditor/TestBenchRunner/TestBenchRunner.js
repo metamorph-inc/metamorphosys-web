@@ -147,7 +147,8 @@ define(['plugin/PluginConfig',
             self.getAdmAndAcms2(self.referencedDesign, function (err) {
                 self.generateExecutionFiles(null, function (err, artifact) {
                     if (err) {
-                        callback('Could generateExecutionFiles : err' + err.toString(), self.result);
+                        callback('generateExecutionFiles failed : ' + err.toString(), self.result);
+                        self.logger.error('generateExecutionFiles failed : ' + err.toString());
                         return;
                     }
                     self.saveAndRun(artifact, null, callback);
@@ -173,7 +174,8 @@ define(['plugin/PluginConfig',
                 }
                 self.generateExecutionFiles(testBenchInfo, function (err, artifact) {
                     if (err) {
-                        callback('Could generateExecutionFiles : err' + err.toString(), self.result);
+                        callback('generateExecutionFiles failed : ' + err.toString(), self.result);
+                        self.logger.error('generateExecutionFiles failed : ' + err.toString());
                         return;
                     }
                     self.saveAndRun(artifact, testBenchInfo, callback);

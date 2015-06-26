@@ -2,6 +2,30 @@
 body, html {
   height: 100%; }
 
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
+.category-resizer {
+  height: 100%;
+  padding: 0 12px;
+  margin-left: -12px;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  cursor: col-resize; }
+  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
+  .category-resizer .category-resizer-border {
+    width: 1px;
+    height: 100%;
+    background-color: #aaa;
+    opacity: 0.4;
+    transition: opacity 200ms; }
+  /* line 21, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
+  .category-resizer:hover .category-resizer-border {
+    opacity: 1; }
+
+/* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
+.embedded .category-resizer {
+  padding-top: 0; }
+
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
 .content-browser {
   height: 100%;
@@ -122,30 +146,6 @@ body, html {
   /* line 170, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentBrowser/styles/componentBrowser.scss */
   .content-browser.embedded .left-panel {
     padding-top: 0; }
-
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
-.category-resizer {
-  height: 100%;
-  padding: 0 12px;
-  margin-left: -12px;
-  position: absolute;
-  top: 0;
-  z-index: 10;
-  cursor: col-resize; }
-  /* line 11, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
-  .category-resizer .category-resizer-border {
-    width: 1px;
-    height: 100%;
-    background-color: #aaa;
-    opacity: 0.4;
-    transition: opacity 200ms; }
-  /* line 21, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
-  .category-resizer:hover .category-resizer-border {
-    opacity: 1; }
-
-/* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/categoryResizer/styles/categoryResizer.scss */
-.embedded .category-resizer {
-  padding-top: 0; }
 
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/componentCategories/styles/componentCategories.scss */
 .content-categories .tree-navigator {
@@ -400,6 +400,37 @@ table tr:nth-child(even) {
 .info-text {
   line-height: 1.2; }
 
+/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
+.property-table {
+  font-size: 80%;
+  line-height: 110%; }
+  /* line 6, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
+  .property-table .property-table-item {
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: .15ex;
+    margin-right: 1em; }
+    /* line 13, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
+    .property-table .property-table-item .property-name {
+      display: inline-block;
+      font-weight: bold;
+      text-align: right;
+      padding-right: .5ex;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px; }
+    /* line 24, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
+    .property-table .property-table-item .property-value {
+      display: inline-block;
+      text-align: left;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: .5ex;
+      max-width: 120px; }
+
 /* line 3, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/paging/styles/paging.scss */
 .paging .btn[disabled] {
   opacity: 0.18; }
@@ -411,36 +442,6 @@ table tr:nth-child(even) {
 .paging .next-page {
   width: 60px;
   margin-left: 2ex; }
-
-/* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
-.property-table {
-  font-size: 80%;
-  line-height: 110%; }
-  /* line 6, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
-  .property-table .property-table-item {
-    display: inline-block;
-    white-space: nowrap;
-    margin-bottom: .15ex; }
-    /* line 12, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
-    .property-table .property-table-item .property-name {
-      display: inline-block;
-      font-weight: bold;
-      text-align: right;
-      padding-right: .5ex;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis; }
-    /* line 22, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
-    .property-table .property-table-item .property-value {
-      display: inline-block;
-      text-align: left;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      padding-right: .5ex; }
-      /* line 30, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/propertyTable/styles/propertyTable.scss */
-      .property-table .property-table-item .property-value:hover {
-        overflow-x: visible; }
 
 /* line 1, /Users/laszlojuracz/Projects/morph/content-server/client_apps/componentBrowser/directives/showLessButton/styles/showLessButton.scss */
 .show-less-button {
