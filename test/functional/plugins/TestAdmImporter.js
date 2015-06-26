@@ -17,7 +17,6 @@ if (typeof window === 'undefined') {
 describe('TestAdmImporter', function () {
     'use strict';
 
-    var BlobClient;
     var Artifact;
     var acmTemplates;
     var admTemplates;
@@ -31,12 +30,10 @@ describe('TestAdmImporter', function () {
         commitHash,
         PluginCliManager = require('../../../node_modules/webgme/src/plugin/climanager');
 
-    testConf.useServer(before, after);
     testConf.useStorage(projectName, before, after);
 
     before(function (done) {
-        requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/adm/functional/Templates', 'jszip', 'common/core/core'], function (BlobClient_, Artifact_, admTemplates_, jszip_, Core_) {
-            BlobClient = BlobClient_;
+        requirejs(['blob/Artifact', 'test/models/adm/functional/Templates', 'jszip', 'common/core/core'], function (Artifact_, admTemplates_, jszip_, Core_) {
             Artifact = Artifact_;
             admTemplates = admTemplates_;
             jszip = jszip_;
@@ -121,10 +118,6 @@ describe('TestAdmImporter', function () {
     });
 
     function newBlobClient() {
-        return new BlobClient({
-            server: 'localhost',
-            serverPort: CONFIG.server.port,
-            httpsecure: false
-        });
+        return testConf.newBlobClient();
     }
 });

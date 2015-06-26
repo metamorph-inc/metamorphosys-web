@@ -32,7 +32,6 @@ describe('ProjectImporter', function () {
     var Artifact;
     var jszip;
 
-    testConf.useServer(before, after);
     testConf.useStorage(projectName, before, after);
 
 
@@ -90,21 +89,17 @@ describe('ProjectImporter', function () {
                     },
                     pluginManager = new PluginCliManager(project, logger, gmeConfig);
 
-                pluginManager.executePlugin('ProjectImporter', pluginConfig, pluginContext, function (err, result) {
+                pluginManager.executePlugin('ProjectImporter', pluginConfig, pluginContext, testConf.callbackImmediate(function (err, result) {
                         chai.expect(err).to.equal(null);
                         chai.expect(result.getSuccess()).to.equal(true);
                         // TODO: look at model
                         done();
-                    });
+                    }));
             });
         });
     });
 
     function newBlobClient() {
-        return new BlobClient({
-            server: 'localhost',
-            serverPort: CONFIG.server.port,
-            httpsecure: false
-        });
+        return testConf.newBlobClient();
     }
 });

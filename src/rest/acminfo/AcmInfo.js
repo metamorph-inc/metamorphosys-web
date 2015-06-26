@@ -34,7 +34,7 @@
                 newParseAcm(id).parse().then(function (json) {
                     res.send(json);
                 }).catch(function (err) {
-                    logger.warning(err + ' ' + err.stack);
+                    logger.warn(err + ' ' + err.stack);
                     res.sendStatus(500);
                 });
             } else if (url.length === 4 && url[1] === 'getfile') {
@@ -46,7 +46,7 @@
                     res.setHeader('Content-Disposition', contentDisposition(filename, {type: 'attachment'}));
                     res.send(buffer);
                 }).catch(function (err) {
-                    logger.warning(err + ' ' + err.stack);
+                    logger.warn(err + ' ' + err.stack);
                     res.sendStatus(500);
                 });
             } else {

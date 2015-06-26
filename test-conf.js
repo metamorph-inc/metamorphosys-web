@@ -10,6 +10,8 @@
 
 var PATH = require('path');
 
+var testFixture = require('./node_modules/webgme/test/_globals');
+
 var CONFIG = JSON.parse(JSON.stringify(require('./config.js')));
 CONFIG.server.log.transports.forEach(function (transport) {
     transport.options.handleExceptions = false;
@@ -18,13 +20,18 @@ CONFIG.server.log.transports.forEach(function (transport) {
     }
 });
 
-exports.config = CONFIG;
+exports.config = CONFIG = testFixture.getGmeConfig();
 CONFIG.blob.fsDir = './blob-local-storage';
 CONFIG.server.port = 49049;
 CONFIG.mongo.uri = 'mongodb://127.0.0.1:27017/CyPhyFunctional';
 CONFIG.mongo.options.server = CONFIG.mongo.options.server || {};
 CONFIG.mongo.options.server.socketOptions = {connectTimeoutMS: 500};
 CONFIG.executor.enable = false; // fails until https://github.com/webgme/webgme/issues/323 is fixed
+CONFIG.blob.fsDir = './blob-local-storage';
+testFixture.getGmeConfig = function () {
+    return exports.config;
+};
+
 var webgme = require('webgme');
 var requirejs = webgme.requirejs;
 webgme.addToRequireJsPaths(CONFIG);
@@ -111,6 +118,15 @@ exports.callbackImmediate = function (callback) {
     };
 };
 
+exports.newBlobClient = function () {
+    var BlobFSBackend = require('./node_modules/webgme/src/server/middleware/blob/BlobFSBackend'),
+        BlobRunPluginClient = require('./node_modules/webgme/src/server/middleware/blob/BlobRunPluginClient');
+
+    var blobBackend = new BlobFSBackend(CONFIG),
+        blobClient = new BlobRunPluginClient(blobBackend);
+
+    return blobClient;
+};
 
 if (require.main === module) {
     console.log(JSON.stringify(CONFIG, null, 4));

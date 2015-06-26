@@ -29,7 +29,6 @@ describe('TestBenchRunner', function () {
         commitHash,
         PluginCliManager = require('../../../node_modules/webgme/src/plugin/climanager');
 
-    testConf.useServer(before, after);
     testConf.useStorage(projectName, before, after);
 
     beforeEach(function (done) {
@@ -86,6 +85,7 @@ describe('TestBenchRunner', function () {
             pluginManager.executePlugin(pluginName, pluginConfig, pluginContext, testConf.callbackImmediate(function (err, result) {
                 chai.expect(err).to.equal(null);
                 chai.expect(result.getSuccess()).to.equal(true);
+                //chai.expect(result.artifacts[0]).to.equal('647767cc4a46fc26b663f7ead26944b09ed8ad99');
                 var bc = newBlobClient();
                 bc.getSubObject(result.artifacts[0], 'executor_config.json', function (err, res) {
                     if (err) {
@@ -100,10 +100,6 @@ describe('TestBenchRunner', function () {
     });
 
     function newBlobClient() {
-        return new BlobClient({
-            server: 'localhost',
-            serverPort: CONFIG.server.port,
-            httpsecure: false
-        });
+        return testConf.newBlobClient();
     }
 });
