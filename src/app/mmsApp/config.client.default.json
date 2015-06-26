@@ -104,7 +104,15 @@
                     "name": "Photon Shield Template",
                     "description": "This template allows you to connect to Particle’s WiFi Photon device. The Photon is a tiny Wi-Fi development kit for creating connected projects and products for the Internet of Things.The board uses a Broadcom Wi-Fi chip alongside a powerful ARM Cortex M3 micro controller. It has a 3.3VDC SMP power supply, RF and user interface components on a small single-sided PCB.",
                     "visual": "images/photon_wifi.png",
-                    "noComponentBrowser": true
+                    "noComponentBrowser": true,
+                    "noAutoRouter": true
+                },
+                {
+                    "name": "Electric Imp Module",
+                    "description": "The Electric Imp platform has an imp, a module containing WiFi and a processor to connect to the Internet or work as an independent device. It features fully integrated hardware, software, OS, APIs, cloud services and security. This version follows the Nora hardware reference design, a sensor node powered by two AA lithium battery cells.",
+                    "visual": "images/electric_imp.png",
+                    "noComponentBrowser": true,
+                    "noAutoRouter": true
                 }
 
             ]
