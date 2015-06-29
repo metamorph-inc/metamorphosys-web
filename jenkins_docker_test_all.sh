@@ -6,7 +6,7 @@ function cleanup {
 name=mms-webcyphy
 docker logs $name || true
 docker kill $name || true
-docker rm $name || true
+docker rm -v $name || true
 }
 trap cleanup EXIT
 
