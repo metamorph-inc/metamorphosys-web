@@ -58,10 +58,10 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         testBenchResults.push(result);
 
         testBenches.forEach(function (testBench) {
-            
+
             if (testBench.id === result.testBenchId) {
                 // add result object to test bench
-                testBench.result.push(result);
+                testBench.results.push(result);
 
                 // update last result, if result is finished and it is newer
                 if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {

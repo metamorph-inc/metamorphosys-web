@@ -8,14 +8,24 @@ angular.module('mms.testBenchDrawerPanel', [
 
     function TestListController(testBenchService) {
 
-        var testBenches = testBenchService.getTestBenches();
+        var self = this,
+            testBenches = testBenchService.getTestBenches();
 
         this.listData = {
             items: []
         };
 
         testBenches.forEach(testBench => {
-            console.log(testBench);
+
+            var listItem = {
+                id: testBench.id,
+                title: testBench.name
+            };
+
+            self.listData.items.push(listItem);
+
+            console.log(this.listData);
+
         });
 
         this.config = {
