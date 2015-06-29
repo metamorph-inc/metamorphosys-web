@@ -193,7 +193,7 @@ module.exports = function ($scope, contentLibraryService) {
         };
 
         if (item.iconFileName) {
-            details.documentation.icon = "/component_files/" + item.iconFileName;
+            details.documentation.icon = contentLibraryService.getServerUrl() + "/component_files/" + item.iconFileName;
         }
 
         return {
@@ -614,6 +614,10 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         ComponentLibrary = function () {
 
             var classificationTree, subcircuitTree, grandTotal, subcircuitGrandTotal;
+
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
 
             this.getListOfComponents = function (categoryPath, itemCount, cursor) {
 
@@ -1790,6 +1794,10 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
 
             var subcircuitTree, subcircuitGrandTotal;
 
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
+
             this.getListOfSubCircuits = function (categoryPath, itemCount, cursor) {
 
                 var deferred = $q.defer();
@@ -1899,7 +1907,8 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
                         id: id,
                         description: json.data.description,
                         connectors: json.data.connectors,
-                        visuals: json.data.visuals
+                        visuals: json.data.visuals,
+                        icon: json.data.icon
                     };
 
                     deferred.resolve(documentation);
