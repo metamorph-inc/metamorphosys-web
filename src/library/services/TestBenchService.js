@@ -12,8 +12,12 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
     'use strict';
     var self = this,
         watchers = {},
+
         testBenches = [],
-        testBenchResults = [];
+        testBenchesById = {},
+
+        testBenchResults = [],
+        testBenchResultsById = {};
 
     // TODO: add notifications: TestBench list updated, Result created, Result status changed.
 
@@ -50,9 +54,11 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
     }
 
     function addResult(result) {
+
         testBenchResults.push(result);
 
-        testBenches.map(function (testBench) {
+        testBenches.forEach(function (testBench) {
+            
             if (testBench.id === result.testBenchId) {
                 // add result object to test bench
                 testBench.result.push(result);
@@ -74,9 +80,11 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
 
     function addTestBench(testBench) {
+
         testBenches.push(testBench);
-
         testBenches.sort(compareTestBench);
+
+        testBenchesById[testBench.id] = testBench;
 
         self.dispatchEvent({
             type: 'testBenchListChanged',
@@ -84,36 +92,67 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         });
     }
 
-    function removeTestBench(testBenchId) {
-        // TODO: remove test bench based on id
+    function removeTestBench(id) {
 
-        testBenches.sort(compareTestBench);
+        var notFound = true,
+            i = 0,
+            testBench;
 
-        self.dispatchEvent({
-            type: 'testBenchListChanged',
-            data: testBenches
-        });
+        while (notFound && i < testBenches.length) {
+
+            testBench = testBenches[i];
+
+            if (testBench.id === id) {
+                notFound = false;
+            }
+
+        }
+
+
+        if (!notFound) {
+
+            testBenches.splice(i, 1);
+            testBenchesById[id] = null;
+
+            //TODO: add remove results
+
+            self.dispatchEvent({
+                type: 'testBenchListChanged',
+                data: testBenches
+            });
+
+
+        }
+
     }
+
+    this.getTestBenchById = function(id) {
+        return testBenchesById[id];
+    };
 
 
     this.getTestBenches = function () {
         var i;
 
-        // dummy data
-        for (i = 0; i < 10; i += 1) {
-            addTestBench({
-                id: i,
-                name: 'Test bench ' + i,
-                config: [
-                    {
-                        id: 1,
-                        name: 'quantity',
-                        value: 600
-                    }
-                ],
-                results: [],
-                lastResult: null
-            });
+        // Generating dummy data. TODO: get these from GME instead
+
+        if (testBenches.length === 0) {
+
+            for (i = 0; i < 10; i += 1) {
+                addTestBench({
+                    id: i,
+                    name: 'Test bench ' + i,
+                    config: [
+                        {
+                            id: 1,
+                            name: 'quantity',
+                            value: 600
+                        }
+                    ],
+                    results: [],
+                    lastResult: null
+                });
+            }
         }
 
         testBenches.sort(compareTestBench);
@@ -125,33 +164,42 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         var results = [],
             i;
 
-        // dummy data
-        var status = ['Running', 'Failed', 'Succeeded'];
-        for (i = 0; i < 100; i += 1) {
-            addResult({
-                id: i,
-                testBenchId: i % 10,
-                config: [
-                    {
-                        id: 1,
-                        name: 'quantity',
-                        value: 600
-                    }
-                ],
-                startTime: (new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000),
-                endTime: (new Date()).getTime() - Math.floor(Math.random() * 15000),
-                status: status[Math.floor(Math.random() * status.length)],
-                resultUrl: 'something_' + i + '.zip'
-            });
-            if (testBenchResults[i].status === 'Running') {
-                testBenchResults[i].endTime = null;
+        // Generating dummy results. Get these from GME.
+        // TODO: get these from GME.
+
+        if (testBenchResults.length === 0) {
+
+            var status = ['Running', 'Failed', 'Succeeded'];
+
+            for (i = 0; i < 100; i += 1) {
+                addResult({
+                    id: i,
+                    testBenchId: i % 10,
+                    config: [
+                        {
+                            id: 1,
+                            name: 'quantity',
+                            value: 600
+                        }
+                    ],
+                    startTime: (new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000),
+                    endTime: (new Date()).getTime() - Math.floor(Math.random() * 15000),
+                    status: status[Math.floor(Math.random() * status.length)],
+                    resultUrl: 'something_' + i + '.zip'
+                });
+
+                if (testBenchResults[i].status === 'Running') {
+                    testBenchResults[i].endTime = null;
+                }
             }
+
         }
 
         testBenchResults.map(function (testBenchResult) {
+
             if (id) {
                 // test bench result only for the requested test bench
-                if (id === testBenchResult.id) {
+                if (id === testBenchResult.testBenchId) {
                     results.push(testBenchResult);
                 }
             } else {
@@ -166,14 +214,16 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
     };
 
     this.setTestBenchConfig = function (id, config) {
+
         testBenches.map(function (testBench) {
             if (id) {
                 // test bench result only for the requested test bench
-                if (id === testBenches.id) {
-                    testBenches.config = config;
+                if (id === testBench.id) {
+                    testBench.config = config;
                 }
             }
         });
+
     };
 
 

@@ -12,7 +12,7 @@ require('./footerDrawer.js');
 require('./operationCommitHandlersForGME.js');
 require('../diagramContainer/diagramContainer.js');
 require('../svgDiagram/svgDiagram.js');
-require('../testBenchDrawerPanel/testBenchDrawerPanel.js');
+require('../testBenchDrawerPanel/testBenchDrawerPanel.jsx');
 
 angular.module('mms.designEditor', [
         'mms.designEditor.footerDrawer',

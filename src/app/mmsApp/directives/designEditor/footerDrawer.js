@@ -392,8 +392,6 @@ angular.module('mms.designEditor.footerDrawer', [
 
                         var preferences = this._footerDrawerCtrl.getPanelUserPreferencesByPanelName(this.name);
 
-                        console.log(preferences);
-
                         if ( preferences.activeSubPanel === panelCtrl.name ||
                             ( preferences.activeSubPanel === undefined && panelCtrl.active)
                         ) {
