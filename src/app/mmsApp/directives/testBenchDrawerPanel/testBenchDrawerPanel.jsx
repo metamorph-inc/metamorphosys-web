@@ -24,8 +24,6 @@ angular.module('mms.testBenchDrawerPanel', [
 
             self.listData.items.push(listItem);
 
-            console.log(this.listData);
-
         });
 
         this.config = {
@@ -47,13 +45,11 @@ angular.module('mms.testBenchDrawerPanel', [
     return {
         restrict: 'E',
         controller: TestListController,
-        controlerAs: 'ctrl',
+        controllerAs: 'ctrl',
         bindToController: true,
-        scope: {
-            tests: '='
-        },
         replace: true,
-        transclude: false,
+        transclude: true,
+        scope: true,
         templateUrl: '/mmsApp/templates/testBenchDrawerPanelTestList.html'
     };
 })
@@ -62,14 +58,22 @@ angular.module('mms.testBenchDrawerPanel', [
 
     function ResultListController(testBenchService) {
 
-        var testBenchResults = testBenchService.getTestBenchResults();
+        var self = this,
+            testBenchResults = testBenchService.getTestBenchResults();
 
         this.listData = {
             items: []
         };
 
         testBenchResults.forEach(testBenchResult => {
-            console.log(testBenchResult);
+
+            var listItem = {
+                id: testBenchResult.id,
+                title: testBenchResult.testBench && testBenchResult.testBench.name
+            };
+
+            self.listData.items.push(listItem);
+
         });
 
         this.config = {
@@ -92,11 +96,9 @@ angular.module('mms.testBenchDrawerPanel', [
     return {
         restrict: 'E',
         controller: ResultListController,
-        controlerAs: 'ctrl',
+        controllerAs: 'ctrl',
         bindToController: true,
-        scope: {
-            results: '='
-        },
+        scope: true,
         replace: true,
         transclude: false,
         templateUrl: '/mmsApp/templates/testBenchDrawerPanelResultList.html'

@@ -1,5 +1,11 @@
 .test-bench-drawer-panel {
 
+    .item-list ul.list-group li.item-list-item {
+        background-color: transparent;
+        border: 1px solid rgba(143, 156, 166, 0.2);
+        padding: 0 1em;
+    }
+
     .test-bench-drawer-panel-test-list {
     }
 

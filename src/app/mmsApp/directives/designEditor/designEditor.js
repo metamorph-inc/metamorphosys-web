@@ -739,18 +739,6 @@ angular.module('mms.designEditor', [
             return height;
         };
 
-        DesignEditorController.prototype.getSelectedComponents = function() {
-
-            var result = {};
-
-            // if (this.diagram) {
-            //     result = this.diagram;
-            // }
-
-            return result;
-        };
-
-
         DesignEditorController.prototype.componentBrowserItemDragStart = function(e, item) {
 
             if (typeof e.dataTransfer.setDragImage === 'function') {

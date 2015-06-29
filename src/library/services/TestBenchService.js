@@ -63,6 +63,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                 // add result object to test bench
                 testBench.results.push(result);
 
+                result.testBench = testBench;
+
                 // update last result, if result is finished and it is newer
                 if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {
                     testBench.lastResult = result;
@@ -168,6 +170,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         // TODO: get these from GME.
 
         if (testBenchResults.length === 0) {
+
+            this.getTestBenches();
 
             var status = ['Running', 'Failed', 'Succeeded'];
 
