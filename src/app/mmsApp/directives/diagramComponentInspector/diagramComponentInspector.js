@@ -99,6 +99,12 @@ angular.module('mms.diagramComponentInspector', [
 
                                                 newInspectable.details.acmInfo = response.data;
 
+                                                newInspectable.details.documentation = {
+                                                    icon: response.data.icon,
+                                                    datasheet: response.data.datasheet,
+                                                    connectors: null
+                                                };
+
                                             }
 
                                         });
@@ -116,7 +122,6 @@ angular.module('mms.diagramComponentInspector', [
                         this.subcircuitDocumentation.loadDocumentation(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
                             .then(function (containerData) {
                                 newInspectable.details.documentation = containerData;
-
                             });
 
                     }
