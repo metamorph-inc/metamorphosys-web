@@ -39,7 +39,7 @@ describe('TestBenchRunner', function () {
             gmeConfig: gmeConfig
         };
 
-        testConf.storage.deleteProject({projectName: projectName})
+        testConf.storage.deleteProject({projectId: webgme.requirejs('common/storage/util').getProjectIdFromUserIdAndProjectName('guest', projectName)})
             .then(function () {
                 return testFixture.importProject(testConf.storage, importParam);
             })
