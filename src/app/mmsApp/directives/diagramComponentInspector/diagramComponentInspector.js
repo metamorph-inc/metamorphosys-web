@@ -102,7 +102,7 @@ angular.module('mms.diagramComponentInspector', [
                                                 newInspectable.details.documentation = {
                                                     icon: response.data.icon,
                                                     datasheet: response.data.datasheet,
-                                                    connectors: null
+                                                    connectors: response.data.connectors
                                                 };
 
                                             }
