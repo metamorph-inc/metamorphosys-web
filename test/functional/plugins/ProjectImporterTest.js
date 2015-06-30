@@ -49,11 +49,10 @@ describe('ProjectImporter', function () {
             projectSeed: './meta/ADMEditor_metaOnly.json',
             projectName: projectName,
             logger: logger,
-            gmeConfig: gmeConfig,
-            username: 'guest'
+            gmeConfig: gmeConfig
         };
 
-        testConf.storage.deleteProject({projectId: webgme.requirejs('common/storage/util').getProjectIdFromUserIdAndProjectName('guest', projectName)})
+        testConf.storage.deleteProject({projectName: projectName})
             .then(function () {
                 return testFixture.importProject(testConf.storage, importParam);
             })
