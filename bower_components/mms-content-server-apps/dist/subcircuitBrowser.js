@@ -3,13 +3,19 @@
 
 require("./directives/subcircuitBrowser/subcircuitBrowser");
 require("./services/subcircuitLibrary.js");
+require("../componentBrowser/services/componentLibrary.js");
 require("./appConfig");
 
-angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcircuitBrowser.config", "mms.subcircuitBrowser.subcircuitLibrary", "ngMaterial"]).config(function (subcircuitLibraryProvider, subcircuitServerUrl) {
+angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcircuitBrowser.config", "mms.subcircuitBrowser.subcircuitLibrary", "mms.componentBrowser.componentLibrary", "ngMaterial"]).config(function (subcircuitLibraryProvider, subcircuitServerUrl, componentLibraryProvider, componentServerUrl) {
     if (subcircuitServerUrl.indexOf("http") !== 0) {
         subcircuitServerUrl = window.location.origin + subcircuitServerUrl;
     }
     subcircuitLibraryProvider.setServerUrl(subcircuitServerUrl);
+
+    if (componentServerUrl.indexOf("http") !== 0) {
+        componentServerUrl = window.location.origin + componentServerUrl;
+    }
+    componentLibraryProvider.setServerUrl(componentServerUrl);
 }).controller("AppController", function ($scope) {
 
     $scope.itemDragStart = function (e, item) {
@@ -22,7 +28,7 @@ angular.module("mms.subcircuitBrowserApp", ["mms.subcircuitBrowser", "mms.subcir
 });
 /*globals angular*/
 
-},{"./appConfig":12,"./directives/subcircuitBrowser/subcircuitBrowser":13,"./services/subcircuitLibrary.js":18}],2:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":11,"./appConfig":12,"./directives/subcircuitBrowser/subcircuitBrowser":13,"./services/subcircuitLibrary.js":19}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -180,12 +186,15 @@ module.exports = function ($scope, contentLibraryService) {
             documentation: {
                 id: item.id,
                 description: item.description,
-                connectors: null,
+                connectors: item.connectors,
                 visuals: null,
                 icon: null
             }
-
         };
+
+        if (item.iconFileName) {
+            details.documentation.icon = contentLibraryService.getServerUrl() + "/component_files/" + item.iconFileName;
+        }
 
         return {
             id: item.id,
@@ -206,7 +215,7 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":11,"../subcircuitBrowser/services/subcircuitLibrary.js":18}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":11,"../subcircuitBrowser/services/subcircuitLibrary.js":19}],3:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
@@ -606,6 +615,10 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
             var classificationTree, subcircuitTree, grandTotal, subcircuitGrandTotal;
 
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
+
             this.getListOfComponents = function (categoryPath, itemCount, cursor) {
 
                 var deferred = $q.defer();
@@ -805,32 +818,27 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
                 return deferred.promise;
             };
 
-            this.getDetails = function (id, details) {
-                var path = serverUrl + "/getcomponent/info/" + id;
-                return $http.get(path).then(function (json) {
+            this.getDetails = function (id) {
 
-                    details.documentation.icon = json.data.icon;
+                var path = serverUrl + "/components/overview/" + id,
+                    deferred = $q.defer();
 
-                    details.markdown = (function (markdownHtml) {
-                        if (markdownHtml) {
-                            var el = document.createElement("html"),
-                                description = null,
-                                pEls,
-                                i;
+                $http.get(path).then(function (json) {
 
-                            el.innerHTML = markdownHtml;
-                            pEls = el.getElementsByTagName("p");
+                    var documentation = {
+                        id: id,
+                        description: json.data.description,
+                        connectors: json.data.connectors
+                    };
 
-                            for (i = 0; i < pEls.length; i++) {
-                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
-                                    description = pEls[i + 1].textContent;
-                                    break;
-                                }
-                            }
-                            return description;
-                        }
-                    })(json.data.documentation);
+                    if (json.data.iconFileName) {
+                        documentation.icon = "/component_files/" + json.data.iconFileName;
+                    }
+
+                    deferred.resolve(documentation);
                 });
+
+                return deferred.promise;
             };
         };
 
@@ -843,7 +851,7 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 "use strict";
 
 /*globals angular*/
-angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000");
+angular.module("mms.subcircuitBrowser.config", []).constant("subcircuitServerUrl", "http://localhost:3000").constant("componentServerUrl", "http://localhost:3000");
 
 },{}],13:[function(require,module,exports){
 "use strict";
@@ -853,10 +861,11 @@ require("../../../componentBrowser/directives/componentSearch/componentSearch.js
 require("../subcircuitListing/subcircuitListing.js");
 require("../../services/subcircuitLibrary.js");
 require("../../../componentBrowser/directives/categoryResizer/categoryResizer.js");
+require("../../../componentBrowser/services/componentLibrary.js");
 
-angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCategories", "mms.componentBrowser.componentSearch", "mms.subcircuitBrowser.subcircuitListing", "mms.componentBrowser.templates", "mms.subcircuitBrowser.templates", "mms.subcircuitBrowser.subcircuitLibrary", "mms.contentBrowser.categoryResizer", "ngCookies"]).directive("subcircuitBrowser", function () {
+angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCategories", "mms.componentBrowser.componentSearch", "mms.componentBrowser.componentLibrary", "mms.subcircuitBrowser.subcircuitListing", "mms.componentBrowser.templates", "mms.subcircuitBrowser.templates", "mms.subcircuitBrowser.subcircuitLibrary", "mms.contentBrowser.categoryResizer", "ngCookies"]).directive("subcircuitBrowser", function () {
 
-    function SubcircuitBrowserController($scope, subcircuitLibrary, $log, $anchorScroll, $timeout, $cookies, $location) {
+    function SubcircuitBrowserController($scope, componentLibrary, subcircuitLibrary, $log, $anchorScroll, $timeout, $cookies, $location) {
 
         var self, updateList, noSearchResults, loadState;
 
@@ -1108,11 +1117,24 @@ angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCatego
 
         // });
 
+        this.checkComponentServerUp = function () {
+            componentLibrary.getClassificationTree().then(function () {
+
+                self.appBooting = false;
+            }, function (data) {
+
+                if (parseInt(data.status, 10) === 503 || parseInt(data.status, 10) === 404) {
+                    self.appBooting = true;
+                }
+            });
+        };
+
         this.init = function () {
 
             loadState();
             this.getSearchResults();
             updateList();
+            this.checkComponentServerUp();
         };
     }
 
@@ -1167,7 +1189,7 @@ angular.module("mms.subcircuitBrowser", ["mms.subcircuitBrowser.subcircuitCatego
 });
 /*global angular*/
 
-},{"../../../componentBrowser/directives/categoryResizer/categoryResizer.js":3,"../../../componentBrowser/directives/componentSearch/componentSearch.js":4,"../../services/subcircuitLibrary.js":18,"../subcircuitCategories/subcircuitCategories.js":14,"../subcircuitListing/subcircuitListing.js":17}],14:[function(require,module,exports){
+},{"../../../componentBrowser/directives/categoryResizer/categoryResizer.js":3,"../../../componentBrowser/directives/componentSearch/componentSearch.js":4,"../../../componentBrowser/services/componentLibrary.js":11,"../../services/subcircuitLibrary.js":19,"../subcircuitCategories/subcircuitCategories.js":14,"../subcircuitListing/subcircuitListing.js":18}],14:[function(require,module,exports){
 "use strict";
 
 require("../../services/subcircuitLibrary.js");
@@ -1362,8 +1384,95 @@ angular.module("mms.subcircuitBrowser.subcircuitCategories", ["isis.ui.treeNavig
  * Created by Blake McBride on 2/9/15.
  */
 
-},{"../../services/subcircuitLibrary.js":18}],15:[function(require,module,exports){
+},{"../../services/subcircuitLibrary.js":19}],15:[function(require,module,exports){
 "use strict";
+
+var ConnectorsDescription = React.createClass({
+    displayName: "ConnectorsDescription",
+
+    render: function render() {
+
+        var title, connectors;
+
+        if (Array.isArray(this.props.connectors)) {
+
+            this.props.connectors.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                } else if (a.name === b.name) {
+                    return 0;
+                } else if (a.name > b.name) {
+                    return 1;
+                }
+            });
+
+            title = React.createElement(
+                "h3",
+                null,
+                "Connectors:"
+            );
+
+            connectors = Array.isArray(this.props.connectors) && this.props.connectors.map(function (connectorDescription) {
+                return React.createElement(ConnectorDescription, { connector: connectorDescription });
+            });
+        }
+
+        return React.createElement(
+            "div",
+            { className: "connectors-description" },
+            title,
+            connectors
+        );
+    }
+});
+
+var ConnectorDescription = React.createClass({
+    displayName: "ConnectorDescription",
+
+    render: function render() {
+
+        var connectorDetails = [],
+            cssClass = "connector-description",
+            name = this.props.connector.name.replace("_", " ");
+
+        connectorDetails.push(React.createElement(
+            "div",
+            { className: "connector-name" },
+            name
+        ));
+
+        if (this.props.connector.type) {
+
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-type" },
+                this.props.connector.type
+            ));
+            cssClass += " " + this.props.connector.type;
+        }
+
+        if (this.props.connector.description) {
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-description-text" },
+                this.props.connector.description
+            ));
+        }
+
+        return React.createElement(
+            "div",
+            { className: cssClass },
+            connectorDetails
+        );
+    }
+});
+
+module.exports = ConnectorsDescription;
+
+},{}],16:[function(require,module,exports){
+"use strict";
+
+var ConnectorsDescription = require("./ConnectorsDescription.jsx");
 
 angular.module("mms.subcircuitDetails.react", []).directive("subcircuitDetails", function () {
 
@@ -1492,87 +1601,7 @@ var SubcircuitVisuals = React.createClass({
     }
 });
 
-var ConnectorsDescription = React.createClass({
-    displayName: "ConnectorsDescription",
-
-    render: function render() {
-
-        var title, connectors;
-
-        if (Array.isArray(this.props.connectors)) {
-
-            this.props.connectors.sort(function (a, b) {
-                if (a.name < b.name) {
-                    return -1;
-                } else if (a.name === b.name) {
-                    return 0;
-                } else if (a.name > b.name) {
-                    return 1;
-                }
-            });
-
-            title = React.createElement(
-                "h3",
-                null,
-                "Connectors:"
-            );
-
-            connectors = Array.isArray(this.props.connectors) && this.props.connectors.map(function (connectorDescription) {
-                return React.createElement(ConnectorDescription, { connector: connectorDescription });
-            });
-        }
-
-        return React.createElement(
-            "div",
-            { className: "connectors-description" },
-            title,
-            connectors
-        );
-    }
-});
-
-var ConnectorDescription = React.createClass({
-    displayName: "ConnectorDescription",
-
-    render: function render() {
-
-        var connectorDetails = [],
-            cssClass = "connector-description",
-            name = this.props.connector.name.replace("_", " ");
-
-        connectorDetails.push(React.createElement(
-            "div",
-            { className: "connector-name" },
-            name
-        ));
-
-        if (this.props.connector.type) {
-
-            connectorDetails.push(React.createElement(
-                "div",
-                { className: "connector-type" },
-                this.props.connector.type
-            ));
-            cssClass += " " + this.props.connector.type;
-        }
-
-        if (this.props.connector.description) {
-            connectorDetails.push(React.createElement(
-                "div",
-                { className: "connector-description-text" },
-                this.props.connector.description
-            ));
-        }
-
-        return React.createElement(
-            "div",
-            { className: cssClass },
-            connectorDetails
-        );
-    }
-});
-
-},{}],16:[function(require,module,exports){
+},{"./ConnectorsDescription.jsx":15}],17:[function(require,module,exports){
 "use strict";
 
 require("..//subcircuitDetails/subcircuitDetails.jsx");
@@ -1673,7 +1702,7 @@ angular.module("mms.subcircuitBrowser.subcircuitListView", ["isis.ui.itemList", 
 
 //debugger;
 
-},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/infoButton/infoButton.js":7,"../../../componentBrowser/directives/showLessButton/showLessButton.js":9,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":10,"../../services/subcircuitLibrary.js":18,"..//subcircuitDetails/subcircuitDetails.jsx":15}],17:[function(require,module,exports){
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/downloadButton/downloadButton.js":6,"../../../componentBrowser/directives/infoButton/infoButton.js":7,"../../../componentBrowser/directives/showLessButton/showLessButton.js":9,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":10,"../../services/subcircuitLibrary.js":19,"..//subcircuitDetails/subcircuitDetails.jsx":16}],18:[function(require,module,exports){
 "use strict";
 
 require("../subcircuitListView/subcircuitListView.js");
@@ -1743,7 +1772,7 @@ angular.module("mms.subcircuitBrowser.subcircuitListing", ["mms.subcircuitBrowse
 
 /*global angular, alert*/
 
-},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":5,"../../../componentBrowser/directives/paging/paging.js":8,"../../services/subcircuitLibrary.js":18,"../subcircuitListView/subcircuitListView.js":16}],18:[function(require,module,exports){
+},{"../../../componentBrowser/directives/countDisplay/countDisplay.js":5,"../../../componentBrowser/directives/paging/paging.js":8,"../../services/subcircuitLibrary.js":19,"../subcircuitListView/subcircuitListView.js":17}],19:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -1764,6 +1793,10 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         SubcircuitLibrary = function () {
 
             var subcircuitTree, subcircuitGrandTotal;
+
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
 
             this.getListOfSubCircuits = function (categoryPath, itemCount, cursor) {
 

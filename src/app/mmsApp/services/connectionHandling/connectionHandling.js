@@ -37,8 +37,9 @@ angular.module('mms.connectionHandling', [])
 
                         if (!dataStorePromise && !mainConnectionEstablished) {
 
+                            GME.gmeConfig.host = window.location.protocol + "//" + window.location.host;
                             dataStorePromise = dataStoreService.connectToDatabase(mainConnectionId,
-                                { host: window.location.protocol + "//" + window.location.host }
+                                GME.gmeConfig
                             ).then(function () {
 
                                 dataStoreService.watchConnectionState( mainConnectionId, function ( connectionEvent ) {

@@ -6,7 +6,7 @@ RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/
 
 RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential git-core nodejs mongodb-server python moreutils ca-certificates
 
-RUN npm install -g npm@2.9.1
+RUN npm install -g npm@2.12.1
 
 RUN npm install -g gulp
 

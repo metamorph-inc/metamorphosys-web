@@ -1,5 +1,6 @@
+/*jshint node:true*/
 /**
- * Created by Zsolt on 4/4/2014.
+ * @author lattmann / https://github.com/lattmann
  */
 
 var config = require('./' + (process.argv[2] || 'config')),

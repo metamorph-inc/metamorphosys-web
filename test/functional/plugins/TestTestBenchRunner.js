@@ -10,6 +10,7 @@ if (typeof window === 'undefined') {
     var testConf = require('../../../test-conf.js');
 
     var chai = require('chai');
+    var testFixture = require('../../../node_modules/webgme/test/_globals');
 }
 
 describe('TestBenchRunner', function () {
@@ -21,7 +22,34 @@ describe('TestBenchRunner', function () {
     var admTemplates;
     var jszip;
 
-    testConf.useServer(before, after);
+    var projectName = 'TestTestBenchRunner';
+    var logger = testFixture.logger.fork(projectName),
+        gmeConfig = testFixture.getGmeConfig(),
+        project,
+        commitHash,
+        PluginCliManager = require('../../../node_modules/webgme/src/plugin/climanager');
+
+    testConf.useStorage(projectName, before, after);
+
+    beforeEach(function (done) {
+        var importParam = {
+            projectSeed: './test/models/SimpleModelica.json',
+            projectName: projectName,
+            logger: logger,
+            gmeConfig: gmeConfig
+        };
+
+        testConf.storage.deleteProject({projectName: projectName})
+            .then(function () {
+                return testFixture.importProject(testConf.storage, importParam);
+            })
+            .then(function (importResult) {
+                project = importResult.project;
+                commitHash = importResult.commitHash;
+                done();
+            })
+            .catch(done);
+    });
 
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/unit/Templates', 'jszip'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_, jszip_) {
@@ -32,25 +60,6 @@ describe('TestBenchRunner', function () {
             jszip = jszip_;
             done();
         }, done);
-    });
-
-    var projectName = 'TestTestBenchRunner';
-    var updateMeta;
-    before(function (done) {
-        requirejs(['utils/update_meta.js'],
-            function (updateMeta_) {
-                updateMeta = updateMeta_;
-
-                updateMeta.withProject(CONFIG, projectName, function (err, project) {
-                    if (err) {
-                        return done(err);
-                    }
-                    return updateMeta.importLibrary(CONFIG, projectName, 'master', 'test/models/SimpleModelica.json', project)
-                        .then(function (/*commitHash*/) {
-                            done();
-                        });
-                });
-            }, done);
     });
 
     it('TestBenchRunner', function (done) {
@@ -64,19 +73,19 @@ describe('TestBenchRunner', function () {
             if (err) {
                 return done(err);
             }
-            var storage = undefined;
-            // console.log(hash); // 95f5f253ec1bd748cf668024c0d51b9cc9f565f3
+            var pluginContext = {
+                    commitHash: commitHash,
+                    activeNode: testPoint,
+                    branchName: 'master'
+                },
+                pluginConfig = {
+                },
+                pluginManager = new PluginCliManager(project, logger, gmeConfig);
 
-            webgme.runPlugin.main(
-                storage,
-                CONFIG, {
-                projectName: projectName,
-                pluginName: pluginName,
-                activeNode: testPoint,
-                pluginConfig: {}
-            }, {}, function (err, result) {
+            pluginManager.executePlugin(pluginName, pluginConfig, pluginContext, testConf.callbackImmediate(function (err, result) {
                 chai.expect(err).to.equal(null);
                 chai.expect(result.getSuccess()).to.equal(true);
+                //chai.expect(result.artifacts[0]).to.equal('647767cc4a46fc26b663f7ead26944b09ed8ad99');
                 var bc = newBlobClient();
                 bc.getSubObject(result.artifacts[0], 'executor_config.json', function (err, res) {
                     if (err) {
@@ -86,15 +95,11 @@ describe('TestBenchRunner', function () {
                     chai.expect(res.cmd).to.equal('run_execution.cmd');
                     done();
                 });
-            });
+            }));
         });
     });
 
     function newBlobClient() {
-        return new BlobClient({
-            server: 'localhost',
-            serverPort: CONFIG.server.port,
-            httpsecure: false
-        });
+        return testConf.newBlobClient();
     }
 });

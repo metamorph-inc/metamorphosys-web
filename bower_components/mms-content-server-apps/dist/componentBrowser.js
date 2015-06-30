@@ -25,7 +25,7 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
  * Created by blake on 2/9/15.
  */
 
-},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":18}],2:[function(require,module,exports){
+},{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":20}],2:[function(require,module,exports){
 "use strict";
 
 require("../componentBrowser/services/componentLibrary.js");
@@ -183,12 +183,15 @@ module.exports = function ($scope, contentLibraryService) {
             documentation: {
                 id: item.id,
                 description: item.description,
-                connectors: null,
+                connectors: item.connectors,
                 visuals: null,
                 icon: null
             }
-
         };
+
+        if (item.iconFileName) {
+            details.documentation.icon = contentLibraryService.getServerUrl() + "/component_files/" + item.iconFileName;
+        }
 
         return {
             id: item.id,
@@ -209,7 +212,7 @@ module.exports = function ($scope, contentLibraryService) {
         itemGenerator: itemGenerator };
 };
 
-},{"../componentBrowser/services/componentLibrary.js":18,"../subcircuitBrowser/services/subcircuitLibrary.js":19}],3:[function(require,module,exports){
+},{"../componentBrowser/services/componentLibrary.js":20,"../subcircuitBrowser/services/subcircuitLibrary.js":22}],3:[function(require,module,exports){
 "use strict";
 
 /*globals angular*/
@@ -708,7 +711,7 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
 });
 /*global angular*/
 
-},{"../../services/componentLibrary.js":18,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":9,"../componentSearch/componentSearch.js":10}],6:[function(require,module,exports){
+},{"../../services/componentLibrary.js":20,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":9,"../componentSearch/componentSearch.js":10}],6:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -901,7 +904,7 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
  * Created by Blake McBride on 2/9/15.
  */
 
-},{"../../services/componentLibrary.js":18}],7:[function(require,module,exports){
+},{"../../services/componentLibrary.js":20}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -913,6 +916,7 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var PropertyTable = require("../propertyTable/propertyTable.jsx");
+var ConnectorsDescription = require("../../../subcircuitBrowser/directives/subcircuitDetails/ConnectorsDescription.jsx");
 
 angular.module("mms.componentDetails.react", []).directive("componentDetails", function () {
 
@@ -927,6 +931,7 @@ angular.module("mms.componentDetails.react", []).directive("componentDetails", f
         transclude: false,
         template: "<div class=\"component-details\"></div>",
         scope: {
+            properties: "=",
             details: "="
         },
         require: ["componentDetails"],
@@ -939,7 +944,7 @@ angular.module("mms.componentDetails.react", []).directive("componentDetails", f
             }
 
             function render() {
-                React.render(React.createElement(ComponentDetailsGrid, { details: ctrl.details }), element[0]);
+                React.render(React.createElement(ComponentDetailsGrid, { details: ctrl.details, properties: ctrl.properties }), element[0]);
             }
 
             scope.$watch(function () {
@@ -976,13 +981,21 @@ var ComponentDetailsGrid = (function (_React$Component) {
                 var className = "component-details-grid",
                     icon;
 
-                if (this.props.details.documentation && this.props.details.documentation.icon) {}
+                if (this.props.details.icon) {
+
+                    icon = React.createElement(
+                        "div",
+                        { className: "component-icon-container" },
+                        React.createElement("img", { className: "component-icon", src: this.props.details.icon })
+                    );
+                }
 
                 return React.createElement(
                     "div",
                     { className: className },
-                    React.createElement(PropertyTable, { properties: this.props.details.properties }),
-                    icon
+                    React.createElement(PropertyTable, { properties: this.props.properties }),
+                    icon,
+                    React.createElement(ConnectorsDescription, { connectors: this.props.details.connectors })
                 );
             }
         }
@@ -991,21 +1004,19 @@ var ComponentDetailsGrid = (function (_React$Component) {
     return ComponentDetailsGrid;
 })(React.Component);
 
-// icon = <div className="icon-container">
-//     <img className="icon" src={this.props.details.documentation.icon}/>
-// </div>;
-
-},{"../propertyTable/propertyTable.jsx":16}],8:[function(require,module,exports){
+},{"../../../subcircuitBrowser/directives/subcircuitDetails/ConnectorsDescription.jsx":21,"../propertyTable/propertyTable.jsx":16}],8:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
 require("../downloadButton/downloadButton.js");
+require("../../../componentBrowser/directives/showMoreButton/showMoreButton.js");
+require("../../../componentBrowser/directives/showLessButton/showLessButton.js");
 require("../infoButton/infoButton.js");
 require("../componentDetails/componentDetails.jsx");
 
 var listViewBase = require("../../../common/listViewBase.js");
 
-angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.infoButton", "mms.componentDetails.react"]).controller("ComponentListViewItemController", function () {}).directive("componentListView", function () {
+angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "mms.componentBrowser.componentLibrary", "mms.componentBrowser.downloadButton", "mms.componentBrowser.showMoreButton", "mms.componentBrowser.showLessButton", "mms.componentBrowser.infoButton", "mms.componentDetails.react"]).controller("ComponentListViewItemController", function () {}).directive("componentListView", function () {
 
     function ComponentDetailsController($scope) {
 
@@ -1071,6 +1082,7 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
                     item = commonList.itemGenerator(comp, "component", "/componentBrowser/templates/");
 
                 item.octopart = findOctopart(comp);
+                item.expandDetails = self.expandDetails;
 
                 comps.push(item);
             }
@@ -1084,6 +1096,15 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
         });
 
         renderList();
+
+        this.expandDetails = function (item) {
+
+            self.contentLibraryService.getDetails(item.id, item.details).then(function (documentation) {
+
+                item.details.documentation = documentation;
+                item.expandedDetails = true;
+            });
+        };
     }
 
     return {
@@ -1111,7 +1132,7 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
 // console.log($scope);
 //debugger;
 
-},{"../../../common/listViewBase.js":2,"../../services/componentLibrary.js":18,"../componentDetails/componentDetails.jsx":7,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],9:[function(require,module,exports){
+},{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/showLessButton/showLessButton.js":17,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":18,"../../services/componentLibrary.js":20,"../componentDetails/componentDetails.jsx":7,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],9:[function(require,module,exports){
 "use strict";
 
 require("../componentListView/componentListView.js");
@@ -1176,7 +1197,7 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
 
 /*global angular, alert*/
 
-},{"../../services/componentLibrary.js":18,"../componentListView/componentListView.js":8,"../countDisplay/countDisplay.js":11,"../gridView/gridView.js":13,"../paging/paging.js":15,"../viewSelection/viewSelection.js":17}],10:[function(require,module,exports){
+},{"../../services/componentLibrary.js":20,"../componentListView/componentListView.js":8,"../countDisplay/countDisplay.js":11,"../gridView/gridView.js":13,"../paging/paging.js":15,"../viewSelection/viewSelection.js":19}],10:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -1632,7 +1653,7 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
 
 /*global angular*/
 
-},{"../../services/componentLibrary.js":18,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],14:[function(require,module,exports){
+},{"../../services/componentLibrary.js":20,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],14:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
@@ -1866,6 +1887,36 @@ module.exports = PropertyTable;
 },{}],17:[function(require,module,exports){
 "use strict";
 
+angular.module("mms.componentBrowser.showLessButton", []).directive("showLessButton", function () {
+
+    return {
+        restrict: "E",
+        replace: true,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/showLessButton.html"
+    };
+});
+/*global angular*/
+
+},{}],18:[function(require,module,exports){
+"use strict";
+
+angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreButton", function () {
+
+    return {
+        restrict: "E",
+        replace: true,
+        controllerAs: "ctrl",
+        bindToController: true,
+        templateUrl: "/componentBrowser/templates/showMoreButton.html"
+    };
+});
+/*global angular*/
+
+},{}],19:[function(require,module,exports){
+"use strict";
+
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
 
     function ViewSelectionController() {
@@ -1903,7 +1954,7 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
 
 /*global angular*/
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -1924,6 +1975,10 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         ComponentLibrary = function () {
 
             var classificationTree, subcircuitTree, grandTotal, subcircuitGrandTotal;
+
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
 
             this.getListOfComponents = function (categoryPath, itemCount, cursor) {
 
@@ -2124,32 +2179,27 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
                 return deferred.promise;
             };
 
-            this.getDetails = function (id, details) {
-                var path = serverUrl + "/getcomponent/info/" + id;
-                return $http.get(path).then(function (json) {
+            this.getDetails = function (id) {
 
-                    details.documentation.icon = json.data.icon;
+                var path = serverUrl + "/components/overview/" + id,
+                    deferred = $q.defer();
 
-                    details.markdown = (function (markdownHtml) {
-                        if (markdownHtml) {
-                            var el = document.createElement("html"),
-                                description = null,
-                                pEls,
-                                i;
+                $http.get(path).then(function (json) {
 
-                            el.innerHTML = markdownHtml;
-                            pEls = el.getElementsByTagName("p");
+                    var documentation = {
+                        id: id,
+                        description: json.data.description,
+                        connectors: json.data.connectors
+                    };
 
-                            for (i = 0; i < pEls.length; i++) {
-                                if (pEls[i].textContent === "####Description" || pEls[i].textContent === "#### Description") {
-                                    description = pEls[i + 1].textContent;
-                                    break;
-                                }
-                            }
-                            return description;
-                        }
-                    })(json.data.documentation);
+                    if (json.data.iconFileName) {
+                        documentation.icon = "/component_files/" + json.data.iconFileName;
+                    }
+
+                    deferred.resolve(documentation);
                 });
+
+                return deferred.promise;
             };
         };
 
@@ -2158,7 +2208,92 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 });
 /*globals angular*/
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
+"use strict";
+
+var ConnectorsDescription = React.createClass({
+    displayName: "ConnectorsDescription",
+
+    render: function render() {
+
+        var title, connectors;
+
+        if (Array.isArray(this.props.connectors)) {
+
+            this.props.connectors.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                } else if (a.name === b.name) {
+                    return 0;
+                } else if (a.name > b.name) {
+                    return 1;
+                }
+            });
+
+            title = React.createElement(
+                "h3",
+                null,
+                "Connectors:"
+            );
+
+            connectors = Array.isArray(this.props.connectors) && this.props.connectors.map(function (connectorDescription) {
+                return React.createElement(ConnectorDescription, { connector: connectorDescription });
+            });
+        }
+
+        return React.createElement(
+            "div",
+            { className: "connectors-description" },
+            title,
+            connectors
+        );
+    }
+});
+
+var ConnectorDescription = React.createClass({
+    displayName: "ConnectorDescription",
+
+    render: function render() {
+
+        var connectorDetails = [],
+            cssClass = "connector-description",
+            name = this.props.connector.name.replace("_", " ");
+
+        connectorDetails.push(React.createElement(
+            "div",
+            { className: "connector-name" },
+            name
+        ));
+
+        if (this.props.connector.type) {
+
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-type" },
+                this.props.connector.type
+            ));
+            cssClass += " " + this.props.connector.type;
+        }
+
+        if (this.props.connector.description) {
+            connectorDetails.push(React.createElement(
+                "div",
+                { className: "connector-description-text" },
+                this.props.connector.description
+            ));
+        }
+
+        return React.createElement(
+            "div",
+            { className: cssClass },
+            connectorDetails
+        );
+    }
+});
+
+module.exports = ConnectorsDescription;
+
+},{}],22:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -2179,6 +2314,10 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         SubcircuitLibrary = function () {
 
             var subcircuitTree, subcircuitGrandTotal;
+
+            this.getServerUrl = function () {
+                return serverUrl;
+            };
 
             this.getListOfSubCircuits = function (categoryPath, itemCount, cursor) {
 

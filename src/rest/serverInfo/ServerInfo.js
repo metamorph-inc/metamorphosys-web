@@ -121,7 +121,7 @@
     };
 
     setup = function (_gmeConfig, _ensureAuthenticated) {
-        logger = Logger.create('web-cyphy:server:middleware:ServerInfo', _gmeConfig.server.log);
+        logger = Logger.create('web-cyphy:server:middleware:ExampleRestComponent', _gmeConfig.server.log);
         logger.debug('serverInfoRest setup done');
         return serverInfoRestInit;
     };

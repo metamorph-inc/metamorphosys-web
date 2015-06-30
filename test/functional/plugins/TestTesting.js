@@ -12,7 +12,7 @@ if (typeof window === 'undefined') {
     var chai = require('chai');
 }
 
-describe('TestTesting', function () {
+describe.skip('TestTesting', function () {
     'use strict';
     var projectName = 'TestTesting',
         updateMeta,
@@ -23,7 +23,7 @@ describe('TestTesting', function () {
     var acmTemplates;
     var admTemplates;
 
-    testConf.useServer(before, after);
+    // testConf.useServer(before, after);
 
     before(function (done) {
         requirejs(['blob/BlobClient', 'blob/Artifact', 'test/models/acm/unit/Templates', 'test/models/adm/functional/Templates'], function (BlobClient_, Artifact_, acmTemplates_, admTemplates_) {

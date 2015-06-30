@@ -11,7 +11,6 @@
         fs = require('fs'),
         child_process = require('child_process'),
         MetaPath = require('./MetaPath'),
-        path = require('path'),
         DesertBackEnd,
         dbe,
         DesertRest,
@@ -258,7 +257,7 @@
     };
 
     setup = function (_gmeConfig /*, _authentication*/) {
-        logger = Logger.create('web-cyphy:server:middleware:Desert', _gmeConfig.server.log);
+        logger = Logger.create('web-cyphy:server:middleware:ExampleRestComponent', _gmeConfig.server.log);
         logger.debug('serverInfoRest setup done');
         return DesertRest;
     };

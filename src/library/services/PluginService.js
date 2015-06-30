@@ -23,7 +23,7 @@ angular.module( 'cyphy.services' )
         this.runPlugin = function ( context, pluginName, config ) {
             var deferred = $q.defer(),
                 dbConn = dataStoreService.getDatabaseConnection( context.db ),
-                interpreterManager = new GME.classes.InterpreterManager( dbConn.client, dbConn.gmeConfig );
+                interpreterManager = new GME.classes.InterpreterManager( dbConn.client, GME.gmeConfig );
 
             interpreterManager.run( pluginName, config, function ( result ) {
                 if ( result ) {
