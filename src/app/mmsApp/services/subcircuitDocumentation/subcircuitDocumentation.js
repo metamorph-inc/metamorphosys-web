@@ -23,14 +23,24 @@ angular.module('mms.subcircuitDocumentation', ['cyphy.services'])
                         },
                         'Connector': {
                             attributes: {name: 'name', Description: 'description', Definition: 'type'}
+                        },
+                        'Property': {
+                            attributes: {name: 'name', Value: 'value'}
                         }
                     });
                 }).then(function (data) {
+                    var subcircuitSourceUrl = (data.data.Property || []).filter(function (prop) {
+                        return prop.name.toLowerCase() === 'subcircuit source url';
+                    })[0];
+                    if (subcircuitSourceUrl) {
+                        subcircuitSourceUrl = subcircuitSourceUrl.value;
+                    }
                     return {
                         "id": data.data._id,
                         "description": data.data.description,
                         "name": data.data.name,
-                        "connectors": data.data.Connector
+                        "connectors": data.data.Connector,
+                        "subcircuitSourceUrl": subcircuitSourceUrl
                     };
                 });
         };
