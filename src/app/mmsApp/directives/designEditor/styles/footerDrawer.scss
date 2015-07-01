@@ -23,7 +23,6 @@ $header-height: 38px;
         list-style-type: none;
         position: absolute;
         width: 100%;
-        background: $baseBGColor;
 
         > li {
             color: #555;
@@ -60,7 +59,8 @@ $header-height: 38px;
 
     .drawer-sub-navigator {
         position: absolute;
-        width: 100%;
+        width: auto;
+        display: inline-block;
         background: $baseBGColor;
         z-index: 20;
         font-size: 100%;

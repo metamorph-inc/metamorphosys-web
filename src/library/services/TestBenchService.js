@@ -140,7 +140,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
         if (testBenches.length === 0) {
 
-            for (i = 0; i < 10; i += 1) {
+            for (i = 0; i < 6; i += 1) {
                 addTestBench({
                     id: i,
                     name: 'Test bench ' + i,
@@ -175,7 +175,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
             var status = ['Running', 'Failed', 'Succeeded'];
 
-            for (i = 0; i < 100; i += 1) {
+            for (i = 0; i < 50; i += 1) {
                 addResult({
                     id: i,
                     testBenchId: i % 10,
