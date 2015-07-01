@@ -11,6 +11,7 @@
     "content-disposition": "^0.5.0",
     "jszip": "^2.5.0",
     "mongodb": "=1.4.34",
+    "mongoose": "^4.0.6",
     "ng-gme": "=0.2.0",
     "parseddp": "git+https://bitbucket.org/metamorphsoftwareinc/parseddp.git#12a7ecee9c38a67368af06b9b8887f83f156a881",
     "requirejs": "=2.1.11",

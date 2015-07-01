@@ -42,7 +42,8 @@ config.rest.components = mapPaths({
     'desert': './src/rest/desert/Desert',
     'serverinfo': './src/rest/serverInfo/ServerInfo',
     'copyproject': './src/rest/copyproject/CopyProject',
-    'acminfo': './src/rest/acminfo/AcmInfo'
+    'acminfo': './src/rest/acminfo/AcmInfo',
+    'testbenches': './src/rest/testBenches/TestBenches'
 });
 config.visualization.visualizerDescriptors.push('./Visualizers.json');
 config.storage.keyType = 'rand160Bits';
