@@ -24,7 +24,10 @@ angular.module('mms.testBenchDrawerPanel', [
                 id: testBench.id,
                 title: testBench.name,
                 headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
-                testBench: testBench
+                detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
+                testBench: testBench,
+                details: true,
+                toolTip: 'Click to run'
             };
 
             console.log(testBench);
@@ -38,6 +41,8 @@ angular.module('mms.testBenchDrawerPanel', [
             sortable: false,
             secondaryItemMenu: false,
             detailsCollapsible: true,
+            showDetailsLabel: 'Configure',
+            hideDetailsLabel: 'Configure',
 
             itemClick: function (event, item) {
                 console.log('Clicked: ' + item);

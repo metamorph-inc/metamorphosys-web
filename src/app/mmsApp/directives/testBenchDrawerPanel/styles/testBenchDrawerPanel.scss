@@ -30,10 +30,49 @@
         margin: 0;
     }
 
+    .item-list {
+        .item-title {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    }
+
     .item-list ul.list-group li.item-list-item {
         background-color: transparent;
         border: 1px solid rgba(143, 156, 166, 0.2);
         padding: 0 110px 0 0;
+        cursor: default;
+    }
+
+    .item-list .item-details {
+        background-color: #38424d;
+        padding: 10px;
+        border-top-right-radius: 3px;
+        border-top-left-radius: 3px;
+        margin: 0 10px;
+
+        .item-details-header {
+            font-weight: normal;
+            border: none;
+            margin: -10px;
+            padding: 10px;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            transition: background-color 200ms;
+
+            &:hover {
+                color: #ffa;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        &.expanded {
+            .item-details-header {
+                border-bottom: 1px solid rgba(143, 156, 166, 0.2);
+                margin-bottom: 10px;
+            }
+        }
+
     }
 
     .test-bench-drawer-panel-test-list {
@@ -59,6 +98,25 @@
         .no-result {
             padding-top: 20%;
             height: 100%;
+        }
+    }
+
+    .run-test-bench {
+        display: inline-block;
+        margin-right: 1ex;
+        border-radius: 17px;
+        width: 35px;
+        height: 35px;
+        padding: 9px 0;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.4);
+        colot: #fff;
+        transition: background 200ms, color 200ms;
+        cursor: pointer;
+
+        &:hover {
+            background: #ffc;
+            color: #000;
         }
     }
 }
