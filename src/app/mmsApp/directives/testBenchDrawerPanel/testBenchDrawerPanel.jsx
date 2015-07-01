@@ -23,8 +23,11 @@ angular.module('mms.testBenchDrawerPanel', [
             var listItem = {
                 id: testBench.id,
                 title: testBench.name,
-                headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html'
+                headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
+                testBench: testBench
             };
+
+            console.log(testBench);
 
             self.listData.items.push(listItem);
 

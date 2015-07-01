@@ -20,13 +20,13 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
         scope: {
             result: '='
         },
-        require: ['componentDetails'],
+        require: ['testBenchResultAndTime'],
         link: function(scope, element, attr, controllers) {
 
             var ctrl = controllers[0];
 
             function cleanup() {
-              React.unmountComponentAtNode(element[0]);
+                React.unmountComponentAtNode(element[0]);
             }
 
             function render() {
@@ -34,9 +34,9 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
             }
 
             scope.$watch(function() {
-                if (ctrl.result) {
-                    return ctrl.result;
-                }
+
+                return ctrl.result;
+
             }, function(newO, oldO){
 
                 if ((oldO !== newO || oldO != null) && newO != null) {
@@ -45,6 +45,8 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
                     render();
                 }
             });
+
+            render();
 
             scope.$on('$destroy', cleanup());
 
@@ -64,8 +66,8 @@ class TestBenchResultAndTime extends React.Component {
 
         var cssClass = 'test-bench-result-and-time';
 
-        if (this.props.status) {
-            cssClass += ' ' + this.props.status;
+        if (this.props.result && this.props.result.status) {
+            cssClass += ' ' + this.props.result.status;
         }
 
         return (
