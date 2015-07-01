@@ -186,8 +186,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                             value: 600
                         }
                     ],
-                    startTime: (new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000),
-                    endTime: (new Date()).getTime() - Math.floor(Math.random() * 15000),
+                    startTime: new Date((new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000)).toISOString(),
+                    endTime: new Date((new Date()).getTime() - Math.floor(Math.random() * 15000)).toISOString(),
                     status: status[Math.floor(Math.random() * status.length)],
                     resultUrl: 'something_' + i + '.zip'
                 });
