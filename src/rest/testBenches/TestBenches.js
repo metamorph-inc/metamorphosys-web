@@ -1,6 +1,7 @@
 /* globals module, require, requireJS, console */
 /*
  GET http://localhost:8855/rest/external/testbenches/results/?testbench_id=:id
+ GET http://localhost:8855/rest/external/testbenches/result/:resultId
  PUT http://localhost:8855/rest/external/testbenches/result/
  POST http://localhost:8855/rest/external/testbenches/result/:resultId
  DELETE http://localhost:8855/rest/external/testbenches/result/:resultId
