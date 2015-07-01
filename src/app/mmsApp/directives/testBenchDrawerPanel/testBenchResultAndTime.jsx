@@ -48,7 +48,7 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
             render();
 
-            scope.$on('$destroy', cleanup());
+            scope.$on('$destroy', cleanup);
 
         }
     };
@@ -64,17 +64,37 @@ class TestBenchResultAndTime extends React.Component {
 
     render() {
 
-        var cssClass = 'test-bench-result-and-time';
+        var cssClass = 'test-bench-result-and-time',
+            innerContents = [];
 
-        if (this.props.result && this.props.result.status) {
-            cssClass += ' ' + this.props.result.status;
+        if (this.props.result) {
+
+            if (this.props.result.status) {
+                cssClass += ' ' + this.props.result.status;
+            }
+
+            innerContents.push(
+                <div className="start-time date-and-time">Start time</div>
+            );
+
+            innerContents.push(
+                <div className="end-time date-and-time">End time</div>
+            );
+
+            innerContents.push(
+                <div className="status">{this.props.status}</div>
+            );
+
+        } else {
+
+            cssClass += ' no-result';
+            innerContents.push(<div class="no-result-label">---</div>);
+
         }
 
         return (
             <div className={cssClass}>
-                <div className="start-time date-and-time">Start time</div>
-                <div className="end-time date-and-time">End time</div>
-                <div className="status">{this.props.status}</div>
+                {innerContents}
             </div>
         );
     }

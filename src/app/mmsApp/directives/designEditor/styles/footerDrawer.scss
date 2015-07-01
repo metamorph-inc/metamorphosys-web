@@ -21,6 +21,9 @@ $header-height: 38px;
     .drawer-navigator {
         padding: 0;
         list-style-type: none;
+        position: absolute;
+        width: 100%;
+        background: $baseBGColor;
 
         > li {
             color: #555;
@@ -56,7 +59,10 @@ $header-height: 38px;
     }
 
     .drawer-sub-navigator {
-
+        position: absolute;
+        width: 100%;
+        background: $baseBGColor;
+        z-index: 20;
         font-size: 100%;
 
         button.btn, .md-button {
@@ -68,10 +74,12 @@ $header-height: 38px;
         height: $header-height;
         border-bottom: 1px solid #4e5a68;
         position: absolute;
+        z-index: 20;
         top: 0;
         width: 100%;
         left: 0;
         padding: 3px 10px;
+        background: $baseBGColor;
 
         cursor: row-resize;
 
@@ -96,9 +104,12 @@ $header-height: 38px;
 
     .drawer-content {
         overflow: auto;
-        position: relative;
+        position: absolute;
         height: 100%;
-
+        width: 100%;
+        top: 0;
+        padding-top: 40px;
+        z-index: 10;
         color: $drawerColor;
 
         .btn,
@@ -117,6 +128,10 @@ $header-height: 38px;
             background-color: #fff;
         }
 
+    }
+
+    .drawer-navigator + .drawer-content {
+        padding-top: 80px;
     }
 
 }
