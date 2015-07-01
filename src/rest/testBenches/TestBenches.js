@@ -1,11 +1,16 @@
 /* globals module, require, requireJS, console */
 /*
- http://localhost:8855/rest/external/testbenches/testbench_id
+ GET http://localhost:8855/rest/external/testbenches/results/?testbench_id=:id
+ PUT http://localhost:8855/rest/external/testbenches/result/
+ POST http://localhost:8855/rest/external/testbenches/result/:resultId
+ DELETE http://localhost:8855/rest/external/testbenches/result/:resultId
  */
 
 'use strict';
 
-var ensureAuthenticated,
+var express = require('express'),
+    router = express.Router(),
+    ensureAuthenticated,
     gmeConfig, //global config is passed by server/standalone.js
     logger,
     mongoose = require('mongoose'),
@@ -18,70 +23,29 @@ function getUserId(req) {
     return req.session.hasOwnProperty('udmId') ? req.session.udmId : null;
 }
 
-//var TestBenchesRestComponent = function (req, res/*, next*/) {
-//
-//
-//    // the request can be handled with ensureAuthenticated
-//    ensureAuthenticated(req, res, handleRequest);
-//};
 
-var ResultSchema = new Schema({
-    id: ObjectId,
-    userId: String,
-    testBenchId: String,
-    status: {type: String, match: /Running|Failed|Succeeded/, default: 'Running'},
-    startTime: String, // or Date ???
-    endTime: String, // or Date ???
-    resultUrl: String,
-    config: Object
-});
+function initialize(middlewareOpts) {
 
-// FIXME: name this collection as you wish
-var Result = mongoose.model('_test_bench_results', ResultSchema);
+    var ResultSchema = new Schema({
+            id: ObjectId,
+            userId: String,
+            testBenchId: String,
+            status: {type: String, match: /Running|Failed|Succeeded/, default: 'Running'},
+            startTime: String, // or Date ???
+            endTime: String, // or Date ???
+            resultUrl: String,
+            config: Object
+        }),
 
-var TestBenchesRestComponent = function (req, res/*, next*/) {
-    var userId = getUserId(req),
+    // FIXME: name this collection as you wish
+        Result = mongoose.model('_test_bench_results', ResultSchema);
 
-    // call next if request is not handled here.
-        url = req.url.split('/'),
-        testBenchId,
-        responseData;
+    // middlewareOpts contains gmeConfig, ensureAuthenticated function and logger, etc.
 
-    if (url.length === 2) {
-        testBenchId = url[1];
-
-        responseData = {
-            id: testBenchId,
-            userId: userId,
-            results: []
-        };
-
-        // read test bench results from mongo based on testBenchId
-        // Note: testBenchId might be an empty string
-
-        Result.find({testBenchId: testBenchId}, function (err, docs) {
-            if (err) {
-                logger.error('error', err);
-                res.send(500);
-                return;
-            }
-
-            docs.forEach(function (doc) {
-                responseData.results.push(doc);
-            });
-
-            // send results for test bench
-            res.json(responseData);
-        });
-
-    } else {
-        res.sendStatus(404);
-    }
-};
-
-var setup = function (_gmeConfig, _ensureAuthenticated, _logger) {
-    gmeConfig = _gmeConfig;
-    logger = _logger.fork('gme:meta-morph:REST-TestBenches', true);
+    // get configurations
+    gmeConfig = middlewareOpts.gmeConfig;
+    logger = middlewareOpts.logger.fork('gme:meta-morph:REST-TestBenches', true);
+    ensureAuthenticated = middlewareOpts.ensureAuthenticated;
 
     // https://www.npmjs.com/package/mongoose#connecting-to-mongodb
     // Important! Mongoose buffers all the commands until it's connected to the database.
@@ -116,14 +80,160 @@ var setup = function (_gmeConfig, _ensureAuthenticated, _logger) {
         result.save(function (err) {
             if (err) {
                 logger.error('Failed to save dummy test bench result: ', err);
+                return;
             }
             logger.info('Added dummy test bench result.');
         });
     }
+    // dummy data ends here
 
 
-    ensureAuthenticated = _ensureAuthenticated;
-    return TestBenchesRestComponent;
+    // handlers
+    router.get('/results', function (req, res/*, next*/) {
+        var userId = getUserId(req),
+            testBenchId = req.query.testBenchId,
+            query,
+            responseData;
+
+        // TODO: in the response we may not need to send these back ...
+        responseData = {
+            id: testBenchId,
+            userId: userId,
+            results: []
+        };
+
+        // read test bench results from mongo based on testBenchId
+        // Note: testBenchId might be an empty string
+
+        if (testBenchId) {
+            query = {testBenchId: testBenchId};
+        } else {
+            query = {};
+        }
+
+        Result.find(query, function (err, docs) {
+            if (err) {
+                logger.error('error', err);
+                res.send(500);
+                return;
+            }
+
+            docs.forEach(function (doc) {
+                responseData.results.push(doc);
+            });
+
+            // send results for test bench
+            res.json(responseData);
+        });
+    });
+
+    router.get('/result/:resultId', function (req, res/*, next*/) {
+        var userId = getUserId(req);
+
+        Result.findOne({_id: req.params.resultId}, function (err, doc) {
+            if (err) {
+                logger.error('error', err);
+                res.send(500);
+                return;
+            }
+
+            if (doc) {
+                res.json(doc);
+            } else {
+                res.send(404);
+            }
+        });
+    });
+
+
+    router.put('/result', function (req, res/*, next*/) {
+        var userId = getUserId(req),
+            result = new Result(),
+            receivedData = req.body;
+
+        result.userId = userId;
+        result.testBenchId = receivedData.testBenchId;
+        result.config = receivedData.config;
+        result.startTime = receivedData.startTime;
+        result.endTime = receivedData.endTime;
+        result.resultUrl = receivedData.resultUrl;
+        result.status = receivedData.status;
+
+        // TODO: should we check if the received data is valid?
+
+        result.save(function (err) {
+            if (err) {
+                logger.error('error', err);
+                res.send(500);
+                return;
+            }
+            // created
+            res.send(201);
+        });
+    });
+
+    router.post('/result/:resultId', function (req, res/*, next*/) {
+        var userId = getUserId(req),
+            result = new Result(),
+            receivedData = req.body;
+
+        Result.findOne({_id: req.params.resultId}, function (err, doc) {
+            if (err) {
+                logger.error('error', err);
+                res.send(500);
+                return;
+            }
+
+            if (doc) {
+
+                doc.userId = userId;
+                doc.testBenchId = receivedData.testBenchId || doc.testBenchId;
+                doc.config = receivedData.config || doc.config;
+                doc.startTime = receivedData.startTime || doc.startTime;
+                doc.endTime = receivedData.endTime || doc.endTime;
+                doc.resultUrl = receivedData.resultUrl || doc.resultUrl;
+                doc.status = receivedData.status || doc.status;
+
+                doc.save(function (err) {
+                    if (err) {
+                        logger.error('error', err);
+                        res.send(500);
+                        return;
+                    }
+                    // updated
+                    res.send(200);
+                });
+            } else {
+                res.send(404);
+            }
+        });
+    });
+
+
+    router.delete('/result/:resultId', function (req, res/*, next*/) {
+        var userId = getUserId(req);
+
+        Result.find({_id: req.params.resultId}).remove(function (err) {
+            if (err) {
+                logger.error('error', err);
+                res.send(500);
+                return;
+            }
+
+            // deleted
+            res.send(204);
+        });
+    });
+
+
+    // TODO: add any special error handling here
+    //router.use(function (err, req, res, next) {
+    //
+    //});
+
+}
+
+module.exports = {
+    initialize: initialize,
+    router: router
 };
-
-module.exports = setup;
