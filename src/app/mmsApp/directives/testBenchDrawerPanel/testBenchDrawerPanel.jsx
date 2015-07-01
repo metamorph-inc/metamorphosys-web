@@ -1,7 +1,10 @@
 'use strict';
 
+require('./testBenchResultAndTime.jsx');
+
 angular.module('mms.testBenchDrawerPanel', [
-    'cyphy.services'
+    'cyphy.services',
+    'mms.testBenchDrawerPanel.resultAndTime'
 ])
 
 .directive('testBenchDrawerPanelTestList', function() {
@@ -19,7 +22,8 @@ angular.module('mms.testBenchDrawerPanel', [
 
             var listItem = {
                 id: testBench.id,
-                title: testBench.name
+                title: testBench.name,
+                headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html'
             };
 
             self.listData.items.push(listItem);
@@ -69,7 +73,8 @@ angular.module('mms.testBenchDrawerPanel', [
 
             var listItem = {
                 id: testBenchResult.id,
-                title: testBenchResult.testBench && testBenchResult.testBench.name
+                title: testBenchResult.testBench && testBenchResult.testBench.name,
+                headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
             };
 
             self.listData.items.push(listItem);
