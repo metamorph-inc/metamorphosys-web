@@ -37,12 +37,11 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
             scope.$watch(function() {
 
-                return ctrl.result;
+                return ctrl.result && ctrl.result.status;
 
             }, function(newO, oldO){
 
-                if ((oldO !== newO || oldO != null) && newO != null) {
-
+                if ( newO !== null && oldO !== newO ){
                     cleanup();
                     render();
                 }
@@ -63,7 +62,7 @@ function timeFormatter(dateString) {
     var result;
 
     if (dateString) {
-        result = moment(dateString).format('MM/DD/YY h:ma');
+        result = moment(dateString).format('MM/DD/YY h:mma');
     } else {
         result = '---';
     }

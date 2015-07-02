@@ -31,7 +31,6 @@ angular.module('mms.testBenchDrawerPanel', [
                     testBench: testBench,
                     details: true,
                     runTest: function (item) {
-                        console.log('Run test bench from here', item);
                         testBenchService.runTestBench(item.id);
                     },
                     openLastResult: function(item) {
@@ -64,23 +63,23 @@ angular.module('mms.testBenchDrawerPanel', [
 
         };
 
-        function onResultsChanged(event) {
-
-            if (event.data && event.data.newResult) {
-
-                var testBench = event.data.newResult.testBench;
-
-                console.log('Testbecnhs last result changed for test bench', testBench);
-
-            }
-
-        }
-
-        testBenchService.addEventListener('resultsChanged', onResultsChanged);
-
-        $scope.$on('$destroy', function() {
-            testBenchService.removeEventListener('resultsChanged', onResultsChanged);
-        });
+        // function onResultsChanged(event) {
+        //
+        //     if (event.data && event.data.newResult) {
+        //
+        //         var testBench = event.data.newResult.testBench;
+        //
+        //         console.log('Testbecnhs last result changed for test bench', testBench);
+        //
+        //     }
+        //
+        // }
+        //
+        // testBenchService.addEventListener('resultsChanged', onResultsChanged);
+        //
+        // $scope.$on('$destroy', function() {
+        //     testBenchService.removeEventListener('resultsChanged', onResultsChanged);
+        // });
 
 
     }

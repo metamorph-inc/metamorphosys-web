@@ -65,7 +65,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                     result.testBench = testBench;
 
                     // update last result, if result is finished and it is newer
-                    if (result.startTime && testBench.lastResult && testBench.lastResult.startTime < result.startTime) {
+                    if (!testBench.lastResult ||
+                        result.startTime && testBench.lastResult && testBench.lastResult.startTime < result.startTime) {
                         testBench.lastResult = result;
                     }
                 }
@@ -360,14 +361,17 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                             testBenchResult.resultUrl = '/rest/blob/download/' + artifactsByName['all.zip'].hash;
                         }
 
+                        testBenches.forEach(function (testBench) {
 
-                        testBenches.map(function (testBench) {
                             if (testBench.id === result.testBenchId) {
+
                                 // update last result, if result is finished and it is newer
-                                if (testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
+                                if (!testBench.lastResult ||
+                                    testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
                                     testBench.lastResult = testBenchResult;
                                 }
                             }
+
                         });
 
                         self.dispatchEvent({
