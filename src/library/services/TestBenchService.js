@@ -65,7 +65,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                     result.testBench = testBench;
 
                     // update last result, if result is finished and it is newer
-                    if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {
+                    if (result.startTime && testBench.lastResult && testBench.lastResult.startTime < result.startTime) {
                         testBench.lastResult = result;
                     }
                 }
@@ -111,6 +111,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                 });
             });
             self.testBenchPromise = undefined;
+            testBenches = [];
         };
         projectHandling.addEventListener('leaveDesign', cleanup);
         return (this.testBenchPromise = nodeService.getMetaNodes(context)
@@ -140,13 +141,14 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     config: {
                                         properties: properties.data.Property || []
-                                    }
-                                    //results: [],
-                                    // lastResult: null
+                                    },
+                                    results: [],
+                                    lastResult: null
                                 };
                             });
                         }));
-                    }).then(function (testBenches) {
+                    }).then(function (testBenches_) {
+                        testBenches = testBenches_;
                         testBenches.sort(compareTestBench);
                         return testBenches;
                     });
@@ -321,8 +323,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
             testBenchResult = {
                 id: (new Date()).getTime(),
                 testBenchId: testBenchId,
-                config: [],
-                startTime: (new Date()).getTime(),
+                startTime: (new Date()).toISOString(),
                 endTime: null,
                 status: 'Running',
                 resultUrl: null
@@ -330,6 +331,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         this.getTestBenchById(testBenchId)
             .then(function (testBench) {
                     testBenchResult.testBench = testBench;
+                    testBenchResult.config = angular.copy(testBench.config);
                     addResult(testBenchResult);
                 });
 
