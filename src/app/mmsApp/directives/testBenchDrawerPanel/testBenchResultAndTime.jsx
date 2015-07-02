@@ -1,3 +1,5 @@
+/*global moment*/
+
 'use strict';
 
 angular.module('mms.testBenchDrawerPanel.resultAndTime', [
@@ -56,11 +58,26 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
 });
 
+function timeFormatter(dateString) {
+
+    var result;
+
+    if (dateString) {
+        result = moment(dateString).format('MM/DD/YY h:ma');
+    } else {
+        result = '---';
+    }
+
+    return result;
+
+}
+
 class TestBenchResultAndTime extends React.Component {
 
     constructor(props) {
         super(props);
     }
+
 
     render() {
 
@@ -70,19 +87,23 @@ class TestBenchResultAndTime extends React.Component {
         if (this.props.result) {
 
             if (this.props.result.status) {
-                cssClass += ' ' + this.props.result.status;
+                cssClass += ' ' + this.props.result.status.toLowerCase();
             }
 
             innerContents.push(
-                <div className="start-time date-and-time">Start time</div>
+                <div className="start-time date-and-time">{timeFormatter(this.props.result.startTime)}</div>
             );
 
             innerContents.push(
-                <div className="end-time date-and-time">End time</div>
+                <div className="start-end-time-separator"><i className="glyphicon glyphicon-arrow-down"></i></div>
             );
 
             innerContents.push(
-                <div className="status">{this.props.status}</div>
+                <div className="end-time date-and-time">{timeFormatter(this.props.result.endTime)}</div>
+            );
+
+            innerContents.push(
+                <div className="status">{this.props.result.status}</div>
             );
 
         } else {

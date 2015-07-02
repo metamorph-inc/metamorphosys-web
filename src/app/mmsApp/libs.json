@@ -22,7 +22,8 @@
         "./bower_components/mms-content-server-apps/dist/subcircuitBrowser-templates.js",
 
         "./bower_components/angular-ui-grid/ui-grid.min.js",
-        "./bower_components/numeral/numeral.js"
+        "./bower_components/numeral/numeral.js",
+        "./bower_components/moment/moment.js"
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",

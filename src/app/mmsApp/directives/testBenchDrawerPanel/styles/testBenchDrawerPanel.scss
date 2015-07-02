@@ -93,21 +93,6 @@
         padding: 0 10px;
     }
 
-    .test-bench-result-and-time-wrapper {
-        position: absolute;
-        width: 100px;
-        height: 100%;
-        right: 0;
-        top: 0;
-        text-align: center;
-        border-left: 1px dotted rgba(143, 156, 166, 0.2);
-
-        .no-result {
-            padding-top: 20%;
-            height: 100%;
-        }
-    }
-
     .test-bench-title-wrapper {
 
         cursor: pointer;

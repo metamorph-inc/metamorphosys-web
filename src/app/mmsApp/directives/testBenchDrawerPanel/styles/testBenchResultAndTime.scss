@@ -1,0 +1,52 @@
+.test-bench-result-and-time-wrapper {
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    text-align: center;
+    border-left: 1px dotted rgba(143, 156, 166, 0.2);
+    font-size: 11px;
+
+    .test-bench-result-and-time {
+
+        padding: 5px;
+        height: 100%;
+
+        &.running {
+            background-color: rgba(245, 245, 10, .2);
+        }
+
+        &.succeeded {
+            background-color: rgba(10, 245, 10, .2);
+        }
+
+        &.failed {
+            background-color: rgba(245, 10, 10, .2);
+        }
+
+        .no-result {
+            padding-top: 20%;
+            height: 100%;
+        }
+
+        .start-time {
+            margin-bottom: 3px;
+        }
+
+        .end-time {
+            margin-top: 3px;
+        }
+
+        .status {
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .start-end-time-separator {
+            font-size: 9px;
+        }
+    }
+
+}

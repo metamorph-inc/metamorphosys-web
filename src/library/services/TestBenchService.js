@@ -60,8 +60,10 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         testBenches.forEach(function (testBench) {
 
             if (testBench.id === result.testBenchId) {
+
                 // add result object to test bench
                 testBench.results.push(result);
+                testBench.lastResult = result;
 
                 result.testBench = testBench;
 
@@ -156,6 +158,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                     lastResult: null
                 });
             }
+
+            this.getTestBenchResults();
         }
 
         testBenches.sort(compareTestBench);
