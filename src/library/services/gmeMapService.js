@@ -32,6 +32,10 @@ angular.module('cyphy.services')
                         self.loaded.reject(err);
                     });
             };
+            GmeMapping.prototype.destroy = function GmeMappingDestroy() {
+                // TODO does this work
+                nodeService.cleanUpRegion(parentContext.db, this.regionId);
+            };
             GmeMapping.prototype.update = function GmeMappingUpdate() {
                 var self = this,
                     setNodeAttributes = function (node, data) {

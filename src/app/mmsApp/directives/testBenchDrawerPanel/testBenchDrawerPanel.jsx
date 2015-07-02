@@ -20,26 +20,29 @@ angular.module('mms.testBenchDrawerPanel', [
             items: []
         };
 
-        testBenches.forEach(testBench => {
+        testBenches.then(function (testBenches) {
+            testBenches.forEach(testBench => {
 
-            var listItem = {
-                id: testBench.id,
-                title: testBench.name,
-                headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
-                detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
-                configDirective: 'dummy-test-bench-config',
-                testBench: testBench,
-                details: true,
-                runTest: function(item) {
-                    console.log('Run test bench from here', item);
-                }
+                var listItem = {
+                    id: testBench.id,
+                    title: testBench.name,
+                    headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
+                    detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
+                    configDirective: 'dummy-test-bench-config',
+                    testBench: testBench,
+                    details: true,
+                    runTest: function (item) {
+                        console.log('Run test bench from here', item);
+                        testBenchService.runTestBench(item.id)
+                    }
 
-            };
+                };
 
-            console.log(testBench);
+                console.log(testBench);
 
-            self.listData.items.push(listItem);
+                self.listData.items.push(listItem);
 
+            });
         });
 
         this.config = {
@@ -77,23 +80,30 @@ angular.module('mms.testBenchDrawerPanel', [
     function ResultListController(testBenchService) {
 
         var self = this,
-            testBenchResults = testBenchService.getTestBenchResults();
+            testBenchResults = testBenchService.getTestBenchResults(),
+            setListItems = function (testBenchResults) {
+                self.listData.items.splice(0, self.listData.items.length);
+                testBenchResults.forEach(testBenchResult => {
+
+                    var listItem = {
+                        id: testBenchResult.id,
+                        title: testBenchResult.testBench && testBenchResult.testBench.name,
+                        headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
+                    };
+
+                    self.listData.items.push(listItem);
+                });
+            };
 
         this.listData = {
             items: []
         };
 
-        testBenchResults.forEach(testBenchResult => {
-
-            var listItem = {
-                id: testBenchResult.id,
-                title: testBenchResult.testBench && testBenchResult.testBench.name,
-                headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
-            };
-
-            self.listData.items.push(listItem);
-
+        testBenchResults.then(setListItems);
+        testBenchService.addEventListener('resultsChanged',function (event) {
+            setListItems(event.data);
         });
+        // FIXME: where do we removeEventListener?
 
         this.config = {
 
