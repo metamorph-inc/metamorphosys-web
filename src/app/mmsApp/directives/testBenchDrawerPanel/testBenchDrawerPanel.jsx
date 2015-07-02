@@ -11,18 +11,16 @@ angular.module('mms.testBenchDrawerPanel', [
 
 .directive('testBenchDrawerPanelTestList', function() {
 
-    function TestListController(testBenchService) {
+    function TestListController($scope, testBenchService) {
 
-        var self = this,
-            testBenches = testBenchService.getTestBenches();
+        var self = this;
 
         this.listData = {
             items: []
         };
 
-        testBenches.then(function (testBenches) {
+        testBenchService.getTestBenches().then(function (testBenches) {
             testBenches.forEach(testBench => {
-
 
                 var listItem = {
                     id: testBench.id,
@@ -34,7 +32,7 @@ angular.module('mms.testBenchDrawerPanel', [
                     details: true,
                     runTest: function (item) {
                         console.log('Run test bench from here', item);
-                        testBenchService.runTestBench(item.id)
+                        testBenchService.runTestBench(item.id);
                     },
                     openLastResult: function(item) {
                         console.log('Last result should be opened', item);
@@ -65,6 +63,26 @@ angular.module('mms.testBenchDrawerPanel', [
             }
 
         };
+
+        function onResultsChanged(event) {
+
+            if (event.data && event.data.newResult) {
+
+                var testBench = event.data.newResult.testBench;
+
+                console.log('Testbecnhs last result changed for test bench', testBench);
+
+            }
+
+        }
+
+        testBenchService.addEventListener('resultsChanged', onResultsChanged);
+
+        $scope.$on('$destroy', function() {
+            testBenchService.removeEventListener('resultsChanged', onResultsChanged);
+        });
+
+
     }
 
     return {
@@ -84,7 +102,7 @@ angular.module('mms.testBenchDrawerPanel', [
     function ResultListController($scope, testBenchService) {
 
         var self = this,
-            testBenchResults = testBenchService.getTestBenchResults(),
+            testBenchResultsPromise = testBenchService.getTestBenchResults(),
             setListItems = function (testBenchResults) {
                 self.listData.items.splice(0, self.listData.items.length);
                 testBenchResults.forEach(testBenchResult => {
@@ -103,10 +121,10 @@ angular.module('mms.testBenchDrawerPanel', [
             items: []
         };
 
-        testBenchResults.then(setListItems);
+        testBenchResultsPromise.then(setListItems);
 
         function onResultsChanged(event) {
-            setListItems(event.data);
+            setListItems(event.data.results);
         }
 
         testBenchService.addEventListener('resultsChanged', onResultsChanged);

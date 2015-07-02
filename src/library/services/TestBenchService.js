@@ -75,7 +75,10 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
             self.dispatchEvent({
                 type: 'resultsChanged',
-                data: testBenchResults
+                data: {
+                    newResult: result,
+                    results: testBenchResults
+                }
             });
         });
     }
