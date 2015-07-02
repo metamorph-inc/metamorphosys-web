@@ -7,6 +7,8 @@
         <i class="glyphicon glyphicon-play"></i></div><span class="item-title">{{ item.title }}</span></h4>
     <test-bench-result-and-time
         result="item.testBench.lastResult"
-        navigable
+        class="navigable"
+        title="Open"
+        ng-click="item.openLastResult(item)"
         ></test-bench-result-and-time>
 </div>

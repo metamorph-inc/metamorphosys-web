@@ -32,6 +32,9 @@ angular.module('mms.testBenchDrawerPanel', [
                 details: true,
                 runTest: function(item) {
                     console.log('Run test bench from here', item);
+                },
+                openLastResult: function(item) {
+                    console.log('Last result should be opened', item);
                 }
 
             };

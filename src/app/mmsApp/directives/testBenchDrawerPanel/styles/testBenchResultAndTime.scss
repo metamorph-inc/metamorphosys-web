@@ -7,6 +7,7 @@
     text-align: center;
     border-left: 1px dotted rgba(143, 156, 166, 0.2);
     font-size: 11px;
+    cursor: pointer;
 
     .test-bench-result-and-time {
 
@@ -49,4 +50,13 @@
         }
     }
 
+}
+
+.navigable.test-bench-result-and-time-wrapper {
+    opacity: .75;
+    transition: opacity 200ms;
+
+    &:hover {
+        opacity: 1;
+    }
 }
