@@ -20,29 +20,33 @@ angular.module('mms.testBenchDrawerPanel', [
             items: []
         };
 
-        testBenches.forEach(testBench => {
+        testBenches.then(function (testBenches) {
+            testBenches.forEach(testBench => {
 
-            var listItem = {
-                id: testBench.id,
-                title: testBench.name,
-                headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
-                detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
-                configDirective: 'dummy-test-bench-config',
-                testBench: testBench,
-                details: true,
-                runTest: function(item) {
-                    console.log('Run test bench from here', item);
-                },
-                openLastResult: function(item) {
-                    console.log('Last result should be opened', item);
-                }
 
-            };
+                var listItem = {
+                    id: testBench.id,
+                    title: testBench.name,
+                    headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
+                    detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
+                    configDirective: 'dummy-test-bench-config',
+                    testBench: testBench,
+                    details: true,
+                    runTest: function (item) {
+                        console.log('Run test bench from here', item);
+                        testBenchService.runTestBench(item.id)
+                    },
+                    openLastResult: function(item) {
+                        console.log('Last result should be opened', item);
+                    }
 
-            console.log(testBench);
+                };
 
-            self.listData.items.push(listItem);
+                console.log(testBench);
 
+                self.listData.items.push(listItem);
+
+            });
         });
 
         this.config = {
@@ -77,25 +81,38 @@ angular.module('mms.testBenchDrawerPanel', [
 
 .directive('testBenchDrawerPanelResultList', function() {
 
-    function ResultListController(testBenchService) {
+    function ResultListController($scope, testBenchService) {
 
         var self = this,
-            testBenchResults = testBenchService.getTestBenchResults();
+            testBenchResults = testBenchService.getTestBenchResults(),
+            setListItems = function (testBenchResults) {
+                self.listData.items.splice(0, self.listData.items.length);
+                testBenchResults.forEach(testBenchResult => {
+
+                    var listItem = {
+                        id: testBenchResult.id,
+                        title: testBenchResult.testBench && testBenchResult.testBench.name,
+                        headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
+                    };
+
+                    self.listData.items.push(listItem);
+                });
+            };
 
         this.listData = {
             items: []
         };
 
-        testBenchResults.forEach(testBenchResult => {
+        testBenchResults.then(setListItems);
 
-            var listItem = {
-                id: testBenchResult.id,
-                title: testBenchResult.testBench && testBenchResult.testBench.name,
-                headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
-            };
+        function onResultsChanged(event) {
+            setListItems(event.data);
+        }
 
-            self.listData.items.push(listItem);
+        testBenchService.addEventListener('resultsChanged', onResultsChanged);
 
+        $scope.$on('$destroy', function() {
+            testBenchService.removeEventListener('resultsChanged', onResultsChanged);
         });
 
         this.config = {

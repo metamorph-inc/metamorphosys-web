@@ -8,16 +8,12 @@
 var EventDispatcher = require('../../app/mmsApp/classes/EventDispatcher');
 
 
-var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService) {
+var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService, projectHandling) {
     'use strict';
     var self = this,
         watchers = {},
-
         testBenches = [],
-        testBenchesById = {},
-
-        testBenchResults = [],
-        testBenchResultsById = {};
+        testBenchResults = [];
 
     // TODO: add notifications: TestBench list updated, Result created, Result status changed.
 
@@ -57,169 +53,157 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
         testBenchResults.push(result);
 
-        testBenches.forEach(function (testBench) {
+        self.getTestBenches().then(function() {
 
-            if (testBench.id === result.testBenchId) {
+            testBenches.forEach(function (testBench) {
 
-                // add result object to test bench
-                testBench.results.push(result);
-                testBench.lastResult = result;
+                if (testBench.id === result.testBenchId) {
 
-                result.testBench = testBench;
+                    // add result object to test bench
+                    testBench.results.push(result);
 
-                // update last result, if result is finished and it is newer
-                if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {
-                    testBench.lastResult = result;
+                    result.testBench = testBench;
+
+                    // update last result, if result is finished and it is newer
+                    if (result.endTime && testBench.lastResult && testBench.lastResult.endTime < result.endTime) {
+                        testBench.lastResult = result;
+                    }
                 }
-            }
-        });
-
-        testBenchResults.sort(compareResult);
-
-        self.dispatchEvent({
-            type: 'resultCreated',
-            data: result
-        });
-    }
-
-
-    function addTestBench(testBench) {
-
-        testBenches.push(testBench);
-        testBenches.sort(compareTestBench);
-
-        testBenchesById[testBench.id] = testBench;
-
-        self.dispatchEvent({
-            type: 'testBenchListChanged',
-            data: testBenches
-        });
-    }
-
-    function removeTestBench(id) {
-
-        var notFound = true,
-            i = 0,
-            testBench;
-
-        while (notFound && i < testBenches.length) {
-
-            testBench = testBenches[i];
-
-            if (testBench.id === id) {
-                notFound = false;
-            }
-
-        }
-
-
-        if (!notFound) {
-
-            testBenches.splice(i, 1);
-            testBenchesById[id] = null;
-
-            //TODO: add remove results
-
-            self.dispatchEvent({
-                type: 'testBenchListChanged',
-                data: testBenches
             });
 
+            testBenchResults.sort(compareResult);
 
-        }
-
+            self.dispatchEvent({
+                type: 'resultsChanged',
+                data: testBenchResults
+            });
+        });
     }
 
-    this.getTestBenchById = function(id) {
-        return testBenchesById[id];
+    this.getTestBenchById = function (id) {
+        return this.getTestBenches()
+            .then(function () {
+                return testBenches.filter(function (testBench) {
+                    return testBench.id === id;
+                })[0];
+            });
     };
 
-
     this.getTestBenches = function () {
-        var i;
 
-        // Generating dummy data. TODO: get these from GME instead
-
-        if (testBenches.length === 0) {
-
-            for (i = 0; i < 6; i += 1) {
-                addTestBench({
-                    id: i,
-                    name: 'Test bench ' + i,
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                    config: [
-                        {
-                            id: 1,
-                            name: 'quantity',
-                            value: 600
-                        }
-                    ],
-                    results: [],
-                    lastResult: null
-                });
-            }
-
-            this.getTestBenchResults();
+        if (this.testBenchPromise) {
+            return this.testBenchPromise;
         }
 
-        testBenches.sort(compareTestBench);
+        var designId = projectHandling.getSelectedDesignId(),
+            context = projectHandling.getDesignContext(),
+            gmeMaps = [];
+        context = {
+            db: context.db,
+            regionId: context.regionId + '_tbs'
+        };
 
-        return testBenches;
+        var cleanup = function () {
+            projectHandling.removeEventListener('leaveDesign', cleanup);
+            self.testBenchPromise.then(function () {
+                gmeMaps.forEach(function (gmeMap) {
+                    gmeMap.destroy();
+                });
+            });
+            self.testBenchPromise = undefined;
+        };
+        projectHandling.addEventListener('leaveDesign', cleanup);
+        return (this.testBenchPromise = nodeService.getMetaNodes(context)
+            .then(function(meta) {
+
+                return nodeService.loadNode(context, designId)
+                    .then(function (design) {
+                        // TODO: support adding new TestBenches on-the-fly
+                        return design.getCollectionPaths('TopLevelSystemUnderTest');
+                    }).then(function (paths) {
+                        return $q.all(paths.map(function (path) {
+                            return nodeService.loadNode(context, path);
+                        }));
+                    }).then(function (testBenches) {
+                        return $q.all(testBenches.filter(function (testbench) {
+                            return testbench.isMetaTypeOf(meta.byName.AVMTestBenchModel);
+                        }).map(function (testBench) {
+                            return gmeMapService.mapGmeNode(context, testBench.getId(), {
+                                'Property': {
+                                    attributes: {name: 'label', Value: 'value'}
+                                }
+                            }).then(function (properties) {
+                                gmeMaps.push(properties);
+                                return {
+                                    id: testBench.getId(),
+                                    name: testBench.getAttribute('name'),
+                                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                    config: {
+                                        properties: properties.data.Property || []
+                                    }
+                                    //results: [],
+                                    // lastResult: null
+                                };
+                            });
+                        }));
+                    }).then(function (testBenches) {
+                        testBenches.sort(compareTestBench);
+                        return testBenches;
+                    });
+            }));
     };
 
     this.getTestBenchResults = function (id) {
-        var results = [],
-            i;
+        // TODO Generating dummy results. Get these from REST API.
 
-        // Generating dummy results. Get these from GME.
-        // TODO: get these from GME.
+        if (this.testBenchResultsPromise) {
+            return this.testBenchResultsPromise;
+        }
+        var cleanup = function () {
+            projectHandling.removeEventListener('leaveDesign', cleanup);
+            self.testBenchPromise = undefined;
+            testBenchResults = [];
+            self.dispatchEvent({
+                type: 'resultsChanged',
+                data: testBenchResults
+            });
+        };
+        projectHandling.addEventListener('leaveDesign', cleanup);
+        return (this.testBenchResultsPromise = this.getTestBenches()
+            .then(function (testBenches) {
 
-        if (testBenchResults.length === 0) {
+                testBenches.filter(function (testBench) {
+                    return testBench.id === id;
+                }).forEach(function (testBench) {
+                    var status = ['Running', 'Failed', 'Succeeded'];
+                    for (var i = 0; i < 3; i += 1) {
+                        addResult({
+                            id: i,
+                            testBenchId: testBench.id,
+                            testBench: testBench,
+                            config: [
+                                {
+                                    id: 1,
+                                    name: 'quantity',
+                                    value: 600
+                                }
+                            ],
+                            startTime: new Date((new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000)).toISOString(),
+                            endTime: new Date((new Date()).getTime() - Math.floor(Math.random() * 15000)).toISOString(),
+                            status: status[Math.floor(Math.random() * status.length)],
+                            resultUrl: 'something_' + i + '.zip'
+                        });
 
-            this.getTestBenches();
-
-            var status = ['Running', 'Failed', 'Succeeded'];
-
-            for (i = 0; i < 50; i += 1) {
-                addResult({
-                    id: i,
-                    testBenchId: i % 10,
-                    config: [
-                        {
-                            id: 1,
-                            name: 'quantity',
-                            value: 600
+                        if (testBenchResults[i].status === 'Running') {
+                            testBenchResults[i].endTime = null;
                         }
-                    ],
-                    startTime: new Date((new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000)).toISOString(),
-                    endTime: new Date((new Date()).getTime() - Math.floor(Math.random() * 15000)).toISOString(),
-                    status: status[Math.floor(Math.random() * status.length)],
-                    resultUrl: 'something_' + i + '.zip'
+                    }
                 });
 
-                if (testBenchResults[i].status === 'Running') {
-                    testBenchResults[i].endTime = null;
-                }
-            }
+                testBenchResults.sort(compareResult);
 
-        }
-
-        testBenchResults.map(function (testBenchResult) {
-
-            if (id) {
-                // test bench result only for the requested test bench
-                if (id === testBenchResult.testBenchId) {
-                    results.push(testBenchResult);
-                }
-            } else {
-                // all results
-                results.push(testBenchResult);
-            }
-        });
-
-        results.sort(compareResult);
-
-        return results;
+                return testBenchResults;
+            }));
     };
 
     this.setTestBenchConfig = function (id, config) {
@@ -305,10 +289,6 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         nodeService.destroyNode(context, testBenchId, message);
     };
 
-    this.exportTestBench = function (/*testBenchId*/) {
-        throw new Error('Not implemented.');
-    };
-
     /**
      * Updates the given attributes
      * @param {object} context - Must exist within watchers and contain the test bench.
@@ -321,13 +301,19 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         return baseCyPhyService.setNodeAttributes(context, testBenchId, attrs);
     };
 
-    this.runTestBench = function (context, testBenchId, configurationId) {
+    this.runTestBench = function (testBenchId, configurationId) {
+        var context = projectHandling.getDesignContext();
+        context = {
+            db: context.db,
+            regionId: context.regionId + '_runtb'
+        };
+
         var deferred = $q.defer(),
             config = {
                 activeNode: testBenchId,
                 runOnServer: true,
                 pluginConfig: {
-                    run: true,
+                    run: false, // XXX for testing
                     save: true,
                     configurationPath: configurationId
                 }
@@ -341,9 +327,11 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                 status: 'Running',
                 resultUrl: null
             };
-
-        // add result object
-        addResult(testBenchResult);
+        this.getTestBenchById(testBenchId)
+            .then(function (testBench) {
+                    testBenchResult.testBench = testBench;
+                    addResult(testBenchResult);
+                });
 
         //console.log(JSON.stringify(config));
         pluginService.runPlugin(context, 'TestBenchRunner', config)
@@ -376,8 +364,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                         });
 
                         self.dispatchEvent({
-                            type: 'resultStatusChanged',
-                            data: testBenchResult
+                            type: 'resultsChanged',
+                            data: testBenchResults
                         });
 
 

@@ -2,9 +2,11 @@
 
 'use strict';
 
+var EventDispatcher = require('../../classes/EventDispatcher');
+
 angular.module('mms.projectHandling', [])
     .service('projectHandling', function($q, $log, branchService, connectionHandling, $http, projectService, $rootScope, workspaceService,
-        mmsUtils, designService, testBenchService, designLayoutService, $timeout, dataStoreService, $injector) {
+        mmsUtils, designService, designLayoutService, $timeout, dataStoreService, $injector) {
 
         var self = this,
             selectedProjectId,
@@ -40,6 +42,12 @@ angular.module('mms.projectHandling', [])
 
             _designConfigs = {};
 
+        EventDispatcher.prototype.apply(this);
+
+        this.emit = function(eventName) {
+            $rootScope.$emit(eventName);
+            this.dispatchEvent({type: eventName});
+        };
 
         if ($injector.has('designsToSelect')) {
 
@@ -61,7 +69,7 @@ angular.module('mms.projectHandling', [])
             if (selectedProjectId) {
 
                 this.leaveBranch();
-                $rootScope.$emit('leaveProject');
+                this.emit('leaveProject');
 
                 selectedDesignId = null;
 
@@ -79,7 +87,7 @@ angular.module('mms.projectHandling', [])
 
                 cleanWSWatcher();
 
-                $rootScope.$emit('leaveBranch');
+                this.emit('leaveBranch');
 
                 selectedBranchId = null;
 
@@ -94,7 +102,7 @@ angular.module('mms.projectHandling', [])
 
                 cleanWorkspaceInternalsWatcher();
 
-                $rootScope.$emit('leaveWorkspace');
+                this.emit('leaveWorkspace');
 
                 selectedWorkspaceId = null;
 
@@ -109,7 +117,7 @@ angular.module('mms.projectHandling', [])
 
                 cleanDesignInternalsWatcher();
 
-                $rootScope.$emit('leaveDesign');
+                this.emit('leaveDesign');
 
                 selectedDesignId = null;
 
@@ -122,7 +130,7 @@ angular.module('mms.projectHandling', [])
 
                 cleanContainerInternalsWatcher();
 
-                $rootScope.$emit('leaveContainer');
+                this.emit('leaveContainer');
 
                 selectedContainerId = null;
 
@@ -362,12 +370,13 @@ angular.module('mms.projectHandling', [])
 
             selectedDesignId = null;
 
+            // TODO designService.unregisterWatcher(wsContext);
+
         };
 
         setupWorkspaceInternalsWatcher = function() {
 
             var designsPromise,
-                testbenchesPromise,
                 deferred;
 
             deferred = $q.defer();
@@ -380,20 +389,12 @@ angular.module('mms.projectHandling', [])
                 availableDesigns = designsData.designs;
             });
 
-            testbenchesPromise = testBenchService.watchTestBenches(wsContext, selectedWorkspaceId, function() {
-                //TODO: eventually this has to be implemented
-            }).then(function(testbenchesData) {
-                availableTestBenches = testbenchesData.testBenches;
-                // TODO: hook this up to something
-                testBenchService.watchTestBenchDetails(wsContext, testbenchesData.testBenches[Object.getOwnPropertyNames(testbenchesData.testBenches)[0]].id);
-            });
-
-            $q.all([designsPromise, testbenchesPromise])
+            designsPromise
                 .then(function() {
                     deferred.resolve();
                 })
                 .catch(function() {
-                    deferred.reject('Could not get designs and testbenches');
+                    deferred.reject('Could not get designs');
                 });
 
             return deferred.promise;
