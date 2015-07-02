@@ -1,7 +1,8 @@
 <div class="test-list-header list-header">
     <div class="test-bench-description">{{ ::item.testBench.description }}</div>
-    <h4 class="test-bench-title-wrapper"><div
-        class="run-test-bench"
+    <h4 class="test-bench-title-wrapper"
+        ng-click="item.runTest(item)">
+        <div class="run-test-bench"
         title="Run test">
         <i class="glyphicon glyphicon-play"></i></div><span class="item-title">{{ item.title }}</span></h4>
     <test-bench-result-and-time

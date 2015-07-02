@@ -1,10 +1,12 @@
 'use strict';
 
 require('./testBenchResultAndTime.jsx');
+require('./testBenchConfig.js');
 
 angular.module('mms.testBenchDrawerPanel', [
     'cyphy.services',
-    'mms.testBenchDrawerPanel.resultAndTime'
+    'mms.testBenchDrawerPanel.resultAndTime',
+    'mms.testBenchDrawerPanel.testBenchConfig'
 ])
 
 .directive('testBenchDrawerPanelTestList', function() {
@@ -25,9 +27,13 @@ angular.module('mms.testBenchDrawerPanel', [
                 title: testBench.name,
                 headerTemplateUrl: '/mmsApp/templates/testListHeaderTemplate.html',
                 detailsTemplateUrl: '/mmsApp/templates/testListDetailsTemplate.html',
+                configDirective: 'dummy-test-bench-config',
                 testBench: testBench,
                 details: true,
-                toolTip: 'Click to run'
+                runTest: function(item) {
+                    console.log('Run test bench from here', item);
+                }
+
             };
 
             console.log(testBench);
