@@ -114,7 +114,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
             testBenches = [];
         };
         projectHandling.addEventListener('leaveDesign', cleanup);
-        return (this.testBenchPromise = nodeService.getMetaNodes(context)
+        this.testBenchPromise = nodeService.getMetaNodes(context)
             .then(function(meta) {
 
                 return nodeService.loadNode(context, designId)
@@ -152,7 +152,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                         testBenches.sort(compareTestBench);
                         return testBenches;
                     });
-            }));
+            });
+        return this.testBenchPromise;
     };
 
     this.getTestBenchResults = function (id) {
@@ -171,8 +172,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
             });
         };
         projectHandling.addEventListener('leaveDesign', cleanup);
-        return (this.testBenchResultsPromise = this.getTestBenches()
-            .then(function (testBenches) {
+        this.testBenchResultsPromise = this.getTestBenches()
+            .then(function () {
 
                 testBenches.filter(function (testBench) {
                     return testBench.id === id;
@@ -205,7 +206,8 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                 testBenchResults.sort(compareResult);
 
                 return testBenchResults;
-            }));
+            });
+        return this.testBenchResultsPromise;
     };
 
     this.setTestBenchConfig = function (id, config) {
