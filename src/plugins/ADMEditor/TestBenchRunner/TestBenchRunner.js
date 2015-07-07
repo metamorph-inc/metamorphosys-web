@@ -12,9 +12,10 @@ define(['plugin/PluginConfig',
     'xmljsonconverter',
     'executor/ExecutorClient',
     'ejs',
-    'q'
+    'q',
+    'superagent'
 ], function (PluginConfig, PluginBase, MetaTypes, TEMPLATES, AdmExporter, AtmExporter, Converter, ExecutorClient,
-             ejs, Q) {
+             ejs, Q, superagent) {
     'use strict';
     //<editor-fold desc="============================ Class Definition ================================">
     /**
@@ -122,7 +123,38 @@ define(['plugin/PluginConfig',
         // Use self to access core, project, result, logger etc from PluginBase.
         // These are all instantiated at this point.
         var self = this,
-            currentConfig = self.getCurrentConfig();
+            currentConfig = self.getCurrentConfig(),
+            originalCallback = callback;
+
+        if (currentConfig.testBenchResultId) {
+            callback = function saveTestBenchResult(err, result) {
+                var url = '/rest/external/testbenches/result/' + encodeURIComponent(currentConfig.testBenchResultId);
+                if (typeof window === 'undefined') {
+                    // TODO: won't work after we turn on auth
+                    url = (self.gmeConfig.server.https.enable ? 'https://' : 'http://') +
+                        '127.0.0.1:' + self.gmeConfig.server.port +
+                        url;
+                }
+                var testBenchResultFields = {
+                    endTime: new Date().toISOString(),
+                    status: self.result.getSuccess() ? 'Succeeded' : 'Failed'
+                };
+                if (self.executionJobHash) {
+                    testBenchResultFields.executionJobHash = self.executionJobHash;
+                }
+                if (self.executionJobResultHash) {
+                    testBenchResultFields.resultUrl = '/rest/blob/download/' + self.executionJobResultHash;
+                }
+                superagent.post(url)
+                    .send(testBenchResultFields)
+                    .end(function (postErr, res) {
+                        if (postErr || !res.ok) {
+                            self.logger.error('POST to testbenches/result failed: ' + postErr + ' ' + (res ? res.body : ''));
+                        }
+                        originalCallback(err, result);
+                    });
+            };
+        }
 
         if (!self.activeNode) {
             self.createMessage(null,
@@ -192,6 +224,7 @@ define(['plugin/PluginConfig',
                 return;
             }
             self.result.addArtifact(hash);
+            self.executionJobHash = hash;
             if (self.runExecution) {
                 self.executeJob(hash, testBenchInfo, function (err, success) {
                     if (err) {
@@ -690,6 +723,7 @@ define(['plugin/PluginConfig',
                     self.logger.info(JSON.stringify(jInfo, null, 4));
                     //noinspection JSLint
                     clearInterval(intervalID);
+                    self.executionJobResultHash = jInfo.resultHashes.all;
                     if (jInfo.status === 'SUCCESS') {
                         atSucceedJob(jInfo);
                     } else {

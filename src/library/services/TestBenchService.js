@@ -8,7 +8,7 @@
 var EventDispatcher = require('../../app/mmsApp/classes/EventDispatcher');
 
 
-var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService, projectHandling) {
+var TestBenchService = function ($q, $timeout, $cookies, $http, dataStoreService, nodeService, baseCyPhyService, pluginService, gmeMapService, projectHandling) {
     'use strict';
     var self = this,
         watchers = {},
@@ -18,16 +18,16 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
     // TODO: add notifications: TestBench list updated, Result created, Result status changed.
 
     function compareResult(a, b) {
-        if (a.endTime < b.endTime) {
-            return -1;
-        }
-        if (a.endTime > b.endTime) {
-            return 1;
-        }
         if (a.startTime < b.startTime) {
             return -1;
         }
         if (a.startTime > b.startTime) {
+            return 1;
+        }
+        if (a.endTime < b.endTime) {
+            return -1;
+        }
+        if (a.endTime > b.endTime) {
             return 1;
         }
         return 0;
@@ -160,12 +160,18 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         return this.testBenchPromise;
     };
 
-    this.getTestBenchResults = function (id) {
+    this.getTestBenchResults = function () {
         // TODO Generating dummy results. Get these from REST API.
 
         if (this.testBenchResultsPromise) {
             return this.testBenchResultsPromise;
         }
+        var context = projectHandling.getDesignContext();
+        context = {
+            db: context.db,
+            regionId: context.regionId + '_runtb'
+        };
+
         var cleanup = function () {
             projectHandling.removeEventListener('leaveDesign', cleanup);
             self.testBenchPromise = undefined;
@@ -178,33 +184,15 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         projectHandling.addEventListener('leaveDesign', cleanup);
         this.testBenchResultsPromise = this.getTestBenches()
             .then(function () {
-
-                testBenches.filter(function (testBench) {
-                    return testBench.id === id;
-                }).forEach(function (testBench) {
-                    var status = ['Running', 'Failed', 'Succeeded'];
-                    for (var i = 0; i < 3; i += 1) {
-                        addResult({
-                            id: i,
-                            testBenchId: testBench.id,
-                            testBench: testBench,
-                            config: [
-                                {
-                                    id: 1,
-                                    name: 'quantity',
-                                    value: 600
-                                }
-                            ],
-                            startTime: new Date((new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000)).toISOString(),
-                            endTime: new Date((new Date()).getTime() - Math.floor(Math.random() * 15000)).toISOString(),
-                            status: status[Math.floor(Math.random() * status.length)],
-                            resultUrl: 'something_' + i + '.zip'
-                        });
-
-                        if (testBenchResults[i].status === 'Running') {
-                            testBenchResults[i].endTime = null;
-                        }
-                    }
+                // TODO memoize and poll
+                return $http.get('/rest/external/testbenches/results/?projectId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectName()) +
+                    '&branchId=' + dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName());
+            }).then(function (res) {
+                testBenchResults = res.data.results;
+                testBenchResults.forEach(function (result) {
+                    result.testBench = testBenches.filter(function (testBench) {
+                        return testBench.id === result.testBenchId;
+                    })[0];
                 });
 
                 testBenchResults.sort(compareResult);
@@ -321,70 +309,79 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                 activeNode: testBenchId,
                 runOnServer: true,
                 pluginConfig: {
-                    run: false, // XXX for testing
-                    save: true,
+                    run: true,
+                    save: false,
                     configurationPath: configurationId
                 }
             },
+            timestamp = (Math.floor(new Date().valueOf() / 100)).toString(16),
             testBenchResult = {
-                id: (new Date()).getTime(),
+                id: '0000000000'.substr(0, 10 - timestamp.length) + timestamp,
+                projectId: dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectName(),
+                branchId: dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName(),
+                commitHash: dataStoreService.getDatabaseConnection(context.db).client.getActiveCommitHash(),
                 testBenchId: testBenchId,
                 startTime: (new Date()).toISOString(),
                 endTime: null,
                 status: 'Running',
                 resultUrl: null
             };
+        config.pluginConfig.testBenchResultId = testBenchResult.id;
         this.getTestBenchById(testBenchId)
             .then(function (testBench) {
                     testBenchResult.testBench = testBench;
                     testBenchResult.config = angular.copy(testBench.config);
                     addResult(testBenchResult);
-                });
+                    var testBenchResultWithoutTestBench = angular.copy(testBenchResult);
+                    delete testBenchResultWithoutTestBench.testBench;
+                    testBenchResultWithoutTestBench.testBenchId = testBench.id;
+                    return $http.put('/rest/external/testbenches/result/', testBenchResultWithoutTestBench);
+                })
+            .then(function () {
+                //console.log(JSON.stringify(config));
+                pluginService.runPlugin(context, 'TestBenchRunner', config)
+                    .then(function (result) {
+                        var extendedResult = {
+                            success: result.success,
+                            messages: result.messages,
+                            unparsedResult: result
+                        };
+                        //console.log( 'Result', result );
+                        pluginService.getPluginArtifacts(result.artifacts)
+                            .then(function (artifactsByName) {
 
-        //console.log(JSON.stringify(config));
-        pluginService.runPlugin(context, 'TestBenchRunner', config)
-            .then(function (result) {
-                var extendedResult = {
-                    success: result.success,
-                    messages: result.messages,
-                    unparsedResult: result
-                };
-                //console.log( 'Result', result );
-                pluginService.getPluginArtifacts(result.artifacts)
-                    .then(function (artifactsByName) {
-
-                        // update result object
-                        testBenchResult.startTime = result.startTime;
-                        testBenchResult.endTime = result.finishTime;
-                        testBenchResult.status = result.success ? 'Succeeded' : 'Failed';
-                        if (artifactsByName.hasOwnProperty('all.zip')) {
-                            testBenchResult.resultUrl = '/rest/blob/download/' + artifactsByName['all.zip'].hash;
-                        }
-
-                        testBenches.forEach(function (testBench) {
-
-                            if (testBench.id === result.testBenchId) {
-
-                                // update last result, if result is finished and it is newer
-                                if (!testBench.lastResult ||
-                                    testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
-                                    testBench.lastResult = testBenchResult;
+                                // update result object
+                                testBenchResult.startTime = result.startTime;
+                                testBenchResult.endTime = result.finishTime;
+                                testBenchResult.status = result.success ? 'Succeeded' : 'Failed';
+                                if (artifactsByName.hasOwnProperty('all.zip')) {
+                                    testBenchResult.resultUrl = '/rest/blob/download/' + artifactsByName['all.zip'].hash;
                                 }
-                            }
 
-                        });
+                                testBenches.forEach(function (testBench) {
 
-                        self.dispatchEvent({
-                            type: 'resultsChanged',
-                            data: testBenchResults
-                        });
+                                    if (testBench.id === result.testBenchId) {
+
+                                        // update last result, if result is finished and it is newer
+                                        if (!testBench.lastResult ||
+                                            testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
+                                            testBench.lastResult = testBenchResult;
+                                        }
+                                    }
+
+                                });
+
+                                self.dispatchEvent({
+                                    type: 'resultsChanged',
+                                    data: testBenchResults
+                                });
 
 
-                        extendedResult.artifacts = artifactsByName;
-                        deferred.resolve(extendedResult);
+                                extendedResult.artifacts = artifactsByName;
+                                deferred.resolve(extendedResult);
+                            });
                     });
-            })
-            .
+            }).
             catch(function (reason) {
                 deferred.reject('Something went terribly wrong, ' + reason);
             });
