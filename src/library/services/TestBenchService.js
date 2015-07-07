@@ -8,7 +8,8 @@
 var EventDispatcher = require('../../app/mmsApp/classes/EventDispatcher');
 
 
-var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService, projectHandling) {
+var TestBenchService = function (
+    $q, $timeout, nodeService, baseCyPhyService, pluginService, gmeMapService, projectHandling) {
     'use strict';
     var self = this,
         watchers = {},
@@ -336,6 +337,12 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
             };
         this.getTestBenchById(testBenchId)
             .then(function (testBench) {
+
+                    self.dispatchEvent({
+                        type: 'testBenchStarted',
+                        data: testBench
+                    });
+
                     testBenchResult.testBench = testBench;
                     testBenchResult.config = angular.copy(testBench.config);
                     addResult(testBenchResult);
@@ -363,13 +370,17 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
 
                         testBenches.forEach(function (testBench) {
 
-                            if (testBench.id === result.testBenchId) {
-
+                            if (testBench.id === testBenchResult.testBenchId) {
                                 // update last result, if result is finished and it is newer
                                 if (!testBench.lastResult ||
                                     testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
                                     testBench.lastResult = testBenchResult;
                                 }
+
+                                self.dispatchEvent({
+                                    type: 'testBenchCompleted',
+                                    data: testBench
+                                });
                             }
 
                         });
@@ -379,14 +390,18 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                             data: testBenchResults
                         });
 
-
                         extendedResult.artifacts = artifactsByName;
                         deferred.resolve(extendedResult);
                     });
             })
-            .
-            catch(function (reason) {
+            .catch(function (reason) {
                 deferred.reject('Something went terribly wrong, ' + reason);
+
+                self.dispatchEvent({
+                    type: 'testBenchException',
+                    data: reason
+                });
+
             });
 
         return deferred.promise;
@@ -452,7 +467,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
                         data.meta = meta;
                         data.testBench = {
                             id: testBenchId,
-                            name: testBenchNode.getAttribute('name'),
+                            name: testBenchNode.getAttribute('name').replace(/_/g, ' '),
                             description: testBenchNode.getAttribute('INFO'),
                             path: testBenchNode.getAttribute('ID'),
                             results: testBenchNode.getAttribute('Results'),
@@ -662,7 +677,7 @@ var TestBenchService = function ($q, $timeout, nodeService, baseCyPhyService, pl
         baseCyPhyService.unregisterWatcher(watchers, parentContext);
     };
 
-}
+};
 
 EventDispatcher.prototype.apply(TestBenchService.prototype);
 

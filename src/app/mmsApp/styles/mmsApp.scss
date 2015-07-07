@@ -77,6 +77,10 @@ md-toast.success {
         margin-left: 20px;
         background-color: rgba(0, 111, 10, 1);
         color: #fff;
+
+        &:hover {
+            background-color: #12c36e !important;
+        }
     }
 }
 
@@ -86,6 +90,11 @@ md-toast.failure {
         margin-left: 20px;
         background-color: #6F1900;
         color: #fff;
+
+        &:hover {
+            background-color: #d52a00 !important;
+        }
+
     }
 }
 

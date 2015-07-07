@@ -1,0 +1,23 @@
+<md-toast
+    ng-class="{
+        'failure': !success,
+        'success': success
+        }">
+    <span class="toast-box"flex
+        ng-if="success === true"><i class="glyphicon glyphicon-ok" style="margin-right: 10px"></i> {{progressMessage}}</span>
+    <span class="toast-box" flex
+          ng-if="success !== true"
+        ><i class="fa fa-exclamation-circle" style="margin-right: 10px"></i> {{progressMessage}}</span>
+    <md-button
+        class="md-raised toast-bttn"
+        ng-if="!success"
+        ng-click="closeToast()">
+        Close
+    </md-button>
+    <md-button
+        class="md-raised toast-bttn"
+        ng-if="success"
+        ng-click="showResult($event)">
+        Show it
+    </md-button>
+</md-toast>

@@ -3,12 +3,109 @@
 require('./testBenchResultAndTime.jsx');
 require('./testBenchConfig.js');
 
+function TestBenchStartedToastController($scope, $mdToast, message) {
+
+    $scope.progressMessage = message;
+
+    $scope.closeToast = function () {
+        $mdToast.hide();
+    };
+
+}
+
+function TestBenchCompletedToastController($scope, $mdToast, message, result, success, showAction) {
+
+    $scope.result = result;
+
+    $scope.success = success;
+
+    $scope.progressMessage = message || 'Job execution has started...';
+
+    $scope.closeToast = function () {
+        $mdToast.hide();
+    };
+
+    $scope.showResult = function ($event) {
+
+        $scope.closeToast();
+        showAction(result.id, $event);
+
+    };
+
+
+}
+
+
 angular.module('mms.testBenchDrawerPanel', [
     'cyphy.services',
     'mms.testBenchDrawerPanel.resultAndTime',
-    'mms.testBenchDrawerPanel.testBenchConfig'
+    'mms.testBenchDrawerPanel.testBenchConfig',
+    'ngMaterial'
 ])
+.run(function($mdToast, testBenchService) {
 
+    testBenchService.addEventListener(
+        'testBenchStarted',
+        function(e) {
+
+            $mdToast.show({
+                    controller: TestBenchStartedToastController,
+                    templateUrl: '/mmsApp/templates/testBenchStartedToast.html',
+                    locals: {
+                        message: e.data.name + ' started'
+                    },
+                    hideDelay: 5000
+                }
+            );
+        }
+    );
+
+    testBenchService.addEventListener(
+        'testBenchCompleted',
+        function(e) {
+
+            var message,
+                delay,
+                success = false;
+
+            if (e.data.lastResult.status === 'Succeeded') {
+                message = e.data.name + ' completed';
+                delay = 0;
+                success = true;
+            } else {
+                message = e.data.name + ' errored';
+                delay = 0;
+            }
+
+            $mdToast.show({
+                    controller: TestBenchCompletedToastController,
+                    templateUrl: '/mmsApp/templates/testBenchCompletedToast.html',
+                    locals: {
+                        result: e.data.lastResult,
+                        message: message,
+                        showAction: function (id, $event) {
+                            //$scope.showResults(id, $event);
+                            //TODO: hook up showing the result here
+
+                            console.warn('Show results should be hooked up here', $event);
+
+                        },
+                        success: true
+                    },
+                    hideDelay: delay
+                }
+            );
+        }
+    );
+
+    testBenchService.addEventListener(
+        'testBenchException',
+        function() {
+            // Show TB error message here
+        }
+    );
+
+})
 .directive('testBenchDrawerPanelTestList', function() {
 
     function TestListController($scope, testBenchService) {
