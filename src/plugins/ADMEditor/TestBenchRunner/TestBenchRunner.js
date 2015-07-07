@@ -597,7 +597,7 @@ define(['plugin/PluginConfig',
                 }, {
                     name: 'all',
                     // resultPatterns: [ 'results/', 'log/**', '_FAILED.txt']
-                    resultPatterns: ['results/*brd', 'results/*png', 'log/**', 'results/*/log/*', '_FAILED.txt']
+                    resultPatterns: ['results/*brd', 'results/*png', 'results/*json', 'log/**', 'results/*/log/*', '_FAILED.txt']
                 }, {
                     name: 'testBenchManifest',
                     resultPatterns: ['results/*/testbench_manifest.json']
