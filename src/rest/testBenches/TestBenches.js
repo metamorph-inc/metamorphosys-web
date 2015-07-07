@@ -2,7 +2,8 @@
 /*
  GET http://localhost:8855/rest/external/testbenches/results/?testbench_id=:id
  GET http://localhost:8855/rest/external/testbenches/result/:resultId
- PUT http://localhost:8855/rest/external/testbenches/result/
+ curl -H "Content-Type: application/json" -XPUT -d {\"id\":\"asdf\"} http://localhost:8855/rest/external/testbenches/result/
+ curl -H "Content-Type: application/json" -XPOST -d {\"status\":\"Succeeded\"} http://localhost:8855/rest/external/testbenches/result/03580d6ab3
  POST http://localhost:8855/rest/external/testbenches/result/:resultId
  DELETE http://localhost:8855/rest/external/testbenches/result/:resultId
  */
@@ -28,8 +29,12 @@ function getUserId(req) {
 function initialize(middlewareOpts) {
 
     var ResultSchema = new Schema({
-            id: ObjectId,
+            _id: {type: String, index: true},
             userId: String,
+            projectId: String,
+            branchId: String,
+            commitHash: String,
+            executionJobHash: String,
             testBenchId: String,
             status: {type: String, match: /Running|Failed|Succeeded/, default: 'Running'},
             startTime: String, // or Date ???
@@ -53,47 +58,11 @@ function initialize(middlewareOpts) {
     // This means that you don't have to wait until it connects to MongoDB in order to define models, run queries, etc.
     mongoose.connect(gmeConfig.mongo.uri);
 
-
-    // populate database with dummy data
-    var status = ['Running', 'Failed', 'Succeeded'],
-        i;
-
-    for (i = 0; i < 100; i += 1) {
-        var result = new Result();
-        result.testBenchId = i % 10;
-        result.config = [
-            {
-                id: 1,
-                name: 'quantity',
-                value: 600
-            }
-        ];
-        result.startTime = new Date((new Date()).getTime() - 20000 - Math.floor(Math.random() * 20000)).toISOString();
-        result.endTime = new Date((new Date()).getTime() - Math.floor(Math.random() * 15000)).toISOString();
-        result.resultUrl = 'something_' + i + '.zip';
-        result.status = status[Math.floor(Math.random() * status.length)];
-
-        if (result.status === 'Running') {
-            // clear end time if it is still running
-            result.endTime = null;
-        }
-
-        result.save(function (err) {
-            if (err) {
-                logger.error('Failed to save dummy test bench result: ', err);
-                return;
-            }
-            logger.info('Added dummy test bench result.');
-        });
-    }
-    // dummy data ends here
-
-
     // handlers
     router.get('/results', function (req, res/*, next*/) {
         var userId = getUserId(req),
             testBenchId = req.query.testBenchId,
-            query,
+            query = {},
             responseData;
 
         // TODO: in the response we may not need to send these back ...
@@ -106,16 +75,16 @@ function initialize(middlewareOpts) {
         // read test bench results from mongo based on testBenchId
         // Note: testBenchId might be an empty string
 
-        if (testBenchId) {
-            query = {testBenchId: testBenchId};
-        } else {
-            query = {};
-        }
+        ['projectId', 'branchId', 'testBenchId', 'hash'].forEach(function (field) {
+            if (req.query[field]) {
+                query[field] = req.query[field];
+            }
+        });
 
         Result.find(query, function (err, docs) {
             if (err) {
                 logger.error('error', err);
-                res.send(500);
+                res.sendStatus(500);
                 return;
             }
 
@@ -134,14 +103,14 @@ function initialize(middlewareOpts) {
         Result.findOne({_id: req.params.resultId}, function (err, doc) {
             if (err) {
                 logger.error('error', err);
-                res.send(500);
+                res.sendStatus(500);
                 return;
             }
 
             if (doc) {
                 res.json(doc);
             } else {
-                res.send(404);
+                res.sendStatus(404);
             }
         });
     });
@@ -152,24 +121,24 @@ function initialize(middlewareOpts) {
             result = new Result(),
             receivedData = req.body;
 
+        for (var key in ResultSchema.paths) {
+            result[key] = receivedData[key];
+        }
         result.userId = userId;
-        result.testBenchId = receivedData.testBenchId;
-        result.config = receivedData.config;
-        result.startTime = receivedData.startTime;
-        result.endTime = receivedData.endTime;
-        result.resultUrl = receivedData.resultUrl;
-        result.status = receivedData.status;
-
-        // TODO: should we check if the received data is valid?
+        result._id = receivedData.id;
 
         result.save(function (err) {
             if (err) {
+                if (err.code === 11000) {
+                    res.status(409).send('Conflict: already exists').end();
+                    return;
+                }
                 logger.error('error', err);
-                res.send(500);
+                res.sendStatus(500);
                 return;
             }
             // created
-            res.send(201);
+            res.sendStatus(201);
         });
     });
 
@@ -181,31 +150,29 @@ function initialize(middlewareOpts) {
         Result.findOne({_id: req.params.resultId}, function (err, doc) {
             if (err) {
                 logger.error('error', err);
-                res.send(500);
+                res.sendStatus(500);
                 return;
             }
 
             if (doc) {
 
+                for (var key in ResultSchema.paths) {
+                    doc[key] = receivedData[key] || doc[key];
+                    result[key] = receivedData[key];
+                }
                 doc.userId = userId;
-                doc.testBenchId = receivedData.testBenchId || doc.testBenchId;
-                doc.config = receivedData.config || doc.config;
-                doc.startTime = receivedData.startTime || doc.startTime;
-                doc.endTime = receivedData.endTime || doc.endTime;
-                doc.resultUrl = receivedData.resultUrl || doc.resultUrl;
-                doc.status = receivedData.status || doc.status;
 
                 doc.save(function (err) {
                     if (err) {
                         logger.error('error', err);
-                        res.send(500);
+                        res.sendStatus(500);
                         return;
                     }
                     // updated
-                    res.send(200);
+                    res.sendStatus(200);
                 });
             } else {
-                res.send(404);
+                res.sendStatus(404);
             }
         });
     });
