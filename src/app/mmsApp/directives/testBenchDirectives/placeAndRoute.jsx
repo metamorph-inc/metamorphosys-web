@@ -72,7 +72,7 @@ angular.module('mms.testBenchDirectives')
         scope: {
             result: '='
         },
-        templateUrl: '/mmsApp/templates/placeAndRoutmpactultConfig.html'
+        templateUrl: '/mmsApp/templates/placeAndRouteResultCompact.html'
     };
 
 });
