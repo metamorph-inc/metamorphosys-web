@@ -5,7 +5,9 @@
 angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 ])
 
-.directive('testBenchResultAndTime', function() {
+.directive('testBenchResultAndTime', function($compile) {
+
+    var compiledDirectives = {};
 
     function TestBenchResultAndTimeController() {
 
@@ -25,14 +27,51 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
         require: ['testBenchResultAndTime'],
         link: function(scope, element, attr, controllers) {
 
-            var ctrl = controllers[0];
+            var ctrl = controllers[0],
+                resultCompactDirective,
+                compiledDirective,
+                resultCompactElement;
 
             function cleanup() {
                 React.unmountComponentAtNode(element[0]);
             }
 
             function render() {
-                React.render(<TestBenchResultAndTime result={ctrl.result} />, element[0]);
+
+                resultCompactDirective =
+                    ctrl.result &&
+                    ctrl.result.testBench.directives &&
+                    ctrl.result.testBench.directives.resultCompact;
+
+                if (resultCompactDirective) {
+
+                        compiledDirective = compiledDirectives[resultCompactDirective];
+
+                        if (!compiledDirective) {
+
+                            compiledDirective = $compile(
+                                angular.element(
+                                    '<' + resultCompactDirective + ' result="result">' +
+                                    '</' + resultCompactDirective + '>'
+                                )
+                            );
+
+                            compiledDirectives[resultCompactDirective] = compiledDirective;
+
+                        }
+
+                        scope.result = ctrl.result;
+
+                        compiledDirective(scope, function(clonedElement) {
+                            resultCompactElement = clonedElement[0];
+                        });
+
+                }
+
+                React.render(<TestBenchResultAndTime
+                    result={ctrl.result}
+                    resultCompactElement={resultCompactElement}
+                    />, element[0]);
             }
 
             scope.$watch(function() {
@@ -77,6 +116,17 @@ class TestBenchResultAndTime extends React.Component {
         super(props);
     }
 
+    componentDidMount() {
+
+        if (this.props.resultCompactElement) {
+
+            var node = React.findDOMNode(this.refs.status);
+
+            node.innerHTML = '';
+            node.appendChild(this.props.resultCompactElement);
+
+        }
+    }
 
     render() {
 
@@ -101,19 +151,10 @@ class TestBenchResultAndTime extends React.Component {
                 <div className="end-time date-and-time">{timeFormatter(this.props.result.endTime)}</div>
             );
 
-            if (this.props.result.testBench.resultsCompactDirective) {
+            innerContents.push(
+                <div ref="status" className="status">{this.props.result.status}</div>
+            );
 
-                innerContents.push(
-                    <div className="status">{this.props.result.status}</div>
-                );
-
-            } else {
-
-                innerContents.push(
-                    <div className="status">{this.props.result.status}</div>
-                );
-
-            }
 
         } else {
 
