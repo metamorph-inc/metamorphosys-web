@@ -210,6 +210,9 @@ angular.module('mms.testBenchDrawerPanel', [
                     };
 
                     self.listData.items.push(listItem);
+
+                    console.log(testBenchResult);
+
                 });
             };
 

@@ -117,6 +117,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
             self.testBenchPromise = undefined;
             testBenches = [];
         };
+
         projectHandling.addEventListener('leaveDesign', cleanup);
         this.testBenchPromise = nodeService.getMetaNodes(context)
             .then(function(meta) {
