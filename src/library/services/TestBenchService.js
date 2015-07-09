@@ -159,6 +159,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                         return testBenches;
                     });
             });
+        // this fills in testBench.lastResult
+        this.getTestBenchResults();
         return this.testBenchPromise;
     };
 
@@ -176,7 +178,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
         var cleanup = function () {
             projectHandling.removeEventListener('leaveDesign', cleanup);
-            self.testBenchPromise = undefined;
+            self.testBenchResultsPromise = undefined;
             testBenchResults = [];
             self.dispatchEvent({
                 type: 'resultsChanged',
@@ -188,13 +190,23 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
             .then(function () {
                 // TODO memoize and poll
                 return $http.get('/rest/external/testbenches/results/?projectId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectName()) +
-                    '&branchId=' + dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName());
+                    '&branchId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName()));
             }).then(function (res) {
                 testBenchResults = res.data.results;
-                testBenchResults.forEach(function (result) {
+                testBenchResults = testBenchResults.filter(function (result) {
                     result.testBench = testBenches.filter(function (testBench) {
                         return testBench.id === result.testBenchId;
                     })[0];
+                    return result.testBench;
+                });
+
+                testBenchResults.forEach(function (testBenchResult) {
+                    var testBench = testBenchResult.testBench;
+
+                    if (!testBench.lastResult ||
+                        testBenchResult.endTime && testBench.lastResult && testBench.lastResult.endTime < testBenchResult.endTime) {
+                        testBench.lastResult = testBenchResult;
+                    }
                 });
 
                 testBenchResults.sort(compareResult);
