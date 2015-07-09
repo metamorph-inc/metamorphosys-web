@@ -127,5 +127,8 @@
         top: 20px;
         padding-right: 110px;
         padding-left: 200px;
+        max-height: 35px;
+        overflow: hidden;
+        text-overflow: ellipsis;        
     }
 }

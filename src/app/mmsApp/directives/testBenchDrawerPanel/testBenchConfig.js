@@ -17,8 +17,7 @@ angular.module('mms.testBenchDrawerPanel.testBenchConfig', [
         replace: true,
         transclude: false,
         scope: {
-            testBench: '=',
-            directive: '='
+            testBench: '='
         },
         require: ['testBenchConfig', '^testBenchDrawerPanelTestList'],
         template: '<div class="custom-test-bench-config-wrapper"><div class="place-holder"></div>',
@@ -28,27 +27,28 @@ angular.module('mms.testBenchDrawerPanel.testBenchConfig', [
                 placeHolderEl = element.querySelector('.place-holder'),
                 ctrl = controllers[0],
                 listCtrl = controllers[1],
-                compiledDirective;
+                compiledDirective,
+                configDirective = ctrl.testBench.directives && ctrl.testBench.directives.config;
 
             listCtrl.compiledConfigDirectives = listCtrl.compiledConfigDirectives || {};
 
-            if (ctrl.directive) {
+            if (configDirective) {
 
-                compiledDirective = listCtrl.compiledConfigDirectives[ctrl.directive];
+                compiledDirective = listCtrl.compiledConfigDirectives[configDirective];
 
                 if (!compiledDirective) {
 
                     compiledDirective = $compile(
                         angular.element(
-                            '<' + ctrl.directive + '>' +
-                            '</' + ctrl.directive + '>'
+                            '<' + configDirective + '>' +
+                            '</' + configDirective + '>'
                         )
                     );
 
                     if (compiledDirective) {
-                        listCtrl.compiledConfigDirectives[ctrl.directive] = compiledDirective;
+                        listCtrl.compiledConfigDirectives[configDirective] = compiledDirective;
                     } else {
-                        throw new Error('Config directive could not be compiled' + ctrl.directive);
+                        throw new Error('Config directive could not be compiled' + configDirective);
                     }
                 }
 

@@ -3,6 +3,11 @@
 require('./testBenchResultAndTime.jsx');
 require('./testBenchConfig.js');
 
+angular.module('mms.testBenchDirectives', []);
+
+require('../testBenchDirectives/costEstimation.jsx');
+require('../testBenchDirectives/placeAndRoute.jsx');
+
 function TestBenchStartedToastController($scope, $mdToast, message) {
 
     $scope.progressMessage = message;
@@ -40,7 +45,9 @@ angular.module('mms.testBenchDrawerPanel', [
     'cyphy.services',
     'mms.testBenchDrawerPanel.resultAndTime',
     'mms.testBenchDrawerPanel.testBenchConfig',
-    'ngMaterial'
+    'ngMaterial',
+
+    'mms.testBenchDirectives'
 ])
 .run(function($mdToast, testBenchService) {
 

@@ -13,7 +13,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
     var self = this,
         watchers = {},
         testBenches = [],
-        testBenchResults = [];
+        testBenchResults = [],
+        testBenchDirectives = {};
 
     // TODO: add notifications: TestBench list updated, Result created, Result status changed.
 
@@ -84,6 +85,10 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         });
     }
 
+    this.registerTestBenchDirectives = function(testBenchName, directives) {
+        testBenchDirectives[testBenchName] = directives;
+    };
+
     this.getTestBenchById = function (id) {
         return this.getTestBenches()
             .then(function () {
@@ -140,16 +145,20 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                 }
                             }).then(function (properties) {
                                 gmeMaps.push(properties);
+
+                                var name = testBench.getAttribute('name');
+
                                 return {
                                     id: testBench.getId(),
-                                    name: testBench.getAttribute('name'),
+                                    name: name,
                                     // TODO: what directive should be used for visualizing the results?
                                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     config: {
                                         properties: properties.data.Property || []
                                     },
                                     results: [],
-                                    lastResult: null
+                                    lastResult: null,
+                                    directives: testBenchDirectives[name]
                                 };
                             });
                         }));

@@ -101,9 +101,19 @@ class TestBenchResultAndTime extends React.Component {
                 <div className="end-time date-and-time">{timeFormatter(this.props.result.endTime)}</div>
             );
 
-            innerContents.push(
-                <div className="status">{this.props.result.status}</div>
-            );
+            if (this.props.result.testBench.resultsCompactDirective) {
+
+                innerContents.push(
+                    <div className="status">{this.props.result.status}</div>
+                );
+
+            } else {
+
+                innerContents.push(
+                    <div className="status">{this.props.result.status}</div>
+                );
+
+            }
 
         } else {
 
