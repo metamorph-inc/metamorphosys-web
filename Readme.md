@@ -8,14 +8,16 @@ If you want to get the web server running your own machine, follow the instructi
 
 1. Install [nodejs](http://nodejs.org/download/)
 2. Install [mongodb](http://www.mongodb.org/downloads) if you want to use a local database (recommended for initial use)
-3. Clone this repository, and navigate
-4. Install *node-js* dependencies with `npm install`
-5. run `gulp compile-all`
-6. In a separate process, start the *MongoDB* server with `mongod --dbpath mongodatabase`, and leave it running
-7. Preload the *MongoDB* by running `mongorestore`
-8. Start the server with `node app.js` or `npm start`
-9. _(optional):_ To set up a worker (needed for running analysis), install or compile the *metamorphosys-desktop* tools, and then follow the README.md at `/node_modules/webgme/src/middleware/executor/worker`.
-10. Open the example project at http://localhost:8855/#/editor/Template_Module_1x2
+3. Clone this repository, and navigate to your local copy
+4. Recommended: update npm. On Windows, with an elevated command prompt ("Run as Administrator"): `pushd C:\Program Files\nodejs & npm install npm@latest & popd`
+5. Install `gulp` globally: `npm install -g gulp@~3.8.7` (must be elevated on Windows)
+6. Install *node-js* dependencies with `npm install`
+7. run `gulp compile-all`
+8. In a separate process, start the *MongoDB* server with `mongod --dbpath mongodatabase`, and leave it running
+9. Preload the *MongoDB* by running `mongorestore`
+10. Start the server with `node app.js` or `npm start`
+11. _(optional):_ To set up a worker (needed for running analysis), install or compile the *metamorphosys-desktop* tools, and then follow the README.md at `/node_modules/webgme/src/middleware/executor/worker`.
+12. Open the example project at http://localhost:8855/#/editor/Template_Module_1x2
 
 (To access the original webgme interface, go to http://localhost:8855/extlib/node_modules/webgme/src/client/ )
 
