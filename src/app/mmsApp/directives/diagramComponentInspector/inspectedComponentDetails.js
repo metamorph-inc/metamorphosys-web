@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('mms.diagramComponentInspector.inspectedComponentDetails', [
+        'mms.componentDetails.react'
     ])
     .directive('inspectedComponentDetails', [
         function() {
