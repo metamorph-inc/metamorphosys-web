@@ -39,7 +39,7 @@ function initialize(middlewareOpts) {
             status: {type: String, match: /Running|Failed|Succeeded/, default: 'Running'},
             startTime: String, // or Date ???
             endTime: String, // or Date ???
-            resultUrl: String,
+            resultHash: String,
             config: Object
         }),
 

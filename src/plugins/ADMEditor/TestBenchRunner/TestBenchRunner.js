@@ -143,7 +143,7 @@ define(['plugin/PluginConfig',
                     testBenchResultFields.executionJobHash = self.executionJobHash;
                 }
                 if (self.executionJobResultHash) {
-                    testBenchResultFields.resultUrl = '/rest/blob/download/' + self.executionJobResultHash;
+                    testBenchResultFields.resultHash = self.executionJobResultHash;
                 }
                 superagent.post(url)
                     .send(testBenchResultFields)

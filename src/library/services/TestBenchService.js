@@ -142,6 +142,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                 return {
                                     id: testBench.getId(),
                                     name: testBench.getAttribute('name'),
+                                    // TODO: what directive should be used for visualizing the results?
                                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     config: {
                                         properties: properties.data.Property || []
@@ -324,7 +325,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                 startTime: (new Date()).toISOString(),
                 endTime: null,
                 status: 'Running',
-                resultUrl: null
+                resultHash: null
             };
         config.pluginConfig.testBenchResultId = testBenchResult.id;
         this.getTestBenchById(testBenchId)
@@ -361,7 +362,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                 testBenchResult.endTime = result.finishTime;
                                 testBenchResult.status = result.success ? 'Succeeded' : 'Failed';
                                 if (artifactsByName.hasOwnProperty('all.zip')) {
-                                    testBenchResult.resultUrl = '/rest/blob/download/' + artifactsByName['all.zip'].hash;
+                                    testBenchResult.resultHash = artifactsByName['all.zip'].hash;
                                 }
 
                                 testBenches.forEach(function (testBench) {
