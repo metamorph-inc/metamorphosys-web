@@ -79,11 +79,11 @@ angular.module('mms.testBenchDrawerPanel', [
 
             if (e.data.lastResult.status === 'Succeeded') {
                 message = e.data.name + ' completed';
-                delay = 0;
+                delay = 5000;
                 success = true;
             } else {
                 message = e.data.name + ' errored';
-                delay = 0;
+                delay = 5000;
             }
 
             $mdToast.show({
