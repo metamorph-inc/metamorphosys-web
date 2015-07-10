@@ -60,6 +60,38 @@ describe('AcmInfo', function () {
                             'value': 'ADXL345BCCZ'
                         }
                     },
+                    'connectors': [
+                        {
+                            'description': '',
+                            'name': 'I2C',
+                            'type': ''
+                        },
+                        {
+                            'description': '',
+                            'name': 'VS_3V3',
+                            'type': ''
+                        },
+                        {
+                            'description': '',
+                            'name': 'GND',
+                            'type': ''
+                        },
+                        {
+                            'description': '',
+                            'name': 'INT1',
+                            'type': ''
+                        },
+                        {
+                            'description': '',
+                            'name': 'INT2',
+                            'type': ''
+                        },
+                        {
+                            'description': '',
+                            'name': 'VDD_IO_1V8',
+                            'type': ''
+                        }
+                    ],
                     'name': '3_Axis_Accelerometer',
                     'classification': 'sensors'
                 });
@@ -71,6 +103,7 @@ describe('AcmInfo', function () {
         getAcmInfo('9127635cc180eefbb253279e2953dca07d14953a')
             .then(function (info) {
                 // console.log(JSON.stringify(info, null, 4));
+                delete info.connectors;
                 expect(info).to.deep.equal({
                     'properties': {
                         'octopart_mpn': {
@@ -93,6 +126,7 @@ describe('AcmInfo', function () {
                 var startOfIconUrl = 'data:image/png;base64,' + 'iVBORw0KGgoAAAANSUhEUgA';
                 expect(info.icon.substr(0, startOfIconUrl.length)).to.equal(startOfIconUrl);
                 delete info.icon;
+                delete info.connectors;
                 // console.log(JSON.stringify(info, null, 4));
                 expect(info).to.deep.equal({
                     'properties': {
@@ -117,6 +151,7 @@ describe('AcmInfo', function () {
                 var startOfDocumentation = '<h1>PART NAME</h1>\n<h2>BP103-3/4</h2>';
                 expect(info.documentation.substr(0, startOfDocumentation.length)).to.equal(startOfDocumentation);
                 delete info.documentation;
+                delete info.connectors;
                 expect(info).to.deep.equal(
                     {
                         'classification': 'optoelectronics.detectors.single_sensor_detectors.phototransistor',

@@ -199,7 +199,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         this.testBenchResultsPromise = this.getTestBenches()
             .then(function () {
                 // TODO memoize and poll
-                return $http.get('/rest/external/testbenches/results/?projectId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectName()) +
+                return $http.get('/rest/external/testbenches/results/?projectId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectId()) +
                     '&branchId=' + encodeURIComponent(dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName()));
             }).then(function (res) {
                 testBenchResults = res.data.results;
@@ -327,7 +327,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
             timestamp = (Math.floor(new Date().valueOf() / 100)).toString(16),
             testBenchResult = {
                 id: '0000000000'.substr(0, 10 - timestamp.length) + timestamp,
-                projectId: dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectName(),
+                projectId: dataStoreService.getDatabaseConnection(context.db).client.getActiveProjectId(),
                 branchId: dataStoreService.getDatabaseConnection(context.db).client.getActiveBranchName(),
                 commitHash: dataStoreService.getDatabaseConnection(context.db).client.getActiveCommitHash(),
                 testBenchId: testBenchId,
