@@ -89,6 +89,9 @@ function initialize(middlewareOpts) {
             }
 
             docs.forEach(function (doc) {
+                doc = doc.toObject();
+                doc.id = doc._id;
+                delete doc._id;
                 responseData.results.push(doc);
             });
 
@@ -108,6 +111,9 @@ function initialize(middlewareOpts) {
             }
 
             if (doc) {
+                doc = doc.toObject();
+                doc.id = doc._id;
+                delete doc._id;
                 res.json(doc);
             } else {
                 res.sendStatus(404);
