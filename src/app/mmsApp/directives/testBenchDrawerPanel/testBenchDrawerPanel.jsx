@@ -187,22 +187,26 @@ angular.module('mms.testBenchDrawerPanel', [
             testBenchResultsPromise = testBenchService.getTestBenchResults(),
 
             setListItems = function (testBenchResults) {
-                self.listData.items.splice(0, self.listData.items.length);
 
-                testBenchResults.forEach(testBenchResult => {
+                if (testBenchResults) {
+                    self.listData.items.splice(0, self.listData.items.length);
 
-                    var listItem = {
-                        id: testBenchResult.id,
-                        title: testBenchResult.testBench && testBenchResult.testBench.name,
-                        headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html',
-                        result: testBenchResult
-                    };
+                    testBenchResults.forEach(testBenchResult => {
 
-                    self.listData.items.push(listItem);
+                        var listItem = {
+                            id: testBenchResult.id,
+                            title: testBenchResult.testBench && testBenchResult.testBench.name,
+                            headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html',
+                            result: testBenchResult
+                        };
 
-                });
+                        self.listData.items.push(listItem);
 
-                self.listData.items.reverse();
+                    });
+
+                    self.listData.items.reverse();
+
+                }
             };
 
         this.listData = {
