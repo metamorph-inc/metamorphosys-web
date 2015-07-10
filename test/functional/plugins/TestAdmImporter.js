@@ -50,7 +50,10 @@ describe('TestAdmImporter', function () {
             gmeConfig: gmeConfig
         };
 
-        testConf.storage.deleteProject({projectName: projectName})
+        testConf.gmeAuth.authorizeByUserId('guest', 'guest+' + projectName, 'set', {read: true, write: true, delete: true})
+            .then(function() {
+                return testConf.storage.deleteProject({projectId: 'guest+' + projectName, userName: 'guest'});
+            })
             .then(function () {
                 return testFixture.importProject(testConf.storage, importParam);
             })
