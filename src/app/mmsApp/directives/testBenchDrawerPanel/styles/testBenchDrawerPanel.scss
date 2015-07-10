@@ -1,5 +1,15 @@
 @import '../../../styles/colors';
 
+md-toast.test-bench-completed {
+    .test-bench-result-opener {
+        margin-left: 1em;
+
+        &:hover {
+            background: rgb(21, 140, 49) !important;
+        }
+    }
+}
+
 .test-bench-drawer-panel {
 
     .above-list-headers {
@@ -129,6 +139,6 @@
         padding-left: 200px;
         max-height: 35px;
         overflow: hidden;
-        text-overflow: ellipsis;        
+        text-overflow: ellipsis;
     }
 }

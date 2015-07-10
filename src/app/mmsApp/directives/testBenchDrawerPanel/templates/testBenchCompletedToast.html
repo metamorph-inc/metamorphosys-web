@@ -1,4 +1,5 @@
 <md-toast
+    class="test-bench-completed"
     ng-class="{
         'failure': !success,
         'success': success
@@ -14,10 +15,10 @@
         ng-click="closeToast()">
         Close
     </md-button>
-    <md-button
-        class="md-raised toast-bttn"
+    <test-bench-result-opener
         ng-if="success"
-        ng-click="showResult($event)">
-        Show it
-    </md-button>
+        result="result"
+        class="toast-bttn"
+    >
+    <test-bench-result-opener>
 </md-toast>

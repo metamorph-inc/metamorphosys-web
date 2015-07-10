@@ -7,7 +7,6 @@ angular.module('mms.testBenchDirectives')
         'Cost Estimation',
         {
             config: 'cost-estimation-config',
-            result: 'cost-estimation-result',
             resultCompact: 'cost-estimation-result-compact'
         }
     );
@@ -72,7 +71,19 @@ angular.module('mms.testBenchDirectives')
         scope: {
             result: '='
         },
-        templateUrl: '/mmsApp/templates/costEstimationResultCompact.html'
+        templateUrl: '/mmsApp/templates/costEstimationResultCompact.html',
+        require: ['costEstimationResultCompact', '^testBenchResultOpener'],
+        link: function(s, element, attributes, controllers) {
+
+            var openerController = controllers[1];
+
+            function showResults() {
+                console.log('Show results from here');
+            }
+
+            openerController.resultsOpener = showResults;
+
+        }
     };
 
 });

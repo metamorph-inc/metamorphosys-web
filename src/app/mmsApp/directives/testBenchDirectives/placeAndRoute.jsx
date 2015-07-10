@@ -7,7 +7,6 @@ angular.module('mms.testBenchDirectives')
         'Place and Route',
         {
             config: 'place-and-route-config',
-            result: 'place-and-route-result',
             resultCompact: 'place-and-route-result-compact'
         }
     );
@@ -72,7 +71,19 @@ angular.module('mms.testBenchDirectives')
         scope: {
             result: '='
         },
-        templateUrl: '/mmsApp/templates/placeAndRouteResultCompact.html'
+        templateUrl: '/mmsApp/templates/placeAndRouteResultCompact.html',
+        require: ['placeAndRouteResultCompact', '^testBenchResultOpener'],
+        link: function(s, element, attributes, controllers) {
+
+            var openerController = controllers[1];
+
+            function showResults() {
+                console.log('Show results from here');
+            }
+
+            openerController.resultsOpener = showResults;
+
+        }
     };
 
 });

@@ -7,8 +7,6 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
 .directive('testBenchResultAndTime', function($compile) {
 
-    var compiledDirectives = {};
-
     function TestBenchResultAndTimeController() {
 
     }
@@ -28,7 +26,6 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
         link: function(scope, element, attr, controllers) {
 
             var ctrl = controllers[0],
-                resultCompactDirective,
                 compiledDirective,
                 resultCompactElement;
 
@@ -38,40 +35,33 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
             function render() {
 
-                resultCompactDirective =
-                    ctrl.result &&
-                    ctrl.result.testBench.directives &&
-                    ctrl.result.testBench.directives.resultCompact;
+                if (ctrl.result && ctrl.result.status !== 'Running') {
 
-                if (resultCompactDirective) {
+                    compiledDirective = $compile(
+                        angular.element(
+                            '<test-bench-result-opener result="ctrl.result">' +
+                            '</test-bench-result-opener>'
+                        )
+                    );
 
-                        compiledDirective = compiledDirectives[resultCompactDirective];
+                    compiledDirective(scope, function(clonedElement) {
 
-                        if (!compiledDirective) {
+                        resultCompactElement = clonedElement[0];
 
-                            compiledDirective = $compile(
-                                angular.element(
-                                    '<' + resultCompactDirective + ' result="result">' +
-                                    '</' + resultCompactDirective + '>'
-                                )
-                            );
+                        React.render(<TestBenchResultAndTime
+                            result={ctrl.result}
+                            resultCompactElement={resultCompactElement}
+                            />, element[0]);
 
-                            compiledDirectives[resultCompactDirective] = compiledDirective;
+                    });
 
-                        }
+                } else {
 
-                        scope.result = ctrl.result;
-
-                        compiledDirective(scope, function(clonedElement) {
-                            resultCompactElement = clonedElement[0];
-                        });
+                    React.render(<TestBenchResultAndTime
+                        result={ctrl.result}
+                        />, element[0]);
 
                 }
-
-                React.render(<TestBenchResultAndTime
-                    result={ctrl.result}
-                    resultCompactElement={resultCompactElement}
-                    />, element[0]);
             }
 
             scope.$watch(function() {
@@ -122,9 +112,10 @@ class TestBenchResultAndTime extends React.Component {
 
             var node = React.findDOMNode(this.refs.status);
 
-            node.innerHTML = '';
-            node.appendChild(this.props.resultCompactElement);
-
+            if (node) {
+                node.innerHTML = '';
+                node.appendChild(this.props.resultCompactElement);
+            }
         }
     }
 

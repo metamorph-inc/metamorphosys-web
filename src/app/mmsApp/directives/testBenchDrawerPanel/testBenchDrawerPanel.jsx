@@ -8,6 +8,8 @@ angular.module('mms.testBenchDirectives', []);
 require('../testBenchDirectives/costEstimation.jsx');
 require('../testBenchDirectives/placeAndRoute.jsx');
 
+var compiledDirectives = {};
+
 function TestBenchStartedToastController($scope, $mdToast, message) {
 
     $scope.progressMessage = message;
@@ -97,7 +99,7 @@ angular.module('mms.testBenchDrawerPanel', [
                             console.warn('Show results should be hooked up here', $event);
 
                         },
-                        success: true
+                        success: success
                     },
                     hideDelay: delay
                 }
@@ -136,11 +138,7 @@ angular.module('mms.testBenchDrawerPanel', [
                     details: true,
                     runTest: function (item) {
                         testBenchService.runTestBench(item.id);
-                    },
-                    openLastResult: function(item) {
-                        console.log('Last result should be opened', item);
                     }
-
                 };
 
                 console.log(testBench);
@@ -166,25 +164,6 @@ angular.module('mms.testBenchDrawerPanel', [
             }
 
         };
-
-        // function onResultsChanged(event) {
-        //
-        //     if (event.data && event.data.newResult) {
-        //
-        //         var testBench = event.data.newResult.testBench;
-        //
-        //         console.log('Testbecnhs last result changed for test bench', testBench);
-        //
-        //     }
-        //
-        // }
-        //
-        // testBenchService.addEventListener('resultsChanged', onResultsChanged);
-        //
-        // $scope.$on('$destroy', function() {
-        //     testBenchService.removeEventListener('resultsChanged', onResultsChanged);
-        // });
-
 
     }
 
@@ -265,5 +244,82 @@ angular.module('mms.testBenchDrawerPanel', [
         replace: true,
         transclude: false,
         templateUrl: '/mmsApp/templates/testBenchDrawerPanelResultList.html'
+    };
+})
+.directive('testBenchResultOpener', function($compile) {
+
+    function CompactResultOpenerController() {
+
+        var self = this;
+
+        this.resultsOpener = null;
+
+        this.openResults = function() {
+
+            if (self.resultsOpener) {
+                self.resultsOpener();
+            }
+
+        };
+
+    }
+
+    return {
+        restrict: 'E',
+        bindToController: true,
+        controller: CompactResultOpenerController,
+        controllerAs: 'ctrl',
+        replace: true,
+        transclude: false,
+        templateUrl: '/mmsApp/templates/testBenchResultOpener.html',
+        scope: {
+            result: '='
+        },
+        require: ['testBenchResultOpener'],
+        link: function(scope, element, attr, controllers) {
+
+            var ctrl = controllers[0],
+                resultCompactDirective,
+                compiledDirective,
+                resultCompactElement;
+
+            resultCompactDirective =
+                ctrl.result &&
+                ctrl.result.testBench.directives &&
+                ctrl.result.testBench.directives.resultCompact;
+
+            if (resultCompactDirective) {
+
+                    compiledDirective = compiledDirectives[resultCompactDirective];
+
+                    if (!compiledDirective) {
+
+                        compiledDirective = $compile(
+                            angular.element(
+                                '<' + resultCompactDirective + ' result="result">' +
+                                '</' + resultCompactDirective + '>'
+                            )
+                        );
+
+                        compiledDirectives[resultCompactDirective] = compiledDirective;
+
+                    }
+
+                    scope.result = ctrl.result;
+
+                    compiledDirective(scope, function(clonedElement) {
+
+                        resultCompactElement = clonedElement[0];
+
+                        var placeHolderEl = element[0].querySelector('.compact-results');
+
+                        placeHolderEl.innerHTML = '';
+
+                        placeHolderEl.appendChild(resultCompactElement);
+
+                    });
+
+            }
+        }
     };
 });
