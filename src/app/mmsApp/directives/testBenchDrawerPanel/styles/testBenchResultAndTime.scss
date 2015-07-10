@@ -59,3 +59,25 @@
         opacity: 1;
     }
 }
+
+.test-bench-result-and-time-wrapper.horizontal {
+    width: 250px;
+
+    .date-and-time {
+        display: inline-block;
+        width: 100px;
+    }
+
+    .start-end-time-separator {
+        display: inline-block;
+        width: 20px;
+
+        i {
+            transform: rotate(-90deg);
+        }
+    }
+
+    .status {
+        margin-top: 0;
+    }
+}

@@ -185,21 +185,24 @@ angular.module('mms.testBenchDrawerPanel', [
 
         var self = this,
             testBenchResultsPromise = testBenchService.getTestBenchResults(),
+
             setListItems = function (testBenchResults) {
                 self.listData.items.splice(0, self.listData.items.length);
+
                 testBenchResults.forEach(testBenchResult => {
 
                     var listItem = {
                         id: testBenchResult.id,
                         title: testBenchResult.testBench && testBenchResult.testBench.name,
-                        headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html'
+                        headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html',
+                        result: testBenchResult
                     };
 
                     self.listData.items.push(listItem);
 
-                    console.log(testBenchResult);
-
                 });
+
+                self.listData.items.reverse();
             };
 
         this.listData = {

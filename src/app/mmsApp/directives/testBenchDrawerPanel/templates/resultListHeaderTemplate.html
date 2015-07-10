@@ -1,8 +1,9 @@
 <div class="result-list-header list-header">
     <h4><span class="item-title">{{ item.title }}</span></h4>
     <test-bench-result-and-time
-        ng-if="item.lastResult"
-        result="item.lastResult"
+        class="horizontal navigable"
+        ng-if="item.result"
+        result="item.result"
         navigable
         ></test-bench-result-and-time>
 </div>
