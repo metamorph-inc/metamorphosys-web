@@ -154,7 +154,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                     // TODO: what directive should be used for visualizing the results?
                                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                     config: {
-                                        properties: properties.data.Property || []
+                                        properties: properties.data.Property || [],
+                                        save: properties.update.bind(properties)
                                     },
                                     results: [],
                                     lastResult: null,
@@ -224,20 +225,6 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
             });
         return this.testBenchResultsPromise;
     };
-
-    this.setTestBenchConfig = function (id, config) {
-
-        testBenches.map(function (testBench) {
-            if (id) {
-                // test bench result only for the requested test bench
-                if (id === testBench.id) {
-                    testBench.config = config;
-                }
-            }
-        });
-
-    };
-
 
     this.editTestBenchFn = function (data) {
         var modalInstance = data.modal.open({
@@ -360,6 +347,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
                     testBenchResult.testBench = testBench;
                     testBenchResult.config = angular.copy(testBench.config);
+                    delete testBenchResult.config.save;
                     addResult(testBenchResult);
                     var testBenchResultWithoutTestBench = angular.copy(testBenchResult);
                     delete testBenchResultWithoutTestBench.testBench;

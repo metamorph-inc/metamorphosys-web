@@ -33,10 +33,12 @@ angular.module('cyphy.services')
                     });
             };
             GmeMapping.prototype.destroy = function GmeMappingDestroy() {
+                // TODO GmeMapping.prototype.destroy: unregister watchers, unload nodes
                 // TODO does this work
                 nodeService.cleanUpRegion(parentContext.db, this.regionId);
             };
             GmeMapping.prototype.update = function GmeMappingUpdate() {
+                // TODO: start tx
                 var self = this,
                     setNodeAttributes = function (node, data) {
                         var attrs = (self.map[node.getMetaTypeName(self.meta)] || {}).attributes;
@@ -59,7 +61,7 @@ angular.module('cyphy.services')
                     setNodeAttributes(node, data);
                 }
                 (function addNewGmeNodes() {
-                    var q = [self.data, undefined],
+                    var q = [[self.data, undefined]],
                         getEnqueueFn = function (kind) {
                             return function (childData) {
                                 q.push([childData, kind]);
@@ -82,7 +84,6 @@ angular.module('cyphy.services')
                     }
                 })();
             };
-            // TODO GmeMapping.prototype.destroy: unregister watchers, unload nodes
             GmeMapping.prototype._onUnload = function GmeMappingOnUnload(id, kind) {
                 var self = this;
                 if (id === self.rootId) {
@@ -122,13 +123,14 @@ angular.module('cyphy.services')
                     var kind = self.nodes[self.rootId + parentsId].getMetaTypeName(self.meta);
                     data[kind] = data[kind] || [];
                     var childDatas = data[kind].filter(function (child) {
-                        return child._id === parentId;
+                        return child._id === self.rootId + '/' + parentId;
                     });
                     if (childDatas.length === 0) {
                         if (create) {
                             childDatas = [{}];
                             data[kind].push(childDatas[0]);
                         } else {
+                            data = undefined;
                             return undefined;
                         }
                     }
