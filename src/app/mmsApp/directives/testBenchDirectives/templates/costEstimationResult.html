@@ -1,3 +1,35 @@
-<div class="cost-estimation-result">
-Cost estimation results
-</div>
+<md-dialog
+    class="testbench-result-dialog cost-estimation-result">
+    <md-content>
+        <div class="result-container">
+            <div layout="column" flex="100">
+                <div class="config-properties">
+                    <h3>Configuration:</h3>
+                    <ul>
+                        <li ng-repeat="prop in result.config.properties">
+                            <label>{{prop.label}}:</label>{{prop.value}}
+                        </li>
+                    </ul>
+                </div>
+                <div class="result-details-summary">
+                    <label>Per design parts cost:</label>{{detailedCostEstimation.per_design_parts_cost}}
+                </div>
+            </div>
+        </div>
+    </md-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <ul class="testbench-attachments-links">
+            <li>
+                <md-button class="md-raised md-primary"
+                            target="_blank"
+                           ng-href="{{jsonUrl}}"
+                    ><i class="fa fa-cloud-download"></i> Detailed estimation</md-button>
+            </li>
+        </ul>
+
+        <md-button ng-click="close()" class="md-primary toast-bttn">
+            Close
+        </md-button>
+    </div>
+</md-dialog>

@@ -1,3 +1,5 @@
+/* globals ga*/
+
 'use strict';
 
 angular.module('mms.testBenchDirectives')
@@ -34,28 +36,7 @@ angular.module('mms.testBenchDirectives')
 
 })
 
-.directive('costEstimationResult', function() {
-
-    function TestBenchResultController() {
-
-    }
-
-    return {
-        restrict: 'E',
-        controller: TestBenchResultController,
-        controllerAs: 'ctrl',
-        bindToController: true,
-        replace: true,
-        transclude: false,
-        scope: {
-            result: '='
-        },
-        templateUrl: '/mmsApp/templates/costEstimationResult.html'
-    };
-
-})
-
-.directive('costEstimationResultCompact', function() {
+.directive('costEstimationResultCompact', function($mdDialog, $http) {
 
     function TestBenchResultCompactController() {
 
@@ -75,10 +56,46 @@ angular.module('mms.testBenchDirectives')
         require: ['costEstimationResultCompact', '^testBenchResultOpener'],
         link: function(s, element, attributes, controllers) {
 
-            var openerController = controllers[1];
+            var ctrl = controllers[0],
+                openerController = controllers[1],
+                jsonUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/CostEstimationResults.json';
 
             function showResults() {
-                console.log('Show results from here');
+
+                ga('send', 'event', 'testbench', 'result', ctrl.result.id);
+
+                function ShowResultsDialogController($scope, result, detailedCostEstimation) {
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    };
+                    $scope.close = function () {
+                        $mdDialog.hide();
+                    };
+
+                    $scope.result = result;
+                    $scope.detailedCostEstimation = detailedCostEstimation;
+                    $scope.jsonUrl = jsonUrl;
+                }
+
+                $http.get(jsonUrl).then(function(detailedCostEstimationJSON) {
+
+                    $mdDialog.show({
+                        controller: ShowResultsDialogController,
+                        bindToController: true,
+                        controllerAs: 'ctrl',
+                        templateUrl: '/mmsApp/templates/costEstimationResult.html',
+                        locals: {
+                            result: ctrl.result,
+                            jsonUrl: jsonUrl,
+                            detailedCostEstimation: detailedCostEstimationJSON.data
+                        }
+                    })
+                    .then(function () {
+                    });
+
+                });
+
             }
 
             openerController.resultsOpener = showResults;

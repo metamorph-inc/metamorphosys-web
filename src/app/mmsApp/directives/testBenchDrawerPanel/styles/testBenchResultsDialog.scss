@@ -1,0 +1,30 @@
+.testbench-result-dialog {
+    label {
+        margin-right: 1em;
+    }
+
+    .result-details-summary {
+
+        margin-top: 1em;
+        border-top: 2px dotted #ddd;
+        padding-left: 1em;
+        padding-top: 1ex;
+
+    }
+
+    .config-properties {
+        font-size: 90%;
+        margin-bottom: 1em;
+
+        h3 {
+            margin-top: 0;
+        }
+    }
+}
+
+.testbench-result-dialog.place-and-route-result {
+    .config-properties {
+
+    }
+
+}
