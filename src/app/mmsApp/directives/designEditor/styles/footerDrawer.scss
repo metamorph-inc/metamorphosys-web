@@ -138,3 +138,16 @@ $header-height: 38px;
     }
 
 }
+
+
+.footer-drawer.Inspector,
+.footer-drawer.Components,
+.footer-drawer.Subcircuits {
+
+    padding-top: 40px;
+
+    .drawer-content {
+        padding-top: 0;
+        position: relative;
+    }
+}

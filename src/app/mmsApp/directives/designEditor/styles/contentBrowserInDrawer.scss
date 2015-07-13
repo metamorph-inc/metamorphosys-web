@@ -448,15 +448,3 @@ $hover-color: rgba(158, 158, 158, 0.1);
 .subcircuit-details-grid .connectors-description .connector-description.focused {
     background-color: rgba(200, 200, 255, 0.22);
 }
-
-
-.footer-drawer.Components,
-.footer-drawer.Subcircuits {
-
-    padding-top: 40px;
-
-    .drawer-content {
-        padding-top: 0;
-        position: relative;
-    }
-}

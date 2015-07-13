@@ -10,7 +10,7 @@
         <!-- <testbench-actions></testbench-actions> -->
     </div>
     <footer-drawer>
-        <drawer-panel name="Inspector" icon-class="fa fa-search inspector-icon" height="200">
+        <drawer-panel name="Inspector" active icon-class="fa fa-search inspector-icon" height="200">
             <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
@@ -33,7 +33,7 @@
             no-download
             ></subcircuit-browser>
         </drawer-panel>
-        <drawer-panel name="Analyze" active height="300" class="test-bench-drawer-panel">
+        <drawer-panel name="Analyze" height="300" class="test-bench-drawer-panel">
             <drawer-sub-panel name="Tests" active>
                 <test-bench-drawer-panel-test-list></test-bench-drawer-panel-test-list>
             </drawer-sub-panel>
