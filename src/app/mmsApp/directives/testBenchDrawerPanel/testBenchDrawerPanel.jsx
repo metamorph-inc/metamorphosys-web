@@ -92,13 +92,6 @@ angular.module('mms.testBenchDrawerPanel', [
                     locals: {
                         result: e.data.lastResult,
                         message: message,
-                        showAction: function (id, $event) {
-                            //$scope.showResults(id, $event);
-                            //TODO: hook up showing the result here
-
-                            console.warn('Show results should be hooked up here', $event);
-
-                        },
                         success: success
                     },
                     hideDelay: delay
@@ -141,7 +134,7 @@ angular.module('mms.testBenchDrawerPanel', [
                     }
                 };
 
-                console.log(testBench);
+                //console.log(testBench);
 
                 self.listData.items.push(listItem);
 
@@ -156,9 +149,6 @@ angular.module('mms.testBenchDrawerPanel', [
             showDetailsLabel: 'Configure',
             hideDetailsLabel: 'Configure',
 
-            itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
-            },
             detailsRenderer: function (item) {
                 item.details = 'My details are here now!';
             }
@@ -231,9 +221,6 @@ angular.module('mms.testBenchDrawerPanel', [
             secondaryItemMenu: false,
             detailsCollapsible: true,
 
-            itemClick: function (event, item) {
-                console.log('Clicked: ' + item);
-            },
             detailsRenderer: function (item) {
                 item.details = 'My details are here now!';
             }

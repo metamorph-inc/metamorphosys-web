@@ -6,7 +6,7 @@ angular.module('mms.designEditor.footerDrawer', [
         'ngCookies'
     ])
     .directive('footerDrawer',
-        function(projectHandling, mmsUtils, $cookies, $injector) {
+        function(projectHandling, mmsUtils, $cookies, $injector, $timeout) {
 
             function DrawerController() {
 
@@ -284,31 +284,36 @@ angular.module('mms.designEditor.footerDrawer', [
 
             DrawerController.prototype.activatePanel = function(panel) {
 
+                var self = this;
+
                 if (panel) {
 
-                    if (this._activePanel && this._activePanel !== panel) {
-                        this._activePanel.active = false;
-                    }
+                    $timeout(function(){
 
-                    panel.active = true;
-                    this._activePanel = panel;
-
-                    this._userPreferences = this._userPreferences || {};
-
-                    if (this._userPreferences.panels && this._userPreferences.panels[panel.name]) {
-
-                        var height = this._userPreferences.panels[panel.name].height;
-
-                        if (!isNaN(height)) {
-                            panel.height = height;
+                        if (self._activePanel && self._activePanel !== panel) {
+                            self._activePanel.active = false;
                         }
 
-                    }
+                        panel.active = true;
+                        self._activePanel = panel;
 
-                    if (this._expanded) {
-                        this.setHeight(panel.height);
-                    }
+                        self._userPreferences = self._userPreferences || {};
 
+                        if (self._userPreferences.panels && self._userPreferences.panels[panel.name]) {
+
+                            var height = self._userPreferences.panels[panel.name].height;
+
+                            if (!isNaN(height)) {
+                                panel.height = height;
+                            }
+
+                        }
+
+                        if (self._expanded) {
+                            self.setHeight(panel.height);
+                        }
+
+                    });
 
                 }
 
