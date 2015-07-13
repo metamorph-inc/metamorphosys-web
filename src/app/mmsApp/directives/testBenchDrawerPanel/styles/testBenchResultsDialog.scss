@@ -21,4 +21,48 @@
         margin-bottom: 1em;
     }
 
+    width: 670px;
+
+    .testbench-visual-container {
+        display: inline-block;
+        position: relative;
+        width: 628px;
+        height: 300px;
+    }
+
+    .testbench-visual {
+        max-height: 300px;
+        max-width: 622px;
+    }
+
+    .testbench-attachments-links {
+
+        margin-top: 9px;
+
+        list-style-type: none;
+        padding-right: 0;
+
+        li {
+            display: inline-block;
+
+            a, a:hover {
+                text-decoration: none;
+            }
+        }
+    }
+
+    .result-header {
+        position: relative;
+    }
+}
+
+
+.toast-bttn {
+    &:hover {
+        background-color: rgb(144, 144, 144) !important;
+    }
+}
+
+.toast-box {
+    flex: 1 0 auto;
 }

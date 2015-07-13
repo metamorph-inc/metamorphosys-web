@@ -20,7 +20,7 @@ function TestBenchStartedToastController($scope, $mdToast, message) {
 
 }
 
-function TestBenchCompletedToastController($scope, $mdToast, message, result, success, showAction) {
+function TestBenchCompletedToastController($scope, $mdToast, message, result, success) {
 
     $scope.result = result;
 
@@ -31,14 +31,6 @@ function TestBenchCompletedToastController($scope, $mdToast, message, result, su
     $scope.closeToast = function () {
         $mdToast.hide();
     };
-
-    $scope.showResult = function ($event) {
-
-        $scope.closeToast();
-        showAction(result.id, $event);
-
-    };
-
 
 }
 
