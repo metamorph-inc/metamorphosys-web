@@ -29,6 +29,7 @@ define([
         this.meta = MetaTypes;
         this.acmCounter = 0;
         this.designID2Node = {};
+        this.avmIDToComponent = {};
         this.componentID2Acm = {};
         this.componentID2PrintInfo = {};
         // printInfoDataType = {
@@ -763,15 +764,21 @@ define([
                 }));
             }
         } else if (pluginConfig.componentServerUrl) {
-            var config = {
-                AcmUrl: pluginConfig.componentServerUrl + '/getcomponent/download/' + encodeURIComponent(avmID),
-                DeleteExisting: false
-            };
-
-            component = self.runPlugin(AcmImporter, config, {activeNode: parentNode})
-                .then(function (result) {
-                    return result.id2ComponentMap[Object.keys(result.id2ComponentMap)[0]];
+            if (self.avmIDToComponent.hasOwnProperty(avmID)) {
+                component = self.avmIDToComponent[avmID].then(function (node) {
+                    return self.core.copyNode(node, parentNode);
                 });
+            } else {
+                var config = {
+                    AcmUrl: pluginConfig.componentServerUrl + '/getcomponent/download/' + encodeURIComponent(avmID),
+                    DeleteExisting: false
+                };
+
+                self.avmIDToComponent[avmID] = component = self.runPlugin(AcmImporter, config, {activeNode: parentNode})
+                    .then(function (result) {
+                        return result.id2ComponentMap[Object.keys(result.id2ComponentMap)[0]];
+                    });
+            }
         } else {
             component = Q.reject('Could not find component with ID ' + componentData['@Name']);
         }

@@ -24,12 +24,7 @@ define(['plugin/PluginConfig',
         // Call base class' constructor.
         PluginBase.call(this);
         this.metaTypes = MetaTypes;
-        this.id2NodeMap = {};
-        this.valueFlowIdMap = {};
-        this.recursionCounter = 0;
-        this.id2ComponentMap = {};
         this.deleteExisting = false;
-        this.cleanImport = true;
 
         //this.propertyJson = {};
     };
