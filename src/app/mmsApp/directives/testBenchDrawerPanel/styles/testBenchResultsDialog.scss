@@ -1,6 +1,7 @@
 .testbench-result-dialog {
-    label {
-        margin-right: 1em;
+
+    h3 {
+        margin-top: 0;
     }
 
     .result-details-summary {
@@ -12,19 +13,12 @@
 
     }
 
-    .config-properties {
-        font-size: 90%;
-        margin-bottom: 1em;
-
-        h3 {
-            margin-top: 0;
-        }
+    label {
+        margin-right: 1em;
     }
-}
 
-.testbench-result-dialog.place-and-route-result {
-    .config-properties {
-
+    .test-bench-config-properties {
+        margin-bottom: 1em;
     }
 
 }

@@ -40,7 +40,7 @@ angular.module('mms.testBenchDrawerPanel.testBenchConfig', [
 
                     compiledDirective = $compile(
                         angular.element(
-                            '<' + configDirective + '>' +
+                            '<' + configDirective + ' test-bench="ctrl.testBench">' +
                             '</' + configDirective + '>'
                         )
                     );
@@ -72,5 +72,27 @@ angular.module('mms.testBenchDrawerPanel.testBenchConfig', [
             scope: true,
             template: '<div>Dummy thing. Ain\'t anything to config with me. Upgrade to get the real thing.</div>'
     };
+
+})
+
+.directive('testBenchConfigProperties', function() {
+
+        function TestBenchConfigPropertiesController() {
+
+        }
+
+        return {
+            restrict: 'E',
+            controller: TestBenchConfigPropertiesController,
+            controllerAs: 'ctrl',
+            bindToController: true,
+            replace: true,
+            transclude: false,
+            scope: {
+                config: '=',
+                readOnly: '='
+            },
+            templateUrl: '/mmsApp/templates/testBenchConfigProperties.html'
+        };
 
 });

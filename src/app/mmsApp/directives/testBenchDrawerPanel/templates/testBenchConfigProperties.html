@@ -1,0 +1,34 @@
+<div class="test-bench-properties-wrapper"
+    ng-class="{'editable': !ctrl.readOnly}">
+    <div
+    ng-if="::ctrl.config.properties.length"
+    class="test-bench-config-properties">
+        <form name="propertiesForm" ng-if="::!ctrl.readOnly">
+            <ul>
+                <li ng-repeat="prop in ctrl.config.properties">
+                    <label>{{::prop.label}}:</label>
+                    <input ng-model="prop.value"/>
+                </li>
+            </ul>
+            <div class="save-button-container">
+                <button
+                    ng-disabled="propertiesForm.$pristine"
+                    class="md-raised md-button save-button" ng-click="::ctrl.config.save(); propertiesForm.$setPristine();">
+                    Save
+                </button>
+            </div>
+        </form>
+        <div ng-if="ctrl.readOnly">
+            <ul>
+                <li ng-repeat="prop in ctrl.config.properties">
+                    <label>{{::prop.label}}:</label>
+                    <span>{{::prop.value}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div
+        ng-if="::!ctrl.config.properties.length">
+        No properties.
+    </div>
+</div>

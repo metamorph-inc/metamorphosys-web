@@ -3,13 +3,9 @@
     <md-content>
         <div class="result-container">
             <div layout="column" flex="100">
-                <div class="config-properties">
+                <div ng-if="result.config.properties.length">
                     <h3>Configuration:</h3>
-                    <ul>
-                        <li ng-repeat="prop in result.config.properties">
-                            <label>{{prop.label}}:</label>{{prop.value}}
-                        </li>
-                    </ul>
+                    <test-bench-config-properties config="::result.config" read-only="'true'"></test-bench-config-properties>
                 </div>
                 <div class="result-details-summary">
                     <label>Per design parts cost:</label>{{detailedCostEstimation.per_design_parts_cost}}

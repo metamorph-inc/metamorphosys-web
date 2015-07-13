@@ -1,13 +1,9 @@
 <md-dialog
     class="testbench-result-dialog place-and-route-result">
     <md-content>
-        <div class="config-properties" ng-if="result.config.properties.length">
+        <div ng-if="result.config.properties.length">
             <h3>Configuration:</h3>
-            <ul>
-                <li ng-repeat="prop in result.config.properties">
-                    <label>{{prop.label}}:</label>{{prop.value}}
-                </li>
-            </ul>
+            <test-bench-config-properties config="::result.config" read-only="'true'"></test-bench-config-properties>
         </div>
         <div class="result-container">
             <div layout="column" flex="100">
