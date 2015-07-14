@@ -2,17 +2,24 @@
 
 'use strict';
 
-var WireSegment = function(parameters, parentWire) {
+var WireSegment = function(parameters, parentWire, useOldId) {
 
-	this._id = Math.random().toString(36).substr(2, 7);
-    this._parameters = parameters;
+    this._parameters = angular.copy(parameters);
 	this._parentWire = parentWire;
+
+    if ( !useOldId ) {
+        this.setId(Math.random().toString(36).substr(2, 7));
+    }
 
 };
 
 WireSegment.prototype.getId = function() {
-    return this._id;
-}
+    return this._parameters._id;
+};
+
+WireSegment.prototype.setId = function(id) {
+    this._parameters._id = id;
+};
 
 WireSegment.prototype.translate = function(translation) {
 

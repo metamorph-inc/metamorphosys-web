@@ -203,6 +203,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.params
                 );
 
+                newSegmentParameters[0]._id = segmentParams._id;
+
                 wire.replaceSegmentsFromParametersArray(0, newSegmentParameters);
 
 
@@ -241,6 +243,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.type, 
                     router.params
                 );
+
+                newSegmentParameters[0]._id = segmentParams._id;
 
                 wire.replaceSegmentsFromParametersArray(segments.length - newSegmentParameters.length, newSegmentParameters);
 

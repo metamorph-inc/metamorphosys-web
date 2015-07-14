@@ -324,7 +324,12 @@ Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
     if (angular.isObject(wire)) {
 
-        wire.makeSegmentsFromParameters(newSegments);
+        if (this.state.selectedSegmentEndcornerIds.length > 0) {
+            wire.makeSegmentsFromParameters(newSegments, null, true);
+        }
+        else {
+            wire.makeSegmentsFromParameters(newSegments);
+        }
 
         this.afterWireChange([wire]);
 
