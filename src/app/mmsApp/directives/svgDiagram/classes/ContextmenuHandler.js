@@ -381,7 +381,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
         ga('send', 'event', 'diagram', 'contextmenu');
 
-        $event.stopPropagation();        
+        $event.stopPropagation();
 
         angular.forEach($scope.routerTypes, function(routerType) {
             var selected;
@@ -479,7 +479,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'glyphicon glyphicon-floppy-save',
                     action: function() {
 
-                        testBenchService.runTestBench(projectHandling.getWorkspaceContext(), projectHandling.getSelectedDesignId())
+                        testBenchService.exportDesign(projectHandling.getSelectedDesignId())
                             .then(function (resultData) {
 
                                 var hash;

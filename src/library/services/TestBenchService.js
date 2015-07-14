@@ -307,6 +307,44 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         return baseCyPhyService.setNodeAttributes(context, testBenchId, attrs);
     };
 
+    this.exportDesign = function (designId, configurationId) {
+        var context = projectHandling.getDesignContext();
+        context = {
+            db: context.db,
+            regionId: context.regionId + '_runtb'
+        };
+        var deferred = $q.defer(),
+            config = {
+                activeNode: designId,
+                runOnServer: true,
+                pluginConfig: {
+                    run: true,
+                    save: false,
+                    configurationPath: configurationId
+                }
+            };
+        //console.log(JSON.stringify(config));
+        pluginService.runPlugin(context, 'TestBenchRunner', config)
+            .then(function (result) {
+                var extendedResult = {
+                    success: result.success,
+                    messages: result.messages,
+                    unparsedResult: result
+                };
+                //console.log( 'Result', result );
+                pluginService.getPluginArtifacts(result.artifacts)
+                    .then(function (artifactsByName) {
+                        extendedResult.artifacts = artifactsByName;
+                        deferred.resolve(extendedResult);
+                    });
+            })
+            .catch(function (reason) {
+                deferred.reject('Something went terribly wrong, ' + reason);
+            });
+
+        return deferred.promise;
+    };
+
     this.runTestBench = function (testBenchId, configurationId) {
         var context = projectHandling.getDesignContext();
         context = {
