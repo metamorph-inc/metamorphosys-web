@@ -14,7 +14,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         watchers = {},
         testBenches = [],
         testBenchResults = [],
-        testBenchDirectives = {};
+        testBenchDirectives = {},
+        testBenchDescriptions = {};
 
     // TODO: add notifications: TestBench list updated, Result created, Result status changed.
 
@@ -89,6 +90,10 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         testBenchDirectives[testBenchName] = directives;
     };
 
+    this.registerTestBenchDescription = function(testBenchName, description) {
+        testBenchDescriptions[testBenchName] = description;
+    };
+
     this.getTestBenchById = function (id) {
         return this.getTestBenches()
             .then(function () {
@@ -152,7 +157,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                     id: testBench.getId(),
                                     name: name,
                                     // TODO: what directive should be used for visualizing the results?
-                                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                    description: testBenchDescriptions[name],
                                     config: {
                                         properties: properties.data.Property || [],
                                         save: properties.update.bind(properties)

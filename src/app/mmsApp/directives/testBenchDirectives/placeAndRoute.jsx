@@ -13,6 +13,11 @@ angular.module('mms.testBenchDirectives')
         }
     );
 
+    testBenchService.registerTestBenchDescription(
+        'Place and Route',
+        'This test bench is designed to build an EAGLE schematic and board file. It automatically places components according to layout constraints provided in the CyPhy model. It then uses EAGLE\'s routing engine to automatically route the signals on the board.'
+    );
+
 })
 
 .directive('placeAndRouteConfig', function() {

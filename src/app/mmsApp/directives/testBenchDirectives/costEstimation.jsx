@@ -13,6 +13,11 @@ angular.module('mms.testBenchDirectives')
         }
     );
 
+    testBenchService.registerTestBenchDescription(
+        'Cost Estimation',
+        'This test bench is designed to estimate the cost of parts for a given system design. It polls the Octopart database for up-to-date pricing for each part, looks for the best price break based on the quantity needed, and estimates a parts cost for the design. It also produces a bill-of-materials (BOM) spreadsheet for the design.'
+    );
+
 })
 
 .directive('costEstimationConfig', function() {
