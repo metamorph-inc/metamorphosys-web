@@ -424,7 +424,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
                                         self.dispatchEvent({
                                             type: 'testBenchCompleted',
-                                            data: testBench
+                                            data: testBenchResult
                                         });
                                     }
 

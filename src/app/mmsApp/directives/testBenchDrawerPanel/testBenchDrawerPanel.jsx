@@ -67,14 +67,16 @@ angular.module('mms.testBenchDrawerPanel', [
 
             var message,
                 delay,
-                success = false;
+                success = false,
+                testBench = e.data.testBench,
+                result = e.data;
 
-            if (e.data.lastResult.status === 'Succeeded') {
-                message = e.data.name + ' completed';
+            if (result.status === 'Succeeded') {
+                message = testBench.name + ' completed';
                 delay = 5000;
                 success = true;
             } else {
-                message = e.data.name + ' errored';
+                message = testBench.name + ' errored';
                 delay = 5000;
             }
 
@@ -82,7 +84,7 @@ angular.module('mms.testBenchDrawerPanel', [
                     controller: TestBenchCompletedToastController,
                     templateUrl: '/mmsApp/templates/testBenchCompletedToast.html',
                     locals: {
-                        result: e.data.lastResult,
+                        result: result,
                         message: message,
                         success: success
                     },
