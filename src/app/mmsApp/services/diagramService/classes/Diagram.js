@@ -324,7 +324,12 @@ Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
     if (angular.isObject(wire)) {
 
-        wire.makeSegmentsFromParameters(newSegments);
+        if (this.state.selectedSegmentEndcornerIds.length > 0) {
+            wire.makeSegmentsFromParameters(newSegments, null, true);
+        }
+        else {
+            wire.makeSegmentsFromParameters(newSegments);
+        }
 
         this.afterWireChange([wire]);
 
@@ -641,6 +646,42 @@ Diagram.prototype.deselectWire = function(wireId) {
         }
 
     }
+
+};
+
+Diagram.prototype.clearExtraWireSegmentCorners = function(wireCornerIdBeingMoved, silent) {
+
+    var self = this;
+
+    if (this.state.selectedSegmentEndcornerIds.length) {
+
+        this.state.selectedSegmentEndcornerIds.forEach(function(idPairStr) {
+
+            var idPair = idPairStr.split('_'),
+                wire = self.getWireById(idPair[0]),
+                segment;
+
+            if (idPair[1] !== wireCornerIdBeingMoved) {
+
+                if (wire) {
+                    segment = wire.getSegmentById(idPair[1]);
+
+                    if (segment) {
+                        segment.deselectEndCorner();
+                    }
+                }
+            }
+
+        });
+
+        if (silent !== true) {
+
+            this.afterSelectionChange();
+
+        }
+
+    }
+
 
 };
 

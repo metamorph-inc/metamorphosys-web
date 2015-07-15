@@ -21,6 +21,8 @@ angular.module('mms.designVisualization.operations.moveWire', [])
             this.init = function(aDiagram, possibleDragTargetDescriptor) {
                 diagram = aDiagram;
                 dragTargetsDescriptor = possibleDragTargetDescriptor;
+
+                diagram.clearExtraWireSegmentCorners(dragTargetsDescriptor.primaryTarget.segment._parameters._id, true);
             };
 
             this.set = function(offset) {
@@ -230,7 +232,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
                     });
 
 
-                    diagram.afterWireChange(changedWiresById); {}
+                    diagram.afterWireChange(changedWiresById);
                 }
 
 
@@ -243,7 +245,7 @@ angular.module('mms.designVisualization.operations.moveWire', [])
 
                     angular.forEach(dragTargetsDescriptor.targets, function(target) {
 
-                        target.wire.makeSegmentsFromParameters(target.originalSegmentsParameters);
+                        target.wire.makeSegmentsFromParameters(target.originalSegmentsParameters, null, true);
 
                     });
 

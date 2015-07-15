@@ -39,7 +39,7 @@ Wire.prototype.translateSegments = function(translation) {
         l,
         newSegments = [];
 
-    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters(), null, true);
 
     if (Array.isArray(this._segments)) {
 
@@ -60,7 +60,7 @@ Wire.prototype.translateSegmentEndCorner = function(index, translation) {
 
     if (index > -1 && Array.isArray(this._segments)) {
 
-        this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+        this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters(), null, true);
 
         this._segments[index].translateEnd2(translation);
         this._segments[Number(index) + 1].translateEnd1(translation);        
@@ -98,7 +98,7 @@ Wire.prototype.getCopyOfSegmentsParameters = function(stripEndcornerSelected) {
 
 };
 
-Wire.prototype.makeSegmentsFromParameters = function(parametersArray, selectedSegments) {
+Wire.prototype.makeSegmentsFromParameters = function(parametersArray, selectedSegments, useOldId) {
 
     var self = this;
 
@@ -108,7 +108,7 @@ Wire.prototype.makeSegmentsFromParameters = function(parametersArray, selectedSe
 
         this._segments = parametersArray.map(function(parameters) {
 
-            return new WireSegment(parameters, self);
+            return new WireSegment(parameters, self, useOldId);
 
         });
 
@@ -208,27 +208,16 @@ Wire.prototype.replaceSegments = function(startPosition, setOfSegments) {
 
 };
 
-Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, parametersArray) {
+Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, parametersArray, useOldId) {
 
     var i,
         l = this._segments.length;
 
     for (i = 0; i < parametersArray.length; i++) {
 
-        this._segments[Math.min(l, startPosition + i)] = new WireSegment(parametersArray[i], this);
+        var segment = new WireSegment(parametersArray[i], this, useOldId);
 
-    }
-
-};
-
-Wire.prototype.replaceSegmentsFromParametersArrayById = function(startPosition, parametersArray) {
-
-    var i,
-        l = this._segments.length;
-
-    for (i = 0; i < parametersArray.length; i++) {
-
-        this._segments[Math.min(l, startPosition + i)] = new WireSegment(parametersArray[i], this);
+        this._segments[Math.min(l, startPosition + i)] = segment;
 
     }
 
@@ -236,7 +225,9 @@ Wire.prototype.replaceSegmentsFromParametersArrayById = function(startPosition, 
 
 Wire.prototype.replaceSegmentFromProperties = function(atPosition, properties) {
 
-    this._segments[atPosition] = new WireSegment(properties, this);
+    var segment = new WireSegment(properties, this);
+
+    this._segments[atPosition] = segment;
 
 };
 
@@ -250,7 +241,7 @@ Wire.prototype.deleteSegmentById = function(id) {
 
     var found = false,
         idx = this._segments.map( function(x) {
-            return x._id;
+            return x._parameters._id;
         }).indexOf(id);
 
     if ( idx > -1 ) {
@@ -265,7 +256,7 @@ Wire.prototype.deleteSegmentById = function(id) {
 Wire.prototype.getSegmentById = function(id) {
 
     var idx = this._segments.map( function(x) {
-                return x._id;
+                return x._parameters._id;
           }).indexOf(id);
 
     return this._segments[idx];
@@ -355,7 +346,7 @@ Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {
     var nextParameters = nextSegment.getParameters();
 
     // wire.deleteSegment(sIndex);
-    var found = wire.deleteSegmentById(segment._id);
+    var found = wire.deleteSegmentById(segment._parameters._id);
 
     if ( found ) {
 
@@ -372,7 +363,8 @@ Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {
 
         wire.replaceSegmentsFromParametersArray(
             sIndex,
-            newSegments
+            newSegments,
+            false
         );
 
         if (sIndex > 0 &&
