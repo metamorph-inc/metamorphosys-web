@@ -152,14 +152,13 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
         this.adjustWireEndSegments = function (wire) {
 
-            var firstSegment,
-                secondSegment,
-                secondToLastSegment,
-                lastSegment,
+            var firstSegmentParams,
+                secondSegmentParams,
+                secondToLastSegmentParams,
+                lastSegmentParams,
                 endPositions = wire.getEndPositions(),
                 segments = wire.getSegments(),
                 newSegmentParameters,
-                segmentParams,
                 router,
                 pos;
 
@@ -169,18 +168,16 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 // Creating new begining for wire
 
-                firstSegment = segments[0];
-                segmentParams = firstSegment.getParameters();
-                router = segmentParams.router || DEFAULT_ROUTER;                
+                firstSegmentParams = segments[0].getParameters();
+                router = firstSegmentParams.router || DEFAULT_ROUTER;                
 
                 if (router && router.type === 'ElbowRouter') {
 
-                    secondSegment = segments[1];
-                    segmentParams = secondSegment.getParameters();
+                    secondSegmentParams = segments[1].getParameters();
 
                     pos = {
-                        x: segmentParams.x2,
-                        y: segmentParams.y2
+                        x: secondSegmentParams.x2,
+                        y: secondSegmentParams.y2
                     };
 
                 } else {
@@ -188,8 +185,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     // Use SimpleRouter
 
                     pos = {
-                        x: segmentParams.x2,
-                        y: segmentParams.y2
+                        x: firstSegmentParams.x2,
+                        y: firstSegmentParams.y2
                     };
 
                 }
@@ -203,25 +200,28 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.params
                 );
 
-                newSegmentParameters[0]._id = segmentParams._id;
+                newSegmentParameters[0]._id = firstSegmentParams._id;
+                newSegmentParameters[0].endCornerSelected = firstSegmentParams.endCornerSelected;
+                if (newSegmentParameters.length > 1) {
+                    newSegmentParameters[1]._id = secondSegmentParams._id;
+                    newSegmentParameters[1].endCornerSelected = secondSegmentParams.endCornerSelected;
+                }
 
-                wire.replaceSegmentsFromParametersArray(0, newSegmentParameters);
+                wire.replaceSegmentsFromParametersArray(0, newSegmentParameters, true);
 
 
                 // Creating new end for wire
-
-                lastSegment = segments[segments.length - 1];
-                segmentParams = lastSegment.getParameters();
-                router = segmentParams.router || DEFAULT_ROUTER;                
+                
+                lastSegmentParams = segments[segments.length - 1].getParameters();
+                router = lastSegmentParams.router || DEFAULT_ROUTER;                
 
                 if (router && router.type === 'ElbowRouter') {
 
-                    secondToLastSegment = segments[segments.length - 2];
-                    segmentParams = secondToLastSegment.getParameters();
+                    secondToLastSegmentParams = segments[segments.length - 2].getParameters();
 
                     pos = {
-                        x: segmentParams.x1,
-                        y: segmentParams.y1
+                        x: secondToLastSegmentParams.x1,
+                        y: secondToLastSegmentParams.y1
                     };
 
                 } else {
@@ -229,8 +229,8 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     // Use SimpleRouter                    
 
                     pos = {
-                        x: segmentParams.x1,
-                        y: segmentParams.y1
+                        x: lastSegmentParams.x1,
+                        y: lastSegmentParams.y1
                     };
 
                 }
@@ -244,9 +244,14 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     router.params
                 );
 
-                newSegmentParameters[0]._id = segmentParams._id;
+                newSegmentParameters[0]._id = lastSegmentParams._id;
+                newSegmentParameters[0].endCornerSelected = lastSegmentParams.endCornerSelected;
+                if (newSegmentParameters.length > 1) {
+                    newSegmentParameters[1]._id = secondToLastSegmentParams._id;
+                    newSegmentParameters[1].endCornerSelected = secondToLastSegmentParams.endCornerSelected;
+                }
 
-                wire.replaceSegmentsFromParametersArray(segments.length - newSegmentParameters.length, newSegmentParameters);
+                wire.replaceSegmentsFromParametersArray(segments.length - newSegmentParameters.length, newSegmentParameters, true);
 
             } else {
 

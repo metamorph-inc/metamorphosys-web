@@ -7,6 +7,10 @@ var WireSegment = function(parameters, parentWire, useOldId) {
     this._parameters = angular.copy(parameters);
 	this._parentWire = parentWire;
 
+    if ( !useOldId || this._parameters.endCornerSelected === undefined ) {
+        this._parameters.endCornerSelected = false;
+    }
+
     if ( !useOldId ) {
         this.setId(Math.random().toString(36).substr(2, 7));
     }
@@ -88,7 +92,7 @@ WireSegment.prototype.isInViewport = function(viewPort, padding) {
             result = true;
 
         } else {
-	      	result = false;
+            result = false;
         }
 
     }

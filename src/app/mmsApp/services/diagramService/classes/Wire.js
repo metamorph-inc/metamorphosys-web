@@ -39,7 +39,7 @@ Wire.prototype.translateSegments = function(translation) {
         l,
         newSegments = [];
 
-    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+    this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters(), null, true);
 
     if (Array.isArray(this._segments)) {
 
@@ -60,7 +60,7 @@ Wire.prototype.translateSegmentEndCorner = function(index, translation) {
 
     if (index > -1 && Array.isArray(this._segments)) {
 
-        this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters());
+        this.makeSegmentsFromParameters(this.getCopyOfSegmentsParameters(), null, true);
 
         this._segments[index].translateEnd2(translation);
         this._segments[Number(index) + 1].translateEnd1(translation);        
@@ -208,33 +208,14 @@ Wire.prototype.replaceSegments = function(startPosition, setOfSegments) {
 
 };
 
-Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, parametersArray) {
+Wire.prototype.replaceSegmentsFromParametersArray = function(startPosition, parametersArray, useOldId) {
 
     var i,
         l = this._segments.length;
 
     for (i = 0; i < parametersArray.length; i++) {
 
-        var segment = new WireSegment(parametersArray[i], this, true);
-
-        segment._parameters._id = parametersArray[i]._id;
-
-        this._segments[Math.min(l, startPosition + i)] = segment;
-
-    }
-
-};
-
-Wire.prototype.replaceSegmentsFromParametersArrayById = function(startPosition, parametersArray) {
-
-    var i,
-        l = this._segments.length;
-
-    for (i = 0; i < parametersArray.length; i++) {
-
-        var segment = new WireSegment(parametersArray[i], this, true);
-
-        segment._parameters._id = parametersArray[i]._id;
+        var segment = new WireSegment(parametersArray[i], this, useOldId);
 
         this._segments[Math.min(l, startPosition + i)] = segment;
 
@@ -244,9 +225,7 @@ Wire.prototype.replaceSegmentsFromParametersArrayById = function(startPosition, 
 
 Wire.prototype.replaceSegmentFromProperties = function(atPosition, properties) {
 
-    var segment = new WireSegment(properties, this, true);
-
-    segment._parameters._id = properties._id;
+    var segment = new WireSegment(properties, this);
 
     this._segments[atPosition] = segment;
 
@@ -384,7 +363,8 @@ Wire.prototype.destroyEndCornerOfSegment = function(segment, wiringService) {
 
         wire.replaceSegmentsFromParametersArray(
             sIndex,
-            newSegments
+            newSegments,
+            false
         );
 
         if (sIndex > 0 &&
