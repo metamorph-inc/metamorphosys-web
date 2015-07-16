@@ -63,7 +63,8 @@ angular.module('mms.testBenchDirectives')
 
             var ctrl = controllers[0],
                 openerController = controllers[1],
-                jsonUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/CostEstimationResults.json';
+                jsonUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/CostEstimationResults.json',
+                bomUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/BomTable.html';
 
             function showResults() {
 
@@ -80,7 +81,7 @@ angular.module('mms.testBenchDirectives')
 
                     $scope.result = result;
                     $scope.detailedCostEstimation = detailedCostEstimation;
-                    $scope.jsonUrl = jsonUrl;
+                    $scope.bomUrl = bomUrl;
                 }
 
                 $http.get(jsonUrl).then(function(detailedCostEstimationJSON) {
@@ -92,7 +93,7 @@ angular.module('mms.testBenchDirectives')
                         templateUrl: '/mmsApp/templates/costEstimationResult.html',
                         locals: {
                             result: ctrl.result,
-                            jsonUrl: jsonUrl,
+                            bomUrl: bomUrl,
                             detailedCostEstimation: detailedCostEstimationJSON.data
                         }
                     })
