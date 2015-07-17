@@ -29,14 +29,25 @@
 
   }
 
-  &.highlight {
+  &.highlight-direct {
     .port-shape {
       .decorated-port-box {
-        fill: #FF9C4D;
+        fill: #ff7100;
       }
     }
     .bg-part {
-      fill: #FF9C4D;
+      fill: #ff7100;
+    }
+  }
+
+  &.highlight-indirect {
+    .port-shape {
+      .decorated-port-box {
+        fill: #3399FF;
+      }
+    }
+    .bg-part {
+      fill: #3399FF;
     }
   }
 

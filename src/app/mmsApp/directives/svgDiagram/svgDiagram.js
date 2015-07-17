@@ -556,32 +556,57 @@ angular.module('mms.svgDiagram', [
                     }
 
                 };
-
+                
                 this.focusConnectedPorts = function(diagram) {
+                    
+                    self.findConnectedPorts(this._focusedPort, diagram.getWires(), 0);
 
-                    var wires = diagram.getWires(),
-                        wireEnds;
+                };
+
+                this.findConnectedPorts = function(port, wires, level) {
+
+                    var wireEnds,
+                        matchingPort,
+                        connectionType = level === 0 ? ' highlight-direct' : ' highlight-indirect';
 
                     for (var w in wires) {
 
                         wireEnds = wires[w].getEnds();
 
-                        if (wireEnds.end1.port.id === this._focusedPort.id) {
+                        if (wireEnds.end1.port.id === port.id) {
                             
-                            this._connectedPorts.push(wireEnds.end2.port.id);
-
-                            wireEnds.end2.port.portSymbol.cssClass += ' highlight';
+                            matchingPort = wireEnds.end2.port;
 
                         }
-                        else if (wireEnds.end2.port.id === this._focusedPort.id) {
+                        else if (wireEnds.end2.port.id === port.id) {
                             
-                            this._connectedPorts.push(wireEnds.end1.port.id);
+                            matchingPort = wireEnds.end1.port;
 
-                            wireEnds.end1.port.portSymbol.cssClass += ' highlight';
+                        }
 
+                        
+                        if (matchingPort) {
+
+                            if (level !== 0 && (this._connectedPorts.indexOf(matchingPort.id) !== -1 
+                                                || matchingPort.id === this._focusedPort.id)) {
+                                
+                                continue;
+
+                            }
+
+                            this._connectedPorts.push(matchingPort.id);
+
+                            matchingPort.portSymbol.cssClass += connectionType;
+
+                            level++;
+
+                            self.findConnectedPorts(matchingPort, wires, level);
+                            
                         }
 
                     }
+
+                    level--;
 
                 };
 
@@ -597,7 +622,8 @@ angular.module('mms.svgDiagram', [
                             port = diagram.getPortById(this._connectedPorts[portId]);
 
                             port.portSymbol.cssClass =
-                                port.portSymbol.cssClass.replace(' highlight', '');
+                                port.portSymbol.cssClass.replace(' highlight-direct', '').
+                                                         replace(' highlight-indirect', '');
 
                         }
 
