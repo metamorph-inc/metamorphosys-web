@@ -31,6 +31,8 @@
 
   &.highlight-direct {
     .port-shape {
+      fill: #ff7100;
+
       .decorated-port-box {
         fill: #ff7100;
       }
@@ -42,9 +44,12 @@
 
   &.highlight-indirect {
     .port-shape {
+      fill: #3399FF;
+
       .decorated-port-box {
         fill: #3399FF;
       }
+
     }
     .bg-part {
       fill: #3399FF;
