@@ -5,13 +5,17 @@
     font-size: 70%;
   }
 
-  .port-shape {
-     transition: fill 200ms;
-    cursor: crosshair;
+  &:not(.no-hover) {
+    .port-shape {
+       transition: fill 200ms;
+      cursor: crosshair;
+    }
   }
-
-  .port-shape:hover {
-    fill: #ff7100;
+  
+  &:not(.no-hover) {
+    .port-shape:hover {
+      fill: #ff7100;
+    }
   }
 
   &.right {

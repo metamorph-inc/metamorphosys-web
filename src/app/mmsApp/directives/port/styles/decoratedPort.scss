@@ -13,11 +13,13 @@
         font-weight: bold;
     }
 
-    &:hover {
-        .port-shape {
+    &:not(.no-hover) {
+        &:hover {
+            .port-shape {
 
-            path {
-                fill: #ff7100;
+                path {
+                    fill: #ff7100;
+                }
             }
         }
     }
@@ -36,10 +38,14 @@
     }
 }
 
-.supply-single-symbol:hover {
-    path.bg-part {
-//        transition: fill 200ms;
-        fill: #ff7100;
+.supply-single-symbol {
+    &:not(.no-hover) {
+        &:hover {
+            path.bg-part {
+        //        transition: fill 200ms;
+                fill: #ff7100;
+            }
+        }
     }
 }
 

@@ -27,19 +27,21 @@
     }
 
     &.selected,
-    &:hover {
+    &:not(.no-hover) {
+        &:hover {
 
-        cursor: pointer;
-        //cursor: url(images/openhand.cur) 4 4, pointer;
+            cursor: pointer;
+            //cursor: url(images/openhand.cur) 4 4, pointer;
 
-        .component-label {
-            fill: #ff7100;
-        }
+            .component-label {
+                fill: #ff7100;
+            }
 
-        .silhouette {
+            .silhouette {
 
-            stroke: #ff7100;
+                stroke: #ff7100;
 
+            }
         }
     }
 

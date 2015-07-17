@@ -169,6 +169,8 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         finishDrag();
 
+        $scope.diagram.clearSelection(true);
+
     };
 
     onWindowBlur = function (/*$event*/) {

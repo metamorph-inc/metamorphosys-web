@@ -79,6 +79,8 @@ angular.module('mms.svgDiagram', [
                     wasPortMouseDowned = false,
                     wasWireCornerMouseDowned = false,
 
+                    hoverToggleClasses = ['.port', '.container-box', '.decorated-port', '.supply-single-symbol'],
+
                     $$window,
 
                     self = this;
@@ -238,6 +240,10 @@ angular.module('mms.svgDiagram', [
                             wireDrawHandler.onDiagramMouseUp(event);
                             panHandler.onDiagramMouseUp(event);
 
+                            if (wasWireMouseDowned || wasWireCornerMouseDowned) {
+                                self.toggleHoverForClassArray(hoverToggleClasses, false);
+                            }
+
                         }
 
                         wasDiagramMouseDowned = false;
@@ -292,13 +298,17 @@ angular.module('mms.svgDiagram', [
                     panHandler.onDiagramMouseLeave($event);
                     drawSelectionHandler.cancel();
 
+                    if (wasWireMouseDowned || wasWireCornerMouseDowned) {
+
+                        self.toggleHoverForClassArray(hoverToggleClasses, false);
+
+                    }
+
                     wasComponnetMouseDowned = false;
                     wasDiagramMouseDowned = false;
                     wasWireMouseDowned = false;
                     wasPortMouseDowned = false;
                     wasWireCornerMouseDowned = false;
-
-
                 };
 
                 function onWindowBlur($event) {
@@ -309,6 +319,12 @@ angular.module('mms.svgDiagram', [
                     panHandler.onWindowBlur($event);
                     dndService.stopDrag();
                     drawSelectionHandler.cancel();
+
+                    if (wasWireMouseDowned || wasWireCornerMouseDowned) {
+
+                        self.toggleHoverForClassArray(hoverToggleClasses, false);
+
+                    }
 
                     wasComponnetMouseDowned = false;
                     wasDiagramMouseDowned = false;
@@ -347,14 +363,17 @@ angular.module('mms.svgDiagram', [
 
                 this.onPortMouseDown = function(component, port, $event) {
 
-                    wasPortMouseDowned = true;
+                    if (!wasWireMouseDowned && !wasWireCornerMouseDowned) {
 
-                    if (!wireDrawHandler.wiring && $event.which === 3) {
+                        wasPortMouseDowned = true;
 
-                        contextMenuHandler.onPortContextmenu(component, port, $event);
+                        if (!wireDrawHandler.wiring && $event.which === 3) {
 
-                    } else {
-                        wireDrawHandler.onPortMouseDown(component, port, $event);
+                            contextMenuHandler.onPortContextmenu(component, port, $event);
+
+                        } else {
+                            wireDrawHandler.onPortMouseDown(component, port, $event);
+                        }
                     }
 
                 };
@@ -383,17 +402,21 @@ angular.module('mms.svgDiagram', [
 
                 this.onComponentMouseDown = function(component, $event) {
 
-                    wasComponnetMouseDowned = true;
+                    if (!wasWireMouseDowned && !wasWireCornerMouseDowned) {
 
-                    if ($event.which === 3) {
+                        wasComponnetMouseDowned = true;
 
-                        contextMenuHandler.onComponentContextmenu(component, $event);
+                        if ($event.which === 3) {
 
-                    } else {
+                            contextMenuHandler.onComponentContextmenu(component, $event);
 
-                        componentDragHandler.onComponentMouseDown(component, $event);
+                        } else {
 
+                            componentDragHandler.onComponentMouseDown(component, $event);
+
+                        }
                     }
+
                 };
 
                 this.onWireMouseUp = function(wire, segment, event) {
@@ -415,6 +438,8 @@ angular.module('mms.svgDiagram', [
 
                         wasWireMouseDowned = false;
 
+                        self.toggleHoverForClassArray(hoverToggleClasses, false);
+
                     }
 
                 };
@@ -433,6 +458,40 @@ angular.module('mms.svgDiagram', [
                         wireDragHandler.onWireMouseDown(wire, segment, event);
 
                     }
+
+                    self.toggleHoverForClassArray(hoverToggleClasses, true);
+
+                };
+
+                this.toggleHoverForClassArray = function(classNameArray, disable) {
+
+                    for (var i in classNameArray) {
+
+                        self.toggleClassHover(classNameArray[i], disable);
+
+                    }
+
+                };
+
+                this.toggleClassHover = function(className, disable) {
+
+                    var els = document.querySelectorAll(className);
+
+                    if (els) {
+
+                        Array.prototype.forEach.call(els, function(el) {
+
+                            if (disable) {
+                                el.classList.add('no-hover');
+                            }
+                            else {
+                                el.classList.remove('no-hover');
+                            }
+
+                        });
+
+                    }
+
                 };
 
                 this.onComponentDoubleClick = function(component) {
@@ -452,6 +511,8 @@ angular.module('mms.svgDiagram', [
 
                         wasWireCornerMouseDowned = false;
 
+                        self.toggleHoverForClassArray(hoverToggleClasses, false);
+
                     }
 
                 };
@@ -470,6 +531,9 @@ angular.module('mms.svgDiagram', [
                         wireDragHandler.onWireMouseDown(wire, segment, event, true);
 
                     }
+
+                    self.toggleHoverForClassArray(hoverToggleClasses, true);
+
                 };
 
                 this.isEditable = function() {
@@ -504,7 +568,7 @@ angular.module('mms.svgDiagram', [
 
                 this.onPortMouseOver = function(diagram, component, port) {
 
-                    if (!wireDrawHandler.wiring) {
+                    if (!wireDrawHandler.wiring && !wasWireMouseDowned && !wasWireCornerMouseDowned) {
 
                         this._focusedPort = port;
                         this.focusPorts(diagram);
