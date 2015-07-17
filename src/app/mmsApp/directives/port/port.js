@@ -69,7 +69,6 @@ angular.module(
             if ($scope.portInstance.portSymbol.type) {
                 cssClass += ' ' + $scope.portInstance.portSymbol.type;
             }
-            //
             // if ($scope.svgDiagramController &&
             //     $scope.svgDiagramController.focusedPort &&
             //     $scope.svgDiagramController.focusedPort.portSymbol &&
@@ -115,6 +114,7 @@ angular.module(
                     typeEl;
 
                 scope.svgDiagramController = svgDiagramController;
+                scope.diagram = diagramContainerController.getDiagram();
                 scope.element = element[0];
 
                 scope.onPortClick = function (port, $event) {
@@ -130,11 +130,11 @@ angular.module(
                 };
 
                 scope.onPortMouseOver = function (port, $event) {
-                    svgDiagramController.onPortMouseOver(scope.component, port, $event);
+                    svgDiagramController.onPortMouseOver(scope.diagram, scope.component, port, $event);
                 };
 
                 scope.onPortMouseOut = function (port, $event) {
-                    svgDiagramController.onPortMouseOut(scope.component, port, $event);
+                    svgDiagramController.onPortMouseOut(scope.diagram, scope.component, port, $event);
                 };
 
                 diagramContainerController.replaceWithDirective(

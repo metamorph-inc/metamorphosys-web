@@ -55,7 +55,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         portHorizontalTranslation = parameters.portWireLength + parameters.portLabelHorizontalPadding;
 
-        wireLeadIn = 0;
+        wireLeadIn = 10;
 
         for (i=0; i < numberOfPorts; i++) {
 

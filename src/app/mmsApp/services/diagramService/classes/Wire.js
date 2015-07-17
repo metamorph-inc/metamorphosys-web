@@ -261,11 +261,18 @@ Wire.prototype.getSegmentById = function(id) {
 
     return this._segments[idx];
 
-}
+};
 
 Wire.prototype.insertSegment = function(atPosition, segment) {
 
     segment.setParentWire(this);
+    this._segments.splice(atPosition, 0, segment);
+
+};
+
+Wire.prototype.insertSegmentFromParameters = function(atPosition, parameters) {
+
+    var segment = new WireSegment(parameters, this);
     this._segments.splice(atPosition, 0, segment);
 
 };

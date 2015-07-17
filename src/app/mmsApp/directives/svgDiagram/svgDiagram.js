@@ -97,6 +97,7 @@ angular.module('mms.svgDiagram', [
 
                 this._portElementsByType = null;
                 this._focusedPort = null;
+                this._connectedPorts = [];
 
                 // Setting up handlers
 
@@ -501,18 +502,22 @@ angular.module('mms.svgDiagram', [
 
                 };
 
-                this.onPortMouseOver = function(component, port) {
+                this.onPortMouseOver = function(diagram, component, port) {
 
                     if (!wireDrawHandler.wiring) {
 
                         this._focusedPort = port;
-                        this.focusPorts();
+                        this.focusPorts(diagram);
+
+                        // Highlight other ports that are connected to this port
+                        //   only before a wire drawing has begun.
+                        this.focusConnectedPorts(diagram, port);
 
                     }
 
                 };
 
-                this.onPortMouseOut = function(/*component, port*/) {
+                this.onPortMouseOut = function(diagram) {
 
                     if (!wireDrawHandler.wiring) {
 
@@ -520,6 +525,8 @@ angular.module('mms.svgDiagram', [
                         this.unFocusPorts();
 
                     }
+
+                    this.unFocusConnectedPorts(diagram);
 
                 };
 
@@ -546,6 +553,55 @@ angular.module('mms.svgDiagram', [
                             this._portElementsByType[type].splice(index, 1);
                         }
 
+                    }
+
+                };
+
+                this.focusConnectedPorts = function(diagram) {
+
+                    var wires = diagram.getWires(),
+                        wireEnds;
+
+                    for (var w in wires) {
+
+                        wireEnds = wires[w].getEnds();
+
+                        if (wireEnds.end1.port.id === this._focusedPort.id) {
+                            
+                            this._connectedPorts.push(wireEnds.end2.port.id);
+
+                            wireEnds.end2.port.portSymbol.cssClass += ' highlight';
+
+                        }
+                        else if (wireEnds.end2.port.id === this._focusedPort.id) {
+                            
+                            this._connectedPorts.push(wireEnds.end1.port.id);
+
+                            wireEnds.end1.port.portSymbol.cssClass += ' highlight';
+
+                        }
+
+                    }
+
+                };
+
+                this.unFocusConnectedPorts = function(diagram) {
+
+                    var port,
+                        portId;
+
+                    if (this._connectedPorts.length > 0) {
+
+                        for (portId in this._connectedPorts) {
+
+                            port = diagram.getPortById(this._connectedPorts[portId]);
+
+                            port.portSymbol.cssClass =
+                                port.portSymbol.cssClass.replace(' highlight', '');
+
+                        }
+
+                        this._connectedPorts = [];
                     }
 
                 };
@@ -591,7 +647,6 @@ angular.module('mms.svgDiagram', [
                             }
 
                         }
-
                 };
 
                 this.unFocusPorts = function() {

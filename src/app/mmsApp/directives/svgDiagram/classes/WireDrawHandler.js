@@ -139,17 +139,91 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
             }
         );
 
+        var startPortPosition = wireStart.port.getGridPosition(),
+            startPortLeadInPosition = wireStart.port.getGridPosition(true),
+            startPortWireAngle = wireStart.port.getGridWireAngle(),
+            endPortPosition = port.getGridPosition(),
+            endPortLeadInPosition = port.getGridPosition(true),
+            endPortWireAngle = port.getGridWireAngle(),
+            end2 = endPortLeadInPosition;
+
+        if ( angular.equals($scope.newWireLine.activeSegmentStartPosition, startPortLeadInPosition) ) {
+            if ( [0, 180, 360].indexOf(startPortWireAngle) !== -1 && [0, 180, 360].indexOf(endPortWireAngle) !== -1 ||
+                 [90, 270].indexOf(startPortWireAngle) !== -1 && [90, 270].indexOf(endPortWireAngle) !== -1 ) {
+                
+                var maxPortPosition,
+                    maxPortLeadIn,
+                    minPortPosition,
+                    minPortLeadIn,
+                    startIsMin,
+                    randomOffset;
+
+                if ( startPortWireAngle === 0 || startPortWireAngle === 180 || startPortWireAngle === 360 ) {
+                    
+                    startIsMin = startPortPosition.x < endPortPosition.x;
+                    maxPortPosition = startIsMin ? endPortPosition.x : startPortPosition.x;
+                    maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
+                    minPortPosition = startIsMin ? startPortPosition.x : endPortPosition.x;
+                    minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
+
+                    if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
+                        end2 = endPortLeadInPosition;
+                    }
+                    else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
+                        end2 = { x: (minPortPosition + minPortLeadIn), y: endPortPosition.y };
+                    } 
+                    else {
+                        randomOffset = Math.floor(Math.random() * 5 - 5);
+                        end2 = { x: (minPortPosition + maxPortPosition) / 2 + randomOffset, y: endPortPosition.y };
+                    }
+                }
+                else {
+
+                    startIsMin = startPortPosition.y < endPortPosition.y;
+                    maxPortPosition = startIsMin ? endPortPosition.y : startPortPosition.y;
+                    maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
+                    minPortPosition = startIsMin ? startPortPosition.y : endPortPosition.y;
+                    minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
+
+                    if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
+                        end2 = endPortLeadInPosition;
+                    }
+                    else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
+                        end2 = { x: endPortPosition.x, y: (minPortPosition + minPortLeadIn) };
+                    }
+                    else {
+                        randomOffset = Math.floor(Math.random() * 5 - 5);
+                        end2 = { x: endPortPosition.x, y: (maxPortPosition + minPortPosition) / 2 + randomOffset };
+                    }
+
+                }
+            }
+        }
+        
+
+
         wire.makeSegmentsFromParameters(
             $scope.newWireLine.lockedSegments.concat(
                 wiringService.getSegmentsBetweenPositions({
                         end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: port.getGridPosition()
+                        end2: end2
                     },
                     $scope.selectedRouter.type,
                     $scope.selectedRouter.params,
                     true
                 )
             )
+        );
+
+        wire.appendSegmentFromParameters(
+            wiringService.getSegmentsBetweenPositions({
+                    end1: end2,
+                    end2: port.getGridPosition()
+                },
+                $scope.selectedRouter.type,
+                $scope.selectedRouter.params,
+                false
+            )[0]
         );
 
         $rootScope.$emit('wireCreationMustBeDone', wire);
@@ -182,34 +256,68 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseMove = function($event) {
 
-        var snappedPosition;
+        var snappedPosition,
+            okToExtend = true,
+            wireAngle,
+            leftOfRightPort,
+            rightOfLeftPort,
+            northOfSouthPort,
+            southOfNorthPort;
 
         latestMouseEvent = $event;
 
         if (wireStart) {
 
-
             $scope.newWireLine = $scope.newWireLine || {};
             $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
-            $scope.newWireLine.activeSegmentStartPosition =
-                $scope.newWireLine.activeSegmentStartPosition || wireStart.port.getGridPosition();
+            
+            if (!$scope.newWireLine.activeSegmentStartPosition) {
+                $scope.newWireLine.wireStartPosition = wireStart.port.getGridPosition(true);
+
+                $scope.newWireLine.lockedSegments.push(
+                    wiringService.getSegmentsBetweenPositions({
+                            end1: wireStart.port.getGridPosition(),
+                            end2: $scope.newWireLine.wireStartPosition
+                        },
+                        $scope.selectedRouter.type,
+                        $scope.selectedRouter.params,
+                        true
+                    )[0]
+                );                
+                $scope.newWireLine.activeSegmentStartPosition = $scope.newWireLine.wireStartPosition;
+            }
 
             snappedPosition = gridService.getSnappedPosition({
                 x: $event.pageX - $scope.elementOffset.left - 3,
                 y: $event.pageY - $scope.elementOffset.top - 3
             });
 
+            if ( angular.equals($scope.newWireLine.activeSegmentStartPosition, $scope.newWireLine.wireStartPosition) ) {
+                
+                wireAngle = wireStart.port.getGridWireAngle();
+                leftOfRightPort = ( [0, 360].indexOf(wireAngle) !== -1 && 
+                                    snappedPosition.x < $scope.newWireLine.wireStartPosition.x );
+                rightOfLeftPort = ( wireAngle === 180 && snappedPosition.x > $scope.newWireLine.wireStartPosition.x );
+                northOfSouthPort = ( wireAngle === 90 && snappedPosition.y < $scope.newWireLine.wireStartPosition.y );
+                southOfNorthPort = ( wireAngle === 270 && snappedPosition.y > $scope.newWireLine.wireStartPosition.y );
 
-            $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
-                wiringService.getSegmentsBetweenPositions({
-                        end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: snappedPosition
-                    },
-                    $scope.selectedRouter.type,
-                    $scope.selectedRouter.params,
-                    true
-                )
-            );
+                okToExtend = [leftOfRightPort, rightOfLeftPort, 
+                              northOfSouthPort, southOfNorthPort].every(function(e) { return !e; });
+                
+            }
+
+            if ( okToExtend ) {
+                $scope.newWireLine.segments = $scope.newWireLine.lockedSegments.concat(
+                    wiringService.getSegmentsBetweenPositions({
+                            end1: $scope.newWireLine.activeSegmentStartPosition,
+                            end2: snappedPosition
+                        },
+                        $scope.selectedRouter.type,
+                        $scope.selectedRouter.params,
+                        true
+                    )
+                );
+            }
 
         }
 

@@ -10,7 +10,7 @@ var ComponentPort = function (descriptor) {
 
 };
 
-ComponentPort.prototype.getGridPosition = function () {
+ComponentPort.prototype.getGridPosition = function (getLeadInPosition) {
 
     var position,
         positionVector,
@@ -47,7 +47,7 @@ ComponentPort.prototype.getGridPosition = function () {
 
             }
 
-            wireAngle = this.portSymbol.wireAngleRad;
+            wireAngle = Math.PI * this.getGridWireAngle() / 180;
 
 
             glMatrix.mat2.rotate(leadInTransformation, leadInTransformation, wireAngle);
@@ -65,8 +65,12 @@ ComponentPort.prototype.getGridPosition = function () {
         }
 
     }
-
-    return position;
+    if ( getLeadInPosition ) {
+        return position.leadInPosition;
+    }
+    else {
+        return position;
+    }
 
 };
 

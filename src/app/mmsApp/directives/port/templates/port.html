@@ -1,7 +1,7 @@
 <g ng-attr-id="{{::port.id}}"
    ng-attr-transform="{{::getPortTransform()}}"
    class="port"
-   ng-class="::getCssClass()">
+   ng-class="getCssClass()">
     <text class="port-label"
         ng-if="::isPortLabelVisible()"
         ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"

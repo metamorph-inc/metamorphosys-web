@@ -20,7 +20,7 @@ angular.module(
                     p1: {
                         id: 'p1',
                         wireAngle: 0,
-                        wireLeadIn: 0,
+                        wireLeadIn: 20,
                         label: '',
                         x: 117,
                         y: 7
