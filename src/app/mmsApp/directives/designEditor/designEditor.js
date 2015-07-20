@@ -648,7 +648,7 @@ angular.module('mms.designEditor', [
 
                                 var designConfig = projectHandling.getSelectedDesignConfig();
 
-                                if (designConfig.tutorial && $cookies['seenTutorialFor' + designConfig.name] !== 'true') {
+                                if (designConfig && designConfig.tutorial && $cookies['seenTutorialFor' + designConfig.name] !== 'true') {
 
                                     $rootScope.openHelpDialog();
                                     $cookies['seenTutorialFor' + designConfig.name] = 'true';
