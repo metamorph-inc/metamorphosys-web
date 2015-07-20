@@ -1,0 +1,19 @@
+<md-dialog
+    class="testbench-result-dialog delete-result">
+    <md-content>
+        Are you sure you want to delete this result?
+    </md-content>
+    <div class="md-actions" layout="row">
+        <span flex></span>
+        <ul class="testbench-result-delete">
+            <md-button class="md-raised md-primary" ng-click="deleteResult()">
+                <i class="delete-result-icon fa fa-trash-o"></i>
+                Delete
+            </md-button>
+        </ul>
+
+        <md-button ng-click="close()" class="md-primary toast-bttn">
+            Close
+        </md-button>
+    </div>
+</md-dialog>

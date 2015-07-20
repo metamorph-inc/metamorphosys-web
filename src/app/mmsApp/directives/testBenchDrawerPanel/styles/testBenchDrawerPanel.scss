@@ -92,11 +92,25 @@ md-toast.test-bench-completed {
         }
     }
 
+    .no-items-to-show-message {
+        padding-top: 25px;
+    }
+
     .test-bench-drawer-panel-test-list {
     }
 
 
     .test-bench-drawer-panel-result-list {
+
+        .test-bench-result-delete {
+
+            margin-left: 10px;
+            border: 1px solid rgba(255,255,255,.2);
+
+            .delete-result-icon {
+              font-size: 10px;
+            }
+        }
     }
 
     .list-header {
@@ -135,7 +149,7 @@ md-toast.test-bench-completed {
         font-size: 12.8px;
         position: absolute;
         top: 20px;
-        padding-right: 110px;
+        padding-right: 120px;
         padding-left: 200px;
         max-height: 35px;
         overflow: hidden;

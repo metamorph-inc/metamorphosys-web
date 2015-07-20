@@ -86,6 +86,53 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
         });
     }
 
+    this.removeResult = function(result) {
+
+        var i;        
+
+        for (i = 0; i < testBenchResults.length; i++ ) {
+
+            if (testBenchResults[i].id === result.id) {
+
+                testBenchResults.splice(i, 1);
+                break;
+            }
+        }
+
+        self.getTestBenches().then(function() {
+
+            testBenches.forEach(function (testBench) {
+
+                if (testBench.id === result.testBenchId) {
+
+                    
+                    for (i = 0; i < testBench.results.length; i++ ) {
+
+                        if (testBench.results[i].id === result.id) {
+
+                            testBench.results.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    testBench.lastResult = testBench.results[testBench.results.length - 1];
+
+                    $http.delete('/rest/external/testbenches/result/' + result.id);
+
+                }
+            });
+
+            testBenchResults.sort(compareResult);
+
+            self.dispatchEvent({
+                type: 'resultsChanged',
+                data: {
+                    results: testBenchResults
+                }
+            });
+        });
+    };
+
     this.registerTestBenchDirectives = function(testBenchName, directives) {
         testBenchDirectives[testBenchName] = directives;
     };

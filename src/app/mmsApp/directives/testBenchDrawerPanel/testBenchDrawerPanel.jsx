@@ -1,5 +1,7 @@
 'use strict';
 
+/* globals ga */
+
 require('./testBenchResultAndTime.jsx');
 require('./testBenchConfig.js');
 
@@ -231,7 +233,8 @@ angular.module('mms.testBenchDrawerPanel', [
         scope: true,
         replace: true,
         transclude: false,
-        templateUrl: '/mmsApp/templates/testBenchDrawerPanelResultList.html'
+        templateUrl: '/mmsApp/templates/testBenchDrawerPanelResultList.html',
+        require: ['testBenchResultDeleter']
     };
 })
 .directive('testBenchResultOpener', function($compile) {
@@ -310,4 +313,68 @@ angular.module('mms.testBenchDrawerPanel', [
             }
         }
     };
+})
+.directive('testBenchResultDeleter', function($mdDialog) {
+
+    function TestBenchResultDeleterController() {
+
+    }
+
+    return {
+        restrict: 'E',
+        controller: TestBenchResultDeleterController,
+        controllerAs: 'ctrl',
+        bindToController: true,
+        replace: true,
+        transclude: false,
+        scope: {
+            result: '='
+        },
+        templateUrl: '/mmsApp/templates/testBenchResultDeleter.html',
+        require: ['testBenchResultDeleter'],
+        link: function(s, element, attributes, controllers) {
+
+            var ctrl = controllers[0];
+
+            function checkDelete() {
+
+                ga('send', 'event', 'testbench', 'result', ctrl.result.id);
+
+                function DeleteResultDialogController($scope, result, testBenchService) {
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    };
+                    $scope.close = function () {
+                        $mdDialog.hide();
+                    };
+
+                    $scope.result = result;
+
+                    $scope.deleteResult = function () {
+                        testBenchService.removeResult(result);
+                        $scope.hide();
+                    };
+                }
+
+
+                $mdDialog.show({
+                    controller: DeleteResultDialogController,
+                    bindToController: true,
+                    controllerAs: 'ctrl',
+                    templateUrl: '/mmsApp/templates/testBenchResultDeleteDialog.html',
+                    locals: {
+                        result: ctrl.result
+                    }
+                })
+                .then(function () {
+                });
+
+            }
+
+            ctrl.checkDelete = checkDelete;
+
+        }
+    };
+
 });

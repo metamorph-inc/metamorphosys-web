@@ -27,7 +27,8 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
             var ctrl = controllers[0],
                 compiledDirective,
-                resultCompactElement;
+                resultCompactElement,
+                deleteElement;
 
             function cleanup() {
                 React.unmountComponentAtNode(element[0]);
@@ -48,12 +49,36 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
                         resultCompactElement = clonedElement[0];
 
-                        React.render(<TestBenchResultAndTime
-                            result={ctrl.result}
-                            resultCompactElement={resultCompactElement}
-                            />, element[0]);
-
                     });
+
+                    compiledDirective = $compile(
+                        angular.element(
+                            '<test-bench-result-deleter result="ctrl.result">' +
+                            '</test-bench-result-deleter>'
+                        )
+                    );
+                    
+                    if (element.parent()[0].classList.contains("result-list-header")) {
+
+                        compiledDirective(scope, function(clonedElement) {
+
+                            deleteElement = clonedElement[0];
+
+                        });
+
+                        React.render(<TestBenchResultAndTime
+                                result={ctrl.result}
+                                resultCompactElement={resultCompactElement}
+                                deleteElement={deleteElement}
+                                />, element[0]);
+                    }
+                    else {
+
+                        React.render(<TestBenchResultAndTime
+                                result={ctrl.result}
+                                resultCompactElement={resultCompactElement}
+                                />, element[0]);
+                    }
 
                 } else {
 
@@ -79,7 +104,6 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
             render();
 
             scope.$on('$destroy', cleanup);
-
         }
     };
 
@@ -115,6 +139,10 @@ class TestBenchResultAndTime extends React.Component {
             if (node) {
                 node.innerHTML = '';
                 node.appendChild(this.props.resultCompactElement);
+                
+                if (this.props.deleteElement) {
+                    node.appendChild(this.props.deleteElement);
+                }
             }
         }
     }

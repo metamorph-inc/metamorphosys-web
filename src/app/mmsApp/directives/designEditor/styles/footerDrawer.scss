@@ -59,11 +59,13 @@ $header-height: 38px;
 
     .drawer-sub-navigator {
         position: absolute;
-        width: auto;
+        width: 100%;
         display: inline-block;
         background: $baseBGColor;
         z-index: 20;
         font-size: 100%;
+        padding-bottom: 2px;
+        border: 1px solid rgba(143, 156, 166, 0.2);
 
         button.btn, .md-button {
             text-transform: none;
@@ -134,7 +136,7 @@ $header-height: 38px;
     }
 
     .drawer-navigator + .drawer-content {
-        padding-top: 80px;
+        padding-top: 70px;
     }
 
 }
