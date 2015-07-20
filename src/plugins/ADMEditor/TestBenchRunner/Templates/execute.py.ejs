@@ -362,7 +362,7 @@ def run_execution_jobs():
         shutil.move(filename, os.path.join('results', *filename.split(os.path.sep)[2:]))
     if os.path.isfile('results/schema.brd'):
         shutil.move('results/schema.brd', 'results/eagle-board.brd')
-    for (pattern, dest) in (('results/*/schema.png', 'eagle-board.png'),):
+    for (pattern, dest) in (('results/schema.png', 'eagle-board.png'),):
         for artifact in glob.glob(pattern):
             subprocess.check_call([r"c:\ImageMagick-6.9.0-7\convert.exe", "-rotate", "90", artifact, './results/' + dest])
 
