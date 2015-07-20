@@ -9,6 +9,7 @@ angular.module('mms.testBenchDirectives', []);
 
 require('../testBenchDirectives/costEstimation.jsx');
 require('../testBenchDirectives/placeAndRoute.jsx');
+require('../testBenchDirectives/analogElectronicSimulation.jsx');
 
 var compiledDirectives = {};
 

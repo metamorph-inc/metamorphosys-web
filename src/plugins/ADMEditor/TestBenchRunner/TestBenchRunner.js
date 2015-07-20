@@ -597,7 +597,14 @@ define(['plugin/PluginConfig',
                 }, {
                     name: 'all',
                     // resultPatterns: [ 'results/', 'log/**', '_FAILED.txt']
-                    resultPatterns: ['results/*brd', 'results/*png', 'results/*json', 'results/BomTable.html', 'log/**', 'results/*/log/*', '_FAILED.txt']
+                    resultPatterns: [
+                        // Place and Route
+                        'results/*brd', 'results/*png',
+                        // Analog Electronic Simulation
+                        'results/*.cir', 'results/LaunchSpiceViewer.bat', 'results/runspice.bat', // schema.raw
+                        // Cost Estimation
+                        'results/BomTable.html', // 'results/Something.json',
+                        'results/*json', 'log/**', 'results/log/*', '_FAILED.txt']
                 }, {
                     name: 'testBenchManifest',
                     resultPatterns: ['results/*/testbench_manifest.json']
