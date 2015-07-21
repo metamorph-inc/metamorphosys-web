@@ -59,13 +59,12 @@ $header-height: 38px;
 
     .drawer-sub-navigator {
         position: absolute;
-        width: 100%;
+        width: 50%;
         display: inline-block;
         background: $baseBGColor;
         z-index: 20;
         font-size: 100%;
-        padding-bottom: 2px;
-        border: 1px solid rgba(143, 156, 166, 0.2);
+        border-bottom: 1px solid rgba(143, 156, 166, 0.2);
 
         button.btn, .md-button {
             text-transform: none;
