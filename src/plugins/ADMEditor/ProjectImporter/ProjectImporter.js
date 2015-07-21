@@ -48,7 +48,7 @@ define(['plugin/PluginConfig',
      * @public
      */
     ProjectImporter.prototype.getVersion = function () {
-        return '0.1.0';
+        return '1.1.0';
     };
 
     /**
@@ -211,24 +211,35 @@ define(['plugin/PluginConfig',
             }
             // TODO check for missing testbenches_zip or json
             var designModels;
+            var testBenchFolders = {};
 
             return Q.ninvoke(self.core, 'loadChildren', self.admFolder)
-                .then(function(designModels_) {
+                .then(function (designModels_) {
                     designModels = designModels_;
                 }).then(function () {
                     return Q.ninvoke(self.blobClient, 'getObject', self.artifact.descriptor.content[testbenches_json].content);
-                }).then(function(testBenches) {
+                }).then(function (testBenches) {
                     if (typeof Buffer !== 'undefined' && Buffer.isBuffer(testBenches)) {
                         testBenches = JSON.parse(testBenches.toString());
                     }
                     // {"/Testing/PlaceAndRoute_1x2": "Template_Module_1x2__few_bga_connections"}
+
                     var tbs = Object.getOwnPropertyNames(testBenches);
                     return throttle(tbs, function (tb) {
+                        var atmFolder = testBenchFolders[testBenches[tb]];
+                        if (!atmFolder) {
+                            testBenchFolders[testBenches[tb]] = atmFolder = self.core.createNode({
+                                base: self.metaTypes.ATMFolder,
+                                parent: self.atmFolder
+                            });
+                            self.core.setAttribute(atmFolder, 'name', testBenches[tb]);
+                        }
+
                         var tbModel = self.core.createNode({
                             base: self.metaTypes.AVMTestBenchModel,
-                            parent: self.atmFolder
+                            parent: atmFolder
                         });
-                        self.core.setAttribute(tbModel, 'name', testBenches[tb]);
+                        self.core.setAttribute(tbModel, 'name', tb.substring(tb.lastIndexOf('/') + 1));
 
                         var design = designModels.filter(function (design) {
                             return self.core.getAttribute(design, 'name') === testBenches[tb];
@@ -252,7 +263,8 @@ define(['plugin/PluginConfig',
                 });
 
 
-
+        }).then(function () {
+            self.core.deleteNode(self.acmFolder);
         }).then(function () {
             return Q.ninvoke(self, 'save', 'ProjectImporter');
         }).then(function () {
