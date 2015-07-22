@@ -255,6 +255,12 @@ define( [ 'plugin/PluginConfig',
         };
 
         var req = superagent.get(url);
+
+        if (typeof window === 'undefined') {
+            if (this.keepaliveAgent !== undefined) {
+                req.agent(this.keepaliveAgent);
+            }
+        }
         if (req.pipe) {
             // running on node
             var Writable = require('stream').Writable;

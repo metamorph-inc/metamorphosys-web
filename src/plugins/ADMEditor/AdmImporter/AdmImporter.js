@@ -1480,6 +1480,19 @@ define([
         }
 
         var plugin = new pluginClass();
+        if (typeof window === 'undefined' && config.AcmUrl) {
+            if (this.keepaliveAgent === undefined) {
+                var Agent;
+                if (config.AcmUrl.indexOf('https:') === 0) {
+                    Agent = require('agentkeepalive').HttpsAgent;
+                } else {
+                    Agent = require('agentkeepalive');
+                }
+                this.keepaliveAgent = new Agent({ca: require('https').globalAgent.options.ca, maxSockets: 5, maxFreeSockets: 10});
+            }
+            plugin.keepaliveAgent = this.keepaliveAgent;
+        }
+
         var pluginLogger = self.logger.fork('Plugin.' + plugin.getName());
         plugin.save = function (message, callback) {
             callback(null);
