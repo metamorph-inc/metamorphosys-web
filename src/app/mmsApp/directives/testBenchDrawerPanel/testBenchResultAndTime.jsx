@@ -28,82 +28,11 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
             var ctrl = controllers[0],
                 compiledDirective,
                 resultCompactElement,
-                deleteElement,
-
-                reactResultArray = [];
+                deleteElement;
 
             function cleanup() {
                 React.unmountComponentAtNode(element[0]);
             }
-
-            
-//             function render2() {
-
-//                 if (ctrl.result && ctrl.result.status !== 'Running') {
-
-//                     compiledDirective = $compile(
-//                         angular.element(
-//                             '<test-bench-result-opener result="ctrl.result">' +
-//                             '</test-bench-result-opener>'
-//                         )
-//                     );
-
-//                     compiledDirective(scope, function(clonedElement) {
-
-//                         resultCompactElement = clonedElement[0];
-
-//                     });
-
-//                     compiledDirective = $compile(
-//                         angular.element(
-//                             '<test-bench-result-deleter result="ctrl.result">' +
-//                             '</test-bench-result-deleter>'
-//                         )
-//                     );
-                    
-//                     if (element.parent()[0].classList.contains("result-list-header")) {
-
-//                         compiledDirective(scope, function(clonedElement) {
-
-//                             deleteElement = clonedElement[0];
-
-//                         });
-
-//                         reactResultArray.push(<TestBenchResultAndTime
-//                                 result={ctrl.result}
-//                                 resultCompactElement={resultCompactElement}
-//                                 deleteElement={deleteElement}
-//                                 />);
-//                     }
-//                     else {
-
-//                         reactResultArray.push(<TestBenchResultAndTime
-//                                 result={ctrl.result}
-//                                 resultCompactElement={resultCompactElement}
-//                                 />, element[0]);
-//                     }
-
-//                 } else {
-
-//                     reactResultArray.push(<TestBenchResultAndTime
-//                         result={ctrl.result}
-//                         />, element[0]);
-
-//                 }
-
-//                 var reactResultEl = React.createElement('div', {className: "item-list"}, {reactResultArray});
-//                 var resultListNode = document.querySelectorAll(".test-bench-drawer-panel-result-list")[0];
-                
-//                 if (resultListNode) {
-//                     React.render(reactResultEl, resultListNode);
-//                 }
-//                 else {
-//                     React.render(reactResultArray[0], document.querySelectorAll(".test-list-header")[0]);
-//                 }
-
-//             }
-// ///
-
 
             function render() {
 
@@ -139,40 +68,29 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
                             });
 
                             React.render(<TestBenchResultAndTime
-                                    key={ctrl.result.id}
                                     result={ctrl.result}
                                     resultCompactElement={resultCompactElement}
                                     deleteElement={deleteElement}
-                                    />, element[0]);
+                                    />, element[0]); ///
                         }
                         else {
 
                             React.render(<TestBenchResultAndTime
-                                    key={ctrl.result.id}
                                     result={ctrl.result}
                                     resultCompactElement={resultCompactElement}
-                                    />, element[0]);
+                                    />, element[0]); ///
                         }
 
                     } else {
 
                         React.render(<TestBenchResultAndTime
-                            key={ctrl.result.id}
                             result={ctrl.result}
-                            />, element[0]);
-
+                            />, element[0]); ///
                     }
-                }
-                else {
-                    console.log(ctrl);
                 }
             }
 
-            scope.$watch(function() {
-
-                return ctrl.result && ctrl.result.status;
-
-            }, function(newO, oldO){
+            scope.$watchCollection('[ctrl.result, ctrl.result.status]', function(newO, oldO){
 
                 if ( newO !== null && oldO !== newO ){
                     cleanup();
@@ -185,7 +103,6 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
             scope.$on('$destroy', cleanup);
         }
     };
-
 
 });
 
