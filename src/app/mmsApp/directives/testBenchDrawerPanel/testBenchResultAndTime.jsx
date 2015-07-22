@@ -36,64 +36,61 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
 
             function render() {
 
-                if (ctrl.result && ctrl.result.status !== 'Running') {
+                if (ctrl.result) {
+                    if (ctrl.result.status !== 'Running') {
 
-                    compiledDirective = $compile(
-                        angular.element(
-                            '<test-bench-result-opener result="ctrl.result">' +
-                            '</test-bench-result-opener>'
-                        )
-                    );
-
-                    compiledDirective(scope, function(clonedElement) {
-
-                        resultCompactElement = clonedElement[0];
-
-                    });
-
-                    compiledDirective = $compile(
-                        angular.element(
-                            '<test-bench-result-deleter result="ctrl.result">' +
-                            '</test-bench-result-deleter>'
-                        )
-                    );
-                    
-                    if (element.parent()[0].classList.contains("result-list-header")) {
+                        compiledDirective = $compile(
+                            angular.element(
+                                '<test-bench-result-opener result="ctrl.result">' +
+                                '</test-bench-result-opener>'
+                            )
+                        );
 
                         compiledDirective(scope, function(clonedElement) {
 
-                            deleteElement = clonedElement[0];
+                            resultCompactElement = clonedElement[0];
 
                         });
 
-                        React.render(<TestBenchResultAndTime
-                                result={ctrl.result}
-                                resultCompactElement={resultCompactElement}
-                                deleteElement={deleteElement}
-                                />, element[0]);
-                    }
-                    else {
+                        compiledDirective = $compile(
+                            angular.element(
+                                '<test-bench-result-deleter result="ctrl.result">' +
+                                '</test-bench-result-deleter>'
+                            )
+                        );
+                        
+                        if (element.parent()[0].classList.contains("result-list-header")) {
+
+                            compiledDirective(scope, function(clonedElement) {
+
+                                deleteElement = clonedElement[0];
+
+                            });
+
+                            React.render(<TestBenchResultAndTime
+                                    result={ctrl.result}
+                                    resultCompactElement={resultCompactElement}
+                                    deleteElement={deleteElement}
+                                    />, element[0]); ///
+                        }
+                        else {
+
+                            React.render(<TestBenchResultAndTime
+                                    result={ctrl.result}
+                                    resultCompactElement={resultCompactElement}
+                                    />, element[0]); ///
+                        }
+
+                    } else {
 
                         React.render(<TestBenchResultAndTime
-                                result={ctrl.result}
-                                resultCompactElement={resultCompactElement}
-                                />, element[0]);
+                            result={ctrl.result}
+                            />, element[0]); ///
                     }
-
-                } else {
-
-                    React.render(<TestBenchResultAndTime
-                        result={ctrl.result}
-                        />, element[0]);
-
                 }
             }
 
-            scope.$watch(function() {
-
-                return ctrl.result && ctrl.result.status;
-
-            }, function(newO, oldO){
+            scope.$watchCollection('[ctrl.result, ctrl.result.status]', function(newO, oldO){
 
                 if ( newO !== null && oldO !== newO ){
                     cleanup();
@@ -106,7 +103,6 @@ angular.module('mms.testBenchDrawerPanel.resultAndTime', [
             scope.$on('$destroy', cleanup);
         }
     };
-
 
 });
 

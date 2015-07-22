@@ -90,6 +90,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
         var i;        
 
+        testBenchResults = testBenchResults.slice();
+
         for (i = 0; i < testBenchResults.length; i++ ) {
 
             if (testBenchResults[i].id === result.id) {
@@ -105,6 +107,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
                 if (testBench.id === result.testBenchId) {
 
+                    testBench.results = testBench.results.slice();
                     
                     for (i = 0; i < testBench.results.length; i++ ) {
 
