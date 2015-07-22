@@ -10,6 +10,14 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
         type = 'MoveComponents';
 
+        function doComponentsIntersect(componentA, componentB) {
+            return !( componentB.x > (componentA.x + componentA.width) ||
+                      (componentB.x + componentB.width) < componentA.x ||
+                      componentB.y > (componentA.y + componentA.height) ||
+                      (componentB.y + componentB.height) < componentA.y
+                    );
+        }
+
         operationsManager.registerOperation({
             type: type,
             operationClass: function () {
@@ -145,9 +153,12 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                     var message,
                         components,
-                        wires = [];
+                        diagramComponents,
+                        wires = [],
+                        invalidMove = false;
 
                     components = dragTargetsDescriptor.componentsBeingDragged;
+                    diagramComponents = diagram.getComponents();
 
                     if (components.length > 1) {
                         message = 'Dragging selection';
@@ -155,45 +166,71 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                         message = 'Dragging ' + components[0].label;
                     }
 
-                    angular.forEach(dragTargetsDescriptor.affectedWires, function(wire) {
+                    angular.forEach(components, function(draggedComponent) {
 
-                        var ends = wire.getEnds();
+                        if (!invalidMove) {
 
-                        if (components.indexOf(ends.end1.component) !== -1 &&
-                            components.indexOf(ends.end2.component) !== -1) {
+                            var draggedComponentBoundBox = draggedComponent.getGridBoundingBox();
 
-                            wires.push(wire);
+                            angular.forEach(diagramComponents, function(diagramComponent) {
 
+                                if (!invalidMove && diagramComponent.id !== draggedComponent.id) {
+                                    invalidMove = doComponentsIntersect(draggedComponentBoundBox, 
+                                                                        diagramComponent.getGridBoundingBox()
+                                                                        );
+                                }
+
+                            });
                         }
 
                     });
 
-                    angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
+                    if (!invalidMove) {
+                        angular.forEach(dragTargetsDescriptor.affectedWires, function(wire) {
 
-                        var parentWire = diagram.getWireById(wireAndIndex[0]);
+                            var ends = wire.getEnds();
 
-                        if (wires.indexOf(parentWire) === -1) {
+                            if (components.indexOf(ends.end1.component) !== -1 &&
+                                components.indexOf(ends.end2.component) !== -1) {
 
-                            wires.push(parentWire);
- 
-                        }
+                                wires.push(wire);
 
-                    });
+                            }
 
-                    operationsManager.commitOperation(
-                        type,
-                        {
-                            diagramId: diagram.id,
-                            components: components,
-                            wires: dragTargetsDescriptor.affectedWires,
-                            message: message,
-                            primaryTarget: dragTargetsDescriptor.primaryTarget
                         });
 
-                    //$scope.$emit('wiresChange', {
-                    //    diagramId: $scope.diagram.id,
-                    //    wires: dragTargetsDescriptor.affectedWires
-                    //});
+                        angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
+
+                            var parentWire = diagram.getWireById(wireAndIndex[0]);
+
+                            if (wires.indexOf(parentWire) === -1) {
+
+                                wires.push(parentWire);
+
+                            }
+
+                        });
+
+                        operationsManager.commitOperation(
+                            type,
+                            {
+                                diagramId: diagram.id,
+                                components: components,
+                                wires: dragTargetsDescriptor.affectedWires,
+                                message: message,
+                                primaryTarget: dragTargetsDescriptor.primaryTarget
+                            });
+
+                        //$scope.$emit('wiresChange', {
+                        //    diagramId: $scope.diagram.id,
+                        //    wires: dragTargetsDescriptor.affectedWires
+                        //});
+                    }
+                    else {
+
+                        this.cancel();
+
+                    }
 
                 };
             }
