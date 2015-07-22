@@ -28,8 +28,9 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     var i,
                         target,
                         snappedPosition,
-                        componentsBeingMoved = {},
-                        translation = null;
+                        componentsToBeMoved = [],
+                        translation = null,
+                        invalidMove = false;
 
                     for (i = 0; i < dragTargetsDescriptor.targets.length; i++) {
 
@@ -51,51 +52,67 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             };
                         }
 
-                        target.component.setPosition(
-                            snappedPosition.x,
-                            snappedPosition.y
-                        );
+                        if (target.component) {
 
+                            if (snappedPosition.x <= 0 || snappedPosition.y <= 0) {
+                                invalidMove = true;
+                            }
+                            else {
+                                componentsToBeMoved.push({target: target, snappedPosition: snappedPosition});
+                            }
+                        }
                     }
 
-                    var completelyChangedWiresById = {};
+                    if (!invalidMove) {
 
-                    angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+                        angular.forEach(componentsToBeMoved, function (component) {
 
-                        var ends = wire.getEnds();
+                            component.target.component.setPosition(
+                                component.snappedPosition.x,
+                                component.snappedPosition.y
+                            );
 
-                        if (dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end1.component) !== -1 &&
-                            dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end2.component) !== -1) {
+                        });
 
-                            // Adjust all segments
+                        var completelyChangedWiresById = {};
 
-                            //wiringService.adjustWireEndSegments(wire);                            
-                            wire.translateSegments(translation);
+                        angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
 
-                            completelyChangedWiresById[wire.getId()] = wire;
+                            var ends = wire.getEnds();
 
-                        } else {
+                            if (dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end1.component) !== -1 &&
+                                dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end2.component) !== -1) {
 
-                            // Only adjust ends
+                                // Adjust all segments
 
-                            wiringService.adjustWireEndSegments(wire);
-                        }
+                                //wiringService.adjustWireEndSegments(wire);                            
+                                wire.translateSegments(translation);
 
-                    });
+                                completelyChangedWiresById[wire.getId()] = wire;
 
-                    angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
+                            } else {
 
-                        var parentWire = diagram.getWireById(wireAndIndex[0]);
+                                // Only adjust ends
 
-                        if (!completelyChangedWiresById[parentWire.getId()]) {
+                                wiringService.adjustWireEndSegments(wire);
+                            }
 
-                            parentWire.translateSegmentEndCorner(wireAndIndex[1], translation);
- 
-                        }
+                        });
 
-                    });
+                        angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
 
-                    diagram.afterWireChange(dragTargetsDescriptor.affectedWires);                    
+                            var parentWire = diagram.getWireById(wireAndIndex[0]);
+
+                            if (!completelyChangedWiresById[parentWire.getId()]) {
+
+                                parentWire.translateSegmentEndCorner(wireAndIndex[1], translation);
+     
+                            }
+
+                        });
+
+                        diagram.afterWireChange(dragTargetsDescriptor.affectedWires);
+                    }
 
                 };
 
