@@ -226,13 +226,13 @@ define(['plugin/PluginConfig',
 
                     var tbs = Object.getOwnPropertyNames(testBenches);
                     return throttle(tbs, function (tb) {
-                        var atmFolder = testBenchFolders[testBenches[tb]];
+                        var atmFolder = testBenchFolders[testBenches[tb].name];
                         if (!atmFolder) {
-                            testBenchFolders[testBenches[tb]] = atmFolder = self.core.createNode({
+                            testBenchFolders[testBenches[tb].name] = atmFolder = self.core.createNode({
                                 base: self.metaTypes.ATMFolder,
                                 parent: self.atmFolder
                             });
-                            self.core.setAttribute(atmFolder, 'name', testBenches[tb]);
+                            self.core.setAttribute(atmFolder, 'name', testBenches[tb].name);
                         }
 
                         var tbModel = self.core.createNode({
@@ -242,16 +242,25 @@ define(['plugin/PluginConfig',
                         self.core.setAttribute(tbModel, 'name', tb.substring(tb.lastIndexOf('/') + 1));
 
                         var design = designModels.filter(function (design) {
-                            return self.core.getAttribute(design, 'name') === testBenches[tb];
+                            return self.core.getAttribute(design, 'name') === testBenches[tb].name;
                         })[0];
                         if (!design) {
                             self.createMessage(null,
-                                'Could not find design \'' + testBenches[tb] + '\' for testbench \'' + tb + '\'. TopLevelSystemUnderTest will be null', 'error');
+                                'Could not find design \'' + testBenches[tb].name + '\' for testbench \'' + tb + '\'. TopLevelSystemUnderTest will be null', 'error');
                         } else {
                             self.core.setPointer(tbModel, 'TopLevelSystemUnderTest', design);
                         }
                         self.core.setAttribute(tbModel, 'TestBenchFiles', self.artifact.descriptor.content[testbenches_zip].content);
                         self.core.setAttribute(tbModel, 'ID', tb);
+
+                        for (var propName in testBenches[tb].properties || {}) {
+                            var prop = self.core.createNode({
+                                base: self.metaTypes.Property,
+                                parent: tbModel
+                            });
+                            self.core.setAttribute(prop, 'name', propName);
+                            self.core.setAttribute(prop, 'Value', testBenches[tb].properties[propName].value);
+                        }
 
                         self.core.createNode({
                             base: self.metaTypes.Container,
