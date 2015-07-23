@@ -107,12 +107,31 @@ symbolsModule.directive(
 
                 scope.getCssClass = function () {
 
-                    var result;
+                    var result,
+                        modAngle,
+                        rotatedClass;
 
                     result = scope.component.symbol.cssClass ? scope.component.symbol.cssClass : scope.component.symbol.type;
 
                     if ( diagramContainerController.isComponentSelected( scope.component ) ) {
                         result += ' selected';
+                    }
+
+                    modAngle = scope.component.rotation % 360;
+                    rotatedClass = " rotated-" + modAngle;
+
+                    if (result.indexOf(rotatedClass) === -1) {
+                        if (modAngle !== 0) {
+
+                            result += rotatedClass;
+
+                            result = result.replace(" rotated-" + (modAngle + 90), '')
+                                           .replace(" rotated-" + (modAngle - 90), '');
+                        }
+                        else {
+                            result = result.replace(" rotated-" + (modAngle + 90), '')
+                                           .replace(" rotated-270", '');
+                        }
                     }
 
                     return result;

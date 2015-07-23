@@ -655,6 +655,16 @@ angular.module('mms.designEditor', [
 
                                 }
 
+                                // Chrome repaint issue for rotated components, need to force a redraw. 
+                                // See http://stackoverflow.com/a/3485654
+                                angular.forEach(document.getElementsByClassName("rotated-180"), function(rotatedEl) {
+
+                                    rotatedEl.style.display = 'none';
+                                    rotatedEl.offsetHeight; // no need to store this anywhere, the reference is enough
+                                    rotatedEl.style.display = '';
+
+                                });
+
 
                             }, 200);
 

@@ -252,23 +252,7 @@ DiagramComponent.prototype.rotate = function(angle) {
 
         this.rotation += angle;
 
-        this.updateTransformationMatrix();
-
-        var modAngle = this.rotation % 360;
-
-        if (modAngle !== 0) {
-
-            this.symbol.cssClass += " rotated-" + modAngle;
-
-            this.symbol.cssClass = 
-                this.symbol.cssClass.replace(" rotated-" + (modAngle + 90), '')
-                                        .replace(" rotated-" + (modAngle - 90), '');
-        }
-        else {
-            this.symbol.cssClass = 
-                this.symbol.cssClass.replace(" rotated-" + (modAngle + 90), '')
-                                        .replace(" rotated-270", '');
-        }  
+        this.updateTransformationMatrix();  
 
     } else {
         throw new Error('Angle must be number!');
