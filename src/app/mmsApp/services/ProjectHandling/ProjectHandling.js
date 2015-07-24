@@ -226,7 +226,7 @@ angular.module('mms.projectHandling', [])
             return selectedProjectId;
         };
 
-        this.selectProject = function(projectId) {
+        this.selectProject = function(projectId, branchId) {
 
             var deferred;
 
@@ -245,7 +245,7 @@ angular.module('mms.projectHandling', [])
                     connectionHandling.establishMainGMEConnection()
                         .then(function(connectionId) {
 
-                            projectService.selectProject(connectionId, projectId)
+                            projectService.selectProject(connectionId, projectId, branchId)
                                 .then(function(projectId) {
 
                                     selectedProjectId = projectId;
