@@ -181,6 +181,8 @@ angular.module('mms.designEditor', [
                             };
                         }
 
+                        position = gridService.getSnappedPosition(position);
+
                         if (componentUrl) {
                             acmImportService.importAcm(self.layoutContext, selectedContainerId,
                                     componentUrl, position)
@@ -206,6 +208,8 @@ angular.module('mms.designEditor', [
                                 y: 0
                             };
                         }
+
+                        position = gridService.getSnappedPosition(position);
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
