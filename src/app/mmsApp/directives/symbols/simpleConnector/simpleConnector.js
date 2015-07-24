@@ -14,7 +14,7 @@ angular.module(
                     x: 3,
                     y: 11
                 },
-                width: 120,
+                width: 106,
                 height: 15,
                 ports: {
                     p1: {
@@ -22,7 +22,7 @@ angular.module(
                         wireAngle: 0,
                         wireLeadIn: 20,
                         label: '',
-                        x: 117,
+                        x: 103,
                         y: 7
                     } }
             });

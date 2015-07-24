@@ -25,6 +25,13 @@ angular.module(
                             $scope.decorationTransform = 'translate(-29, -8)';
                     }
 
+                } 
+                else if ($scope.component.symbol.symbolDirective === 'simple-connector') {
+
+                        $scope.decorationTransform = 'translate(-28, 0)';
+                        $scope.portInstance = $scope.component.portInstances[0];
+                        $scope.portInstance.portSymbol.side = "left";
+
                 } else {
 
                     switch ($scope.portInstance.portSymbol.side) {
@@ -74,10 +81,12 @@ angular.module(
                 scope.decoratorColor = scope.decoratorColor || '#fff';
                 scope.portType = scope.portInstance.portSymbol.type;
 
-                if (scope.portType === 'GPIO') {
-                    scope.pinCount = 'X';
-                } else {
-                    scope.pinCount = scope.portType.split('_')[1];
+                if (scope.portType) {
+                    if (scope.portType === 'GPIO') {
+                        scope.pinCount = 'X';
+                    } else {
+                        scope.pinCount = scope.portType.split('_')[1];
+                    }
                 }
             }
 

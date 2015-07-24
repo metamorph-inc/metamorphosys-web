@@ -13,7 +13,7 @@
         font-weight: bold;
     }
 
-    &:not(.no-hover) {
+    &:not(.no-hover):not(.connector-decorated-port) {
         &:hover {
             .port-shape {
 
