@@ -200,7 +200,7 @@ define(['plugin/PluginConfig',
                 if (err) {
                     self.logger.error(err);
                     self.createMessage(self.referencedDesign,
-                        'Something went wrong when exploring the referenced design.', 'error');
+                        'Something went wrong when exploring the referenced design ' + err, 'error');
                     callback(null, self.result);
                     return;
                 }
@@ -406,6 +406,7 @@ define(['plugin/PluginConfig',
         var self = this;
         self.initializeAdmExporter();
         self.admExporter.rootPath = self.core.getPath(designNode);
+        self.admExporter.activeNode = designNode;
         self.admExporter.setupDesertCfg(self.cfgPath, function (err) {
             if (err) {
                 callback('Failed setting up desertConfigurations, err: ' + err);

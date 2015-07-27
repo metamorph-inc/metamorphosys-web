@@ -792,7 +792,13 @@ define([
         if (self.isMetaTypeOf(node, self.META.AVMComponentModel) === true) {
             return self.core.getAttribute(node, 'InstanceID') || self.core.getGuid(node);
         } else {
-            return self.core.getGuid(node);
+            var IDs = [];
+            var n = node;
+            while (n !== self.activeNode) {
+                IDs.push(self.core.getRelid(n));
+                n = self.core.getParent(n);
+            }
+            return 'id.' + IDs.join('.'); // slash (aka solidus) is not allowed in XML IDs
         }
     };
 
@@ -804,7 +810,7 @@ define([
         var types = {
             'Modelica': { type: 'modelica:ModelicaModel' },
             'CAD': { type: 'cad:CADModel'},
-            'Manufacturing': { type: 'manufacturing:ManufacturingModel'} ,
+            'Manufacturing': { type: 'manufacturing:ManufacturingModel'},
             'Cyber': { type: 'cyber:CyberModel' },
             'SPICE': { type: 'spice:SPICEModel' },
             'EDA': { type: 'eda:EDAModel' },
@@ -1436,7 +1442,7 @@ define([
                 "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
                 "@Name": self.core.getAttribute(node, 'name'),
                 "@Description": self.core.getAttribute(node, 'Description') || '',
-                "@ID": self.core.getGuid(node),
+                "@ID": self.getComponentOrDesignID(node),
                 "@xmlns": "",
                 "Container": [],
                 "Property": [],

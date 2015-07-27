@@ -197,31 +197,6 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.findFirstBranch = function() {
-
-            var deferred,
-                connectionId;
-
-            deferred = $q.defer();
-
-            connectionId = connectionHandling.getMainGMEConnectionId();
-
-            branchService.getBranches(connectionId)
-                .then(function(branches) {
-
-                    $log.debug('Available branches', branches);
-
-                    for (var branch in branches) {
-                        deferred.resolve(branch);
-                        break;
-                    }
-
-                });
-
-            return deferred.promise;
-
-        };
-
         this.getSelectedProjectId = function() {
             return selectedProjectId;
         };
