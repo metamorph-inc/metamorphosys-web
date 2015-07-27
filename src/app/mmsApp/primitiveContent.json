@@ -1,0 +1,164 @@
+[
+    {
+        "id": "simple-connector",
+        "name": "Simple Connector",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    },
+    {
+        "id": "complex-connector",
+        "name": "Complex Connector",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    },
+    {
+        "id": "123-connector",
+        "name": "123 Connector",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    },
+    {
+        "id": "ABC-connector",
+        "name": "ABC Connector",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    },
+    {
+        "id": "test1",
+        "name": "test1",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    },
+    {
+        "id": "test2",
+        "name": "test2",
+        "description": "This is a description",
+        "config": [
+            {
+                "label": "Ports",
+                "value": 1,
+                "readOnly": false
+            },
+            {
+                "label": "Min Ports",
+                "value": 1,
+                "readOnly": true
+            },
+            {
+                "label": "Max Ports",
+                "value": 2,
+                "readOnly": true
+            },
+            {
+                "label": "Instance Name",
+                "value": "Simple Connector A",
+                "readOnly": false
+            }
+        ]
+    }
+]

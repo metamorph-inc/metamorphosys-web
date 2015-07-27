@@ -1,0 +1,41 @@
+.primitive-grid {
+
+	font-size: 80%;
+    line-height: 110%;
+
+	.primitive-grid-item {
+
+		display: inline-block;
+    	white-space: nowrap;
+		margin-bottom: .15ex;
+		margin-right: 1em;
+
+		.primitive-name {
+			display: inline-block;
+			font-weight: bold;
+			text-align: right;
+			padding-right: .5ex;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width:100px;
+		}
+
+		.primitive-description {
+			display: inline-block;
+			text-align:left;
+			overflow-x: hidden;
+			overflow-y: hidden;
+			text-overflow: ellipsis;
+    		white-space: nowrap;
+			padding-right: .5ex;
+			max-width:120px;
+
+			&:hover {
+			}
+		}
+
+	}
+
+
+}

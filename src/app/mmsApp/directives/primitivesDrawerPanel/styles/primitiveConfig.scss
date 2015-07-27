@@ -1,0 +1,48 @@
+.primitive-properties-wrapper {
+
+    .md-button[disabled] {
+        opacity: 0.18;
+    }
+
+    .primitive-config-properties {
+        font-size: 90%;
+
+        ul {
+            padding-left: 20px;
+            list-style-type: none;
+        }
+
+        input {
+            color: #555;
+        }
+
+        label {
+            margin-right: 1em;
+            margin-right: 1em;
+            width: 20ex;
+            text-align: right;
+        }
+
+        .save-button-container {
+
+            text-align: right;
+
+            .save-button {
+                margin-top: 1em;
+                border: 1px solid #888;
+            }
+
+        }
+
+    }
+
+    &.editable {
+
+        ul {
+
+            li {
+                margin-bottom: 1ex;
+            }
+        }
+    }
+}

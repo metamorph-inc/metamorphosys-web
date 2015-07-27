@@ -12,6 +12,7 @@ require('./operationCommitHandlersForGME.js');
 require('../diagramContainer/diagramContainer.js');
 require('../svgDiagram/svgDiagram.js');
 require('../testBenchDrawerPanel/testBenchDrawerPanel.jsx');
+require('../primitivesDrawerPanel/primitivesDrawerPanel.jsx');
 
 angular.module('mms.designEditor', [
         'mms.designEditor.footerDrawer',
@@ -23,8 +24,8 @@ angular.module('mms.designEditor', [
         'mms.diagramContainer',
         'mms.utils',
         'mms.dndService',
-        'mms.testBenchDrawerPanel'
-
+        'mms.testBenchDrawerPanel',
+        'mms.primitivesDrawerPanel'
     ])
     .directive('designEditor', function(dndService) {
 
