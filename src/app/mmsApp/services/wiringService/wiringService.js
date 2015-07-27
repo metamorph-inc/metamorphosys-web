@@ -21,7 +21,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
             },
 
             DEFAULT_ROUTER = {
-                type: 'SimpleRouter',
+                type: 'OrthogonalRouter',
                 params: null
             };
 
@@ -47,6 +47,12 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     id: 'simpleRouter',
                     label: 'Straight wire',
                     type: 'SimpleRouter'
+                },
+
+                {
+                    id: 'autoRouter',
+                    label: 'Auto Route',
+                    type: 'OrthogonalRouter'
                 }
 
 

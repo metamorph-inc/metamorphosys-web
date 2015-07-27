@@ -2,7 +2,7 @@
 
 angular.module('mms.designEditor.componentWiresContainer.react', [])
     .directive('componentWiresContainerReact',
-        function(diagramService, gridService) {
+        function(diagramService, gridService, wiringService) {
 
             function ComponentWiresContainerController() {
             }
@@ -61,6 +61,15 @@ angular.module('mms.designEditor.componentWiresContainer.react', [])
                             if (diagram) {
                                 diagram.addEventListener('wireChange', render);
                                 diagram.addEventListener('selectionChange', render);
+
+                                scope.routerTypes = wiringService.getRouterTypes();
+
+                                scope.selectedRouter = scope.routerTypes[0];
+
+                                // TODO AutoRouter: have this turned off until default GME position place components in valid positions.
+                                // if (scope.selectedRouter.id === 'autoRouter') {
+                                //     wiringService.routeDiagram(diagram, scope.selectedRouter.type);
+                                // }
                             }
 
                             if (grid) {
