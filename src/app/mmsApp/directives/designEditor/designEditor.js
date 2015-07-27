@@ -260,13 +260,45 @@ angular.module('mms.designEditor', [
 
                                         if (diagram) {
 
+                                            var wireEnd1 = wire.getEnd1();
+                                            var wireEnd2 = wire.getEnd2();
                                             node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
-                                            node.makePointer('src', wire.getEnd1().port.id);
-                                            node.makePointer('dst', wire.getEnd2().port.id);
+                                            node.makePointer('src', wireEnd1.port.id);
+                                            node.makePointer('dst', wireEnd2.port.id);
 
                                             wire.setId(node.id);
                                             diagram.addWire(wire);
 
+                                            var port1IsCandidate = wireEnd1.component.metaType === 'Container';
+                                            nodeService.loadNode(layoutContext, wireEnd1.port.id)
+                                                .then(function(port1) {
+
+                                                    console.log(port1);
+                                                    var def = port1.getAttribute('Definition');
+                                                    console.log(def);
+
+                                                    // If untyped
+                                                    if (def === '') {
+                                                        // copy content from the other guy.
+                                                        nodeService.loadNode(layoutContext, wireEnd2.port.id)
+                                                            .then(function(port2) {
+                                                                // Copy definition
+                                                                port1.setAttribute('Definition', port2.getAttribute('Definition'));
+
+                                                                // Copy content
+                                                                var nodesToCopy = {};
+                                                                port2.loadChildren(layoutContext)
+                                                                    .then(function(children) {
+                                                                        children.forEach(function(child) {
+                                                                            nodesToCopy[child.id] = child;
+                                                                        });
+
+                                                                        nodeService.copyMoreNodes(layoutContext, port1.id, nodesToCopy);
+                                                                    });
+                                                            });
+                                                    }
+
+                                                });
 
                                         }
 
