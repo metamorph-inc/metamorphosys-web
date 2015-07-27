@@ -291,10 +291,32 @@ angular.module('mms.designEditor', [
                                                                     });
                                                             };
 
-                                                            // If untyped
-                                                            if (port1.getAttribute('Definition') === '') {
-                                                                // copy content from the other guy
+                                                            var port1Def = port1.getAttribute('Definition');
+                                                            var port2Def = port2.getAttribute('Definition');
+                                                            var port1IsTyped = port1Def !== '';
+                                                            var port2IsTyped = port2Def !== '';
+
+                                                            if (port1IsTyped === false && port2IsTyped === true)
+                                                            {
+                                                                // Transfer port2's type to port1
                                                                 CloneConnector(port2, port1);
+                                                            }
+                                                            else if (port1IsTyped === true && port2IsTyped === false)
+                                                            {
+                                                                // Transfer port1's type to port2
+                                                                CloneConnector(port1, port2);
+                                                            }
+                                                            else if (port1IsTyped === true && port2IsTyped === true)
+                                                            {
+                                                                console.log('both of these connectors are typed');
+                                                            }
+                                                            else if (port1IsTyped === false && port2IsTyped === false)
+                                                            {
+                                                                console.log('neither of these connectors are typed');
+                                                            }
+                                                            else
+                                                            {
+                                                                console.log('how is this even possible');
                                                             }
                                                         });
                                                 });
