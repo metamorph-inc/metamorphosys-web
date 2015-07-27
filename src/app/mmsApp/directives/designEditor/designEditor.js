@@ -269,37 +269,35 @@ angular.module('mms.designEditor', [
                                             wire.setId(node.id);
                                             diagram.addWire(wire);
 
-                                            var port1IsCandidate = wireEnd1.component.metaType === 'Container';
                                             nodeService.loadNode(layoutContext, wireEnd1.port.id)
                                                 .then(function(port1) {
 
-                                                    console.log(port1);
-                                                    var def = port1.getAttribute('Definition');
-                                                    console.log(def);
+                                                    nodeService.loadNode(layoutContext, wireEnd2.port.id)
+                                                        .then(function(port2) {
 
-                                                    // If untyped
-                                                    if (def === '') {
-                                                        // copy content from the other guy.
-                                                        nodeService.loadNode(layoutContext, wireEnd2.port.id)
-                                                            .then(function(port2) {
-                                                                // Copy definition
-                                                                port1.setAttribute('Definition', port2.getAttribute('Definition'));
+                                                            var CloneConnector = function (srcConnector, targetConnector) {
+                                                                var definition = srcConnector.getAttribute('Definition');
+                                                                targetConnector.setAttribute('Definition', definition);
 
                                                                 // Copy content
                                                                 var nodesToCopy = {};
-                                                                port2.loadChildren(layoutContext)
-                                                                    .then(function(children) {
-                                                                        children.forEach(function(child) {
+                                                                srcConnector.loadChildren(layoutContext)
+                                                                    .then(function (children) {
+                                                                        children.forEach(function (child) {
                                                                             nodesToCopy[child.id] = child;
                                                                         });
 
-                                                                        nodeService.copyMoreNodes(layoutContext, port1.id, nodesToCopy);
+                                                                        nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
                                                                     });
-                                                            });
-                                                    }
+                                                            };
 
+                                                            // If untyped
+                                                            if (port1.getAttribute('Definition') === '') {
+                                                                // copy content from the other guy
+                                                                CloneConnector(port2, port1);
+                                                            }
+                                                        });
                                                 });
-
                                         }
 
                                         nodeService.completeTransaction(layoutContext);
