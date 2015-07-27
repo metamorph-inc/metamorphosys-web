@@ -31,8 +31,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             wireLeadIn;
 
         numberOfPorts = somePorts.length;
-
-        offset = parameters.portWireLength + parameters.portSpacing;
+        
+        offset = parameters.portSpacing;        
 
         if (side === 'right' || side === 'left') {
             offset += parameters.topPortPadding;
@@ -158,14 +158,14 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         left = portDescriptors.left || [];
 
         width = Math.max(
-            parameters.portSpacing * ( top.length + 3 ),
-            parameters.portSpacing * ( bottom.length + 3),
+            parameters.portSpacing * ( top.length + 2 ),
+            parameters.portSpacing * ( bottom.length + 2),
             parameters.minWidth
         );
 
         height = Math.max(
-            parameters.portSpacing * ( left.length + 3) + parameters.topPortPadding + parameters.bottomPortPadding,
-            parameters.portSpacing * ( right.length + 3) + parameters.topPortPadding + parameters.bottomPortPadding,
+            parameters.portSpacing * ( left.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
+            parameters.portSpacing * ( right.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
             parameters.minHeight
         );
 
@@ -201,7 +201,10 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         var symbol,
             parameters,
             portsAndSizes,
-            cssClass;
+            cssClass,
+
+            boxWidth,
+            boxHeight;
 
         parameters = angular.extend({
 
@@ -211,10 +214,14 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             bottomPortPadding: 0,
             portLabelHorizontalPadding: 5,
             portLabelVerticalPadding: 3,
-            minWidth: 140,
-            minHeight: 80,
+            minWidth: 120,
+            minHeight: 60,
             justifyPorts: false,
-            portWireLeadInIncrement: 0
+            portWireLeadInIncrement: 0,
+            hasTopPort: portDescriptors.top.length > 0,
+            hasBottomPort: portDescriptors.bottom.length > 0,
+            hasLeftPort: portDescriptors.left.length > 0,
+            hasRightPort: portDescriptors.right.length > 0
 
         }, givenParameters || {});
 
@@ -230,6 +237,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                 cssClass += ' parameters.cssClass';
             }
 
+            boxWidth = portsAndSizes.width - parameters.portWireLength * (parameters.hasLeftPort + parameters.hasRightPort);
+            boxHeight = portsAndSizes.height - parameters.portWireLength * (parameters.hasTopPort + parameters.hasBottomPort);
+
             symbol = angular.extend(descriptor,
                 {
                     type: type,
@@ -238,14 +248,18 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     svgDecoration: null,
                     labelPosition: {
                         x: portsAndSizes.width / 2,
-                        y: parameters.portWireLength + 24
+                        y: parameters.hasTopPort * parameters.portWireLength + 24
                     },
                     portWireLength: parameters.portWireLength,
                     width: portsAndSizes.width,
                     height: portsAndSizes.height,
                     ports: portsAndSizes.ports,
-                    boxHeight: portsAndSizes.height - parameters.portWireLength,
-                    boxWidth: portsAndSizes.width - 2 * parameters.portWireLength
+                    boxHeight: boxHeight,
+                    boxWidth: boxWidth,
+                    hasTopPort: portDescriptors.top.length > 0,
+                    hasBottomPort: portDescriptors.bottom.length > 0,
+                    hasLeftPort: portDescriptors.left.length > 0,
+                    hasRightPort: portDescriptors.right.length > 0
                 });
 
 
