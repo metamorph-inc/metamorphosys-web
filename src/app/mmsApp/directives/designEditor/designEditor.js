@@ -301,35 +301,6 @@ angular.module('mms.designEditor', [
                                                                 {
                                                                     // Transfer port2's type to port1
                                                                     CloneConnector(port2, port1);
-
-                                                                    var getOtherEnds = function(port, name1, name2) {
-                                                                        return port.getCollectionPaths(name1)
-                                                                            .map(function (id) {
-                                                                                return nodeService.loadNode(layoutContext, id)
-                                                                                    .then(function (theConnection) {
-                                                                                        return theConnection.getPointer(name2);
-                                                                                    })
-                                                                                    .then(function (theOtherEndPointer) {
-                                                                                        return theOtherEndPointer.to;
-                                                                                    })
-                                                                                    .then(function (theOtherEndId) {
-                                                                                        return nodeService.loadNode(layoutContext, theOtherEndId);
-                                                                                    })
-                                                                                    .then(function (otherEnd) {
-                                                                                        return otherEnd;
-                                                                                    });
-                                                                            });
-                                                                    };
-
-                                                                    var sources = getOtherEnds(port1, 'src', 'dst');
-                                                                    var destinations = getOtherEnds(port1, 'dst', 'src');
-
-                                                                    sources.then(function(sib) {
-                                                                        console.log(sib.getAttribute('Definition'));
-                                                                    });
-                                                                    destinations.then(function(sib) {
-                                                                        console.log(sib.getAttribute('Definition'));
-                                                                    });
                                                                 }
                                                                 else if (port1IsTyped === true && port2IsTyped === false)
                                                                 {
