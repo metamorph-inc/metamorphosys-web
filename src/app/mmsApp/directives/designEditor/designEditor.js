@@ -302,51 +302,33 @@ angular.module('mms.designEditor', [
                                                                     // Transfer port2's type to port1
                                                                     CloneConnector(port2, port1);
 
-                                                                    var siblingConnectors = [];
+                                                                    var getOtherEnds = function(port, name1, name2) {
+                                                                        return port.getCollectionPaths(name1)
+                                                                            .map(function (id) {
+                                                                                return nodeService.loadNode(layoutContext, id)
+                                                                                    .then(function (theConnection) {
+                                                                                        return theConnection.getPointer(name2);
+                                                                                    })
+                                                                                    .then(function (theOtherEndPointer) {
+                                                                                        return theOtherEndPointer.to;
+                                                                                    })
+                                                                                    .then(function (theOtherEndId) {
+                                                                                        return nodeService.loadNode(layoutContext, theOtherEndId);
+                                                                                    })
+                                                                                    .then(function (otherEnd) {
+                                                                                        return otherEnd;
+                                                                                    });
+                                                                            });
+                                                                    };
 
-                                                                    var sources = port1.getCollectionPaths('src')
-                                                                        .map(function (id) {
-                                                                            return nodeService.loadNode(layoutContext, id)
-                                                                                .then(function (theConnection) {
-                                                                                    return theConnection.getPointer('dst');
-                                                                                })
-                                                                                .then(function (theOtherEndPointer) {
-                                                                                    return theOtherEndPointer.to;
-                                                                                })
-                                                                                .then(function (theOtherEndId) {
-                                                                                    return nodeService.loadNode(layoutContext, theOtherEndId);
-                                                                                })
-                                                                                .then(function (otherEnd) {
-                                                                                    return otherEnd;
-                                                                                });
-                                                                        });
+                                                                    var sources = getOtherEnds(port1, 'src', 'dst');
+                                                                    var destinations = getOtherEnds(port1, 'dst', 'src');
 
-                                                                    var destinations = port1.getCollectionPaths('dst')
-                                                                        .map(function (id) {
-                                                                            return nodeService.loadNode(layoutContext, id)
-                                                                                .then(function (theConnection) {
-                                                                                    return theConnection.getPointer('src');
-                                                                                })
-                                                                                .then(function (theOtherEndPointer) {
-                                                                                    return theOtherEndPointer.to;
-                                                                                })
-                                                                                .then(function (theOtherEndId) {
-                                                                                    return nodeService.loadNode(layoutContext, theOtherEndId);
-                                                                                })
-                                                                                .then(function (otherEnd) {
-                                                                                    return otherEnd;
-                                                                                });
-                                                                        });
-
-                                                                    $q.all(concat(sources, destinations))
-                                                                        .then(function (sc) {
-                                                                            sc.forEach(function (thing) {
-                                                                                siblingConnectors.push(thing);
-                                                                            })
+                                                                    sources.then(function(sib) {
+                                                                        console.log(sib.getAttribute('Definition'));
                                                                     });
-
-                                                                    siblingConnectors.forEach(function (thing) {
-                                                                        console.log(thing.getAttribute('Definition'))
+                                                                    destinations.then(function(sib) {
+                                                                        console.log(sib.getAttribute('Definition'));
                                                                     });
                                                                 }
                                                                 else if (port1IsTyped === true && port2IsTyped === false)
