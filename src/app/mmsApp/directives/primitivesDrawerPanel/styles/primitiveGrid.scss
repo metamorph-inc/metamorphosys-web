@@ -1,3 +1,5 @@
+@import '../../../styles/_colors';
+
 .primitive-grid {
 
 	font-size: 80%;
@@ -6,26 +8,56 @@
 
 	.primitive-grid-item {
 			
-		display: inline-block;
-		white-space: nowrap;
-		margin-bottom: 1em;
-		margin-right: 1em;
-		border: white solid 1px;
+		width: 390px;
+        display: inline-block;
+        background: transparent;
+        cursor: copy;
+        margin: 1ex;
+        vertical-align: top;
+        position: relative;
 		
+		.primitive-svg-wrapper {
+			display: block;
+            position: absolute;
+            top: 48px;
+            left: 13px;
+            max-height: 100px;
+            max-width: 100px;
+            margin: 1ex;
+            opacity: 1;
+            transition: opacity 200ms;
+
+            .primitive-svg {
+            	width: 100%;
+            	height: 100%;
+            }
+		}
+
 		.primitive-name {
 			
-			font-weight: bold;
-			/*max-width: 200px;*/
-			padding-bottom: 6px;
+            background-color: slategrey;
+            color: #fff;
+            margin: 0;
+            padding: 0 10px;
+            line-height: 35px;
+            height: 35px;
+            font-size: larger;
+
 		}
+
+		border-left: 1px solid $baseBGColor;
+        border-right: 1px solid $baseBGColor;
+        border-bottom: 1px solid $baseBGColor;
 
 		.primitive-description {
 			
-			text-align: left;
-			/*max-width: 200px;*/		
+			padding: 10px 10px 10px 125px;
+            text-align: left;
+            font-size: 100%;
+            height: 80px;
+            border: slategrey solid 1px;
 		}
 
 	}
-
 
 }

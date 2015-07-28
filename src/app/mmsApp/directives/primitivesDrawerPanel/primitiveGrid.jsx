@@ -14,62 +14,51 @@ class PrimitiveGrid extends React.Component {
 
     componentDidMount() {
 
-        let nameWidths = [],
-            descriptionWidths = [];
+        // let nameWidths = [],
+        //     descriptionWidths = [];
 
 
-        for (let i in this.refs) {
+        // for (let i in this.refs) {
 
-            // let itemEl = React.findDOMNode(this.refs[i]);
-            //
-            // itemEls.push(itemEl);
+        //     let item = this.refs[i];
 
-            let item = this.refs[i];
+        //     nameWidths.push(item.getNameWidth());
+        //     descriptionWidths.push(item.getDescriptionWidth());
 
-            nameWidths.push(item.getNameWidth());
-            descriptionWidths.push(item.getDescriptionWidth());
+        // }
 
-        }
+        // let widestNameWidth = Math.max.apply(null, nameWidths);
+        // let widestDescriptionWidth = Math.max.apply(null, descriptionWidths);
+        // let widestSvgWidth = 150;
+        // let widestSvgHeight = 150;
 
-        let widestNameWidth = Math.max.apply(null, nameWidths);
-        let widestDescriptionWidth = Math.max.apply(null, descriptionWidths);
-        let widestSvgWidth = 150;
-        let widestSvgHeight = 150;
+        // let itemWidth = widestNameWidth + widestDescriptionWidth + widestSvgWidth;
+        // let minItemHeight = widestSvgHeight;        
 
-        let itemWidth = widestNameWidth + widestDescriptionWidth + widestSvgWidth;
-        let minItemHeight = widestSvgHeight;        
+        // for (let i in this.refs) {
 
-        for (let i in this.refs) {
+        //     let item = this.refs[i];
 
-            let item = this.refs[i];
+        //     item.setWidth(itemWidth);
+        //     item.setMinHeight(minItemHeight);
 
-            item.setWidth(itemWidth);
-            item.setMinHeight(minItemHeight);
-
-        }
+        // }
 
     }
 
 }
 
-
 class PrimitiveGridItem extends React.Component {
 
     render() {
 
-        var divStyle = {
-              fill: 'white',
-              stroke:'black',
-              strokeWidth:5, // note the capital 'W' here
-              fillRule:'nonzero' // 'ms' is the only lowercase vendor prefix
-            };
+        var primitiveSvgTag = '<use xlink:href="images/symbols.svg#icon-simpleConnector" />';
 
-        var svgEl = <div className="primitive-svg" ref="svg">
-                        <svg height="100" width="100">
-                          <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
-                        </svg> 
+        var svgEl = <div className="primitive-svg-wrapper" ref="svg">
+                        <svg className="primitive-svg" viewBox={this.props.primitive.svgViewBox} dangerouslySetInnerHTML={{__html: primitiveSvgTag }} />
                     </div>;
 
+        // var primitivePngEl = <img className="primitive-png" src={"images/" + "simple-connector" /*this.props.primitive.id*/ + ".png"} />
 
         var nameEl = <div className="primitive-name" title={this.props.primitive.name} ref="name">
                         {this.props.primitive.name}
