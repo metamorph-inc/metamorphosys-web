@@ -291,33 +291,84 @@ angular.module('mms.designEditor', [
                                                                     });
                                                             };
 
-                                                            var port1Def = port1.getAttribute('Definition');
-                                                            var port2Def = port2.getAttribute('Definition');
-                                                            var port1IsTyped = port1Def !== '';
-                                                            var port2IsTyped = port2Def !== '';
+                                                            var ConnectorTypeInference = function(port1, port2) {
+                                                                var port1Def = port1.getAttribute('Definition');
+                                                                var port2Def = port2.getAttribute('Definition');
+                                                                var port1IsTyped = port1Def !== '';
+                                                                var port2IsTyped = port2Def !== '';
 
-                                                            if (port1IsTyped === false && port2IsTyped === true)
-                                                            {
-                                                                // Transfer port2's type to port1
-                                                                CloneConnector(port2, port1);
-                                                            }
-                                                            else if (port1IsTyped === true && port2IsTyped === false)
-                                                            {
-                                                                // Transfer port1's type to port2
-                                                                CloneConnector(port1, port2);
-                                                            }
-                                                            else if (port1IsTyped === true && port2IsTyped === true)
-                                                            {
-                                                                console.log('both of these connectors are typed');
-                                                            }
-                                                            else if (port1IsTyped === false && port2IsTyped === false)
-                                                            {
-                                                                console.log('neither of these connectors are typed');
-                                                            }
-                                                            else
-                                                            {
-                                                                console.log('how is this even possible');
-                                                            }
+                                                                if (port1IsTyped === false && port2IsTyped === true)
+                                                                {
+                                                                    // Transfer port2's type to port1
+                                                                    CloneConnector(port2, port1);
+
+                                                                    var siblingConnectors = [];
+
+                                                                    var sources = port1.getCollectionPaths('src')
+                                                                        .map(function (id) {
+                                                                            return nodeService.loadNode(layoutContext, id)
+                                                                                .then(function (theConnection) {
+                                                                                    return theConnection.getPointer('dst');
+                                                                                })
+                                                                                .then(function (theOtherEndPointer) {
+                                                                                    return theOtherEndPointer.to;
+                                                                                })
+                                                                                .then(function (theOtherEndId) {
+                                                                                    return nodeService.loadNode(layoutContext, theOtherEndId);
+                                                                                })
+                                                                                .then(function (otherEnd) {
+                                                                                    return otherEnd;
+                                                                                });
+                                                                        });
+
+                                                                    var destinations = port1.getCollectionPaths('dst')
+                                                                        .map(function (id) {
+                                                                            return nodeService.loadNode(layoutContext, id)
+                                                                                .then(function (theConnection) {
+                                                                                    return theConnection.getPointer('src');
+                                                                                })
+                                                                                .then(function (theOtherEndPointer) {
+                                                                                    return theOtherEndPointer.to;
+                                                                                })
+                                                                                .then(function (theOtherEndId) {
+                                                                                    return nodeService.loadNode(layoutContext, theOtherEndId);
+                                                                                })
+                                                                                .then(function (otherEnd) {
+                                                                                    return otherEnd;
+                                                                                });
+                                                                        });
+
+                                                                    $q.all(concat(sources, destinations))
+                                                                        .then(function (sc) {
+                                                                            sc.forEach(function (thing) {
+                                                                                siblingConnectors.push(thing);
+                                                                            })
+                                                                    });
+
+                                                                    siblingConnectors.forEach(function (thing) {
+                                                                        console.log(thing.getAttribute('Definition'))
+                                                                    });
+                                                                }
+                                                                else if (port1IsTyped === true && port2IsTyped === false)
+                                                                {
+                                                                    // Transfer port1's type to port2
+                                                                    CloneConnector(port1, port2);
+                                                                }
+                                                                else if (port1IsTyped === true && port2IsTyped === true)
+                                                                {
+                                                                    console.log('both of these connectors are typed');
+                                                                }
+                                                                else if (port1IsTyped === false && port2IsTyped === false)
+                                                                {
+                                                                    console.log('neither of these connectors are typed');
+                                                                }
+                                                                else
+                                                                {
+                                                                    console.log('how is this even possible');
+                                                                }
+                                                            };
+
+                                                            ConnectorTypeInference(port1, port2);
                                                         });
                                                 });
                                         }
