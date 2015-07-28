@@ -38,6 +38,22 @@ angular.module('mms.designVisualization.diagramService', [
             dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService, mmsUtils);
             cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService, pcbService);
 
+            this.updateComponentsPosition = function(diagramId, componentId, newPosition) {
+
+                var diagram;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    diagram.updateComponentPosition(componentId, newPosition);
+
+                    diagram.sortComponentsByZ();
+
+                }
+
+            };
+
             this.updateComponentsAndItsWiresPosition = function(diagramId, componentId, newPosition) {
 
                 var diagram,
@@ -57,8 +73,23 @@ angular.module('mms.designVisualization.diagramService', [
 
                     });
 
-                    diagram.sortComponentsByZ();
                     diagram.afterWireChange(setOfWires);
+
+                    diagram.sortComponentsByZ();
+
+                }
+
+            };
+
+            this.updateComponentsRotation = function(diagramId, componentId, newRotation) {
+
+                var diagram;
+
+                diagram = diagrams[diagramId];
+
+                if (angular.isObject(diagram)) {
+
+                    diagram.updateComponentRotation(componentId, newRotation);
 
                 }
 

@@ -139,92 +139,94 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
             }
         );
 
-        var startPortPosition = wireStart.port.getGridPosition(),
-            startPortLeadInPosition = wireStart.port.getGridPosition(true),
-            startPortWireAngle = wireStart.port.getGridWireAngle(),
-            endPortPosition = port.getGridPosition(),
-            endPortLeadInPosition = port.getGridPosition(true),
-            endPortWireAngle = port.getGridWireAngle(),
-            end2 = endPortLeadInPosition;
+        if ($scope.selectedRouter.id !== 'autoRouter') {
+            var startPortPosition = wireStart.port.getGridPosition(),
+                startPortLeadInPosition = wireStart.port.getGridPosition(true),
+                startPortWireAngle = wireStart.port.getGridWireAngle(),
+                endPortPosition = port.getGridPosition(),
+                endPortLeadInPosition = port.getGridPosition(true),
+                endPortWireAngle = port.getGridWireAngle(),
+                end2 = endPortLeadInPosition;
 
-        if ( angular.equals($scope.newWireLine.activeSegmentStartPosition, startPortLeadInPosition) ) {
-            if ( [0, 180, 360].indexOf(startPortWireAngle) !== -1 && [0, 180, 360].indexOf(endPortWireAngle) !== -1 ||
-                 [90, 270].indexOf(startPortWireAngle) !== -1 && [90, 270].indexOf(endPortWireAngle) !== -1 ) {
-                
-                var maxPortPosition,
-                    maxPortLeadIn,
-                    minPortPosition,
-                    minPortLeadIn,
-                    startIsMin,
-                    randomOffset;
-
-                if ( startPortWireAngle === 0 || startPortWireAngle === 180 || startPortWireAngle === 360 ) {
+            if ( angular.equals($scope.newWireLine.activeSegmentStartPosition, startPortLeadInPosition) ) {
+                if ( [0, 180, 360].indexOf(startPortWireAngle) !== -1 && [0, 180, 360].indexOf(endPortWireAngle) !== -1 ||
+                     [90, 270].indexOf(startPortWireAngle) !== -1 && [90, 270].indexOf(endPortWireAngle) !== -1 ) {
                     
-                    startIsMin = startPortPosition.x < endPortPosition.x;
-                    maxPortPosition = startIsMin ? endPortPosition.x : startPortPosition.x;
-                    maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
-                    minPortPosition = startIsMin ? startPortPosition.x : endPortPosition.x;
-                    minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
+                    var maxPortPosition,
+                        maxPortLeadIn,
+                        minPortPosition,
+                        minPortLeadIn,
+                        startIsMin,
+                        randomOffset;
 
-                    if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
-                        end2 = endPortLeadInPosition;
-                    }
-                    else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
-                        end2 = { x: (minPortPosition + minPortLeadIn), y: endPortPosition.y };
-                    } 
-                    else {
-                        randomOffset = Math.floor(Math.random() * 5 - 5);
-                        end2 = { x: (minPortPosition + maxPortPosition) / 2 + randomOffset, y: endPortPosition.y };
-                    }
-                }
-                else {
+                    if ( startPortWireAngle === 0 || startPortWireAngle === 180 || startPortWireAngle === 360 ) {
+                        
+                        startIsMin = startPortPosition.x < endPortPosition.x;
+                        maxPortPosition = startIsMin ? endPortPosition.x : startPortPosition.x;
+                        maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
+                        minPortPosition = startIsMin ? startPortPosition.x : endPortPosition.x;
+                        minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
 
-                    startIsMin = startPortPosition.y < endPortPosition.y;
-                    maxPortPosition = startIsMin ? endPortPosition.y : startPortPosition.y;
-                    maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
-                    minPortPosition = startIsMin ? startPortPosition.y : endPortPosition.y;
-                    minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
-
-                    if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
-                        end2 = endPortLeadInPosition;
-                    }
-                    else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
-                        end2 = { x: endPortPosition.x, y: (minPortPosition + minPortLeadIn) };
+                        if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
+                            end2 = endPortLeadInPosition;
+                        }
+                        else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
+                            end2 = { x: (minPortPosition + minPortLeadIn), y: endPortPosition.y };
+                        } 
+                        else {
+                            randomOffset = Math.floor(Math.random() * 5 - 5);
+                            end2 = { x: (minPortPosition + maxPortPosition) / 2 + randomOffset, y: endPortPosition.y };
+                        }
                     }
                     else {
-                        randomOffset = Math.floor(Math.random() * 5 - 5);
-                        end2 = { x: endPortPosition.x, y: (maxPortPosition + minPortPosition) / 2 + randomOffset };
-                    }
 
+                        startIsMin = startPortPosition.y < endPortPosition.y;
+                        maxPortPosition = startIsMin ? endPortPosition.y : startPortPosition.y;
+                        maxPortLeadIn = startIsMin ? port.portSymbol.wireLeadIn : wireStart.port.portSymbol.wireLeadIn;
+                        minPortPosition = startIsMin ? startPortPosition.y : endPortPosition.y;
+                        minPortLeadIn = startIsMin ? wireStart.port.portSymbol.wireLeadIn : port.portSymbol.wireLeadIn;
+
+                        if ( minPortPosition + maxPortLeadIn < maxPortPosition - maxPortLeadIn ) {
+                            end2 = endPortLeadInPosition;
+                        }
+                        else if ( (minPortPosition + minPortLeadIn) < maxPortPosition ) {
+                            end2 = { x: endPortPosition.x, y: (minPortPosition + minPortLeadIn) };
+                        }
+                        else {
+                            randomOffset = Math.floor(Math.random() * 5 - 5);
+                            end2 = { x: endPortPosition.x, y: (maxPortPosition + minPortPosition) / 2 + randomOffset };
+                        }
+
+                    }
                 }
             }
-        }
-        
 
 
-        wire.makeSegmentsFromParameters(
-            $scope.newWireLine.lockedSegments.concat(
+
+            wire.makeSegmentsFromParameters(
+                $scope.newWireLine.lockedSegments.concat(
+                    wiringService.getSegmentsBetweenPositions({
+                            end1: $scope.newWireLine.activeSegmentStartPosition,
+                            end2: end2
+                        },
+                        $scope.selectedRouter.type,
+                        $scope.selectedRouter.params,
+                        true
+                    )
+                )
+            );
+
+            wire.appendSegmentFromParameters(
                 wiringService.getSegmentsBetweenPositions({
-                        end1: $scope.newWireLine.activeSegmentStartPosition,
-                        end2: end2
+                        end1: end2,
+                        end2: port.getGridPosition()
                     },
                     $scope.selectedRouter.type,
                     $scope.selectedRouter.params,
-                    true
-                )
-            )
-        );
-
-        wire.appendSegmentFromParameters(
-            wiringService.getSegmentsBetweenPositions({
-                    end1: end2,
-                    end2: port.getGridPosition()
-                },
-                $scope.selectedRouter.type,
-                $scope.selectedRouter.params,
-                false
-            )[0]
-        );
+                    false
+                )[0]
+            );
+        }
 
         $rootScope.$emit('wireCreationMustBeDone', wire);
 
@@ -266,7 +268,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         latestMouseEvent = $event;
 
-        if (wireStart) {
+        if (wireStart && $scope.selectedRouter.type === 'elbowRouter') {
 
             $scope.newWireLine = $scope.newWireLine || {};
             $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
@@ -325,9 +327,15 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseUp = function() {
 
-        if (wireStart) {
+        if (wireStart && $scope.selectedRouter.id !== 'autoRouter') {
             addCornerToNewWireLine();
         }
+
+        // TODO AutoRouter: This should create a 'waypoint'. This would create a wire from the wireStart point
+        // to the snapped position. The snapped position would be considered a temporary 'port' assigned to no
+        // component. Once another port is mouseDowned, run the auto router on each of these segment 'wires' 
+        // separately. Once all routes have been found and nudged, place these intermediary wires as segments 
+        // in the wire defined by the two end ports.
 
     };
 
@@ -339,6 +347,16 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
             if (wireStart.port !== port) {
                 finishWire(component, port);
+
+                if ($scope.selectedRouter.id === 'autoRouter') {
+                    $timeout(function() {
+
+                        wiringService.routeDiagram($scope.diagram, $scope.selectedRouter.type);
+
+                    }, 50);
+
+                }
+                
             } else {
                 cancelWire();
             }

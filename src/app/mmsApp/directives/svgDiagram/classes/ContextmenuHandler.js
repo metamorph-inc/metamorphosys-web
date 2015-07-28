@@ -78,15 +78,26 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
         angular.forEach($scope.routerTypes, function(routerType) {
 
-            wiringMenu.push({
-                id: routerType.id,
-                label: routerType.label,
-                action: function() {
-                    wiringService.routeWire(wire, routerType.type, routerType.params);
-                    $rootScope.$emit('wireSegmentsMustBeSaved', wire);
-                }
-            });
-
+            if (routerType.id === 'autoRouter') {
+                wiringMenu.push({
+                    id: routerType.id,
+                    label: routerType.label,
+                    action: function() {
+                        wiringService.routeDiagram($scope.diagram, routerType.type, routerType.params);
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                });
+            }
+            else {
+                wiringMenu.push({
+                    id: routerType.id,
+                    label: routerType.label,
+                    action: function() {
+                        wiringService.routeWire(wire, routerType.type, routerType.params);
+                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                    }
+                });
+            }
         });
 
         $scope.contextMenuData = [{
@@ -193,7 +204,11 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
                         ga('send', 'event', 'wire', 'redraw', wire.getId());
 
-                        wiringService.routeWire(wire, routerType.type, routerType.params);
+                        // TODO AutoRouter: For now this will re-route component wires using elbow-horizontal.
+                        // In the future the orthogonal router should have a routeWire function to route
+                        // only one wire at a time
+                        // wiringService.routeWire(wire, routerType.type, routerType.params);
+                        wiringService.routeWire(wire, 'ElbowRouter', routerType.params);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
 
                     });
@@ -398,6 +413,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
 
                     $scope.selectedRouter = routerType;
+                    wiringService.selectedRouter = $scope.selectedRouter;
 
                 }
             });
