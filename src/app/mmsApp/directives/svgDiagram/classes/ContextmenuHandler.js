@@ -413,6 +413,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     ga('send', 'event', 'diagram', 'changeRouter', routerType.id);
 
                     $scope.selectedRouter = routerType;
+                    wiringService.selectedRouter = $scope.selectedRouter;
 
                 }
             });

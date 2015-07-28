@@ -4,12 +4,14 @@ var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     Point = require("./orthogonalRouter/classes/Point.js"),
     OrthogonalGridNode = require("./orthogonalRouter/classes/orthogonalGridNode.js"),
     OrthogonalGridSegment = require("./orthogonalRouter/classes/orthogonalGridSegment.js"),
-    WireSegment = require("../../diagramService/classes/WireSegment.js");
+    WireSegment = require("../../diagramService/classes/WireSegment.js"),
+    SvgDiagramToast = require("../../../directives/svgDiagram/classes/SvgDiagramToast.js");
 
 
-var OrthogonalRouter = function () {
+var OrthogonalRouter = function ($mdToast) {
 
-    var self = this;
+    var self = this,
+        svgDiagramToast = new SvgDiagramToast($mdToast);
 
     self.name = 'OrthogonalRouter';
 
@@ -43,7 +45,7 @@ var OrthogonalRouter = function () {
             optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
 
             if ( optimalConnections === null ) {
-                alert("No valid path was found. Adjust components and try again.");
+                svgDiagramToast.showToast("No valid path was found. Adjust components and try again.");
                 return null;  // No path found
             }
 
@@ -185,7 +187,6 @@ var OrthogonalRouter = function () {
                                                  searchedNodes);
 
             if ( !result ) {
-                alert("No path was found for one or more connections! Try moving components around.");
                 return null;
             }
             optimalConnections.push(result.path);
@@ -736,6 +737,9 @@ var OrthogonalRouter = function () {
 
     /**
      * Check that no components are off of the grid or overlapping one another, prior to executing router.
+     *
+     * 7/28/15 - No longer pad bounding boxes. This issue should be resolved by improving the nudging 
+     *           algorithm.
      */
     this.validDiagramForAutoRoute = function ( components, gridHeight, gridWidth ) {
         var i, j,
@@ -749,11 +753,6 @@ var OrthogonalRouter = function () {
         for ( i = 0; i < components.length; i++ ) {
             boundBox = components[i].getGridBoundingBox();
 
-            boundBox.x -= 20;
-            boundBox.y -= 20;
-            boundBox.height += 40;
-            boundBox.width += 40;
-
             invalidConditions = [ boundBox.x <= 0,
                                   boundBox.y <= 0,
                                   boundBox.x > gridWidth,
@@ -766,7 +765,7 @@ var OrthogonalRouter = function () {
                 if ( componentOffGrid ) {
                     message = "Component " + components[i].label + " is off or on the edge of the diagram. " +
                               "Adjust the component in order to auto-route the design.";
-                    alert(message);
+                    svgDiagramToast.showToast(message);
                 }
                 break;
             }
@@ -792,7 +791,7 @@ var OrthogonalRouter = function () {
                         message = "The (padded) bounding boxes for components " + components[i].label + " and " +
                                   components[j].label + " are overlapping or share a border. " +
                                   "Adjust components to auto-route.";
-                        alert(message);
+                        svgDiagramToast.showToast(message);
                         break;
                     }
                 }

@@ -268,7 +268,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         latestMouseEvent = $event;
 
-        if (wireStart && $scope.selectedRouter.id !== 'autoRouter') {
+        if (wireStart && $scope.selectedRouter.type === 'elbowRouter') {
 
             $scope.newWireLine = $scope.newWireLine || {};
             $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
@@ -327,9 +327,15 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
     onDiagramMouseUp = function() {
 
-        if (wireStart) {
+        if (wireStart && $scope.selectedRouter.id !== 'autoRouter') {
             addCornerToNewWireLine();
         }
+
+        // TODO AutoRouter: This should create a 'waypoint'. This would create a wire from the wireStart point
+        // to the snapped position. The snapped position would be considered a temporary 'port' assigned to no
+        // component. Once another port is mouseDowned, run the auto router on each of these segment 'wires' 
+        // separately. Once all routes have been found and nudged, place these intermediary wires as segments 
+        // in the wire defined by the two end ports.
 
     };
 
@@ -344,9 +350,13 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
                 if ($scope.selectedRouter.id === 'autoRouter') {
                     $timeout(function() {
+
                         wiringService.routeDiagram($scope.diagram, $scope.selectedRouter.type);
+
                     }, 50);
+
                 }
+                
             } else {
                 cancelWire();
             }
