@@ -4,9 +4,9 @@ class PrimitiveGrid extends React.Component {
 
     render() {
 
-        this.items = this.listData.items.map( (item, index) => {
+        this.items = this.props.primitives.map( (item, index) => {
 
-            return <PrimitiveGridItem primitive={item} ref={index} key={index}/>;
+            return <PrimitiveGridItem primitive={item} ref={index} key={item.id}/>;
         });
 
         return <div className="primitive-grid">{this.items}</div>;
@@ -27,21 +27,24 @@ class PrimitiveGrid extends React.Component {
             let item = this.refs[i];
 
             nameWidths.push(item.getNameWidth());
-            descriptionWidths.push(item.getDescriptionWidthx());
+            descriptionWidths.push(item.getDescriptionWidth());
 
         }
 
         let widestNameWidth = Math.max.apply(null, nameWidths);
         let widestDescriptionWidth = Math.max.apply(null, descriptionWidths);
+        let widestSvgWidth = 150;
+        let widestSvgHeight = 150;
 
-        //let itemWidth = widestNameWidth + widestDescriptionWidth;
+        let itemWidth = widestNameWidth + widestDescriptionWidth + widestSvgWidth;
+        let minItemHeight = widestSvgHeight;        
 
         for (let i in this.refs) {
 
             let item = this.refs[i];
 
-            item.setNameWidth(widestNameWidth);
-            item.setDescriptionWidth(widestDescriptionWidth);
+            item.setWidth(itemWidth);
+            item.setMinHeight(minItemHeight);
 
         }
 
@@ -54,15 +57,29 @@ class PrimitiveGridItem extends React.Component {
 
     render() {
 
-        var nameEl = <div className="primitive-name" title={this.listData.item.primitive.name} ref="name">
-                        {this.listData.item.primitive.name}
+        var divStyle = {
+              fill: 'white',
+              stroke:'black',
+              strokeWidth:5, // note the capital 'W' here
+              fillRule:'nonzero' // 'ms' is the only lowercase vendor prefix
+            };
+
+        var svgEl = <div className="primitive-svg" ref="svg">
+                        <svg height="100" width="100">
+                          <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="white" />
+                        </svg> 
                     </div>;
 
-        var descriptionEl = <div className="primitive-description" title={this.listData.item.primitive.description} ref="description">
-                        {this.listData.item.primitive.description}
+
+        var nameEl = <div className="primitive-name" title={this.props.primitive.name} ref="name">
+                        {this.props.primitive.name}
                     </div>;
 
-        return <div className="primitive-grid-item">{nameEl}{descriptionEl}</div>;
+        var descriptionEl = <div className="primitive-description" title={this.props.primitive.description} ref="description">
+                        {this.props.primitive.description}
+                    </div>;
+
+        return <div className="primitive-grid-item">{svgEl}{nameEl}{descriptionEl}</div>;
 
     }
 
@@ -84,16 +101,12 @@ class PrimitiveGridItem extends React.Component {
         );
     }
 
-    setNameWidth(w) {
-        React.findDOMNode(this.refs.name).style.width = w + 'px';
-    }
-
-    setDescriptionWidth(w) {
-        React.findDOMNode(this.refs.description).style.width = w + 'px';
-    }
-
     setWidth(w) {
         React.findDOMNode(this).style.width = w + 'px';
+    }
+
+    setMinHeight(h) {
+        React.findDOMNode(this).style.minHeight = h + 'px';
     }
 }
 

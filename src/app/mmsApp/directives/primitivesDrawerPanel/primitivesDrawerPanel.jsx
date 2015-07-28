@@ -2,11 +2,10 @@
 
 /* globals ga */
 
-require('./primitiveConfig.js');
+var PrimitiveGrid = require('./primitiveGrid.jsx');
 
 angular.module('mms.primitivesDrawerPanel', [
     'mms.primitivesService',
-    'mms.primitiveDrawerPanel.primitiveConfig',
     'cyphy.services',
     'ngMaterial'
 ])
@@ -25,11 +24,9 @@ angular.module('mms.primitivesDrawerPanel', [
 
             var listItem = {
                 id: primitive.id,
-                title: primitive.name,
-                summary: primitive.description,
+                name: primitive.name,
+                description: primitive.description,
                 config: primitive.config,
-                headerTemplateUrl: '/mmsApp/templates/primitivesGridHeaderTemplate.html',
-                detailsTemplateUrl: '/mmsApp/templates/primitivesGridDetailsTemplate.html',
                 configDirective: 'dummy-primitives-config',
                 details: true
             };
@@ -63,6 +60,56 @@ angular.module('mms.primitivesDrawerPanel', [
         replace: true,
         transclude: true,
         scope: true,
-        templateUrl: '/mmsApp/templates/primitivesDrawerPanelGrid.html'
-    };
-});
+        //templateUrl: '/mmsApp/templates/primitivesDrawerPanelGrid.html',
+        template: '<div class="primitives-drawer-panel"></div>',
+        require: ['primitivesDrawerPanelGrid'],
+        link: function(scope, element, attr, controllers) {
+
+                var ctrl = controllers[0];
+
+                function cleanup() {
+                  React.unmountComponentAtNode(element[0]);
+                }
+
+                function render() {
+                    React.render(<PrimitivesGrid primitives={ctrl.listData.items} />, element[0]);
+                }
+
+                scope.$watch(function() {
+                    if (ctrl.listData.items) {
+                        return ctrl.listData.items;
+                    }
+                }, function(newO, oldO){
+
+                    if ((oldO !== newO || oldO != null) && newO != null) {
+
+                        cleanup();
+                        render();
+                    }
+                });
+
+                scope.$on('$destroy', cleanup);
+
+            }
+        };
+    }
+);
+
+class PrimitivesGrid extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+
+        var className = 'primitives-drawer-panel-grid';
+
+        return (
+            <div className={className}>
+                <div className="above-list-headers"></div>
+                <PrimitiveGrid primitives={this.props.primitives}/>
+            </div>
+        );
+    }
+}
