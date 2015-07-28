@@ -48,6 +48,14 @@ angular.module(
             } );
         } );
 
+        $scope.getBoxStartY = function() {
+            return $scope.component.symbol.hasTopPort * $scope.component.symbol.portWireLength;
+        };
+
+        $scope.getBoxStartX = function() {
+            return $scope.component.symbol.hasLeftPort * $scope.component.symbol.portWireLength;
+        };
+
     } )
     .directive(
         'box',

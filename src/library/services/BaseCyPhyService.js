@@ -56,11 +56,11 @@ angular.module( 'cyphy.services' )
             }
             success = nodeService.off(parentContext, 'initialize');
             if (success !== true) {
-                console.error(success.msg);
+                console.error(success.msg || success.message);
             }
             success = nodeService.off(parentContext, 'destroy');
             if (success !== true) {
-                console.error(success.msg);
+                console.error(success.msg || success.message);
             }
         };
 

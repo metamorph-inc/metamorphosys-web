@@ -157,8 +157,7 @@ angular.module('mms.projectHandling', [])
                         .then(function(branches) {
 
                             var newBranchId,
-                                hashId,
-                                i;
+                                hashId;
 
                             $log.debug('Available branches', branches);
 
@@ -166,6 +165,7 @@ angular.module('mms.projectHandling', [])
 
                             if (!hashId) {
                                 deferred.reject('Could not find master branch!');
+                                return;
                             }
 
                             newBranchId = mmsUtils.randomString(6) + (new Date()).getTime();
@@ -197,36 +197,11 @@ angular.module('mms.projectHandling', [])
 
         };
 
-        this.findFirstBranch = function() {
-
-            var deferred,
-                connectionId;
-
-            deferred = $q.defer();
-
-            connectionId = connectionHandling.getMainGMEConnectionId();
-
-            branchService.getBranches(connectionId)
-                .then(function(branches) {
-
-                    $log.debug('Available branches', branches);
-
-                    for (var branch in branches) {
-                        deferred.resolve(branch);
-                        break;
-                    }
-
-                });
-
-            return deferred.promise;
-
-        };
-
         this.getSelectedProjectId = function() {
             return selectedProjectId;
         };
 
-        this.selectProject = function(projectId) {
+        this.selectProject = function(projectId, branchId) {
 
             var deferred;
 
@@ -245,7 +220,7 @@ angular.module('mms.projectHandling', [])
                     connectionHandling.establishMainGMEConnection()
                         .then(function(connectionId) {
 
-                            projectService.selectProject(connectionId, projectId)
+                            projectService.selectProject(connectionId, projectId, branchId)
                                 .then(function(projectId) {
 
                                     selectedProjectId = projectId;
@@ -319,7 +294,7 @@ angular.module('mms.projectHandling', [])
                         // TODO: this watchers is being called even if context was cleaned up. This will cause memory leaks.
                         if (wsContext !== null) {
                             if (destroyed !== true) {
-                                workspaceService.watchWorkspaces(wsContext, function(updateObject) {
+                                return workspaceService.watchWorkspaces(wsContext, function(updateObject) {
 
 
                                     // TODO: creation/removal of new workapces are NOT done
@@ -563,7 +538,7 @@ angular.module('mms.projectHandling', [])
                         container = availableContainers[containerId];
                         container.childContainers = {};
 
-                        designLayoutService.watchDiagramElements(
+                        return designLayoutService.watchDiagramElements(
                                 designContext,
                                 containerId,
                                 childContainerWatcher(container.childContainers)
@@ -730,12 +705,15 @@ angular.module('mms.projectHandling', [])
                     availableContainers = availableContainers || {};
                     availableContainers[designId] = availableDesigns[designId];
 
-                    setupDesignInternalsWatcher(designId).then(function() {
+                    setupDesignInternalsWatcher(designId).then(function () {
 
                         $log.debug('Design selected', availableDesigns[designId]);
                         deferred.resolve(designId);
 
-                    });
+                    })
+                        .catch(function (err) {
+                            deferred.reject(err);
+                        });
 
                 } else {
                     deferred.resolve(designId);
@@ -789,7 +767,10 @@ angular.module('mms.projectHandling', [])
                     $log.debug('Container selected', availableContainers[containerId]);
                     deferred.resolve(containerId);
 
-                });
+                })
+                    .catch(function(err) {
+                        deferred.reject(err);
+                    });
 
 
             } else {
@@ -808,7 +789,7 @@ angular.module('mms.projectHandling', [])
                             self.leaveContainer();
                             selectedContainerId = containerId;
 
-                            setupContainerInternalsWatcher(containerId).then(function() {
+                            return setupContainerInternalsWatcher(containerId).then(function() {
 
                                 $log.debug('Container selected', availableContainers[containerId]);
                                 deferred.resolve(containerId);
@@ -826,7 +807,7 @@ angular.module('mms.projectHandling', [])
 
 
                 } else {
-                    deferred.reject('Could not find parent conainer for container to be loded');
+                    deferred.reject('Could not find parent container for container to be loaded');
                 }
 
             }

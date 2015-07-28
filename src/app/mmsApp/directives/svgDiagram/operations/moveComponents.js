@@ -2,9 +2,19 @@
 
 'use strict';
 
+function InvalidComponentDragToastController($scope, $mdToast, message) {
+
+    $scope.progressMessage = message;
+
+    $scope.closeToast = function () {
+        $mdToast.hide();
+    };
+
+}
+
 angular.module('mms.designVisualization.operations.moveComponents', [])
 
-    .run(function (operationsManager, $rootScope, wiringService, gridService) {
+    .run(function (operationsManager, $rootScope, wiringService, gridService, $mdToast) {
 
         var type;
 
@@ -121,6 +131,17 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                         diagram.afterWireChange(dragTargetsDescriptor.affectedWires);
                     }
+                    else {
+                        $mdToast.show({
+                            controller: InvalidComponentDragToastController,
+                            templateUrl: '/mmsApp/templates/invalidComponentDragToast.html',
+                            locals: {
+                                message: "Unable to move component(s) any further East and/or North!"
+                            },
+                            hideDelay: 5000
+                        }
+            );
+                    }
 
                 };
 
@@ -229,6 +250,16 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     else {
 
                         this.cancel();
+
+                        $mdToast.show({
+                            controller: InvalidComponentDragToastController,
+                            templateUrl: '/mmsApp/templates/invalidComponentDragToast.html',
+                            locals: {
+                                message: 'Unable to place component(s) - drag would result in overlapping components!'
+                            },
+                            hideDelay: 5000
+                        }
+            );
 
                     }
 
