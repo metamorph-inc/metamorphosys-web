@@ -240,6 +240,22 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    var CloneConnector = function (srcConnector, targetConnector) {
+                        var definition = srcConnector.getAttribute('Definition');
+                        targetConnector.setAttribute('Definition', definition);
+
+                        // Copy content
+                        var nodesToCopy = {};
+                        return srcConnector.loadChildren(layoutContext)
+                            .then(function (children) {
+                                children.forEach(function (child) {
+                                    nodesToCopy[child.id] = child;
+                                });
+
+                                nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
+                            });
+                    };
+
                     addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
 
                         $rootScope.setProcessing();
@@ -281,24 +297,6 @@ angular.module('mms.designEditor', [
                                         })
                                         .then(function (port2_) {
                                             port2 = port2_;
-
-                                            // Move somewhere else, outside of the eventlistener, that has
-                                            // nodeService and layoutContext available
-                                            var CloneConnector = function (srcConnector, targetConnector) {
-                                                var definition = srcConnector.getAttribute('Definition');
-                                                targetConnector.setAttribute('Definition', definition);
-
-                                                // Copy content
-                                                var nodesToCopy = {};
-                                                return srcConnector.loadChildren(layoutContext)
-                                                    .then(function (children) {
-                                                        children.forEach(function (child) {
-                                                            nodesToCopy[child.id] = child;
-                                                        });
-
-                                                        nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
-                                                    });
-                                            };
 
                                             var port1Def = port1.getAttribute('Definition');
                                             var port2Def = port2.getAttribute('Definition');
@@ -350,61 +348,58 @@ angular.module('mms.designEditor', [
                         });
                     });
 
+                    var IsNodeConnected = function(node) {
+                        var sources = node.getCollectionPaths('src');
+                        var destinations = node.getCollectionPaths('dst');
+
+                        if (sources.length + destinations.length > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    };
+
+                    var TestConnectorForInferredType = function(connector) {
+                        // Does this guy (or his ports) have any connections?
+                        // If not, and his parent is a Container, then strip his Connector typing info.
+
+                        var meta;
+                        return nodeService.getMetaNodes(layoutContext)
+                            .then(function(meta_) {
+                                meta = meta_;
+                                return connector.getParentNode();
+                            })
+                            .then(function(parent) {
+                                var parentMetaTypeName = parent.getMetaTypeName(meta);
+                                if (parentMetaTypeName === 'Container') {
+
+                                    if (IsNodeConnected(connector)) {
+                                        console.log(connector.getAttribute('name'), 'has connections and will be spared');
+                                    } else {
+                                        return connector.loadChildren()
+                                            .then(function (children) {
+
+                                                // If no children are connected, de-type this connector
+                                                if (children.filter(IsNodeConnected).length == 0) {
+                                                    console.log(connector.getAttribute('name'), 'will be de-typed');
+                                                    connector.setAttribute('Definition', '');
+
+                                                    children.forEach(function (child) {
+                                                        child.destroy();
+                                                    });
+                                                } else {
+                                                    console.log(connector.getAttribute('name'), 'has a connected port and will be spared');
+                                                }
+                                            });
+                                    }
+                                }
+                            });
+                    };
+
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
 
                         nodeService.startTransaction(layoutContext, message || 'Wire deletion');
-
-                        // Move this function to some other scope that has
-                        // nodeService, layoutContext
-                        var TestConnectorForInferredType = function(connector) {
-                            // Does this guy (or his ports) have any connections?
-                            // If not, and his parent is a Container, then strip his Connector typing info.
-
-                            var meta;
-                            return nodeService.getMetaNodes(layoutContext)
-                                .then(function(meta_) {
-                                    meta = meta_;
-                                    return connector.getParentNode();
-                                })
-                                .then(function(parent) {
-                                    var parentMetaTypeName = parent.getMetaTypeName(meta);
-                                    if (parentMetaTypeName === 'Container') {
-
-                                        // Move this guy
-                                        var IsNodeConnected = function(node) {
-                                            var sources = node.getCollectionPaths('src');
-                                            var destinations = node.getCollectionPaths('dst');
-
-                                            if (sources.length + destinations.length > 0) {
-                                                return true;
-                                            } else {
-                                                return false;
-                                            }
-                                        };
-
-                                        if (IsNodeConnected(connector)) {
-                                            console.log(connector.getAttribute('name'), 'has connections and will be spared');
-                                        } else {
-                                            return connector.loadChildren()
-                                                .then(function (children) {
-
-                                                    // If no children are connected, de-type this connector
-                                                    if (children.filter(IsNodeConnected).length == 0) {
-                                                        console.log(connector.getAttribute('name'), 'will be de-typed');
-                                                        connector.setAttribute('Definition', '');
-
-                                                        children.forEach(function (child) {
-                                                            child.destroy();
-                                                        });
-                                                    } else {
-                                                        console.log(connector.getAttribute('name'), 'has a connected port and will be spared');
-                                                    }
-                                                });
-                                        }
-                                    }
-                                });
-                        };
 
                         // Fetch both SRC and DST connectors and check them to see if their
                         // Connector typing info needs to be stripped.
