@@ -291,37 +291,35 @@ angular.module('mms.designEditor', [
                                                                     });
                                                             };
 
-                                                            var ConnectorTypeInference = function(port1, port2) {
-                                                                var port1Def = port1.getAttribute('Definition');
-                                                                var port2Def = port2.getAttribute('Definition');
-                                                                var port1IsTyped = port1Def !== '';
-                                                                var port2IsTyped = port2Def !== '';
+                                                            var port1Def = port1.getAttribute('Definition');
+                                                            var port2Def = port2.getAttribute('Definition');
+                                                            var port1IsTyped = port1Def !== '';
+                                                            var port2IsTyped = port2Def !== '';
 
-                                                                if (port1IsTyped === false && port2IsTyped === true)
-                                                                {
-                                                                    // Transfer port2's type to port1
-                                                                    CloneConnector(port2, port1);
-                                                                }
-                                                                else if (port1IsTyped === true && port2IsTyped === false)
-                                                                {
-                                                                    // Transfer port1's type to port2
-                                                                    CloneConnector(port1, port2);
-                                                                }
-                                                                else if (port1IsTyped === true && port2IsTyped === true)
-                                                                {
-                                                                    console.log('both of these connectors are typed');
-                                                                }
-                                                                else if (port1IsTyped === false && port2IsTyped === false)
-                                                                {
-                                                                    console.log('neither of these connectors are typed');
-                                                                }
-                                                                else
-                                                                {
-                                                                    console.log('how is this even possible');
-                                                                }
-                                                            };
 
-                                                            ConnectorTypeInference(port1, port2);
+                                                            // Logic for handling connection based on definitions
+                                                            if (port1IsTyped === false && port2IsTyped === true)
+                                                            {
+                                                                // Transfer port2's type to port1
+                                                                CloneConnector(port2, port1);
+                                                            }
+                                                            else if (port1IsTyped === true && port2IsTyped === false)
+                                                            {
+                                                                // Transfer port1's type to port2
+                                                                CloneConnector(port1, port2);
+                                                            }
+                                                            else if (port1IsTyped === true && port2IsTyped === true)
+                                                            {
+                                                                console.log('both of these connectors are typed');
+                                                            }
+                                                            else if (port1IsTyped === false && port2IsTyped === false)
+                                                            {
+                                                                console.log('neither of these connectors are typed');
+                                                            }
+                                                            else
+                                                            {
+                                                                console.log('how is this even possible');
+                                                            }
                                                         });
                                                 });
                                         }
@@ -353,7 +351,105 @@ angular.module('mms.designEditor', [
 
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
-                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
+
+                        /*var meta,
+                            wireObj,
+                            srcConnector,
+                            dstConnector;
+                        */
+
+                        var TestConnectorForInferredType = function(connector) {
+                            // Does this guy have any connections?
+                            // If not, remove its typing info.
+
+                            nodeService.getMetaNodes(layoutContext)
+                                .then(function(meta) {
+                                    connector.getParentNode()
+                                        .then(function (parent) {
+                                            var parentMetaTypeName = parent.getMetaTypeName(meta);
+                                            if (parentMetaTypeName === 'Container') {
+                                                console.log(parentMetaTypeName);
+
+                                                var IsNodeConnected = function(node) {
+                                                    var sources = node.getCollectionPaths('src');
+                                                    var destinations = node.getCollectionPaths('dst');
+
+                                                    if (sources.length + destinations.length > 0) {
+                                                        return true;
+                                                    } else {
+                                                        return false;
+                                                    }
+                                                };
+
+                                                if (IsNodeConnected(connector)) {
+                                                    console.log(connector.getAttribute('name'), ' has connections and will be spared');
+                                                } else {
+                                                    connector.loadChildren()
+                                                        .then(function (children) {
+                                                            var anyConnected = false;
+                                                            children.forEach(function (child) {
+                                                                if (IsNodeConnected(child)) {
+                                                                    anyConnected = true;
+                                                                }
+                                                            });
+
+                                                            if (anyConnected === false) {
+                                                                console.log(connector.getAttribute('name'), ' will be de-typed');
+                                                                connector.setAttribute('Definition', '');
+
+                                                                children.forEach(function (child) {
+                                                                    child.destroy();
+                                                                });
+                                                            } else {
+                                                                console.log(connector.getAttribute('name'), ' has a connected port, and will be spared');
+                                                            }
+                                                        });
+                                                }
+
+
+                                                /*
+                                                // See how many connections to this thing
+                                                var sources = connector.getCollectionPaths('src');
+                                                var destinations = connector.getCollectionPaths('dst');
+
+                                                if (sources.length + destinations.length == 0) {
+                                                    // Remove typing data.
+                                                    connector.setAttribute('Definition', '');
+                                                    connector.loadChildren(layoutContext)
+                                                        .then(function (children) {
+                                                            children.forEach(function(child) {
+                                                                child.destroy();
+                                                            })
+                                                        })
+                                                }*/
+                                            }
+                                        });
+                                });
+                        };
+
+                        nodeService.loadNode(layoutContext, wire.getId())
+                            .then(function(wireObj) {
+                                var srcPointer = wireObj.getPointer('src').to;
+                                var dstPointer = wireObj.getPointer('dst').to;
+
+                                nodeService.getMetaNodes(layoutContext)
+                                    .then(function(meta) {
+
+                                        nodeService.loadNode(layoutContext, srcPointer)
+                                            .then(function (srcConnector) {
+                                                TestConnectorForInferredType(srcConnector);
+                                        });
+
+                                        nodeService.loadNode(layoutContext, dstPointer)
+                                            .then(function (dstConnector) {
+                                                TestConnectorForInferredType(dstConnector);
+                                            });
+
+                                    })
+                                    .then(function() {
+                                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
+                                    });
+                            });
                     });
 
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
