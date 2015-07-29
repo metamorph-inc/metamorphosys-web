@@ -589,6 +589,9 @@ define([
             base: self.meta.Container
         });
         containerData['@ID'] = containerData['@ID'] || self.core.getPath(container);
+        if (this.designID2Node[containerData['@ID']]) {
+            throw new Error('Design file is malformed: duplicate @ID ' + containerData['@ID']);
+        }
         this.designID2Node[containerData['@ID']] = container;
         self.core.setAttribute(container, 'name', containerData['@Name']);
         self.core.setAttribute(container, 'Description', containerData['@Description'] || '');
