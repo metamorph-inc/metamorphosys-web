@@ -352,102 +352,75 @@ angular.module('mms.designEditor', [
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
 
-                        /*var meta,
-                            wireObj,
-                            srcConnector,
-                            dstConnector;
-                        */
-
                         var TestConnectorForInferredType = function(connector) {
-                            // Does this guy have any connections?
-                            // If not, remove its typing info.
+                            // Does this guy (or his ports) have any connections?
+                            // If not, and his parent is a Container, then strip his Connector typing info.
 
+                            var meta;
                             nodeService.getMetaNodes(layoutContext)
-                                .then(function(meta) {
-                                    connector.getParentNode()
-                                        .then(function (parent) {
-                                            var parentMetaTypeName = parent.getMetaTypeName(meta);
-                                            if (parentMetaTypeName === 'Container') {
-                                                console.log(parentMetaTypeName);
+                                .then(function(meta_) {
+                                    meta = meta_;
+                                    return connector.getParentNode();
+                                })
+                                .then(function(parent) {
+                                    var parentMetaTypeName = parent.getMetaTypeName(meta);
+                                    if (parentMetaTypeName === 'Container') {
+                                        var IsNodeConnected = function(node) {
+                                            var sources = node.getCollectionPaths('src');
+                                            var destinations = node.getCollectionPaths('dst');
 
-                                                var IsNodeConnected = function(node) {
-                                                    var sources = node.getCollectionPaths('src');
-                                                    var destinations = node.getCollectionPaths('dst');
-
-                                                    if (sources.length + destinations.length > 0) {
-                                                        return true;
-                                                    } else {
-                                                        return false;
-                                                    }
-                                                };
-
-                                                if (IsNodeConnected(connector)) {
-                                                    console.log(connector.getAttribute('name'), ' has connections and will be spared');
-                                                } else {
-                                                    connector.loadChildren()
-                                                        .then(function (children) {
-                                                            var anyConnected = false;
-                                                            children.forEach(function (child) {
-                                                                if (IsNodeConnected(child)) {
-                                                                    anyConnected = true;
-                                                                }
-                                                            });
-
-                                                            if (anyConnected === false) {
-                                                                console.log(connector.getAttribute('name'), ' will be de-typed');
-                                                                connector.setAttribute('Definition', '');
-
-                                                                children.forEach(function (child) {
-                                                                    child.destroy();
-                                                                });
-                                                            } else {
-                                                                console.log(connector.getAttribute('name'), ' has a connected port, and will be spared');
-                                                            }
-                                                        });
-                                                }
-
-
-                                                /*
-                                                // See how many connections to this thing
-                                                var sources = connector.getCollectionPaths('src');
-                                                var destinations = connector.getCollectionPaths('dst');
-
-                                                if (sources.length + destinations.length == 0) {
-                                                    // Remove typing data.
-                                                    connector.setAttribute('Definition', '');
-                                                    connector.loadChildren(layoutContext)
-                                                        .then(function (children) {
-                                                            children.forEach(function(child) {
-                                                                child.destroy();
-                                                            })
-                                                        })
-                                                }*/
+                                            if (sources.length + destinations.length > 0) {
+                                                return true;
+                                            } else {
+                                                return false;
                                             }
-                                        });
+                                        };
+
+                                        if (IsNodeConnected(connector)) {
+                                            console.log(connector.getAttribute('name'), 'has connections and will be spared');
+                                        } else {
+                                            connector.loadChildren()
+                                                .then(function (children) {
+                                                    var anyConnected = false;
+                                                    children.forEach(function (child) {
+                                                        if (IsNodeConnected(child)) {
+                                                            anyConnected = true;
+                                                        }
+                                                    });
+
+                                                    if (anyConnected === false) {
+                                                        console.log(connector.getAttribute('name'), 'will be de-typed');
+                                                        connector.setAttribute('Definition', '');
+
+                                                        children.forEach(function (child) {
+                                                            child.destroy();
+                                                        });
+                                                    } else {
+                                                        console.log(connector.getAttribute('name'), 'has a connected port and will be spared');
+                                                    }
+                                                });
+                                        }
+                                    }
                                 });
                         };
 
+                        // Fetch both SRC and DST connectors and check them to see if their
+                        // Connector typing info needs to be stripped.
+                        // We can delete the wire as soon as we have the pointers to these connectors.
                         nodeService.loadNode(layoutContext, wire.getId())
                             .then(function(wireObj) {
                                 var srcPointer = wireObj.getPointer('src').to;
                                 var dstPointer = wireObj.getPointer('dst').to;
+                                nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
 
-                                nodeService.getMetaNodes(layoutContext)
-                                    .then(function(meta) {
+                                nodeService.loadNode(layoutContext, srcPointer)
+                                    .then(function (srcConnector) {
+                                        TestConnectorForInferredType(srcConnector);
+                                    });
 
-                                        nodeService.loadNode(layoutContext, srcPointer)
-                                            .then(function (srcConnector) {
-                                                TestConnectorForInferredType(srcConnector);
-                                        });
-
-                                        nodeService.loadNode(layoutContext, dstPointer)
-                                            .then(function (dstConnector) {
-                                                TestConnectorForInferredType(dstConnector);
-                                            });
-
-                                    })
-                                    .then(function() {
-                                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
+                                nodeService.loadNode(layoutContext, dstPointer)
+                                    .then(function (dstConnector) {
+                                        TestConnectorForInferredType(dstConnector);
                                     });
                             });
                     });
