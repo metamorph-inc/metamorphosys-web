@@ -269,58 +269,63 @@ angular.module('mms.designEditor', [
                                             wire.setId(node.id);
                                             diagram.addWire(wire);
 
+                                            var port1,
+                                                port2;
+
                                             nodeService.loadNode(layoutContext, wireEnd1.port.id)
-                                                .then(function(port1) {
+                                                .then(function(port1_) {
+                                                    port1 = port1_;
 
                                                     nodeService.loadNode(layoutContext, wireEnd2.port.id)
-                                                        .then(function(port2) {
-
-                                                            var CloneConnector = function (srcConnector, targetConnector) {
-                                                                var definition = srcConnector.getAttribute('Definition');
-                                                                targetConnector.setAttribute('Definition', definition);
-
-                                                                // Copy content
-                                                                var nodesToCopy = {};
-                                                                srcConnector.loadChildren(layoutContext)
-                                                                    .then(function (children) {
-                                                                        children.forEach(function (child) {
-                                                                            nodesToCopy[child.id] = child;
-                                                                        });
-
-                                                                        nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
-                                                                    });
-                                                            };
-
-                                                            var port1Def = port1.getAttribute('Definition');
-                                                            var port2Def = port2.getAttribute('Definition');
-                                                            var port1IsTyped = port1Def !== '';
-                                                            var port2IsTyped = port2Def !== '';
-
-
-                                                            // Logic for handling connection based on definitions
-                                                            if (port1IsTyped === false && port2IsTyped === true)
-                                                            {
-                                                                // Transfer port2's type to port1
-                                                                CloneConnector(port2, port1);
-                                                            }
-                                                            else if (port1IsTyped === true && port2IsTyped === false)
-                                                            {
-                                                                // Transfer port1's type to port2
-                                                                CloneConnector(port1, port2);
-                                                            }
-                                                            else if (port1IsTyped === true && port2IsTyped === true)
-                                                            {
-                                                                console.log('both of these connectors are typed');
-                                                            }
-                                                            else if (port1IsTyped === false && port2IsTyped === false)
-                                                            {
-                                                                console.log('neither of these connectors are typed');
-                                                            }
-                                                            else
-                                                            {
-                                                                console.log('how is this even possible');
-                                                            }
+                                                        .then(function (port2_) {
+                                                            port2 = port2_;
                                                         });
+                                                })
+                                                .then(function() {
+                                                    var CloneConnector = function (srcConnector, targetConnector) {
+                                                        var definition = srcConnector.getAttribute('Definition');
+                                                        targetConnector.setAttribute('Definition', definition);
+
+                                                        // Copy content
+                                                        var nodesToCopy = {};
+                                                        srcConnector.loadChildren(layoutContext)
+                                                            .then(function (children) {
+                                                                children.forEach(function (child) {
+                                                                    nodesToCopy[child.id] = child;
+                                                                });
+
+                                                                nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
+                                                            });
+                                                    };
+
+                                                    var port1Def = port1.getAttribute('Definition');
+                                                    var port2Def = port2.getAttribute('Definition');
+                                                    var port1IsTyped = port1Def !== '';
+                                                    var port2IsTyped = port2Def !== '';
+
+                                                    // Logic block for handling connection based on definitions
+                                                    if (port1IsTyped === false && port2IsTyped === true)
+                                                    {
+                                                        // Transfer port2's type to port1
+                                                        CloneConnector(port2, port1);
+                                                    }
+                                                    else if (port1IsTyped === true && port2IsTyped === false)
+                                                    {
+                                                        // Transfer port1's type to port2
+                                                        CloneConnector(port1, port2);
+                                                    }
+                                                    else if (port1IsTyped === true && port2IsTyped === true)
+                                                    {
+                                                        console.log('both of these connectors are typed');
+                                                    }
+                                                    else if (port1IsTyped === false && port2IsTyped === false)
+                                                    {
+                                                        console.log('neither of these connectors are typed');
+                                                    }
+                                                    else
+                                                    {
+                                                        console.log('how is this even possible');
+                                                    }
                                                 });
                                         }
 
