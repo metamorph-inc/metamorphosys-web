@@ -244,6 +244,8 @@ angular.module('mms.designEditor', [
 
                         $rootScope.setProcessing();
 
+                        nodeService.startTransaction(layoutContext, msg || 'New wire creation');
+
                         nodeService.getMetaNodes(layoutContext)
                             .then(function(meta) {
 
@@ -251,91 +253,85 @@ angular.module('mms.designEditor', [
 
                                 metaId = meta.byName.ConnectorComposition.id;
 
-                                nodeService.startTransaction(layoutContext, msg || 'New wire creation');
+                                return nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire');
+                            })
+                            .then(function(node) {
 
-                                nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
-                                    .then(function(node) {
+                                var diagram = diagramService.getDiagram(selectedContainerId);
 
-                                        var diagram = diagramService.getDiagram(selectedContainerId);
+                                if (diagram) {
 
-                                        if (diagram) {
+                                    var wireEnd1 = wire.getEnd1();
+                                    var wireEnd2 = wire.getEnd2();
+                                    node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
+                                    node.makePointer('src', wireEnd1.port.id);
+                                    node.makePointer('dst', wireEnd2.port.id);
 
-                                            var wireEnd1 = wire.getEnd1();
-                                            var wireEnd2 = wire.getEnd2();
-                                            node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
-                                            node.makePointer('src', wireEnd1.port.id);
-                                            node.makePointer('dst', wireEnd2.port.id);
+                                    wire.setId(node.id);
+                                    diagram.addWire(wire);
 
-                                            wire.setId(node.id);
-                                            diagram.addWire(wire);
+                                    var port1,
+                                        port2;
 
-                                            var port1,
-                                                port2;
+                                    return nodeService.loadNode(layoutContext, wireEnd1.port.id)
+                                        .then(function (port1_) {
+                                            port1 = port1_;
 
-                                            nodeService.loadNode(layoutContext, wireEnd1.port.id)
-                                                .then(function(port1_) {
-                                                    port1 = port1_;
+                                            return nodeService.loadNode(layoutContext, wireEnd2.port.id);
+                                        })
+                                        .then(function (port2_) {
+                                            port2 = port2_;
 
-                                                    nodeService.loadNode(layoutContext, wireEnd2.port.id)
-                                                        .then(function (port2_) {
-                                                            port2 = port2_;
+                                            // Move somewhere else, outside of the eventlistener, that has
+                                            // nodeService and layoutContext available
+                                            var CloneConnector = function (srcConnector, targetConnector) {
+                                                var definition = srcConnector.getAttribute('Definition');
+                                                targetConnector.setAttribute('Definition', definition);
+
+                                                // Copy content
+                                                var nodesToCopy = {};
+                                                return srcConnector.loadChildren(layoutContext)
+                                                    .then(function (children) {
+                                                        children.forEach(function (child) {
+                                                            nodesToCopy[child.id] = child;
                                                         });
-                                                })
-                                                .then(function() {
-                                                    var CloneConnector = function (srcConnector, targetConnector) {
-                                                        var definition = srcConnector.getAttribute('Definition');
-                                                        targetConnector.setAttribute('Definition', definition);
 
-                                                        // Copy content
-                                                        var nodesToCopy = {};
-                                                        srcConnector.loadChildren(layoutContext)
-                                                            .then(function (children) {
-                                                                children.forEach(function (child) {
-                                                                    nodesToCopy[child.id] = child;
-                                                                });
+                                                        nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
+                                                    });
+                                            };
 
-                                                                nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
-                                                            });
-                                                    };
+                                            var port1Def = port1.getAttribute('Definition');
+                                            var port2Def = port2.getAttribute('Definition');
+                                            var port1IsTyped = port1Def !== '';
+                                            var port2IsTyped = port2Def !== '';
 
-                                                    var port1Def = port1.getAttribute('Definition');
-                                                    var port2Def = port2.getAttribute('Definition');
-                                                    var port1IsTyped = port1Def !== '';
-                                                    var port2IsTyped = port2Def !== '';
-
-                                                    // Logic block for handling connection based on definitions
-                                                    if (port1IsTyped === false && port2IsTyped === true)
-                                                    {
-                                                        // Transfer port2's type to port1
-                                                        CloneConnector(port2, port1);
-                                                    }
-                                                    else if (port1IsTyped === true && port2IsTyped === false)
-                                                    {
-                                                        // Transfer port1's type to port2
-                                                        CloneConnector(port1, port2);
-                                                    }
-                                                    else if (port1IsTyped === true && port2IsTyped === true)
-                                                    {
-                                                        console.log('both of these connectors are typed');
-                                                    }
-                                                    else if (port1IsTyped === false && port2IsTyped === false)
-                                                    {
-                                                        console.log('neither of these connectors are typed');
-                                                    }
-                                                    else
-                                                    {
-                                                        console.log('how is this even possible');
-                                                    }
-                                                });
-                                        }
-
-                                        nodeService.completeTransaction(layoutContext);
-                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId);
-
-                                        $rootScope.stopProcessing();
-
-                                    });
-
+                                            // Logic block for handling connection based on definitions
+                                            if (port1IsTyped === false && port2IsTyped === true) {
+                                                // Transfer port2's type to port1
+                                                return CloneConnector(port2, port1);
+                                            }
+                                            else if (port1IsTyped === true && port2IsTyped === false) {
+                                                // Transfer port1's type to port2
+                                                return CloneConnector(port1, port2);
+                                            }
+                                            else if (port1IsTyped === true && port2IsTyped === true) {
+                                                console.log('both of these connectors are typed');
+                                            }
+                                            else if (port1IsTyped === false && port2IsTyped === false) {
+                                                console.log('neither of these connectors are typed');
+                                            }
+                                            else {
+                                                console.log('how is this even possible');
+                                            }
+                                        });
+                                }
+                            })
+                            .then(function() {
+                                nodeService.completeTransaction(layoutContext);
+                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                            })
+                            .finally(function() {
+                                $rootScope.stopProcessing();
                             });
 
                     });
@@ -357,12 +353,16 @@ angular.module('mms.designEditor', [
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
 
+                        nodeService.startTransaction(layoutContext, message || 'Wire deletion');
+
+                        // Move this function to some other scope that has
+                        // nodeService, layoutContext
                         var TestConnectorForInferredType = function(connector) {
                             // Does this guy (or his ports) have any connections?
                             // If not, and his parent is a Container, then strip his Connector typing info.
 
                             var meta;
-                            nodeService.getMetaNodes(layoutContext)
+                            return nodeService.getMetaNodes(layoutContext)
                                 .then(function(meta_) {
                                     meta = meta_;
                                     return connector.getParentNode();
@@ -370,6 +370,8 @@ angular.module('mms.designEditor', [
                                 .then(function(parent) {
                                     var parentMetaTypeName = parent.getMetaTypeName(meta);
                                     if (parentMetaTypeName === 'Container') {
+
+                                        // Move this guy
                                         var IsNodeConnected = function(node) {
                                             var sources = node.getCollectionPaths('src');
                                             var destinations = node.getCollectionPaths('dst');
@@ -384,7 +386,7 @@ angular.module('mms.designEditor', [
                                         if (IsNodeConnected(connector)) {
                                             console.log(connector.getAttribute('name'), 'has connections and will be spared');
                                         } else {
-                                            connector.loadChildren()
+                                            return connector.loadChildren()
                                                 .then(function (children) {
                                                     var anyConnected = false;
                                                     children.forEach(function (child) {
@@ -412,21 +414,36 @@ angular.module('mms.designEditor', [
                         // Fetch both SRC and DST connectors and check them to see if their
                         // Connector typing info needs to be stripped.
                         // We can delete the wire as soon as we have the pointers to these connectors.
+                        var srcPointer,
+                            dstPointer;
+
                         nodeService.loadNode(layoutContext, wire.getId())
                             .then(function(wireObj) {
-                                var srcPointer = wireObj.getPointer('src').to;
-                                var dstPointer = wireObj.getPointer('dst').to;
+                                srcPointer = wireObj.getPointer('src').to;
+                                dstPointer = wireObj.getPointer('dst').to;
                                 nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
 
-                                nodeService.loadNode(layoutContext, srcPointer)
-                                    .then(function (srcConnector) {
-                                        TestConnectorForInferredType(srcConnector);
-                                    });
-
-                                nodeService.loadNode(layoutContext, dstPointer)
-                                    .then(function (dstConnector) {
-                                        TestConnectorForInferredType(dstConnector);
-                                    });
+                                return nodeService.loadNode(layoutContext, srcPointer);
+                            })
+                            .then(function (srcConnector) {
+                                return TestConnectorForInferredType(srcConnector);
+                            })
+                            .then(function() {
+                                return nodeService.loadNode(layoutContext, dstPointer);
+                            })
+                            .then(function (dstConnector) {
+                                return TestConnectorForInferredType(dstConnector);
+                            })
+                            .then(function() {
+                                nodeService.completeTransaction(layoutContext);
+                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                            })
+                            .catch(function(err) {
+                                // TODO: Commit the transaction and then do an undo
+                                console.error(err);
+                            })
+                            .finally(function() {
+                                $rootScope.stopProcessing();
                             });
                     });
 
