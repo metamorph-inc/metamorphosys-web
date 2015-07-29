@@ -388,14 +388,9 @@ angular.module('mms.designEditor', [
                                         } else {
                                             return connector.loadChildren()
                                                 .then(function (children) {
-                                                    var anyConnected = false;
-                                                    children.forEach(function (child) {
-                                                        if (IsNodeConnected(child)) {
-                                                            anyConnected = true;
-                                                        }
-                                                    });
 
-                                                    if (anyConnected === false) {
+                                                    // If no children are connected, de-type this connector
+                                                    if (children.filter(IsNodeConnected).length == 0) {
                                                         console.log(connector.getAttribute('name'), 'will be de-typed');
                                                         connector.setAttribute('Definition', '');
 
