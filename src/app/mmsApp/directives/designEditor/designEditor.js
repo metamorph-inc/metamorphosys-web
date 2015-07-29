@@ -240,6 +240,12 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    /**
+                     * Modifies targetConnector to have the same Description and children as srcConnector
+                     * @param srcConnector
+                     * @param targetConnector
+                     * @returns {*}
+                     */
                     var CloneConnector = function (srcConnector, targetConnector) {
                         var definition = srcConnector.getAttribute('Definition');
                         targetConnector.setAttribute('Definition', definition);
@@ -313,13 +319,16 @@ angular.module('mms.designEditor', [
                                                 return CloneConnector(port1, port2);
                                             }
                                             else if (port1IsTyped === true && port2IsTyped === true) {
-                                                console.log('both of these connectors are typed');
+                                                $log.debug('Both', port1.getAttribute('name'),
+                                                    'and', port2.getAttribute('name'), 'are typed');
                                             }
                                             else if (port1IsTyped === false && port2IsTyped === false) {
-                                                console.log('neither of these connectors are typed');
+                                                $log.debug('Neither', port1.getAttribute('name'),
+                                                    'nor', port2.getAttribute('name'), 'are typed');
                                             }
                                             else {
-                                                console.log('how is this even possible');
+                                                $log.error('Failure in type detection logic when considering',
+                                                    port1.getAttribute('name'), 'and', port2.getAttribute('name'));
                                             }
                                         });
                                 }
@@ -348,6 +357,11 @@ angular.module('mms.designEditor', [
                         });
                     });
 
+                    /**
+                     * Given a model object, see if there are any connections that include it as SRC or DST
+                     * @param node
+                     * @returns {boolean} True if it's a connection endpoint
+                     */
                     var IsNodeConnected = function(node) {
                         var sources = node.getCollectionPaths('src');
                         var destinations = node.getCollectionPaths('dst');
@@ -359,7 +373,14 @@ angular.module('mms.designEditor', [
                         }
                     };
 
-                    var TestConnectorForInferredType = function(connector) {
+                    /**
+                     * Test a connector to see if its type inference is still valid.
+                     * If its type can no longer be inferred, remove its type by
+                     * destroying its children and clearing the Description attribute.
+                     * @param connector
+                     * @returns {*}
+                     */
+                    var TestConnectorForInferredTypeRemoval = function(connector) {
                         // Does this guy (or his ports) have any connections?
                         // If not, and his parent is a Container, then strip his Connector typing info.
 
@@ -374,21 +395,20 @@ angular.module('mms.designEditor', [
                                 if (parentMetaTypeName === 'Container') {
 
                                     if (IsNodeConnected(connector)) {
-                                        console.log(connector.getAttribute('name'), 'has connections and will be spared');
+                                        $log.debug(connector.getAttribute('name'), 'has connections and won\'t be de-typed');
                                     } else {
                                         return connector.loadChildren()
                                             .then(function (children) {
-
                                                 // If no children are connected, de-type this connector
                                                 if (children.filter(IsNodeConnected).length == 0) {
-                                                    console.log(connector.getAttribute('name'), 'will be de-typed');
+                                                    $log.debug(connector.getAttribute('name'), 'will be de-typed');
                                                     connector.setAttribute('Definition', '');
 
                                                     children.forEach(function (child) {
                                                         child.destroy();
                                                     });
                                                 } else {
-                                                    console.log(connector.getAttribute('name'), 'has a connected port and will be spared');
+                                                    $log.debug(connector.getAttribute('name'), 'has a connected port and won\'t be de-typed');
                                                 }
                                             });
                                     }
@@ -416,13 +436,13 @@ angular.module('mms.designEditor', [
                                 return nodeService.loadNode(layoutContext, srcPointer);
                             })
                             .then(function (srcConnector) {
-                                return TestConnectorForInferredType(srcConnector);
+                                return TestConnectorForInferredTypeRemoval(srcConnector);
                             })
                             .then(function() {
                                 return nodeService.loadNode(layoutContext, dstPointer);
                             })
                             .then(function (dstConnector) {
-                                return TestConnectorForInferredType(dstConnector);
+                                return TestConnectorForInferredTypeRemoval(dstConnector);
                             })
                             .then(function() {
                                 nodeService.completeTransaction(layoutContext);
