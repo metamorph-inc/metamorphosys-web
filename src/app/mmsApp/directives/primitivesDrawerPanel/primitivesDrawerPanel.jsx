@@ -28,6 +28,7 @@ angular.module('mms.primitivesDrawerPanel', [
             var listItem = {
                 id: primitive.id,
                 name: primitive.name,
+                metaType: primitive.metaType,
                 description: primitive.description,
                 svgViewBox: primitive.svgViewBox,
                 config: primitive.config,

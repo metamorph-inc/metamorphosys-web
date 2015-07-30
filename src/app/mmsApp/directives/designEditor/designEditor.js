@@ -240,7 +240,9 @@ angular.module('mms.designEditor', [
 
                                 var metaId;
 
-                                metaId = meta.byName.ConnectorComposition.id;
+                                //container/connector
+
+                                metaId = meta.byName[primitive.metaType].id;
 
                                 nodeService.startTransaction(layoutContext, 'New primitive creation');
 
@@ -270,13 +272,19 @@ angular.module('mms.designEditor', [
 
                                         self.diagram.addComponent(primitiveElement);
 
+                                        node.setRegistry('position', position, 'Set primitive position');
+
                                         nodeService.completeTransaction(layoutContext);
 
                                         $rootScope.stopProcessing();
 
+                                        $log.debug('NewDiagram', self.diagram);
+
                                     });
 
                             });
+
+                         $log.debug('Diagram', self.diagram);
 
                     });
 

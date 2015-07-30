@@ -2,6 +2,7 @@
     {
         "id": "simple-connector",
         "name": "Connector",
+        "metaType": "Connector",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         "svgViewBox": "0 0 100 20",
         "config": []
@@ -9,8 +10,9 @@
     {
         "id": "empty-subcircuit",
         "name": "Empty Subcircuit",
+        "metaType": "Container",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        "svgViewBox": "0 0 80 80",
+        "svgViewBox": "0 0 100 100",
         "config": []
     }
 ]
