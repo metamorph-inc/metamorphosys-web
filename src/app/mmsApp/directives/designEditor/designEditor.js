@@ -181,6 +181,8 @@ angular.module('mms.designEditor', [
                             };
                         }
 
+                        position = gridService.getSnappedPosition(position);
+
                         if (componentUrl) {
                             acmImportService.importAcm(self.layoutContext, selectedContainerId,
                                     componentUrl, position)
@@ -206,6 +208,8 @@ angular.module('mms.designEditor', [
                                 y: 0
                             };
                         }
+
+                        position = gridService.getSnappedPosition(position);
 
                         if (subcircuitUrl) {
                             acmImportService.importAdm(self.layoutContext, selectedContainerId,
@@ -569,27 +573,47 @@ angular.module('mms.designEditor', [
 
                                         if (designStructureUpdateObject.updateType === 'positionChange') {
 
-                                            diagramService.updateComponentsAndItsWiresPosition(
-                                                selectedContainerId,
-                                                designStructureUpdateObject.id,
-                                                designStructureUpdateObject.data.position
-                                            );
+                                            if (wiringService.selectedRouter.id === 'autoRouter') {
+                                                diagramService.updateComponentsPosition(
+                                                    selectedContainerId,
+                                                    designStructureUpdateObject.id,
+                                                    designStructureUpdateObject.data.position
+                                                );
+                                            }
+                                            else {
+
+                                                diagramService.updateComponentsAndItsWiresPosition(
+                                                    selectedContainerId,
+                                                    designStructureUpdateObject.id,
+                                                    designStructureUpdateObject.data.position
+                                                );
+                                            }
                                         }
 
                                         if (designStructureUpdateObject.updateType === 'rotationChange') {
 
-                                            diagramService.updateComponentsAndItsWiresRotation(
-                                                selectedContainerId,
-                                                designStructureUpdateObject.id,
-                                                designStructureUpdateObject.data.rotation
-                                            );
+                                            if (wiringService.selectedRouter.id === 'autoRouter') {
+                                                diagramService.updateComponentsRotation(
+                                                    selectedContainerId,
+                                                    designStructureUpdateObject.id,
+                                                    designStructureUpdateObject.data.rotation
+                                                );
+                                            }
+                                            else {
+
+                                                diagramService.updateComponentsAndItsWiresRotation(
+                                                    selectedContainerId,
+                                                    designStructureUpdateObject.id,
+                                                    designStructureUpdateObject.data.rotation
+                                                );
+                                            }
                                         }
 
                                         if (designStructureUpdateObject.updateType === 'detailsChange') {
 
                                             diagram = diagramService.getDiagram(selectedContainerId);
 
-                                            if (diagram) {
+                                            if (diagram && wiringService.selectedRouter.id !== 'autoRouter') {
 
                                                 diagram.updateWireSegments(
                                                     designStructureUpdateObject.id,

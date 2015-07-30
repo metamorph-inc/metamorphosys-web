@@ -31,7 +31,7 @@ define(['./NodeMock'], function (NodeMock) {
         var newNode = node.clone(this, parentNode, this._nodes);
 
         return newNode;
-    }
+    };
 
     CoreMock.prototype.addChild = function (node, child) {
         node.children.push(this.getPath(child));

@@ -14,7 +14,7 @@ angular.module('CyPhyApp').config(function(
 
     retrieveGivenProject = function($state, $stateParams, projectHandling, $log, errorReporter) {
 
-        return projectHandling.selectProject($stateParams.projectId)
+        return projectHandling.selectProject($stateParams.projectId, $stateParams.branchId)
             .then(function(projectId) {
                 $log.debug('givenProject found', projectId);
                 return projectId;

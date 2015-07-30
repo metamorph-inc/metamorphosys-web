@@ -365,7 +365,11 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 minWidth: 240,
                 portWireLeadInIncrement: 8,
                 portWireLength: 30,
-                topPortPadding: 20
+                topPortPadding: 20,
+                hasTopPort: portStuff.portDescriptors.top.length > 0,
+                hasBottomPort: portStuff.portDescriptors.bottom.length > 0,
+                hasLeftPort: portStuff.portDescriptors.left.length > 0,
+                hasRightPort: portStuff.portDescriptors.right.length > 0
             }
         );
 

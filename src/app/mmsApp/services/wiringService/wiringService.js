@@ -5,8 +5,8 @@
 var wiringServicesModule = angular.module(
     'mms.designVisualization.wiringService', []);
 
-wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
-    function () {
+wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope', '$timeout',
+    function ($mdToast) {
 
         var self = this,
             SimpleRouter = require('./classes/SimpleRouter.js'),
@@ -16,7 +16,7 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
 
                 SimpleRouter: new SimpleRouter(),
                 ElbowRouter: new ElbowRouter(),
-                OrthogonalRouter: new OrthogonalRouter()                
+                OrthogonalRouter: new OrthogonalRouter($mdToast)                
 
             },
 
@@ -25,9 +25,22 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                 params: null
             };
 
+        this.selectedRouter = 
+            {
+                id: 'autoRouter',
+                label: 'Auto Router',
+                type: 'OrthogonalRouter'
+            };
+
         this.getRouterTypes = function () {
 
             return [
+
+                {
+                    id: 'autoRouter',
+                    label: 'Auto Router',
+                    type: 'OrthogonalRouter'
+                },
 
                 {
                     id: 'elbowHorizontal',
@@ -48,7 +61,6 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
                     label: 'Straight wire',
                     type: 'SimpleRouter'
                 }
-
 
             ];
 
@@ -84,6 +96,9 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
         };
 
         this.routeWire = function (wire, routerType, params, ignoreLeadIn) {
+
+            // TODO AutoRouter: This function should route only the current wire if no new components have been
+            // added and no components were moved around. It would use a cached version of the visibility graph.
 
             var router,
                 simpleRouter,
@@ -151,6 +166,10 @@ wiringServicesModule.service('wiringService', ['$log', '$rootScope', '$timeout',
         };
 
         this.adjustWireEndSegments = function (wire) {
+
+            // TODO AutoRouter: Currently defaults to ElbowRouter if this function is called and 
+            // router type is set to autoRouter. How it should work for AutoRouter: If components are dragged,
+            // do not redraw wires until the drag completes. No adjusting of wires, just redraw once complete.
 
             var firstSegmentParams,
                 secondSegmentParams,

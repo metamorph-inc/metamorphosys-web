@@ -169,7 +169,9 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
         finishDrag();
 
-        $scope.diagram.clearSelection(true);
+        if ($scope.diagram) {
+            $scope.diagram.clearSelection(true);
+        }
 
     };
 
