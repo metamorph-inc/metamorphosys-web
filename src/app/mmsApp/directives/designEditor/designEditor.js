@@ -396,8 +396,14 @@ angular.module('mms.designEditor', [
                                 }
                             })
                             .then(function() {
-                                nodeService.completeTransaction(layoutContext);
+                                return nodeService.completeTransaction(layoutContext)
+                                    .then(function() {
+                                        console.log('transaction complete');
+                                    });
+                            })
+                            .then(function() {
                                 gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                $rootScope.$emit('wireCreationDone');
                             })
                             .finally(function() {
                                 $rootScope.stopProcessing();
@@ -489,6 +495,7 @@ angular.module('mms.designEditor', [
                         var srcPointer,
                             dstPointer;
 
+                        var committed = false;
                         nodeService.loadNode(layoutContext, wire.getId())
                             .then(function(wireObj) {
                                 srcPointer = wireObj.getPointer('src').to;
@@ -507,12 +514,26 @@ angular.module('mms.designEditor', [
                                 return TestConnectorForInferredTypeRemoval(dstConnector);
                             })
                             .then(function() {
-                                nodeService.completeTransaction(layoutContext);
+                                return nodeService.completeTransaction(layoutContext)
+                                    .then(function() {
+                                        committed = true;
+                                        console.log('Transaction complete');
+                                    });
+                            })
+                            .then(function() {
                                 gridService.invalidateVisibleDiagramComponents(selectedContainerId);
                             })
                             .catch(function(err) {
-                                // TODO: Commit the transaction and then do an undo
                                 console.error(err);
+
+                                // Commit the transaction, if not committed already, and undo it.
+                                if (committed === false)
+                                {
+                                    return nodeService.completeTransaction(layoutContext)
+                                       .then(function() {
+                                           diagramService.undo();
+                                        });
+                                }
                             })
                             .finally(function() {
                                 $rootScope.stopProcessing();
