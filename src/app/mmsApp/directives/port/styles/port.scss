@@ -3,30 +3,33 @@
   .port-label-wrapper {
     -ms-transform-origin: center center;
     -webkit-transform-origin: center center;
-    transform-origin: center center;
+    /*
+        Uncomment once Firefox supports SVG transform origin
+        transform-origin: center center;
+     */
 
     .rotated-180 & {
       -ms-transform:rotate(180deg);
-      -moz-transform:rotate(180deg);
+      /*-moz-transform:rotate(180deg);*/
       -webkit-transform:rotate(180deg);
       -o-transform:rotate(180deg);
-      transform: rotate(180deg);
+      /*transform: rotate(180deg);*/
     }
 
     .rotated-90 & {
       -ms-transform:rotate(0deg);
-      -moz-transform:rotate(0deg);
+      /*-moz-transform:rotate(0deg);*/
       -webkit-transform:rotate(0deg);
       -o-transform:rotate(0deg);
-      transform: rotate(0deg);
+      /*transform: rotate(0deg);*/
     }
 
     .rotated-270 & {
       -ms-transform:rotate(0deg);
-      -moz-transform:rotate(0deg);
+      /*-moz-transform:rotate(0deg);*/
       -webkit-transform:rotate(0deg);
       -o-transform:rotate(0deg);
-      transform: rotate(0deg);
+      /*transform: rotate(0deg);*/
     }
   }
 
