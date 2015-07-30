@@ -2,10 +2,13 @@
 
 /* globals ga */
 
+require('../designEditor/designEditor.js');
+
 var PrimitiveGrid = require('./primitiveGrid.jsx');
 
 angular.module('mms.primitivesDrawerPanel', [
     'mms.primitivesService',
+    'mms.designEditor',
     'cyphy.services',
     'ngMaterial'
 ])
@@ -61,12 +64,12 @@ angular.module('mms.primitivesDrawerPanel', [
         replace: true,
         transclude: true,
         scope: true,
-        //templateUrl: '/mmsApp/templates/primitivesDrawerPanelGrid.html',
         template: '<div class="primitives-drawer-panel"></div>',
-        require: ['primitivesDrawerPanelGrid'],
+        require: ['primitivesDrawerPanelGrid', '^designEditor'],
         link: function(scope, element, attr, controllers) {
 
-                var ctrl = controllers[0];
+                var ctrl = controllers[0],
+                    designCtrl = controllers[1];
 
                 function cleanup() {
                   React.unmountComponentAtNode(element[0]);
@@ -86,6 +89,33 @@ angular.module('mms.primitivesDrawerPanel', [
 
                         cleanup();
                         render();
+
+                        var gridItems = document.querySelectorAll( '.primitive-grid-item' )
+
+                        if (gridItems) {
+
+                            angular.forEach(gridItems, function(gridItem) {
+
+                                gridItem.addEventListener("dragstart", function(e) {
+
+                                    var primitiveId = this.getElementsByClassName('primitive-name')[0].title,
+                                        primitive = ctrl.listData.items.filter(function(p) {
+                                            return p.id === primitiveId; 
+                                        })[0];  
+
+                                    designCtrl.primitivePanelItemDragStart(e, primitive);
+
+                                });
+
+                                gridItem.addEventListener("dragstop", function(e) {
+
+                                    var primitiveId = this.getElementsByClassName('primitive-name')[0].title;
+
+                                    designCtrl.primitivePanelItemDragEnd(e, primitiveId);
+
+                                });
+                            });
+                        }
                     }
                 });
 

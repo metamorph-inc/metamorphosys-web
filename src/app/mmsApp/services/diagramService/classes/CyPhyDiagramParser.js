@@ -7,6 +7,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     var getDiagram,
         getDiagramElement,
         avmComponentModelParser,
+        primitiveParser,
         connectorParser,
         containerParser,
         labelParser,
@@ -304,6 +305,19 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         }
 
         return wire;
+
+    };
+
+    primitiveParser = function(element, zIndex) {
+        
+        if (element.primitiveId === 'simple-connector') {
+
+            return connectorParser(element, zIndex);
+        }
+        else if (element.primitiveId === 'empty-subcircuit') {
+
+            return containerParser(element, zIndex);
+        }
 
     };
 
@@ -849,4 +863,5 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     this.getDiagram = getDiagram;
     this.getDiagramElement = getDiagramElement;
+    this.primitiveParser = primitiveParser;
 };

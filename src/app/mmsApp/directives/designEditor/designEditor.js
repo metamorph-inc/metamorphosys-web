@@ -4,6 +4,8 @@
 
 var EventDispatcher = require('../../classes/EventDispatcher');
 
+var CyPhyDiagramParser = require('../../services/diagramService/classes/CyPhyDiagramParser.js');
+
 require('../keyboardMap/keyboardMap.js');
 require('../diagramComponentInspector/diagramComponentInspector.js');
 require('../diagramWireInspector/diagramWireInspector.js');
@@ -27,7 +29,9 @@ angular.module('mms.designEditor', [
         'mms.testBenchDrawerPanel',
         'mms.primitivesDrawerPanel'
     ])
-    .directive('designEditor', function(dndService) {
+    .directive('designEditor', function(dndService, symbolManager, diagramService, wiringService, pcbService) {
+
+        var cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, diagramService, wiringService, pcbService);
 
         var _ghostComponent = document.createElement('img');
         _ghostComponent.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAaCAMAAADRyb8sAAAARVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgICAwMDBAQECAgIC/v7////8hdZNpAAAAEHRSTlMAECAwQFBgcICPn6+/z9/vIxqCigAAALpJREFUeNrt1E0PwiAMgOEWCiIrUD///081jMZkB5lVj74XLjzLMuhgk6N5Dl6WzpdZpwTbHPknvd1nXZ+UaN0uIsWbaGgiLUCQXrFQ1zppsMhapF7eoZl6x0GAx1q4V3doHbuUjkc0NLwwKcXSl2j6TLmTDIAHXsh4OHHhCJqFan/6PiU0U+/WM2oijCbqq0j1eqvYQvHzyUnfT04eq2VywiA68sn0mYr+WFxmjmCimJgT/u42ybwNfQDu5E5vKmPGHgAAAABJRU5ErkJggg=='
@@ -224,6 +228,55 @@ angular.module('mms.designEditor', [
                                     $rootScope.stopProcessing();
                                 });
                         }
+
+                    });
+
+                    addRootScopeEventListener('primitiveInstantiationMustBeDone', function($event, primitive, position) {
+
+                        $rootScope.setProcessing();
+
+                        nodeService.getMetaNodes(layoutContext)
+                            .then(function(meta) {
+
+                                var metaId;
+
+                                metaId = meta.byName.ConnectorComposition.id;
+
+                                nodeService.startTransaction(layoutContext, 'New primitive creation');
+
+                                nodeService.createNode(layoutContext, selectedContainerId, metaId, 'New primitive')
+                                    .then(function(node) {
+
+                                       var element = {},
+                                           primitiveElement;
+
+                                        if (!position) {
+                                            position = gridService.getViewPortCenter(selectedContainerId);
+                                        }
+
+                                        if (!position) {
+                                            position = {
+                                                x: 0,
+                                                y: 0
+                                            };
+                                        }
+
+                                        angular.copy(primitive, element);
+
+                                        element.id = node.id;
+                                        element.position = gridService.getSnappedPosition(position);
+
+                                        primitiveElement = cyPhyDiagramParser.primitiveParser(element, self.diagram.getHighestZ() + 1);
+
+                                        self.diagram.addComponent(primitiveElement);
+
+                                        nodeService.completeTransaction(layoutContext);
+
+                                        $rootScope.stopProcessing();
+
+                                    });
+
+                            });
 
                     });
 
@@ -825,6 +878,47 @@ angular.module('mms.designEditor', [
         };
 
         DesignEditorController.prototype.subcircuitBrowserItemDragEnd = function(e, item) {
+            dndService.stopDrag();
+
+            if (typeof e.dataTransfer.setDragImage !== 'function') {
+
+                // We are in IE land
+
+                document.body.removeChild(_ghostComponent);
+                document.body.removeEventListener('drag', dragginginIE, true);
+
+            }
+
+        };
+
+        DesignEditorController.prototype.primitivePanelItemDragStart = function(e, item) {
+
+            if (typeof e.dataTransfer.setDragImage === 'function') {
+                e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
+            } else {
+
+                // We are in IE land
+
+                _ghostComponent.style.zIndex = '100';
+                _ghostComponent.style.top = (e.pageY + 5) + 'px';
+                _ghostComponent.style.left = (e.pageX + 5) + 'px';
+                _ghostComponent.style.position = 'absolute';
+                _ghostComponent.style.pointerEvents = 'none';
+
+                document.body.appendChild(_ghostComponent);
+
+                document.body.addEventListener('drag', dragginginIE, true);
+            }
+
+            item.primitiveId = item.id;
+
+            dndService.startDrag('primitive', {
+                primitiveId: item.id,
+                primitiveData: item
+            });
+        };
+
+        DesignEditorController.prototype.primitivePanelItemDragEnd = function(e, item) {
             dndService.stopDrag();
 
             if (typeof e.dataTransfer.setDragImage !== 'function') {
