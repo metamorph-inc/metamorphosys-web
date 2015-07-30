@@ -100,6 +100,7 @@ angular.module('mms.svgDiagram', [
                 this._portElementsByType = null;
                 this._focusedPort = null;
                 this._connectedPorts = [];
+                this._connectedWires = [];
 
                 // Setting up handlers
 
@@ -463,6 +464,38 @@ angular.module('mms.svgDiagram', [
 
                 };
 
+                this.onWireMouseOver = function(wireId) {
+
+                    var wireEl = document.getElementById(wireId);
+
+                    if (wireEl) {
+
+                        angular.forEach(wireEl.childNodes, function(wireSegmentEl) {
+
+                            wireSegmentEl.classList.add('hover');
+
+                        });
+
+                    }
+
+                };
+
+                this.onWireMouseOut = function(wireId) {
+
+                    var wireEl = document.getElementById(wireId);
+
+                    if (wireEl) {
+
+                        angular.forEach(wireEl.childNodes, function(wireSegmentEl) {
+
+                            wireSegmentEl.classList.remove('hover');
+
+                        });
+
+                    }
+
+                };
+
                 this.toggleHoverForClassArray = function(classNameArray, disable) {
 
                     for (var i in classNameArray) {
@@ -575,7 +608,7 @@ angular.module('mms.svgDiagram', [
 
                         // Highlight other ports that are connected to this port
                         //   only before a wire drawing has begun.
-                        this.focusConnectedPorts(diagram, port);
+                        this.focusConnectedPortsAndWires(diagram, port);
 
                     }
 
@@ -590,7 +623,7 @@ angular.module('mms.svgDiagram', [
 
                     }
 
-                    this.unFocusConnectedPorts(diagram);
+                    this.unFocusConnectedPortsAndWires(diagram);
 
                 };
 
@@ -621,21 +654,28 @@ angular.module('mms.svgDiagram', [
 
                 };
                 
-                this.focusConnectedPorts = function(diagram) {
+                this.focusConnectedPortsAndWires = function(diagram) {
                     
-                    self.findConnectedPorts(this._focusedPort, diagram.getWires(), 0);
+                    self.findConnectedPortsAndWires(this._focusedPort, diagram.getWires(), 0);
 
                 };
 
-                this.findConnectedPorts = function(port, wires, level) {
+                this.findConnectedPortsAndWires = function(port, wires, level) {
 
                     var wireEnds,
+                        wire,
+                        wireId,
+                        wireEl,
                         matchingPort,
                         connectionType = level === 0 ? ' highlight-direct' : ' highlight-indirect';
 
                     for (var w in wires) {
 
-                        wireEnds = wires[w].getEnds();
+                        wire = wires[w];
+
+                        wireId = wire.getId();
+
+                        wireEnds = wire.getEnds();
 
                         if (wireEnds.end1.port.id === port.id) {
                             
@@ -654,6 +694,7 @@ angular.module('mms.svgDiagram', [
                             if (level !== 0 && (this._connectedPorts.indexOf(matchingPort.id) !== -1 
                                                 || matchingPort.id === this._focusedPort.id)) {
                                 
+                                matchingPort = null;
                                 continue;
 
                             }
@@ -662,19 +703,31 @@ angular.module('mms.svgDiagram', [
 
                             matchingPort.portSymbol.cssClass += connectionType;
 
+                            if (level === 0 && this._connectedWires.indexOf(wireId) === -1) {
+
+                                this._connectedWires.push(wireId);
+
+                                wireEl = document.getElementById(wireId);
+
+                                if (wireEl) {
+                                    wireEl.classList.add('highlight');
+                                }
+
+                            }
+
                             level++;
 
-                            self.findConnectedPorts(matchingPort, wires, level);
+                            self.findConnectedPortsAndWires(matchingPort, wires, level);
+                            matchingPort = null;
                             
+                            level --;
                         }
 
                     }
 
-                    level--;
-
                 };
 
-                this.unFocusConnectedPorts = function(diagram) {
+                this.unFocusConnectedPortsAndWires = function(diagram) {
 
                     var port,
                         portId;
@@ -693,6 +746,14 @@ angular.module('mms.svgDiagram', [
 
                         this._connectedPorts = [];
                     }
+
+                    angular.forEach(this._connectedWires, function(wireId) {
+
+                        document.getElementById(wireId).classList.remove('highlight');
+
+                    });
+
+                    this._connectedWires = [];
 
                 };
 
@@ -737,6 +798,7 @@ angular.module('mms.svgDiagram', [
                             }
 
                         }
+
                 };
 
                 this.unFocusPorts = function() {
