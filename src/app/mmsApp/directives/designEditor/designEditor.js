@@ -302,9 +302,33 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    /**
+                     * Modifies targetConnector to have the same Description and children as srcConnector
+                     * @param srcConnector
+                     * @param targetConnector
+                     * @returns {*}
+                     */
+                    var CloneConnector = function (srcConnector, targetConnector) {
+                        var definition = srcConnector.getAttribute('Definition');
+                        targetConnector.setAttribute('Definition', definition);
+
+                        // Copy content
+                        var nodesToCopy = {};
+                        return srcConnector.loadChildren(layoutContext)
+                            .then(function (children) {
+                                children.forEach(function (child) {
+                                    nodesToCopy[child.id] = child;
+                                });
+
+                                nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
+                            });
+                    };
+
                     addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
 
                         $rootScope.setProcessing();
+
+                        nodeService.startTransaction(layoutContext, msg || 'New wire creation');
 
                         nodeService.getMetaNodes(layoutContext)
                             .then(function(meta) {
@@ -313,32 +337,70 @@ angular.module('mms.designEditor', [
 
                                 metaId = meta.byName.ConnectorComposition.id;
 
-                                nodeService.startTransaction(layoutContext, msg || 'New wire creation');
+                                return nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire');
+                            })
+                            .then(function(node) {
 
-                                nodeService.createNode(layoutContext, selectedContainerId, metaId, msg || 'New wire')
-                                    .then(function(node) {
+                                var diagram = diagramService.getDiagram(selectedContainerId);
 
-                                        var diagram = diagramService.getDiagram(selectedContainerId);
+                                if (diagram) {
 
-                                        if (diagram) {
+                                    var wireEnd1 = wire.getEnd1();
+                                    var wireEnd2 = wire.getEnd2();
+                                    node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
+                                    node.makePointer('src', wireEnd1.port.id);
+                                    node.makePointer('dst', wireEnd2.port.id);
 
-                                            node.setRegistry('wireSegments', wire.getCopyOfSegmentsParameters());
-                                            node.makePointer('src', wire.getEnd1().port.id);
-                                            node.makePointer('dst', wire.getEnd2().port.id);
+                                    wire.setId(node.id);
+                                    diagram.addWire(wire);
 
-                                            wire.setId(node.id);
-                                            diagram.addWire(wire);
+                                    var port1,
+                                        port2;
 
+                                    return nodeService.loadNode(layoutContext, wireEnd1.port.id)
+                                        .then(function (port1_) {
+                                            port1 = port1_;
 
-                                        }
+                                            return nodeService.loadNode(layoutContext, wireEnd2.port.id);
+                                        })
+                                        .then(function (port2_) {
+                                            port2 = port2_;
 
-                                        nodeService.completeTransaction(layoutContext);
-                                        gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                                            var port1Def = port1.getAttribute('Definition');
+                                            var port2Def = port2.getAttribute('Definition');
+                                            var port1IsTyped = port1Def !== '';
+                                            var port2IsTyped = port2Def !== '';
 
-                                        $rootScope.stopProcessing();
-
-                                    });
-
+                                            // Logic block for handling connection based on definitions
+                                            if (port1IsTyped === false && port2IsTyped === true) {
+                                                // Transfer port2's type to port1
+                                                return CloneConnector(port2, port1);
+                                            }
+                                            else if (port1IsTyped === true && port2IsTyped === false) {
+                                                // Transfer port1's type to port2
+                                                return CloneConnector(port1, port2);
+                                            }
+                                            else if (port1IsTyped === true && port2IsTyped === true) {
+                                                $log.debug('Both', port1.getAttribute('name'),
+                                                    'and', port2.getAttribute('name'), 'are typed');
+                                            }
+                                            else if (port1IsTyped === false && port2IsTyped === false) {
+                                                $log.debug('Neither', port1.getAttribute('name'),
+                                                    'nor', port2.getAttribute('name'), 'are typed');
+                                            }
+                                            else {
+                                                $log.error('Failure in type detection logic when considering',
+                                                    port1.getAttribute('name'), 'and', port2.getAttribute('name'));
+                                            }
+                                        });
+                                }
+                            })
+                            .then(function() {
+                                nodeService.completeTransaction(layoutContext);
+                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                            })
+                            .finally(function() {
+                                $rootScope.stopProcessing();
                             });
 
                     });
@@ -357,9 +419,104 @@ angular.module('mms.designEditor', [
                         });
                     });
 
+                    /**
+                     * Given a model object, see if there are any connections that include it as SRC or DST
+                     * @param node
+                     * @returns {boolean} True if it's a connection endpoint
+                     */
+                    var IsNodeConnected = function(node) {
+                        var sources = node.getCollectionPaths('src');
+                        var destinations = node.getCollectionPaths('dst');
+
+                        if (sources.length + destinations.length > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    };
+
+                    /**
+                     * Test a connector to see if its type inference is still valid.
+                     * If its type can no longer be inferred, remove its type by
+                     * destroying its children and clearing the Description attribute.
+                     * @param connector
+                     * @returns {*}
+                     */
+                    var TestConnectorForInferredTypeRemoval = function(connector) {
+                        // Does this guy (or his ports) have any connections?
+                        // If not, and his parent is a Container, then strip his Connector typing info.
+
+                        var meta;
+                        return nodeService.getMetaNodes(layoutContext)
+                            .then(function(meta_) {
+                                meta = meta_;
+                                return connector.getParentNode();
+                            })
+                            .then(function(parent) {
+                                var parentMetaTypeName = parent.getMetaTypeName(meta);
+                                if (parentMetaTypeName === 'Container') {
+
+                                    if (IsNodeConnected(connector)) {
+                                        $log.debug(connector.getAttribute('name'), 'has connections and won\'t be de-typed');
+                                    } else {
+                                        return connector.loadChildren()
+                                            .then(function (children) {
+                                                // If no children are connected, de-type this connector
+                                                if (children.filter(IsNodeConnected).length == 0) {
+                                                    $log.debug(connector.getAttribute('name'), 'will be de-typed');
+                                                    connector.setAttribute('Definition', '');
+
+                                                    children.forEach(function (child) {
+                                                        child.destroy();
+                                                    });
+                                                } else {
+                                                    $log.debug(connector.getAttribute('name'), 'has a connected port and won\'t be de-typed');
+                                                }
+                                            });
+                                    }
+                                }
+                            });
+                    };
+
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
-                        nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
+
+                        nodeService.startTransaction(layoutContext, message || 'Wire deletion');
+
+                        // Fetch both SRC and DST connectors and check them to see if their
+                        // Connector typing info needs to be stripped.
+                        // We can delete the wire as soon as we have the pointers to these connectors.
+                        var srcPointer,
+                            dstPointer;
+
+                        nodeService.loadNode(layoutContext, wire.getId())
+                            .then(function(wireObj) {
+                                srcPointer = wireObj.getPointer('src').to;
+                                dstPointer = wireObj.getPointer('dst').to;
+                                nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
+
+                                return nodeService.loadNode(layoutContext, srcPointer);
+                            })
+                            .then(function (srcConnector) {
+                                return TestConnectorForInferredTypeRemoval(srcConnector);
+                            })
+                            .then(function() {
+                                return nodeService.loadNode(layoutContext, dstPointer);
+                            })
+                            .then(function (dstConnector) {
+                                return TestConnectorForInferredTypeRemoval(dstConnector);
+                            })
+                            .then(function() {
+                                nodeService.completeTransaction(layoutContext);
+                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+                            })
+                            .catch(function(err) {
+                                // TODO: Commit the transaction and then do an undo
+                                console.error(err);
+                            })
+                            .finally(function() {
+                                $rootScope.stopProcessing();
+                            });
                     });
 
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {

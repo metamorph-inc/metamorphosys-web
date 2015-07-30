@@ -795,7 +795,7 @@ define([
             var IDs = [];
             var n = node;
             while (n !== self.activeNode) {
-                IDs.push(self.core.getRelid(n));
+                IDs.unshift(self.core.getRelid(n));
                 n = self.core.getParent(n);
             }
             return 'id.' + IDs.join('.'); // slash (aka solidus) is not allowed in XML IDs
