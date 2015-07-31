@@ -9,14 +9,20 @@
 	.primitive-grid-item {
 			
 		width: 390px;
-		max-height: 135px;
+		max-height: 80px;
         display: inline-block;
         background: transparent;
         cursor: copy;
-        margin: 1ex;
+        margin: 2px;
         vertical-align: top;
         position: relative;
-        border: slategrey solid 1px;
+        transition: background 200ms;
+
+        &:hover {
+
+            background-color: rgba(158, 158, 158, 0.1);
+
+        }
 		
 		.primitive-details {
 			max-height: 100px;
@@ -30,6 +36,7 @@
             max-width: 100px;
             margin: 10px;
             opacity: 1;
+            overflow: hidden;
 
             .primitive-svg {
             	width: 100%;
@@ -39,21 +46,19 @@
 
 		.primitive-name {
 			
-            background-color: slategrey;
             color: #fff;
             margin: 0;
-            padding: 0 10px;
-            line-height: 35px;
-            height: 35px;
-            font-size: larger;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
 
 		}
 
 		.primitive-description {
 			
-			padding: 10px;
+			padding: 0px 10px 10px 10px;
             text-align: left;
-            font-size: 100%;
+            font-size: 110%;
             width: 280px;
 		}
 

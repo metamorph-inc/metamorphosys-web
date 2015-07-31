@@ -59,9 +59,10 @@ $header-height: 38px;
 
     .drawer-sub-navigator {
         position: absolute;
-        width: 50%;
+        width: 70%;
         height: 35px;
         display: inline-block;
+        overflow: hidden;
         background: $baseBGColor;
         z-index: 20;
         font-size: 100%;
