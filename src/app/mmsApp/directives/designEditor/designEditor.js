@@ -398,7 +398,7 @@ angular.module('mms.designEditor', [
                             .then(function() {
                                 return nodeService.completeTransaction(layoutContext)
                                     .then(function() {
-                                        console.log('transaction complete');
+                                        $log.debug('Transaction complete');
                                     });
                             })
                             .then(function() {
