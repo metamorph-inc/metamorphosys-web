@@ -484,62 +484,6 @@ angular.module('mms.designEditor', [
                             });
                     };
 
-                    addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
-                        $rootScope.setProcessing();
-
-                        nodeService.startTransaction(layoutContext, message || 'Wire deletion');
-
-                        // Fetch both SRC and DST connectors and check them to see if their
-                        // Connector typing info needs to be stripped.
-                        // We can delete the wire as soon as we have the pointers to these connectors.
-                        var srcPointer,
-                            dstPointer;
-
-                        var committed = false;
-                        nodeService.loadNode(layoutContext, wire.getId())
-                            .then(function(wireObj) {
-                                srcPointer = wireObj.getPointer('src').to;
-                                dstPointer = wireObj.getPointer('dst').to;
-                                nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
-
-                                return nodeService.loadNode(layoutContext, srcPointer);
-                            })
-                            .then(function (srcConnector) {
-                                return TestConnectorForInferredTypeRemoval(srcConnector);
-                            })
-                            .then(function() {
-                                return nodeService.loadNode(layoutContext, dstPointer);
-                            })
-                            .then(function (dstConnector) {
-                                return TestConnectorForInferredTypeRemoval(dstConnector);
-                            })
-                            .then(function() {
-                                return nodeService.completeTransaction(layoutContext)
-                                    .then(function() {
-                                        committed = true;
-                                        console.log('Transaction complete');
-                                    });
-                            })
-                            .then(function() {
-                                gridService.invalidateVisibleDiagramComponents(selectedContainerId);
-                            })
-                            .catch(function(err) {
-                                console.error(err);
-
-                                // Commit the transaction, if not committed already, and undo it.
-                                if (committed === false)
-                                {
-                                    return nodeService.completeTransaction(layoutContext)
-                                       .then(function() {
-                                           diagramService.undo();
-                                        });
-                                }
-                            })
-                            .finally(function() {
-                                $rootScope.stopProcessing();
-                            });
-                    });
-
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 
                         if (component) {
@@ -635,20 +579,16 @@ angular.module('mms.designEditor', [
 
                     });
 
-                    addRootScopeEventListener('selectedDiagramThingsDeletionMustBeDone', function($event, diagram, msg) {
+                    var deleteMultipleThings = function(diagram, components, wires, wireSegmentsWithSelectedEndCorner, msg) {
 
-                        var selectedComponents = diagram.getSelectedComponents(),
-                            selectedWires = diagram.getSelectedWires(),
-                            selectedWireSegmentsWithSelectedEndCorner = diagram.getWireSegmentsWithSelectedEndCorner(),
+                        var i,
                             deletedWires = [],
-                            i,
                             nodeIdsToDelete = [],
                             deleteMessage = 'Deleting design element',
 
                             doDeletionOfComponent = function(component) {
 
-                                var i,
-                                    componentWires = [],
+                                var componentWires = [],
                                     deleteMessage;
 
                                 if (angular.isObject(component)) {
@@ -673,9 +613,9 @@ angular.module('mms.designEditor', [
 
                             };
 
-                        if ((!Array.isArray(selectedComponents) || selectedComponents.length === 0) &&
-                            (!Array.isArray(selectedWires) || selectedWires.length === 0) &&
-                            (!Array.isArray(selectedWireSegmentsWithSelectedEndCorner) || selectedWireSegmentsWithSelectedEndCorner.length === 0)) {
+                        if ((!Array.isArray(components) || components.length === 0) &&
+                            (!Array.isArray(wires) || wires.length === 0) &&
+                            (!Array.isArray(wireSegmentsWithSelectedEndCorner) || wireSegmentsWithSelectedEndCorner.length === 0)) {
                             // nothing to do
                             return;
                         }
@@ -683,9 +623,9 @@ angular.module('mms.designEditor', [
                         $rootScope.setProcessing();
                         nodeService.startTransaction(layoutContext, msg || 'Deleting design elements');
 
-                        if (Array.isArray(selectedComponents)) {
+                        if (Array.isArray(components)) {
 
-                            angular.forEach(selectedComponents, function(component) {
+                            angular.forEach(components, function(component) {
 
                                 deletedWires = deletedWires.concat(doDeletionOfComponent(component));
 
@@ -693,12 +633,33 @@ angular.module('mms.designEditor', [
 
                         }
 
-                        if (Array.isArray(selectedWires)) {
+                        var gmeUpdatePromises = [];
 
-                            angular.forEach(selectedWires, function(aWire) {
+                        if (Array.isArray(wires)) {
+
+                            angular.forEach(wires, function(aWire) {
 
                                 if (deletedWires.indexOf(aWire) === -1) {
-                                    nodeIdsToDelete.push(aWire.getId());
+                                    var wireId = aWire.getId();
+
+                                    var srcId = aWire._end1.port.id;
+                                    var dstId = aWire._end2.port.id;
+
+                                    gmeUpdatePromises.push(
+                                        nodeService.loadNode(layoutContext, srcId)
+                                            .then(function (srcConnector) {
+                                                return TestConnectorForInferredTypeRemoval(srcConnector);
+                                            })
+                                    );
+
+                                    gmeUpdatePromises.push(
+                                        nodeService.loadNode(layoutContext, dstId)
+                                            .then(function (dstConnector) {
+                                                return TestConnectorForInferredTypeRemoval(dstConnector);
+                                            })
+                                    );
+
+                                    nodeIdsToDelete.push(wireId);
                                     deletedWires.push(aWire);
                                 }
 
@@ -709,9 +670,9 @@ angular.module('mms.designEditor', [
 
                         var wiresToUpdate = [];
 
-                        if (Array.isArray(selectedWireSegmentsWithSelectedEndCorner)) {
+                        if (Array.isArray(wireSegmentsWithSelectedEndCorner)) {
 
-                            angular.forEach(selectedWireSegmentsWithSelectedEndCorner, function(aSegment) {
+                            angular.forEach(wireSegmentsWithSelectedEndCorner, function(aSegment) {
 
                                 var parentWire = aSegment.getParentWire();
 
@@ -728,8 +689,6 @@ angular.module('mms.designEditor', [
                             });
 
                         }
-
-                        var gmeUpdatePromises = [];
 
                         // Deleting gathered component and wires
 
@@ -748,6 +707,21 @@ angular.module('mms.designEditor', [
                         $q.all(gmeUpdatePromises).then(function() {
                             nodeService.completeTransaction(layoutContext);
                         });
+                    };
+
+                    addRootScopeEventListener('selectedDiagramThingsDeletionMustBeDone', function($event, diagram, msg) {
+
+                        var selectedComponents = diagram.getSelectedComponents(),
+                            selectedWires = diagram.getSelectedWires(),
+                            selectedWireSegmentsWithSelectedEndCorner = diagram.getWireSegmentsWithSelectedEndCorner();
+
+                        deleteMultipleThings(diagram, selectedComponents, selectedWires, selectedWireSegmentsWithSelectedEndCorner, msg);
+
+                    });
+
+                    addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
+
+                        deleteMultipleThings($scope.diagram, null, [wire], null, message);
 
                     });
 
