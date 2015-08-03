@@ -23,6 +23,24 @@ angular.module(
 
         };
 
+        // $scope.setPortType = function(portType, portDescription, portDecorator) {
+
+        //     if (portDecorator) {
+        //         $scope.portInstance.portSymbol.decoratorColor = portDecorator.color;
+        //         $scope.portInstance.portSymbol.decoratorBGColor = portDecorator.bgColor;
+
+        //         $scope.portInstance.portSymbol.decoratorLabel = portDecorator.label;
+        //         $scope.portInstance.portSymbol.decoratorDirective = portDecorator.directive;
+        //     }
+
+        //     $scope.portInstance.portSymbol.decoratorColor = $scope.portInstance.portSymbol.decoratorColor || '#fff';
+        //     $scope.portInstance.portSymbol.decoratorBGColor = $scope.portInstance.portSymbol.decoratorBGColor || '#747f8d';
+
+        //     $scope.portInstance.portSymbol.type = portType;
+        //     $scope.portInstance.portSymbol.description = portDescription;
+        //     $scope.portInstance.portSymbol.portDecorator = portDecorator;    
+        // };
+
         $scope.getLabel = function () {
 
             var label;
@@ -152,6 +170,12 @@ angular.module(
                     if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {
                         svgDiagramController.deregisterPortElement(scope.portInstance.portSymbol.type, element[0]);
                     }
+
+                });
+
+                scope.$watch('scope.portInstance.portSymbol.type', function() {
+
+
 
                 });
 

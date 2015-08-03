@@ -5,12 +5,19 @@
 angular.module(
     'mms.designVisualization.port.decoratedPorts', []
 )
+    
+
     .directive(
     'decoratedPort',
     function () {
         return {
-            scope: false,
+            scope: true,
             controller: function ($scope) {
+
+                if ($scope.$parent.portData) {
+                    $scope.component = $scope.$parent.portData.parentComponent;
+                    $scope.portInstance = $scope.$parent.portData;
+                }
 
                 if ($scope.component.symbol.symbolDirective === 'container-box') {
 
@@ -55,7 +62,8 @@ angular.module(
             templateUrl: '/mmsApp/templates/decoratedPort.html',
             link: function (scope, element, attributes, controllers) {
 
-                var diagramContainerController = controllers[1];
+                var ctrl = controllers[0],
+                    diagramContainerController = controllers[1];
 
                 if (scope.portInstance.portSymbol.portDecorator) {
 
@@ -88,6 +96,10 @@ angular.module(
                         scope.pinCount = scope.portType.split('_')[1];
                     }
                 }
+
+                scope.$watch('scope.portInstance.portSymbol.portDecorator.directive', function() {
+                    console.log('j');
+                }, true);
             }
 
         };
@@ -100,7 +112,13 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html'
+            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html',
+            link: function(scope){
+
+                if (scope.$parent.portData) {
+                    scope.portInstance = scope.$parent.portData;
+                }
+            }
         };
     })
     .directive(
@@ -111,7 +129,13 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html'
+            templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html',
+            link: function(scope){
+
+                if (scope.$parent.portData) {
+                    scope.portInstance = scope.$parent.portData;
+                }
+            }
         };
     })
     .directive(
@@ -122,18 +146,30 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/analogConnectorSymbol.html'
+            templateUrl: '/mmsApp/templates/analogConnectorSymbol.html',
+            link: function(scope){
+
+                if (scope.$parent.portData) {
+                    scope.portInstance = scope.$parent.portData;
+                }
+            }
         };
     })
     .directive(
     'supplySingleSymbol',
     function () {
         return {
-            scope: false,
+            scope: true,
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/supplySingleSymbol.html'
+            templateUrl: '/mmsApp/templates/supplySingleSymbol.html',
+            link: function(scope){
+
+                if (scope.$parent.portData) {
+                    scope.portInstance = scope.$parent.portData;
+                }
+            }
         };
     })
     ;

@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function(symbolManager, diagramService, wiringService, pcbService) {
+module.exports = function(symbolManager, diagramService, wiringService, pcbService, nodeService) {
 
     var getDiagram,
         getDiagramElement,
@@ -324,9 +324,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     connectorParser = function(element, zIndex) {
         var portInstance,
             symbol,
+            tmpSymbol,
             newDiagramComponent;
 
-        symbol = symbolManager.getSymbol('simpleConnector');
+        tmpSymbol = symbolManager.getSymbol('simpleConnector');
+
+        symbol = angular.copy(tmpSymbol, symbol);
 
         newDiagramComponent = new DiagramComponent({
             id: element.id,
@@ -864,4 +867,5 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     this.getDiagram = getDiagram;
     this.getDiagramElement = getDiagramElement;
     this.primitiveParser = primitiveParser;
+    this.connectorTypeToDecorator = connectorTypeToDecorator;
 };

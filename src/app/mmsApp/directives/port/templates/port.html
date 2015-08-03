@@ -15,7 +15,7 @@
         ng-mouseover="onPortMouseOver(portInstance, $event)"
         ng-mouseout="onPortMouseOut(portInstance, $event)"
         >
-        <title>{{::(portInstance.portSymbol.description || portInstance.portSymbol.type)}}</title>
+        <title>{{(portInstance.portSymbol.description || portInstance.portSymbol.type)}}</title>
         <g class="symbol-placeholder"></g>
     </g>
 </g>
