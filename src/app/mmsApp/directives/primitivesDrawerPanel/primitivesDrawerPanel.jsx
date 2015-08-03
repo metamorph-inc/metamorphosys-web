@@ -29,6 +29,7 @@ angular.module('mms.primitivesDrawerPanel', [
                 id: primitive.id,
                 name: primitive.name,
                 metaType: primitive.metaType,
+                type: primitive.type,
                 description: primitive.description,
                 svgViewBox: primitive.svgViewBox,
                 config: primitive.config,

@@ -285,6 +285,8 @@ angular.module('cyphy.services')
                 child = {
                     id: node.getId(),
                     name: node.getAttribute('name'),
+                    type: node.getAttribute('Definition'),
+                    description: node.getAttribute('Description'),
                     position: node.getRegistry('position'),
                     rotation: node.getRegistry('rotation'),
                     baseId: node.getBaseId()

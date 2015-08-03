@@ -20,6 +20,7 @@ require('./services/wiringService/wiringService.js');
 require('./services/dndService/dndService.js');
 require('./services/pcbService/pcbService.js');
 require('./services/primitivesService/primitivesService.js');
+require('./services/connectorService/connectorService.js');
 
 require('./directives/headerButtons/headerButtons.js');
 require('./directives/socialMediaButtons/socialMediaButtons.js');

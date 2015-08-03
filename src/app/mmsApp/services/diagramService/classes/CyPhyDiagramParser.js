@@ -357,6 +357,15 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             portSymbol: symbol.ports.p1
         });
 
+        if ( element.type.toLowerCase() !== 'generic' && element.type.length > 0 ) {
+            
+            portInstance.setPortType( element.type,
+                                      element.description,
+                                      connectorTypeToDecorator[element.type] );
+
+        }
+
+
         newDiagramComponent.registerPortInstances([portInstance]);
 
         return newDiagramComponent;
@@ -759,8 +768,6 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         var i,
             newDiagramComponent,
-
-
 
             diagram,
             wire,

@@ -23,6 +23,10 @@ DiagramComponent.prototype.getId = function() {
     return this.id;
 };
 
+DiagramComponent.prototype.isConnector = function() {
+    return this.metaType === 'Connector';
+};
+
 DiagramComponent.prototype.isInViewport = function(viewPort, padding) {
 
     //TODO: count width and height for orientation

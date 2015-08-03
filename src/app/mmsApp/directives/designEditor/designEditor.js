@@ -27,7 +27,9 @@ angular.module('mms.designEditor', [
         'mms.utils',
         'mms.dndService',
         'mms.testBenchDrawerPanel',
-        'mms.primitivesDrawerPanel'
+        'mms.primitivesDrawerPanel',
+        'mms.connectorService',
+        'mms.projectHandling'
     ])
     .directive('designEditor', function(dndService, symbolManager, diagramService, wiringService, pcbService) {
 
@@ -46,7 +48,7 @@ angular.module('mms.designEditor', [
         function DesignEditorController($scope, $rootScope, diagramService, $log, connectionHandling,
             designService, $state, $stateParams, designLayoutService,
             symbolManager, $timeout, nodeService, gridService, $cookies, projectHandling,
-            acmImportService, mmsUtils, operationsManager, wiringService, $q, $injector, $mdToast, $compile) {
+            acmImportService, mmsUtils, operationsManager, wiringService, connectorService, $q, $injector, $mdToast, $compile) {
 
             var justCreatedWires,
                 layoutContext,
@@ -300,28 +302,6 @@ angular.module('mms.designEditor', [
 
                     });
 
-                    /**
-                     * Modifies targetConnector to have the same Description and children as srcConnector
-                     * @param srcConnector
-                     * @param targetConnector
-                     * @returns {*}
-                     */
-                    var CloneConnector = function (srcConnector, targetConnector) {
-                        var definition = srcConnector.getAttribute('Definition');
-                        targetConnector.setAttribute('Definition', definition);
-
-                        // Copy content
-                        var nodesToCopy = {};
-                        return srcConnector.loadChildren(layoutContext)
-                            .then(function (children) {
-                                children.forEach(function (child) {
-                                    nodesToCopy[child.id] = child;
-                                });
-
-                                nodeService.copyMoreNodes(layoutContext, targetConnector.id, nodesToCopy);
-                            });
-                    };
-
                     addRootScopeEventListener('wireCreationMustBeDone', function($event, wire, msg) {
 
                         $rootScope.setProcessing();
@@ -352,45 +332,8 @@ angular.module('mms.designEditor', [
                                     wire.setId(node.id);
                                     diagram.addWire(wire);
 
-                                    var port1,
-                                        port2;
+                                    connectorService.updateConnectorDefinition(wire, layoutContext);
 
-                                    return nodeService.loadNode(layoutContext, wireEnd1.port.id)
-                                        .then(function (port1_) {
-                                            port1 = port1_;
-
-                                            return nodeService.loadNode(layoutContext, wireEnd2.port.id);
-                                        })
-                                        .then(function (port2_) {
-                                            port2 = port2_;
-
-                                            var port1Def = port1.getAttribute('Definition');
-                                            var port2Def = port2.getAttribute('Definition');
-                                            var port1IsTyped = port1Def !== '';
-                                            var port2IsTyped = port2Def !== '';
-
-                                            // Logic block for handling connection based on definitions
-                                            if (port1IsTyped === false && port2IsTyped === true) {
-                                                // Transfer port2's type to port1
-                                                return CloneConnector(port2, port1);
-                                            }
-                                            else if (port1IsTyped === true && port2IsTyped === false) {
-                                                // Transfer port1's type to port2
-                                                return CloneConnector(port1, port2);
-                                            }
-                                            else if (port1IsTyped === true && port2IsTyped === true) {
-                                                $log.debug('Both', port1.getAttribute('name'),
-                                                    'and', port2.getAttribute('name'), 'are typed');
-                                            }
-                                            else if (port1IsTyped === false && port2IsTyped === false) {
-                                                $log.debug('Neither', port1.getAttribute('name'),
-                                                    'nor', port2.getAttribute('name'), 'are typed');
-                                            }
-                                            else {
-                                                $log.error('Failure in type detection logic when considering',
-                                                    port1.getAttribute('name'), 'and', port2.getAttribute('name'));
-                                            }
-                                        });
                                 }
                             })
                             .then(function() {
@@ -422,65 +365,6 @@ angular.module('mms.designEditor', [
                             nodeService.completeTransaction(layoutContext);
                         });
                     });
-
-                    /**
-                     * Given a model object, see if there are any connections that include it as SRC or DST
-                     * @param node
-                     * @returns {boolean} True if it's a connection endpoint
-                     */
-                    var IsNodeConnected = function(node) {
-                        var sources = node.getCollectionPaths('src');
-                        var destinations = node.getCollectionPaths('dst');
-
-                        if (sources.length + destinations.length > 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    };
-
-                    /**
-                     * Test a connector to see if its type inference is still valid.
-                     * If its type can no longer be inferred, remove its type by
-                     * destroying its children and clearing the Description attribute.
-                     * @param connector
-                     * @returns {*}
-                     */
-                    var TestConnectorForInferredTypeRemoval = function(connector) {
-                        // Does this guy (or his ports) have any connections?
-                        // If not, and his parent is a Container, then strip his Connector typing info.
-
-                        var meta;
-                        return nodeService.getMetaNodes(layoutContext)
-                            .then(function(meta_) {
-                                meta = meta_;
-                                return connector.getParentNode();
-                            })
-                            .then(function(parent) {
-                                var parentMetaTypeName = parent.getMetaTypeName(meta);
-                                if (parentMetaTypeName === 'Container') {
-
-                                    if (IsNodeConnected(connector)) {
-                                        $log.debug(connector.getAttribute('name'), 'has connections and won\'t be de-typed');
-                                    } else {
-                                        return connector.loadChildren()
-                                            .then(function (children) {
-                                                // If no children are connected, de-type this connector
-                                                if (children.filter(IsNodeConnected).length == 0) {
-                                                    $log.debug(connector.getAttribute('name'), 'will be de-typed');
-                                                    connector.setAttribute('Definition', '');
-
-                                                    children.forEach(function (child) {
-                                                        child.destroy();
-                                                    });
-                                                } else {
-                                                    $log.debug(connector.getAttribute('name'), 'has a connected port and won\'t be de-typed');
-                                                }
-                                            });
-                                    }
-                                }
-                            });
-                    };
 
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 
@@ -646,14 +530,14 @@ angular.module('mms.designEditor', [
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, srcId)
                                             .then(function (srcConnector) {
-                                                return TestConnectorForInferredTypeRemoval(srcConnector);
+                                                return connectorService.testConnectorForInferredTypeRemoval(srcConnector, layoutContext);
                                             })
                                     );
 
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, dstId)
                                             .then(function (dstConnector) {
-                                                return TestConnectorForInferredTypeRemoval(dstConnector);
+                                                return connectorService.testConnectorForInferredTypeRemoval(dstConnector, layoutContext);
                                             })
                                     );
 
@@ -860,29 +744,24 @@ angular.module('mms.designEditor', [
 
                                             if (diagram) {
 
-                                                var port,
-                                                    template,
-                                                    compiledSymbol,
-                                                    decoratedPortEl,
-                                                    newDecorator;
+                                                var newConnectorData = {
+                                                    type: designStructureUpdateObject.data.type,
+                                                    description: designStructureUpdateObject.data.description,
+                                                    decorator: cyPhyDiagramParser.connectorTypeToDecorator[designStructureUpdateObject.data.type]
+                                                };
 
-                                                port = diagram.getPortById(designStructureUpdateObject.id);
+                                                var port = diagram.getPortById(designStructureUpdateObject.id);
 
                                                 if (port) {
 
-                                                    newDecorator = cyPhyDiagramParser.connectorTypeToDecorator[designStructureUpdateObject.data.type];
+                                                    connectorService.updateConnectorModel(port, newConnectorData);
 
-                                                    port.portSymbol.portDecorator = newDecorator;
-
-                                                    port.setPortType(designStructureUpdateObject.data.type,
-                                                                        designStructureUpdateObject.data.description,
-                                                                        newDecorator);                                                    
+                                                    var compiledSymbol,
+                                                        decoratedPortEl;
 
                                                     decoratedPortEl = document.getElementById(port.id).querySelector('.decorated-port');
 
-                                                    template = angular.element('<decorated-port></decorated-port>');
-
-                                                    compiledSymbol = $compile(template);
+                                                    compiledSymbol = $compile('<decorated-port></decorated-port>');
 
                                                     compiledSymbol($scope, function (clonedElement) {
 
@@ -894,7 +773,6 @@ angular.module('mms.designEditor', [
                                                     });
 
                                                     $scope.portData = port;
-                                        
                                                 }
 
                                             }
@@ -937,7 +815,6 @@ angular.module('mms.designEditor', [
                                     $cookies['seenTutorialFor' + designConfig.name] = 'true';
 
                                 }
-
 
                             }, 200);
 
