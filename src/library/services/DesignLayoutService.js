@@ -234,7 +234,6 @@ angular.module('cyphy.services')
                     }
 
                     if (newDefinition !== child.type) {
-                        console.log('from: ' + child.type + ' to: ' + newDefinition);
                         child.type = newDefinition;
                         child.description = newDescription;
                         hadChanges = true;

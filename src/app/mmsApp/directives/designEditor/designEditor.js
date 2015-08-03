@@ -29,9 +29,9 @@ angular.module('mms.designEditor', [
         'mms.testBenchDrawerPanel',
         'mms.primitivesDrawerPanel'
     ])
-    .directive('designEditor', function(dndService, symbolManager, diagramService, wiringService, pcbService, nodeService) {
+    .directive('designEditor', function(dndService, symbolManager, diagramService, wiringService, pcbService) {
 
-        var cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, diagramService, wiringService, pcbService, nodeService);
+        var cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, diagramService, wiringService, pcbService);
 
         var _ghostComponent = document.createElement('img');
         _ghostComponent.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAaCAMAAADRyb8sAAAARVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgICAwMDBAQECAgIC/v7////8hdZNpAAAAEHRSTlMAECAwQFBgcICPn6+/z9/vIxqCigAAALpJREFUeNrt1E0PwiAMgOEWCiIrUD///081jMZkB5lVj74XLjzLMuhgk6N5Dl6WzpdZpwTbHPknvd1nXZ+UaN0uIsWbaGgiLUCQXrFQ1zppsMhapF7eoZl6x0GAx1q4V3doHbuUjkc0NLwwKcXSl2j6TLmTDIAHXsh4OHHhCJqFan/6PiU0U+/WM2oijCbqq0j1eqvYQvHzyUnfT04eq2VywiA68sn0mYr+WFxmjmCimJgT/u42ybwNfQDu5E5vKmPGHgAAAABJRU5ErkJggg=='
@@ -277,8 +277,6 @@ angular.module('mms.designEditor', [
                                         nodeService.completeTransaction(layoutContext);
 
                                         $rootScope.stopProcessing();
-
-                                        $log.debug('NewDiagram', self.diagram);
 
                                     });
 
@@ -863,11 +861,9 @@ angular.module('mms.designEditor', [
                                             if (diagram) {
 
                                                 var port,
-                                                    oldPortDecorator,
                                                     template,
-                                                    templateStr,
                                                     compiledSymbol,
-                                                    placeHolderEl,
+                                                    decoratedPortEl,
                                                     newDecorator;
 
                                                 port = diagram.getPortById(designStructureUpdateObject.id);
@@ -876,54 +872,28 @@ angular.module('mms.designEditor', [
 
                                                     newDecorator = cyPhyDiagramParser.connectorTypeToDecorator[designStructureUpdateObject.data.type];
 
-                                                    oldPortDecorator = port.portSymbol.portDecorator;
-
                                                     port.portSymbol.portDecorator = newDecorator;
+
                                                     port.setPortType(designStructureUpdateObject.data.type,
                                                                         designStructureUpdateObject.data.description,
                                                                         newDecorator);                                                    
 
-                                                    placeHolderEl = document.getElementById(port.id).querySelector('.decoration-placeholder');
+                                                    decoratedPortEl = document.getElementById(port.id).querySelector('.decorated-port');
 
-                                                    if (placeHolderEl) {
+                                                    template = angular.element('<decorated-port></decorated-port>');
 
-                                                        templateStr = '<' + newDecorator.directive + '>' +
-                                                        '</' + newDecorator.directive + '>';
+                                                    compiledSymbol = $compile(template);
 
-                                                    }
-                                                    else {
+                                                    compiledSymbol($scope, function (clonedElement) {
 
-                                                        placeHolderEl = document.getElementById(port.id).querySelector('.' + oldPortDecorator.directive);
+                                                        decoratedPortEl.parentNode.replaceChild(
+                                                            clonedElement[0],
+                                                            decoratedPortEl
+                                                        );
 
-                                                        templateStr = '<g' + ' class="decoration-placeholder"' + '>' +
-                                                        '</' + ' g' + '>';
-
-                                                    }                                                    
-
-                                                    // template = angular.element(templateStr);
-
-                                                    // compiledSymbol = $compile(template);
-                                                    var gp = placeHolderEl.parentNode.parentNode.parentNode;
-                                                    var ph = placeHolderEl.parentNode.parentNode;
-                                                    var teststr = '<' + 'decorated-port' + '>' +
-                                                        '</' + 'decorated-port' + '>';
-                                                    var template2 = angular.element(teststr);
-                                                    var compile2 = $compile(template2);
-                                                    compile2($scope, function(clonedElement) { gp.replaceChild(clonedElement[0], ph); });
-
-
-                                                    // compiledSymbol($scope, function (clonedElement) {
-
-                                                    //     placeHolderEl.parentNode.replaceChild(
-                                                    //         clonedElement[0],
-                                                    //         placeHolderEl
-                                                    //     );
-
-                                                    // });
+                                                    });
 
                                                     $scope.portData = port;
-
-                                                    $rootScope.$emit('typeWasChanged', projectHandling.getSelectedContainer());
                                         
                                                 }
 

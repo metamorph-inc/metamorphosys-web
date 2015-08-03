@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function(symbolManager, diagramService, wiringService, pcbService, nodeService) {
+module.exports = function(symbolManager, diagramService, wiringService, pcbService) {
 
     var getDiagram,
         getDiagramElement,

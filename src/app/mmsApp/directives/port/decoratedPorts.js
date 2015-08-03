@@ -15,8 +15,11 @@ angular.module(
             controller: function ($scope) {
 
                 if ($scope.$parent.portData) {
+                    // Port type is being inferred/redefined
+
                     $scope.component = $scope.$parent.portData.parentComponent;
                     $scope.portInstance = $scope.$parent.portData;
+
                 }
 
                 if ($scope.component.symbol.symbolDirective === 'container-box') {
@@ -35,7 +38,7 @@ angular.module(
                 } 
                 else if ($scope.component.symbol.symbolDirective === 'simple-connector') {
 
-                        $scope.decorationTransform = 'translate(-28, 0)';
+                        $scope.decorationTransform = 'translate(-27, 0)';
                         $scope.portInstance = $scope.component.portInstances[0];
                         $scope.portInstance.portSymbol.side = "left";
 
@@ -62,8 +65,7 @@ angular.module(
             templateUrl: '/mmsApp/templates/decoratedPort.html',
             link: function (scope, element, attributes, controllers) {
 
-                var ctrl = controllers[0],
-                    diagramContainerController = controllers[1];
+                var diagramContainerController = controllers[1];
 
                 if (scope.portInstance.portSymbol.portDecorator) {
 
@@ -96,10 +98,6 @@ angular.module(
                         scope.pinCount = scope.portType.split('_')[1];
                     }
                 }
-
-                scope.$watch('scope.portInstance.portSymbol.portDecorator.directive', function() {
-                    console.log('j');
-                }, true);
             }
 
         };
@@ -112,13 +110,7 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html',
-            link: function(scope){
-
-                if (scope.$parent.portData) {
-                    scope.portInstance = scope.$parent.portData;
-                }
-            }
+            templateUrl: '/mmsApp/templates/usbConnectorSymbol.html'
         };
     })
     .directive(
@@ -129,13 +121,7 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html',
-            link: function(scope){
-
-                if (scope.$parent.portData) {
-                    scope.portInstance = scope.$parent.portData;
-                }
-            }
+            templateUrl: '/mmsApp/templates/digitalConnectorSymbol.html'
         };
     })
     .directive(
@@ -146,13 +132,7 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/analogConnectorSymbol.html',
-            link: function(scope){
-
-                if (scope.$parent.portData) {
-                    scope.portInstance = scope.$parent.portData;
-                }
-            }
+            templateUrl: '/mmsApp/templates/analogConnectorSymbol.html'
         };
     })
     .directive(
@@ -163,13 +143,7 @@ angular.module(
             restrict: 'E',
             replace: true,
             templateNamespace: 'SVG',
-            templateUrl: '/mmsApp/templates/supplySingleSymbol.html',
-            link: function(scope){
-
-                if (scope.$parent.portData) {
-                    scope.portInstance = scope.$parent.portData;
-                }
-            }
+            templateUrl: '/mmsApp/templates/supplySingleSymbol.html'
         };
     })
     ;

@@ -7,9 +7,6 @@
         viewBox="0 0 13 9">
             <path d="M0.5 5.5 l0 -5 l3 0 l0 8 l3 0 l0 -8 l3 0 l0 8 l3 0 l0 -5 " stroke="#fff" fill="none" stroke-width="1"/>
         </svg>
-        <text class="decorator-label"
-            ng-attr-fill="{{decoratorColor}}"
-        </text>
     </g>
     <g ng-if="::pinCount">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
@@ -20,7 +17,7 @@
             <path d="M0.5 5.5 l0 -5 l3 0 l0 8 l3 0 l0 -8 l3 0 l0 8 l3 0 l0 -5 " stroke="#fff" fill="none" stroke-width="1"/>
         </svg>
         <text class="decorator-label"
-            ng-attr-fill="{{decoratorColor}}"
+            ng-attr-fill="{{::decoratorColor}}"
             x="20"
             y="10">{{::pinCount}}</text>
     </g>

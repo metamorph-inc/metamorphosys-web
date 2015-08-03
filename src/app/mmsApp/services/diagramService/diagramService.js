@@ -9,7 +9,7 @@ angular.module('mms.designVisualization.diagramService', [
         'mms.utils'
     ])
     .service('diagramService',
-        function($q, $timeout, symbolManager, $stateParams, wiringService, pcbService, mmsUtils, nodeService ) {
+        function($q, $timeout, symbolManager, $stateParams, wiringService, pcbService, mmsUtils ) {
 
             var
                 self = this,
@@ -36,7 +36,7 @@ angular.module('mms.designVisualization.diagramService', [
             Wire = require('./classes/Wire.js');
 
             dummyDiagramGenerator = new DummyDiagramGenerator(symbolManager, self, wiringService, mmsUtils);
-            cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService, pcbService, nodeService);
+            cyPhyDiagramParser = new CyPhyDiagramParser(symbolManager, self, wiringService, pcbService);
 
             this.updateComponentsPosition = function(diagramId, componentId, newPosition) {
 
