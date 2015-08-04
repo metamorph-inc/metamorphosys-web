@@ -7,6 +7,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     var getDiagram,
         getDiagramElement,
         avmComponentModelParser,
+        primitiveParser,
         connectorParser,
         containerParser,
         labelParser,
@@ -307,12 +308,28 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
+    primitiveParser = function(element, zIndex) {
+        
+        if (element.primitiveId === 'simple-connector') {
+
+            return connectorParser(element, zIndex);
+        }
+        else if (element.primitiveId === 'empty-subcircuit') {
+
+            return containerParser(element, zIndex);
+        }
+
+    };
+
     connectorParser = function(element, zIndex) {
         var portInstance,
             symbol,
+            tmpSymbol,
             newDiagramComponent;
 
-        symbol = symbolManager.getSymbol('simpleConnector');
+        tmpSymbol = symbolManager.getSymbol('simpleConnector');
+
+        symbol = angular.copy(tmpSymbol, symbol);
 
         newDiagramComponent = new DiagramComponent({
             id: element.id,
@@ -339,6 +356,15 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             id: element.id,
             portSymbol: symbol.ports.p1
         });
+
+        if ( element.type.toLowerCase() !== 'generic' && element.type.length > 0 ) {
+            
+            portInstance.setPortType( element.type,
+                                      element.description,
+                                      connectorTypeToDecorator[element.type] );
+
+        }
+
 
         newDiagramComponent.registerPortInstances([portInstance]);
 
@@ -743,8 +769,6 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         var i,
             newDiagramComponent,
 
-
-
             diagram,
             wire,
 
@@ -849,4 +873,6 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     this.getDiagram = getDiagram;
     this.getDiagramElement = getDiagramElement;
+    this.primitiveParser = primitiveParser;
+    this.connectorTypeToDecorator = connectorTypeToDecorator;
 };

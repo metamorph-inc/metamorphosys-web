@@ -90,4 +90,29 @@ ComponentPort.prototype.getGridWireAngle = function() {
 
 };
 
+
+/*
+    When a port's definition is inferred, it's type, description, and other
+    identifying features need to be updated as well.
+ */
+ComponentPort.prototype.setPortType = function(portType, portDescription, portDecorator) {
+
+    if (portDecorator) {
+        this.portSymbol.decoratorColor = portDecorator.color;
+        this.portSymbol.decoratorBGColor = portDecorator.bgColor;
+
+        this.portSymbol.decoratorLabel = portDecorator.label;
+        this.portSymbol.decoratorDirective = portDecorator.directive;
+    }
+
+    this.portSymbol.decoratorColor = this.portSymbol.decoratorColor || '#fff';
+    this.portSymbol.decoratorBGColor = this.portSymbol.decoratorBGColor || '#747f8d';
+
+    this.portSymbol.type = portType;
+    this.portSymbol.description = portDescription;
+    this.portSymbol.portDecorator = portDecorator;
+
+};
+
+
 module.exports = ComponentPort;

@@ -68,9 +68,6 @@ angular.module('mms.svgDiagram', [
                     ComponentKeyboardOperationsHandler = require('./classes/ComponentKeyboardOperationsHandler'),
                     componentKeyboardOperationsHandler,
 
-                    WireKeyboardOperationsHandler = require('./classes/WireKeyboardOperationsHandler'),
-                    wireKeyboardOperationsHandler,
-
                     componentElements,
 
                     wasComponnetMouseDowned = false,
@@ -179,14 +176,6 @@ angular.module('mms.svgDiagram', [
                     operationsManager,
                     mmsUtils
                 );
-
-                wireKeyboardOperationsHandler = new WireKeyboardOperationsHandler(
-                    $scope,
-                    $rootScope,
-                    operationsManager,
-                    mmsUtils
-                );
-                //
 
                 $scope.routerTypes = wiringService.getRouterTypes();
 

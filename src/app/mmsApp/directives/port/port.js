@@ -103,15 +103,11 @@ angular.module(
             replace: true,
             templateUrl: '/mmsApp/templates/port.html',
             templateNamespace: 'SVG',
-            require: ['^svgDiagram', '^diagramContainer', 'port'],
+            require: ['^svgDiagram', '^diagramContainer'],
             link: function (scope, element, attributes, controllers) {
 
                 var svgDiagramController = controllers[0],
-                    diagramContainerController = controllers[1],
-                    portController = controllers[2],
-
-                    labelEl,
-                    typeEl;
+                    diagramContainerController = controllers[1];
 
                 scope.svgDiagramController = svgDiagramController;
                 scope.diagram = diagramContainerController.getDiagram();
