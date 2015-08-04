@@ -1,7 +1,8 @@
-function LockedComponentWireToastController ($scope, $rootScope, $mdToast, message, components) {
+function LockedComponentWireToastController ($scope, $rootScope, $mdToast, message, components, wires) {
 
     $scope.message = message;
     $scope.components = components;
+    $scope.wires = wires;
 
     $scope.closeToast = function () {
         $mdToast.hide();
@@ -9,7 +10,14 @@ function LockedComponentWireToastController ($scope, $rootScope, $mdToast, messa
 
     $scope.overrideWireLocks = function() {
         
-        $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', components, false);        
+        if ( wires ) {
+            angular.forEach(wires, function(wire) {
+                wire.wire.unlockWire();
+            });
+        }
+        else {
+            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', components, false);
+        }
 
         $mdToast.hide();
     }
@@ -17,7 +25,7 @@ function LockedComponentWireToastController ($scope, $rootScope, $mdToast, messa
 };
 
 
-module.exports = function($mdToast, $rootScope, components) {
+module.exports = function($mdToast, $rootScope, components, wires) {
 
     var self = this;
 
@@ -29,6 +37,7 @@ module.exports = function($mdToast, $rootScope, components) {
             locals: {
                 message: message,
                 components: components,
+                wires: wires
             },
             hideDelay: 0
         });

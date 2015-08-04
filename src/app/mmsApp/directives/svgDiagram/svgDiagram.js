@@ -121,7 +121,8 @@ angular.module('mms.svgDiagram', [
                     operationsManager,
                     $timeout,
                     gridService,
-                    $log
+                    $log,
+                    $mdToast
                 );
 
                 drawSelectionHandler = new DrawSelectionHandler(

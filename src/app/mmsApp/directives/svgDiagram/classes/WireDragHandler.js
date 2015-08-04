@@ -2,7 +2,10 @@
 
 'use strict';
 
-module.exports = function ($scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log) {
+var LockedComponentWireToast = require('../classes/lockedComponentWiresToast.js'),
+    HelperMethods = require('../classes/svgDiagramHelperMethods.js');
+
+module.exports = function ($scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log, $mdToast) {
 
     var self = this,
         getOffsetToMouse,
@@ -139,13 +142,31 @@ module.exports = function ($scope, $rootScope, diagramService, wiringService, op
 
     onDiagramMouseMove = function ($event) {
 
-        var offset;
+        var offset,
+            invalidMove;
 
         if (possibbleDragTargetsDescriptor && (
                 $event.pageX !== possibbleDragTargetsDescriptor.mousePosition.x ||
                 $event.pageY !== possibbleDragTargetsDescriptor.mousePosition.y
             )) {
-            startDrag();
+
+            invalidMove = possibbleDragTargetsDescriptor.targets
+                    .every(function(target) {
+                        return !target.wire.isWireLocked();
+                    });
+
+            if ( !invalidMove ) {
+
+                var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, null,
+                        possibbleDragTargetsDescriptor.targets);
+
+                cancelDrag();
+
+                lockedComponentWireToast.showToast("Locked wires preventing wires(s) from being moved. Override wire locks?");
+            }
+            else {
+                startDrag();
+            }
         }
 
         if (moveOperation) {
