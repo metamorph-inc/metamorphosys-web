@@ -28,6 +28,14 @@ $wire-selected-color: rgb(30,136,229);
 
     }
 
+    &.hover {
+
+      .component-wire-segment-segment {
+        stroke: #ff7100;
+      }
+
+    }
+
   }
 
   &.selected {
@@ -37,7 +45,6 @@ $wire-selected-color: rgb(30,136,229);
     }
 
   }
-
 
   .component-wire-corner {
 
@@ -58,6 +65,12 @@ $wire-selected-color: rgb(30,136,229);
     }
 
   }
+
+  &.highlight .component-wire-segment-segment {
+
+      stroke: #ff7100;
+
+    }
 }
 
 .diagram-container.editable {

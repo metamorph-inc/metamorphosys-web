@@ -194,6 +194,14 @@ var ComponentWireSegment = React.createClass({
         this.props.diagramCtrl.onWireMouseUp(this.props.wire, this.props.segment, e);
     },
 
+    onMouseOver: function() {
+        this.props.diagramCtrl.onWireMouseOver(this.props.wire.getId());
+    },
+
+    onMouseOut: function() {
+        this.props.diagramCtrl.onWireMouseOut(this.props.wire.getId());
+    },
+
     render: function(){
 
         var parameters = this.props.segment._parameters,
@@ -241,6 +249,8 @@ var ComponentWireSegment = React.createClass({
             <g className="component-wire-segment"
                onMouseDown={this.onMouseDown}
                onMouseUp={this.onMouseUp}
+               onMouseOver={this.onMouseOver}
+               onMouseOut={this.onMouseOut}
                >
                 {lines}
             </g>

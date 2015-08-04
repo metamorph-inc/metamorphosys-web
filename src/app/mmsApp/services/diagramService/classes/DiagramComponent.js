@@ -256,7 +256,7 @@ DiagramComponent.prototype.rotate = function(angle) {
 
         this.rotation += angle;
 
-        this.updateTransformationMatrix();
+        this.updateTransformationMatrix();  
 
     } else {
         throw new Error('Angle must be number!');

@@ -19,10 +19,12 @@
             <port
                 ng-repeat="portInstance in component.portInstances"
                 class="zoom-3"></port>
-            <text class="component-label" ng-attr-x="{{::component.symbol.labelPosition.x}}"
-                  ng-attr-y="{{::component.symbol.labelPosition.y}}"
-                >{{component.label}}
-            </text>
+            <g class="component-label-wrapper">
+              <text class="component-label" ng-attr-x="{{::component.symbol.labelPosition.x}}"
+                    ng-attr-y="{{::component.symbol.labelPosition.y}}"
+                  >{{component.label}}
+              </text>
+            </g>
         </g>
 
 </g>
