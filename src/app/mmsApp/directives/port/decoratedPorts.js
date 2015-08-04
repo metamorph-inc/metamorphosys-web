@@ -38,7 +38,7 @@ angular.module(
                 } 
                 else if ($scope.component.symbol.symbolDirective === 'simple-connector') {
 
-                        $scope.decorationTransform = 'translate(-27, 0)';
+                        $scope.decorationTransform = 'translate(0, 0)';
                         $scope.portInstance = $scope.component.portInstances[0];
                         $scope.portInstance.portSymbol.side = "left";
 
