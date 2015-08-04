@@ -366,7 +366,6 @@ angular.module('mms.designEditor', [
                         });
                     });
 
-<<<<<<< HEAD
                     addRootScopeEventListener('wireDeletionMustBeDone', function($event, wire, message) {
                         $rootScope.setProcessing();
                         nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
@@ -376,8 +375,6 @@ angular.module('mms.designEditor', [
                         designLayoutService.setWireLock(layoutContext, wire.getId(), lockWire, message || 'Setting wire lock');
                     });
 
-=======
->>>>>>> master
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 
                         if (component) {
