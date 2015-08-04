@@ -1,4 +1,4 @@
-/*globals angular*/
+/*globals angular, ga*/
 
 'use strict';
 
@@ -6,7 +6,7 @@ var wiringServicesModule = angular.module(
     'mms.designVisualization.wiringService', []);
 
 wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope', '$timeout',
-    function ($mdToast) {
+    function ($mdToast, $log, $rootScope, $timeout) {
 
         var self = this,
             SimpleRouter = require('./classes/SimpleRouter.js'),
@@ -63,6 +63,26 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                 }
 
             ];
+
+        };
+
+        this.lockWire = function (wire) {
+
+            ga('send', 'event', 'wire', 'lock', wire.getId());
+
+            wire.lockWire(wire);
+
+            $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
+
+        };
+
+        this.unlockWire = function (wire) {
+
+            ga('send', 'event', 'wire', 'unlock', wire.getId());
+
+            wire.unlockWire(wire);
+
+            $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
 
         };
 

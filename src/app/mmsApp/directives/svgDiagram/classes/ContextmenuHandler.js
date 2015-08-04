@@ -183,12 +183,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     label: 'Unlock wire',
                     iconClass: 'fa fa-unlock',
                     action: function() {
-
-                        ga('send', 'event', 'wire', 'unlock', wire.getId());
-
-                        wire.unlockWire(wire);
-
-                        $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
+                        wiringService.unlockWire(wire);
                     }
                 }]
             });
@@ -203,12 +198,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     label: 'Lock wire',
                     iconClass: 'fa fa-lock',
                     action: function() {
-
-                        ga('send', 'event', 'wire', 'lock', wire.getId());
-
-                        wire.lockWire(wire);
-
-                        $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
+                        wiringService.lockWire(wire);
                     }
                 }]
             });
@@ -354,24 +344,10 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     action: function() {
 
                         if (multipleComponents) {
-                            angular.forEach(multipleComponents, function(component) {
-                                angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
-                                    ga('send', 'event', 'wire', 'lock', wire.getId());
-
-                                    wire.lockWire(wire);
-
-                                    $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
-                                });
-                            });
+                            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', $scope.diagram.getSelectedComponents(), true);
                         }
                         else {
-                            angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
-                                ga('send', 'event', 'wire', 'lock', wire.getId());
-
-                                wire.lockWire(wire);
-
-                                $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
-                            });
+                            $rootScope.$emit('wireLockMustBeSetForComponentWires', component, true);
                         }
                     }
                 }]
@@ -384,24 +360,10 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     action: function() {
 
                         if (multipleComponents) {
-                            angular.forEach(multipleComponents, function(component) {
-                                angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
-                                    ga('send', 'event', 'wire', 'unlock', wire.getId());
-
-                                    wire.unlockWire(wire);
-
-                                    $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
-                                });
-                            });
+                            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', $scope.diagram.getSelectedComponents(), false);
                         }
                         else {
-                            angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
-                                ga('send', 'event', 'wire', 'unlock', wire.getId());
-
-                                wire.unlockWire(wire);
-
-                                $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
-                            });
+                            $rootScope.$emit('wireLockMustBeSetForComponentWires', component, false);
                         }
                     }
                 }]

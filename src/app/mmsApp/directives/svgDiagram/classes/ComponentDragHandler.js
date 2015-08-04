@@ -2,8 +2,11 @@
 
 'use strict';
 
+var LockedComponentWireToast = require('../classes/lockedComponentWiresToast.js'),
+    HelperMethods = require('../classes/svgDiagramHelperMethods.js');
+
 module.exports = function(
-    $scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log
+    $scope, $rootScope, diagramService, wiringService, operationsManager, $timeout, gridService, $log, $mdToast
 ) {
 
     var self = this,
@@ -29,7 +32,9 @@ module.exports = function(
 
         afterComponentDuplicated,
 
-        lastMousePosition;
+        lastMousePosition,
+
+        helperMethods = new HelperMethods(); 
 
     scrollWhenAlongTheEdge = function() {
 
@@ -97,7 +102,6 @@ module.exports = function(
         return offset;
 
     };
-
 
     startDrag = function() {
 
@@ -198,7 +202,8 @@ module.exports = function(
 
         var offset,
             scrollerTimeout,
-            component;
+            component,
+            invalidMove;
 
         lastMousePosition = {
             x: $event.pageX,
@@ -242,7 +247,26 @@ module.exports = function(
                 );
 
             } else {
-                startDrag();
+
+                invalidMove = possibbleDragTargetsDescriptor.componentsBeingDragged
+                        .every(function(component) {
+                            return helperMethods.ensureNoLockedWires($scope.diagram, component);
+                        });
+
+                if ( !invalidMove ) {
+
+                    var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, 
+                            possibbleDragTargetsDescriptor.componentsBeingDragged);
+
+                    cancelDrag();
+
+                    lockedComponentWireToast.showToast("Locked wires preventing component(s) from being moved. Override wire locks?");
+                }
+                else {
+
+                    startDrag();
+                }
+
             }
 
         }

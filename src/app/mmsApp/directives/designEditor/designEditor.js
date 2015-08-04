@@ -372,8 +372,42 @@ angular.module('mms.designEditor', [
                     });
 
                     addRootScopeEventListener('wireLockMustBeSaved', function($event, wire, lockWire, message) {
+
                         designLayoutService.setWireLock(layoutContext, wire.getId(), lockWire, message || 'Setting wire lock');
                     });
+
+                    addRootScopeEventListener('wireLockMustBeSetForComponentWires', function($event, component, wireLock) {
+
+                        var diagram = diagramService.getDiagram(selectedContainerId);
+
+                        angular.forEach(diagram.getWiresByComponentId(component.id), function(wire) {
+                            if (wireLock) {
+                                wiringService.lockWire(wire);
+                            }
+                            else {
+                                wiringService.unlockWire(wire);
+                            }
+                        });
+
+                    });
+
+                    addRootScopeEventListener('wireLockMustBeSetForMultipleComponentsWires', function($event, components, wireLock) {
+
+                        var diagram = diagramService.getDiagram(selectedContainerId);
+
+                        angular.forEach(components, function(component) {
+                            angular.forEach(diagram.getWiresByComponentId(component.id), function(wire) {
+                                if (wireLock) {
+                                    wiringService.lockWire(wire);
+                                }
+                                else {
+                                    wiringService.unlockWire(wire);
+                                }
+                            });
+                        });
+
+                    });
+
 
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 

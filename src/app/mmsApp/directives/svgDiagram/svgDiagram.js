@@ -37,7 +37,7 @@ angular.module('mms.svgDiagram', [
     .directive('svgDiagram',
         function($rootScope, $log, diagramService, wiringService, componentLibrary, contentServerUrl,
             gridService, $window, $timeout, contextmenuService, operationsManager, mmsUtils, dndService,
-            acmImportService, testBenchService, projectHandling) {
+            acmImportService, testBenchService, projectHandling, $mdToast) {
 
             var DiagramDropHandler = require('./mixins/DiagramDropHandler');
 
@@ -109,7 +109,8 @@ angular.module('mms.svgDiagram', [
                     operationsManager,
                     $timeout,
                     gridService,
-                    $log
+                    $log,
+                    $mdToast
                 );
 
                 wireDragHandler = new WireDragHandler(
