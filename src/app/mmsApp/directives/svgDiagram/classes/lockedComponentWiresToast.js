@@ -16,7 +16,12 @@ function LockedComponentWireToastController ($scope, $rootScope, $mdToast, messa
             });
         }
         else {
-            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', components, false);
+            if (components.length) {
+                $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', components, false);
+            }
+            else {
+                $rootScope.$emit('wireLockMustBeSetForComponentWires', components, false);
+            }
         }
 
         $mdToast.hide();

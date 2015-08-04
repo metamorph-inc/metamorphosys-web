@@ -2,7 +2,10 @@
 
 'use strict';
 
-module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
+var LockedComponentWireToast = require('../classes/lockedComponentWiresToast.js'),
+    HelperMethods = require('../classes/svgDiagramHelperMethods.js');
+
+module.exports = function($scope, $rootScope, operationsManager, mmsUtils, $mdToast) {
 
     $scope.$on('keydownOnDocument', function($event, event) {
 
@@ -14,7 +17,8 @@ module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
             componentsToDrag,
             multiplier,
             offset,
-            getDragDescriptor;
+            getDragDescriptor,
+            helperMethods = new HelperMethods();
 
         getDragDescriptor = function(component) {
 
@@ -65,14 +69,27 @@ module.exports = function($scope, $rootScope, operationsManager, mmsUtils) {
 
             if (event.keyCode === 82 && !(event.ctrlKey || event.metaKey)) {
 
-                operation = operationsManager.initNew(
-                    'RotateComponents',
-                    $scope.diagram,
-                    $scope.diagram.getSelectedComponents()[0]
-                );
-                operation.set(event.shiftKey ? -90 : 90);
-                operation.finish();
+                var invalidMove = $scope.diagram.getSelectedComponents()
+                        .every(function(component) {
+                            return helperMethods.ensureNoLockedWires($scope.diagram, component);
+                        });
 
+                if ( !invalidMove ) {
+
+                    var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope,
+                            $scope.diagram.getSelectedComponents());
+
+                    lockedComponentWireToast.showToast("Locked wires preventing component(s) from being rotated. Override wire locks?");
+                }
+                else {
+                    operation = operationsManager.initNew(
+                        'RotateComponents',
+                        $scope.diagram,
+                        $scope.diagram.getSelectedComponents()[0]
+                    );
+                    operation.set(event.shiftKey ? -90 : 90);
+                    operation.finish();
+                }
             }
 
 

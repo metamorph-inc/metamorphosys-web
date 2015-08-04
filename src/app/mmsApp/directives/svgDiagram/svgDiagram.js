@@ -163,7 +163,8 @@ angular.module('mms.svgDiagram', [
                     $log,
                     gridService,
                     testBenchService,
-                    projectHandling
+                    projectHandling,
+                    $mdToast
                 );
 
 
@@ -176,7 +177,8 @@ angular.module('mms.svgDiagram', [
                     $scope,
                     $rootScope,
                     operationsManager,
-                    mmsUtils
+                    mmsUtils,
+                    $mdToast
                 );
 
                 $scope.routerTypes = wiringService.getRouterTypes();

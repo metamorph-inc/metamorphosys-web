@@ -2,9 +2,12 @@
 
 'use strict';
 
+var LockedComponentWireToast = require('../classes/lockedComponentWiresToast.js'),
+    HelperMethods = require('../classes/svgDiagramHelperMethods.js');
+
 module.exports = function($scope, $rootScope, diagramService, $timeout,
     contextmenuService, operationsManager, wiringService, $log, gridService,
-    testBenchService, projectHandling) {
+    testBenchService, projectHandling, $mdToast) {
 
     var WireSegment = require('../../../services/diagramService/classes/WireSegment.js');
 
@@ -16,7 +19,8 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
         onDiagramMouseDown,
         getOffsetToMouse,
 
-        openMenu;
+        openMenu,
+        helperMethods = new HelperMethods();
 
     $log.debug('Initializing context menus.');
 
@@ -271,11 +275,20 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-rotate-right',
                     action: function() {
 
-                        var operation;
+                        var operation,
+                            invalidMove;
 
-                        operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
-                        operation.set(90);
-                        operation.finish();
+                        if ( !helperMethods.ensureNoLockedWires($scope.diagram, component) ) {
+
+                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
+                            operation.set(90);
+                            operation.finish();
+                        }
+                        else {
+                            var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, component);
+
+                            lockedComponentWireToast.showToast("Locked wires preventing component from being rotated. Override wire locks?");
+                        }
                     }
                 }, {
                     id: 'rotateCCW',
@@ -286,9 +299,17 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
                         var operation;
 
-                        operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
-                        operation.set(-90);
-                        operation.finish();
+                        if ( helperMethods.ensureNoLockedWires($scope.diagram, component) ) {
+
+                            operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
+                            operation.set(-90);
+                            operation.finish();
+                        }
+                        else {
+                            var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, component);
+
+                            lockedComponentWireToast.showToast("Locked wires preventing component from being rotated. Override wire locks?");
+                        }
 
                     }
                 }, {
