@@ -180,7 +180,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 id: 'unlock',
                 items: [{
                     id: 'unlock',
-                    label: 'unlock wire',
+                    label: 'Unlock wire',
                     iconClass: 'fa fa-unlock',
                     action: function() {
 
@@ -200,7 +200,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 id: 'lock',
                 items: [{
                     id: 'lock',
-                    label: 'lock wire',
+                    label: 'Lock wire',
                     iconClass: 'fa fa-lock',
                     action: function() {
 
@@ -225,7 +225,8 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
         var inSelection,
             selectedComponents,
             destroyLabel,
-            wiringMenu;
+            wiringMenu,
+            multipleComponents = false;
 
         wiringMenu = [];
 
@@ -263,6 +264,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
         if ($scope.diagram.isComponentSelected(component) && selectedComponents.length > 1) {
 
             inSelection = true;
+            multipleComponents = true;
 
             destroyLabel = 'Destroy selected [' + selectedComponents.length + ']';
 
@@ -342,6 +344,66 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     menu: [{
                         items: wiringMenu
                     }]
+                }]
+            }, {
+                id: 'lockAll',
+                items: [{
+                    id: 'lockAll',
+                    label: 'Lock component wires',
+                    iconClass: 'fa fa-lock',
+                    action: function() {
+
+                        if (multipleComponents) {
+                            angular.forEach(multipleComponents, function(component) {
+                                angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
+                                    ga('send', 'event', 'wire', 'lock', wire.getId());
+
+                                    wire.lockWire(wire);
+
+                                    $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
+                                });
+                            });
+                        }
+                        else {
+                            angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
+                                ga('send', 'event', 'wire', 'lock', wire.getId());
+
+                                wire.lockWire(wire);
+
+                                $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
+                            });
+                        }
+                    }
+                }]
+            }, {
+                id: 'unlockAll',
+                items: [{
+                    id: 'unlockAll',
+                    label: 'Unlock component wires',
+                    iconClass: 'fa fa-unlock',
+                    action: function() {
+
+                        if (multipleComponents) {
+                            angular.forEach(multipleComponents, function(component) {
+                                angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
+                                    ga('send', 'event', 'wire', 'unlock', wire.getId());
+
+                                    wire.unlockWire(wire);
+
+                                    $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
+                                });
+                            });
+                        }
+                        else {
+                            angular.forEach($scope.diagram.getWiresByComponentId(component.id), function(wire) {
+                                ga('send', 'event', 'wire', 'unlock', wire.getId());
+
+                                wire.unlockWire(wire);
+
+                                $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
+                            });
+                        }
+                    }
                 }]
             }, {
                 id: 'edit',

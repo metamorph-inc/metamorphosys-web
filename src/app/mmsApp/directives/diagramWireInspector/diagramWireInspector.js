@@ -21,6 +21,7 @@ angular.module('mms.diagramWireInspector', [
 
                 this.componentA = null;
                 this.componentB = null;
+                this.locked = null;
 
                 function initComponentDetails(wireId) {
 
@@ -41,6 +42,8 @@ angular.module('mms.diagramWireInspector', [
                             classificationTags: self.wire._end2.component.classificationTags,
                             portLabel: self.wire._end2.port.portSymbol.label
                         };
+
+                        self.locked = self.wire.isWireLocked();
 
                         initialized = true;
 

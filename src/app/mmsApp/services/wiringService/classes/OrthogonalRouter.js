@@ -59,12 +59,10 @@ var OrthogonalRouter = function ($mdToast) {
             nudgedConnections = nudgeConnections(optimalConnections);
 
             // Update diagram Wires
-            
-            wires = diagram.getWires();
 
-            for ( var w = 0; w < wires.length - 1; w++ ) {
+            for ( var w = 0; w < unlockedWireCollection.length; w++ ) {
 
-                wire = wires[w];
+                wire = diagram.getWireById(unlockedWireCollection[w].getId());
 
                 wire.removeSegments();
 

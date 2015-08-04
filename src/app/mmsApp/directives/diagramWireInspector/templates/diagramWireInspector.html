@@ -1,6 +1,12 @@
 <div class="diagram-wire-inspector">
     <div ng-if="!ctrl.inspectableWireId" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
     <div ng-if="ctrl.inspectableWireId">
+    <div ng-if="ctrl.locked" class="inspectable-locked">
+        <i class="fa fa-lock"></i>
+    </div>
+    <div ng-if="!ctrl.locked" class="inspectable-locked">
+        <i class="fa fa-unlock"></i>
+    </div>
     <div class="inspectable-name">
         Connection between:
     </div>
