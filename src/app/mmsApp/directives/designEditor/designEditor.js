@@ -226,6 +226,29 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('brdImportMustBeDone', function($event, brdBlobUrl) {
+
+                        $rootScope.setProcessing();
+
+                        var brdBlobUrlParts = brdBlobUrl.replace(/\/*$/, '').split('/');
+                        acmImportService.importBrd(self.layoutContext, projectHandling.getSelectedDesignId(), brdBlobUrlParts[brdBlobUrlParts.length - 1])
+                            .then(function () {
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                        .content('BRD file imported. Place and Route will use this BRD file.')
+                                );
+                            })
+                            .catch(function(err) {
+                                $log.error(err);
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                        .content('BRD import failed')
+                                );
+                                $rootScope.stopProcessing();
+                            });
+
+                    });
+
                     addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
                         var operation;
@@ -679,7 +702,7 @@ angular.module('mms.designEditor', [
 
                                 }
 
-                                // Chrome repaint issue for rotated components, need to force a redraw. 
+                                // Chrome repaint issue for rotated components, need to force a redraw.
                                 // See http://stackoverflow.com/a/3485654
                                 angular.forEach(document.getElementsByClassName("rotated-180"), function(rotatedEl) {
 

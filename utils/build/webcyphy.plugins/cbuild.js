@@ -26,6 +26,7 @@
         'plugin/AcmImporter': './src/plugins/ADMEditor',
         'plugin/AdmImporter': './src/plugins/ADMEditor',
         'plugin/AtmImporter': './src/plugins/ADMEditor',
+        'plugin/BrdImporter': './src/plugins/ADMEditor',
         'plugin/ExportWorkspace': './src/plugins/ADMEditor',
         'plugin/GenerateDashboard': './src/plugins/ADMEditor',
         'plugin/SaveDesertConfigurations': './src/plugins/ADMEditor'

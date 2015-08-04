@@ -66,8 +66,11 @@ DiagramDropHandler._onDrop = function(e, dragged) {
         if (/\.(adm|adp)$/.test(e.dataTransfer.files[0].name)) {
             event = 'subcircuitInstantiationMustBeDone';
         }
+        if (/\.brd$/.test(e.dataTransfer.files[0].name)) {
+            event = 'brdImportMustBeDone';
+        }
 
-        this.acmImportService.storeDroppedAcm(e.dataTransfer.files[0])
+        this.acmImportService.storeDroppedFile(e.dataTransfer.files[0])
             .then(function (url) {
                 self.$rootScope.$emit(event, url, position, contentServerUrl);
             })

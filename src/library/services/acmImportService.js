@@ -107,7 +107,7 @@ angular.module('cyphy.services')
 
         };
 
-        this.storeDroppedAcm = function (file) {
+        this.storeDroppedFile = function (file) {
             var deferred = $q.defer();
 
             var blobClient = new GME.classes.BlobClient(
@@ -171,4 +171,19 @@ angular.module('cyphy.services')
                 });
         };
 
+        this.importBrd = function (context, parentId, brdHash) {
+            var config = {
+                activeNode: parentId,
+                runOnServer: true,
+                pluginConfig: {
+                    brdFile: brdHash
+                }
+            };
+            return pluginService.runPlugin(context, 'BrdImporter', config)
+                .then(function (result) {
+                    if (result.error || !result.success) {
+                        return $q.reject(result.error || 'Plugin failed');
+                    }
+                });
+        };
     });
