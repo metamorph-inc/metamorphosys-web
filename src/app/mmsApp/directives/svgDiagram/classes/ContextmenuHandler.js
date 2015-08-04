@@ -461,19 +461,6 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
         });
 
         $scope.contextMenuData = [{
-                id: 'testbenches',
-                items: [{
-                    id: 'generatePCB',
-                    label: 'Generate PCB',
-                    disabled: !angular.isFunction($rootScope.startTestbench) || $rootScope.runningTestbench,
-                    iconClass: 'fa fa-play',
-                    action: function() {
-                        $rootScope.startTestbench();
-                    },
-                    actionData: {}
-                }]
-
-            }, {
                 id: 'gridSettings',
                 items: [{
                     id: 'snapToGrid',

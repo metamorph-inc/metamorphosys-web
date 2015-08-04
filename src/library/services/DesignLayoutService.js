@@ -182,6 +182,8 @@ angular.module('cyphy.services')
 
                 var newName,
                     newDetails,
+                    newDefinition,
+                    newDescription,
                     newPos,
                     newRotation,
                     hadChanges,
@@ -198,6 +200,8 @@ angular.module('cyphy.services')
                     newName = this.getAttribute('name');
                     newPos = this.getRegistry('position');
                     newRotation = this.getRegistry('rotation') || 0;
+                    newDefinition = this.getAttribute('Definition');
+                    newDescription = this.getAttribute( 'Description' );
 
                     hadChanges = false;
 
@@ -228,6 +232,7 @@ angular.module('cyphy.services')
                         'ConnectorComposition': getConnectorCompositionDetails,
                         'AVMComponentModel': getComponentDetails
                     }[child.baseName];
+                    
                     if (detailsFn) {
 
                         newDetails = detailsFn(this);
@@ -241,6 +246,13 @@ angular.module('cyphy.services')
 
                         }
 
+                    }
+
+                    if (newDefinition !== child.type) {
+                        child.type = newDefinition;
+                        child.description = newDescription;
+                        hadChanges = true;
+                        updateType = 'typeChange';
                     }
 
                     if (hadChanges) {
@@ -288,6 +300,8 @@ angular.module('cyphy.services')
                 child = {
                     id: node.getId(),
                     name: node.getAttribute('name'),
+                    type: node.getAttribute('Definition'),
+                    description: node.getAttribute('Description'),
                     position: node.getRegistry('position'),
                     rotation: node.getRegistry('rotation'),
                     baseId: node.getBaseId()

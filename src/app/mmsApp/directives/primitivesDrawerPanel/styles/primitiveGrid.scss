@@ -1,0 +1,67 @@
+@import '../../../styles/_colors';
+
+.primitive-grid {
+
+	font-size: 80%;
+    line-height: 110%;
+    padding-top: 45px;
+
+	.primitive-grid-item {
+			
+		width: 390px;
+		max-height: 80px;
+        display: inline-block;
+        background: transparent;
+        cursor: copy;
+        margin: 2px;
+        vertical-align: top;
+        position: relative;
+        transition: background 200ms;
+
+        &:hover {
+
+            background-color: rgba(158, 158, 158, 0.1);
+
+        }
+		
+		.primitive-details {
+			max-height: 100px;
+		}
+
+		.primitive-svg-wrapper {
+			display: inline-block;
+            position: relative;
+            top: -50px;
+            left: 270px;
+            max-width: 100px;
+            margin: 10px;
+            opacity: 1;
+            overflow: hidden;
+
+            .primitive-svg {
+            	width: 100%;
+            	max-height: 80px;
+            }
+		}
+
+		.primitive-name {
+			
+            color: #fff;
+            margin: 0;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+
+		}
+
+		.primitive-description {
+			
+			padding: 0px 10px 10px 10px;
+            text-align: left;
+            font-size: 110%;
+            width: 280px;
+		}
+
+	}
+
+}

@@ -1,0 +1,25 @@
+@import '../../../styles/colors';
+
+.primitives-drawer-panel {
+
+    .above-list-headers {
+        position: fixed;
+        right: 0;
+        margin-top: -8px;
+        text-transform: uppercase;
+        font-size: 85%;
+        font-weight: bold;
+        width: 30%;
+        text-align: right;
+        background: $baseBGColor;
+        z-index: 30;
+        height: 43px;
+        border-bottom: 1px solid rgba(143, 156, 166, 0.2);
+
+        div {
+            text-align: center;
+        }
+
+    }
+
+}

@@ -14,24 +14,33 @@
             <diagram-component-inspector ng-if="!designEditorCtrl.inspectableWire" inspectable="designEditorCtrl.inspectableComponent"></diagram-component-inspector>
             <diagram-wire-inspector ng-if="designEditorCtrl.inspectableWire" inspectable-wire-id="designEditorCtrl.inspectableWire.getId()" diagram="designEditorCtrl.diagram"></diagram-wire-inspector>
         </drawer-panel>
-        <drawer-panel name="Components" height="300">
-            <component-browser
-            embedded
-            persist-state
-            on-item-drag-start="designEditorCtrl.componentBrowserItemDragStart"
-            on-item-drag-end="designEditorCtrl.componentBrowserItemDragEnd"
-            no-download
-            ></component-browser>
-        </drawer-panel>
-        <drawer-panel name="Subcircuits" height="300">
-            <subcircuit-browser
-            embedded
-            persist-state
-            on-item-drag-start="designEditorCtrl.subcircuitBrowserItemDragStart"
-            on-item-drag-end="designEditorCtrl.subcircuitBrowserItemDragEnd"
-            list-view-items-per-page="60"
-            no-download
-            ></subcircuit-browser>
+        <drawer-panel name="Content" height="300">
+            <div class="drawer-sub-panel-content">
+                <drawer-sub-panel name="Components">
+                    <div class="above-content-headers"></div>
+                    <component-browser
+                        embedded
+                        persist-state
+                        on-item-drag-start="designEditorCtrl.componentBrowserItemDragStart"
+                        on-item-drag-end="designEditorCtrl.componentBrowserItemDragEnd"
+                        no-download>
+                    </component-browser>
+                </drawer-sub-panel>
+                <drawer-sub-panel name="Subcircuits" active>
+                    <div class="above-content-headers"></div>
+                    <subcircuit-browser
+                        embedded
+                        persist-state
+                        on-item-drag-start="designEditorCtrl.subcircuitBrowserItemDragStart"
+                        on-item-drag-end="designEditorCtrl.subcircuitBrowserItemDragEnd"
+                        list-view-items-per-page="60"
+                        no-download>
+                    </subcircuit-browser>
+                </drawer-sub-panel>
+                <drawer-sub-panel name="Primitives" class="primitives-drawer-panel">
+                    <primitives-drawer-panel-grid></primitives-drawer-panel-grid>
+                </drawer-sub-panel>
+            </div>
         </drawer-panel>
         <drawer-panel name="Analyze" height="300" class="test-bench-drawer-panel">
             <drawer-sub-panel name="Tests" active>

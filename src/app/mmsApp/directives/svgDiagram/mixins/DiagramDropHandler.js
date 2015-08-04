@@ -53,9 +53,20 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
             this.$rootScope.$emit('subcircuitInstantiationMustBeDone',
                 contentServerUrl + '/subcircuit/getsubcircuit/download/' + dragged.data.subcircuitId, position, contentServerUrl);
+        
+        } else if (dragged.data.primitiveId) {
 
+            console.log('Dropped primitive id: ', dragged.data.primitiveId);
 
+            position = this.mmsUtils.getPositionFromEvent(e);
+
+            ga('send', 'event', 'avmComponent', 'dropped', dragged.data.primitiveId);
+
+            this.$rootScope.$emit('primitiveInstantiationMustBeDone',
+                dragged.data.primitiveData, position);
+        
         }
+
 
     } else if (e.dataTransfer.files.length) {
 

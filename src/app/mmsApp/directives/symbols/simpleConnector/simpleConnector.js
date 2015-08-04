@@ -11,10 +11,10 @@ angular.module(
                 symbolDirective: 'simple-connector',
                 labelPrefix: '',
                 labelPosition: {
-                    x: 3,
+                    x: 30,
                     y: 11
                 },
-                width: 120,
+                width: 134,
                 height: 15,
                 ports: {
                     p1: {
@@ -22,8 +22,8 @@ angular.module(
                         wireAngle: 0,
                         wireLeadIn: 20,
                         label: '',
-                        x: 117,
-                        y: 7
+                        x: 134,
+                        y: 6.5
                     } }
             });
         }

@@ -59,8 +59,10 @@ $header-height: 38px;
 
     .drawer-sub-navigator {
         position: absolute;
-        width: 50%;
+        width: 70%;
+        height: 35px;
         display: inline-block;
+        overflow: hidden;
         background: $baseBGColor;
         z-index: 20;
         font-size: 100%;
@@ -103,6 +105,31 @@ $header-height: 38px;
         }
     }
 
+
+
+    .drawer-sub-panel {
+
+        .above-content-headers {
+            position: fixed;
+            right: 0;
+            margin-top: -42px;
+            text-transform: uppercase;
+            font-size: 85%;
+            font-weight: bold;
+            width: 50%;
+            text-align: right;
+            background: $baseBGColor;
+            z-index: 30;
+            height: 77px;
+            border-bottom: 1px solid rgba(143, 156, 166, 0.2);
+
+            div {
+                text-align: center;
+            }
+        }
+
+    }
+
     .drawer-panel {
     }
 
@@ -141,14 +168,22 @@ $header-height: 38px;
 }
 
 
-.footer-drawer.Inspector,
-.footer-drawer.Components,
-.footer-drawer.Subcircuits {
+.footer-drawer.Inspector {
 
     padding-top: 40px;
 
     .drawer-content {
         padding-top: 0;
+        position: relative;
+    }
+}
+
+.footer-drawer.Content {
+
+    padding-top: 40px;
+
+    .drawer-content {
+        padding-top: 0px;
         position: relative;
     }
 }
