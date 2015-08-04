@@ -29,6 +29,7 @@ var OrthogonalRouter = function ($mdToast) {
 
             var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
                 visibilityGraph = new VisibilityGraph(),
+                unlockedWireCollection = [],
                 points,
                 optimalConnections,
                 nudgedConnections,
@@ -38,11 +39,17 @@ var OrthogonalRouter = function ($mdToast) {
                 replaceParent,
                 replaceWire = [];
 
+            console.log('Diagram wire count: ' + diagram.getWires().length);
+            unlockedWireCollection = diagram.getWires().filter( function(wire) {
+                return !wire.isWireLocked();
+            });
+            console.log('Unlocked wire count: ' + unlockedWireCollection.length);
+
             points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
 
             visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
-            optimalConnections = self.autoRouteWithGraph(visibilityGraph, diagram.getWires(), points);
+            optimalConnections = self.autoRouteWithGraph(visibilityGraph, unlockedWireCollection, points);
 
             if ( optimalConnections === null ) {
                 svgDiagramToast.showToast("No valid path was found. Adjust components and try again.");
@@ -55,7 +62,7 @@ var OrthogonalRouter = function ($mdToast) {
             
             wires = diagram.getWires();
 
-            for ( var w = 0; w < wires.length; w++ ) {
+            for ( var w = 0; w < wires.length - 1; w++ ) {
 
                 wire = wires[w];
 

@@ -286,7 +286,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     }, {
                         component: destinationPort.parentComponent,
                         port: destinationPort
-                    }
+                    },
+                    element.details.wireLocked
                 );
 
                 if (Array.isArray(element.details.wireSegments) && element.details.wireSegments.length > 0) {

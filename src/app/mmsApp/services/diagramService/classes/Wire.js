@@ -4,12 +4,13 @@
 
 var WireSegment = require('./WireSegment.js');
 
-var Wire = function(id, end1, end2, segments) {
+var Wire = function(id, end1, end2, locked, segments) {
 
     this._id = id;
     this._end1 = end1;
     this._end2 = end2;
     this._segments = segments || [];
+    this._locked = locked || false;
 
 };
 
@@ -27,6 +28,18 @@ Wire.prototype.getEnd1 = function() {
 
 Wire.prototype.getEnd2 = function() {
     return this._end2;
+};
+
+Wire.prototype.isWireLocked = function() {
+    return this._locked;
+};
+
+Wire.prototype.lockWire = function() {
+    this._locked = true;
+};
+
+Wire.prototype.unlockWire = function() {
+    this._locked = false;
 };
 
 Wire.prototype.getSegments = function() {

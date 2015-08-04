@@ -300,6 +300,10 @@ angular.module('mms.designEditor', [
                         nodeService.destroyNode(layoutContext, wire.getId(), message || 'Deleting wire');
                     });
 
+                    addRootScopeEventListener('wireLockMustBeSaved', function($event, wire, lockWire, message) {
+                        designLayoutService.setWireLock(layoutContext, wire.getId(), lockWire, message || 'Setting wire lock');
+                    });
+
                     addRootScopeEventListener('componentDuplicationMustBeDone', function($event, component, cb) {
 
                         if (component) {

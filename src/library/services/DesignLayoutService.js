@@ -58,6 +58,14 @@ angular.module('cyphy.services')
 
         };
 
+        this.setWireLock = function (context, nodeId, wireLock, msg) {
+
+            return nodeService.loadNode(context, nodeId)
+                .then(function (node) {
+                    node.setRegistry('wireLock', wireLock, msg);
+                });
+        };
+
         this.watchDiagramElements = function (parentContext, containerId, updateListener) {
 
             var deferred,
@@ -131,11 +139,13 @@ angular.module('cyphy.services')
 
                     sourceId,
                     destinationId,
-                    wireSegments;
+                    wireSegments,
+                    wireLocked;
 
                 sourcePtr = connectorCompositionNode.getPointer('src');
                 destinationPtr = connectorCompositionNode.getPointer('dst');
                 wireSegments = connectorCompositionNode.getRegistry('wireSegments');
+                wireLocked = connectorCompositionNode.getRegistry('wireLock'); 
 
                 if (angular.isObject(sourcePtr)) {
                     sourceId = sourcePtr.to;
@@ -145,10 +155,15 @@ angular.module('cyphy.services')
                     destinationId = destinationPtr.to;
                 }
 
+                if (wireLocked === undefined || wireLocked === null) {
+                    wireLocked = false;
+                }
+
                 details = {
                     sourceId: sourceId,
                     destinationId: destinationId,
-                    wireSegments: wireSegments
+                    wireSegments: wireSegments,
+                    wireLocked: wireLocked
                 };
 
                 return details;

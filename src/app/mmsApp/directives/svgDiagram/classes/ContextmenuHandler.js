@@ -171,7 +171,47 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                 }]
             });
 
+        }
 
+        if ( wire.isWireLocked() ) {
+
+            $scope.contextMenuData.unshift({
+
+                id: 'unlock',
+                items: [{
+                    id: 'unlock',
+                    label: 'unlock wire',
+                    iconClass: 'fa fa-unlock',
+                    action: function() {
+
+                        ga('send', 'event', 'wire', 'unlock', wire.getId());
+
+                        wire.unlockWire(wire);
+
+                        $rootScope.$emit('wireLockMustBeSaved', wire, false, 'Unlocking wire');
+                    }
+                }]
+            });
+        }
+        else {
+
+            $scope.contextMenuData.unshift({
+
+                id: 'lock',
+                items: [{
+                    id: 'lock',
+                    label: 'lock wire',
+                    iconClass: 'fa fa-lock',
+                    action: function() {
+
+                        ga('send', 'event', 'wire', 'lock', wire.getId());
+
+                        wire.lockWire(wire);
+
+                        $rootScope.$emit('wireLockMustBeSaved', wire, true, 'Locking wire');
+                    }
+                }]
+            });
         }
 
         openMenu($event);
