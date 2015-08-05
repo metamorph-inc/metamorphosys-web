@@ -39,8 +39,6 @@ var OrthogonalRouter = function ($mdToast) {
             diagramWires = diagram.getWires();
             newestWire = diagramWires[diagramWires.length - 1];
 
-            console.log('Newest wire: ');
-            console.log(newestWire);
             routeWires(diagram, cachedRouterData.visibilityGraph, [newestWire], cachedRouterData.points);
         }
 
@@ -101,8 +99,6 @@ var OrthogonalRouter = function ($mdToast) {
             wire,
             segment;
 
-        console.log('Routing ' + wireCollection.length + ' wires');
-
         optimalConnections = self.autoRouteWithGraph(visibilityGraph, wireCollection, points);
 
         if ( optimalConnections === null ) {
@@ -159,11 +155,9 @@ var OrthogonalRouter = function ($mdToast) {
                 replaceParent,
                 replaceWire = [];
 
-            console.log('Diagram wire count: ' + diagram.getWires().length);
             unlockedWireCollection = diagram.getWires().filter( function(wire) {
                 return !wire.isWireLocked();
             });
-            console.log('Unlocked wire count: ' + unlockedWireCollection.length);
 
             points = this.getBoundingBoxAndPortPointsFromComponents(diagramComponents, visibilityGraph);
 
