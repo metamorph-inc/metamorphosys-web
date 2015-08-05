@@ -918,27 +918,29 @@ var OrthogonalRouter = function ($mdToast) {
 
     function cleanVisibilityGraph(visibilityGraph) {
 
-        angular.forEach(visibilityGraph.nodes, function(value) {
+        if (visibilityGraph) {
 
-            angular.forEach(value, function(gridNode) {
+            angular.forEach(visibilityGraph.nodes, function(value) {
 
-                gridNode.closed = false;
-                gridNode.visited = false;
-                gridNode.parent = null;
-                gridNode.dir = null;
+                angular.forEach(value, function(gridNode) {
 
-                gridNode.bends = null;
-                gridNode.remBends = null;
-                gridNode.hueristic = null;
-                gridNode.cost = null;
-                gridNode.score = null;
+                    gridNode.closed = false;
+                    gridNode.visited = false;
+                    gridNode.parent = null;
+                    gridNode.dir = null;
 
-            })
+                    gridNode.bends = null;
+                    gridNode.remBends = null;
+                    gridNode.hueristic = null;
+                    gridNode.cost = null;
+                    gridNode.score = null;
 
-        });
+                })
 
-        return visibilityGraph;
+            });
 
+            return visibilityGraph;
+        }
     };
 
 };
