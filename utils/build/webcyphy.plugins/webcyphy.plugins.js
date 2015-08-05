@@ -6,6 +6,7 @@ define('webcyphy.plugins',
         'plugin/AdmImporter/AdmImporter/AdmImporter',
         'plugin/AtmImporter/AtmImporter/AtmImporter',
         'plugin/AdmExporter/AdmExporter/AdmExporter',
+        'plugin/BrdImporter/BrdImporter/BrdImporter',
         'plugin/TestBenchRunner/TestBenchRunner/TestBenchRunner',
         'plugin/ExportWorkspace/ExportWorkspace/ExportWorkspace',
         'plugin/GenerateDashboard/GenerateDashboard/GenerateDashboard',
@@ -15,6 +16,7 @@ define('webcyphy.plugins',
                  AdmImporter,
                  AtmImporter,
                  AdmExporter,
+                 BrdImporter,
                  TestBenchRunner,
                  ExportWorkspace,
                  GenerateDashboard,
@@ -28,6 +30,7 @@ define('webcyphy.plugins',
         WebGMEGlobal.plugins.AdmImporter = AdmImporter;
         WebGMEGlobal.plugins.AtmImporter = AtmImporter;
         WebGMEGlobal.plugins.AdmExporter = AdmExporter;
+        WebGMEGlobal.plugins.BrdImporter = BrdImporter;
         WebGMEGlobal.plugins.ExportWorkspace = ExportWorkspace;
         WebGMEGlobal.plugins.TestBenchRunner = TestBenchRunner;
         WebGMEGlobal.plugins.GenerateDashboard = GenerateDashboard;

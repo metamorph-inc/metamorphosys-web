@@ -288,6 +288,29 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('brdImportMustBeDone', function($event, brdBlobUrl) {
+
+                        $rootScope.setProcessing();
+
+                        var brdBlobUrlParts = brdBlobUrl.replace(/\/*$/, '').split('/');
+                        acmImportService.importBrd(self.layoutContext, projectHandling.getSelectedDesignId(), brdBlobUrlParts[brdBlobUrlParts.length - 1])
+                            .then(function () {
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                        .content('BRD file imported. Place and Route will use this BRD file.')
+                                );
+                            })
+                            .catch(function(err) {
+                                $log.error(err);
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                        .content('BRD import failed')
+                                );
+                                $rootScope.stopProcessing();
+                            });
+
+                    });
+
                     addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
                         var operation;

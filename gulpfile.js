@@ -761,11 +761,10 @@ gulp.task('register-watchers', ['compile-all'], function(cb) {
 gulp.task('get-git-hash', function() {
 
     var deferred = Q.defer();
-
-    git.revParse({
-        args: '--short HEAD'
+    git.exec({
+        args: 'describe --always --dirty=-dev'
     }, function(err, hash) {
-        console.log('Current build (git) hash: ' + hash);
+        console.log('Current build (git) hash: ' + hash + ' ' + err);
         buildHash = hash;
         deferred.resolve();
     });
