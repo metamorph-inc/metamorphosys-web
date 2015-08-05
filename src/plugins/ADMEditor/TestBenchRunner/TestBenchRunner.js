@@ -600,7 +600,7 @@ define(['plugin/PluginConfig',
                     // resultPatterns: [ 'results/', 'log/**', '_FAILED.txt']
                     resultPatterns: [
                         // Place and Route
-                        'results/*brd', 'results/*png',
+                        'results/*brd', 'results/*png', 'results/*.sch',
                         // Analog Electronic Simulation
                         'results/*.cir', 'results/LaunchSpiceViewer.bat', 'results/runspice.bat', // schema.raw
                         // Cost Estimation

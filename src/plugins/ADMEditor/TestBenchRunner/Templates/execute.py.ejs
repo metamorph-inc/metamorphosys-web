@@ -309,7 +309,7 @@ def call_master_interpreter(mga_path, test_bench_id, cfg_ids):
         if nbr_of_failures > 0:
             with open('_FAILED.txt', 'ab+') as f_out:
                 f_out.write('MasterInterprter failed on ' + str(nbr_of_failures) + ' out of ' + str(nbr_of_cfgs) +
-                            ' configurations. See log/execution.log and log/MasterInerpter.xxxx.log for more info.')
+                            ' configurations. See log/execution.log and log/MasterInterpreter.xxxx.log for more info.')
     finally:
         project.Close(True)
 
