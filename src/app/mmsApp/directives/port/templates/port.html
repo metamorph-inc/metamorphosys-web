@@ -2,14 +2,20 @@
    ng-attr-transform="{{::getPortTransform()}}"
    class="port"
    ng-class="getCssClass()">
-    <g class="port-label-wrapper">
+    <g class="port-label-wrapper"
+       ng-if="isComponentUpsideDown && isPortLabelVisible()">
         <text class="port-label"
-            ng-if="::isPortLabelVisible()"
             ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
             ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
             >{{getLabel()}}
         </text>
     </g>
+    <text class="port-label"
+        ng-if="!isComponentUpsideDown && isPortLabelVisible()"
+        ng-attr-x="{{::portInstance.portSymbol.labelPosition.x}}"
+        ng-attr-y="{{::portInstance.portSymbol.labelPosition.y}}"
+        >{{getLabel()}}
+    </text>
     <g
         ng-click="onPortClick(portInstance, $event)"
         ng-mousedown="onPortMouseDown(portInstance, $event)"

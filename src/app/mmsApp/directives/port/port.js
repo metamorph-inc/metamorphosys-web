@@ -143,6 +143,14 @@ angular.module(
                     svgDiagramController.registerPortElement(scope.portInstance.portSymbol.type, element[0]);
                 }
 
+                scope.isComponentUpsideDown = false;
+
+                scope.$watch('portInstance.parentComponent.rotation', function() {
+                    if (scope.portInstance.parentComponent.rotation % 360 === 180) {
+                        scope.isComponentUpsideDown = true;
+                    }
+                })
+
                 scope.$on('$destroy', function() {
 
                     if (scope.portInstance.portSymbol && scope.portInstance.portSymbol.type) {

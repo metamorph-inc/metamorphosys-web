@@ -27,27 +27,29 @@ var OrthogonalRouter = function ($mdToast) {
             diagramWires,
             newestWire;
 
-        haveDiagramComponentsChanged = doesDiagramNeedToBeReRouted(diagram);
+        if (diagram.getWires().length) {
 
-        if ( haveDiagramComponentsChanged ) {
-            console.log('Something in diagram has changed, re-routing entire diagram');
-            self.routeDiagram(diagram);
+            haveDiagramComponentsChanged = doesDiagramNeedToBeReRouted(diagram);
+
+            if ( haveDiagramComponentsChanged ) {
+                console.log('Something in diagram has changed, will have to re-routing entire diagram');
+                self.routeDiagram(diagram);
+            }
+            else {
+                console.log('Diagram is consistent with previous wiring, able to use cached visibility graph');
+
+                diagramWires = diagram.getWires();
+                newestWire = diagramWires[diagramWires.length - 1];
+
+                routeWires(diagram, cachedRouterData.visibilityGraph, [newestWire], cachedRouterData.points);
+            }
+
+            cachedRouterData.visibilityGraph = cleanVisibilityGraph(cachedRouterData.visibilityGraph);
+
+            var endTime = performance.now();
+
+            console.log('AutoRoute Execution Time: ' + (endTime - startTime) + 'ms');
         }
-        else {
-            console.log('Diagram is consistent with previous wiring, able to use cached visibility graph');
-
-            diagramWires = diagram.getWires();
-            newestWire = diagramWires[diagramWires.length - 1];
-
-            routeWires(diagram, cachedRouterData.visibilityGraph, [newestWire], cachedRouterData.points);
-        }
-
-        cachedRouterData.visibilityGraph = cleanVisibilityGraph(cachedRouterData.visibilityGraph);
-
-        var endTime = performance.now();
-
-        console.log('AutoRoute Execution Time: ' + (endTime - startTime) + 'ms');
-
     };
 
     function doesDiagramNeedToBeReRouted(diagram) {
