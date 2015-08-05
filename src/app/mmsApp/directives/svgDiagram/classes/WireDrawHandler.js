@@ -351,7 +351,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
                 if ($scope.selectedRouter.id === 'autoRouter') {
                     $timeout(function() {
 
-                        wiringService.routeDiagram($scope.diagram, $scope.selectedRouter.type);
+                        wiringService.autoRoute($scope.diagram, $scope.selectedRouter.type);
 
                     }, 50);
 

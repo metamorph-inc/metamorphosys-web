@@ -5,37 +5,157 @@ var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     OrthogonalGridNode = require("./orthogonalRouter/classes/orthogonalGridNode.js"),
     OrthogonalGridSegment = require("./orthogonalRouter/classes/orthogonalGridSegment.js"),
     WireSegment = require("../../diagramService/classes/WireSegment.js"),
-    SvgDiagramToast = require("../../../directives/svgDiagram/classes/SvgDiagramToast.js");
+    DiagramComponent = require("../../diagramService/classes/DiagramComponent.js"),
+    SvgDiagramToast = require("../../../directives/svgDiagram/classes/SvgDiagramToast.js"),
+    VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js");
 
 
 var OrthogonalRouter = function ($mdToast) {
 
     var self = this,
-        svgDiagramToast = new SvgDiagramToast($mdToast);
+        routeWireByWire = true,
+        svgDiagramToast = new SvgDiagramToast($mdToast),
+        cachedRouterData = {};
 
     self.name = 'OrthogonalRouter';
 
+    this.route = function( diagram ) {
+
+        var startTime = performance.now();
+
+        var haveDiagramComponentsChanged,
+            diagramWires,
+            newestWire;
+
+        haveDiagramComponentsChanged = doesDiagramNeedToBeReRouted(diagram);
+
+        if ( haveDiagramComponentsChanged ) {
+            console.log('Something in diagram has changed, re-routing entire diagram');
+            self.routeDiagram(diagram);
+        }
+        else {
+            console.log('Diagram is consistent with previous wiring, able to use cached visibility graph');
+
+            diagramWires = diagram.getWires();
+            newestWire = diagramWires[diagramWires.length - 1];
+
+            console.log('Newest wire: ');
+            console.log(newestWire);
+            routeWires(diagram, cachedRouterData.visibilityGraph, [newestWire], cachedRouterData.points);
+        }
+
+        cachedRouterData.visibilityGraph = cleanVisibilityGraph(cachedRouterData.visibilityGraph);
+
+        var endTime = performance.now();
+
+        console.log('AutoRoute Execution Time: ' + (endTime - startTime) + 'ms');
+
+    };
+
+    function doesDiagramNeedToBeReRouted(diagram) {
+
+        var rerouteNeeded = false,
+            currentComponents = diagram.getComponents(),
+            currentPorts = diagram.getPorts(),
+            currentComponentPositions = [],
+            currentPortPositions = [],
+            i;
+
+        if ( cachedRouterData.visibilityGraph ) { 
+
+            if (currentComponents.length !== cachedRouterData.componentPositions.length ||
+                Object.keys(currentPorts).length !== cachedRouterData.portPositions.length) {
+                rerouteNeeded = true;
+            }
+            else {
+                currentComponents.forEach(function(component) {
+                    currentComponentPositions.push(component.getGridPosition());
+                });
+
+                rerouteNeeded = !angular.equals(currentComponentPositions, cachedRouterData.componentPositions);
+
+            }
+
+            if ( !rerouteNeeded ) {
+
+                angular.forEach(currentPorts, function(port) {
+                    currentPortPositions.push(port.getGridPosition());
+                });
+
+                rerouteNeeded = !angular.equals(currentPortPositions, cachedRouterData.portPositions);
+
+            }
+        }
+        else {
+            rerouteNeeded = true;
+        }
+
+        return rerouteNeeded;
+    };
+
+
+    function routeWires (diagram, visibilityGraph, wireCollection, points) {
+
+        var optimalConnections,
+            nudgedConnections,
+            wire,
+            segment;
+
+        console.log('Routing ' + wireCollection.length + ' wires');
+
+        optimalConnections = self.autoRouteWithGraph(visibilityGraph, wireCollection, points);
+
+        if ( optimalConnections === null ) {
+            svgDiagramToast.showToast("No valid path was found. Adjust components and try again.");
+            return null;  // No path found
+        }
+
+        nudgedConnections = nudgeConnections(optimalConnections);
+
+        // Update diagram Wires
+
+        for ( var w = 0; w < wireCollection.length; w++ ) {
+
+            wire = diagram.getWireById(wireCollection[w].getId());
+
+            wire.removeSegments();
+
+
+            for (var i = nudgedConnections[w].length - 1; i >= 0; i--) {
+
+                segment = nudgedConnections[w][i];
+
+                //console.log(segment.toString());
+
+                segment.setFipped(true, true);
+                wire.appendSegmentFromParameters(segment);
+
+            }
+
+            //console.log(wire.getSegments());
+
+        }
+
+        diagram.afterWireChange();
+
+    };
 
     this.routeDiagram = function( diagram ) {
         // Step 1: generateVisibilityGraph
         // Step 2: AutoRouteWithGraph
         // Step 3: nudgeRoutes
 
-        var validDiagram = this.validDiagramForAutoRoute ( diagram.getComponents(),
+        var diagramComponents = diagram.getComponents(),
+            validDiagram = this.validDiagramForAutoRoute ( diagramComponents,
                                                            diagram.config.height,
                                                            diagram.config.width );
 
         if ( validDiagram ) {
 
-            var VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js"),
-                visibilityGraph = new VisibilityGraph(),
+            var visibilityGraph = new VisibilityGraph(),
                 unlockedWireCollection = [],
                 points,
-                optimalConnections,
-                nudgedConnections,
                 wires,
-                wire,
-                segment,
                 replaceParent,
                 replaceWire = [];
 
@@ -45,45 +165,31 @@ var OrthogonalRouter = function ($mdToast) {
             });
             console.log('Unlocked wire count: ' + unlockedWireCollection.length);
 
-            points = this.getBoundingBoxAndPortPointsFromComponents(diagram.getComponents(), visibilityGraph);
+            points = this.getBoundingBoxAndPortPointsFromComponents(diagramComponents, visibilityGraph);
 
             visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
 
-            optimalConnections = self.autoRouteWithGraph(visibilityGraph, unlockedWireCollection, points);
-
-            if ( optimalConnections === null ) {
-                svgDiagramToast.showToast("No valid path was found. Adjust components and try again.");
-                return null;  // No path found
-            }
-
-            nudgedConnections = nudgeConnections(optimalConnections);
-
-            // Update diagram Wires
-
-            for ( var w = 0; w < unlockedWireCollection.length; w++ ) {
-
-                wire = diagram.getWireById(unlockedWireCollection[w].getId());
-
-                wire.removeSegments();
-
-
-                for (var i = nudgedConnections[w].length - 1; i >= 0; i--) {
-
-                    segment = nudgedConnections[w][i];
-
-                    //console.log(segment.toString());
-
-                    segment.setFipped(true, true);
-                    wire.appendSegmentFromParameters(segment);                    
-
-                }
-
-                //console.log(wire.getSegments());
-
-
-            }
+            routeWires(diagram, visibilityGraph, unlockedWireCollection, points);
 
             diagram.afterWireChange();
+
+            var componentPositions = [],
+                portPositions = [];
+
+            angular.forEach(diagram.getComponents(), function(component) {
+                componentPositions.push(component.getGridPosition());
+            });
+
+            angular.forEach(diagram.getPorts(), function(port) {
+                portPositions.push(port.getGridPosition());
+            });
+
+            cachedRouterData = {
+                    visibilityGraph: visibilityGraph,
+                    points: points,
+                    componentPositions: componentPositions,
+                    portPositions: portPositions
+                }
 
         }
     };
@@ -293,7 +399,7 @@ var OrthogonalRouter = function ($mdToast) {
                     }
                     else {
                         // Remove element from array and re-check it.
-                        for (var i = 0; openHeap.length-1; i++) {
+                        for (var i = 0; i < openHeap.length; i++) {
                             if (n.compareXTo(openHeap[i]) === 0 && n.compareYTo(openHeap[i]) === 0) {
                                 openHeap.splice(i, 1);
                                 break;
@@ -809,6 +915,31 @@ var OrthogonalRouter = function ($mdToast) {
 
         return !(componentOffGrid || overlap);
     }
+
+    function cleanVisibilityGraph(visibilityGraph) {
+
+        angular.forEach(visibilityGraph.nodes, function(value) {
+
+            angular.forEach(value, function(gridNode) {
+
+                gridNode.closed = false;
+                gridNode.visited = false;
+                gridNode.parent = null;
+                gridNode.dir = null;
+
+                gridNode.bends = null;
+                gridNode.remBends = null;
+                gridNode.hueristic = null;
+                gridNode.cost = null;
+                gridNode.score = null;
+
+            })
+
+        });
+
+        return visibilityGraph;
+
+    };
 
 };
 

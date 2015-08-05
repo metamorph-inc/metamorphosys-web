@@ -318,6 +318,10 @@ Diagram.prototype.getWires = function() {
     return this._wires;
 };
 
+Diagram.prototype.getPorts = function() {
+    return this._portsById;
+};
+
 Diagram.prototype.updateWireSegments = function(wireId, newSegments) {
 
     var wire = this._wiresById[wireId];

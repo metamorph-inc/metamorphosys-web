@@ -61,12 +61,6 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                     });
 
                 }
-                else {
-
-                    if (componentsToRotate.length) {
-                        wiringService.routeDiagram(diagram, wiringService.selectedRouter.type);
-                    }
-                }
 
 
                 if (componentsToRotate.length > 1) {
@@ -82,6 +76,13 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
                         message: message
                     }
                 );
+
+                if (wiringService.selectedRouter.id === 'autoRouter') {
+
+                    if (componentsToRotate.length) {
+                        wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
+                    }
+                }
 
             };
         }

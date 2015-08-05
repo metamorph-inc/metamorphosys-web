@@ -87,7 +87,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     id: routerType.id,
                     label: routerType.label,
                     action: function() {
-                        wiringService.routeDiagram($scope.diagram, routerType.type, routerType.params);
+                        wiringService.autoRoute($scope.diagram, routerType.type);
                         $rootScope.$emit('wireSegmentsMustBeSaved', wire);
                     }
                 });
@@ -543,7 +543,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                         label: 'Reroute diagram',
                         iconClass: 'glyphicon glyphicon-random',
                         action: function() {
-                            wiringService.routeDiagram($scope.diagram, 'OrthogonalRouter');
+                            wiringService.rerouteDiagram($scope.diagram, 'OrthogonalRouter');
                             $rootScope.$emit('wiresMustBeSaved', $scope.diagram.getWires());
                         }
                     }]

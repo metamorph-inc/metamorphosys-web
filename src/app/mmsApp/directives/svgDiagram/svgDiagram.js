@@ -723,7 +723,8 @@ angular.module('mms.svgDiagram', [
                 this.unFocusConnectedPortsAndWires = function(diagram) {
 
                     var port,
-                        portId;
+                        portId,
+                        wireEl;
 
                     if (this._connectedPorts.length > 0) {
 
@@ -742,7 +743,11 @@ angular.module('mms.svgDiagram', [
 
                     angular.forEach(this._connectedWires, function(wireId) {
 
-                        document.getElementById(wireId).classList.remove('highlight');
+                        wireEl = document.getElementById(wireId).classList;
+
+                        if (wireEl) {
+                            wireEl.remove('highlight');
+                        }
 
                     });
 

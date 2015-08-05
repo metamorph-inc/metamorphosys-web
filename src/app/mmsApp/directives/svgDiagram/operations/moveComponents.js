@@ -4,7 +4,7 @@
 
 angular.module('mms.designVisualization.operations.moveComponents', [])
 
-    .run(function (operationsManager, $rootScope, wiringService, gridService, $mdToast) {
+    .run(function (operationsManager, $rootScope, wiringService, gridService, $mdToast, $timeout) {
 
         var SvgDiagramToast = require('../classes/SvgDiagramToast.js'),
             svgDiagramToast = new SvgDiagramToast($mdToast);
@@ -196,6 +196,8 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     });
 
                     if (!invalidMove) {
+
+                        affectedWires = dragTargetsDescriptor.affectedWires;
                         
                         if (wiringService.selectedRouter.id !== 'autoRouter') {
 
@@ -224,15 +226,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                             });
 
-                            affectedWires = dragTargetsDescriptor.affectedWires;
-                        }
-                        else {
-
-                            wiringService.routeDiagram(diagram, wiringService.selectedRouter.type);
-                            affectedWires = diagram.getWires();
-                        }
-
-                        operationsManager.commitOperation(
+                            operationsManager.commitOperation(
                             type,
                             {
                                 diagramId: diagram.id,
@@ -241,11 +235,25 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                                 message: message,
                                 primaryTarget: dragTargetsDescriptor.primaryTarget
                             });
+                        }
 
-                        //$scope.$emit('wiresChange', {
-                        //    diagramId: $scope.diagram.id,
-                        //    wires: dragTargetsDescriptor.affectedWires
-                        //});
+                        if (wiringService.selectedRouter.id === 'autoRouter') {
+
+                            operationsManager.commitOperation(
+                            type,
+                            {
+                                diagramId: diagram.id,
+                                components: components,
+                                wires: affectedWires,
+                                message: message,
+                                primaryTarget: dragTargetsDescriptor.primaryTarget
+                            }).then(function() {
+                                $timeout(function() {
+                                    wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
+                                });
+                            });
+                        }
+
                     }
                     else {
 

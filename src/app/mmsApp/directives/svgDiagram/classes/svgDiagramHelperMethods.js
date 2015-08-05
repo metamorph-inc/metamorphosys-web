@@ -10,10 +10,13 @@ module.exports = function() {
 
         var wires = diagram.getWiresByComponentId(component.id);
 
-        return wires.every( function(wire) {
-            return !wire.isWireLocked();
-        });
+        if (wires) {
+            return wires.every( function(wire) {
+                return !wire.isWireLocked();
+            });
+        }
 
+        return true;
     };
 
     this.ensureNoLockedWires = ensureNoLockedWires;

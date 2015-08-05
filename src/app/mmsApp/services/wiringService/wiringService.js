@@ -105,12 +105,22 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
         };
 
-        this.routeDiagram = function(diagram, routerType, params) {
+        this.autoRoute = function(diagram, routerType) {
+
+            var router = routers[routerType];
+
+            if (router && angular.isFunction(router.route)) {
+                router.route(diagram);
+            }
+
+        };
+
+        this.rerouteDiagram = function(diagram, routerType) {
 
             var router = routers[routerType];
 
             if (router && angular.isFunction(router.routeDiagram)) {
-                router.routeDiagram(diagram, params);
+                router.routeDiagram(diagram);
             }
 
         };
