@@ -113,7 +113,7 @@ var ComponentWiresContainer = React.createClass({
 
 
 var ComponentWire = React.createClass({
-	render: function(){
+    render: function() {
 
         var self = this,
             childSegments = [],
@@ -146,6 +146,10 @@ var ComponentWire = React.createClass({
 
         if (this.props.wire.selected) {
             className += ' selected';
+        }
+
+        if (this.props.wire.isWireLocked()) {
+            className += ' locked';
         }
 
         return (

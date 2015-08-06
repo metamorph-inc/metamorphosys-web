@@ -410,7 +410,11 @@ angular.module('mms.designEditor', [
                             else {
                                 wiringService.unlockWire(wire);
                             }
+
+                            $rootScope.$emit('wireLockMustBeSaved', wire, wireLock, 'Locking wire');
                         });
+
+                        diagram.afterWireChange();
 
                     });
 
@@ -426,8 +430,12 @@ angular.module('mms.designEditor', [
                                 else {
                                     wiringService.unlockWire(wire);
                                 }
+
+                                $rootScope.$emit('wireLockMustBeSaved', wire, wireLock, 'Locking wire');
                             });
                         });
+
+                        diagram.afterWireChange();
 
                     });
 

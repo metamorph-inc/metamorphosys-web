@@ -16,9 +16,9 @@ $wire-selected-color: rgb(30,136,229);
     .component-wire-segment-segment {
 
       stroke-width: 1;
-      stroke: #000066;
+      /*stroke: #000066;*/
+      stroke: #0010B0;
       fill: none;
-
     }
 
     .component-wire-segment-under {
@@ -42,6 +42,14 @@ $wire-selected-color: rgb(30,136,229);
 
     .component-wire-segment-segment {
       stroke: $wire-selected-color;
+    }
+
+  }
+
+  &.locked {
+
+    .component-wire-segment-segment {
+      stroke: #000000;
     }
 
   }

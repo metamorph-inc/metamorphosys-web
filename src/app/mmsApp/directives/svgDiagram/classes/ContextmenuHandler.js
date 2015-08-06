@@ -188,6 +188,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-unlock',
                     action: function() {
                         wiringService.unlockWire(wire);
+                        $scope.diagram.afterWireChange();
                     }
                 }]
             });
@@ -203,6 +204,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-lock',
                     action: function() {
                         wiringService.lockWire(wire);
+                        $scope.diagram.afterWireChange();
                     }
                 }]
             });
