@@ -280,7 +280,7 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                         var operation,
                             invalidMove;
 
-                        if ( !helperMethods.ensureNoLockedWires($scope.diagram, component) ) {
+                        if ( helperMethods.ensureNoLockedWires($scope.diagram, component) ) {
 
                             operation = operationsManager.initNew('RotateComponents', $scope.diagram, component);
                             operation.set(90);
