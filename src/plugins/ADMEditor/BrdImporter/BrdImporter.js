@@ -278,7 +278,7 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
             self.core.setAttribute(domainModel, 'Type', 'CircuitLayout');
             var layout = JSON.parse(self.layoutJson);
             var box = '0,0,' + layout.boardWidth + ',' + layout.boardHeight;
-            self.core.setAttribute(domainModel, 'BoundingBoxes', box + ',0,' + box + ',1');
+            self.core.setAttribute(domainModel, 'BoundingBoxes', box + ';0,' + box + ',1');
             self.core.deleteSet(domainModel, 'UsesResource');
             self.core.addMember(domainModel, 'UsesResource', resource);
             return Q.ninvoke(self, 'save', 'imported brd file');
