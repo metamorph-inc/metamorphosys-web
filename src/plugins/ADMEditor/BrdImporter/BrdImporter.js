@@ -215,7 +215,7 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
                                 // TODO encoding: ...; child_process.exec("powershell [console]::OutputEncoding.CodePage", function (err, stdout, stderr) { console.log(err,stdout,stderr) }) => 437
                             })
                             .then(function (stdout, stderr) {
-                                self.logger.info('BoardSynthesis.exe stdout ' + stdout + '\nstderr ' + stderr);
+                                self.logger.debug('BoardSynthesis.exe stdout ' + stdout + '\nstderr ' + stderr);
                             })
                             .then(function () {
                                 return Q.ninvoke(fs, 'readFile', path.join(dirname, 'layout.json'), {encoding: 'utf8'});
@@ -328,7 +328,12 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
             .then(self.updateModel.bind(self))
             .nodeify(function (err) {
                 if (err) {
-                    self.createMessage(null, err.message || err.msg || err, 'error');
+                    var msg = err.message || err.msg || err;
+                    self.createMessage(null, msg, 'error');
+                    if (err instanceof Error) {
+                        msg += '\n' + err.stack;
+                    }
+                    self.logger.error(msg);
                     callback(null, self.result);
                     return;
                 }
