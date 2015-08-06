@@ -84,16 +84,19 @@
 
 .port.faded {
 
-    .decorated-port {
+    &:not(.highlight-direct):not(.highlight-indirect) {
 
-        path.bg-part {
-            fill: #bac1cb;
-        }
+        .decorated-port {
 
-        .port-shape {
-
-            path {
+            path.bg-part {
                 fill: #bac1cb;
+            }
+
+            .port-shape {
+
+                path {
+                    fill: #bac1cb;
+                }
             }
         }
     }

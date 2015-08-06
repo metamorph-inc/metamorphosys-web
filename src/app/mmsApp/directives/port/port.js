@@ -149,7 +149,7 @@ angular.module(
                     if (scope.portInstance.parentComponent.rotation % 360 === 180) {
                         scope.isComponentUpsideDown = true;
                     }
-                })
+                });
 
                 scope.$on('$destroy', function() {
 
