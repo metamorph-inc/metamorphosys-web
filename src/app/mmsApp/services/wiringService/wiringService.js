@@ -105,6 +105,7 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
         };
 
+        /* AutoRouter Wiring Functions */
         this.autoRoute = function(diagram, routerType) {
 
             var router = routers[routerType];
@@ -125,10 +126,8 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
         };
 
+        /* For Elbow and Simple Routers */
         this.routeWire = function (wire, routerType, params, ignoreLeadIn) {
-
-            // TODO AutoRouter: This function should route only the current wire if no new components have been
-            // added and no components were moved around. It would use a cached version of the visibility graph.
 
             var router,
                 simpleRouter,
@@ -196,10 +195,6 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
         };
 
         this.adjustWireEndSegments = function (wire) {
-
-            // TODO AutoRouter: Currently defaults to ElbowRouter if this function is called and 
-            // router type is set to autoRouter. How it should work for AutoRouter: If components are dragged,
-            // do not redraw wires until the drag completes. No adjusting of wires, just redraw once complete.
 
             var firstSegmentParams,
                 secondSegmentParams,

@@ -268,7 +268,7 @@ module.exports = function($scope, $rootScope, diagramService, wiringService, gri
 
         latestMouseEvent = $event;
 
-        if (wireStart && $scope.selectedRouter.type === 'elbowRouter') {
+        if (wireStart && $scope.selectedRouter.id !== 'autoRouter') {
 
             $scope.newWireLine = $scope.newWireLine || {};
             $scope.newWireLine.lockedSegments = $scope.newWireLine.lockedSegments || [];
