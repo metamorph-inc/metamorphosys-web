@@ -551,15 +551,37 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
             }
 
             $scope.contextMenuData.push({
-                id: 'projectMenu',
-                label: 'Project',
-                items: [{
-                    id: 'undo',
-                    label: 'Undo last change',
-                    iconClass: 'fa fa-reply',
-                    action: function() {
-                        projectHandling.undo();
-                    }
+                    id: 'lockAll',
+                    items: [{
+                        id: 'lockAll',
+                        label: 'Lock all wires',
+                        iconClass: 'fa fa-lock',
+                        action: function() {
+                            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', $scope.diagram.getComponents(), true);
+                        }
+                    }]
+                },
+                {
+                    id: 'unlockAll',
+                    items: [{
+                        id: 'unlockAll',
+                        label: 'Unlock all wires',
+                        iconClass: 'fa fa-unlock',
+                        action: function() {
+                            $rootScope.$emit('wireLockMustBeSetForMultipleComponentsWires', $scope.diagram.getComponents(), false);
+                        }
+                    }]
+                },
+                {
+                    id: 'projectMenu',
+                    label: 'Project',
+                    items: [{
+                        id: 'undo',
+                        label: 'Undo last change',
+                        iconClass: 'fa fa-reply',
+                        action: function() {
+                            projectHandling.undo();
+                        }
                 },
                 {
                     id: 'exportToGME',
