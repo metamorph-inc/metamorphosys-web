@@ -44,7 +44,7 @@ module.exports = function($mdToast, $rootScope, components, wires) {
                 components: components,
                 wires: wires
             },
-            hideDelay: 0
+            hideDelay: 5000
         });
 
     };

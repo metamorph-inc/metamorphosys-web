@@ -127,9 +127,6 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             diagram.afterWireChange(dragTargetsDescriptor.affectedWires);
                         }
                     }
-                    else {
-                        svgDiagramToast.showToast("Unable to move component(s) any further East and/or North!");
-                    }
 
                 };
 
