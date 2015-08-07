@@ -4,7 +4,7 @@
         "name": "Connector",
         "metaType": "Connector",
         "type": "generic",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "description": "Create an external interface for your subcircuit by connecting a port to this primitive.",
         "svgViewBox": "0 0 100 20",
         "config": []
     },
@@ -13,7 +13,7 @@
         "name": "Empty Subcircuit",
         "metaType": "Container",
         "type": "generic",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "description": "Use this primitive to begin creating your own subcircuit from scratch.",
         "svgViewBox": "0 0 100 100",
         "config": []
     }
