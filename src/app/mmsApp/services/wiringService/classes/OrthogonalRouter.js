@@ -10,14 +10,22 @@ var insert = require("../../mmsUtils/classes/simpleInsert.js"),
     VisibilityGraph = require("./orthogonalRouter/classes/VisibilityGraph.js");
 
 
-var OrthogonalRouter = function ($mdToast) {
+var OrthogonalRouter = function ($mdToast, $injector) {
 
     var self = this,
         routeWireByWire = true,
         svgDiagramToast = new SvgDiagramToast($mdToast),
-        cachedRouterData = {};
+        cachedRouterData = {},
+
+        // debug helpers
+        debugHelper = { sweepLines: [], sweepPoints: [] },
+        debugRouter = false;
 
     self.name = 'OrthogonalRouter';
+
+    if ($injector.has('debugAutoRouter')) {
+        debugRouter = $injector.get('debugAutoRouter');
+    }
 
     this.route = function( diagram ) {
 
@@ -49,6 +57,11 @@ var OrthogonalRouter = function ($mdToast) {
             var endTime = performance.now();
 
             console.log('AutoRoute Execution Time: ' + (endTime - startTime) + 'ms');
+
+            if (debugRouter) {
+                diagram.sweepLines = cachedRouterData.debugHelper.sweepLines;
+                diagram.sweepPoints = cachedRouterData.debugHelper.sweepPoints;
+            }
         }
     };
 
@@ -150,7 +163,7 @@ var OrthogonalRouter = function ($mdToast) {
 
         if ( validDiagram ) {
 
-            var visibilityGraph = new VisibilityGraph(),
+            var visibilityGraph = new VisibilityGraph(debugRouter),
                 unlockedWireCollection = [],
                 points,
                 wires,
@@ -163,7 +176,7 @@ var OrthogonalRouter = function ($mdToast) {
 
             points = this.getBoundingBoxAndPortPointsFromComponents(diagramComponents, visibilityGraph);
 
-            visibilityGraph.generate(points, diagram.config.width, diagram.config.height);
+            visibilityGraph.generate(points, diagram.config.width, diagram.config.height, debugHelper);
 
             routeWires(diagram, visibilityGraph, unlockedWireCollection, points);
 
@@ -186,6 +199,10 @@ var OrthogonalRouter = function ($mdToast) {
                     componentPositions: componentPositions,
                     portPositions: portPositions
                 }
+
+            if (debugRouter) {
+                cachedRouterData.debugHelper = debugHelper;
+            }
 
         }
     };

@@ -4,6 +4,7 @@
     "dispatcherUrl": "/#/editor/Template_Module_1x2",
     "showStats": false,
     "showBuildHash": false,
+    "debugAutoRouter": false,
 
     "designsToSelect": [
         {

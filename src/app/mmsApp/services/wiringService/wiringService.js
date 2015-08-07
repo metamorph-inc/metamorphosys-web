@@ -5,8 +5,8 @@
 var wiringServicesModule = angular.module(
     'mms.designVisualization.wiringService', []);
 
-wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope', '$timeout',
-    function ($mdToast, $log, $rootScope, $timeout) {
+wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope', '$timeout', '$injector',
+    function ($mdToast, $log, $rootScope, $timeout, $injector) {
 
         var self = this,
             SimpleRouter = require('./classes/SimpleRouter.js'),
@@ -16,7 +16,7 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
                 SimpleRouter: new SimpleRouter(),
                 ElbowRouter: new ElbowRouter(),
-                OrthogonalRouter: new OrthogonalRouter($mdToast)                
+                OrthogonalRouter: new OrthogonalRouter($mdToast, $injector)
 
             },
 

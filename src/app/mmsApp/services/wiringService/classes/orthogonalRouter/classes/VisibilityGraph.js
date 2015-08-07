@@ -9,13 +9,14 @@ var insert = require("../../../../mmsUtils/classes/simpleInsert.js"),
     OrthogonalGridNode = require("./orthogonalGridNode.js"),
     OrthogonalGridSegment = require("./orthogonalGridSegment.js");
 
-var VisibilityGraph = function () {
+var VisibilityGraph = function (debugRouter) {
 
     this.nodes = {};
     this.incompleteNodes = [];
     this.edges = [];
     this.vertices = [];
     this.boundingBoxes = [];
+    this.debug = debugRouter;
 
     };
 
@@ -26,7 +27,7 @@ var VisibilityGraph = function () {
  * @param gridWidth - Max width
  * @param gridHeight - Max height
  */
-VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight ) {
+VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, debugHelper ) {
 
     var sortedY = points.slice();
     sortedY.sort(function ( a, b ) { return a.comparePointsByXorY(b, 0); });
@@ -75,6 +76,13 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight ) 
     }
 
     this.edges = this.edges.concat(horizontalSegments).concat(verticalSegments);
+
+    if (this.debug) {
+        debugHelper.sweepLines = this.edges;
+        debugHelper.sweepPoints = this.vertices;
+    }
+
+
 };
 
 
