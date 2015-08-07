@@ -27,7 +27,7 @@ var VisibilityGraph = function (debugRouter) {
  * @param gridWidth - Max width
  * @param gridHeight - Max height
  */
-VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, debugHelper ) {
+VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, debugHelper, bboxes ) {
 
     var sortedY = points.slice();
     sortedY.sort(function ( a, b ) { return a.comparePointsByXorY(b, 0); });
@@ -35,13 +35,7 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, d
     var sortedX = points.slice();
     sortedX.sort(function ( a, b ) { return a.comparePointsByXorY(b, 1); });
 
-    var horizontalSegments = this.verticalLineSweep(sortedY, gridWidth),
-        verticalSegments = this.horizontalLineSweep(sortedX, gridHeight);
-
-    var numberOfSegments = verticalSegments.length;
-    for ( var s = 0; s < numberOfSegments; s++ ) {
-        this.getSegmentIntersections(verticalSegments[s], horizontalSegments, gridHeight);
-    }
+    var lines = this.getGrid(sortedX, sortedY, gridWidth, gridHeight, bboxes);
 
     // NOTE:
     // At this point, all nodes and neighbors are determined except for far East and bottom right South nodes,
@@ -75,7 +69,8 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, d
         this.incompleteNodes.splice(0, 1);
     }
 
-    this.edges = this.edges.concat(horizontalSegments).concat(verticalSegments);
+    // this.edges = this.edges.concat(horizontalSegments).concat(verticalSegments);
+    this.edges = lines;
 
     if (this.debug) {
         debugHelper.sweepLines = this.edges;
@@ -83,8 +78,200 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, d
     }
 
 
+
 };
 
+function segmentsMatch(segment1, segment2) {
+
+    return segment1.x1 === segment2.x1 && segment1.x2 === segment2.x2 &&
+           segment1.y1 === segment2.y1 && segment1.y2 === segment2.y2;
+
+}
+
+function lineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+    
+    var dx12 = x2 - x1, 
+        dx34 = x4 - x3,
+        dy12 = y2 - y1, 
+        dy34 = y4 - y3,
+        denominator = dy34 * dx12 - dx34 * dy12;
+
+    if (denominator === 0) { 
+        return null; 
+    }
+    var dx31 = x1 - x3, 
+        dy31 = y1 - y3,
+        numa = dx34 * dy31 - dy34 * dx31,
+        a = numa / denominator,
+        numb = dx12 * dy31 - dy12 * dx31,
+        b = numb / denominator;
+    if (a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+        return {
+            x: Math.round((x1 + a * dx12) * 100) / 100,
+            y: Math.round((y1 + a * dy12) * 100) / 100
+        };
+    }
+    return null;
+}
+
+
+VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, gridWidth, gridHeight, bboxes) {
+
+    var hlines,
+        vlines,
+        lines,
+        vertices = [],
+
+        invalidPort,
+        i, b;
+
+    // Find all segments, then filter out copies and nulls (nulls will be invlaid ports).
+    hlines = sortedYpoints.map(function(p) {
+        if ( !!p.isPort && ( p.direction === 270 || p.direction === 90 || p.direction === -270 || p.direction === -90 ) ){
+            return null;
+        }
+        else {
+            return new OrthogonalGridSegment(0, p.y, gridWidth, p.y, 'horizontal');
+        }
+    });
+
+    vlines = sortedXpoints.map(function(p) {
+        if ( !!p.isPort && ( p.direction === 180 || p.direction === -180 || p.direction === 0 || p.direction === 360 ) ){
+            return null;
+        }
+        else {
+            return new OrthogonalGridSegment(p.x, 0, p.x, gridHeight, 'vertical');
+        }
+    });
+
+    // Remove invalid ports
+    hlines = hlines.filter(function(el) {
+        return el !== null;
+    });
+
+    vlines = vlines.filter(function(el) {
+        return el !== null;
+    });
+
+    // Remove duplicated line segments
+    for (i = 1; i < hlines.length; ) {
+        if (segmentsMatch(hlines[i - 1], hlines[i])) {
+            hlines.splice(i, 1);
+        }
+        else {
+            i++;
+        }
+    }
+
+    for (i = 1; i < vlines.length; ) {
+        if (segmentsMatch(vlines[i - 1], vlines[i])) {
+            vlines.splice(i, 1);
+        }
+        else {
+            i++;
+        }
+    }
+
+    // Now we have a unique set of horizontal/vertical lines spanning the diagram. There is a line at each
+    // bounding box edge and port location. No components have been taken into consideration.
+
+    //https://github.com/tgdwyer/WebCola/blob/master/WebCola/src/gridrouter.ts
+
+    var sortedBBoxes = bboxes.sort(function(a, b) {
+        return (a.x - b.x);
+    });
+
+    var intersectionFound = false,
+        box,
+        line,
+        side,
+        newSeg1,
+        newSeg2,
+        incMod,
+        r;
+    for (i = 0; i < hlines.length; ) {
+
+        line = hlines[i];
+        incMod = false;
+
+        for (b = 0; b < sortedBBoxes.length; b++) {
+
+            box = sortedBBoxes[b];
+
+            side = new OrthogonalGridSegment(box.x, box.y, box.x, box.y + box.height, 'vertical');
+
+            r = lineIntersection(line.x1, line.y1, line.x2, line.y2, side.x1, side.y1, side.x2, side.y2);
+
+            if (r && !side.isPointOnEndPoint(r)) {
+                newSeg1 = new OrthogonalGridSegment(line.x1, line.y1, box.x, line.y2, 'horizontal');
+                newSeg2 = new OrthogonalGridSegment(box.x + box.width, line.y1, line.x2, line.y1, 'horizontal');
+
+                // Replace bigger segment with broken up segment
+                hlines.splice(i, 1).splice.apply(hlines, [i, 0].concat([newSeg1, newSeg2]));
+
+                line = hlines[i + 1];
+                i += 1;
+                incMod = true;
+
+            }
+
+        }
+
+        if (!incMod) {
+            i += 1;
+        }
+
+    }
+
+    sortedBBoxes = bboxes.sort(function(a, b) {
+        return (a.y - b.y);
+    });
+
+    for (i = 0; i < vlines.length; ) {
+
+        line = vlines[i];
+        incMod = false;
+
+        for (b = 0; b < sortedBBoxes.length; b++) {
+
+            box = sortedBBoxes[b];
+
+            side = new OrthogonalGridSegment(box.x, box.y, box.x + box.width, box.y, 'horizontal');
+
+            r = lineIntersection(line.x1, line.y1, line.x2, line.y2, side.x1, side.y1, side.x2, side.y2);
+
+            if (r && !side.isPointOnEndPoint(r)) {
+                newSeg1 = new OrthogonalGridSegment(line.x1, line.y1, line.x1, box.y, 'vertical');
+                newSeg2 = new OrthogonalGridSegment(line.x1, box.y + box.height, line.x1, line.y2, 'vertical');
+
+                // Replace bigger segment with broken up segment
+                vlines.splice(i, 1).splice.apply(vlines, [i, 0].concat([newSeg1, newSeg2]));
+
+                line = vlines[i + 1];
+                i += 1;
+                incMod = true;
+
+            }
+
+        }
+
+        if (!incMod) {
+            i += 1;
+        }
+
+    }
+
+    // Get segment intersections 
+    for ( var s = 0; s < vlines.length; s++ ) {
+        this.getSegmentIntersections(vlines[s], hlines, gridHeight);
+    }
+    lines = hlines.concat(vlines);
+
+    
+
+    return lines;
+
+};
 
 /**
  * Sweeps a vertical line across the grid, left-to-right. Generates horizontal segments.
@@ -460,7 +647,7 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
             intersection;
 
         // Collinear if denominator = 0
-        if ( denominator !== 0 ) {
+        if ( denominator !== 0 || segmentSet[i].getMagnitude() === 0 ) {
             // Check if an intersection between segments occurs at one of the end points.
             intersection = segment.getSharedEndPoint(segmentSet[i]);
             if ( intersection ) {

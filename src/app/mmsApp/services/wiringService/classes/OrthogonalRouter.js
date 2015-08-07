@@ -176,7 +176,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
             points = this.getBoundingBoxAndPortPointsFromComponents(diagramComponents, visibilityGraph);
 
-            visibilityGraph.generate(points, diagram.config.width, diagram.config.height, debugHelper);
+            visibilityGraph.generate(points, diagram.config.width, diagram.config.height, debugHelper, visibilityGraph.boundingBoxes);
 
             routeWires(diagram, visibilityGraph, unlockedWireCollection, points);
 
@@ -221,16 +221,53 @@ var OrthogonalRouter = function ($mdToast, $injector) {
     this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
 
-        // Nodes from bounding box
-        points.push( new Point( boundBox.x - 20, boundBox.y - 20 ) );
-        points.push( new Point( boundBox.x - 20, boundBox.y + boundBox.height + 20 ) );
-        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 20 ) );
-        points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y + boundBox.height + 20 ) );
+        // // Nodes from bounding box
+        // points.push( new Point( boundBox.x - 20, boundBox.y - 20 ) );
+        // points.push( new Point( boundBox.x - 20, boundBox.y + boundBox.height + 20 ) );
+        // points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 20 ) );
+        // points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y + boundBox.height + 20 ) );
 
-        visibilityGraph.boundingBoxes.push({ x: boundBox.x - 20,
-                                             y: boundBox.y - 20,
-                                             width: boundBox.width + 40,
-                                             height: boundBox.height + 40} );
+        // visibilityGraph.boundingBoxes.push({ x: boundBox.x - 20,
+        //                                      y: boundBox.y - 20,
+        //                                      width: boundBox.width + 40,
+        //                                      height: boundBox.height + 40} );
+
+        // // Nodes from ports
+        // for ( var k = 0; k < component.portInstances.length; k++ ) {
+        //     var portPos = component.portInstances[k].getGridPosition(),
+        //         portWireAngle = component.portInstances[k].getGridWireAngle(),
+        //         x = portPos.x,
+        //         y = portPos.y,
+        //         actualX = x,
+        //         actualY = y;
+
+        //     if ([90, -270].indexOf(portWireAngle) !== -1) {
+        //         y += boundBox.y + boundBox.height + 20 - y;  // S port
+        //     }
+        //     else if ([-90, 270].indexOf(portWireAngle) !== -1) {
+        //         y -= y - (boundBox.y - 20);  // N port
+        //     }
+        //     else if ([180, -180].indexOf(portWireAngle) !== -1) {
+        //         x -= x - (boundBox.x - 20);  // W port
+        //     }
+        //     else {
+        //         x += boundBox.x + boundBox.width + 20 - x;  // E port
+        //     }
+
+        //     points.push( new Point( x, y, true, portWireAngle, {x:actualX, y:actualY} ) );
+        // }
+        // 
+        
+        // Nodes from bounding box
+        points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );
+        points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 10 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y - 10 ) );
+        points.push( new Point( boundBox.x + boundBox.width + 10, boundBox.y + boundBox.height + 10 ) );
+
+        visibilityGraph.boundingBoxes.push({ x: boundBox.x - 10,
+                                             y: boundBox.y - 10,
+                                             width: boundBox.width + 20,
+                                             height: boundBox.height + 20} );
 
         // Nodes from ports
         for ( var k = 0; k < component.portInstances.length; k++ ) {
@@ -242,19 +279,19 @@ var OrthogonalRouter = function ($mdToast, $injector) {
                 actualY = y;
 
             if ([90, -270].indexOf(portWireAngle) !== -1) {
-                y += boundBox.y + boundBox.height + 20 - y;  // S port
+                y += boundBox.y + boundBox.height + 10 - y;  // S port
             }
             else if ([-90, 270].indexOf(portWireAngle) !== -1) {
-                y -= y - (boundBox.y - 20);  // N port
+                y -= y - (boundBox.y - 10);  // N port
             }
             else if ([180, -180].indexOf(portWireAngle) !== -1) {
-                x -= x - (boundBox.x - 20);  // W port
+                x -= x - (boundBox.x - 10);  // W port
             }
             else {
-                x += boundBox.x + boundBox.width + 20 - x;  // E port
+                x += boundBox.x + boundBox.width + 10 - x;  // E port
             }
 
-            points.push( new Point( x, y, true, portWireAngle, {x:actualX, y:actualY} ) );
+            points.push( new Point( x, y, true, portWireAngle, {x: actualX, y: actualY} ) );
         }
     };
 

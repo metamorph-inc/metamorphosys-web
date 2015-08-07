@@ -64,6 +64,10 @@ OrthogonalGridSegment.prototype.getIndexUsingY = function( arr ) {
 
 };
 
+OrthogonalGridSegment.prototype.getMagnitude = function() {
+    return Math.sqrt(Math.pow(this.x1 - this.x2, 2) + Math.pow(this.y1 - this.y2, 2));
+};
+
 
 /**
  * Check if segments with same starting point have same ending point.
@@ -160,7 +164,8 @@ OrthogonalGridSegment.prototype.isPointOnLine = function ( point ) {
 
 OrthogonalGridSegment.prototype.isPointOnEndPoint = function ( point ) {
 
-    return ((point.y - this.y1) === (point.x - this.x1));
+    return ((point.y - this.y1) === (point.x - this.x1) ||
+            (point.y - this.y2) === (point.x - this.x2));
 };
 
 
