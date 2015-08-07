@@ -198,7 +198,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
                     points: points,
                     componentPositions: componentPositions,
                     portPositions: portPositions
-                }
+                };
 
             if (debugRouter) {
                 cachedRouterData.debugHelper = debugHelper;
@@ -220,43 +220,6 @@ var OrthogonalRouter = function ($mdToast, $injector) {
      */
     this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
-
-        // // Nodes from bounding box
-        // points.push( new Point( boundBox.x - 20, boundBox.y - 20 ) );
-        // points.push( new Point( boundBox.x - 20, boundBox.y + boundBox.height + 20 ) );
-        // points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y - 20 ) );
-        // points.push( new Point( boundBox.x + boundBox.width + 20, boundBox.y + boundBox.height + 20 ) );
-
-        // visibilityGraph.boundingBoxes.push({ x: boundBox.x - 20,
-        //                                      y: boundBox.y - 20,
-        //                                      width: boundBox.width + 40,
-        //                                      height: boundBox.height + 40} );
-
-        // // Nodes from ports
-        // for ( var k = 0; k < component.portInstances.length; k++ ) {
-        //     var portPos = component.portInstances[k].getGridPosition(),
-        //         portWireAngle = component.portInstances[k].getGridWireAngle(),
-        //         x = portPos.x,
-        //         y = portPos.y,
-        //         actualX = x,
-        //         actualY = y;
-
-        //     if ([90, -270].indexOf(portWireAngle) !== -1) {
-        //         y += boundBox.y + boundBox.height + 20 - y;  // S port
-        //     }
-        //     else if ([-90, 270].indexOf(portWireAngle) !== -1) {
-        //         y -= y - (boundBox.y - 20);  // N port
-        //     }
-        //     else if ([180, -180].indexOf(portWireAngle) !== -1) {
-        //         x -= x - (boundBox.x - 20);  // W port
-        //     }
-        //     else {
-        //         x += boundBox.x + boundBox.width + 20 - x;  // E port
-        //     }
-
-        //     points.push( new Point( x, y, true, portWireAngle, {x:actualX, y:actualY} ) );
-        // }
-        // 
         
         // Nodes from bounding box
         points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );

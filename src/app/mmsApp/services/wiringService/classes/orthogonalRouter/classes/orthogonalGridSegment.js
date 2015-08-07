@@ -130,6 +130,42 @@ OrthogonalGridSegment.prototype.getSharedEndPoint = function ( segment2 ) {
 };
 
 
+OrthogonalGridSegment.prototype.getIntersection = function( segment ) {
+    
+    var dx12 = this.x2 - this.x1, 
+        dx34 = segment.x2 - segment.x1,
+        dy12 = this.y2 - this.y1, 
+        dy34 = segment.y2 - segment.y1,
+        denominator = dy34 * dx12 - dx34 * dy12;
+
+    if (denominator === 0) { 
+        return null; 
+    }
+    var dx31 = this.x1 - segment.x1, 
+        dy31 = this.y1 - segment.y1,
+        numa = dx34 * dy31 - dy34 * dx31,
+        a = numa / denominator,
+        numb = dx12 * dy31 - dy12 * dx31,
+        b = numb / denominator;
+
+    if (a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+        return new Point(
+            Math.round((this.x1 + a * dx12) * 100) / 100,
+            Math.round((this.y1 + a * dy12) * 100) / 100
+        );
+    }
+    return null;
+};
+
+
+OrthogonalGridSegment.prototype.doesSegmentMatch = function ( segment ) {
+
+    return this.x1 === segment.x1 && this.x2 === segment.x2 &&
+           this.y1 === segment.y1 && this.y2 === segment.y2;
+
+};
+
+
 /**
  * Return true if a point lies on a grid segment, endpoints included.
  * @param point

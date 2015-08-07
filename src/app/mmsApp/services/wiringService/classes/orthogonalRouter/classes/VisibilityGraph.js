@@ -35,7 +35,7 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, d
     var sortedX = points.slice();
     sortedX.sort(function ( a, b ) { return a.comparePointsByXorY(b, 1); });
 
-    var lines = this.getGrid(sortedX, sortedY, gridWidth, gridHeight, bboxes);
+    this.edges = this.getGrid(sortedX, sortedY, gridWidth, gridHeight, bboxes);
 
     // NOTE:
     // At this point, all nodes and neighbors are determined except for far East and bottom right South nodes,
@@ -69,60 +69,17 @@ VisibilityGraph.prototype.generate = function ( points, gridWidth, gridHeight, d
         this.incompleteNodes.splice(0, 1);
     }
 
-    // this.edges = this.edges.concat(horizontalSegments).concat(verticalSegments);
-    this.edges = lines;
-
     if (this.debug) {
         debugHelper.sweepLines = this.edges;
         debugHelper.sweepPoints = this.vertices;
     }
-
-
-
 };
-
-function segmentsMatch(segment1, segment2) {
-
-    return segment1.x1 === segment2.x1 && segment1.x2 === segment2.x2 &&
-           segment1.y1 === segment2.y1 && segment1.y2 === segment2.y2;
-
-}
-
-function lineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
-    
-    var dx12 = x2 - x1, 
-        dx34 = x4 - x3,
-        dy12 = y2 - y1, 
-        dy34 = y4 - y3,
-        denominator = dy34 * dx12 - dx34 * dy12;
-
-    if (denominator === 0) { 
-        return null; 
-    }
-    var dx31 = x1 - x3, 
-        dy31 = y1 - y3,
-        numa = dx34 * dy31 - dy34 * dx31,
-        a = numa / denominator,
-        numb = dx12 * dy31 - dy12 * dx31,
-        b = numb / denominator;
-    if (a >= 0 && a <= 1 && b >= 0 && b <= 1) {
-        return {
-            x: Math.round((x1 + a * dx12) * 100) / 100,
-            y: Math.round((y1 + a * dy12) * 100) / 100
-        };
-    }
-    return null;
-}
 
 
 VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, gridWidth, gridHeight, bboxes) {
 
     var hlines,
         vlines,
-        lines,
-        vertices = [],
-
-        invalidPort,
         i, b;
 
     // Find all segments, then filter out copies and nulls (nulls will be invlaid ports).
@@ -155,7 +112,7 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
 
     // Remove duplicated line segments
     for (i = 1; i < hlines.length; ) {
-        if (segmentsMatch(hlines[i - 1], hlines[i])) {
+        if ( hlines[i - 1].doesSegmentMatch(hlines[i]) ) {
             hlines.splice(i, 1);
         }
         else {
@@ -164,7 +121,7 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
     }
 
     for (i = 1; i < vlines.length; ) {
-        if (segmentsMatch(vlines[i - 1], vlines[i])) {
+        if ( vlines[i - 1].doesSegmentMatch(vlines[i]) ) {
             vlines.splice(i, 1);
         }
         else {
@@ -175,20 +132,18 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
     // Now we have a unique set of horizontal/vertical lines spanning the diagram. There is a line at each
     // bounding box edge and port location. No components have been taken into consideration.
 
-    //https://github.com/tgdwyer/WebCola/blob/master/WebCola/src/gridrouter.ts
-
-    var sortedBBoxes = bboxes.sort(function(a, b) {
-        return (a.x - b.x);
+    var sortedBBoxes = bboxes.sort(function(a, c) {
+        return (a.x - c.x);
     });
 
-    var intersectionFound = false,
-        box,
+    var box,
         line,
         side,
         newSeg1,
         newSeg2,
         incMod,
         r;
+
     for (i = 0; i < hlines.length; ) {
 
         line = hlines[i];
@@ -200,7 +155,7 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
 
             side = new OrthogonalGridSegment(box.x, box.y, box.x, box.y + box.height, 'vertical');
 
-            r = lineIntersection(line.x1, line.y1, line.x2, line.y2, side.x1, side.y1, side.x2, side.y2);
+            r = line.getIntersection(side);
 
             if (r && !side.isPointOnEndPoint(r)) {
                 newSeg1 = new OrthogonalGridSegment(line.x1, line.y1, box.x, line.y2, 'horizontal');
@@ -223,8 +178,8 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
 
     }
 
-    sortedBBoxes = bboxes.sort(function(a, b) {
-        return (a.y - b.y);
+    sortedBBoxes = bboxes.sort(function(a, c) {
+        return (a.y - c.y);
     });
 
     for (i = 0; i < vlines.length; ) {
@@ -238,7 +193,7 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
 
             side = new OrthogonalGridSegment(box.x, box.y, box.x + box.width, box.y, 'horizontal');
 
-            r = lineIntersection(line.x1, line.y1, line.x2, line.y2, side.x1, side.y1, side.x2, side.y2);
+            r = line.getIntersection(side);
 
             if (r && !side.isPointOnEndPoint(r)) {
                 newSeg1 = new OrthogonalGridSegment(line.x1, line.y1, line.x1, box.y, 'vertical');
@@ -265,364 +220,9 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
     for ( var s = 0; s < vlines.length; s++ ) {
         this.getSegmentIntersections(vlines[s], hlines, gridHeight);
     }
-    lines = hlines.concat(vlines);
 
-    
+    return hlines.concat(vlines);
 
-    return lines;
-
-};
-
-/**
- * Sweeps a vertical line across the grid, left-to-right. Generates horizontal segments.
- * @param points - <X,Y> coordinate pairs that are sorted by Y, then X.
- * @param gridWidth - Max value a horizontal line can have.
- */
-VisibilityGraph.prototype.verticalLineSweep = function ( points, gridWidth ) {
-    // Perform line sweep algorithm on grid.
-    var createTree = require("functional-red-black-tree"),
-        segments = [],
-        openObjects = [],
-        i,
-        binTree = createTree(),
-        previousNode = null,
-        segment,
-        numberOfPoints = points.length;
-
-    for ( i = 0; i < numberOfPoints; i++ ) {
-        var checkRemoveFromOpen = true;
-
-
-        // If node is a port that is on bottom or top, ignore and skip this node.
-        var isInvalidPort = ( !!points[i].isPort &&
-                                ( points[i].direction === 270 || points[i].direction === 90 ||
-                                  points[i].direction === -270 || points[i].direction === -90 ) );
-
-        // If port is on top/bottom and inside of the component bounding box, a horizontal segment needs to be made.
-        var specialCasePort = false,
-            skipLeft = false,
-            skipRight = false;
-
-        // A valid port may also be inside a bb. Check for both valid/invalid cases.
-        for (var k = 0; k < openObjects.length; k++) {
-            if (points[i].x < openObjects[k].x2 && points[i].x > openObjects[k].x1) {
-                if ((previousNode === null && points[i].y > openObjects[k].y1) ||
-                    (previousNode !== null && points[i].y < previousNode.y)) {
-
-                    if (!isInvalidPort) {
-                        // If valid port, but inside bb, we know both end points. Valid segment should
-                        // only go in one of the two directions however. Need to find which endpoint
-                        // the port is closer to so we know to skip the other side.
-                        var distanceToEnd1 = Math.abs(points[i].x - openObjects[k].x1),
-                            distanceToEnd2 = Math.abs(points[i].x - openObjects[k].x2);
-
-                        skipLeft = distanceToEnd1 > distanceToEnd2;
-                        skipRight = !skipLeft;
-                    }
-
-                    specialCasePort = true;
-                    break;  // We've found the port we're looking for, no need to loop through the others.
-                }
-            }
-        }
-
-        if ( !isInvalidPort ) {
-            if (binTree.find(points[i].x).node === null) {
-                // Not in tree, add
-                binTree = binTree.insert(points[i].x, points[i].y);
-                checkRemoveFromOpen = false;
-            }
-            // left
-            if ( ( !points[i].isPort || points[i].direction === 180 ||
-                    points[i].direction === -180 || specialCasePort ) && !skipLeft ) {
-                var left, leftIter = binTree.lt(points[i].x);
-                if (leftIter.valid) {
-                    // If closest left node has the same Y-coord as current node's Y-coord, lines are colinear, skip.
-                    if (leftIter.value === points[i].y) {
-                        if (binTree.length % 2 === 0 && !points[i].isPort) {
-                            // even number of keys, therefore this is part of an object segment.
-                            openObjects.push(new OrthogonalGridSegment(leftIter.key, points[i].y,
-                                points[i].x, points[i].y));
-                        }
-                        continue;  // Move to next point
-                    }
-                    else if (previousNode !== null && !specialCasePort) {
-                        // prevNode is defined, so previous entry was the left hand side of the closing segment.
-                        // Both left and right segments were defined for prevNode, and this point is in the same line
-                        // as that, so it can be skipped. Also, remove these two points from the binary tree and
-                        // remove the line defined by them from the openObjects list.
-                        binTree = binTree.remove(previousNode.x);
-                        binTree = binTree.remove(points[i].x);
-                        segment = new OrthogonalGridSegment(previousNode.x, null, points[i].x, null);
-                        openObjects.splice(segment.getIndexUsingX(openObjects), 1);
-                        previousNode = null;
-                        continue;  // Move to next point
-                    }
-                    left = leftIter.key;
-                    if (points[i].direction && points[i].x > leftIter.key) {
-                        // Check that leftIter.key is actually a part of the openObject that the port belongs to
-                        var keyIsMin = false;
-                        for (var n = 0; n < openObjects.length; n++) {
-                            if (openObjects[n].x1 === leftIter.key) {
-                                keyIsMin = true;
-                                break;
-                            }
-                        }
-                        if (keyIsMin) {
-                            // Means the port is not in line with the bounding box (inside of it). Grab the next left iter.
-                            leftIter = binTree.lt(leftIter.key);
-                            if (leftIter.valid) {
-                                left = leftIter.key;
-                            }
-                            else {
-                                left = 0;
-                            }
-                        }
-                    }
-                    else {
-                        left = leftIter.key;
-                    }
-                }
-                else {
-                    left = 0;
-                }
-                var leftSegment = new OrthogonalGridSegment(left, points[i].y, points[i].x, points[i].y);
-                segments.push(leftSegment);
-            }
-            // right
-            if ((!points[i].isPort || points[i].direction === 0 ||
-                points[i].direction === 360 || specialCasePort) && !skipRight) {
-                var right = this.findNextValidRightNeighbor(points[i], "x", binTree, openObjects, gridWidth);
-
-                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, right, points[i].y);
-                segments.push(rightSegment);
-            }
-            if (checkRemoveFromOpen) {
-                if (!points[i].isPort) {
-                    if (previousNode === null) {
-                        previousNode = new Point(points[i].x, points[i].y);
-                    }
-                }
-            }
-            if (specialCasePort) {
-                binTree = binTree.remove(points[i].x);
-            }
-        }
-
-    }
-    return segments;
-
-};
-
-
-/**
- * Sweeps a horizontal line across the grid, top-to-bottom. Generates vertical segments.
- * @param points - <X,Y> coordinate pairs that are sorted by X, then Y.
- * @param gridHeight - Max value a vertical line can have.
- */
-VisibilityGraph.prototype.horizontalLineSweep = function ( points, gridHeight ) {
-    // Perform line sweep algorithm on grid. Generate vertical line segments.
-    var createTree = require("functional-red-black-tree");
-    var segments = [],
-        openObjects = [],
-        i,
-        binTree = createTree(),
-        prevNode = null,
-        tmpSeg,
-        numberOfPoints = points.length;
-
-    for ( i = 0; i < numberOfPoints; i++ ) {
-        var checkRemove = true;
-
-        // If node is a port that is on left or right, ignore and skip this node.
-        var isInvalidPort = ( !!points[i].isPort &&
-        ( points[i].direction === 180 || points[i].direction === 360 ||
-        points[i].direction === -180 || points[i].direction === 0 ));
-
-        // If port is on left/right and inside of the component bounding box, a vertical segment needs to be made.
-        var specialCasePort = false,
-            skipLeft = false,
-            skipRight = false;
-
-        // If yc is in range of an open object, and x > open object x (inside bb).
-        // If prevNode defined and x < prevNode x (inside bb on right).
-        for (var k = 0; k < openObjects.length; k++) {
-            if (points[i].y < openObjects[k].y2 && points[i].y > openObjects[k].y1) {
-                if ((prevNode === null && points[i].x > openObjects[k].x1) ||
-                    (prevNode !== null && points[i].x < prevNode.x)) {
-
-                    if (!isInvalidPort) {
-                        // If valid port, but inside bb, we know both end points. Valid segment should
-                        // only go in one of the two directions however. Need to find which endpoint
-                        // the port is closer to so we know to skip the other side.
-                        var distEnd1 = Math.abs(points[i].y - openObjects[k].y1),
-                            distEnd2 = Math.abs(points[i].y - openObjects[k].y2);
-
-                        skipLeft = distEnd1 > distEnd2;
-                        skipRight = !skipLeft;
-                    }
-
-
-                    specialCasePort = true;
-                    break;  // We've found the port we're looking for, no need to loop through the others.
-                }
-            }
-        }
-
-        if ( !isInvalidPort ) {
-            if (binTree.find(points[i].y).node === null) {
-                // Not in tree, add
-                binTree = binTree.insert(points[i].y, points[i].x);
-                checkRemove = false;
-            }
-            // top
-            if ((!points[i].isPort || points[i].direction === 270 ||
-                points[i].direction === -90 || specialCasePort) && !skipLeft) {
-                var left, leftIter = binTree.lt(points[i].y);
-                if (leftIter.valid) {
-                    // If closest left node has the same Y-coord as current node's Y-coord, lines are collinear, skip.
-                    if (leftIter.value === points[i].x) {
-                        if (binTree.length % 2 === 0 && !points[i].isPort) {
-                            // even number of keys, therefore this is part of an object segment.
-                            //openObjects.push({y1: leftIter.key, y2: nodes[i].y, x: nodes[i].x});
-                            openObjects.push(new OrthogonalGridSegment(points[i].x, leftIter.key,
-                                points[i].x, points[i].y));
-
-                        }
-                        continue;
-                    }
-                    else if (prevNode !== null && !specialCasePort) {
-                        // prevNode is defined, so previous entry was the left hand side of the closing segment.
-                        // Both left and right segments were defined for prevNode, and this point is in the same line
-                        // as that, so it can be skipped. Also, remove these two points from the binary tree and
-                        // remove the line defined by them from the openObjects list.
-                        binTree = binTree.remove(prevNode.y);
-                        binTree = binTree.remove(points[i].y);
-                        tmpSeg = new OrthogonalGridSegment(null, prevNode.y, null, points[i].y);
-                        openObjects.splice(tmpSeg.getIndexUsingY(openObjects), 1);
-                        prevNode = null;
-                        continue;
-                    }
-                    left = leftIter.key;
-                    if (points[i].direction && points[i].y > leftIter.key) {
-                        var keyIsMin = false;
-                        for (var n = 0; n < openObjects.length; n++) {
-                            if (openObjects[n].y1 === leftIter.key) {
-                                keyIsMin = true;
-                                break;
-                            }
-                        }
-                        if (keyIsMin) {
-                            // Means the port is not in line with the bounding box (inside of it). Grab the next top iter.
-                            leftIter = binTree.lt(leftIter.key);
-                            if (leftIter.valid) {
-                                left = leftIter.key;
-                            }
-                            else {
-                                left = 0;
-                            }
-                        }
-                    }
-                    else {
-                        left = leftIter.key;
-                    }
-                }
-                else {
-                    left = 0;
-                }
-                var leftSegment = new OrthogonalGridSegment(points[i].x, left, points[i].x, points[i].y);
-
-                segments.push(leftSegment);
-            }
-            // bottom
-            if ((!points[i].isPort || points[i].direction === 90 ||
-                points[i].direction === -270 || specialCasePort) && !skipRight) {
-                var right = this.findNextValidRightNeighbor(points[i], "y", binTree, openObjects, gridHeight);
-
-                var rightSegment = new OrthogonalGridSegment(points[i].x, points[i].y, points[i].x, right);
-                segments.push(rightSegment);
-            }
-            if (checkRemove) {
-                if (!points[i].isPort) {
-                    if (prevNode === null) {
-                        prevNode = new Point(points[i].x, points[i].y);
-                    }
-                }
-            }
-            if (specialCasePort) {
-                binTree = binTree.remove(points[i].y);
-            }
-        }
-    }
-    return segments;
-
-};
-
-
-VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, binTree, openObjects, sweepLength) {
-    var right, rightIter = binTree.gt(node[axis]);
-    if (rightIter.valid) {
-        var segment = new OrthogonalGridSegment();
-        segment[axis+1] = node[axis];
-        segment[axis+2] = rightIter.key;
-
-        // X-coords will be the same, need to see if y2 coord of seg is equal or less than open object y2
-        var ltoe = segment.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
-
-        if (ltoe !== -1) {
-            // Means this segment is in the list of open segments, grab the closest node from rightIter that
-            // isn't a part of the open segment. The object may have many ports so...
-
-            // Need to check if seg is on line that defines an open object. In the case where there is a port,
-            // seg will lie on the line of an open object. Need to repeatedly grab the node's right neighbor
-            // defines the open object completely (x = x & y = y).
-
-            while ( ltoe.equal === false ) {
-                rightIter = binTree.gt(rightIter.key);
-                segment[axis+2] = rightIter.key;
-                ltoe = segment.inSetAndLessThanOrEqual(openObjects, axis+1, axis+2);
-            }
-
-            // At this point the line is defined along the object, but this segment's visibility will continue
-            // either to the next open object, or to the boundary. So need to grab the right neighbor once more.
-
-            rightIter = binTree.gt(rightIter.key);
-            if (rightIter.valid) {
-                right = rightIter.key;
-            }
-            else {
-                right = sweepLength;
-            }
-        }
-        else {
-            right = rightIter.key;
-
-            if (node.hasOwnProperty("direction") && node[axis] < rightIter.key) {
-                var keyIsMin = false;
-                for (var n = 0; n < openObjects.length; n++) {
-                    if ( openObjects[n][axis+2] === rightIter.key ) {
-                        keyIsMin = true;
-                        break;
-                    }
-                }
-                if (keyIsMin) {
-                    // Means the port is not in line with the bounding box (inside of it). Grab the next right iter.
-                    rightIter = binTree.gt(rightIter.key);
-                    if (rightIter.valid) {
-                        right = rightIter.key;
-                    }
-                    else {
-                        right = sweepLength;
-                    }
-                }
-            }
-        }
-
-    }
-    else {
-        right = sweepLength;
-    }
-    return right;
 };
 
 
@@ -635,48 +235,21 @@ VisibilityGraph.prototype.findNextValidRightNeighbor = function ( node, axis, bi
 VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentSet, gridHeight ) {
 
     var intersections = this.vertices,
-        segmentX = segment.x2 - segment.x1,
-        segmentY = segment.y2 - segment.y1,
         totalSegments = segmentSet.length;
 
     for ( var i = 0; i < totalSegments; i++ ) {
-        var checkSegmentX = segmentSet[i].x2 - segmentSet[i].x1,
-            checkSegmentY = segmentSet[i].y2 - segmentSet[i].y1,
-            denominator = segmentX * checkSegmentY - checkSegmentX * segmentY,
-            posDenominator = denominator > 0,
-            intersection;
 
-        // Collinear if denominator = 0
-        if ( denominator !== 0 || segmentSet[i].getMagnitude() === 0 ) {
-            // Check if an intersection between segments occurs at one of the end points.
-            intersection = segment.getSharedEndPoint(segmentSet[i]);
-            if ( intersection ) {
-                if ( intersection.myIndexOfPoint(intersections) === -1 ) {
-                    intersections.push(intersection);
-                    this.populateNode(intersection, segment, segmentSet[i], gridHeight);
-                }
-            }
-            else {
-                // See if intersection occurs elsewhere between the two segments.
-                var newSegmentX = segment.x1 - segmentSet[i].x1,
-                    newSegmentY = segment.y1 - segmentSet[i].y1,
-                    numerator1 = segmentX * newSegmentY - segmentY * newSegmentX,
-                    numerator2 = checkSegmentX * newSegmentY - checkSegmentY * newSegmentX,
-                    collinear = ( (numerator1 < 0) === posDenominator ) || ( (numerator2 < 0) === posDenominator ),
-                    noIntersect = ( (numerator1 > denominator) === posDenominator ||
-                                    (numerator2 > denominator) === posDenominator );
+        var intersection;
 
-                if ( !collinear && !noIntersect ) {
-                    var t = numerator2 / denominator;
+        intersection = segment.getIntersection(segmentSet[i]);
 
-                    intersection = new Point( segment.x1 + (t * segmentX), segment.y1 + (t * segmentY) );
+        if ( intersection ) {
 
-                    // Check intersection wasn't previously found
-                    if ( intersection.myIndexOfPoint(intersections) === -1 ) {
-                        intersections.push(intersection);
-                        this.populateNode(intersection, segment, segmentSet[i], gridHeight);
-                    }
-                }
+            if ( intersection.myIndexOfPoint(intersections) === -1 ) {
+
+                intersections.push(intersection);
+                this.populateNode(intersection, segment, segmentSet[i], gridHeight);
+
             }
         }
     }
