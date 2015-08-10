@@ -743,10 +743,11 @@ angular.module('mms.svgDiagram', [
 
                     angular.forEach(this._connectedWires, function(wireId) {
 
-                        wireEl = document.getElementById(wireId).classList;
+                        wireEl = document.getElementById(wireId);
 
                         if (wireEl) {
-                            wireEl.remove('highlight');
+
+                            wireEl.classList.remove('highlight');
                         }
 
                     });

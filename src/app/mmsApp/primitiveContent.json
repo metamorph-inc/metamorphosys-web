@@ -4,7 +4,7 @@
         "name": "Connector",
         "metaType": "Connector",
         "type": "generic",
-        "description": "Create an external interface for your subcircuit by connecting a port to this primitive.",
+        "description": "Create an external interface for your subcircuit by creating and hooking up this connector.",
         "svgViewBox": "0 0 100 20",
         "config": []
     },
