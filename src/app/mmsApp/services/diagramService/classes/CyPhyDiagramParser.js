@@ -400,8 +400,29 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             }
         );
 
+//         var icon = 
+// '<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg"> \
+//  <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ --> \
+//  <g> \
+//   <title>Layer 1</title> \
+//   <rect id="svg_1" height="150" width="180" y="2" x="3" stroke-width="5" stroke="#000000" fill="#FF0000"/> \
+//  </g> \
+// </svg>';
+// 
+        var icon;
+        if (element.name === 'Arduino_Interface') {
+            icon = 'images/test.svg';
+        }
+        else if (element.name === 'GPIO Breakout') {
+            icon = 'images/test3.svg';
+        }
+        else if (element.name === 'Analog Breakout') {
+            icon = 'images/test2.svg';
+        }
+
         newDiagramComponent = new DiagramComponent({
             id: element.id,
+            icon: icon,
             label: labelParser(element.name),
             x: element.position.x,
             y: element.position.y,

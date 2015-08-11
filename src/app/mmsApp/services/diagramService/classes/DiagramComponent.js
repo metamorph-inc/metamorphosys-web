@@ -7,6 +7,7 @@ var glMatrix = require('glMatrix');
 var DiagramComponent = function(descriptor) {
 
     this.classificationTags = [];
+    this.icon = null;
 
     if (!angular.isObject(descriptor.symbol)) {
         throw new Error('No symbol found for component ' + this.id);
@@ -312,5 +313,18 @@ DiagramComponent.prototype.setLabel = function(newLabel) {
     this.label = newLabel;
 
 };
+
+DiagramComponent.prototype.getIcon = function() {
+
+    return this.icon;
+
+};
+
+DiagramComponent.prototype.setIcon = function(newIcon) {
+
+    this.icon = newIcon;
+
+};
+
 
 module.exports = DiagramComponent;

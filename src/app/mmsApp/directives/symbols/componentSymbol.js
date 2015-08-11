@@ -92,6 +92,7 @@ symbolsModule.directive(
                     $el,
                     $labelElement,
                     compiledSymbol,
+                    compiledIcon,
                     symbolDirective;
 
                 svgDiagramController = controllers[ 0 ];
