@@ -7,13 +7,13 @@
    ng-attr-id="{{::component.id}}"
    ng-attr-transform="{{getSymbolTransform()}}"
     >
-        <rect ng-attr-width="{{::component.symbol.width + 20}}"
-              ng-attr-height="{{::component.symbol.height + 20}}"
+        <rect ng-attr-width="{{::getSymbolRectWidth()}}"
+              ng-attr-height="{{getSymbolRectHeight()}}"
               transform="translate(-10,-10)"
               class="selected-symbol-boundary"></rect>
         <g class="symbol-placeholder"></g>
-        <rect ng-attr-width="{{::component.symbol.width}}"
-              ng-attr-height="{{component.symbol.height}}"
+        <rect ng-attr-width="{{::getSymbolWidth()}}"
+              ng-attr-height="{{getSymbolHeight()}}"
               class="symbol-area"></rect>
         <g class="zoom-2">
             <port

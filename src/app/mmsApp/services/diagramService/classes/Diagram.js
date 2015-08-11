@@ -381,6 +381,31 @@ Diagram.prototype.isComponentSelected = function(component) {
 
 };
 
+Diagram.prototype.getComponentByCursorPosition = function(point) {
+
+    var rect,
+        component = null,
+        found = null;
+
+    for (var i = 0; i < this._components.length; i++) {
+
+        component = this._components[i];
+        rect = component.getGridBoundingBox();
+
+        if (point.x >= rect.x && point.x <= rect.x + rect.width &&
+            point.y >= rect.y && point.y <= rect.y + rect.height) {
+
+            found = component;
+            break;
+
+        }
+
+    }
+
+    return found;
+
+};
+
 
 Diagram.prototype.getHighestZ = function() {
 

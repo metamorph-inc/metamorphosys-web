@@ -46,4 +46,17 @@ $blue: #0D47A1;
         height: 100%;
         -webkit-transform-origin: center center;
     }
+
+    .box-box {
+
+        &.drop-target {
+            background-color: rgba(33, 150, 243, .15);
+        }
+        &.drag-entered {
+            background-color: rgba(33, 150, 243, .25);
+            cursor: copy;
+            pointer-events: none;
+        }
+
+    }
 }

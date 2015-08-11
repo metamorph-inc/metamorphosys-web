@@ -428,6 +428,22 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
         ];
 
+        if (component.icon) {
+
+            $scope.contextMenuData.unshift({
+                id: 'iconRemove',
+                items: [{
+                    id: 'removeIcon',
+                    label: 'Remove Icon',
+                    iconClass: 'fa fa-trash-o',
+                    action: function() {
+                        $rootScope.$emit('svgIconMustBeRemoved', component);
+                    }
+                }]
+            });
+
+        }
+
         if (component.metaType === 'Container') {
 
             $scope.contextMenuData.unshift({

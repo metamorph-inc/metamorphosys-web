@@ -58,6 +58,30 @@ symbolsModule.controller(
             return transformString;
         };
 
+        $scope.getSymbolRectWidth = function () {
+
+            return $scope.component.symbol.width + 20;
+
+        };
+
+        $scope.getSymbolRectHeight = function () {
+
+            return $scope.component.icon ? $scope.component.symbol.height + 80 : $scope.component.symbol.height + 20;
+
+        };
+
+        $scope.getSymbolWidth = function () {
+
+            return $scope.component.symbol.width;
+
+        };
+
+        $scope.getSymbolHeight = function () {
+
+            return $scope.component.icon ? $scope.component.symbol.height + 60 : $scope.component.symbol.height;
+
+        };
+
     } );
 
 symbolsModule.directive(

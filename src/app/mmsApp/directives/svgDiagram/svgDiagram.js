@@ -99,6 +99,12 @@ angular.module('mms.svgDiagram', [
                 this._connectedPorts = [];
                 this._connectedWires = [];
 
+                this.diagramDropElement = 'svg';
+                this.componentDropElement = 'rect';
+
+                this.diagramDroppableFiles = ['.adm', '.adp', '.acm', '.brd'];
+                this.componentDroppableFiles = ['.svg'];
+
                 // Setting up handlers
 
                 componentDragHandler = new ComponentDragHandler(

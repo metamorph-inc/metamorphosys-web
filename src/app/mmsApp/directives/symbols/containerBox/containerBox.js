@@ -5,14 +5,15 @@
 angular.module(
     'mms.designVisualization.symbols.containerBox', []
 )
-    .controller( 'ContainerBoxController', function ( $scope, nodeService ) {
+    .controller( 'ContainerBoxController', function ( $scope ) {
 
         $scope.portWires = [];
 
         $scope.addedIconHeight = 60;
         $scope.maxIconWidth = 180;
         $scope.maxIconHeight = 60;
-        $scope.iconSvgViewBox = "0 0 0 0";
+        $scope.iconUrl = null;
+        $scope.iconElement;
 
         angular.forEach( $scope.component.symbol.ports, function ( port ) {
 
@@ -57,8 +58,10 @@ angular.module(
             } );
         } );
 
-        $scope.getIcon = function() {
-            return $scope.component.icon;
+        $scope.getIconUrl = function() {
+            if ($scope.component.icon) {
+                return "http://localhost:8855/rest/blob/view/" + $scope.component.icon;
+            }
         };
 
         $scope.getBoxStartY = function() {
@@ -77,17 +80,28 @@ angular.module(
             return $scope.getBoxStartX();
         };
 
-        // $scope.getViewBox = function() {
-            
+        $scope.updateIconTransform = function() {
 
-        //     return "0 0 " + this.iconSvgWidth + " " + this.iconSvgHeight;
-        // };
+            // Width varies based on ports
+
+            if ($scope.component.symbol.hasLeftPort && $scope.component.symbol.hasRightPort) {
+                $scope.iconElement.style.webkitTransform = "translate(40%, 0%)";
+            }
+            else {
+                $scope.iconElement.style.webkitTransform = "translate(60%, 0%)";
+            }
+
+        };
+
+        $scope.updateIconUrl = function() {
+            $scope.iconUrl = $scope.getIconUrl();
+        };
 
     } )
     .directive(
         'containerBox',
 
-        function ($compile) {
+        function ($timeout, dndService, $rootScope) {
 
             return {
                 scope: false,
@@ -105,6 +119,7 @@ angular.module(
 
                         compiledIcon,
                         template,
+                        dropHandler,
 
                         $el;
 
@@ -113,56 +128,44 @@ angular.module(
                     scope.element = element[0];
 
                     $el = $ ( scope.element );
-
-                                    // Only subcircuits for now
-                    // scope.getViewBox = function(iconSvg) {
-                        
-                    //     var svgWidth = iconSvg.attributes.width,
-                    //         svgHeight = iconSvg.attributes.height,
-                    //         multFactor;
-
-                    //     if (svgWidth && svgHeight) {
-                    //         scope.iconSvgWidth = Number(svgWidth.nodeValue);
-                    //         scope.iconSvgHeight = Number(svgHeight.nodeValue);
-
-                    //         multFactor = Math.min(scope.addedIconHeight / scope.iconSvgWidth,
-                    //                           scope.addedIconHeight / scope.iconSvgHeight);
-
-                    //         scope.iconSvgWidth /= multFactor;
-                    //         scope.iconSvgHeight /= multFactor;
-                    //     }
-                    //     else {
-                    //         console.log('Icon SVG does not have a top-level width/height specified.');
-                    //     }
-
-                    //     scope.iconSvgViewBox = "0 0 " + Math.round(scope.iconSvgWidth) + " " + Math.round(scope.iconSvgHeight);
-                    // };
                     
+
+                    scope.iconElement = $el.find( '.symbol-icon-placeholder' )[0];
 
                     if (scope.component.icon) {
-                        var iconEl = $el.find( '.symbol-icon-placeholder' );
 
-                        if (iconEl) {
-                            if (scope.component.symbol.hasLeftPort && scope.component.symbol.hasRightPort) {
-                                iconEl[0].style.webkitTransform = "translate(40%, 0%)";
-                            }
-                            else {
-                                iconEl[0].style.webkitTransform = "translate(60%, 0%)";
-                            }
-                        }
+                        scope.updateIconTransform();
+                        scope.updateIconUrl();
                     }
 
+                    dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
 
-                    // }
+                    // Template bindings haven't occurred yet, need to put in timeout to have them set so that
+                    // rect tags are available.
+                    $timeout(function() {
+                        dndService.registerDropTarget(
+                            element[0].querySelector('rect'),
+                            'component subscircuit',
+                            dropHandler
+                        );
+                        scope.$apply();
+                    });
 
-                    // scope.$watch('component.icon', function(icon) {
+                    scope.$on('$destroy', function() {
+                        dndService.unregisterDropTarget( element[0].querySelector('rect'));
+                    });
 
-                    //     // if icon, check newId oldId. if old was null, add icon. if not, replace
-
-                    // });
-                     
+                    scope.$watchCollection('[component.symbol.hasLeftPort, component.symbol.hasRightPort]', function() {
+                        scope.updateIconTransform();
+                    });
                     
-
+                     
+                    $rootScope.$on('iconWasChanged', function() {
+                        scope.$apply( function() {
+                            scope.updateIconTransform();
+                            scope.updateIconUrl();
+                        });
+                    });
                 }
             };
         } );

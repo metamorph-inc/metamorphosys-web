@@ -19,6 +19,9 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
     var self = this,
         position,
+        validDrop = true,
+        droppedFileName,
+        droppedFileExtension,
         contentServerUrl = this.contentServerUrl;
 
     e.preventDefault();
@@ -29,7 +32,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
     // this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     // return false;
 
-    if (dragged && dragged.data) {
+    if (dragged && dragged.data && e.target.tagName === self.diagramDropElement) {
 
         if(dragged.data.componentId) {
 
@@ -72,22 +75,41 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         position = this.mmsUtils.getPositionFromEvent(e);
 
-        var event = 'componentInstantiationMustBeDone';
+        droppedFileName = e.dataTransfer.files[0].name;
 
-        if (/\.(adm|adp)$/.test(e.dataTransfer.files[0].name)) {
-            event = 'subcircuitInstantiationMustBeDone';
-        }
-        if (/\.brd$/.test(e.dataTransfer.files[0].name)) {
-            event = 'brdImportMustBeDone';
+        droppedFileExtension = droppedFileName.substr(droppedFileName.lastIndexOf('.') + 1);
+
+        if ((self.diagramDropElement === e.target.tagName && self.diagramDroppableFiles.indexOf(droppedFileExtension) === -1) &&
+            (self.componentDropElement === e.target.tagName && self.componentDroppableFiles.indexOf(droppedFileExtension) === -1) ) {
+            
+            validDrop = false;
+            self.$log.error('Tried dropping invalid file on diagram or component.');
+            
         }
 
-        this.acmImportService.storeDroppedFile(e.dataTransfer.files[0])
-            .then(function (url) {
-                self.$rootScope.$emit(event, url, position, contentServerUrl);
-            })
-            .catch(function (err) {
-                self.$log.error('Error creating drag-n-drop component: ' + err);
-            });
+        if (validDrop) {
+
+            var event = 'componentInstantiationMustBeDone';
+
+            if (/\.(adm|adp)$/.test(droppedFileName)) {
+                event = 'subcircuitInstantiationMustBeDone';
+            }
+            if (/\.brd$/.test(droppedFileName)) {
+                event = 'brdImportMustBeDone';
+            }
+            if (/\.svg$/.test(droppedFileName)) {
+                event = 'svgIconImportMustBeDone';
+            }
+
+
+            this.acmImportService.storeDroppedFile(e.dataTransfer.files[0])
+                .then(function (url) {
+                    self.$rootScope.$emit(event, url, position, contentServerUrl);
+                })
+                .catch(function (err) {
+                    self.$log.error('Error creating drag-n-drop component: ' + err);
+                });
+        }
 
     }
 };

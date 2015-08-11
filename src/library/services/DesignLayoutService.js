@@ -189,7 +189,8 @@ angular.module('cyphy.services')
                     hadChanges,
                     child,
                     updateType,
-                    detailsFn;
+                    detailsFn,
+                    newIcon;
 
                 // BaseName never changes, does it?
 
@@ -202,6 +203,7 @@ angular.module('cyphy.services')
                     newRotation = this.getRegistry('rotation') || 0;
                     newDefinition = this.getAttribute('Definition');
                     newDescription = this.getAttribute( 'Description' );
+                    newIcon = this.getAttribute('Icon');
 
                     hadChanges = false;
 
@@ -255,6 +257,12 @@ angular.module('cyphy.services')
                         updateType = 'typeChange';
                     }
 
+                    if (newIcon !== child.icon) {
+                        child.icon = newIcon;
+                        hadChanges = true;
+                        updateType = 'iconChange';
+                    }
+
                     if (hadChanges) {
 
                         triggerUpdateListener(child.id, child, 'update', updateType);
@@ -302,6 +310,7 @@ angular.module('cyphy.services')
                     name: node.getAttribute('name'),
                     type: node.getAttribute('Definition'),
                     description: node.getAttribute('Description'),
+                    icon: node.getAttribute('Icon'),
                     position: node.getRegistry('position'),
                     rotation: node.getRegistry('rotation'),
                     baseId: node.getBaseId()

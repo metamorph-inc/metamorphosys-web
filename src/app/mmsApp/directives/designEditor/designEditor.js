@@ -311,6 +311,34 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('svgIconImportMustBeDone', function($event, iconBlobUrl, position) {
+
+                        $rootScope.setProcessing();
+
+                        var iconBlobUrlParts = iconBlobUrl.replace(/\/*$/, '').split('/'),
+                            componentToAddIcon = self.diagram.getComponentByCursorPosition(position);
+
+                        nodeService.loadNode(layoutContext, componentToAddIcon.id)
+                        .then(function(componentNode) {
+
+                            componentNode.setAttribute("Icon", iconBlobUrlParts[iconBlobUrlParts.length - 1]);
+                            $rootScope.stopProcessing();
+
+                            });
+
+                    });
+
+                    addRootScopeEventListener('svgIconMustBeRemoved', function($event, component) {
+
+                        nodeService.loadNode(layoutContext, component.id)
+                        .then(function(componentNode) {
+
+                            componentNode.setAttribute("Icon", "");
+
+                            });
+
+                    });
+
                     addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
                         var operation;
@@ -847,6 +875,24 @@ angular.module('mms.designEditor', [
                                                     });
 
                                                     $scope.portData = port;
+                                                }
+
+                                            }
+
+                                        }
+
+                                        if (designStructureUpdateObject.updateType === 'iconChange') {
+
+                                            diagram = diagramService.getDiagram(selectedContainerId);
+
+                                            if (diagram) {
+
+                                                component = diagram.getComponentById(designStructureUpdateObject.id);
+
+                                                if (component) {
+                                                    component.setIcon(designStructureUpdateObject.data.icon);
+
+                                                    $rootScope.$emit('iconWasChanged', projectHandling.getSelectedContainer());
                                                 }
 
                                             }
