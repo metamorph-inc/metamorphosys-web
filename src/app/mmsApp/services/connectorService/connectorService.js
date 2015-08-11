@@ -123,7 +123,7 @@ angular.module('mms.connectorService', [
                     })
                     .then(function(parent) {
                         var parentMetaTypeName = parent.getMetaTypeName(meta);
-                        if (parentMetaTypeName === 'Container') {
+                        if (parentMetaTypeName === 'Container' || parentMetaTypeName === 'JunctionBox') {
 
                             if (isNodeConnected(connector)) {
                                 $log.debug(connector.getAttribute('name'), 'has connections and won\'t be de-typed');

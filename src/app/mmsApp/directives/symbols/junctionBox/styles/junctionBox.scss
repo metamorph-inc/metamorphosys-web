@@ -1,0 +1,43 @@
+$blue: #0D47A1;
+
+.junction-box {
+
+    .component-label {
+        fill: $blue;
+        font-weight: bold;
+        font-size: 85%;
+    }
+
+    .symbol-area {
+        display: none;
+    }
+
+    .component-label {
+        text-anchor: middle;
+    }
+
+    .port {
+
+        .port-label {
+            fill: $blue;
+        }
+
+    }
+
+    .box-box {
+        //  fill:rgba(255,254,230, .3);
+        fill: rgb(255,255,255);
+        stroke-width: 2;
+        stroke: $blue;
+        stroke-dasharray: 2.5.5;
+    }
+
+    .port-wire {
+        stroke-width:1;
+        stroke: $blue;
+    }
+
+    .port-shape {
+
+    }
+}

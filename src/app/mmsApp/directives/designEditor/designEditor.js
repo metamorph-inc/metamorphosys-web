@@ -250,9 +250,38 @@ angular.module('mms.designEditor', [
 
                                 nodeService.createNode(layoutContext, selectedContainerId, metaId, 'New primitive')
                                     .then(function(node) {
+                                        // Is this a junction box? If so, do the special thing
+                                        if (primitive.id === 'connector-junction-box') {
 
-                                       var element = {},
-                                           primitiveElement;
+                                            return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make first connector')
+                                                .then(function (nodeConnector) {
+                                                    // nodeConnector is Connector 1
+                                                    nodeConnector.setAttribute('name', 'Connector1');
+                                                    nodeConnector.setRegistry('position', {
+                                                        x: 50,
+                                                        y: 100
+                                                    }, 'Set primitive position');
+                                                })
+                                                .then(function () {
+                                                    return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make second connector');
+                                                })
+                                                .then(function (nodeConnector) {
+                                                    nodeConnector.setAttribute('name', 'Connector2');
+                                                    nodeConnector.setRegistry('position', {
+                                                        x: 400,
+                                                        y: 100
+                                                    }, 'Set primitive position');
+
+                                                    return node;
+                                                });
+                                        }
+                                        else {
+                                            return node;
+                                        }
+                                    })
+                                    .then(function(node) {
+
+                                        var element = {};
 
                                         if (!position) {
                                             position = gridService.getViewPortCenter(selectedContainerId);
@@ -269,10 +298,6 @@ angular.module('mms.designEditor', [
 
                                         element.id = node.id;
                                         element.position = gridService.getSnappedPosition(position);
-
-                                        primitiveElement = cyPhyDiagramParser.primitiveParser(element, self.diagram.getHighestZ() + 1);
-
-                                        self.diagram.addComponent(primitiveElement);
 
                                         node.setRegistry('position', position, 'Set primitive position');
 

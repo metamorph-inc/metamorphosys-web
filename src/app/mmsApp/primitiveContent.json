@@ -16,5 +16,14 @@
         "description": "Use this primitive to begin creating your own subcircuit from scratch.",
         "svgViewBox": "0 0 100 100",
         "config": []
+    },
+    {
+        "id": "connector-junction-box",
+        "name": "Connector Junction Box",
+        "metaType": "JunctionBox",
+        "type": "generic",
+        "description": "Use this to map one type of connector to another.",
+        "svgViewBox": "0 0 100 100",
+        "config": []
     }
 ]

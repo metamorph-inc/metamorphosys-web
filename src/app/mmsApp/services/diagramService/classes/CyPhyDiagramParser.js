@@ -10,6 +10,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         primitiveParser,
         connectorParser,
         containerParser,
+        junctionBoxParser,
         labelParser,
         wireParser,
 
@@ -228,6 +229,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     portSymbol.portDirective = 'rectangle-port';
                 }
 
+                if (element.baseName === 'JunctionBox') {
+                    portSymbol.portDirective = 'rectangle-port';
+                }
+
                 if (innerConnector.position.x < median) {
 
                     portDescriptors.left.push(portSymbol);
@@ -318,6 +323,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         else if (element.primitiveId === 'empty-subcircuit') {
 
             return containerParser(element, zIndex);
+        }
+        else if (element.primitiveId === 'connector-junction-box') {
+
+            return junctionBoxParser(element, zIndex);
         }
 
     };
@@ -422,6 +431,62 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         newDiagramComponent.classificationTags.push({
             id: 'subcircuit',
             name: 'Subcircuit'
+        });
+
+        newDiagramComponent.registerPortInstances(portStuff.portInstances);
+
+        return newDiagramComponent;
+
+    };
+
+    junctionBoxParser = function(element, zIndex) {
+        var symbol,
+            newDiagramComponent,
+            portStuff;
+
+        zIndex = zIndex || 0;
+
+        portStuff = minePortsFromInterfaces(element);
+
+        symbol = symbolManager.makeBoxSymbol(
+            'junction-box',
+            element.name || element.id, {
+                showPortLabels: true,
+                limitLabelWidthTo: 150,
+                portDirective: 'decorated-port'
+            }, portStuff.portDescriptors, {
+                minWidth: 240,
+                portWireLeadInIncrement: 8,
+                portWireLength: 30,
+                topPortPadding: 20,
+                hasTopPort: portStuff.portDescriptors.top.length > 0,
+                hasBottomPort: portStuff.portDescriptors.bottom.length > 0,
+                hasLeftPort: portStuff.portDescriptors.left.length > 0,
+                hasRightPort: portStuff.portDescriptors.right.length > 0
+            }
+        );
+
+        newDiagramComponent = new DiagramComponent({
+            id: element.id,
+            label: labelParser(element.name),
+            x: element.position.x,
+            y: element.position.y,
+            z: element.position.z || zIndex,
+            rotation: element.rotation || 0,
+            scaleX: 1,
+            scaleY: 1,
+            symbol: symbol,
+            nonSelectable: false,
+            readonly: false,
+            locationLocked: false,
+            draggable: true,
+            metaType: 'JunctionBox'
+        });
+
+
+        newDiagramComponent.classificationTags.push({
+            id: 'junctionbox',
+            name: 'JunctionBox'
         });
 
         newDiagramComponent.registerPortInstances(portStuff.portInstances);
@@ -836,6 +901,18 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
+            angular.forEach(diagramElements.JunctionBox, function(element) {
+
+                newDiagramComponent = junctionBoxParser(element, i);
+
+                diagram.addComponent(newDiagramComponent);
+
+                checkMaxSizes(newDiagramComponent);
+
+                i++;
+
+            });
+
 
             angular.forEach(diagramElements.ConnectorComposition, function(element) {
 
@@ -870,6 +947,10 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         } else if (descriptor.baseName === 'ConnectorComposition') {
 
             element = wireParser(descriptor, diagram);
+
+        } else if (descriptor.baseName === 'JunctionBox') {
+
+            element = junctionBoxParser(descriptor, zIndex);
 
         }
 

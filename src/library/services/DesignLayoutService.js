@@ -15,7 +15,8 @@ angular.module('cyphy.services')
 
         typesWithConnectordsInside = [
             'AVMComponentModel',
-            'Container'
+            'Container',
+            'JunctionBox'
         ];
 
         $log.debug('IN design layout service');

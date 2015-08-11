@@ -22,7 +22,8 @@ angular.module(
 
                 }
 
-                if ($scope.component.symbol.symbolDirective === 'container-box') {
+                if ($scope.component.symbol.symbolDirective === 'container-box' ||
+                    $scope.component.symbol.symbolDirective === 'junction-box') {
 
                     switch ($scope.portInstance.portSymbol.side) {
 
