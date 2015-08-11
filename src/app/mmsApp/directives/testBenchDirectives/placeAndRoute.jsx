@@ -3,7 +3,7 @@
 'use strict';
 
 angular.module('mms.testBenchDirectives')
-.run(function(testBenchService) {
+.run(function (testBenchService) {
 
     testBenchService.registerTestBenchDirectives(
         'Place and Route',
@@ -20,10 +20,45 @@ angular.module('mms.testBenchDirectives')
 
 })
 
-.directive('placeAndRouteConfig', function() {
+.directive('placeAndRouteConfig', function () {
 
-    function TestBenchConfigController() {
+    function TestBenchConfigController($scope, $rootScope, $timeout, $q, $log, nodeService, projectHandling) {
 
+
+        var testBench = $scope.ctrl.testBench,
+            getDomainModel = function () {
+                return (($scope.ctrl.testBench.design.data.DomainModel || []).filter(function (resource) {
+                    return resource.label === 'circuitLayout';
+                }) || [])[0];
+            };
+
+        $scope.hasBRD = getDomainModel;
+
+        $scope.deleteBRD = function () {
+            $log.debug('deleteBRD for ' + testBench.id);
+
+            var context = projectHandling.getDesignContext(),
+                domainModel = getDomainModel();
+
+            $rootScope.setProcessing();
+            nodeService.loadNode(context, domainModel._id)
+                .then(function (domainNode) {
+
+                    return $q.all(domainNode.getMemberIds('UsesResource').map(function (id) {
+                        return nodeService.loadNode(context, id);
+                    })).then(function (members) {
+                        nodeService.startTransaction(context, 'Remove BRD file');
+                        members.forEach(function (member) {
+                            member.destroy();
+                        });
+                        domainNode.destroy();
+                        nodeService.completeTransaction(context);
+                    });
+                })
+                .finally(function () {
+                    $rootScope.stopProcessing();
+                });
+        };
     }
 
     return {
@@ -41,7 +76,7 @@ angular.module('mms.testBenchDirectives')
 
 })
 
-.directive('placeAndRouteResultCompact', function($mdDialog) {
+.directive('placeAndRouteResultCompact', function ($mdDialog) {
 
     function TestBenchResultCompactController() {
 
@@ -59,7 +94,7 @@ angular.module('mms.testBenchDirectives')
         },
         templateUrl: '/mmsApp/templates/placeAndRouteResultCompact.html',
         require: ['placeAndRouteResultCompact', '^testBenchResultOpener'],
-        link: function(s, element, attributes, controllers) {
+        link: function (s, element, attributes, controllers) {
 
             var ctrl = controllers[0],
                 openerController = controllers[1];
@@ -98,8 +133,8 @@ angular.module('mms.testBenchDirectives')
                         ]
                     }
                 })
-                .then(function () {
-                });
+                    .then(function () {
+                    });
             }
 
             openerController.resultsOpener = showResults;

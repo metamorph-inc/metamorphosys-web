@@ -180,17 +180,28 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
         projectHandling.addEventListener('leaveDesign', cleanup);
         this.testBenchPromise = nodeService.getMetaNodes(context)
-            .then(function(meta) {
+            .then(function (meta) {
 
-                return nodeService.loadNode(context, designId)
-                    .then(function (design) {
-                        // TODO: support adding new TestBenches on-the-fly
-                        return design.getCollectionPaths('TopLevelSystemUnderTest');
-                    }).then(function (paths) {
-                        return $q.all(paths.map(function (path) {
-                            return nodeService.loadNode(context, path);
-                        }));
-                    }).then(function (testBenches) {
+                var designMap;
+                return gmeMapService.mapGmeNode(context, designId, {
+                    'Resource': {
+                        attributes: {name: 'label', 'Path': 'path'}
+                    },
+                    'DomainModel': {
+                        attributes: {name: 'label', 'Type': 'type', 'BoundingBoxes': 'boundingBoxes'}
+                    }
+                }).then(function () {
+                    designMap = arguments[0];
+                    gmeMaps.push(designMap);
+
+                    return nodeService.loadNode(context, designId);
+                }).then(function (design) {
+
+                    // TODO: support adding new TestBenches on-the-fly
+                    var paths = design.getCollectionPaths('TopLevelSystemUnderTest');
+                    return $q.all(paths.map(function (path) {
+                        return nodeService.loadNode(context, path);
+                    })).then(function (testBenches) {
                         return $q.all(testBenches.filter(function (testbench) {
                             return testbench.isMetaTypeOf(meta.byName.AVMTestBenchModel);
                         }).map(function (testBench) {
@@ -206,7 +217,8 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                 return {
                                     id: testBench.getId(),
                                     name: name,
-                                    // TODO: what directive should be used for visualizing the results?
+                                    design: designMap,
+                                    gmeContext: context,
                                     description: testBenchDescriptions[name],
                                     config: {
                                         properties: properties.data.Property || [],
@@ -218,11 +230,12 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                 };
                             });
                         }));
-                    }).then(function (testBenches_) {
-                        testBenches = testBenches_;
-                        testBenches.sort(compareTestBench);
-                        return testBenches;
                     });
+                });
+            }).then(function (testBenches_) {
+                testBenches = testBenches_;
+                testBenches.sort(compareTestBench);
+                return testBenches;
             });
         // this fills in testBench.lastResult
         this.getTestBenchResults();
@@ -230,8 +243,6 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
     };
 
     this.getTestBenchResults = function () {
-        // TODO Generating dummy results. Get these from REST API.
-
         if (this.testBenchResultsPromise) {
             return this.testBenchResultsPromise;
         }
