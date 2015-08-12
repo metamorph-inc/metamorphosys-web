@@ -100,10 +100,10 @@ angular.module('mms.svgDiagram', [
                 this._connectedWires = [];
 
                 this.diagramDropElement = 'svg';
-                this.componentDropElement = 'rect';
+                this.componentDropElements = ['g', 'rect'];
 
-                this.diagramDroppableFiles = ['.adm', '.adp', '.acm', '.brd'];
-                this.componentDroppableFiles = ['.svg'];
+                this.diagramDroppableFiles = ['adm', 'adp', 'acm', 'brd'];
+                this.componentDroppableFiles = ['svg'];
 
                 // Setting up handlers
 

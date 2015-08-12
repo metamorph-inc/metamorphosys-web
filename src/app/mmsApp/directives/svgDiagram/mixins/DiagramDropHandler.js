@@ -24,6 +24,11 @@ DiagramDropHandler._onDrop = function(e, dragged) {
         droppedFileExtension,
         contentServerUrl = this.contentServerUrl;
 
+    // Handle jquery event
+    if (e.originalEvent) {
+        e = e.originalEvent;
+    }
+
     e.preventDefault();
     // if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
     //     return false;
@@ -79,12 +84,12 @@ DiagramDropHandler._onDrop = function(e, dragged) {
 
         droppedFileExtension = droppedFileName.substr(droppedFileName.lastIndexOf('.') + 1);
 
-        if ((self.diagramDropElement === e.target.tagName && self.diagramDroppableFiles.indexOf(droppedFileExtension) === -1) &&
-            (self.componentDropElement === e.target.tagName && self.componentDroppableFiles.indexOf(droppedFileExtension) === -1) ) {
+        if ((self.diagramDropElement === e.target.tagName && self.diagramDroppableFiles.indexOf(droppedFileExtension) === -1) ||
+            (self.componentDropElements.indexOf(e.target.tagName) !== -1 && self.componentDroppableFiles.indexOf(droppedFileExtension) === -1) ) {
             
             validDrop = false;
             self.$log.error('Tried dropping invalid file on diagram or component.');
-            
+
         }
 
         if (validDrop) {

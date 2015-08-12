@@ -25,3 +25,5 @@ require('angular-mousewheel');
 require('mousewheel')($);
 require('jscrollpane')($);
 
+require('dragster');
+

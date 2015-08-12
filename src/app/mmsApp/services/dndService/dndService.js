@@ -1,5 +1,7 @@
 'use strict';
 
+require('./jquery.dragster.js');
+
 function DnDService() {
 
     this._dropTargets = [];
@@ -39,9 +41,12 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
     var self = this,
         channelArray,
         channel,
-        dropTarget;
+        dropTarget,
+        dragster;
 
     if (element && this.findInDroptargets(element) === -1) {
+
+        //dragster = new Dragster( element );
 
         dropTarget = {
             targetElement: element,
@@ -49,22 +54,20 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames;
 
-                if (e.target === element) {
+                classNames = element.getAttribute('class');
 
-                    classNames = element.getAttribute('class');
+                dropHandler(e, self._dragged);
+                self.stopDrag();
 
-                    dropHandler(e, self._dragged);
-                    self.stopDrag();
-
-                    if (classNames) {
-                        element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
-                    }
-
+                if (classNames) {
+                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
                 }
             },
             onDragOver: function(e) {
 
                 var classNames = element.getAttribute('class');
+
+                console.log('over');
 
                 if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
                     element.setAttribute('class', classNames + ' drag-entered');
@@ -76,6 +79,8 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames = element.getAttribute('class');
 
+                console.log('enter');
+
                 if (classNames && classNames.indexOf('drag-enter') === -1) {
                     element.setAttribute('class', classNames + ' drag-entered');
                 }
@@ -85,6 +90,8 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             onDragleave: function(e) {
 
                 var classNames = element.getAttribute('class');
+
+                console.log('leave');
 
                 if (classNames) {
                     element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
@@ -99,6 +106,47 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
         element.addEventListener('dragover', dropTarget.onDragOver, false);
         element.addEventListener('dragenter', dropTarget.onDragenter, false);
         element.addEventListener('dragleave', dropTarget.onDragleave, false);
+
+        // 
+        // $(element).dragster({
+        //     enter: function(dragsterEvent, e) {
+        //         var classNames = element.getAttribute('class');
+
+        //         console.log('enter');
+
+        //         if (classNames && classNames.indexOf('drag-enter') === -1) {
+        //             element.setAttribute('class', classNames + ' drag-entered');
+        //         }
+
+        //         self._onDragOverEnterLeave(e);
+        //     },
+        //     leave: function(dragsterEvent, e) {
+        //         var classNames = element.getAttribute('class');
+
+        //         console.log('leave');
+
+        //         if (classNames) {
+        //             element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
+        //         }
+
+        //         self._onDragOverEnterLeave(e);
+        //     },
+        //     drop: function(dragsterEvent, e) {
+        //         var classNames;
+
+        //         //dragster.dragleave(event);
+                
+        //         // Whether or not object is dropped on correct element will be handled by diagramDropHandler
+        //         classNames = element.getAttribute('class');
+
+        //         dropHandler(e, self._dragged);
+        //         self.stopDrag();
+
+        //         if (classNames) {
+        //             element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
+        //         }
+        //     }
+        // });
 
         if (typeof channelStr === 'string') {
 
@@ -129,6 +177,7 @@ DnDService.prototype.unregisterDropTarget = function(element) {
         channelArray,
         dropTarget,
         channel;
+        // dragster = new Dragster(element);
 
     if (index > -1) {
 

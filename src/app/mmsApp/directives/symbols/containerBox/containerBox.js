@@ -73,7 +73,12 @@ angular.module(
         };
 
         $scope.getIconStartY = function() {
-            return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 20;
+            if ($scope.component.icon) {
+                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 20;
+            }
+            else {
+                return $scope.getBoxStartY();
+            }
         };
 
         $scope.getIconStartX = function() {
@@ -143,8 +148,18 @@ angular.module(
                     // Template bindings haven't occurred yet, need to put in timeout to have them set so that
                     // rect tags are available.
                     $timeout(function() {
+                        // dndService.registerDropTarget(
+                        //     element[0].querySelector('rect'),
+                        //     'component subscircuit',
+                        //     dropHandler
+                        // );
+                        // dndService.registerDropTarget(
+                        //     element[0].parentElement.getElementsByClassName('zoom-2')[0],
+                        //     'component subscircuit',
+                        //     dropHandler
+                        // );
                         dndService.registerDropTarget(
-                            element[0].querySelector('rect'),
+                            element[0].parentElement,
                             'component subscircuit',
                             dropHandler
                         );
@@ -152,7 +167,9 @@ angular.module(
                     });
 
                     scope.$on('$destroy', function() {
-                        dndService.unregisterDropTarget( element[0].querySelector('rect'));
+                        // dndService.unregisterDropTarget( element[0].querySelector('rect'));
+                        // dndService.unregisterDropTarget( element[0].parentElement.getElementsByClassName('zoom-2')[0]);
+                        dndService.unregisterDropTarget( element[0].parentElement );
                     });
 
                     scope.$watchCollection('[component.symbol.hasLeftPort, component.symbol.hasRightPort]', function() {
@@ -161,9 +178,10 @@ angular.module(
                     
                      
                     $rootScope.$on('iconWasChanged', function() {
-                        scope.$apply( function() {
-                            scope.updateIconTransform();
-                            scope.updateIconUrl();
+                        scope.updateIconTransform();
+                        scope.updateIconUrl();
+                        $timeout(function() {
+                            scope.$apply();
                         });
                     });
                 }

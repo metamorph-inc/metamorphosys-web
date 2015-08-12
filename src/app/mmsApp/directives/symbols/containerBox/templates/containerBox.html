@@ -18,16 +18,17 @@
 
     <svg class="symbol-icon"
          ng-attr-x="{{::getIconStartX()}}"
-         ng-attr-y="{{::getIconStartY()}}"
+         ng-attr-y="{{getIconStartY()}}"
          ng-attr-width="{{::maxIconWidth}}"
          ng-attr-height="{{::maxIconHeight}}"
          preserveAspectRatio="xMinYMin meet"
          viewBox="0 0 100 60">
       <image class="symbol-icon-placeholder"
-             ng-attr-xlink:href="{{iconUrl}}"
+             ng-href="{{iconUrl}}"
              preserveAspectRatio="xMinYMin meet"
              xlink:href="">
     </svg>
+<!--     <component-icon icon-url="iconUrl"></component-icon>  -->
 
     <!--<circle ng-attr-cx="{{::(component.symbol.boxWidth/2 + component.symbol.portWireLength)}}"-->
             <!--ng-attr-cy="{{::component.symbol.portWireLength}}"-->
