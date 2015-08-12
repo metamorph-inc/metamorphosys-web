@@ -12,7 +12,7 @@
           ng-attr-x="{{::getBoxStartX()}}"
           ng-attr-y="{{::getBoxStartY()}}"
           ng-attr-width="{{::component.symbol.boxWidth}}"
-          ng-attr-height="{{::component.symbol.boxHeight + 60}}"
+          ng-attr-height="{{::component.symbol.boxHeight + 25}}"
           rx="20" ry="20"
         />
 
@@ -22,17 +22,12 @@
          ng-attr-width="{{::maxIconWidth}}"
          ng-attr-height="{{::maxIconHeight}}"
          preserveAspectRatio="xMinYMin meet"
-         viewBox="0 0 100 60">
+         viewBox="0 0 100 50">
       <image class="symbol-icon-placeholder"
-             ng-href="{{iconUrl}}"
+             xlink-href="{{iconUrl}}"
              preserveAspectRatio="xMinYMin meet"
              xlink:href="">
     </svg>
-<!--     <component-icon icon-url="iconUrl"></component-icon>  -->
-
-    <!--<circle ng-attr-cx="{{::(component.symbol.boxWidth/2 + component.symbol.portWireLength)}}"-->
-            <!--ng-attr-cy="{{::component.symbol.portWireLength}}"-->
-            <!--r="8"/>-->
 
     <line class="port-wire"
           ng-repeat="wire in ::portWires"

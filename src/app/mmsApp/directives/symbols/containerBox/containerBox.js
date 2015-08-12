@@ -9,9 +9,9 @@ angular.module(
 
         $scope.portWires = [];
 
-        $scope.addedIconHeight = 60;
+        $scope.addedIconHeight = 30;
         $scope.maxIconWidth = 180;
-        $scope.maxIconHeight = 60;
+        $scope.maxIconHeight = 50;
         $scope.iconUrl = null;
         $scope.iconElement;
 
@@ -74,7 +74,7 @@ angular.module(
 
         $scope.getIconStartY = function() {
             if ($scope.component.icon) {
-                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 20;
+                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 30;
             }
             else {
                 return $scope.getBoxStartY();
@@ -93,7 +93,7 @@ angular.module(
                 $scope.iconElement.style.webkitTransform = "translate(40%, 0%)";
             }
             else {
-                $scope.iconElement.style.webkitTransform = "translate(60%, 0%)";
+                $scope.iconElement.style.webkitTransform = "translate(70%, 0%)";
             }
 
         };
@@ -115,15 +115,12 @@ angular.module(
                 controller: 'ContainerBoxController',
                 templateUrl: '/mmsApp/templates/containerBox.html',
                 templateNamespace: 'SVG',
-                require: ['^svgDiagram', '^diagramContainer', 'containerBox'],
+                require: ['^svgDiagram', '^diagramContainer'],
                 link: function (scope, element, attributes, controllers) {
 
                     var svgDiagramController = controllers[0],
                         diagramContainerController = controllers[1],
-                        containerBoxController = controllers[2],
 
-                        compiledIcon,
-                        template,
                         dropHandler,
 
                         $el;
@@ -148,16 +145,6 @@ angular.module(
                     // Template bindings haven't occurred yet, need to put in timeout to have them set so that
                     // rect tags are available.
                     $timeout(function() {
-                        // dndService.registerDropTarget(
-                        //     element[0].querySelector('rect'),
-                        //     'component subscircuit',
-                        //     dropHandler
-                        // );
-                        // dndService.registerDropTarget(
-                        //     element[0].parentElement.getElementsByClassName('zoom-2')[0],
-                        //     'component subscircuit',
-                        //     dropHandler
-                        // );
                         dndService.registerDropTarget(
                             element[0].parentElement,
                             'component subscircuit',
@@ -167,8 +154,6 @@ angular.module(
                     });
 
                     scope.$on('$destroy', function() {
-                        // dndService.unregisterDropTarget( element[0].querySelector('rect'));
-                        // dndService.unregisterDropTarget( element[0].parentElement.getElementsByClassName('zoom-2')[0]);
                         dndService.unregisterDropTarget( element[0].parentElement );
                     });
 
@@ -178,10 +163,9 @@ angular.module(
                     
                      
                     $rootScope.$on('iconWasChanged', function() {
-                        scope.updateIconTransform();
-                        scope.updateIconUrl();
-                        $timeout(function() {
-                            scope.$apply();
+                        scope.$apply(function() {
+                            scope.updateIconTransform();
+                            scope.updateIconUrl();
                         });
                     });
                 }

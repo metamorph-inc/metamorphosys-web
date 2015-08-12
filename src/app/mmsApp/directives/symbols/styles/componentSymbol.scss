@@ -78,4 +78,17 @@
         }
     }
 
+    .symbol-icon-placeholder {
+        width: 100%;
+        height: 100%;
+        -webkit-transform-origin: center center;
+    }
+
+    &.drag-entered {
+        .silhouette {
+            fill: rgba(33, 150, 243, .25);
+            cursor: copy;
+        } 
+    }
+
 }

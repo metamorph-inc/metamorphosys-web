@@ -24,11 +24,6 @@ DiagramDropHandler._onDrop = function(e, dragged) {
         droppedFileExtension,
         contentServerUrl = this.contentServerUrl;
 
-    // Handle jquery event
-    if (e.originalEvent) {
-        e = e.originalEvent;
-    }
-
     e.preventDefault();
     // if (!e || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
     //     return false;
@@ -36,6 +31,10 @@ DiagramDropHandler._onDrop = function(e, dragged) {
     // //e.preDefault();
     // this.$scope.aFileWasDroppedOnMe(e.dataTransfer.files[0], e);
     // return false;
+    
+    if (e.originalEvent) {
+        e = e.originalEvent;
+    }
 
     if (dragged && dragged.data && e.target.tagName === self.diagramDropElement) {
 
@@ -89,7 +88,7 @@ DiagramDropHandler._onDrop = function(e, dragged) {
             
             validDrop = false;
             self.$log.error('Tried dropping invalid file on diagram or component.');
-
+            
         }
 
         if (validDrop) {

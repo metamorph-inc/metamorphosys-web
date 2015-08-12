@@ -468,6 +468,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
+                    icon: element.icon,
                     label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,

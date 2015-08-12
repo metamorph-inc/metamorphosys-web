@@ -1,9 +1,31 @@
 <g class="symbol-parts">
     <rect class="box-box silhouette"
+          ng-if="!iconUrl"
           ng-attr-x="{{::getBoxStartX()}}"
           ng-attr-y="{{::getBoxStartY()}}"
           ng-attr-width="{{::component.symbol.boxWidth}}"
-          ng-attr-height="{{::component.symbol.boxHeight}}"/>
+          ng-attr-height="{{::component.symbol.boxHeight}}"
+        />
+    <rect class="box-box silhouette"
+          ng-if="iconUrl"
+          ng-attr-x="{{::getBoxStartX()}}"
+          ng-attr-y="{{::getBoxStartY()}}"
+          ng-attr-width="{{::component.symbol.boxWidth}}"
+          ng-attr-height="{{::component.symbol.boxHeight + 25}}"
+        />
+
+    <svg class="symbol-icon"
+         ng-attr-x="{{::getIconStartX()}}"
+         ng-attr-y="{{getIconStartY()}}"
+         ng-attr-width="{{::maxIconWidth}}"
+         ng-attr-height="{{::maxIconHeight}}"
+         preserveAspectRatio="xMinYMin meet"
+         viewBox="0 0 100 50">
+      <image class="symbol-icon-placeholder"
+             xlink-href="{{iconUrl}}"
+             preserveAspectRatio="xMinYMin meet"
+             xlink:href="">
+    </svg>
 
 
     <!--<circle ng-attr-cx="{{::(component.symbol.boxWidth/2 + component.symbol.portWireLength)}}"-->

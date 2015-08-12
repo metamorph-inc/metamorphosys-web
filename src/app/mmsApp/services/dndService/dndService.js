@@ -41,12 +41,9 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
     var self = this,
         channelArray,
         channel,
-        dropTarget,
-        dragster;
+        dropTarget;
 
     if (element && this.findInDroptargets(element) === -1) {
-
-        //dragster = new Dragster( element );
 
         dropTarget = {
             targetElement: element,
@@ -67,8 +64,6 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames = element.getAttribute('class');
 
-                console.log('over');
-
                 if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
                     element.setAttribute('class', classNames + ' drag-entered');
                 }
@@ -78,8 +73,6 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             onDragenter: function(e) {
 
                 var classNames = element.getAttribute('class');
-
-                console.log('enter');
 
                 if (classNames && classNames.indexOf('drag-enter') === -1) {
                     element.setAttribute('class', classNames + ' drag-entered');
@@ -91,8 +84,6 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames = element.getAttribute('class');
 
-                console.log('leave');
-
                 if (classNames) {
                     element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
                 }
@@ -102,51 +93,45 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             }
         };
 
-        element.addEventListener('drop', dropTarget.onDrop, false);
-        element.addEventListener('dragover', dropTarget.onDragOver, false);
-        element.addEventListener('dragenter', dropTarget.onDragenter, false);
-        element.addEventListener('dragleave', dropTarget.onDragleave, false);
+        // element.addEventListener('drop', dropTarget.onDrop, false);
+        // element.addEventListener('dragover', dropTarget.onDragOver, false);
+        // element.addEventListener('dragenter', dropTarget.onDragenter, false);
+        // element.addEventListener('dragleave', dropTarget.onDragleave, false);
 
-        // 
-        // $(element).dragster({
-        //     enter: function(dragsterEvent, e) {
-        //         var classNames = element.getAttribute('class');
+        
+        $(element).dragster({
+            enter: function(dragsterEvent, e) {
+                var classNames = element.getAttribute('class');
 
-        //         console.log('enter');
+                if (classNames && classNames.indexOf('drag-enter') === -1) {
+                    element.setAttribute('class', classNames + ' drag-entered');
+                }
 
-        //         if (classNames && classNames.indexOf('drag-enter') === -1) {
-        //             element.setAttribute('class', classNames + ' drag-entered');
-        //         }
+                self._onDragOverEnterLeave(e);
+            },
+            leave: function(dragsterEvent, e) {
+                var classNames = element.getAttribute('class');
 
-        //         self._onDragOverEnterLeave(e);
-        //     },
-        //     leave: function(dragsterEvent, e) {
-        //         var classNames = element.getAttribute('class');
+                if (classNames) {
+                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
+                }
 
-        //         console.log('leave');
-
-        //         if (classNames) {
-        //             element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
-        //         }
-
-        //         self._onDragOverEnterLeave(e);
-        //     },
-        //     drop: function(dragsterEvent, e) {
-        //         var classNames;
-
-        //         //dragster.dragleave(event);
+                self._onDragOverEnterLeave(e);
+            },
+            drop: function(dragsterEvent, e) {
+                var classNames;
                 
-        //         // Whether or not object is dropped on correct element will be handled by diagramDropHandler
-        //         classNames = element.getAttribute('class');
+                // Whether or not object is dropped on correct element will be handled by diagramDropHandler
+                classNames = element.getAttribute('class');
 
-        //         dropHandler(e, self._dragged);
-        //         self.stopDrag();
+                dropHandler(e, self._dragged);
+                self.stopDrag();
 
-        //         if (classNames) {
-        //             element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
-        //         }
-        //     }
-        // });
+                if (classNames) {
+                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
+                }
+            }
+        });
 
         if (typeof channelStr === 'string') {
 
@@ -177,16 +162,15 @@ DnDService.prototype.unregisterDropTarget = function(element) {
         channelArray,
         dropTarget,
         channel;
-        // dragster = new Dragster(element);
 
     if (index > -1) {
 
         dropTarget = this._dropTargets[index];
 
-        element.removeEventListener('drop', dropTarget.onDrop);
-        element.removeEventListener('dragover', dropTarget.onDragOver);
-        element.removeEventListener('dragenter', dropTarget.onDragenter);
-        element.removeEventListener('dragleave', dropTarget.onDragleave);
+        // element.removeEventListener('drop', dropTarget.onDrop);
+        // element.removeEventListener('dragover', dropTarget.onDragOver);
+        // element.removeEventListener('dragenter', dropTarget.onDragenter);
+        // element.removeEventListener('dragleave', dropTarget.onDragleave);
 
         while (dropTarget.channelArray && dropTarget.channelArray.length && dropTarget.channelArray.length > 0) {
 
