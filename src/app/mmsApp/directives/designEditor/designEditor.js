@@ -316,13 +316,20 @@ angular.module('mms.designEditor', [
                         $rootScope.setProcessing();
 
                         var iconBlobUrlParts = iconBlobUrl.replace(/\/*$/, '').split('/'),
-                            componentToAddIcon = self.diagram.getComponentByCursorPosition(position);
+                            componentToAddIcon = self.diagram.getComponentByCursorPosition(position),
+                            svgIconData;
+
 
                         nodeService.loadNode(layoutContext, componentToAddIcon.id)
                         .then(function(componentNode) {
 
-                            componentNode.setAttribute("Icon", iconBlobUrlParts[iconBlobUrlParts.length - 1]);
-                            $rootScope.stopProcessing();
+                            $.get('http://localhost:8855/rest/blob/view/' + iconBlobUrlParts[iconBlobUrlParts.length - 1], null, function(data) {
+                              svgIconData = data.children[0];
+                            }, 'xml').then(function() {
+
+                                componentNode.setAttribute("Icon", svgIconData.outerHTML);
+                                $rootScope.stopProcessing();
+                            });
 
                             });
 

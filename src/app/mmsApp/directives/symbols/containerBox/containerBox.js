@@ -5,7 +5,7 @@
 angular.module(
     'mms.designVisualization.symbols.containerBox', []
 )
-    .controller( 'ContainerBoxController', function ( $scope ) {
+    .controller( 'ContainerBoxController', function ( $scope, $log ) {
 
         $scope.portWires = [];
 
@@ -13,7 +13,8 @@ angular.module(
         $scope.maxIconWidth = 180;
         $scope.maxIconHeight = 50;
         $scope.iconUrl = null;
-        $scope.iconElement;
+        $scope.iconSvgElement;
+        $scope.iconSvgViewBox = "0 0 0 0";
 
         angular.forEach( $scope.component.symbol.ports, function ( port ) {
 
@@ -60,7 +61,8 @@ angular.module(
 
         $scope.getIconUrl = function() {
             if ($scope.component.icon) {
-                return "http://localhost:8855/rest/blob/view/" + $scope.component.icon;
+                // return "http://localhost:8855/rest/blob/view/" + $scope.component.icon;
+                return "data:image/svg+xml," + $scope.component.icon;
             }
         };
 
@@ -102,6 +104,46 @@ angular.module(
             $scope.iconUrl = $scope.getIconUrl();
         };
 
+        $scope.getIconWidth = function() {
+            return parseFloat($scope.iconSvgElement.getAttribute("width"));
+        };
+
+        $scope.getIconHeight = function() {
+            return parseFloat($scope.iconSvgElement.getAttribute("height"));
+        };
+
+        $scope.setIconSvgViewBox = function(symbolElement) {
+            
+            var viewBox = "0 0 0 0",
+                iconWidth,
+                iconHeight;
+
+            if ($scope.component.icon) {
+
+                if ($scope.iconSvgElement.getAttribute("viewBox") === null) {
+
+                    iconWidth = $scope.getIconWidth();
+                    iconHeight = $scope.getIconHeight();
+
+                    if (!iconWidth || !iconHeight) {
+                        $log.warn("Imported icon does not have width or height attributes to construct viewBox, can't display!");
+                    }
+                    else {
+                        viewBox = "0 0 " + iconWidth + " " + iconHeight;
+                    }
+
+                }
+                else {
+
+                    viewBox = $scope.iconSvgElement.getAttribute("viewBox");
+
+                }
+            }
+
+            symbolElement.setAttribute("viewBox", viewBox);
+
+        };
+
     } )
     .directive(
         'containerBox',
@@ -123,22 +165,46 @@ angular.module(
 
                         dropHandler,
 
-                        $el;
+                        $el,
+
+                        symbolIcon,
+                        $symbolIcon;
 
                     scope.svgDiagramController = svgDiagramController;
                     scope.diagram = diagramContainerController.getDiagram();
                     scope.element = element[0];
 
-                    $el = $ ( scope.element );
+                    $el = $( scope.element );
+
+                    symbolIcon = $el.find('.symbol-icon')[0];
                     
 
-                    scope.iconElement = $el.find( '.symbol-icon-placeholder' )[0];
+                    // scope.iconElement = $el.find( '.symbol-icon-placeholder' )[0];
 
-                    if (scope.component.icon) {
+                    function replaceIcon() {
+                        if (scope.component.icon) {
+                            scope.iconSvgElement = $(scope.component.icon)[0];
 
-                        scope.updateIconTransform();
-                        scope.updateIconUrl();
+                            if (symbolIcon.children.length) {
+                                symbolIcon.replaceChild(scope.iconSvgElement, symbolIcon.children[0]);
+                            }
+                            else {
+                                symbolIcon.appendChild(scope.iconSvgElement);
+                            }
+                            // $symbolIcon.prepend(scope.iconSvgElement);
+                            scope.setIconSvgViewBox(symbolIcon);
+                        }
+                        else {
+
+                            var $symbolIcon = $(symbolIcon);
+
+                            if ($symbolIcon.children().length) {
+                                $symbolIcon.children().eq(0).remove();      
+                            }
+                        }
                     }
+
+                    replaceIcon();
 
                     dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
 
@@ -158,15 +224,16 @@ angular.module(
                         dndService.unregisterDropTarget( element[0].parentElement );
                     });
 
-                    scope.$watchCollection('[component.symbol.hasLeftPort, component.symbol.hasRightPort]', function() {
-                        scope.updateIconTransform();
-                    });
+                    // scope.$watchCollection('[component.symbol.hasLeftPort, component.symbol.hasRightPort]', function() {
+                    //     scope.updateIconTransform();
+                    // });
                     
                      
                     $rootScope.$on('iconWasChanged', function() {
                         scope.$apply(function() {
-                            scope.updateIconTransform();
-                            scope.updateIconUrl();
+
+                            replaceIcon();
+
                         });
                     });
                 }
