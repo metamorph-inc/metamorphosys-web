@@ -9,6 +9,7 @@ function DnDService() {
     this._dragged = null;
 
     this._activeDropTargets = [];
+    this._useDragster = false;
 
 }
 
@@ -36,12 +37,14 @@ DnDService.prototype.findInDroptargets = function(element) {
     return position;
 };
 
-DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler) {
+DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler, useDragster) {
 
     var self = this,
         channelArray,
         channel,
         dropTarget;
+
+    this._useDragster = useDragster;
 
     if (element && this.findInDroptargets(element) === -1) {
 
@@ -93,45 +96,27 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             }
         };
 
-        // element.addEventListener('drop', dropTarget.onDrop, false);
-        // element.addEventListener('dragover', dropTarget.onDragOver, false);
-        // element.addEventListener('dragenter', dropTarget.onDragenter, false);
-        // element.addEventListener('dragleave', dropTarget.onDragleave, false);
-
+        // Dragster used where entering children should not leave the parent (ie, components)
+        if (!this._useDragster) {
+            element.addEventListener('drop', dropTarget.onDrop, false);
+            element.addEventListener('dragover', dropTarget.onDragOver, false);
+            element.addEventListener('dragenter', dropTarget.onDragenter, false);
+            element.addEventListener('dragleave', dropTarget.onDragleave, false);
+        }
+        else {
         
-        $(element).dragster({
-            enter: function(dragsterEvent, e) {
-                var classNames = element.getAttribute('class');
-
-                if (classNames && classNames.indexOf('drag-enter') === -1) {
-                    element.setAttribute('class', classNames + ' drag-entered');
+            $(element).dragster({
+                enter: function(dragsterEvent, e) {
+                    dropTarget.onDragenter(e);
+                },
+                leave: function(dragsterEvent, e) {
+                    dropTarget.onDragleave(e);
+                },
+                drop: function(dragsterEvent, e) {
+                    dropTarget.onDrop(e);
                 }
-
-                self._onDragOverEnterLeave(e);
-            },
-            leave: function(dragsterEvent, e) {
-                var classNames = element.getAttribute('class');
-
-                if (classNames) {
-                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
-                }
-
-                self._onDragOverEnterLeave(e);
-            },
-            drop: function(dragsterEvent, e) {
-                var classNames;
-                
-                // Whether or not object is dropped on correct element will be handled by diagramDropHandler
-                classNames = element.getAttribute('class');
-
-                dropHandler(e, self._dragged);
-                self.stopDrag();
-
-                if (classNames) {
-                    element.setAttribute('class', element.getAttribute('class').replace(/ drag-entered/g, ''));
-                }
-            }
-        });
+            });
+        }
 
         if (typeof channelStr === 'string') {
 
@@ -167,10 +152,12 @@ DnDService.prototype.unregisterDropTarget = function(element) {
 
         dropTarget = this._dropTargets[index];
 
-        // element.removeEventListener('drop', dropTarget.onDrop);
-        // element.removeEventListener('dragover', dropTarget.onDragOver);
-        // element.removeEventListener('dragenter', dropTarget.onDragenter);
-        // element.removeEventListener('dragleave', dropTarget.onDragleave);
+        if (!this._useDragster) {
+            element.removeEventListener('drop', dropTarget.onDrop);
+            element.removeEventListener('dragover', dropTarget.onDragOver);
+            element.removeEventListener('dragenter', dropTarget.onDragenter);
+            element.removeEventListener('dragleave', dropTarget.onDragleave);
+        }
 
         while (dropTarget.channelArray && dropTarget.channelArray.length && dropTarget.channelArray.length > 0) {
 

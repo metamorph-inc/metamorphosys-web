@@ -98,8 +98,14 @@ angular.module('mms.utils', [])
                     y;
                 if (event) {
 
-                    x = event.offsetX || event.layerX || 100;
-                    y = event.offsetY || event.layerY || 100;
+                    // FireFox offset is incorrectly smaller, layer matches that of Chrome
+                    if (event.offsetX && event.layerX) {
+                        x = Math.max(event.offsetX, event.layerX);
+                        y = Math.max(event.offsetY, event.layerY);
+                    }
+
+                    x = x || 100;
+                    y = y || 100;
 
                     position = {
                         x: x - 20,

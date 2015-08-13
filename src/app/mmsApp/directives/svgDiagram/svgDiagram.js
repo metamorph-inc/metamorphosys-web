@@ -993,7 +993,8 @@ angular.module('mms.svgDiagram', [
                     dndService.registerDropTarget(
                         element[0].querySelector('svg'),
                         'component subscircuit',
-                        dropHandler
+                        dropHandler,
+                        false
                     );
 
                     // dragenterFromOutsideHandler = svgDiagramController._onDragenterFromOutside.bind(svgDiagramController);

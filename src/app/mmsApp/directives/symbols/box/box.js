@@ -144,7 +144,8 @@ angular.module(
                         dndService.registerDropTarget(
                             element[0].parentElement,
                             'component subscircuit',
-                            dropHandler
+                            dropHandler,
+                            true
                         );
                         scope.$apply();
                     });
