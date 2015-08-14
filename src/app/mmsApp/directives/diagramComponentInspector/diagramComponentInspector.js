@@ -4,24 +4,28 @@ require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
 require('../../services/subcircuitDocumentation/subcircuitDocumentation.js');
+require('../../services/junctionBoxService/junctionBoxService.js');
 
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
+        //'mms.diagramComponentInspector.inspectedJunctionBoxDetails',
         'mms.contentEditable',
         'mms.componentBrowser.infoButton',
         'mms.subcircuitDetails.react',
-        'mms.subcircuitDocumentation'
+        'mms.subcircuitDocumentation',
+        'mms.junctionBoxService'
     ])
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation) {
+            function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation, junctionBoxService) {
 
                 var self = this;
 
                 this.$http = $http;
                 this.subcircuitDocumentation = subcircuitDocumentation;
+                this.junctionBoxService = junctionBoxService;
                 this.projectHandling = projectHandling;
 
                 this.$rootScope = $rootScope;
@@ -122,6 +126,19 @@ angular.module('mms.diagramComponentInspector', [
                         this.subcircuitDocumentation.loadDocumentation(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
                             .then(function (containerData) {
                                 newInspectable.details.documentation = containerData;
+                            });
+
+                    }
+                    else if (newInspectable.metaType === 'JunctionBox') {
+
+                        newInspectable.details = {};
+                        this.junctionBoxService.loadData(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
+                            .then(function (junctionBoxData) {
+
+                                console.log(junctionBoxData);
+
+                                newInspectable.details = junctionBoxData;
+
                             });
 
                     }
