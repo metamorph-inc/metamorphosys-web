@@ -40,9 +40,11 @@ var symbolsModule = angular.module(
     ] );
 
 symbolsModule.controller(
-    'SymbolController', function ( $scope ) {
+    'SymbolController', function ( $scope, $log ) {
 
-        
+        $scope.iconSvgElement = null;
+        $scope.iconCanBeAdded = $scope.component.symbol.symbolDirective === 'container-box' ||
+                                $scope.component.symbol.symbolDirective === 'box';
 
         $scope.getSymbolTransform = function () {
 
@@ -84,12 +86,52 @@ symbolsModule.controller(
 
         };
 
+        $scope.getIconWidth = function() {
+            return parseFloat($scope.iconSvgElement.getAttribute("width"));
+        };
+
+        $scope.getIconHeight = function() {
+            return parseFloat($scope.iconSvgElement.getAttribute("height"));
+        };
+
+        $scope.setIconSvgViewBox = function(symbolElement) {
+
+            var viewBox = "0 0 0 0",
+                iconWidth,
+                iconHeight;
+
+            if ($scope.component.icon) {
+
+                if ($scope.iconSvgElement.getAttribute("viewBox") === null) {
+
+                    iconWidth = $scope.getIconWidth();
+                    iconHeight = $scope.getIconHeight();
+
+                    if (!iconWidth || !iconHeight) {
+                        $log.warn("Imported icon does not have width or height attributes to construct viewBox, can't display!");
+                    }
+                    else {
+                        viewBox = "0 0 " + iconWidth + " " + iconHeight;
+                    }
+
+                }
+                else {
+
+                    viewBox = $scope.iconSvgElement.getAttribute("viewBox");
+
+                }
+            }
+
+            symbolElement.setAttribute("viewBox", viewBox);
+
+        };
+
     } );
 
 symbolsModule.directive(
     'componentSymbol',
 
-    function ( $compile, $timeout ) {
+    function ( $compile, $timeout, dndService, $rootScope ) {
 
         return {
             scope: {
@@ -115,8 +157,12 @@ symbolsModule.directive(
                     justClicked,
                     doubleClickTolerance = 600,
 
+                    dropHandler,
+                    symbolIcon,
+
                     $el,
                     $labelElement,
+                    $symbolIcon,
                     compiledSymbol,
                     compiledIcon,
                     symbolDirective;
@@ -229,6 +275,7 @@ symbolsModule.directive(
 
                 scope.$on( '$destroy', function () {
                     svgDiagramController.unregisterComponentElement( scope.component.id );
+                    dndService.unregisterDropTarget( element[0] );
                 } );
 
                 // Label ellipsis
@@ -276,6 +323,104 @@ symbolsModule.directive(
 
                     });
                 }
+
+                // Adding/Swapping of Component Icons
+
+                function getElementChild(data) {
+
+                    var childElement = null,
+                        node;
+
+                    if (data.firstElementChild) {
+                        childElement = data.firstElementChild;
+                    }
+                    else {
+                        node = data.firstChild;
+
+                        for ( ; node; node = node.nextSibling) {
+
+                            if (node.nodeType === 1) {
+                                element = node;
+                                break;
+                            }
+                        }
+                    }
+                    return childElement;
+                }
+
+                function replaceIcon() {
+
+                    var svgIconData,
+                        symbolIconChildElement;
+
+                    if (scope.component.icon) {
+
+                        $.get(scope.component.icon, null, function(data) {
+
+                            svgIconData = getElementChild(data);
+
+                        }, 'xml').then(function() {
+
+                            scope.iconSvgElement = svgIconData;
+
+                            symbolIconChildElement = getElementChild(symbolIcon);
+
+                            if (symbolIconChildElement) {
+                                symbolIcon.replaceChild(scope.iconSvgElement, symbolIconChildElement);
+                            }
+                            else {
+                                symbolIcon.appendChild(scope.iconSvgElement);
+                            }
+
+                            scope.setIconSvgViewBox(symbolIcon);
+                        });
+                    }
+                    else {
+
+                        $symbolIcon = $(symbolIcon);
+
+                        if ($symbolIcon.children().length) {
+                            $symbolIcon.children().eq(0).remove();
+                        }
+                    }
+                }
+
+                dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
+
+                // Template bindings haven't occurred yet, need to put in timeout to have them set so that
+                // custom symbol tags are available.
+
+                // Container-Boxes & Boxes can have icons added. Other will be able to swap symbols out
+
+                $timeout(function() {
+
+                    if ( scope.iconCanBeAdded ) {
+                        symbolIcon = $el.find('.symbol-icon')[0];
+
+                        replaceIcon();
+                    }
+
+                    // TODO: else replace symbol
+
+                    dndService.registerDropTarget(
+                        element[0],
+                        'component subscircuit',
+                        dropHandler,
+                        true
+                    );
+                    scope.$apply();
+                });
+
+                $rootScope.$on('iconWasChanged', function() {
+                    scope.$apply(function() {
+
+                        if ( scope.iconCanBeAdded ) {
+                            replaceIcon();
+                        }
+
+                        // TODO: else replace symbol
+                    });
+                });
             }
         };
     }

@@ -5,16 +5,13 @@
 angular.module(
     'mms.designVisualization.symbols.containerBox', []
 )
-    .controller( 'ContainerBoxController', function ( $scope, $log ) {
+    .controller( 'ContainerBoxController', function ( $scope ) {
 
         $scope.portWires = [];
 
         $scope.addedIconHeight = 30;
         $scope.maxIconWidth = 180;
         $scope.maxIconHeight = 50;
-        $scope.iconUrl = null;
-        $scope.iconSvgElement = null;
-        $scope.iconSvgViewBox = "0 0 0 0";
 
         angular.forEach( $scope.component.symbol.ports, function ( port ) {
 
@@ -26,10 +23,6 @@ angular.module(
             portWireLength = $scope.component.symbol.portWireLength;
             width = $scope.component.symbol.width;
             height = $scope.component.symbol.height;
-
-            if ($scope.component.icon) {
-                height += $scope.addedIconHeight;
-            }
 
             if ( port.x === 0 ) {
                 toX = portWireLength;
@@ -80,51 +73,11 @@ angular.module(
             return $scope.getBoxStartX();
         };
 
-        $scope.getIconWidth = function() {
-            return parseFloat($scope.iconSvgElement.getAttribute("width"));
-        };
-
-        $scope.getIconHeight = function() {
-            return parseFloat($scope.iconSvgElement.getAttribute("height"));
-        };
-
-        $scope.setIconSvgViewBox = function(symbolElement) {
-            
-            var viewBox = "0 0 0 0",
-                iconWidth,
-                iconHeight;
-
-            if ($scope.component.icon) {
-
-                if ($scope.iconSvgElement.getAttribute("viewBox") === null) {
-
-                    iconWidth = $scope.getIconWidth();
-                    iconHeight = $scope.getIconHeight();
-
-                    if (!iconWidth || !iconHeight) {
-                        $log.warn("Imported icon does not have width or height attributes to construct viewBox, can't display!");
-                    }
-                    else {
-                        viewBox = "0 0 " + iconWidth + " " + iconHeight;
-                    }
-
-                }
-                else {
-
-                    viewBox = $scope.iconSvgElement.getAttribute("viewBox");
-
-                }
-            }
-
-            symbolElement.setAttribute("viewBox", viewBox);
-
-        };
-
     } )
     .directive(
         'containerBox',
 
-        function ($timeout, dndService, $rootScope) {
+        function () {
 
             return {
                 scope: false,
@@ -132,115 +85,6 @@ angular.module(
                 replace: true,
                 controller: 'ContainerBoxController',
                 templateUrl: '/mmsApp/templates/containerBox.html',
-                templateNamespace: 'SVG',
-                require: ['^svgDiagram', '^diagramContainer'],
-                link: function (scope, element, attributes, controllers) {
-
-                    var svgDiagramController = controllers[0],
-                        diagramContainerController = controllers[1],
-
-                        dropHandler,
-
-                        $el,
-
-                        symbolIcon,
-                        $symbolIcon;
-
-                    scope.svgDiagramController = svgDiagramController;
-                    scope.diagram = diagramContainerController.getDiagram();
-                    scope.element = element[0];
-
-                    $el = $( scope.element );
-
-                    symbolIcon = $el.find('.symbol-icon')[0];
-
-                    function getElementChild(data) {
-
-                        var element = null,
-                            node;
-
-                        if (data.firstElementChild) {
-                            element = data.firstElementChild;
-                        }
-                        else {
-                            node = data.firstChild;
-
-                            for ( ; node; node = node.nextSibling) {
-
-                                if (node.nodeType === 1) {
-                                    element = node;
-                                    break;
-                                }
-                            }
-                        }
-                        return element;
-                    }
-
-                    function replaceIcon() {
-
-                        var svgIconData,
-                            symbolIconChildElement;
-
-                        if (scope.component.icon) {
-
-                            $.get(scope.component.icon, null, function(data) {
-
-                                svgIconData = getElementChild(data);
-
-                            }, 'xml').then(function() {
-
-                                scope.iconSvgElement = svgIconData;
-
-                                symbolIconChildElement = getElementChild(symbolIcon);
-
-                                if (symbolIconChildElement) {
-                                    symbolIcon.replaceChild(scope.iconSvgElement, symbolIconChildElement);
-                                }
-                                else {
-                                    symbolIcon.appendChild(scope.iconSvgElement);
-                                }
-
-                                scope.setIconSvgViewBox(symbolIcon);
-                            });
-                        }
-                        else {
-
-                            var $symbolIcon = $(symbolIcon);
-
-                            if ($symbolIcon.children().length) {
-                                $symbolIcon.children().eq(0).remove();      
-                            }
-                        }
-                    }
-
-                    replaceIcon();
-
-                    dropHandler = svgDiagramController._onDrop.bind(svgDiagramController);
-
-                    // Template bindings haven't occurred yet, need to put in timeout to have them set so that
-                    // rect tags are available.
-                    $timeout(function() {
-                        dndService.registerDropTarget(
-                            element[0].parentElement,
-                            'component subscircuit',
-                            dropHandler,
-                            true,
-                            "copy"
-                        );
-                        scope.$apply();
-                    });
-
-                    scope.$on('$destroy', function() {
-                        dndService.unregisterDropTarget( element[0].parentElement );
-                    });
-                     
-                    $rootScope.$on('iconWasChanged', function() {
-                        scope.$apply(function() {
-
-                            replaceIcon();
-
-                        });
-                    });
-                }
+                templateNamespace: 'SVG'
             };
         } );

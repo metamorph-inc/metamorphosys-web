@@ -516,6 +516,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
+                    icon: element.icon,
                     label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
@@ -566,6 +567,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
+                    icon: element.icon,
                     label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
@@ -626,6 +628,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
+                    icon: element.icon,
                     label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
@@ -694,6 +697,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
                 newModelComponent = new DiagramComponent({
                     id: element.id,
+                    icon: element.icon,
                     label: labelParser(element.name),
                     x: element.position.x,
                     y: element.position.y,
@@ -725,7 +729,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     limitLabelWidthTo: 150,
                     portDirective: 'decorated-port'
                 }, portStuff.portDescriptors, {
-                    minWidth: 240,
+                    minWidth: 180,
                     portWireLeadInIncrement: 8,
                     portWireLength: 30,
                     topPortPadding: 20
@@ -733,6 +737,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             newModelComponent = new DiagramComponent({
                 id: element.id,
+                icon: element.icon,
                 label: labelParser(element.name),
                 x: element.position.x,
                 y: element.position.y,

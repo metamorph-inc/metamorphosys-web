@@ -37,7 +37,7 @@ DnDService.prototype.findInDroptargets = function(element) {
     return position;
 };
 
-DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler, useDragster, dropEffect) {
+DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler, useDragster) {
 
     var self = this,
         channelArray,
@@ -65,10 +65,6 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragOver: function(e) {
 
-                if (dropEffect) {
-                    e.dataTransfer ? e.dataTransfer.dropEffect = dropEffect : e.originalEvent.dataTransfer.dropEffect = dropEffect;
-                }
-
                 var classNames = element.getAttribute('class');
 
                 if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
@@ -78,10 +74,6 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
                 self._onDragOverEnterLeave(e);
             },
             onDragenter: function(e) {
-
-                if (dropEffect) {
-                    e.dataTransfer ? e.dataTransfer.dropEffect = dropEffect : e.originalEvent.dataTransfer.dropEffect = dropEffect;
-                }
 
                 var classNames = element.getAttribute('class');
 
