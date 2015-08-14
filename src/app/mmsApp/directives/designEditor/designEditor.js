@@ -323,7 +323,7 @@ angular.module('mms.designEditor', [
                             nodeService.loadNode(layoutContext, componentToAddIcon.id)
                                 .then(function(componentNode) {
 
-                                    componentNode.setAttribute("Icon", 'http://localhost:8855/rest/blob/view/' + iconBlobUrlParts[iconBlobUrlParts.length - 1]);
+                                    componentNode.setAttribute("Icon", '/rest/blob/view/' + iconBlobUrlParts[iconBlobUrlParts.length - 1]);
                                     $rootScope.stopProcessing();
                                 });
                         }
