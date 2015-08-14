@@ -183,7 +183,7 @@ angular.module(
 
                     function replaceIcon() {
                         if (scope.component.icon) {
-                            scope.iconSvgElement = $(scope.component.icon)[0];
+                            //scope.iconSvgElement = $(scope.component.icon)[0];
 
                             if (symbolIcon.children.length) {
                                 symbolIcon.replaceChild(scope.iconSvgElement, symbolIcon.children[0]);
@@ -232,7 +232,24 @@ angular.module(
                     $rootScope.$on('iconWasChanged', function() {
                         scope.$apply(function() {
 
-                            replaceIcon();
+                            var svgIconData;
+
+                            if (scope.component.icon) {
+
+                                $.get(scope.component.icon, null, function(data) {
+                                  svgIconData = data.children[0];
+                                }, 'xml').then(function() {
+
+                                    // componentNode.setAttribute("Icon", svgIconData.outerHTML);
+                                    scope.iconSvgElement = svgIconData;
+                                    replaceIcon();
+                                });
+                            }
+                            else {
+                                replaceIcon();
+                            }
+
+                            
 
                         });
                     });

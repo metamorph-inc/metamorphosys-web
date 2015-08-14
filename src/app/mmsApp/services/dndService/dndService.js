@@ -65,6 +65,8 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragOver: function(e) {
 
+                e.dataTransfer ? e.dataTransfer.dropEffect = "copy" : e.originalEvent.dataTransfer.dropEffect = "copy";
+
                 var classNames = element.getAttribute('class');
 
                 if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
@@ -74,6 +76,8 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
                 self._onDragOverEnterLeave(e);
             },
             onDragenter: function(e) {
+
+                e.dataTransfer ? e.dataTransfer.dropEffect = "copy" : e.originalEvent.dataTransfer.dropEffect = "copy";
 
                 var classNames = element.getAttribute('class');
 
