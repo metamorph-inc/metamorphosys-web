@@ -155,11 +155,11 @@ angular.module(
                     symbolIcon = $el.find('.symbol-icon')[0];
 
                     function getElementChild(data) {
-                        
+
                         var element = null,
                             node;
 
-                        if (data.firstElementChild) { 
+                        if (data.firstElementChild) {
                             element = data.firstElementChild;
                         }
                         else {
@@ -224,7 +224,8 @@ angular.module(
                             element[0].parentElement,
                             'component subscircuit',
                             dropHandler,
-                            true
+                            true,
+                            "copy"
                         );
                         scope.$apply();
                     });

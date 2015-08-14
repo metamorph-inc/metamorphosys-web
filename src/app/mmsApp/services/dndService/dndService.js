@@ -37,7 +37,7 @@ DnDService.prototype.findInDroptargets = function(element) {
     return position;
 };
 
-DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler, useDragster) {
+DnDService.prototype.registerDropTarget = function(element, channelStr, dropHandler, useDragster, dropEffect) {
 
     var self = this,
         channelArray,
@@ -65,7 +65,9 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragOver: function(e) {
 
-                e.dataTransfer ? e.dataTransfer.dropEffect = "copy" : e.originalEvent.dataTransfer.dropEffect = "copy";
+                if (dropEffect) {
+                    e.dataTransfer ? e.dataTransfer.dropEffect = dropEffect : e.originalEvent.dataTransfer.dropEffect = dropEffect;
+                }
 
                 var classNames = element.getAttribute('class');
 
@@ -77,7 +79,9 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragenter: function(e) {
 
-                e.dataTransfer ? e.dataTransfer.dropEffect = "copy" : e.originalEvent.dataTransfer.dropEffect = "copy";
+                if (dropEffect) {
+                    e.dataTransfer ? e.dataTransfer.dropEffect = dropEffect : e.originalEvent.dataTransfer.dropEffect = dropEffect;
+                }
 
                 var classNames = element.getAttribute('class');
 
