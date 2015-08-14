@@ -27,16 +27,16 @@
                         <td>{{ctrl.inspectable.details.connectors[1].name}}</td>
                         <td>XXX</td>
                     </tr>
-                    <tr ng-repeat="theport in ctrl.inspectable.details.connectors[0].ports">
-                        <td>{{theport.name}}</td>
+                    <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports">
+                        <td>{{port1.name}}</td>
                         <td>
-                            <select ng-model="theport.mappedTo">
-                                <option value="">(none)</option>
-                                <option ng-repeat="theport2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: theport.type}" value="{{theport2.id"}}>{{theport2.name}}</option>
+                            <select ng-model="port1.mapping">
+                                <option value="{{null}}">(none)</option>
+                                <option ng-repeat="port2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: port1.type}" value="{{port2.id}}">{{port2.name}}</option>
                             </select>
                         </td>
                         <td>
-                            ???
+                            {{port1.mapping}}
                         </td>
                     </tr>
                 </table>

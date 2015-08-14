@@ -23,73 +23,83 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                 mappings: []
             };
 
-            return nodeService.loadNode(parentContext, junctionBoxId)
+            var meta;
+            return nodeService.getMetaNodes(parentContext)
+                .then(function (meta_) {
+                    meta = meta_;
+                })
+                .then(function() {
+                    return nodeService.loadNode(parentContext, junctionBoxId);
+                })
                 .then(function (junctionBox) {
-
                     return junctionBox.loadChildren();
-
                 })
                 .then(function (children) {
 
-                    nodeService.getMetaNodes(parentContext)
-                        .then(function(meta) {
+                    var isConnector = function (obj) {
+                        return obj.getMetaTypeName(meta) === 'Connector';
+                    };
+                    var isMapping = function (obj) {
+                        return obj.getMetaTypeName(meta) === 'PortMap';
+                    };
 
-                            var isConnector = function(obj) {
-                                return obj.getMetaTypeName(meta) === 'Connector';
+                    // Get maps
+                    children.forEach(function (child) {
+                        if (isMapping(child)) {
+
+                            junctionBoxData.mappings.push([child.getPointer('src').to, child.getPointer('dst').to]);
+
+                        }
+                    });
+
+                    // Do connectors
+                    children.forEach(function (child) {
+                        if (isConnector(child)) {
+                            var connector = child;
+
+                            var connectorData = {
+                                name: connector.getAttribute('name'),
+                                id: connector.id,
+                                ports: []
                             };
-                            var isMapping = function(obj) {
-                                return obj.getMetaTypeName(meta) === 'PortMap';
-                            };
 
-                            children.forEach(function(child) {
-                                if (isConnector(child)) {
-                                    var connector = child;
+                            connector.loadChildren()
+                                .then(function (ports) {
+                                    ports.forEach(function (port) {
 
-                                    var connectorData = {
-                                        name: connector.getAttribute('name'),
-                                        id: connector.id,
-                                        ports: []
-                                    };
+                                        var portData = {
+                                            name: port.getAttribute('name'),
+                                            id: port.id,
+                                            type: port.getAttribute('Type'),
+                                            mapping: null
+                                        };
 
-                                    connector.loadChildren()
-                                        .then(function (ports) {
-                                            ports.forEach(function (port) {
-
-                                                var portData = {
-                                                    name: port.getAttribute('name'),
-                                                    id: port.id,
-                                                    type: port.getAttribute('Type')
-                                                };
-
-                                                connectorData.ports.push(portData);
-
-                                            });
-                                        })
-                                        .then(function () {
-
-                                            junctionBoxData.connectors.push(connectorData);
-
+                                        junctionBoxData.mappings.forEach(function (mapping) {
+                                            if (mapping[0] === port.id) {
+                                                portData.mapping = mapping[1];
+                                            }
+                                            else if (mapping[1] === port.id) {
+                                                portData.mapping = mapping[0];
+                                            }
                                         });
-                                }
-                                else if (isMapping(child)) {
 
-                                    junctionBoxData.mappings.push([child.getPointer('src').to, child.getPointer('dst').to]);
+                                        connectorData.ports.push(portData);
 
-                                }
-                            });
+                                    });
 
-                        });
+                                    junctionBoxData.connectors.push(connectorData);
 
-                    // Sort so that the connector with the most ports comes first.
-                    junctionBoxData.connectors = junctionBoxData.connectors.sort(function (a, b) {
-                        return a.ports.length < b.ports.length;
+                                    // Sort so that the connector with the most ports comes first.
+                                    junctionBoxData.connectors = junctionBoxData.connectors.sort(function (a, b) {
+                                        return a.ports.length < b.ports.length;
+                                    });
+                                });
+                        }
                     });
 
                     console.log(junctionBoxData);
                     return junctionBoxData;
-
                 });
-
         };
 
 
