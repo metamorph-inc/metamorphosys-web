@@ -71,7 +71,6 @@ SOFTWARE.
                     }
                     if (!first && !second) {
                         $this.trigger('dragster:drop', event);
-                        $this.trigger('dragster:leave', event);
                     }
                     event.preventDefault();
                 },
