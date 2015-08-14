@@ -278,7 +278,7 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
             self.core.setAttribute(domainModel, 'Type', 'CircuitLayout');
             var layout = JSON.parse(self.layoutJson);
             var box = '0,0,' + layout.boardWidth + ',' + layout.boardHeight;
-            self.core.setAttribute(domainModel, 'BoundingBoxes', box + ';0,' + box + ',1');
+            self.core.setAttribute(domainModel, 'BoundingBoxes', box + ',0;' + box + ',1');
             self.core.deleteSet(domainModel, 'UsesResource');
             self.core.addMember(domainModel, 'UsesResource', resource);
             return Q.ninvoke(self, 'save', 'imported brd file');
@@ -300,6 +300,7 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
 
         if (typeof window !== 'undefined') {
             self.createMessage(null, 'This plugin must be run on the server', 'error');
+            self.result.setError('This plugin must be run on the server');
             callback('This plugin must be run on the server', self.result);
             return;
         }
@@ -329,6 +330,7 @@ function BrdImporter(PluginBase, MetaTypes, Q, superagent) {
             .nodeify(function (err) {
                 if (err) {
                     var msg = err.message || err.msg || err;
+                    self.result.setError(msg);
                     self.createMessage(null, msg, 'error');
                     if (err instanceof Error) {
                         msg += '\n' + err.stack;
