@@ -340,7 +340,7 @@ symbolsModule.directive(
                         for ( ; node; node = node.nextSibling) {
 
                             if (node.nodeType === 1) {
-                                element = node;
+                                childElement = node;
                                 break;
                             }
                         }
