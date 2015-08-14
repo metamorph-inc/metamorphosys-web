@@ -40,7 +40,7 @@ var symbolsModule = angular.module(
     ] );
 
 symbolsModule.controller(
-    'SymbolController', function ( $scope, $log ) {
+    'SymbolController', function ( $scope, $rootScope, $log, $mdToast ) {
 
         $scope.iconSvgElement = null;
         $scope.iconCanBeAdded = $scope.component.symbol.symbolDirective === 'container-box' ||
@@ -109,6 +109,13 @@ symbolsModule.controller(
 
                     if (!iconWidth || !iconHeight) {
                         $log.warn("Imported icon does not have width or height attributes to construct viewBox, can't display!");
+
+                        $mdToast.show(
+                            $mdToast.simple()
+                                .content("Icon does not have width or height attributes to construct viewBox, can't display!")
+                        );
+
+                        $rootScope.$emit('svgIconMustBeRemoved', $scope.component);
                     }
                     else {
                         viewBox = "0 0 " + iconWidth + " " + iconHeight;
