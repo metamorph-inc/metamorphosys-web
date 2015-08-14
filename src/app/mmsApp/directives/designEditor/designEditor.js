@@ -327,7 +327,14 @@ angular.module('mms.designEditor', [
                                     $rootScope.stopProcessing();
                                 });
                         }
-
+                        else {
+                            $log.error("Unable to drop SVG icon at cursor position (" + position.x + ", " + position.y + ")");
+                            $mdToast.show(
+                                $mdToast.simple()
+                                    .content('Unable to drop SVG icon there!')
+                            );
+                            $rootScope.stopProcessing();
+                        }
                     });
 
                     addRootScopeEventListener('svgIconMustBeRemoved', function($event, component) {

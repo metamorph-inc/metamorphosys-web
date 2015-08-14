@@ -91,6 +91,7 @@ angular.module('mms.svgDiagram', [
                 this.mmsUtils = mmsUtils;
                 this.contentServerUrl = contentServerUrl;
                 this.$log = $log;
+                this.$mdToast = $mdToast;
                 this.acmImportService = acmImportService;
                 this.dndService = dndService;
 

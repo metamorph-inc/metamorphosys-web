@@ -87,7 +87,11 @@ DiagramDropHandler._onDrop = function(e, dragged) {
             (self.componentDropElements.indexOf(e.target.tagName) !== -1 && self.componentDroppableFiles.indexOf(droppedFileExtension) === -1) ) {
             
             validDrop = false;
-            self.$log.error('Tried dropping invalid file on diagram or component.');
+            self.$log.error('Tried dropping invalid file onto diagram or component.');
+            self.$mdToast.show(
+                self.$mdToast.simple()
+                    .content('Tried dropping incompatible file onto diagram or component.')
+            );
             
         }
 
