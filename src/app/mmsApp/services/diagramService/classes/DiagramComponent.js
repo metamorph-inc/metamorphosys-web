@@ -314,12 +314,6 @@ DiagramComponent.prototype.setLabel = function(newLabel) {
 
 };
 
-DiagramComponent.prototype.getIcon = function() {
-
-    return this.icon;
-
-};
-
 DiagramComponent.prototype.setIcon = function(newIcon) {
 
     this.icon = newIcon;

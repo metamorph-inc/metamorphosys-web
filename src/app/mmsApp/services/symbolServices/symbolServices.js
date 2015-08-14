@@ -32,7 +32,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
         numberOfPorts = somePorts.length;
         
-        offset = parameters.portSpacing;        
+        offset = parameters.portSpacing;
 
         if (side === 'right' || side === 'left') {
             offset += parameters.topPortPadding;
@@ -86,7 +86,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     break;
 
                 case 'right':
-                    aPort.x = width;
+                    aPort.x = width + parameters.portWireLength * (parameters.hasLeftPort + parameters.hasRightPort);
                     aPort.y = offset;
                     aPort.wireAngle = 0;
                     aPort.cssClass = 'right';
@@ -102,7 +102,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
 
                 case 'bottom':
                     aPort.x = offset;
-                    aPort.y = height;
+                    aPort.y = height + parameters.portWireLength * (parameters.hasTopPort + parameters.hasBottomPort);
                     aPort.wireAngle = 90;
                     aPort.cssClass = 'bottom';
                     aPort.labelPosition = {
@@ -237,8 +237,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                 cssClass += ' parameters.cssClass';
             }
 
-            boxWidth = portsAndSizes.width - parameters.portWireLength * (parameters.hasLeftPort + parameters.hasRightPort);
-            boxHeight = portsAndSizes.height - parameters.portWireLength * (parameters.hasTopPort + parameters.hasBottomPort);
+            boxWidth = portsAndSizes.width;
+            boxHeight = portsAndSizes.height;
 
             symbol = angular.extend(descriptor,
                 {
@@ -247,12 +247,12 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     symbolDirective: symbolDirective,
                     svgDecoration: null,
                     labelPosition: {
-                        x: portsAndSizes.width / 2,
+                        x: portsAndSizes.width / 2 + parameters.portWireLength * parameters.hasLeftPort,
                         y: parameters.hasTopPort * parameters.portWireLength + 24
                     },
                     portWireLength: parameters.portWireLength,
-                    width: portsAndSizes.width,
-                    height: portsAndSizes.height,
+                    width: portsAndSizes.width + parameters.portWireLength * (parameters.hasLeftPort + parameters.hasRightPort),
+                    height: portsAndSizes.height + parameters.portWireLength * (parameters.hasTopPort + parameters.hasBottomPort),
                     ports: portsAndSizes.ports,
                     boxHeight: boxHeight,
                     boxWidth: boxWidth,

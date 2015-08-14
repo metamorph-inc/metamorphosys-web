@@ -42,6 +42,8 @@ var symbolsModule = angular.module(
 symbolsModule.controller(
     'SymbolController', function ( $scope ) {
 
+        
+
         $scope.getSymbolTransform = function () {
 
             var transformString;
@@ -66,7 +68,7 @@ symbolsModule.controller(
 
         $scope.getSymbolRectHeight = function () {
 
-            return $scope.component.icon ? $scope.component.symbol.height + 60 : $scope.component.symbol.height + 20;
+            return $scope.component.icon ? $scope.component.symbol.height + 40 : $scope.component.symbol.height + 20;
 
         };
 

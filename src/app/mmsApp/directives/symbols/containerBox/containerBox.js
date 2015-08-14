@@ -13,7 +13,7 @@ angular.module(
         $scope.maxIconWidth = 180;
         $scope.maxIconHeight = 50;
         $scope.iconUrl = null;
-        $scope.iconSvgElement;
+        $scope.iconSvgElement = null;
         $scope.iconSvgViewBox = "0 0 0 0";
 
         angular.forEach( $scope.component.symbol.ports, function ( port ) {
@@ -21,7 +21,7 @@ angular.module(
             var toX = 0,
                 toY = 0,
                 portWireLength,
-                width, height;
+                width, height; 
 
             portWireLength = $scope.component.symbol.portWireLength;
             width = $scope.component.symbol.width;
@@ -59,13 +59,6 @@ angular.module(
             } );
         } );
 
-        $scope.getIconUrl = function() {
-            if ($scope.component.icon) {
-                // return "http://localhost:8855/rest/blob/view/" + $scope.component.icon;
-                return "data:image/svg+xml," + $scope.component.icon;
-            }
-        };
-
         $scope.getBoxStartY = function() {
             return $scope.component.symbol.hasTopPort * $scope.component.symbol.portWireLength;
         };
@@ -85,23 +78,6 @@ angular.module(
 
         $scope.getIconStartX = function() {
             return $scope.getBoxStartX();
-        };
-
-        $scope.updateIconTransform = function() {
-
-            // Width varies based on ports
-
-            if ($scope.component.symbol.hasLeftPort && $scope.component.symbol.hasRightPort) {
-                $scope.iconElement.style.webkitTransform = "translate(40%, 0%)";
-            }
-            else {
-                $scope.iconElement.style.webkitTransform = "translate(70%, 0%)";
-            }
-
-        };
-
-        $scope.updateIconUrl = function() {
-            $scope.iconUrl = $scope.getIconUrl();
         };
 
         $scope.getIconWidth = function() {
@@ -177,22 +153,55 @@ angular.module(
                     $el = $( scope.element );
 
                     symbolIcon = $el.find('.symbol-icon')[0];
-                    
 
-                    // scope.iconElement = $el.find( '.symbol-icon-placeholder' )[0];
+                    function getElementChild(data) {
+                        
+                        var element = null,
+                            node;
+
+                        if (data.firstElementChild) { 
+                            element = data.firstElementChild;
+                        }
+                        else {
+                            node = data.firstChild;
+
+                            for ( ; node; node = node.nextSibling) {
+
+                                if (node.nodeType === 1) {
+                                    element = node;
+                                    break;
+                                }
+                            }
+                        }
+                        return element;
+                    }
 
                     function replaceIcon() {
-                        if (scope.component.icon) {
-                            //scope.iconSvgElement = $(scope.component.icon)[0];
 
-                            if (symbolIcon.children.length) {
-                                symbolIcon.replaceChild(scope.iconSvgElement, symbolIcon.children[0]);
-                            }
-                            else {
-                                symbolIcon.appendChild(scope.iconSvgElement);
-                            }
-                            // $symbolIcon.prepend(scope.iconSvgElement);
-                            scope.setIconSvgViewBox(symbolIcon);
+                        var svgIconData,
+                            symbolIconChildElement;
+
+                        if (scope.component.icon) {
+
+                            $.get(scope.component.icon, null, function(data) {
+
+                                svgIconData = getElementChild(data);
+
+                            }, 'xml').then(function() {
+
+                                scope.iconSvgElement = svgIconData;
+
+                                symbolIconChildElement = getElementChild(symbolIcon);
+
+                                if (symbolIconChildElement) {
+                                    symbolIcon.replaceChild(scope.iconSvgElement, symbolIconChildElement);
+                                }
+                                else {
+                                    symbolIcon.appendChild(scope.iconSvgElement);
+                                }
+
+                                scope.setIconSvgViewBox(symbolIcon);
+                            });
                         }
                         else {
 
@@ -223,33 +232,11 @@ angular.module(
                     scope.$on('$destroy', function() {
                         dndService.unregisterDropTarget( element[0].parentElement );
                     });
-
-                    // scope.$watchCollection('[component.symbol.hasLeftPort, component.symbol.hasRightPort]', function() {
-                    //     scope.updateIconTransform();
-                    // });
-                    
                      
                     $rootScope.$on('iconWasChanged', function() {
                         scope.$apply(function() {
 
-                            var svgIconData;
-
-                            if (scope.component.icon) {
-
-                                $.get(scope.component.icon, null, function(data) {
-                                  svgIconData = data.children[0];
-                                }, 'xml').then(function() {
-
-                                    // componentNode.setAttribute("Icon", svgIconData.outerHTML);
-                                    scope.iconSvgElement = svgIconData;
-                                    replaceIcon();
-                                });
-                            }
-                            else {
-                                replaceIcon();
-                            }
-
-                            
+                            replaceIcon();
 
                         });
                     });
