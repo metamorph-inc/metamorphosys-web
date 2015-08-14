@@ -30,9 +30,9 @@
                     <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports">
                         <td>{{port1.name}}</td>
                         <td>
-                            <select ng-model="port1.mapping">
-                                <option value="{{null}}">(none)</option>
-                                <option ng-repeat="port2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: port1.type}" value="{{port2.id}}">{{port2.name}}</option>
+                            <select ng-model="port1.mapping" ng-change="ctrl.commitMapping()">
+                                <option value="">(none)</option>
+                                <option ng-repeat="port2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: port1.type}" value="{{port2.id}}" ng-selected="port2.id === port1.mapping">{{port2.name}}</option>
                             </select>
                         </td>
                         <td>

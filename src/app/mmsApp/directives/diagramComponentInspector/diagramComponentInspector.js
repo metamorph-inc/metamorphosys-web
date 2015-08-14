@@ -146,6 +146,10 @@ angular.module('mms.diagramComponentInspector', [
 
             };
 
+            DiagramComponentInspectorController.prototype.commitMapping = function() {
+                console.log('commit mapping');
+            };
+
             DiagramComponentInspectorController.prototype.openInfo = function() {
 
                 if (this.inspectable.infoUrl) {
