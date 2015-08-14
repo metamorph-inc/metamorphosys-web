@@ -468,7 +468,7 @@ angular.module('mms.svgDiagram', [
 
                     var wireEl = document.getElementById(wireId);
 
-                    if (wireEl) {
+                    if (wireEl && wireEl.classList) {
 
                         angular.forEach(wireEl.childNodes, function(wireSegmentEl) {
 
@@ -484,7 +484,7 @@ angular.module('mms.svgDiagram', [
 
                     var wireEl = document.getElementById(wireId);
 
-                    if (wireEl) {
+                    if (wireEl && wireEl.classList) {
 
                         angular.forEach(wireEl.childNodes, function(wireSegmentEl) {
 
@@ -514,11 +514,15 @@ angular.module('mms.svgDiagram', [
 
                         Array.prototype.forEach.call(els, function(el) {
 
-                            if (disable) {
-                                el.classList.add('no-hover');
-                            }
-                            else {
-                                el.classList.remove('no-hover');
+                            if (el.classList) {
+
+                                if (disable) {
+                                    el.classList.add('no-hover');
+                                }
+                                else {
+                                    el.classList.remove('no-hover');
+                                }
+
                             }
 
                         });
@@ -709,7 +713,7 @@ angular.module('mms.svgDiagram', [
 
                                 wireEl = document.getElementById(wireId);
 
-                                if (wireEl) {
+                                if (wireEl && wireEl.classList) {
                                     wireEl.classList.add('highlight');
                                 }
 
@@ -752,7 +756,7 @@ angular.module('mms.svgDiagram', [
 
                         wireEl = document.getElementById(wireId);
 
-                        if (wireEl) {
+                        if (wireEl && wireEl.classList) {
 
                             wireEl.classList.remove('highlight');
                         }
@@ -781,7 +785,7 @@ angular.module('mms.svgDiagram', [
 
                                     var nameEl = el.querySelector('.connector-name');
 
-                                    if (nameEl.textContent === self._focusedPort.portSymbol.label) {
+                                    if (nameEl.textContent === self._focusedPort.portSymbol.label && el.classList) {
                                         el.classList.add('focused');
                                     }
 
@@ -796,7 +800,9 @@ angular.module('mms.svgDiagram', [
                                     if (type !== typeToFocus) {
 
                                         for (var i = 0; i < this._portElementsByType[type].length; i++) {
-                                            this._portElementsByType[type][i].classList.add('faded');
+                                            if (this._portElementsByType[type][i].classList) {
+                                                this._portElementsByType[type][i].classList.add('faded');
+                                            }
                                         }
 
                                     }
@@ -814,7 +820,9 @@ angular.module('mms.svgDiagram', [
                         for (var type in this._portElementsByType) {
 
                             for (var i = 0; i < this._portElementsByType[type].length; i++) {
-                                this._portElementsByType[type][i].classList.remove('faded');
+                                if (this._portElementsByType[type][i].classList) {
+                                    this._portElementsByType[type][i].classList.remove('faded');
+                                }
                             }
                         }
 
@@ -824,7 +832,9 @@ angular.module('mms.svgDiagram', [
 
                     if (portDescriptors) {
                         Array.prototype.map.call(portDescriptors, function(el) {
-                            el.classList.remove('focused');
+                            if (el.classList) {
+                                el.classList.remove('focused');
+                            }
                         });
                     }
 
