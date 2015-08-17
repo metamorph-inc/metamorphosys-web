@@ -14,6 +14,7 @@
         background: transparent;
         cursor: copy;
         margin: 2px;
+        top: -10px;
         vertical-align: top;
         position: relative;
         transition: background 200ms;
@@ -31,7 +32,7 @@
 		.primitive-svg-wrapper {
 			display: inline-block;
             position: relative;
-            top: -50px;
+            top: -56px;
             left: 270px;
             max-width: 100px;
             margin: 10px;
@@ -47,11 +48,11 @@
 		.primitive-name {
 			
             color: #fff;
-            margin: 0;
             padding: 5px 10px;
             font-size: 14px;
             font-weight: bold;
-
+            position: relative;
+            top: 10px;
 		}
 
 		.primitive-description {
@@ -60,6 +61,8 @@
             text-align: left;
             font-size: 110%;
             width: 280px;
+            position: relative;
+            top: 10px;
 		}
 
 	}

@@ -45,10 +45,8 @@ class PrimitiveGridItem extends React.Component {
 
     render() {
 
-        var primitiveSvgTag = '<use xlink:href="images/symbols.svg#icon-' + this.props.primitive.id +'" />';
-
         var svgEl = <div className="primitive-svg-wrapper" ref="svg">
-                        <svg className="primitive-svg" viewBox={this.props.primitive.svgViewBox} dangerouslySetInnerHTML={{__html: primitiveSvgTag }} />
+                        <img className="primitive-svg" src={this.props.primitive.svg} />
                     </div>;
 
         var nameEl = <div className="primitive-name" title={this.props.primitive.id} ref="name">
@@ -64,20 +62,6 @@ class PrimitiveGridItem extends React.Component {
         return <div className="primitive-grid-item" draggable="true">{nameEl}{descriptionEl}{svgEl}</div>;
 
     }
-
-    // getSvgHeight() {
-
-    //     var viewBox = this.props.primitive.viewBox;
-
-    //     return Math.ceil(
-
-    //         parseFloat(viewBox.substring(viewBox.lastIndexOf(" ") + 1));
-
-    //         parseFloat(
-    //             getComputedStyle(React.findDOMNode(this.refs.name)).width
-    //         )
-    //     );
-    // }
 
     getDescriptionWidth() {
 

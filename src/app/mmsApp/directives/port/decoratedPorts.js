@@ -33,7 +33,7 @@ angular.module(
 
                         default:
                         case 'right':
-                            $scope.decorationTransform = 'translate(-29, -8)';
+                            $scope.decorationTransform = 'translate(-30, -8)';
                     }
 
                 } 
