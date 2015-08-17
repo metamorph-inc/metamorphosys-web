@@ -22,8 +22,8 @@ if (typeof module !== 'undefined') {
 
 if (typeof module !== 'undefined' && require.main === module) {
     var fatal = function fatal(msg) {
-        console.log(msg);
-        throw Error(msg);
+        console.log(msg + ' ' + msg.stack);
+        // throw Error(msg);
         process.exit(1);
     };
 
@@ -55,7 +55,8 @@ var Storage = require('webgme').serverUserStorage;
 var Logger = require('webgme').Logger;
 //var logger = webgme.Logger.create('cyphy:update_meta', gmeConfig.bin.log, false);
 var gmeAuth, storage;
-var import_ = require('../node_modules/webgme/src/bin/import').import;
+var import_ = require('../node_modules/webgme/src/bin/import').main;
+//import_ = webgme.serializer.import;
 
 define(
     [
@@ -84,13 +85,13 @@ define(
                 //    log: logger.fork('storage2'), // This will be deprecated by 0.9.0
                 //    globConf: CONFIG}
                 //);
-                return Q.all([storage.openDatabase(), gmeAuth.authorizeByUserId(gmeConfig.authentication.guestAccount, projectName, 'create', { read: true, write: true, delete: true })]);
+                return Q.all([storage.openDatabase()]);//, gmeAuth.authorizeByUserId(gmeConfig.authentication.guestAccount, projectName, 'create', { read: true, write: true, delete: true })]);
             })
             .then(function () {
                 return storage.createProject({projectName: projectName, username: gmeConfig.authentication.guestAccount, createProject: true})
                     .catch(function (e) {
                         if (('' + e).indexOf('Project already exist') !== -1) {
-                            return storage.openProject({projectName: projectName, username: gmeConfig.authentication.guestAccount, createProject: true});
+                            return storage.openProject({projectId: gmeConfig.authentication.guestAccount + '+' + projectName, username: gmeConfig.authentication.guestAccount, createProject: true});
                         }
                         throw e;
                     });
@@ -104,11 +105,12 @@ define(
                     return project.closeProject();
                 }
             }).finally(function () {
-                return storage.closeDatabase();
+                //return storage.closeDatabase();
             }).catch(fn);
     }
 
     function importLibrary(CONFIG, projectName, branch, metaJson, project) {
+        return import_(['node', 'import.js', metaJson, '-m', gmeConfig.mongo.uri, '-p', projectName, '-w', 'true']);
         return Q.ninvoke(fs, 'readFile', metaJson, {encoding: 'utf-8'})
             .then(function (metaJson) {
                 return Q.nfcall(import_, storage, gmeConfig, projectName, JSON.parse(metaJson), 'master', 'true', 'guest');
@@ -179,13 +181,13 @@ define(
             project,
             core,
             projectName = 'TmpProject';
-        Q.ninvoke(storage, 'openDatabase')
+        Q.ninvoke(storage.mongo, 'openDatabase')
             .then(function () {
-                return storage.openProject({projectName: projectName, username: gmeConfig.authentication.guestAccount, createProject: true});
+                return storage.openProject({projectId: gmeConfig.authentication.guestAccount + '+' + projectName, username: gmeConfig.authentication.guestAccount, createProject: true});
                 // return storage.openProject(', projectName);
             }).then(function (p) {
                 project = p;
-                core = new Core(storage, {globConf: CONFIG, logger: logger});
+                core = new Core(project, {globConf: CONFIG, logger: logger});
                 return project.getBranchHash('master');
             }).then(function (commitHash) {
                 return Q.ninvoke(project, 'loadObject', commitHash);
@@ -204,9 +206,9 @@ define(
                 return Q.ninvoke(fs, 'writeFile', PATH.resolve(cyphyRootDir, 'meta/ADMEditor_metaLib.json'), JSON.stringify_ordered(res, undefined, 4), {encoding: 'utf-8'});
             }).catch(fatal)
             .finally(function () {
-                return Q.ninvoke(project, 'closeProject');
+                //return Q.ninvoke(project, 'closeProject');
             }).finally(function () {
-                return Q.ninvoke(storage, 'closeDatabase');
+                //return Q.ninvoke(storage, 'closeDatabase');
             }).then(function () {
                 callback(null);
             });
@@ -214,68 +216,83 @@ define(
     }
 
     function writeMetaJs(callback) {
-        var pluginConfig = {};
-        pluginConfig.projectName = pluginConfig.project = "TmpProject";
-        pluginConfig.branch = "master";
-        pluginConfig.pluginName = "PluginGenerator";
-        pluginConfig.activeNode = undefined;
-        pluginConfig.activeSelection = undefined;
-        pluginConfig.pluginConfig = {};
-        webGme.runPlugin.main(null, CONFIG, pluginConfig, pluginConfig.pluginConfig, function (err, result) {
-            if (err) {
-                fatal(err);
-            }
-            var blobClient = new BlobClient({
-                server: 'localhost',
-                serverPort: 8855,
-                httpsecure: false,
-                sessionId: undefined
-            });
-            blobClient.getArtifact(result.artifacts[0], function (err, data) {
-                if (err) {
-                    fatal(err);
-                }
-                blobClient.getSubObject(result.artifacts[0], 'src/plugins/TmpProject/NewPlugin/meta.js', function (err, res) {
+        var pluginConfig = {},
+            project,
+            plugin,
+            context,
+            pluginManager = new webgme.PluginCliManager(null, logger, CONFIG);
+
+        storage.openProject({projectId: gmeConfig.authentication.guestAccount + '+' + "TmpProject", username: gmeConfig.authentication.guestAccount})
+            .then(function (project_) {
+                project = project_;
+                return project.getBranchHash('master');
+            })
+            .then(function (commitHash) {
+                context = {
+                    project: project,
+                    branchName: 'master',
+                    commitHash: commitHash,
+                    activeNode: '/1'
+                };
+
+                // Take the long path so the blobClient is exposed...
+                plugin = pluginManager.initializePlugin('PluginGenerator');
+
+                return pluginManager.configurePlugin(plugin, pluginConfig, context);
+            })
+            .then(function () {
+                var blobClient = plugin.blobClient;
+                pluginManager.runPluginMain(plugin, function (err, result) {
                     if (err) {
                         fatal(err);
                     }
-                    var meta_js = res.toString('utf8');
-                    ['src/plugins/ADMEditor/AcmImporter/meta.js',
-                        'src/plugins/ADMEditor/AdmExporter/meta.js',
-                        'src/plugins/ADMEditor/AdmImporter/meta.js',
-                        'src/plugins/ADMEditor/AtmExporter/meta.js',
-                        'src/plugins/ADMEditor/AtmImporter/meta.js'].forEach(function (f) {
-                            fs.writeFileSync(PATH.resolve(cyphyRootDir, f), meta_js, {encoding: 'utf-8'});
-                        });
+                    //var blobClient = new BlobClient({
+                    //    server: 'localhost',
+                    //    serverPort: 8855,
+                    //    httpsecure: false,
+                    //    sessionId: undefined
+                    //});
+                    blobClient.getArtifact(result.artifacts[0], function (err, data) {
+                        if (err) {
+                            fatal(err);
+                        }
+                        blobClient.getSubObject(result.artifacts[0], 'src/plugins/guest+TmpProject/NewPlugin/meta.js', function (err, res) {
+                            if (err) {
+                                fatal(err);
+                            }
+                            var meta_js = res.toString('utf8');
+                            ['src/plugins/ADMEditor/AcmImporter/meta.js',
+                                'src/plugins/ADMEditor/AdmExporter/meta.js',
+                                'src/plugins/ADMEditor/AdmImporter/meta.js',
+                                'src/plugins/ADMEditor/AtmExporter/meta.js',
+                                'src/plugins/ADMEditor/AtmImporter/meta.js'].forEach(function (f) {
+                                    fs.writeFileSync(PATH.resolve(cyphyRootDir, f), meta_js, {encoding: 'utf-8'});
+                                });
 
-                    writeExampleModel(callback);
+                            writeExampleModel(pluginManager, context, blobClient, callback);
+                        });
+                    });
                 });
-            });
-        });
+            })
     }
-    function writeExampleModel(callback) {
-        var pluginConfig = {};
-        pluginConfig.projectName = pluginConfig.project = "TmpProject";
-        pluginConfig.branch = "master";
-        pluginConfig.pluginName = "MockModelGenerator";
-        pluginConfig.activeNode = "/1";
-        pluginConfig.activeSelection = undefined;
-        pluginConfig.pluginConfig = { timeOut: 0};
-        webGme.runPlugin.main(null, CONFIG, pluginConfig, pluginConfig.pluginConfig, function (err, result) {
+    function writeExampleModel(pluginManager, context, blobClient, callback) {
+        var pluginConfig = { timeOut: 0};
+
+        pluginManager.executePlugin("MockModelGenerator", pluginConfig, context, function (err, result) {
             if (err) {
                 fatal(err);
             }
-            var blobClient = new BlobClient({
-                server: 'localhost',
-                serverPort: 8855,
-                httpsecure: false,
-                sessionId: undefined
-            });
+            //var blobClient = new BlobClient({
+            //    server: 'localhost',
+            //    serverPort: 8855,
+            //    httpsecure: false,
+            //    sessionId: undefined
+            //});
             blobClient.getArtifact(result.artifacts[0], function (err, data) {
                 if (err) {
                     fatal(err);
                 }
-                blobClient.getSubObject(result.artifacts[0], 'test/models/TmpProject/META.js', function (err, res) {
+                blobClient.getSubObject(result.artifacts[0], 'test/models/guest+TmpProject/META.js', function (err, res) {
                     if (err || res.error) {
                         fatal(err || res.error);
                     }
