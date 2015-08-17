@@ -455,10 +455,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 limitLabelWidthTo: 150,
                 portDirective: 'decorated-port'
             }, portStuff.portDescriptors, {
-                minWidth: 240,
+                minWidth: 60,
+                minHeight: 30,
                 portWireLeadInIncrement: 8,
                 portWireLength: 30,
-                topPortPadding: 20,
+                topPortPadding: 10,
+                junctionBox: true,
                 hasTopPort: portStuff.portDescriptors.top.length > 0,
                 hasBottomPort: portStuff.portDescriptors.bottom.length > 0,
                 hasLeftPort: portStuff.portDescriptors.left.length > 0,

@@ -290,7 +290,8 @@ symbolsModule.directive(
                 // Label ellipsis
 
                 function perfectEllipsis(textSelector, textString, maxWidth) {
-                    var textObject = textSelector[0];
+                    var textObject = textSelector[0],
+                        noEllipsis = false;
 
                     if (!textString) {
                         textObject.textContent = '';
@@ -300,23 +301,37 @@ symbolsModule.directive(
                     textObject.textContent = textString;
                     maxWidth = maxWidth || 120;
                     var strLength = textString.length;
-                    var width = textObject.getSubStringLength(0, strLength);
+                    var width;
 
-                    // ellipsis is needed
-                    if (width >= maxWidth) {
-                        textObject.textContent = '...' + textString;
-                        strLength += 3;
+                    try {
+                       width = textObject.getSubStringLength(0, strLength);
+                    }
+                    catch(e) {
+                        if (e.name === 'IndexSizeError') {
+                            noEllipsis = true;
+                        }
+                        else {
+                            throw e;
+                        }
+                    }
 
-                        // guess truncate position
-                        var i = Math.floor(strLength * maxWidth / width) + 1;
+                    if (!noEllipsis) {
+                        // ellipsis is needed
+                        if (width >= maxWidth) {
+                            textObject.textContent = '...' + textString;
+                            strLength += 3;
 
-                        // refine by expansion if necessary
-                        while (++i < strLength && textObject.getSubStringLength(0, i) < maxWidth){}
+                            // guess truncate position
+                            var i = Math.floor(strLength * maxWidth / width) + 1;
 
-                        // refine by reduction if necessary
-                        while (--i > 3 && textObject.getSubStringLength(0, i) > maxWidth){}
+                            // refine by expansion if necessary
+                            while (++i < strLength && textObject.getSubStringLength(0, i) < maxWidth){}
 
-                        textObject.textContent = textString.substring(0, i-3) + '...';
+                            // refine by reduction if necessary
+                            while (--i > 3 && textObject.getSubStringLength(0, i) > maxWidth){}
+
+                            textObject.textContent = textString.substring(0, i-3) + '...';
+                        }
                     }
                 }
 

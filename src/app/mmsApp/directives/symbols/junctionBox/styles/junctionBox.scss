@@ -3,33 +3,25 @@ $blue: #0D47A1;
 .junction-box {
 
     .component-label {
-        fill: $blue;
-        font-weight: bold;
-        font-size: 85%;
+        display: none;
     }
 
     .symbol-area {
         display: none;
     }
 
-    .component-label {
-        text-anchor: middle;
-    }
-
     .port {
 
         .port-label {
-            fill: $blue;
+            fill: #ffffff;
         }
 
     }
 
     .box-box {
-        //  fill:rgba(255,254,230, .3);
-        fill: rgb(255,255,255);
+        fill: #747f8d;
+        stroke: #747f8d;
         stroke-width: 2;
-        stroke: $blue;
-        stroke-dasharray: 2.5.5;
     }
 
     .port-wire {

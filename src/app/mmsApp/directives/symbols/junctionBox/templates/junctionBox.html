@@ -4,13 +4,7 @@
           ng-attr-y="{{::getBoxStartY()}}"
           ng-attr-width="{{::component.symbol.boxWidth}}"
           ng-attr-height="{{::component.symbol.boxHeight}}"
-          rx="20" ry="20"
         />
-
-
-    <!--<circle ng-attr-cx="{{::(component.symbol.boxWidth/2 + component.symbol.portWireLength)}}"-->
-            <!--ng-attr-cy="{{::component.symbol.portWireLength}}"-->
-            <!--r="8"/>-->
 
     <line class="port-wire"
           ng-repeat="wire in ::portWires"
