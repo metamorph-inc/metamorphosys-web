@@ -55,8 +55,8 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                     });
 
                     // Do connectors. Sort by number of ports, most ports first.
-                    children.sort(function(a, b) {return a.getChildrenIds().length < b.getChildrenIds().length;})
-                        .forEach(function (child) {
+                    children.sort(function(a, b) {return a.getAttribute('name') > b.getAttribute('name')})
+                        .forEach(function (child, index) {
                             if (isConnector(child)) {
                                 var connector = child;
 
@@ -65,8 +65,6 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                                     id: connector.id,
                                     ports: []
                                 };
-
-                                var first = junctionBoxData.connectors.length === 0;
 
                                 junctionBoxData.connectors.push(connectorData);
 
@@ -82,7 +80,7 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                                             };
 
                                             // Track mappings for first port only
-                                            if (first) {
+                                            if (index === 0) {
                                                 mappings.forEach(function (mapping) {
                                                     if (mapping[0] === port.id) {
                                                         portData.mapping = mapping[1];
