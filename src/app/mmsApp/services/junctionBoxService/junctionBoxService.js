@@ -19,9 +19,10 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
             // TODO: Get any PortMaps.
 
             var junctionBoxData = {
-                connectors: [],
-                mappings: []
+                connectors: []
             };
+            var mappings = [];
+            var junctionBoxObj;
 
             var meta;
             return nodeService.getMetaNodes(parentContext)
@@ -32,6 +33,7 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                     return nodeService.loadNode(parentContext, junctionBoxId);
                 })
                 .then(function (junctionBox) {
+                    junctionBoxObj = junctionBox;
                     return junctionBox.loadChildren();
                 })
                 .then(function (children) {
@@ -47,55 +49,56 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                     children.forEach(function (child) {
                         if (isMapping(child)) {
 
-                            junctionBoxData.mappings.push([child.getPointer('src').to, child.getPointer('dst').to]);
+                            mappings.push([child.getPointer('src').to, child.getPointer('dst').to]);
 
                         }
                     });
 
-                    // Do connectors
-                    children.forEach(function (child) {
-                        if (isConnector(child)) {
-                            var connector = child;
+                    // Do connectors. Sort by number of ports, most ports first.
+                    children.sort(function(a, b) {return a.getChildrenIds().length < b.getChildrenIds().length;})
+                        .forEach(function (child) {
+                            if (isConnector(child)) {
+                                var connector = child;
 
-                            var connectorData = {
-                                name: connector.getAttribute('name'),
-                                id: connector.id,
-                                ports: []
-                            };
+                                var connectorData = {
+                                    name: connector.getAttribute('name'),
+                                    id: connector.id,
+                                    ports: []
+                                };
 
-                            connector.loadChildren()
-                                .then(function (ports) {
-                                    ports.forEach(function (port) {
+                                var first = junctionBoxData.connectors.length === 0;
 
-                                        var portData = {
-                                            name: port.getAttribute('name'),
-                                            id: port.id,
-                                            type: port.getAttribute('Type'),
-                                            mapping: null
-                                        };
+                                junctionBoxData.connectors.push(connectorData);
 
-                                        junctionBoxData.mappings.forEach(function (mapping) {
-                                            if (mapping[0] === port.id) {
-                                                portData.mapping = mapping[1];
+                                connector.loadChildren()
+                                    .then(function (ports) {
+                                        ports.forEach(function (port) {
+
+                                            var portData = {
+                                                name: port.getAttribute('name'),
+                                                id: port.id,
+                                                type: port.getAttribute('Type'),
+                                                mapping: null
+                                            };
+
+                                            // Track mappings for first port only
+                                            if (first) {
+                                                mappings.forEach(function (mapping) {
+                                                    if (mapping[0] === port.id) {
+                                                        portData.mapping = mapping[1];
+                                                    }
+                                                    else if (mapping[1] === port.id) {
+                                                        portData.mapping = mapping[0];
+                                                    }
+                                                });
                                             }
-                                            else if (mapping[1] === port.id) {
-                                                portData.mapping = mapping[0];
-                                            }
+
+                                            connectorData.ports.push(portData);
+
                                         });
-
-                                        connectorData.ports.push(portData);
-
                                     });
-
-                                    junctionBoxData.connectors.push(connectorData);
-
-                                    // Sort so that the connector with the most ports comes first.
-                                    junctionBoxData.connectors = junctionBoxData.connectors.sort(function (a, b) {
-                                        return a.ports.length < b.ports.length;
-                                    });
-                                });
-                        }
-                    });
+                                }
+                        });
 
                     console.log(junctionBoxData);
                     return junctionBoxData;
@@ -118,6 +121,61 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                         return combined[0].id;
                     }
                 });
+        };
+
+        /**
+         * Completely replaces the current mapping with one described by the argument idPairsToMap
+         * @param parentContext
+         * @param junctionBoxId
+         * @param idPairsToMap
+         */
+        this.setMapping = function(parentContext, junctionBoxId, idPairsToMap) {
+
+            nodeService.startTransaction(parentContext, 'New primitive creation');
+
+            return nodeService.loadNode(parentContext, junctionBoxId)
+                .then(function (junctionBox) {
+
+                    var portMapMetaId,
+                        meta;
+
+                    return nodeService.getMetaNodes(parentContext)
+                        .then(function (meta_) {
+                            portMapMetaId = meta_.byName.PortMap.id;
+                            meta = meta_;
+                        })
+                        .then(function () {
+                            return junctionBox.loadChildren();
+                        })
+                        .then(function (children) {
+                            // Delete all maps inside junction box.
+                            children.forEach(function (child) {
+                                if (child.getMetaTypeName(meta) === 'PortMap') {
+                                    child.destroy();
+                                }
+                            });
+
+                            var waitFor = [];
+
+                            // Create new maps
+                            idPairsToMap.forEach(function (idPair) {
+                                var id1 = idPair[0];
+                                var id2 = idPair[1];
+                                waitFor.push(nodeService.createNode(parentContext, junctionBoxId, portMapMetaId, 'New mapping')
+                                    .then(function (portMap) {
+                                        portMap.makePointer('src', id1);
+                                        portMap.makePointer('dst', id2);
+
+                                        return null;
+                                    }));
+                            });
+                            return waitFor;
+                        });
+                })
+                .then(function (nullArray) {
+                    nodeService.completeTransaction(parentContext);
+                });
+
         };
 
     });

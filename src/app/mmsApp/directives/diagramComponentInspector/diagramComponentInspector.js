@@ -148,6 +148,20 @@ angular.module('mms.diagramComponentInspector', [
 
             DiagramComponentInspectorController.prototype.commitMapping = function() {
                 console.log('commit mapping');
+
+                // Build new map.
+                var idPairs = [];
+                this.inspectable.details.connectors[0].ports.forEach(function(port)
+                {
+                    if (port.mapping !== null && port.mapping !== '') {
+                        var newPair = [port.id, port.mapping];
+                        idPairs.push(newPair);
+                    }
+                });
+
+                var parentContext = this.projectHandling.getContainerLayoutContext();
+                this.junctionBoxService.setMapping(parentContext, this.inspectable.id, idPairs);
+
             };
 
             DiagramComponentInspectorController.prototype.openInfo = function() {

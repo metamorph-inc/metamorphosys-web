@@ -27,7 +27,7 @@
                         <td>{{ctrl.inspectable.details.connectors[1].name}}</td>
                         <td>XXX</td>
                     </tr>
-                    <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports">
+                    <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports | orderBy:'name'">
                         <td>{{port1.name}}</td>
                         <td>
                             <select ng-model="port1.mapping" ng-change="ctrl.commitMapping()">

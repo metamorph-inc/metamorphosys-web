@@ -256,7 +256,7 @@ angular.module('mms.designEditor', [
                                             return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make first connector')
                                                 .then(function (nodeConnector) {
                                                     // nodeConnector is Connector 1
-                                                    nodeConnector.setAttribute('name', 'C1');
+                                                    nodeConnector.setAttribute('name', 'A');
                                                     nodeConnector.setRegistry('position', {
                                                         x: 50,
                                                         y: 100
@@ -266,7 +266,7 @@ angular.module('mms.designEditor', [
                                                     return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make second connector');
                                                 })
                                                 .then(function (nodeConnector) {
-                                                    nodeConnector.setAttribute('name', 'C2');
+                                                    nodeConnector.setAttribute('name', 'B');
                                                     nodeConnector.setRegistry('position', {
                                                         x: 400,
                                                         y: 100
