@@ -8,8 +8,9 @@ define( [ 'plugin/PluginConfig',
     'plugin/AcmImporter/AcmImporter/meta',
     'jszip',
     'xmljsonconverter',
-    'superagent'
-], function ( PluginConfig, PluginBase, MetaTypes, JSZip, Xml2Json, superagent ) {
+    'superagent',
+    'q'
+], function ( PluginConfig, PluginBase, MetaTypes, JSZip, Xml2Json, superagent, Q ) {
     'use strict';
 
     /**
@@ -29,6 +30,7 @@ define( [ 'plugin/PluginConfig',
         this.id2ComponentMap = {};
         this.deleteExisting = false;
         this.cleanImport = true;
+        this.iconPromises = {};
 
         //this.propertyJson = {};
     };
@@ -52,7 +54,7 @@ define( [ 'plugin/PluginConfig',
      * @public
      */
     AcmImporter.prototype.getVersion = function () {
-        return "0.1.0";
+        return "0.2.0";
     };
 
     /**
@@ -160,8 +162,7 @@ define( [ 'plugin/PluginConfig',
                     return;
                 }
 
-                numUploaded = Object.keys( hash2acmJsonMap )
-                    .length;
+                numUploaded = Object.keys( hash2acmJsonMap ).length;
 
                 var acmJson;
 
@@ -183,14 +184,14 @@ define( [ 'plugin/PluginConfig',
 
                 //var propertyString = JSON.stringify(self.propertyJson, null, 4);
 
-                self.save( 'added obj', function ( err ) {
-                    if ( err ) {
-                        mainCallback( err, self.result );
-                        return;
-                    }
+                Q.all(Object.getOwnPropertyNames(self.iconPromises).map(function (hash) {
+                    return self.iconPromises[hash];
+                })).then(function () {
+                    return Q.ninvoke(self, 'save', 'added obj');
+                }).then(function () {
                     if ( numUploaded > 1 ) {
                         self.createMessage( acmFolderNode, numCreated + ' ACMs created out of ' +
-                        numUploaded + ' uploaded.', 'info' );
+                            numUploaded + ' uploaded.', 'info' );
                     }
                     if ( self.cleanImport === true ) {
                         self.result.setSuccess( true );
@@ -198,8 +199,15 @@ define( [ 'plugin/PluginConfig',
                         self.result.setSuccess( false );
                     }
 
-                    mainCallback( null, self.result );
-                } );
+                    mainCallback(null, self.result);
+                }).catch(function (err) {
+                    var msg = err.message || err.msg || err;
+                    if (err instanceof Error) {
+                        msg += '\n' + err.stack;
+                    }
+                    self.logger.error(msg);
+                    mainCallback(msg, self.result);
+                });
             };
 
             self.getAcmDetails( uploadedFileHash, getAcmDescriptionCallback );
@@ -424,6 +432,12 @@ define( [ 'plugin/PluginConfig',
         self.core.setAttribute( newAcmNode, 'Version', version );
         self.core.setAttribute( newAcmNode, 'ID', id );
         self.core.setAttribute( newAcmNode, 'Resource', hash );
+        if (self.iconPromises[hash]) {
+            self.iconPromises[hash] = self.iconPromises[hash].then(function (blobHash) {
+                self.core.setAttribute(newAcmNode, 'Icon', '/rest/blob/view/' + blobHash);
+                return blobHash;
+            });
+        }
 
         if ( avmComponent.hasOwnProperty( 'Connector' ) ) {
             avmConnectors = avmComponent[ 'Connector' ];
@@ -880,7 +894,14 @@ define( [ 'plugin/PluginConfig',
                         acmHash,
                         acmZipFile,
                         numberAcmFiles,
-                        acmJson;
+                        acmJson,
+                        getIconFile = function (zip, acmHash) {
+                            var icon = zip.file(/icon.svg$/i)[0];
+                            if (icon) {
+                                self.iconPromises[acmHash] = Q.ninvoke(self.blobClient, 'putFile', 'icon.svg',
+                                    icon[typeof window === 'undefined' ? 'asNodeBuffer' : 'asArrayBuffer']());
+                            }
+                        };
 
                     try {
                         zipFile = new JSZip( uploadedObjContent );
@@ -897,6 +918,7 @@ define( [ 'plugin/PluginConfig',
 
                         if ( acmJson != null ) {
                             hashToAcmJsonMap[ fileHash ] = acmJson;
+                            getIconFile(zipFile, fileHash);
                         }
 
                         //hashToAcmJsonMap[fileHash] = self.getAcmJsonFromZip(zipFile, contentName);
@@ -917,6 +939,7 @@ define( [ 'plugin/PluginConfig',
 
                             if ( acmJson != null ) {
                                 hashToAcmJsonMap[ acmHash ] = acmJson;
+                                getIconFile(acmZipFile, acmHash);
                             }
                         }
 
