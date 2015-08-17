@@ -1,7 +1,7 @@
 <div class="diagram-component-inspector">
     <div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
     <div ng-if="ctrl.inspectable">
-        <div class="inspectable-name">
+        <div class="inspectable-name" ng-if="ctrl.inspectable.metaType !== 'JunctionBox'">
             <a href="#" editable-text="ctrl.inspectable.label" onbeforesave="ctrl.isNameValid($data)" onaftersave="ctrl.commitName()">
   				{{ ctrl.inspectable.label || "empty" }}
   			</a>
@@ -25,7 +25,6 @@
                     <tr>
                         <td>{{ctrl.inspectable.details.connectors[0].name}}</td>
                         <td>{{ctrl.inspectable.details.connectors[1].name}}</td>
-                        <td>XXX</td>
                     </tr>
                     <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports | orderBy:'name'">
                         <td>{{port1.name}}</td>
@@ -34,9 +33,6 @@
                                 <option value="">(none)</option>
                                 <option ng-repeat="port2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: port1.type}" value="{{port2.id}}" ng-selected="port2.id === port1.mapping">{{port2.name}}</option>
                             </select>
-                        </td>
-                        <td>
-                            {{port1.mapping}}
                         </td>
                     </tr>
                 </table>
