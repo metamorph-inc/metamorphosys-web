@@ -21,6 +21,7 @@
 
 	.editable-click, a.editable-click {
 		color: $linkColorOnDark;
+        margin-right: 1ex;
 	}
 
 	.no-inspectable-message {
@@ -36,7 +37,6 @@
 
 	.classification-tags {
 		display: inline-block;
-		margin-left: 1ex;
 		vertical-align: baseline;
 
 		.taxonomy-term {

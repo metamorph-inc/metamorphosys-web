@@ -57,8 +57,6 @@ class PrimitiveGridItem extends React.Component {
                         {this.props.primitive.description}
                     </div>;
 
-        var detailsEl = <div className="primitive-details">{descriptionEl}{svgEl}</div>;
-
         return <div className="primitive-grid-item" draggable="true">{nameEl}{descriptionEl}{svgEl}</div>;
 
     }
