@@ -17,7 +17,7 @@ require( './simpleConnector/simpleConnector.js' );
 
 require( './box/box.js' );
 require( './containerBox/containerBox.js' );
-require( './junctionBox/junctionBox.js');
+require( './connectorAdapter/connectorAdapter.js');
 
 var symbolsModule = angular.module(
     'mms.designVisualization.symbols', [
@@ -37,7 +37,7 @@ var symbolsModule = angular.module(
 
         'mms.designVisualization.symbols.box',
         'mms.designVisualization.symbols.containerBox',
-        'mms.designVisualization.symbols.junctionBox'
+        'mms.designVisualization.symbols.connectorAdapter'
 
     ] );
 

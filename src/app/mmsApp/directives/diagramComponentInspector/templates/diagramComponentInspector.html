@@ -1,7 +1,7 @@
 <div class="diagram-component-inspector">
     <div ng-if="!ctrl.inspectable" class="no-inspectable-message">{{::ctrl.config.noInspectableMessage}}</div>
     <div ng-if="ctrl.inspectable">
-        <div class="inspectable-name" ng-if="ctrl.inspectable.metaType !== 'JunctionBox'">
+        <div class="inspectable-name" ng-if="ctrl.inspectable.metaType !== 'ConnectorAdapter'">
             <a href="#" editable-text="ctrl.inspectable.label" onbeforesave="ctrl.isNameValid($data)" onaftersave="ctrl.commitName()">
   				{{ ctrl.inspectable.label || "empty" }}
   			</a>
@@ -17,10 +17,8 @@
                                          component="ctrl.inspectable"></inspected-component-details>
             <inspected-container-details ng-if="ctrl.inspectable.metaType == 'Container'"
                                          container="ctrl.inspectable"></inspected-container-details>
-            <!--<inspected-junctionbox-details ng-if="ctrl.inspectable.metaType == 'JunctionBox'"
-                                           junctionbox="ctrl.inspectable"></inspected-junctionbox-details>-->
 
-            <div ng-if="ctrl.inspectable.metaType == 'JunctionBox'">
+            <div ng-if="ctrl.inspectable.metaType == 'ConnectorAdapter'">
                 <table>
                     <tr>
                         <td>{{ctrl.inspectable.details.connectors[0].name}}</td>

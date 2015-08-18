@@ -250,12 +250,11 @@ angular.module('mms.designEditor', [
 
                                 nodeService.createNode(layoutContext, selectedContainerId, metaId, 'New primitive')
                                     .then(function(node) {
-                                        // Is this a junction box? If so, do the special thing
-                                        if (primitive.id === 'connector-junction-box') {
+                                        // Is this a connector adapter? If so, seed it with two untyped ports.
+                                        if (primitive.id === 'connector-adapter') {
 
                                             return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make first connector')
                                                 .then(function (nodeConnector) {
-                                                    // nodeConnector is Connector 1
                                                     nodeConnector.setAttribute('name', 'A');
                                                     nodeConnector.setRegistry('position', {
                                                         x: 50,

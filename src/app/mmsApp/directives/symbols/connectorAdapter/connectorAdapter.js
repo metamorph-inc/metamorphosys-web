@@ -3,9 +3,9 @@
 'use strict';
 
 angular.module(
-    'mms.designVisualization.symbols.junctionBox', []
+    'mms.designVisualization.symbols.connectorAdapter', []
 )
-    .controller( 'JunctionBoxController', function ( $scope ) {
+    .controller( 'ConnectorAdapterController', function ( $scope ) {
 
         $scope.portWires = [];
 
@@ -58,7 +58,7 @@ angular.module(
 
     } )
     .directive(
-        'junctionBox',
+        'connectorAdapter',
 
         function () {
 
@@ -66,8 +66,8 @@ angular.module(
                 scope: false,
                 restrict: 'E',
                 replace: true,
-                controller: 'JunctionBoxController',
-                templateUrl: '/mmsApp/templates/junctionBox.html',
+                controller: 'ConnectorAdapterController',
+                templateUrl: '/mmsApp/templates/connectorAdapter.html',
                 templateNamespace: 'SVG'
             };
         } );

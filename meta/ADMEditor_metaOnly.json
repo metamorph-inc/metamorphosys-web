@@ -433,7 +433,7 @@
     },
     "25bb7b13-1e8b-4396-16db-c6b212c52550": {
       "attributes": {
-        "name": "JunctionBox"
+        "name": "ConnectorAdapter"
       },
       "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
       "meta": {

@@ -2,8 +2,8 @@
 
 'use strict';
 
-angular.module('mms.junctionBoxService', ['cyphy.services'])
-    .service('junctionBoxService', function ($q, $timeout, nodeService, gmeMapService, $log) {
+angular.module('mms.connectorAdapterService', ['cyphy.services'])
+    .service('connectorAdapterService', function ($q, $timeout, nodeService, gmeMapService, $log) {
 
         var self = this;
 
@@ -11,18 +11,18 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
             console.log('message');
         };
 
-        this.loadData = function (parentContext, junctionBoxId) {
+        this.loadData = function (parentContext, connectorAdapterId) {
             // Get each connector
             // For each connector, get its ports
             // For each port, we want the type and ID
 
             // TODO: Get any PortMaps.
 
-            var junctionBoxData = {
+            var connectorAdapterData = {
                 connectors: []
             };
             var mappings = [];
-            var junctionBoxObj;
+            var connectorAdapterObj;
 
             var meta;
             return nodeService.getMetaNodes(parentContext)
@@ -30,11 +30,11 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                     meta = meta_;
                 })
                 .then(function() {
-                    return nodeService.loadNode(parentContext, junctionBoxId);
+                    return nodeService.loadNode(parentContext, connectorAdapterId);
                 })
-                .then(function (junctionBox) {
-                    junctionBoxObj = junctionBox;
-                    return junctionBox.loadChildren();
+                .then(function (connectorAdapter) {
+                    connectorAdapterObj = connectorAdapter;
+                    return connectorAdapter.loadChildren();
                 })
                 .then(function (children) {
 
@@ -66,7 +66,7 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                                     ports: []
                                 };
 
-                                junctionBoxData.connectors.push(connectorData);
+                                connectorAdapterData.connectors.push(connectorData);
 
                                 connector.loadChildren()
                                     .then(function (ports) {
@@ -98,41 +98,22 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                                 }
                         });
 
-                    console.log(junctionBoxData);
-                    return junctionBoxData;
-                });
-        };
-
-
-        this.getMappedPortId = function(junctionBoxId, portId) {
-            return nodeService.loadNode(junctionBoxId, portId)
-                .then(function(port) {
-                    var sources = port.getCollectionPaths('src');
-                    var destinations = port.getCollectionPaths('dst');
-
-                    var combined = Array.prototype.push.apply(sources, destinations);
-
-                    if (combined.length === 0) {
-                        return null;
-                    }
-                    else {
-                        return combined[0].id;
-                    }
+                    return connectorAdapterData;
                 });
         };
 
         /**
          * Completely replaces the current mapping with one described by the argument idPairsToMap
          * @param parentContext
-         * @param junctionBoxId
+         * @param connectorAdapterId
          * @param idPairsToMap
          */
-        this.setMapping = function(parentContext, junctionBoxId, idPairsToMap) {
+        this.setMapping = function(parentContext, connectorAdapterId, idPairsToMap) {
 
             nodeService.startTransaction(parentContext, 'New primitive creation');
 
-            return nodeService.loadNode(parentContext, junctionBoxId)
-                .then(function (junctionBox) {
+            return nodeService.loadNode(parentContext, connectorAdapterId)
+                .then(function (connectorAdapter) {
 
                     var portMapMetaId,
                         meta;
@@ -143,10 +124,10 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                             meta = meta_;
                         })
                         .then(function () {
-                            return junctionBox.loadChildren();
+                            return connectorAdapter.loadChildren();
                         })
                         .then(function (children) {
-                            // Delete all maps inside junction box.
+                            // Delete all maps inside the connector adapter.
                             children.forEach(function (child) {
                                 if (child.getMetaTypeName(meta) === 'PortMap') {
                                     child.destroy();
@@ -159,7 +140,7 @@ angular.module('mms.junctionBoxService', ['cyphy.services'])
                             idPairsToMap.forEach(function (idPair) {
                                 var id1 = idPair[0];
                                 var id2 = idPair[1];
-                                waitFor.push(nodeService.createNode(parentContext, junctionBoxId, portMapMetaId, 'New mapping')
+                                waitFor.push(nodeService.createNode(parentContext, connectorAdapterId, portMapMetaId, 'New mapping')
                                     .then(function (portMap) {
                                         portMap.makePointer('src', id1);
                                         portMap.makePointer('dst', id2);

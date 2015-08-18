@@ -18,12 +18,12 @@
         "config": []
     },
     {
-        "id": "connector-junction-box",
-        "name": "Connector Junction Box",
-        "metaType": "JunctionBox",
+        "id": "connector-adapter",
+        "name": "Connector Adapter",
+        "metaType": "ConnectorAdapter",
         "type": "generic",
         "description": "Use this to map one type of connector to another.",
-        "svg": "images/junctionBoxIcon.svg",
+        "svg": "images/connectorAdapterIcon.svg",
         "config": []
     }
 ]

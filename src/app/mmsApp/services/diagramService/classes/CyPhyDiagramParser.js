@@ -10,7 +10,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         primitiveParser,
         connectorParser,
         containerParser,
-        junctionBoxParser,
+        connectorAdapterParser,
         labelParser,
         wireParser,
 
@@ -229,7 +229,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                     portSymbol.portDirective = 'rectangle-port';
                 }
 
-                if (element.baseName === 'JunctionBox') {
+                if (element.baseName === 'ConnectorAdapter') {
                     portSymbol.portDirective = 'rectangle-port';
                 }
 
@@ -324,9 +324,9 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             return containerParser(element, zIndex);
         }
-        else if (element.primitiveId === 'connector-junction-box') {
+        else if (element.primitiveId === 'connector-adapter') {
 
-            return junctionBoxParser(element, zIndex);
+            return connectorAdapterParser(element, zIndex);
         }
 
     };
@@ -439,7 +439,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    junctionBoxParser = function(element, zIndex) {
+    connectorAdapterParser = function(element, zIndex) {
         var symbol,
             newDiagramComponent,
             portStuff;
@@ -449,7 +449,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         portStuff = minePortsFromInterfaces(element);
 
         symbol = symbolManager.makeBoxSymbol(
-            'junction-box',
+            'connector-adapter',
             element.name || element.id, {
                 showPortLabels: true,
                 limitLabelWidthTo: 150,
@@ -460,7 +460,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
                 portWireLeadInIncrement: 8,
                 portWireLength: 30,
                 topPortPadding: 10,
-                junctionBox: true,
+                connectorAdapter: true,
                 hasTopPort: portStuff.portDescriptors.top.length > 0,
                 hasBottomPort: portStuff.portDescriptors.bottom.length > 0,
                 hasLeftPort: portStuff.portDescriptors.left.length > 0,
@@ -482,13 +482,13 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             readonly: false,
             locationLocked: false,
             draggable: true,
-            metaType: 'JunctionBox'
+            metaType: 'ConnectorAdapter'
         });
 
 
         newDiagramComponent.classificationTags.push({
-            id: 'junctionbox',
-            name: 'JunctionBox'
+            id: 'connectorAdapter',
+            name: 'ConnectorAdapter'
         });
 
         newDiagramComponent.registerPortInstances(portStuff.portInstances);
@@ -903,9 +903,9 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
-            angular.forEach(diagramElements.JunctionBox, function(element) {
+            angular.forEach(diagramElements.ConnectorAdapter, function(element) {
 
-                newDiagramComponent = junctionBoxParser(element, i);
+                newDiagramComponent = connectorAdapterParser(element, i);
 
                 diagram.addComponent(newDiagramComponent);
 
@@ -950,9 +950,9 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             element = wireParser(descriptor, diagram);
 
-        } else if (descriptor.baseName === 'JunctionBox') {
+        } else if (descriptor.baseName === 'ConnectorAdapter') {
 
-            element = junctionBoxParser(descriptor, zIndex);
+            element = connectorAdapterParser(descriptor, zIndex);
 
         }
 

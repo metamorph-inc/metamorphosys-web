@@ -76,7 +76,7 @@ angular.module('mms.svgDiagram', [
                     wasPortMouseDowned = false,
                     wasWireCornerMouseDowned = false,
 
-                    hoverToggleClasses = ['.port', '.container-box', '.decorated-port', '.supply-single-symbol', '.junction-box'],
+                    hoverToggleClasses = ['.port', '.container-box', '.decorated-port', '.supply-single-symbol', '.connector-adapter'],
 
                     $$window,
 

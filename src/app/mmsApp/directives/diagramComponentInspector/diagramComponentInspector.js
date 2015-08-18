@@ -4,28 +4,27 @@ require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
 require('../../services/subcircuitDocumentation/subcircuitDocumentation.js');
-require('../../services/junctionBoxService/junctionBoxService.js');
+require('../../services/connectorAdapterService/connectorAdapterService.js');
 
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
-        //'mms.diagramComponentInspector.inspectedJunctionBoxDetails',
         'mms.contentEditable',
         'mms.componentBrowser.infoButton',
         'mms.subcircuitDetails.react',
         'mms.subcircuitDocumentation',
-        'mms.junctionBoxService'
+        'mms.connectorAdapterService'
     ])
     .directive('diagramComponentInspector', [
         function() {
 
-            function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation, junctionBoxService) {
+            function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation, connectorAdapterService) {
 
                 var self = this;
 
                 this.$http = $http;
                 this.subcircuitDocumentation = subcircuitDocumentation;
-                this.junctionBoxService = junctionBoxService;
+                this.connectorAdapterService = connectorAdapterService;
                 this.projectHandling = projectHandling;
 
                 this.$rootScope = $rootScope;
@@ -129,15 +128,13 @@ angular.module('mms.diagramComponentInspector', [
                             });
 
                     }
-                    else if (newInspectable.metaType === 'JunctionBox') {
+                    else if (newInspectable.metaType === 'ConnectorAdapter') {
 
                         newInspectable.details = {};
-                        this.junctionBoxService.loadData(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
-                            .then(function (junctionBoxData) {
+                        this.connectorAdapterService.loadData(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
+                            .then(function (connectorAdapterData) {
 
-                                console.log(junctionBoxData);
-
-                                newInspectable.details = junctionBoxData;
+                                newInspectable.details = connectorAdapterData;
 
                             });
 
@@ -147,7 +144,6 @@ angular.module('mms.diagramComponentInspector', [
             };
 
             DiagramComponentInspectorController.prototype.commitMapping = function() {
-                console.log('commit mapping');
 
                 // Build new map.
                 var idPairs = [];
@@ -160,7 +156,7 @@ angular.module('mms.diagramComponentInspector', [
                 });
 
                 var parentContext = this.projectHandling.getContainerLayoutContext();
-                this.junctionBoxService.setMapping(parentContext, this.inspectable.id, idPairs);
+                this.connectorAdapterService.setMapping(parentContext, this.inspectable.id, idPairs);
 
             };
 

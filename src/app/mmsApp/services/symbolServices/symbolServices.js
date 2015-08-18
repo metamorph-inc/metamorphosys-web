@@ -31,8 +31,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             wireLeadIn;
 
         numberOfPorts = somePorts.length;
-        
-        if (parameters.junctionBox) {
+
+        if (parameters.connectorAdapter) {
             offset = 5;
         }
         else {
@@ -169,7 +169,7 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             parameters.minWidth
         );
 
-        if (parameters.junctionBox) {
+        if (parameters.connectorAdapter) {
             height = Math.max(
                 parameters.portSpacing * left.length + 10,
                 parameters.portSpacing * right.length + 10,
