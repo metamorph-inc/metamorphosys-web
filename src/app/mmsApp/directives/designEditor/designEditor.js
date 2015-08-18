@@ -1139,6 +1139,11 @@ angular.module('mms.designEditor', [
 
         DesignEditorController.prototype.primitivePanelItemDragStart = function(e, item) {
 
+            // Firefox requires setData() to be called in drag start handler. Data could be anything, not used.
+            if (navigator.appCodeName === "Mozilla") {
+                e.dataTransfer.setData('text/plain', item); 
+            }
+
             if (typeof e.dataTransfer.setDragImage === 'function') {
                 e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
             } else {
