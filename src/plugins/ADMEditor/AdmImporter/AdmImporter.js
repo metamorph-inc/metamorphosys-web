@@ -603,6 +603,9 @@ define([
             });
             if (thisContainerFiles.length) {
                 var artifact = self.blobClient.createArtifact(self.admData['@Name']);
+                var icon = thisContainerFiles.filter(function (entry) {
+                    return entry.name.toLowerCase() === containerData['@ID'] + '/' + 'icon.svg';
+                })[0];
                 var resourcePromise = Q.all(thisContainerFiles.map(function (file) {
                     return Q.ninvoke(artifact, 'addFileAsSoftLink', file.name.substring((containerData['@ID'] + '/').length), file[typeof window === 'undefined' ? 'asNodeBuffer' : 'asArrayBuffer'].call(file));
                 })).then(function () {
@@ -610,6 +613,10 @@ define([
                 }).then(function (artifactHash) {
                     if (artifactHash) {
                         self.core.setAttribute(container, 'Resource', artifactHash);
+                        if (icon) {
+                            self.core.setAttribute(container, 'Icon', '/rest/blob/view/' + artifactHash + '/'
+                                + encodeURIComponent(icon.name.substring((containerData['@ID'] + '/').length)));
+                        }
                     }
                 });
                 self.resourcePromises.push(resourcePromise);
