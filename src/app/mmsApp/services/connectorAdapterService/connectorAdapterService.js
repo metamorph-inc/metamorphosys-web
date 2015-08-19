@@ -55,48 +55,49 @@ angular.module('mms.connectorAdapterService', ['cyphy.services'])
                     });
 
                     // Do connectors. Sort by number of ports, most ports first.
-                    children.sort(function(a, b) {return a.getAttribute('name') > b.getAttribute('name')})
-                        .forEach(function (child, index) {
-                            if (isConnector(child)) {
-                                var connector = child;
+                    children.forEach(function (child) {
+                        if (isConnector(child)) {
+                            var connector = child;
 
-                                var connectorData = {
-                                    name: connector.getAttribute('name'),
-                                    id: connector.id,
-                                    ports: []
-                                };
+                            var connectorData = {
+                                name: connector.getAttribute('name'),
+                                id: connector.id,
+                                ports: []
+                            };
 
-                                connectorAdapterData.connectors.push(connectorData);
+                            connectorAdapterData.connectors.push(connectorData);
 
-                                connector.loadChildren()
-                                    .then(function (ports) {
-                                        ports.forEach(function (port) {
+                            connector.loadChildren()
+                                .then(function (ports) {
+                                    ports.forEach(function (port) {
 
-                                            var portData = {
-                                                name: port.getAttribute('name'),
-                                                id: port.id,
-                                                type: port.getAttribute('Type'),
-                                                mapping: {}
-                                            };
+                                        var portData = {
+                                            name: port.getAttribute('name'),
+                                            id: port.id,
+                                            type: port.getAttribute('Type'),
+                                            mapping: {}
+                                        };
 
-                                            // Track mappings for ports of first connector only
-                                            if (index === 0) {
-                                                mappings.forEach(function (mapping) {
-                                                    if (mapping[0] === port.id) {
-                                                        portData.mapping[mapping[1]] = true;
-                                                    }
-                                                    else if (mapping[1] === port.id) {
-                                                        portData.mapping[mapping[0]] = true;
-                                                    }
-                                                });
+                                        mappings.forEach(function (mapping) {
+                                            if (mapping[0] === port.id) {
+                                                portData.mapping[mapping[1]] = true;
                                             }
-
-                                            connectorData.ports.push(portData);
-
+                                            else if (mapping[1] === port.id) {
+                                                portData.mapping[mapping[0]] = true;
+                                            }
                                         });
+
+                                        connectorData.ports.push(portData);
+
                                     });
-                                }
-                        });
+
+                                    // We want connectors sorted from least number of ports to greatest
+                                    connectorAdapterData.connectors.sort(function(a, b) {
+                                        return a.ports.length <= b.ports.length ? -1 : 1;
+                                    });
+                                });
+                            }
+                    });
 
                     return connectorAdapterData;
                 });
@@ -152,7 +153,7 @@ angular.module('mms.connectorAdapterService', ['cyphy.services'])
                         });
                 })
                 .then(function (nullArray) {
-                    nodeService.completeTransaction(parentContext);
+                    return nodeService.completeTransaction(parentContext);
                 });
 
         };

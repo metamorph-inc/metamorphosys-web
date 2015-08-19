@@ -1,5 +1,5 @@
 <div class="inspected-connector-adapter-table">
-    <table ng-if="ctrl.data.details.connectors[0].ports.length <= ctrl.data.details.connectors[1].ports.length && ctrl.data.details.connectors[0].ports.length">
+    <table ng-if="ctrl.data.details.connectors[0].ports.length">
         <tr>
             <td class="map-header border-right border-bottom">Connector {{ctrl.data.details.connectors[0].name}}</td>
             <td class="map-header border-bottom" colspan="{{ctrl.data.details.connectors[1].ports.length}}">Connector {{ctrl.data.details.connectors[1].name}}</td>
@@ -16,33 +16,9 @@
                 <div class="pin-name">{{port1.name}}</div>
                 <div class="pin-type">{{port1.type}}</div>
             </td>
-            <td class="map-cell" ng-repeat="port2 in ctrl.data.details.connectors[1].ports">
+            <td class="map-cell" ng-repeat="port2 in ctrl.data.details.connectors[1].ports | orderBy:'name'">
                 <i class="fa fa-ban" ng-if="port2.type !== port1.type"></i>
-                <md-checkbox class="map-checkbox" ng-model="port1.mapping[port2.id]" ng-if="port2.type === port1.type" ng-change="ctrl.commitMapping()" aria-label=""/>
-                
-            </td>
-        </tr>
-    </table>
-    <table ng-if="ctrl.data.details.connectors[0].ports.length >= ctrl.data.details.connectors[1].ports.length && ctrl.data.details.connectors[0].ports.length">
-        <tr>
-            <td class="map-header border-right border-bottom">Connector {{ctrl.data.details.connectors[1].name}}</td>
-            <td class="map-header border-bottom" colspan="{{ctrl.data.details.connectors[0].ports.length}}">Connector {{ctrl.data.details.connectors[0].name}}</td>
-        </tr>
-        <tr>
-            <td class="map-header border-right"/>
-            <td class="map-item" ng-repeat="port1 in ctrl.data.details.connectors[0].ports | orderBy:'name'">
-                <div class="pin-name">{{port1.name}}</div>
-                <div class="pin-type">{{port1.type}}</div>
-            </td>
-        </tr>
-        <tr ng-repeat="port2 in ctrl.data.details.connectors[1].ports | orderBy:'name'">
-            <td class="map-item border-right">
-                <div class="pin-name">{{port2.name}}</div>
-                <div class="pin-type">{{port2.type}}</div>
-            </td>
-            <td class="map-cell" ng-repeat="port1 in ctrl.data.details.connectors[0].ports">
-                <i class="fa fa-ban" ng-if="port1.type !== port2.type"></i>
-                <md-checkbox class="map-checkbox" ng-model="port1.mapping[port2.id]" ng-if="port1.type === port2.type" ng-change="ctrl.commitMapping()" aria-label=""/>
+                <md-checkbox class="map-checkbox" ng-model="port1.mapping[port2.id]" ng-if="port2.type === port1.type" ng-change="port2.mapping[port1.id] = port1.mapping[port2.id]; ctrl.commitMapping()" aria-label=""/>
                 
             </td>
         </tr>

@@ -6,16 +6,18 @@ angular.module('mms.diagramComponentInspector.inspectedConnectorAdapterTable', [
     .directive('inspectedConnectorAdapterTable', [
         function() {
 
-            function InspectorController(projectHandling, connectorAdapterService) {
+            function InspectorController($rootScope, projectHandling, connectorAdapterService) {
 
                 this.projectHandling = projectHandling;
                 this.connectorAdapterService = connectorAdapterService;
 
                 InspectorController.prototype.commitMapping = function() {
 
+                    $rootScope.setProcessing();
+
                     // Build new map.
                     var idPairs = [];
-                    this.data.details.connectors[0].ports.forEach(function(port) {
+                    this.data.details.connectors[1].ports.forEach(function(port) {
                         angular.forEach(port.mapping, function(value, key) {
                             if (value) {
                                 idPairs.push([port.id, key]);
@@ -24,7 +26,10 @@ angular.module('mms.diagramComponentInspector.inspectedConnectorAdapterTable', [
                     });
 
                     var parentContext = this.projectHandling.getContainerLayoutContext();
-                    this.connectorAdapterService.setMapping(parentContext, this.data.id, idPairs);
+                    this.connectorAdapterService.setMapping(parentContext, this.data.id, idPairs)
+                        .then(function() {
+                            $rootScope.stopProcessing();
+                        });
 
                 };
 
