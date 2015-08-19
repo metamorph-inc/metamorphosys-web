@@ -16,7 +16,7 @@ If you want to get the web server running your own machine, follow the instructi
 8. In a separate process, start the *MongoDB* server with `mongod --dbpath mongodatabase`, and leave it running
 9. Preload the *MongoDB* by running `mongorestore`
 10. Start the server with `node app.js` or `npm start`
-11. _(optional):_ To set up a worker (needed for running analysis), install or compile the *metamorphosys-desktop* tools, and then follow the README.md at `/node_modules/webgme/src/middleware/executor/worker`.
+11. _(optional):_ To set up a worker (needed for running analysis), install or compile the *metamorphosys-desktop* tools, and then follow the README.md at `/node_modules/webgme/src/server/middleware/executor/worker`.
 12. Open the example project at http://localhost:8855/#/editor/Template_Module_1x2
 
 (To access the original webgme interface, go to http://localhost:8855/extlib/node_modules/webgme/src/client/ )
