@@ -1434,8 +1434,11 @@ define([
 
                             var pos = self.getPositionUInt32(childNode);
                             subContainerData = {
+                                "@xmlns:q1": "avm",
+                                "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
                                 "@Name": self.core.getAttribute(childNode, 'name'),
                                 "@ID": self.getComponentOrDesignID(childNode),
+                                "@xmlns": "",
                                 "@XPosition": pos.x,
                                 "@YPosition": pos.y,
                                 "Connector": []
