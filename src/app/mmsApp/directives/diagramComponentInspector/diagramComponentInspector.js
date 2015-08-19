@@ -147,12 +147,12 @@ angular.module('mms.diagramComponentInspector', [
 
                 // Build new map.
                 var idPairs = [];
-                this.inspectable.details.connectors[0].ports.forEach(function(port)
-                {
-                    if (port.mapping !== null && port.mapping !== '') {
-                        var newPair = [port.id, port.mapping];
-                        idPairs.push(newPair);
-                    }
+                this.inspectable.details.connectors[0].ports.forEach(function(port) {
+                    angular.forEach(port.mapping, function(value, key) {
+                        if (value) {
+                            idPairs.push([port.id, key]);
+                        }
+                    });
                 });
 
                 var parentContext = this.projectHandling.getContainerLayoutContext();
