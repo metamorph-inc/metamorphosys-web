@@ -26,3 +26,5 @@ Create a new project by visiting [http://localhost:8855/#/editor/Template_Module
 
 Each project has a unique URL. Save that URL to return to the project later.
 
+### Running Tests ###
+`npm run test_all`
