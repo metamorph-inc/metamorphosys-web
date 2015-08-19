@@ -3,12 +3,14 @@
 require('../contentEditable/contentEditable.js');
 require('./inspectedContainerDetails.js');
 require('./inspectedComponentDetails.js');
+require('./inspectedConnectorAdapterTable.js');
 require('../../services/subcircuitDocumentation/subcircuitDocumentation.js');
 require('../../services/connectorAdapterService/connectorAdapterService.js');
 
 angular.module('mms.diagramComponentInspector', [
         'mms.diagramComponentInspector.inspectedContainerDetails',
         'mms.diagramComponentInspector.inspectedComponentDetails',
+        'mms.diagramComponentInspector.inspectedConnectorAdapterTable',
         'mms.contentEditable',
         'mms.componentBrowser.infoButton',
         'mms.subcircuitDetails.react',
@@ -134,29 +136,16 @@ angular.module('mms.diagramComponentInspector', [
                         this.connectorAdapterService.loadData(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
                             .then(function (connectorAdapterData) {
 
+                                connectorAdapterData.description = "This connector adapter allows you to map similarly typed pins between \
+                                                                    Connector " + connectorAdapterData.connectors[0].name + " and \
+                                                                    Connector " + connectorAdapterData.connectors[1].name + ".";
+
                                 newInspectable.details = connectorAdapterData;
 
                             });
 
                     }
                 }
-
-            };
-
-            DiagramComponentInspectorController.prototype.commitMapping = function() {
-
-                // Build new map.
-                var idPairs = [];
-                this.inspectable.details.connectors[0].ports.forEach(function(port) {
-                    angular.forEach(port.mapping, function(value, key) {
-                        if (value) {
-                            idPairs.push([port.id, key]);
-                        }
-                    });
-                });
-
-                var parentContext = this.projectHandling.getContainerLayoutContext();
-                this.connectorAdapterService.setMapping(parentContext, this.inspectable.id, idPairs);
 
             };
 

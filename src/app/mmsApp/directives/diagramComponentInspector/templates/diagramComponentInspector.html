@@ -12,30 +12,17 @@
                 </div>
             </div>
         </div>
+        <div class="inspectable-description">
+            {{ctrl.inspectable.details.description}}
+        </div>
         <div class="inspectable-details">
             <inspected-component-details ng-if="ctrl.inspectable.details.acmInfo"
                                          component="ctrl.inspectable"></inspected-component-details>
             <inspected-container-details ng-if="ctrl.inspectable.metaType == 'Container'"
                                          container="ctrl.inspectable"></inspected-container-details>
 
-            <div ng-if="ctrl.inspectable.metaType == 'ConnectorAdapter'">
-                <table>
-                    <tr>
-                        <td>{{ctrl.inspectable.details.connectors[0].name}}</td>
-                        <td>{{ctrl.inspectable.details.connectors[1].name}}</td>
-                    </tr>
-                    <tr ng-repeat="port1 in ctrl.inspectable.details.connectors[0].ports | orderBy:'name'">
-                        <td>{{port1.name}}</td>
-                        <td>
-                            <select ng-model="port1.mapping" ng-change="ctrl.commitMapping()">
-                                <option value="">(none)</option>
-                                <option ng-repeat="port2 in ctrl.inspectable.details.connectors[1].ports | filter: {type: port1.type}" value="{{port2.id}}" ng-selected="port2.id === port1.mapping">{{port2.name}}</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
+            <inspected-connector-adapter-table ng-if="ctrl.inspectable.metaType == 'ConnectorAdapter'"
+                                               data="ctrl.inspectable"></inspected-connector-adapter-table>
         </div>
         <info-button ng-if="ctrl.inspectable.infoUrl" label="'View on Octopart'" ng-click="ctrl.openInfo()"></info-button>
     </div>

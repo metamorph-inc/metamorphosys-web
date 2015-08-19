@@ -11,12 +11,18 @@
 	padding: 10px;
 
     .inspectable-name {
+        display: inline-block;
         margin-top: .5ex;
 
         .editable-text {
             margin-bottom: 1em;
         }
 
+    }
+
+    .inspectable-description {
+        display: inline-block;
+        font-size: 90%;
     }
 
 	.editable-click, a.editable-click {
@@ -61,5 +67,71 @@
 		position: relative;
 		top: 2px;
 	}
+
+    td {
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    .map-item {
+        padding: 2px;
+
+        .pin-name {
+            font-size: 82%;
+            font-weight: bold;
+        }
+
+        .pin-type {
+            display: inline-block;
+            font-size: 65%;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.2ex 1ex;
+            color: #fff;
+            border-radius: 3px;
+            position: relative;
+            top: -3px;
+        }
+    }
+
+    .map-cell {
+        padding: 0 5px;
+
+        .map-checkbox {
+            margin: 0;
+
+            .md-label {
+                display: none;
+            }
+
+            &.md-checked .md-icon {
+                background-color: rgb(13, 71, 161);
+            }
+        }
+
+        &:hover {
+            background: rgba(0,0,0,0.1);
+        }
+    }
+
+    .map-option {
+        &:focus, &:hover, &.active {
+            background: rgba(0,0,0,0.1);
+        }
+    }
+
+    .map-header {
+        padding: 5px;
+        text-align: center;
+        font-size: 90%;
+        line-height: 50%;
+    }
+
+    .border-bottom {
+        border-bottom: rgba(255, 255, 255, 0.1) solid 1px;
+    }
+
+    .border-right {
+        border-right: rgba(255, 255, 255, 0.1) solid 1px;
+    }
 
 }
