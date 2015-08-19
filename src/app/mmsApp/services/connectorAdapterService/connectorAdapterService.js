@@ -76,17 +76,17 @@ angular.module('mms.connectorAdapterService', ['cyphy.services'])
                                                 name: port.getAttribute('name'),
                                                 id: port.id,
                                                 type: port.getAttribute('Type'),
-                                                mapping: null
+                                                mapping: {}
                                             };
 
-                                            // Track mappings for first port only
+                                            // Track mappings for ports of first connector only
                                             if (index === 0) {
                                                 mappings.forEach(function (mapping) {
                                                     if (mapping[0] === port.id) {
-                                                        portData.mapping = mapping[1];
+                                                        portData.mapping[mapping[1]] = true;
                                                     }
                                                     else if (mapping[1] === port.id) {
-                                                        portData.mapping = mapping[0];
+                                                        portData.mapping[mapping[0]] = true;
                                                     }
                                                 });
                                             }
