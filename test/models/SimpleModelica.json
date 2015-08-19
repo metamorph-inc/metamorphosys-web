@@ -21,6 +21,7 @@
     "1deced2f-f026-ca87-711c-d8148b1dfd3c": "1598195376",
     "1f35a3aa-321d-359f-7838-242bc2d08ae5": "755698918",
     "220fe464-ca92-9f68-89cc-1cf4848c14aa": "647669121",
+    "25bb7b13-1e8b-4396-16db-c6b212c52550": "1992649359",
     "2bc42bca-a9be-0f33-16a7-ea847e546b37": "34094492",
     "31210b37-0234-e1f7-e194-17c772f79295": "1610552174",
     "32f297fa-f9ee-df8d-151c-01f19934793e": "647669121",
@@ -119,6 +120,7 @@
       "1bf0e0e7-d4f1-a36d-416b-8af0651f138b": {},
       "1deced2f-f026-ca87-711c-d8148b1dfd3c": {},
       "1f35a3aa-321d-359f-7838-242bc2d08ae5": {},
+      "25bb7b13-1e8b-4396-16db-c6b212c52550": {},
       "2bc42bca-a9be-0f33-16a7-ea847e546b37": {},
       "3317c9c6-6c44-1a06-a476-11f77d722b34": {},
       "3e223dbc-998f-e965-9d15-99085fd445ff": {},
@@ -305,6 +307,16 @@
               "position": {
                 "x": 386,
                 "y": 249
+              }
+            }
+          },
+          {
+            "attributes": {},
+            "guid": "25bb7b13-1e8b-4396-16db-c6b212c52550",
+            "registry": {
+              "position": {
+                "x": 579,
+                "y": 729
               }
             }
           },
@@ -986,6 +998,16 @@
           },
           {
             "attributes": {},
+            "guid": "25bb7b13-1e8b-4396-16db-c6b212c52550",
+            "registry": {
+              "position": {
+                "x": 538,
+                "y": 755
+              }
+            }
+          },
+          {
+            "attributes": {},
             "guid": "2bc42bca-a9be-0f33-16a7-ea847e546b37",
             "registry": {
               "position": {
@@ -1607,6 +1629,10 @@
           },
           "name": {
             "type": "string"
+          },
+          "InstanceID": {
+            "default": "",
+            "type": "string"
           }
         }
       },
@@ -2102,6 +2128,53 @@
       "sets": {},
       "constraints": {}
     },
+    "25bb7b13-1e8b-4396-16db-c6b212c52550": {
+      "attributes": {
+        "name": "ConnectorAdapter"
+      },
+      "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045",
+      "meta": {
+        "attributes": {
+          "name": {
+            "type": "string"
+          },
+          "INFO": {
+            "default": "",
+            "type": "string"
+          },
+          "ReadMe": {
+            "default": "",
+            "type": "asset"
+          }
+        },
+        "children": {
+          "items": [
+            "58fcb797-8a06-2976-9632-d281b3c1ddd2",
+            "f9f20885-6316-a7b6-2196-8299f45692ff"
+          ],
+          "minItems": [
+            -1,
+            -1
+          ],
+          "maxItems": [
+            -1,
+            -1
+          ]
+        }
+      },
+      "parent": "1b2720ba-040c-e5ac-bb4c-4bd502ee3353",
+      "pointers": {
+        "base": "cd891e7b-e2ea-e929-f6cd-9faf4f1fc045"
+      },
+      "registry": {
+        "position": {
+          "x": 270,
+          "y": 828
+        }
+      },
+      "sets": {},
+      "constraints": {}
+    },
     "2bc42bca-a9be-0f33-16a7-ea847e546b37": {
       "attributes": {
         "DataType": "String",
@@ -2379,6 +2452,7 @@
         },
         "children": {
           "items": [
+            "25bb7b13-1e8b-4396-16db-c6b212c52550",
             "2bc42bca-a9be-0f33-16a7-ea847e546b37",
             "3317c9c6-6c44-1a06-a476-11f77d722b34",
             "58fcb797-8a06-2976-9632-d281b3c1ddd2",
@@ -2408,9 +2482,11 @@
             -1,
             -1,
             -1,
+            -1,
             -1
           ],
           "maxItems": [
+            -1,
             -1,
             -1,
             -1,
@@ -2995,6 +3071,10 @@
             "type": "asset"
           },
           "name": {
+            "type": "string"
+          },
+          "InstanceID": {
+            "default": "",
             "type": "string"
           }
         }
@@ -4096,6 +4176,7 @@
         "Classifications": "",
         "ID": "",
         "INFO": "Component model with resources.",
+        "InstanceID": "",
         "Resource": "",
         "SchemaVersion": "",
         "Version": "",
@@ -4109,6 +4190,10 @@
             "type": "string"
           },
           "ID": {
+            "default": "",
+            "type": "string"
+          },
+          "InstanceID": {
             "default": "",
             "type": "string"
           },
