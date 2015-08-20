@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function(symbolManager, diagramService, wiringService, pcbService) {
+module.exports = function (symbolManager, diagramService, wiringService, pcbService) {
 
     var getDiagram,
         getDiagramElement,
@@ -134,13 +134,12 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
         };
 
 
-
     Diagram = require('./Diagram');
     DiagramComponent = require('./DiagramComponent.js');
     ComponentPort = require('./ComponentPort');
     Wire = require('./Wire.js');
 
-    minePortsFromInterfaces = function(element) {
+    minePortsFromInterfaces = function (element) {
 
         var minX,
             maxX,
@@ -165,7 +164,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
         if (angular.isObject(element.interfaces)) {
 
-            angular.forEach(element.interfaces.connectors, function(innerConnector) {
+            angular.forEach(element.interfaces.connectors, function (innerConnector) {
 
                 var x;
 
@@ -191,7 +190,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
-            allInterConnectors.sort(function(a, b) {
+            allInterConnectors.sort(function (a, b) {
 
                 if (a.position.y > b.position.y) {
                     return 1;
@@ -207,21 +206,21 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             median = (minX + maxX) / 2;
 
-            angular.forEach(allInterConnectors, function(innerConnector) {
+            angular.forEach(allInterConnectors, function (innerConnector) {
 
                 var portSymbol,
                     connectorType = innerConnector.type;
 
-                    //  ||
-                    //     randomConnectorTypes[
-                    //         Math.round( Math.random() * (randomConnectorTypes.length - 1) )
-                    //     ];
+                //  ||
+                //     randomConnectorTypes[
+                //         Math.round( Math.random() * (randomConnectorTypes.length - 1) )
+                //     ];
 
                 portSymbol = {
                     id: innerConnector.id,
                     label: labelParser(innerConnector.name),
                     type: connectorType,
-                    portDecorator: connectorTypeToDecorator[ connectorType ],
+                    portDecorator: connectorTypeToDecorator[connectorType],
                     description: innerConnector.description
                 };
 
@@ -262,7 +261,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     };
 
 
-    labelParser = function(crappyName) {
+    labelParser = function (crappyName) {
 
         var result;
 
@@ -272,7 +271,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    wireParser = function(element, diagram) {
+    wireParser = function (element, diagram) {
 
         var sourcePort,
             destinationPort,
@@ -314,8 +313,8 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    primitiveParser = function(element, zIndex) {
-        
+    primitiveParser = function (element, zIndex) {
+
         if (element.primitiveId === 'simple-connector') {
 
             return connectorParser(element, zIndex);
@@ -331,7 +330,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    connectorParser = function(element, zIndex) {
+    connectorParser = function (element, zIndex) {
         var portInstance,
             symbol,
             tmpSymbol,
@@ -367,11 +366,11 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             portSymbol: symbol.ports.p1
         });
 
-        if ( element.type.toLowerCase() !== 'generic' && element.type.length > 0 ) {
-            
-            portInstance.setPortType( element.type,
-                                      element.description,
-                                      connectorTypeToDecorator[element.type] );
+        if (element.type.toLowerCase() !== 'generic' && element.type.length > 0) {
+
+            portInstance.setPortType(element.type,
+                element.description,
+                connectorTypeToDecorator[element.type]);
 
         }
 
@@ -382,7 +381,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    containerParser = function(element, zIndex) {
+    containerParser = function (element, zIndex) {
         var symbol,
             newDiagramComponent,
             portStuff;
@@ -439,7 +438,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    connectorAdapterParser = function(element, zIndex) {
+    connectorAdapterParser = function (element, zIndex) {
         var symbol,
             newDiagramComponent,
             portStuff;
@@ -497,7 +496,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    avmComponentModelParser = function(element, zIndex) {
+    avmComponentModelParser = function (element, zIndex) {
 
         var portStuff,
             newModelComponent,
@@ -839,7 +838,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
     };
 
 
-    getDiagram = function(diagramElements) {
+    getDiagram = function (diagramElements) {
 
         var i,
             newDiagramComponent,
@@ -847,7 +846,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             diagram,
             wire,
 
-            checkMaxSizes = function(component) {
+            checkMaxSizes = function (component) {
 
                 if (component) {
 
@@ -867,7 +866,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             i = 0;
 
-            angular.forEach(diagramElements.Connector, function(element) {
+            angular.forEach(diagramElements.Connector, function (element) {
 
                 newDiagramComponent = connectorParser(element, i);
 
@@ -879,7 +878,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
-            angular.forEach(diagramElements.AVMComponentModel, function(element) {
+            angular.forEach(diagramElements.AVMComponentModel, function (element) {
 
                 newDiagramComponent = avmComponentModelParser(element, i);
 
@@ -891,7 +890,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
-            angular.forEach(diagramElements.Container, function(element) {
+            angular.forEach(diagramElements.Container, function (element) {
 
                 newDiagramComponent = containerParser(element, i);
 
@@ -903,7 +902,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
             });
 
-            angular.forEach(diagramElements.ConnectorAdapter, function(element) {
+            angular.forEach(diagramElements.ConnectorAdapter, function (element) {
 
                 newDiagramComponent = connectorAdapterParser(element, i);
 
@@ -916,7 +915,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
             });
 
 
-            angular.forEach(diagramElements.ConnectorComposition, function(element) {
+            angular.forEach(diagramElements.ConnectorComposition, function (element) {
 
                 wire = wireParser(element, diagram);
 
@@ -930,7 +929,7 @@ module.exports = function(symbolManager, diagramService, wiringService, pcbServi
 
     };
 
-    getDiagramElement = function(descriptor, zIndex, diagram) {
+    getDiagramElement = function (descriptor, zIndex, diagram) {
 
         var element;
 

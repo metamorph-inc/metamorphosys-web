@@ -8,17 +8,17 @@ require('../../services/subcircuitDocumentation/subcircuitDocumentation.js');
 require('../../services/connectorAdapterService/connectorAdapterService.js');
 
 angular.module('mms.diagramComponentInspector', [
-        'mms.diagramComponentInspector.inspectedContainerDetails',
-        'mms.diagramComponentInspector.inspectedComponentDetails',
-        'mms.diagramComponentInspector.inspectedConnectorAdapterTable',
-        'mms.contentEditable',
-        'mms.componentBrowser.infoButton',
-        'mms.subcircuitDetails.react',
-        'mms.subcircuitDocumentation',
-        'mms.connectorAdapterService'
-    ])
+    'mms.diagramComponentInspector.inspectedContainerDetails',
+    'mms.diagramComponentInspector.inspectedComponentDetails',
+    'mms.diagramComponentInspector.inspectedConnectorAdapterTable',
+    'mms.contentEditable',
+    'mms.componentBrowser.infoButton',
+    'mms.subcircuitDetails.react',
+    'mms.subcircuitDocumentation',
+    'mms.connectorAdapterService'
+])
     .directive('diagramComponentInspector', [
-        function() {
+        function () {
 
             function DiagramComponentInspectorController($scope, $rootScope, $http, projectHandling, subcircuitDocumentation, connectorAdapterService) {
 
@@ -32,14 +32,14 @@ angular.module('mms.diagramComponentInspector', [
                 this.$rootScope = $rootScope;
 
                 this.config = this.config || {
-                    noInspectableMessage: 'Select a single diagram element or wire to inspect.'
-                };
+                        noInspectableMessage: 'Select a single diagram element or wire to inspect.'
+                    };
 
                 this.classificationTags = [];
 
-                $scope.$watch(function() {
+                $scope.$watch(function () {
                     return self.inspectable;
-                }, function(newInspectable, oldInspectable) {
+                }, function (newInspectable, oldInspectable) {
 
                     if (newInspectable !== oldInspectable) {
                         self._loadInspectableDetails(newInspectable);
@@ -51,7 +51,7 @@ angular.module('mms.diagramComponentInspector', [
 
             }
 
-            DiagramComponentInspectorController.prototype._loadInspectableDetails = function(newInspectable) {
+            DiagramComponentInspectorController.prototype._loadInspectableDetails = function (newInspectable) {
                 self.classificationTags = [];
 
                 if (newInspectable) {
@@ -65,7 +65,7 @@ angular.module('mms.diagramComponentInspector', [
                                 if (newInspectable.details.resource) {
 
                                     this.$http.get('/rest/external/acminfo/' + newInspectable.details.resource)
-                                        .then(function(response) {
+                                        .then(function (response) {
 
                                             if (response.data) {
 
@@ -73,7 +73,7 @@ angular.module('mms.diagramComponentInspector', [
 
                                                 if (angular.isString(response.data.classification)) {
 
-                                                    response.data.classification.split('.').map(function(className) {
+                                                    response.data.classification.split('.').map(function (className) {
 
                                                         newInspectable.classificationTags.push({
                                                             id: className,
@@ -84,7 +84,7 @@ angular.module('mms.diagramComponentInspector', [
 
                                                 newInspectable.details.properties = [];
 
-                                                angular.forEach(response.data.properties, function(prop, propName) {
+                                                angular.forEach(response.data.properties, function (prop, propName) {
 
                                                     newInspectable.details.properties.push({
                                                         name: propName,
@@ -126,7 +126,9 @@ angular.module('mms.diagramComponentInspector', [
                         newInspectable.details = {};
                         this.subcircuitDocumentation.loadDocumentation(this.projectHandling.getContainerLayoutContext(), newInspectable.id)
                             .then(function (containerData) {
+
                                 newInspectable.details.documentation = containerData;
+
                             });
 
                     }
@@ -149,7 +151,7 @@ angular.module('mms.diagramComponentInspector', [
 
             };
 
-            DiagramComponentInspectorController.prototype.openInfo = function() {
+            DiagramComponentInspectorController.prototype.openInfo = function () {
 
                 if (this.inspectable.infoUrl) {
 
@@ -160,7 +162,7 @@ angular.module('mms.diagramComponentInspector', [
 
             };
 
-            DiagramComponentInspectorController.prototype.isNameValid = function(data) {
+            DiagramComponentInspectorController.prototype.isNameValid = function (data) {
 
                 if (data.length < 1 || data.length > 20) {
                     return 'Name should be between 1 and 20 characters long!';
@@ -168,7 +170,7 @@ angular.module('mms.diagramComponentInspector', [
 
             };
 
-            DiagramComponentInspectorController.prototype.commitName = function() {
+            DiagramComponentInspectorController.prototype.commitName = function () {
 
                 this.$rootScope.$emit('componentLabelMustBeSaved', this.inspectable);
 

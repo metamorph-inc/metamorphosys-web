@@ -1428,7 +1428,9 @@ define([
                             subContainerData = self.getContainerData(childNode);
                             containerData.Container.push(subContainerData);
                             self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
+
                         } else if (self.isMetaTypeOf(childNode, self.meta.ConnectorAdapter)) {
+
                             // Although this is a distinct class, we will export this as a Container
                             // because Container implements enough functionality for the ConnectorAdapter's intended use.
 
@@ -1446,6 +1448,7 @@ define([
 
                             containerData.Container.push(subContainerData);
                             self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
+
                         } else {
                             callback(null);
                         }
