@@ -1,17 +1,22 @@
 <div class="inspected-connector-adapter-table">
     <table ng-if="ctrl.data.details.connectors[0].ports.length">
         <tr>
-            <td class="map-header border-right border-bottom">Connector {{ctrl.data.details.connectors[0].name}}</td>
-            <td class="map-header border-bottom" colspan="{{ctrl.data.details.connectors[1].ports.length}}">Connector {{ctrl.data.details.connectors[1].name}}</td>
+            <td></td>
+            <td></td>
+            <td class="map-header" colspan="{{ctrl.data.details.connectors[1].ports.length}}">Connector {{ctrl.data.details.connectors[1].name}}</td>
         </tr>
         <tr>
-            <td class="map-header border-right"/>
-            <td class="map-item" ng-repeat="port2 in ctrl.data.details.connectors[1].ports | orderBy:'name'">
+            <td class="empty-cell"></td>
+            <td class="empty-cell border-right border-bottom"></td>
+            <td class="map-item border-bottom" ng-repeat="port2 in ctrl.data.details.connectors[1].ports | orderBy:'name'">
                 <div class="pin-name">{{port2.name}}</div>
                 <div class="pin-type">{{port2.type}}</div>
             </td>
         </tr>
         <tr ng-repeat="port1 in ctrl.data.details.connectors[0].ports | orderBy:'name'">
+            <td ng-if="$first" class="map-header" rowspan="{{ctrl.data.details.connectors[0].ports.length}}">
+                Connector {{ctrl.data.details.connectors[0].name}}
+            </td>
             <td class="map-item border-right">
                 <div class="pin-name">{{port1.name}}</div>
                 <div class="pin-type">{{port1.type}}</div>
