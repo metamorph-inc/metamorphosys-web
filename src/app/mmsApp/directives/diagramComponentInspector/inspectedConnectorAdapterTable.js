@@ -6,14 +6,16 @@ angular.module('mms.diagramComponentInspector.inspectedConnectorAdapterTable', [
     .directive('inspectedConnectorAdapterTable', [
         function() {
 
-            function InspectorController($rootScope, projectHandling, connectorAdapterService) {
+            function InspectorController($scope, $rootScope, projectHandling, connectorAdapterService) {
 
                 this.projectHandling = projectHandling;
                 this.connectorAdapterService = connectorAdapterService;
+                this.processingMapping = false;
 
                 InspectorController.prototype.commitMapping = function() {
 
                     $rootScope.setProcessing();
+                    this.processingMapping = true;
 
                     // Build new map.
                     var idPairs = [];
@@ -29,9 +31,14 @@ angular.module('mms.diagramComponentInspector.inspectedConnectorAdapterTable', [
                     this.connectorAdapterService.setMapping(parentContext, this.data.id, idPairs)
                         .then(function() {
                             $rootScope.stopProcessing();
+                            $scope.ctrl.processingMapping = false;
                         });
 
                 };
+
+                $scope.$watch('ctrl.processingMapping', function(isMapping) {
+                    this.processingMapping = isMapping;
+                });
 
             }
 

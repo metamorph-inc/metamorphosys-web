@@ -18,7 +18,7 @@
             </td>
             <td class="map-cell" ng-repeat="port2 in ctrl.data.details.connectors[1].ports | orderBy:'name'">
                 <i class="fa fa-ban" ng-if="port2.type !== port1.type"></i>
-                <md-checkbox class="map-checkbox" ng-model="port1.mapping[port2.id]" ng-if="port2.type === port1.type" ng-change="port2.mapping[port1.id] = port1.mapping[port2.id]; ctrl.commitMapping()" aria-label=""/>
+                <md-checkbox class="map-checkbox" ng-model="port1.mapping[port2.id]" ng-disabled="ctrl.processingMapping" ng-if="port2.type === port1.type" ng-change="port2.mapping[port1.id] = port1.mapping[port2.id]; ctrl.commitMapping()" aria-label=""/>
                 
             </td>
         </tr>
