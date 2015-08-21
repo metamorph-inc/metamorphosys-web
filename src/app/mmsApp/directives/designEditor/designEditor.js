@@ -385,7 +385,9 @@ angular.module('mms.designEditor', [
                         .then(function(designNode) {
 
                             designNode.setAttribute("name", design.label);  // This changes as the user modifies the name.
-                            designNode.setAttribute("label", design.name);  // Constant, for tutorial/designSelector lookup.
+                            if (designNode.getAttribute("originalName") === undefined) {
+                                designNode.setAttribute("originalName", design.originalName);  // Constant, for tutorial/designSelector lookup.
+                            }
 
                             $rootScope.$emit('nameWasChanged', projectHandling.getSelectedContainer());
 

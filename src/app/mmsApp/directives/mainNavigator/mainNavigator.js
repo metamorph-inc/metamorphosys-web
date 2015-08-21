@@ -24,7 +24,7 @@ angular.module(
                 defaultNavigatorItems = [{
                     id: 'root',
                     label: '',
-                    name: '',
+                    originalName: '',
                     itemClass: 'cyphy-root',
                     action: function(item, ev) {
                         $rootScope.openDesignSelector(ev);
@@ -97,7 +97,7 @@ angular.module(
                                 id: design.id,
                                 type: 'design',
                                 label: parseDesignName(design.name),
-                                name: parseDesignName(design.name),
+                                originalName: parseDesignName(design.originalName),
                                 action: function() {
 
                                     if (projectHandling.getSelectedDesignId() !== design.id) {
@@ -137,7 +137,7 @@ angular.module(
                                 id: container.id,
                                 type: index === 0 ? 'design' : 'component',
                                 label: parseDesignName(container.name),
-                                name: parseDesignName(container.name),
+                                originalName: index === 0 ? parseDesignName(container.originalName) : parseDesignName(container.name),
                                 action: function() {
 
                                     if (projectHandling.getSelectedContainerId() !== container.id) {
@@ -159,7 +159,6 @@ angular.module(
                                         id: childContainer.id,
                                         type: 'component',
                                         label: parseDesignName(childContainer.name),
-                                        name: parseDesignName(childContainer.name),
                                         action: function() {
 
                                             if (projectHandling.getSelectedContainerId() !== childContainer.id) {
