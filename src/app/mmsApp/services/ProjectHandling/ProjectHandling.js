@@ -680,7 +680,7 @@ angular.module('mms.projectHandling', [])
 
         this.getSelectedDesignConfig = function() {
 
-            var currentDesignName = this.getSelectedDesign().name.replace(/_/g, ' ');
+            var currentDesignName = this.getSelectedDesign().label.replace(/_/g, ' ');
 
             return _designConfigs[currentDesignName];
 

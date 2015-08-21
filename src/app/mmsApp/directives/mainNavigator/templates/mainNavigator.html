@@ -1,3 +1,41 @@
 <div class="main-navigator-container">
-    <dropdown-navigator data-navigator="ctrl.navigator"></dropdown-navigator>
+    <nav class="dropdown-navigator-container">
+        <ul class="dropdown-navigator">
+            <script type="text/ng-template" id="navigator-item-template">
+                <div class="label-container" ng-if="$first" data-ng-click="!item.disabled && item.action(item.actionData, $event)">
+                    <span class="item-label"
+                          ng-if="!editorVisible"
+                          data-ng-click="!item.disabled && item.action(item.actionData, $event)">{{item.label}}</span>
+                </div>
+                <div class="label-container" ng-if="!$first" ng-mouseenter="showLabelButton(this)" ng-mouseleave="hideLabelButton(this)">
+                    <span class="item-label"
+                          ng-if="!editorVisible"
+                          data-ng-click="!item.disabled && item.action(item.actionData, $event)">{{item.label}}</span>
+                    <a class="item-label" id="item-label-{{$index}}"
+                       ng-if="editorVisible" href="#"
+                       editable-text="item.label"
+                       onbeforesave="ctrl.isNameValid($data)"
+                       onaftersave="ctrl.commitName(item); hideLabelEditor(this, $index)"
+                       oncancel="cancel(this);">{{item.label}}</a>
+                    <md-button class="edit-label-button"
+                               aria-label=""
+                               ng-if="labelHovered && !editorVisible"
+                               ng-click="showLabelEditor(this, $index)"
+                               title="Edit name"> 
+                        <i class="fa fa-pencil-square-o edit-label-icon"></i>
+                    </md-button>
+                </div>
+                <hierarchical-menu menu="item.menu"></hierarchical-menu>
+            </script>
+            <li data-ng-repeat-start="item in ctrl.navigator.items track by $index"
+                data-ng-class=" item.itemClass || '' "
+                ng-include=" item.itemTemplate || 'navigator-item-template' "
+                role="button"
+                >
+            </li>
+            <li data-ng-repeat-end data-ng-if="ctrl.navigator.separator && !$last" class="separator">
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </li>
+        </ul>
+    </nav>
 </div>

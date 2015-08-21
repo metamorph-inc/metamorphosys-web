@@ -87,6 +87,7 @@ angular.module('mms.headerButtons', [])
                 if (designConfig) {
 
                     $scope.tutorial = designConfig.tutorial;
+                    $scope.designName = designConfig.name;
                 }
 
                 $scope.hide = function () {

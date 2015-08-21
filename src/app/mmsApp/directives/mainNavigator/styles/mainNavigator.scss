@@ -1,5 +1,74 @@
 @import '../../../styles/colors';
 
+ul.dropdown-navigator {
+
+  font-size: 130%;
+
+  padding: 0;
+  list-style-type: none;
+  color: #fff;
+
+  .menu-contents {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+  }
+
+  > li {
+    display: inline-block;
+    padding: 0;
+    line-height: 2.22em;
+
+    position: relative;
+
+    > .hierarchical-menu {
+      display: none;
+      position: absolute;
+    }
+
+    .label-container {
+      height: 100%;
+      padding: 0 1em;
+    }
+
+  }
+
+  > li:not(.separator):hover {
+    background-color: #00235B;
+    cursor: pointer;
+
+    > .hierarchical-menu{
+      display: block;
+    }
+
+  }
+
+  li.selected {
+    background-color: #EFF5FD;
+  }
+
+  li.gme-root {
+    background-image: url(images/gme-icon.png);
+    background-position: 8px center;
+    background-repeat: no-repeat;
+
+    .label-container {
+      padding-left: 46px;
+    }
+
+  }
+
+  li.separator {
+    padding: 0;
+    cursor: default;
+    font-size: 60%;
+    top: -2px;
+    position: relative;
+    margin: 0 .75ex;
+  }
+
+
+
+}
+
 .main-navigator-container {
     .dropdown-navigator {
 
@@ -31,6 +100,9 @@
 
             .item-label {
                 color: #fff;
+                font-style: normal;
+                border: none;
+
             }
         }
 
@@ -49,6 +121,8 @@
 
                 padding-left: 46px;
 
+
+
                 .item-label {
                     display: inline-block;
                     height: 1em;
@@ -61,6 +135,52 @@
                 background-color: darken( $c-background-dark, 13% );
             }
 
+        }
+
+        .edit-label-button {
+
+            height: 25px;
+            width: 25px;
+            vertical-align: middle;
+            padding: 0;
+            transition: background-color 500ms;
+
+            .edit-label-icon {
+                color: #FFFFEE;
+                transition: color 500ms;
+                position: absolute;
+                left: 5px;
+                top: 5px;
+            }
+
+            &:hover {
+                background-color: #525B67;
+
+                .edit-label-icon {
+                    color: #45A3FF;
+                }
+            }  
+
+        }
+
+        .editable-buttons {
+            vertical-align: middle;
+            line-height: 100%;
+        }
+
+        .editable-error {
+            padding-left: 10px;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            background-color: #3F4A59;
+            z-index: 10;
+            width: auto;
+            display: block;
+        }
+
+        .editable-input {
+            width: 200px;
         }
     }
 }

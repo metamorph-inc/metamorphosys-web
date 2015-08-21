@@ -179,6 +179,7 @@ angular.module( 'cyphy.services' )
                             data.design = {
                                 id: designId,
                                 name: designNode.getAttribute( 'name' ),
+                                label: designNode.getAttribute( 'label' ) || designNode.getAttribute( 'name' ),
                                 description: designNode.getAttribute( 'INFO' ),
                                 node: designNode
                             };
@@ -258,6 +259,7 @@ angular.module( 'cyphy.services' )
                                     data.designs[ designId ] = {
                                         id: designId,
                                         name: childNode.getAttribute( 'name' ),
+                                        label: childNode.getAttribute( 'label' ) || childNode.getAttribute( 'name' ),
                                         description: childNode.getAttribute( 'INFO' )
                                     };
                                     childNode.onUnload( onUnload );
@@ -273,6 +275,7 @@ angular.module( 'cyphy.services' )
                                     data.designs[ designId ] = {
                                         id: designId,
                                         name: newChild.getAttribute( 'name' ),
+                                        label: newChild.getAttribute( 'label' ) || newChild.getAttribute( 'name' ),
                                         description: newChild.getAttribute( 'INFO' )
                                     };
                                     newChild.onUnload( onUnload );
@@ -560,6 +563,7 @@ angular.module( 'cyphy.services' )
                                 container = {
                                     id: containerNode.getId(),
                                     name: containerNode.getAttribute( 'name' ),
+                                    label: containerNode.getAttribute( 'label' ) || containerNode.getAttribute( 'name' ),
                                     type: containerNode.getAttribute( 'Type' ),
                                     subContainers: {},
                                     components: {}
@@ -618,6 +622,7 @@ angular.module( 'cyphy.services' )
                                         rootContainer = {
                                             id: rootNode.getId(),
                                             name: rootNode.getAttribute( 'name' ),
+                                            label: rootNode.getAttribute( 'label' ) || rootNode.getAttribute( 'name' ),
                                             type: rootNode.getAttribute( 'Type' ),
                                             subContainers: {},
                                             components: {}
@@ -722,6 +727,7 @@ angular.module( 'cyphy.services' )
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
                                                 name: childNodes[ i ].getAttribute( 'name' ),
+                                                label: childNodes[ i ].getAttribute( 'label' ) || childNodes[ i ].getAttribute( 'name' ),
                                                 description: childNodes[ i ].getAttribute( 'INFO' )
                                             };
                                             childNodes[ i ].onUpdate( onUpdate );
@@ -735,6 +741,7 @@ angular.module( 'cyphy.services' )
                                             data.configurationSets[ childId ] = {
                                                 id: childId,
                                                 name: newNode.getAttribute( 'name' ),
+                                                label: newNode.getAttribute( 'label' ) || newNode.getAttribute( 'name' ),
                                                 description: newNode.getAttribute( 'INFO' )
                                             };
                                             newNode.onUpdate( onUpdate );

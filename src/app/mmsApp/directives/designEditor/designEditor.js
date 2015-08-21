@@ -77,6 +77,12 @@ angular.module('mms.designEditor', [
 
             self.isDummy = $state.current.name === 'dummyEditor';
 
+            if ($injector.has('designsToSelect')) {
+
+                $scope.designsToSelect = $injector.get('designsToSelect');
+
+            }
+
             selectionHandler = function(event) {
 
                 var selectedComponentIds = event.message.selectedComponentIds,
@@ -348,6 +354,20 @@ angular.module('mms.designEditor', [
 
                     });
 
+                    addRootScopeEventListener('designLabelMustBeSaved', function($event, design) {
+
+                        nodeService.loadNode(layoutContext, design.id)
+                        .then(function(designNode) {
+
+                            designNode.setAttribute("name", design.label);  // This changes as the user modifies the name.
+                            designNode.setAttribute("label", design.name);  // Constant, for tutorial/designSelector lookup.
+
+                            $rootScope.$emit('nameWasChanged', projectHandling.getSelectedContainer());
+
+                        });
+
+                    });
+
                     addRootScopeEventListener('componentLabelMustBeSaved', function($event, component) {
 
                         var operation;
@@ -358,7 +378,6 @@ angular.module('mms.designEditor', [
                         );
                         operation.set(component.getLabel());
                         operation.finish();
-
 
                     });
 

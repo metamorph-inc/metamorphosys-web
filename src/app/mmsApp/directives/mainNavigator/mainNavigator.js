@@ -14,7 +14,7 @@ angular.module(
             scope: {},
             restrict: 'E',
             replace: true,
-            controller: function($rootScope, $scope, $mdDialog, projectHandling) {
+            controller: function($rootScope, $scope, $timeout, projectHandling) {
 
                 var self = this,
                     defaultNavigatorItems,
@@ -24,6 +24,7 @@ angular.module(
                 defaultNavigatorItems = [{
                     id: 'root',
                     label: '',
+                    name: '',
                     itemClass: 'cyphy-root',
                     action: function(item, ev) {
                         $rootScope.openDesignSelector(ev);
@@ -45,6 +46,33 @@ angular.module(
 
                 };
 
+                $scope.showLabelButton = function(context) {
+                    if (!context.editorVisible) {
+                        context.labelHovered = true;
+                    }
+                };
+
+                $scope.hideLabelButton = function(context) {
+                    context.labelHovered = false;
+                };
+
+                $scope.showLabelEditor = function(context, index) {
+                    context.$parent.editorVisible = true;
+
+                    context.hideLabelButton(context.$parent);
+
+                    $timeout(function() {
+                        angular.element('#item-label-' + index).trigger('click');
+                    });
+                };
+
+                $scope.hideLabelEditor = function(context) {
+                    context.$parent.$parent.editorVisible = false;
+                };
+
+                $scope.cancel = function(context) {
+                    context.$parent.$parent.editorVisible = false;
+                };
 
                 renderNavigator = function(activeContainer) {
 
@@ -67,7 +95,9 @@ angular.module(
 
                             designMenu.items.push({
                                 id: design.id,
+                                type: 'design',
                                 label: parseDesignName(design.name),
+                                name: parseDesignName(design.name),
                                 action: function() {
 
                                     if (projectHandling.getSelectedDesignId() !== design.id) {
@@ -98,14 +128,16 @@ angular.module(
 
                         }
 
-                        angular.forEach(path, function(container) {
+                        angular.forEach(path, function(container, index) {
 
                             var item,
                                 submenu;
 
                             item = {
                                 id: container.id,
+                                type: index === 0 ? 'design' : 'component',
                                 label: parseDesignName(container.name),
+                                name: parseDesignName(container.name),
                                 action: function() {
 
                                     if (projectHandling.getSelectedContainerId() !== container.id) {
@@ -125,7 +157,9 @@ angular.module(
 
                                     submenu.items.push({
                                         id: childContainer.id,
+                                        type: 'component',
                                         label: parseDesignName(childContainer.name),
+                                        name: parseDesignName(childContainer.name),
                                         action: function() {
 
                                             if (projectHandling.getSelectedContainerId() !== childContainer.id) {
@@ -167,6 +201,20 @@ angular.module(
                     } else {
                         self.navigator.items = angular.copy(defaultNavigatorItems, []);
                     }
+
+                };
+
+                this.isNameValid = function(data) {
+
+                    if (data.length < 1 || data.length > 27) {
+                        return 'Name should be between 1 and 27 characters long!';
+                    }
+
+                };
+
+                this.commitName = function(item) {
+
+                    $rootScope.$emit('designLabelMustBeSaved', item);
 
                 };
 
