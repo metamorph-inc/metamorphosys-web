@@ -44,6 +44,7 @@ if (typeof module !== 'undefined' && require.main === module) {
                 return Q.nfcall(exports.writeMetaJs);
             }).then(function () {
                 console.log('Success');
+                console.log('  Don\'t forget to update SimpleModelica.json manually');
             });
     }).catch(fatal);
     gmeConfig = require('../config');

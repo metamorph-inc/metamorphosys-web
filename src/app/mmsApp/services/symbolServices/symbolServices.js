@@ -31,8 +31,13 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             wireLeadIn;
 
         numberOfPorts = somePorts.length;
-        
-        offset = parameters.portSpacing;
+
+        if (parameters.connectorAdapter) {
+            offset = 5;
+        }
+        else {
+            offset = parameters.portSpacing;
+        }
 
         if (side === 'right' || side === 'left') {
             offset += parameters.topPortPadding;
@@ -147,7 +152,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             top,
             right,
             bottom,
-            left;
+            left,
+            padding;
 
         portDescriptors = portDescriptors || {};
         ports = [];
@@ -163,11 +169,20 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             parameters.minWidth
         );
 
-        height = Math.max(
-            parameters.portSpacing * ( left.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
-            parameters.portSpacing * ( right.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
-            parameters.minHeight
-        );
+        if (parameters.connectorAdapter) {
+            height = Math.max(
+                parameters.portSpacing * left.length + 10,
+                parameters.portSpacing * right.length + 10,
+                parameters.minHeight
+            );
+        }
+        else {
+            height = Math.max(
+                parameters.portSpacing * ( left.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
+                parameters.portSpacing * ( right.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
+                parameters.minHeight
+            );
+        }
 
         spreadPortsAlongSide(top, 'top', width, height, parameters);
         spreadPortsAlongSide(right, 'right', width, height, parameters);

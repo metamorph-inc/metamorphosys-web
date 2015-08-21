@@ -5,7 +5,7 @@
         "metaType": "Connector",
         "type": "generic",
         "description": "Create an external interface for your subcircuit by creating and hooking up this connector.",
-        "svgViewBox": "0 0 100 20",
+        "svg": "images/simpleConnectorIcon.svg",
         "config": []
     },
     {
@@ -14,7 +14,16 @@
         "metaType": "Container",
         "type": "generic",
         "description": "Use this primitive to begin creating your own subcircuit from scratch.",
-        "svgViewBox": "0 0 100 100",
+        "svg": "images/emptySubcircuitIcon.svg",
+        "config": []
+    },
+    {
+        "id": "connector-adapter",
+        "name": "Connector Adapter",
+        "metaType": "ConnectorAdapter",
+        "type": "generic",
+        "description": "Use this to map one type of connector to another.",
+        "svg": "images/connectorAdapterIcon.svg",
         "config": []
     }
 ]

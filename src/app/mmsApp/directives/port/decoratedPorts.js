@@ -22,7 +22,8 @@ angular.module(
 
                 }
 
-                if ($scope.component.symbol.symbolDirective === 'container-box') {
+                if ($scope.component.symbol.symbolDirective === 'container-box' ||
+                    $scope.component.symbol.symbolDirective === 'connector-adapter') {
 
                     switch ($scope.portInstance.portSymbol.side) {
 
@@ -32,7 +33,7 @@ angular.module(
 
                         default:
                         case 'right':
-                            $scope.decorationTransform = 'translate(-29, -8)';
+                            $scope.decorationTransform = 'translate(-30, -8)';
                     }
 
                 } 

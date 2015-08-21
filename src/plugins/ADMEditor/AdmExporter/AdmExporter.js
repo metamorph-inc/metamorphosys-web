@@ -430,6 +430,8 @@ define([
 
         if (parentType === 'Container') {
             containerData.Connector.push(data);
+        } else if (parentType === 'ConnectorAdapter') {
+            containerData.Connector.push(data);
         } else if (parentType === 'AVMComponentModel') {
             containerData.ConnectorInstance.push(data);
         } else {
@@ -649,6 +651,8 @@ define([
                         if (self.shouldBeGenerated(parent)) {
                             id = self.core.getGuid(connectedPort);
                         }
+                    } else if (parentMetaType === 'ConnectorAdapter') {
+                        id = self.core.getGuid(connectedPort);
                     } else if (parentMetaType === 'Connector') {
                         grandParent = self.core.getParent(parent);
                         grandParentMetaType = self.core.getAttribute(self.getMetaType(grandParent), 'name');
@@ -656,6 +660,8 @@ define([
                             if (self.shouldBeGenerated(grandParent)) {
                                 id = self.core.getGuid(connectedPort);
                             }
+                        } else if (grandParentMetaType === 'ConnectorAdapter') {
+                            id = self.core.getGuid(connectedPort);
                         } else {
                             callback('Unexpected Connector grandParentMetaType ' + grandParentMetaType);
                             return;
@@ -1422,6 +1428,27 @@ define([
                             subContainerData = self.getContainerData(childNode);
                             containerData.Container.push(subContainerData);
                             self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
+
+                        } else if (self.isMetaTypeOf(childNode, self.meta.ConnectorAdapter)) {
+
+                            // Although this is a distinct class, we will export this as a Container
+                            // because Container implements enough functionality for the ConnectorAdapter's intended use.
+
+                            var pos = self.getPositionUInt32(childNode);
+                            subContainerData = {
+                                "@xmlns:q1": "avm",
+                                "@xsi:type": 'q1:' + self.core.getAttribute(node, 'Type'),
+                                "@Name": self.core.getAttribute(childNode, 'name'),
+                                "@ID": self.getComponentOrDesignID(childNode),
+                                "@xmlns": "",
+                                "@XPosition": pos.x,
+                                "@YPosition": pos.y,
+                                "Connector": []
+                            };
+
+                            containerData.Container.push(subContainerData);
+                            self.visitAllChildrenRec(childNode, counter, subContainerData, callback);
+
                         } else {
                             callback(null);
                         }
@@ -1475,7 +1502,7 @@ define([
             parentType = self.core.getAttribute(self.getMetaType(parent), 'name'),
             data;
 
-        if (parentType === 'Container') {
+        if (parentType === 'Container' || parentType === 'ConnectorAdapter') {
             pos = self.getPositionUInt32(node);
             data = {
                 "@Name": self.core.getAttribute(node, 'name'),

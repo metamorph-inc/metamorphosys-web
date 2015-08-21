@@ -1,0 +1,35 @@
+$blue: #0D47A1;
+
+.connector-adapter {
+
+    .component-label {
+        display: none;
+    }
+
+    .symbol-area {
+        display: none;
+    }
+
+    .port {
+
+        .port-label {
+            fill: #ffffff;
+        }
+
+    }
+
+    .box-box {
+        fill: #747f8d;
+        stroke: #747f8d;
+        stroke-width: 2;
+    }
+
+    .port-wire {
+        stroke-width:1;
+        stroke: $blue;
+    }
+
+    .port-shape {
+
+    }
+}

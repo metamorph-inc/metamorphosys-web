@@ -11,6 +11,7 @@
 	padding: 10px;
 
     .inspectable-name {
+        display: inline-block;
         margin-top: .5ex;
 
         .editable-text {
@@ -19,8 +20,14 @@
 
     }
 
+    .inspectable-description {
+        margin: 0.5em 0 1em 0;
+        font-size: 90%;
+    }
+
 	.editable-click, a.editable-click {
 		color: $linkColorOnDark;
+        margin-right: 1ex;
 	}
 
 	.no-inspectable-message {
@@ -36,7 +43,6 @@
 
 	.classification-tags {
 		display: inline-block;
-		margin-left: 1ex;
 		vertical-align: baseline;
 
 		.taxonomy-term {
@@ -62,4 +68,80 @@
 		top: 2px;
 	}
 
+    td {
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    .map-item {
+        padding: 2px;
+
+        .pin-name {
+            font-size: 82%;
+            font-weight: bold;
+        }
+
+        .pin-type {
+            display: inline-block;
+            font-size: 65%;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 0.2ex 1ex;
+            color: #fff;
+            border-radius: 3px;
+            position: relative;
+            top: -3px;
+        }
+    }
+
+    .map-cell {
+        padding: 0 5px;
+
+        .map-checkbox {
+            margin: 0;
+
+            .md-label {
+                display: none;
+            }
+
+            &.md-checked .md-icon {
+                background-color: rgb(13, 71, 161);
+            }
+        }
+
+        &:hover {
+            background: rgba(0,0,0,0.1);
+        }
+    }
+
+    .map-option {
+        &:focus, &:hover, &.active {
+            background: rgba(0,0,0,0.1);
+        }
+    }
+
+    .map-header {
+        padding: 5px;
+        text-align: center;
+        font-size: 90%;
+        line-height: 50%;
+        font-weight: bold;
+    }
+
+    .border-bottom {
+        border-bottom: rgba(255, 255, 255, 0.1) solid 1px;
+    }
+
+    .border-right {
+        border-right: rgba(255, 255, 255, 0.1) solid 1px;
+    }
+
+    .empty-cell {
+        background-color: #455160;
+    }
+
+    .no-mapping {
+        color: #1F252C;
+        transform: scale(1.3);
+        margin: 6px 0 0 1px
+    }
 }

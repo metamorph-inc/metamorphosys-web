@@ -12,12 +12,17 @@
                 </div>
             </div>
         </div>
+        <div class="inspectable-description">
+            {{ctrl.inspectable.details.description}}
+        </div>
         <div class="inspectable-details">
             <inspected-component-details ng-if="ctrl.inspectable.details.acmInfo"
                                          component="ctrl.inspectable"></inspected-component-details>
             <inspected-container-details ng-if="ctrl.inspectable.metaType == 'Container'"
                                          container="ctrl.inspectable"></inspected-container-details>
+            <inspected-connector-adapter-table ng-if="ctrl.inspectable.metaType == 'ConnectorAdapter'"
+                                               data="ctrl.inspectable"></inspected-connector-adapter-table>
         </div>
-        <info-button ng-if="ctrl.inspectable.infoUrl" label="'View on Octopart'" ng-click="ctrl.openInfo()"></info-button>        
+        <info-button ng-if="ctrl.inspectable.infoUrl" label="'View on Octopart'" ng-click="ctrl.openInfo()"></info-button>
     </div>
 </div>

@@ -256,9 +256,37 @@ angular.module('mms.designEditor', [
 
                                 nodeService.createNode(layoutContext, selectedContainerId, metaId, 'New primitive')
                                     .then(function(node) {
+                                        // Is this a connector adapter? If so, seed it with two untyped ports.
+                                        if (primitive.id === 'connector-adapter') {
 
-                                       var element = {},
-                                           primitiveElement;
+                                            return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make first connector')
+                                                .then(function (nodeConnector) {
+                                                    nodeConnector.setAttribute('name', 'A');
+                                                    nodeConnector.setRegistry('position', {
+                                                        x: 50,
+                                                        y: 100
+                                                    }, 'Set primitive position');
+                                                })
+                                                .then(function () {
+                                                    return nodeService.createNode(layoutContext, node.id, meta.byName['Connector'].id, 'Make second connector');
+                                                })
+                                                .then(function (nodeConnector) {
+                                                    nodeConnector.setAttribute('name', 'B');
+                                                    nodeConnector.setRegistry('position', {
+                                                        x: 400,
+                                                        y: 100
+                                                    }, 'Set primitive position');
+
+                                                    return node;
+                                                });
+                                        }
+                                        else {
+                                            return node;
+                                        }
+                                    })
+                                    .then(function(node) {
+
+                                        var element = {};
 
                                         if (!position) {
                                             position = gridService.getViewPortCenter(selectedContainerId);
@@ -275,10 +303,6 @@ angular.module('mms.designEditor', [
 
                                         element.id = node.id;
                                         element.position = gridService.getSnappedPosition(position);
-
-                                        primitiveElement = cyPhyDiagramParser.primitiveParser(element, self.diagram.getHighestZ() + 1);
-
-                                        self.diagram.addComponent(primitiveElement);
 
                                         node.setRegistry('position', position, 'Set primitive position');
 
@@ -331,6 +355,7 @@ angular.module('mms.designEditor', [
 
                                     componentNode.setAttribute("Icon", '/rest/blob/view/' + iconBlobUrlParts[iconBlobUrlParts.length - 1]);
                                     $rootScope.stopProcessing();
+
                                 });
                         }
                         else {
@@ -1132,6 +1157,11 @@ angular.module('mms.designEditor', [
         };
 
         DesignEditorController.prototype.primitivePanelItemDragStart = function(e, item) {
+
+            // Firefox requires setData() to be called in drag start handler. Data could be anything, not used.
+            if (navigator.appCodeName === "Mozilla") {
+                e.dataTransfer.setData('text/plain', item);
+            }
 
             if (typeof e.dataTransfer.setDragImage === 'function') {
                 e.dataTransfer.setDragImage(_ghostComponent, 0, 0);
