@@ -27,13 +27,13 @@ var OrthogonalRouter = function ($mdToast, $injector) {
         debugRouter = $injector.get('debugAutoRouter');
     }
 
-    this.route = function( diagram ) {
+    this.route = function( diagram, specificWireToRoute ) {
 
         var startTime = performance.now();
 
         var haveDiagramComponentsChanged,
             diagramWires,
-            newestWire;
+            wireToRoute;
 
         if (diagram.getWires().length) {
 
@@ -47,9 +47,10 @@ var OrthogonalRouter = function ($mdToast, $injector) {
                 console.log('Diagram is consistent with previous wiring, able to use cached visibility graph');
 
                 diagramWires = diagram.getWires();
-                newestWire = diagramWires[diagramWires.length - 1];
 
-                routeWires(diagram, cachedRouterData.visibilityGraph, [newestWire], cachedRouterData.points);
+                wireToRoute = specificWireToRoute ? specificWireToRoute : diagramWires[diagramWires.length - 1];
+
+                routeWires(diagram, cachedRouterData.visibilityGraph, [wireToRoute], cachedRouterData.points);
             }
 
             cachedRouterData.visibilityGraph = cleanVisibilityGraph(cachedRouterData.visibilityGraph);

@@ -87,8 +87,15 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     id: routerType.id,
                     label: routerType.label,
                     action: function() {
-                        wiringService.autoRoute($scope.diagram, routerType.type);
-                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        if (!wire.isWireLocked()) {
+                            wiringService.autoRoute($scope.diagram, routerType.type, wire);
+                            $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        }
+                        else {
+                            var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, null, [wire]);
+
+                            lockedComponentWireToast.showToast("Locked wires preventing redraw. Override wire locks?");
+                        }
                     }
                 });
             }
@@ -97,8 +104,15 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     id: routerType.id,
                     label: routerType.label,
                     action: function() {
-                        wiringService.routeWire(wire, routerType.type, routerType.params);
-                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        if (!wire.isWireLocked()) {
+                            wiringService.routeWire(wire, routerType.type, routerType.params);
+                            $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                        }
+                        else {
+                            var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, null, [wire]);
+
+                            lockedComponentWireToast.showToast("Locked wires preventing redraw. Override wire locks?");
+                        }
                     }
                 });
             }
@@ -121,9 +135,16 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
                     iconClass: 'fa fa-trash-o',
                     action: function() {
 
-                        ga('send', 'event', 'wire', 'destroy', wire.getId());
+                        if (!wire.isWireLocked()) {
+                            ga('send', 'event', 'wire', 'destroy', wire.getId());
 
                         $rootScope.$emit('wireDeletionMustBeDone', wire);
+                        }
+                        else {
+                            var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, null, [wire]);
+
+                            lockedComponentWireToast.showToast("Locked wires preventing delete. Override wire locks?");
+                        }
                     }
                 }]
             }
@@ -230,27 +251,55 @@ module.exports = function($scope, $rootScope, diagramService, $timeout,
 
         angular.forEach($scope.routerTypes, function(routerType) {
 
-            wiringMenu.push({
-                id: routerType.id,
-                label: routerType.label,
-                action: function() {
+            if (routerType.id === 'autoRouter') {
+                wiringMenu.push({
+                    id: routerType.id,
+                    label: routerType.label,
+                    action: function() {
 
-                    var wires = $scope.diagram.getWiresForComponents([component]);
+                        var wires = $scope.diagram.getWiresForComponents([component]);
 
-                    angular.forEach(wires, function(wire) {
+                        angular.forEach(wires, function(wire) {
 
-                        ga('send', 'event', 'wire', 'redraw', wire.getId());
+                            ga('send', 'event', 'wire', 'redraw', wire.getId());
 
-                        // TODO AutoRouter: For now this will re-route component wires using elbow-horizontal.
-                        // In the future the orthogonal router should have a routeWire function to route
-                        // only one wire at a time
-                        // wiringService.routeWire(wire, routerType.type, routerType.params);
-                        wiringService.routeWire(wire, 'ElbowRouter', routerType.params);
-                        $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            if (!wire.isWireLocked()) {
+                                wiringService.autoRoute($scope.diagram, routerType.type, wire);
+                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            }
+                            else {
+                                var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, component);
 
-                    });
-                }
-            });
+                                lockedComponentWireToast.showToast("Locked wires preventing redraw. Override wire locks?");
+                            }
+
+                        });
+                    }
+                });
+            }
+            else {
+                wiringMenu.push({
+                    id: routerType.id,
+                    label: routerType.label,
+                    action: function() {
+
+                        var wires = $scope.diagram.getWiresForComponents([component]);
+
+                        angular.forEach(wires, function(wire) {
+
+                            if (!wire.isWireLocked()) {
+                                wiringService.routeWire(wire, routerType.type, routerType.params);
+                                $rootScope.$emit('wireSegmentsMustBeSaved', wire);
+                            }
+                            else {
+                                var lockedComponentWireToast = new LockedComponentWireToast($mdToast, $rootScope, component);
+
+                                lockedComponentWireToast.showToast("Locked wires preventing redraw. Override wire locks?");
+                            }
+                        });
+                    }
+                });
+            }
 
         });
 

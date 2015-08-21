@@ -42,19 +42,19 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                     type: 'OrthogonalRouter'
                 },
 
-                {
-                    id: 'elbowHorizontal',
-                    label: 'Elbow - horizontal first',
-                    type: 'ElbowRouter',
-                    params: 'horizontalFirst'
-                },
+                // {
+                //     id: 'elbowHorizontal',
+                //     label: 'Elbow - horizontal first',
+                //     type: 'ElbowRouter',
+                //     params: 'horizontalFirst'
+                // },
 
-                {
-                    id: 'elbowVertical',
-                    label: 'Elbow - vertical first',
-                    type: 'ElbowRouter',
-                    params: 'verticalFirst'
-                },
+                // {
+                //     id: 'elbowVertical',
+                //     label: 'Elbow - vertical first',
+                //     type: 'ElbowRouter',
+                //     params: 'verticalFirst'
+                // },
 
                 {
                     id: 'simpleRouter',
@@ -106,12 +106,17 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
         };
 
         /* AutoRouter Wiring Functions */
-        this.autoRoute = function(diagram, routerType) {
+        this.autoRoute = function(diagram, routerType, specificWireToRoute) {
 
             var router = routers[routerType];
 
             if (router && angular.isFunction(router.route)) {
-                router.route(diagram);
+                if (specificWireToRoute) {
+                    router.route(diagram, specificWireToRoute);
+                }
+                else {
+                    router.route(diagram);
+                }
             }
 
         };

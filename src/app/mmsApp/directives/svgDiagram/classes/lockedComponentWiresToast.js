@@ -1,3 +1,5 @@
+'use strict';
+
 function LockedComponentWireToastController ($scope, $rootScope, $mdToast, message, components, wires) {
 
     $scope.message = message;
@@ -12,7 +14,8 @@ function LockedComponentWireToastController ($scope, $rootScope, $mdToast, messa
         
         if ( wires ) {
             angular.forEach(wires, function(wire) {
-                wire.wire.unlockWire();
+                wire.unlockWire();
+                $rootScope.$emit('wireLockMustBeSaved', wires[0], false);
             });
         }
         else {
@@ -25,9 +28,9 @@ function LockedComponentWireToastController ($scope, $rootScope, $mdToast, messa
         }
 
         $mdToast.hide();
-    }
+    };
 
-};
+}
 
 
 module.exports = function($mdToast, $rootScope, components, wires) {

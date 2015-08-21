@@ -302,7 +302,9 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
 
                 } else {
 
-                    wiringService.routeWire(wire, 'ElbowRouter');
+                    // wiringService.routeWire(wire, 'ElbowRouter');
+                    diagram.addWire(wire);
+                    wiringService.autoRoute(diagram, 'OrthogonalRouter', wire);
 
                 }
 
