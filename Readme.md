@@ -28,3 +28,8 @@ Each project has a unique URL. Save that URL to return to the project later.
 
 ### Running Tests ###
 `npm run test_all`
+
+##### Protractor Tests #####
+1. Start `mms-webcyphy` using the instructions above
+2. `webdriver-manager start` (and leave running in background)
+3. `protractor protractor_conf.js`
