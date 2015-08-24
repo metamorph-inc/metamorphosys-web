@@ -202,7 +202,8 @@ md-toast.test-bench-completed {
             .result-metrics-wrapper {
                 display: inline-block;
                 vertical-align: top;
-                margin-top: 5px;
+                margin-top: 5px 5px 0 0;
+                width: 18%;
 
                 .result-metric {
                     display: block;
@@ -212,12 +213,8 @@ md-toast.test-bench-completed {
             .result-visual-container {
                 display: inline-block;
                 margin: 5px;
-
-                 width: 880px; /* REMOVE THIS WHEN FILES EXIST */
-
-                .result-visual {
-                    width: 880px; /* REMOVE THIS WHEN FILES EXIST */
-                }
+                text-align: center;
+                width: 78%;
             }
 
         }
