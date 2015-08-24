@@ -80,6 +80,7 @@ var CyPhyApp = angular.module('CyPhyApp', [
     'angucomplete-alt',
     'ngTouch',
     'ngMaterial',
+    'ngAnimate',
     'ngCookies',
 
     'xeditable',
@@ -254,7 +255,7 @@ CyPhyApp.controller('AppController', function($rootScope, $cookies, $state, $q, 
         }
     });
 
-    $animate.enabled(false);
+    $animate.enabled(true);
 
     function initStats() {
 
