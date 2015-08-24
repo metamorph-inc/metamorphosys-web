@@ -199,24 +199,6 @@ md-toast.test-bench-completed {
             width: 100%;
             height: auto;
 
-            .result-metrics-wrapper {
-                display: inline-block;
-                vertical-align: top;
-                margin-top: 5px 5px 0 0;
-                width: 18%;
-
-                .result-metric {
-                    display: block;
-                }
-            }
-
-            .result-visual-container {
-                display: inline-block;
-                margin: 5px;
-                text-align: center;
-                width: 78%;
-            }
-
         }
 
     }

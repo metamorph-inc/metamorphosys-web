@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('mms.testBenchDirectives')
+angular.module('mms.testBenchDirectives', ['ngAnimate'])
     .run(function (testBenchService) {
 
         testBenchService.registerTestBenchDirectives(
@@ -54,9 +54,33 @@ angular.module('mms.testBenchDirectives')
 
     })
 
-.directive('analogElectronicSimulationResultDetails', function () {
+    .directive('analogElectronicSimulationResultDetails', function ($rootScope) {
 
         function ResultDetailsController() {
+
+            this.noInspectedMessage = "View the SPICE simulation results for a signal by selecting its wire in the diagram.";
+            this.inspectedWire = null;
+
+            var wireDetails;
+
+            this.getWireDetails = function() {
+                var wireEnds = this.inspectedWire.getEnds();
+
+                wireDetails = { componentA: wireEnds.end1.component.label || "Unnamed",
+                                portA: wireEnds.end1.port.portSymbol.label || "Unnamed",
+                                componentB: wireEnds.end2.component.label || "Unnamed",
+                                portB: wireEnds.end2.port.portSymbol.label || "Unnamed"
+                              };
+            };
+
+            this.getDetailDescription = function() {
+
+                this.getWireDetails();
+
+                return ["Results of SPICE simulation for wire connecting port " + wireDetails.portA + " of ",
+                        "component " + wireDetails.componentA + " and port " + wireDetails.portB,
+                        " of component " + wireDetails.componentB + "."].join('');
+            };
 
         }
 
@@ -71,17 +95,29 @@ angular.module('mms.testBenchDirectives')
                 result: '='
             },
             templateUrl: '/mmsApp/templates/analogElectronicSimulationResultDetails.html',
-            require: ['analogElectronicSimulationResultDetails'],
-            link: function (s, element, attributes, controllers) {
+            require: ['analogElectronicSimulationResultDetails', '^designEditor'],
+            link: function (scope, element, attributes, controllers) {
 
                 var ctrl = controllers[0],
-                    openerController = controllers[1],
+                    designEditorController = controllers[1],
                     downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash;
 
 
                 var visualUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/spice-plot.png';
 
                 ctrl.visualUrl = '/images/spice_plot_example.png';
+
+                ctrl.inspectedWire = designEditorController.inspectableWire;
+
+                designEditorController.viewingWireResult = true;
+
+                $rootScope.$on("inspectableWireHasChanged", function($event, wire) {
+                    ctrl.inspectedWire = wire;
+                });
+
+                scope.$on('$destroy', function() {
+                    designEditorController.viewingWireResult = false;
+                });
 
             }
         };
