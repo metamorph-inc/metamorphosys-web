@@ -12,6 +12,10 @@ md-toast.test-bench-completed {
 
 .test-bench-drawer-panel {
 
+    h4 {
+        display: inline-block;
+    }
+
     .above-list-headers {
         position: fixed;
         right: 0;
@@ -45,6 +49,7 @@ md-toast.test-bench-completed {
 
     .item-list {
         .item-title {
+            display: inline-block;
             font-weight: bold;
             font-size: 16px;
             
@@ -164,5 +169,58 @@ md-toast.test-bench-completed {
         max-height: 35px;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .test-bench-drawer-panel-result-list {
+        .item-list ul.list-group li.item-list-item {
+            padding-right: 0;
+        }
+    }
+
+    .result-list-header {
+
+        .result-expander {
+            display: inline-block;
+            cursor: pointer;
+
+            .result-expander-icon {
+                font-size: 0.8em;
+            }
+        }
+
+        .test-bench-result-and-time-wrapper {
+
+            height: 54px;
+
+        }
+
+        .detailed-results {
+
+            width: 100%;
+            height: auto;
+
+            .result-metrics-wrapper {
+                display: inline-block;
+                vertical-align: top;
+                margin-top: 5px;
+
+                .result-metric {
+                    display: block;
+                }
+            }
+
+            .result-visual-container {
+                display: inline-block;
+                margin: 5px;
+
+                 width: 880px; /* REMOVE THIS WHEN FILES EXIST */
+
+                .result-visual {
+                    width: 880px; /* REMOVE THIS WHEN FILES EXIST */
+                }
+            }
+
+        }
+
     }
 }

@@ -9,7 +9,8 @@ angular.module('mms.testBenchDirectives')
             'Analog Electronic Simulation',
             {
                 config: 'cost-estimation-config', // TODO: do we need a new config directive?
-                resultCompact: 'analog-electronic-simulation-result-compact'
+                resultCompact: 'analog-electronic-simulation-result-compact',
+                resultDetails: 'analog-electronic-simulation-result-details'
             }
         );
 
@@ -48,6 +49,40 @@ angular.module('mms.testBenchDirectives')
                         ga('send', 'event', 'testbench', 'result', ctrl.result.id);
                         window.location = downloadUrl;
                     };
+            }
+        };
+
+    })
+
+.directive('analogElectronicSimulationResultDetails', function () {
+
+        function ResultDetailsController() {
+
+        }
+
+        return {
+            restrict: 'E',
+            controller: ResultDetailsController,
+            controllerAs: 'ctrl',
+            bindToController: true,
+            replace: true,
+            transclude: false,
+            scope: {
+                result: '='
+            },
+            templateUrl: '/mmsApp/templates/analogElectronicSimulationResultDetails.html',
+            require: ['analogElectronicSimulationResultDetails'],
+            link: function (s, element, attributes, controllers) {
+
+                var ctrl = controllers[0],
+                    openerController = controllers[1],
+                    downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash;
+
+
+                var visualUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/spice-plot.png';
+
+                ctrl.visualUrl = '/images/spice_plot_example.png';
+
             }
         };
 

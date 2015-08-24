@@ -3,6 +3,7 @@
 /* globals ga */
 
 require('./testBenchResultAndTime.jsx');
+require('./testBenchResultDetails.js');
 require('./testBenchConfig.js');
 
 angular.module('mms.testBenchDirectives', []);
@@ -41,6 +42,7 @@ function TestBenchCompletedToastController($scope, $mdToast, message, result, su
 angular.module('mms.testBenchDrawerPanel', [
     'cyphy.services',
     'mms.testBenchDrawerPanel.resultAndTime',
+    'mms.testBenchDrawerPanel.testBenchResultDetails',
     'mms.testBenchDrawerPanel.testBenchConfig',
     'ngMaterial',
 
@@ -184,7 +186,8 @@ angular.module('mms.testBenchDrawerPanel', [
                             id: testBenchResult.id,
                             title: testBenchResult.testBench && testBenchResult.testBench.name,
                             headerTemplateUrl: '/mmsApp/templates/resultListHeaderTemplate.html',
-                            result: testBenchResult
+                            result: testBenchResult,
+                            expanded: false
                         };
 
                         self.listData.items.push(listItem);
@@ -220,6 +223,10 @@ angular.module('mms.testBenchDrawerPanel', [
 
             detailsRenderer: function (item) {
                 item.details = 'My details are here now!';
+            },
+
+            toggleDetailsExpander: function (item) {
+                item.expanded = !item.expanded;
             }
 
         };
