@@ -1,5 +1,4 @@
 <div class="analog-electronic-simulation-result-details">
-    <div ng-if="!ctrl.inspectedWire" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
     <div class="details-container" ng-if="ctrl.inspectedWire">
         <span class="result-detail-description"> {{ctrl.getDetailDescription()}} </span>
         <div class="result-metrics-wrapper">
@@ -10,4 +9,5 @@
             <img class="result-visual" ng-src="{{ctrl.visualUrl}}"/>
         </div>
     </div>
+    <div ng-if="!ctrl.inspectedWire" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
 </div>
