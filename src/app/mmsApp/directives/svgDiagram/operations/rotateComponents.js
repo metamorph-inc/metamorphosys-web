@@ -39,50 +39,48 @@ angular.module('mms.designVisualization.operations.rotateComponents', [])
 
                 selectedComponents = diagram.getSelectedComponents();
 
-                if (selectedComponents.length) {
-                    if (selectedComponents.indexOf(component) > -1) {
-                        componentsToRotate = selectedComponents;
-                    } else {
-                        componentsToRotate = [ component ];
-                    }
+                if (selectedComponents.indexOf(component) > -1) {
+                    componentsToRotate = selectedComponents;
+                } else {
+                    componentsToRotate = [ component ];
+                }
 
-                    angular.forEach(componentsToRotate, function(aComponent) {
-                        aComponent.rotate(angle);
-                    });
-
-
-                    if (wiringService.selectedRouter.id !== 'autoRouter') {
-
-                        affectedWires = diagram.getWiresForComponents(
-                            componentsToRotate
-                        );
-
-                        angular.forEach(affectedWires, function(wire) {
-                            wiringService.adjustWireEndSegments(wire);
-                        });
-
-                    }
+                angular.forEach(componentsToRotate, function(aComponent) {
+                    aComponent.rotate(angle);
+                });
 
 
-                    if (componentsToRotate.length > 1) {
-                        message = 'Rotating selection by ' + angle + 'deg';
-                    } else {
-                        message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
-                    }
+                if (wiringService.selectedRouter.id !== 'autoRouter') {
 
-                    operationsManager.commitOperation(
-                        type, {
-                            diagramId: diagram.id,
-                            components: componentsToRotate,
-                            message: message
-                        }
+                    affectedWires = diagram.getWiresForComponents(
+                        componentsToRotate
                     );
 
-                    if (wiringService.selectedRouter.id === 'autoRouter') {
+                    angular.forEach(affectedWires, function(wire) {
+                        wiringService.adjustWireEndSegments(wire);
+                    });
 
-                        if (componentsToRotate.length) {
-                            wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
-                        }
+                }
+
+
+                if (componentsToRotate.length > 1) {
+                    message = 'Rotating selection by ' + angle + 'deg';
+                } else {
+                    message = 'Rotating ' + component.label + ' by ' + angle + 'deg';
+                }
+
+                operationsManager.commitOperation(
+                    type, {
+                        diagramId: diagram.id,
+                        components: componentsToRotate,
+                        message: message
+                    }
+                );
+
+                if (wiringService.selectedRouter.id === 'autoRouter') {
+
+                    if (componentsToRotate.length) {
+                        wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
                     }
                 }
             };
