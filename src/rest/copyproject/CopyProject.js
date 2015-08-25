@@ -85,7 +85,7 @@ function copy(req, res, callback) {
                     return callback(err);
                 }
                 workerManager.result(id, function (err) {
-                    callback(err, projectName);
+                    callback(err, parameters.userId + '+' + projectName);
                 });
             });
         });
