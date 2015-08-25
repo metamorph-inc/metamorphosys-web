@@ -77,27 +77,27 @@ CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $
         //        return "NkLabsPrototype";
         //    }).then(
         future = ( function ( projectName ) {
-            return dataStoreService.connectToDatabase( databaseId,
-                { host: window.location.protocol + "//" + window.location.host }
-            )
+            var projectId = 'guest+' + projectName;
+            GME.gmeConfig.host = window.location.protocol + "//" + window.location.host;
+            return dataStoreService.connectToDatabase(databaseId, GME.gmeConfig)
                 .then( function () {
                     // select default project and branch (master)
                     log( 'db open' );
-                    return projectService.selectProject( databaseId, projectName );
+                    return projectService.selectProject( databaseId, projectId );
                 } )
                 .
             catch ( function ( reason ) {
-                if (reason.message.indexOf('Project does not exist') !== -1) {
+                if (reason.message.indexOf('Not authorized to read project') !== -1) {
                     return $http.get('/extlib/test/models/SimpleModelica.json')
                         .then(function (res) {
                             var deferred = $q.defer();
                             var client = dataStoreService.getDatabaseConnection(databaseId).client;
-                            client.createProjectFromFileAsync(projectName, res.data, function(err) {
+                            client.createProjectFromFile(projectName, 'master', res.data, function(err) {
                                 if (err) {
                                     return deferred.reject(err);
                                 }
                                 log('project imported');
-                                deferred.resolve();
+                                deferred.resolve(projectService.selectProject(databaseId, projectId));
                             });
                             return deferred.promise;
                         }).catch(fail);
@@ -123,8 +123,7 @@ CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $
                 return branchService.getBranches( databaseId);
             })
             .then( function (branches) {
-                return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ),
-                    branches.filter(function (o) { return o.name === 'master'; })[0].commitId );
+                return branchService.createBranch( databaseId, "branch" + ( Math.random() * 10000 | 0 ), branches.master);
             } )
             .then( function ( branchId_ ) {
                 return $timeout( function () {
@@ -217,13 +216,9 @@ CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $
                                 testBranchResult = function () {
                                     return branchService.getBranches(databaseId).then(function (branches) {
                                         var client = dataStoreService.getDatabaseConnection(databaseId).client,
-                                            clientCommit = client.getActualCommit(),
-                                            serverCommit = branches.filter(function (b) {
-                                            return b.name === branchId;
-                                        })[0];
-                                        if (client.getActualBranchStatus() !== client.branchStates.SYNC) {
-                                            fail('Forked at end');
-                                        } else if (serverCommit.commitId !== clientCommit) {
+                                            clientCommit = client.getActiveCommitHash(),
+                                            serverCommit = branches[branchId];
+                                        if (client.getBranchStatus() !== client.CONSTANTS.BRANCH_STATUS.SYNC || serverCommit !== clientCommit) {
                                             if (getBranchTries++ > 200) {
                                                 fail('Branch mismatch: server has ' + serverCommit.commitId + '; client has ' + clientCommit);
                                             } else {
@@ -234,7 +229,7 @@ CyPhyApp.controller( 'PerfController', function ( $q, $scope, $timeout, $http, $
                                         }
                                     });
                                 };
-                            deferred.resolve;
+                            deferred.resolve();
                             return testBranchResult();
                         })();
 
