@@ -445,6 +445,32 @@ symbolsModule.directive(
                         // TODO: else replace symbol
                     });
                 });
+
+                // Having rotation set by class name doesn't reliably rotate svg elements how we expect.
+                // Watch the component rotation and apply style using Jquery instead.
+                scope.isComponentUpsideDown = false;
+
+                scope.$watch('component.rotation', function() {
+                    var rotate = 0;
+
+                    if (scope.component.rotation % 360 === 180) {
+                        scope.isComponentUpsideDown = true;
+
+                        rotate = 180;
+                    }
+
+                    $timeout(function() {
+                        var wrapperEl = $(element).find('.component-label-wrapper');
+
+                        if (wrapperEl.length) {
+                            wrapperEl.css({ WebkitTransform: 'rotate(' + rotate + 'deg)'});
+                            wrapperEl.css({ msTransform: 'rotate(' + rotate + 'deg)'});
+                            // wrapperEl.css({ MozTransform: 'rotate(' + rotate + 'deg)'});
+                        }
+
+                        scope.$apply();
+                    }, 0);
+                });
             }
         };
     }

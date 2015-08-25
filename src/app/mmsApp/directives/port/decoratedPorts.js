@@ -5,11 +5,11 @@
 angular.module(
     'mms.designVisualization.port.decoratedPorts', []
 )
-    
+
 
     .directive(
     'decoratedPort',
-    function () {
+    function ($timeout) {
         return {
             scope: true,
             controller: function ($scope) {
@@ -36,7 +36,7 @@ angular.module(
                             $scope.decorationTransform = 'translate(-30, -8)';
                     }
 
-                } 
+                }
                 else if ($scope.component.symbol.symbolDirective === 'simple-connector') {
 
                         $scope.decorationTransform = 'translate(0, 0)';
@@ -98,6 +98,37 @@ angular.module(
                     } else {
                         scope.pinCount = scope.portType.split('_')[1];
                     }
+                }
+
+                // Having rotation set by class name doesn't reliably rotate svg elements how we expect.
+                // Watch the component rotation and apply style using Jquery instead.
+
+                // If the decorator takes up the entire port (ie, SupplySingle), the rotation will rotate the entire port
+                // making a left port look like it is should be on the right.
+                if ( !scope.portInstance.portSymbol.portDecorator.disableDecoratorRotate ) {
+                    scope.isComponentUpsideDown = false;
+
+                    scope.$watch('portInstance.parentComponent.rotation', function() {
+                        var rotate = 0;
+
+                        if (scope.portInstance.parentComponent.rotation % 360 === 180) {
+                            scope.isComponentUpsideDown = true;
+
+                            rotate = 180;
+                        }
+
+                        $timeout(function() {
+                            var wrapperEl = $(element).find('.decorator-wrapper');
+
+                            if (wrapperEl.length) {
+                                wrapperEl.css({ WebkitTransform: 'rotate(' + rotate + 'deg)'});
+                                wrapperEl.css({ msTransform: 'rotate(' + rotate + 'deg)'});
+                                // wrapperEl.css({ MozTransform: 'rotate(' + rotate + 'deg)'});
+                            }
+
+                            scope.$apply();
+                        }, 0);
+                    });
                 }
             }
 

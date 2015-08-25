@@ -46,89 +46,104 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
             USB: {
                 directive: 'usb-connector-symbol',
                 bgColor: '#4d9ac4',
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             DigitalSignal: {
                 directive: 'digital-connector-symbol',
                 bgColor: digitalPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             GPIO: {
                 directive: 'digital-connector-symbol',
                 bgColor: digitalPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             'Analog': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             'AnalogSignal': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             'Analog_4': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             'Analog_8': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             'Analog_16': {
                 directive: 'analog-connector-symbol',
                 bgColor: analogPortColorBase,
-                label: null
+                label: null,
+                disableDecoratorRotate: false
             },
 
             GND: {
                 directive: null,
                 bgColor: '#000',
-                label: 'GND'
+                label: 'GND',
+                disableDecoratorRotate: false
             },
 
             SPI: {
                 directive: null,
                 bgColor: digitalPortColorBase,
-                label: 'spi'
+                label: 'spi',
+                disableDecoratorRotate: false
             },
 
             I2C: {
                 directive: null,
                 bgColor: digitalPortColorBase,
-                label: 'I2C'
+                label: 'I2C',
+                disableDecoratorRotate: false
             },
 
             'SPI_ThreeWire': {
                 directive: null,
                 bgColor: digitalPortColorBase,
-                label: 'spi3'
+                label: 'spi3',
+                disableDecoratorRotate: false
             },
 
             UART: {
                 directive: null,
                 bgColor: digitalPortColorBase,
-                label: 'UART'
+                label: 'UART',
+                disableDecoratorRotate: false
             },
 
             DigitalClock: {
                 directive: null,
                 bgColor: digitalPortColorBase,
-                label: 'CLK'
+                label: 'CLK',
+                disableDecoratorRotate: false
             },
 
             'Supply_Single': {
-                directive: 'supply-single-symbol'
+                directive: 'supply-single-symbol',
+                disableDecoratorRotate: true
             }
 
         };
