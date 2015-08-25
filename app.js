@@ -9,4 +9,8 @@ var config = require('./' + (process.argv[2] || 'config')),
 webgme.addToRequireJsPaths(config);
 
 var myServer = new webgme.standaloneServer(config);
-myServer.start();
+myServer.start(function (err) {
+    if (err) {
+        process.exit(1);
+    }
+});
