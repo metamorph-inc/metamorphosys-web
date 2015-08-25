@@ -161,7 +161,9 @@ angular.module(
                         var wrapperEl = $(element).find('.port-label-wrapper');
 
                         if (wrapperEl.length) {
-                            wrapperEl.css({ WebkitTransform: 'rotate(' + rotate + 'deg)'});
+                            if (!!window.chrome && !!window.chrome.webstore) {
+                                wrapperEl.css({ WebkitTransform: 'rotate(' + rotate + 'deg)'});
+                            }
                             wrapperEl.css({ msTransform: 'rotate(' + rotate + 'deg)'});
                             // wrapperEl.css({ MozTransform: 'rotate(' + rotate + 'deg)'});
                         }
