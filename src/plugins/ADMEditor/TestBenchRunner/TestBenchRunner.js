@@ -603,6 +603,7 @@ define(['plugin/PluginConfig',
                         'results/*brd', 'results/*png', 'results/*.sch',
                         // Analog Electronic Simulation
                         'results/*.cir', 'results/LaunchSpiceViewer.bat', 'results/runspice.bat', // schema.raw
+                        'results/net*.png',
                         // Cost Estimation
                         'results/BomTable.html', // 'results/Something.json',
                         'results/*json', 'log/**', 'results/log/*', '_FAILED.txt']
