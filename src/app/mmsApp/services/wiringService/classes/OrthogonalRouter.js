@@ -613,11 +613,14 @@ var OrthogonalRouter = function ($mdToast, $injector) {
                 //}
             }
             else {
-                if ( wireIndex === 0 ) {
-                    adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "first");
-                }
-                else {
-                    adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "last");
+
+                if (connections[e].length > 1) {
+                    if (wireIndex === 0) {
+                        adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "first");
+                    }
+                    else {
+                        adjustPortWire(edge, connections[e], wireIndex, portSeparator, xyDirection, "last");
+                    }
                 }
                 // Reindex segments to account for additionally created segments.
                 for (jj = 0; jj < connections[e].length; jj++) {
