@@ -927,14 +927,14 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
                 if ( j != i ) {
 
-                    overlap = ( (boundBox.x <= (boundBoxes[j].x + boundBoxes[j].width) &&
-                    (boundBox.x + boundBox.width) >= boundBoxes[j].x) &&
-                    ((boundBox.y <= (boundBoxes[j].y + boundBoxes[j].height)) &&
-                    ((boundBox.y + boundBox.height) >= boundBoxes[j].y)) );
+                    overlap = ( (boundBox.x < (boundBoxes[j].x + boundBoxes[j].width) &&
+                    (boundBox.x + boundBox.width) > boundBoxes[j].x) &&
+                    ((boundBox.y < (boundBoxes[j].y + boundBoxes[j].height)) &&
+                    ((boundBox.y + boundBox.height) > boundBoxes[j].y)) );
 
                     if (overlap) {
                         message = "The bounding boxes for components " + components[i].label + " and " +
-                                  components[j].label + " are overlapping or share a border. " +
+                                  components[j].label + " are overlapping. " +
                                   "Adjust components to auto-route.";
                         svgDiagramToast.showToast(message);
                         break;

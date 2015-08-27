@@ -105,7 +105,7 @@ angular.module(
 
                 // If the decorator takes up the entire port (ie, SupplySingle), the rotation will rotate the entire port
                 // making a left port look like it is should be on the right.
-                if ( !scope.portInstance.portSymbol.portDecorator.disableDecoratorRotate ) {
+                if ( !scope.portInstance.portSymbol.portDecorator || !scope.portInstance.portSymbol.portDecorator.disableDecoratorRotate ) {
                     scope.isComponentUpsideDown = false;
 
                     scope.$watch('portInstance.parentComponent.rotation', function() {
