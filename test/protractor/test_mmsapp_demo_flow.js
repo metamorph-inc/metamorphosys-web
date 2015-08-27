@@ -28,11 +28,12 @@ describe('Metamorphosys Tech Demo Flow', function() {
         componentToDrag = 'TEA10201V15A0',
         targetComponentLabel = 'TEA10201V15A0',
 
-        targetContainerLabel = "Power System",
-        mainContainerLabel = "Template Module 1x2",
+        targetContainerLabel = "Arduino Interface",
+        mainContainerLabel = "Arduino DUE Shield Basic",
+        targetProjectLabel = "Arduino DUE Shield Basic",
 
-        wireIdToSelect = '/1922727130/1620862711/1365227561/865811917',
-        segmentIndexToSelect = 4;
+        wireIdToSelect = '/1922727130/1620862711/515320282/1023749206',
+        segmentIndexToSelect = 1;
 
     require('./lib/find_diagramComponent_by_labelText.js');
     require('./lib/getHierarchyComponent.js');
@@ -79,8 +80,12 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         browser.get('/extlib/public/apps/mmsApp/#/createDesign/' + projectName);
 
-        var diagramContainer,
+        var projectSelector,
+            targetProject,
+            diagramContainer,
             componentLabel;
+
+        projectSelector = element(by.css('div.design-selector'));
 
         diagramContainer = element(by.css('div.diagram-container'));
 
@@ -88,22 +93,41 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         browser.wait(function() {
 
-                return diagramContainer.isPresent();
+                return projectSelector.isPresent();
             },
             gmeEventTimeLimit,
-            'diagramContainer not found'
+            'projectSelector not found'
         ).then(function() {
 
-            expect(browser.isElementPresent(diagramContainer)).toEqual(true);
-            componentLabel = element(by.css('text.component-label'));
+            targetProject = element.all(by.css('h3.design-tile-header')).filter(function(elem) {
+                return elem.getText().then(function(text) {
+                    return text === targetProjectLabel;
+                });
+            });
 
-            browser.wait(function () {
-                    return componentLabel.isPresent();
+            expect(targetProject.count()).toEqual(1);
+
+            targetProject.get(0).click();
+
+            browser.wait(function() {
+
+                    return diagramContainer.isPresent();
                 },
                 gmeEventTimeLimit,
-                'components not found');
-            expect(element.all(by.css('text.component-label')).count()).toEqual(4);
+                'diagramContainer not found'
+            ).then(function() {
 
+                expect(browser.isElementPresent(diagramContainer)).toEqual(true);
+                componentLabel = element(by.css('text.component-label'));
+
+                browser.wait(function () {
+                        return componentLabel.isPresent();
+                    },
+                    gmeEventTimeLimit,
+                    'components not found');
+                expect(element.all(by.css('text.component-label')).count()).toEqual(3);
+
+            });
         });
 
     }, gmeEventTimeLimit);
@@ -140,7 +164,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
        diagramContainer = browser.element(by.css('div.diagram-container'));
 
        browser.actions()
-           .mouseMove({x: 300, y: 300})
+           .mouseMove({x: 100, y: 150})
            .mouseDown()
            .perform();
 
@@ -160,10 +184,23 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     it('Should have component browser', function() {
 
-        var componentBrowser,
+        var contentButton,
+            componentsButton,
+            componentBrowser,
             componentSearchInput;
 
-        element(by.css('div.footer-drawer > header > ul > li:nth-child(2) > button')).click();
+        contentButton = element(by.css('div.footer-drawer > header > ul > li:nth-child(2) > button'));
+
+        expect(contentButton.getText()).toEqual("CONTENT");
+
+        contentButton.click();
+
+        componentsButton = element(by.css('div.footer-drawer > ul.drawer-sub-navigator > li:nth-child(1) > button'));
+
+        expect(componentsButton.getText()).toEqual("Components");
+
+        componentsButton.click();
+
         browser.sleep(componentLibraryQueryTimeLimit);
 
         componentBrowser = element(by.css('.component-browser'));
@@ -174,57 +211,59 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     });
 
-    /*
-    it('Component search should return search results', function () {
 
-        var componentSearchInput,
-            searchDropdown,
-            searchResults;
+    // This test utilizes the autocomplete feature of a search dropdown, which we don't currently have.
 
-        componentSearchInput = element(by.css('.component-search-input'));
-        searchDropdown = element(by.css('.component-search .angucomplete-dropdown'));
-        searchResults = element.all(by.css('.component-search .angucomplete-row'));
+    // it('Component search should return search results', function () {
 
-        componentSearchInput.sendKeys(searchTerm)
-            .then(function () {
+    //     var componentSearchInput,
+    //         searchDropdown,
+    //         searchResults;
 
-                browser.wait(function () {
-                        return searchDropdown.isDisplayed();
-                    },
-                    3000,
-                    'search results not displayed')
-                    .then(function () {
-                        expect(searchResults.count()).toBeGreaterThan(0);
+    //     componentSearchInput = element(by.css('.component-search-input'));
+    //     searchDropdown = element(by.css('.component-search .angucomplete-dropdown'));
+    //     searchResults = element.all(by.css('.component-search .angucomplete-row'));
+
+    //     componentSearchInput.sendKeys(searchTerm)
+    //         .then(function () {
+
+    //             browser.wait(function () {
+    //                     return searchDropdown.isDisplayed();
+    //                 },
+    //                 3000,
+    //                 'search results not displayed')
+    //                 .then(function () {
+    //                     expect(searchResults.count()).toBeGreaterThan(0);
 
 
-                        componentSearchInput.sendKeys(searchTermX)
-                            .then(function () {
+    //                     componentSearchInput.sendKeys(searchTermX)
+    //                         .then(function () {
 
-                                // Making sure back-space/delete works in input field
-                                componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
-                                    .then(function () {
+    //                             // Making sure back-space/delete works in input field
+    //                             componentSearchInput.sendKeys(protractor.Key.BACK_SPACE)
+    //                                 .then(function () {
 
-                                        var term = searchTerm + searchTermX;
+    //                                     var term = searchTerm + searchTermX;
 
-                                        expect(componentSearchInput.getAttribute('value')).toEqual( term.substring(0, term.length - 1));
+    //                                     expect(componentSearchInput.getAttribute('value')).toEqual( term.substring(0, term.length - 1));
 
-                                        browser.wait(function () {
-                                                return searchDropdown.isDisplayed();
-                                            },
-                                            3000,
-                                            'search results not displayed')
-                                            .then(function () {
-                                                expect(searchResults.count()).toEqual(0);
-                                            });
-                                    });
-                            });
+    //                                     browser.wait(function () {
+    //                                             return searchDropdown.isDisplayed();
+    //                                         },
+    //                                         3000,
+    //                                         'search results not displayed')
+    //                                         .then(function () {
+    //                                             expect(searchResults.count()).toEqual(0);
+    //                                         });
+    //                                 });
+    //                         });
 
-                    });
+    //                 });
 
-            });
+    //         });
 
-    });
-*/
+    // });
+
     it('Shoud display ' + categoryToUnfold + ' category', function () {
 
         var sensorCategoryItem;
@@ -267,13 +306,13 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] > div'));
+        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] > .node-list li[title=\'' + subCategoryToUnfold + '\'] > div'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
         sensorCategoryItem.click();
 
     });
 
-    /*
+
     it( subCategoryToUnfold + ' category should expand', function () {
 
         var categoryExpander,
@@ -300,8 +339,6 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
             });
     });
-         */
-
 
     it('Should be able to navigate to same project and design in other browser', function () {
 
@@ -315,7 +352,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         browser.driver.getCurrentUrl().then(function (currentUrl) {
 
-            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
+            expect(browser2.driver.getCurrentUrl()).toEqual(currentUrl);
 
         });
 
@@ -335,7 +372,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
             });
 
         expect(browser2.isElementPresent(diagramContainer)).toEqual(true);
-        expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(4);
+        expect(browser2.element.all(by.css('text.component-label')).count()).toEqual(3);
 
         closeButton = browser2.element(by.css('.about-dialog .md-actions button.md-primary'));
 
@@ -572,7 +609,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
             expect(browser.isElementPresent(componentBox)).toEqual(false);
             expect(browser2.isElementPresent(otherComponentBox)).toEqual(false);
 
-            expect(browser2.driver.getCurrentUrl()).toMatch(currentUrl);
+            expect(browser2.driver.getCurrentUrl()).toEqual(currentUrl);
 
         });
 

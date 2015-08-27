@@ -72,7 +72,7 @@ symbolsModule.controller(
 
         $scope.getSymbolRectHeight = function () {
 
-            return $scope.component.icon ? $scope.component.symbol.height + 40 : $scope.component.symbol.height + 20;
+            return $scope.component.symbol.height + 20;
 
         };
 
@@ -84,7 +84,7 @@ symbolsModule.controller(
 
         $scope.getSymbolHeight = function () {
 
-            return $scope.component.icon ? $scope.component.symbol.height + 40 : $scope.component.symbol.height;
+            return $scope.component.symbol.height;
 
         };
 

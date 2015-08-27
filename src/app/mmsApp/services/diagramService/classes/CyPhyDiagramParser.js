@@ -318,8 +318,6 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
                 } else {
 
                     // wiringService.routeWire(wire, 'ElbowRouter');
-                    diagram.addWire(wire);
-                    wiringService.autoRoute(diagram, 'OrthogonalRouter', wire);
 
                 }
 
@@ -421,7 +419,8 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
                 hasTopPort: portStuff.portDescriptors.top.length > 0,
                 hasBottomPort: portStuff.portDescriptors.bottom.length > 0,
                 hasLeftPort: portStuff.portDescriptors.left.length > 0,
-                hasRightPort: portStuff.portDescriptors.right.length > 0
+                hasRightPort: portStuff.portDescriptors.right.length > 0,
+                hasIcon: element.icon !== undefined && element.icon !== null
             }
         );
 
@@ -815,7 +814,8 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
                     minWidth: 180,
                     portWireLeadInIncrement: 8,
                     portWireLength: 30,
-                    topPortPadding: 20
+                    topPortPadding: 20,
+                    hasIcon: element.icon !== undefined && element.icon !== null
                 });
 
             newModelComponent = new DiagramComponent({
@@ -937,6 +937,10 @@ module.exports = function (symbolManager, diagramService, wiringService, pcbServ
                 wire = wireParser(element, diagram);
 
                 diagram.addWire(wire);
+
+                if (!element.details.wireSegments || element.details.wireSegments.length === 0) {
+                    wiringService.autoRoute(diagram, 'OrthogonalRouter', wire);
+                }
 
             });
 

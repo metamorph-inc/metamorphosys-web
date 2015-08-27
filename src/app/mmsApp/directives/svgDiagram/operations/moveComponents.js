@@ -58,7 +58,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             var earlierPosition = target.component.getPosition();
 
                             translation = {
-                                x: snappedPosition.x - earlierPosition.x, 
+                                x: snappedPosition.x - earlierPosition.x,
                                 y: snappedPosition.y - earlierPosition.y
                             };
                         }
@@ -85,47 +85,45 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                         });
 
-                        if (wiringService.selectedRouter.id !== 'autoRouter') {
+                        var completelyChangedWiresById = {};
 
-                            var completelyChangedWiresById = {};
+                        angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
 
-                            angular.forEach(dragTargetsDescriptor.affectedWires, function (wire) {
+                            var ends = wire.getEnds();
 
-                                var ends = wire.getEnds();
+                            if (dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end1.component) !== -1 &&
+                                dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end2.component) !== -1) {
 
-                                if (dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end1.component) !== -1 &&
-                                    dragTargetsDescriptor.componentsBeingDragged.indexOf(ends.end2.component) !== -1) {
+                                // Adjust all segments
 
-                                    // Adjust all segments
+                                //wiringService.adjustWireEndSegments(wire);
+                                wire.translateSegments(translation);
 
-                                    //wiringService.adjustWireEndSegments(wire);                            
-                                    wire.translateSegments(translation);
+                                completelyChangedWiresById[wire.getId()] = wire;
 
-                                    completelyChangedWiresById[wire.getId()] = wire;
+                            } else {
 
-                                } else {
+                                // Only adjust ends
 
-                                    // Only adjust ends
+                                wiringService.adjustWireEndSegments(wire);
+                            }
 
-                                    wiringService.adjustWireEndSegments(wire);
-                                }
+                        });
 
-                            });
+                        angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
 
-                            angular.forEach(dragTargetsDescriptor.selectedSegmentEndcornerIds, function(wireAndIndex) {
+                            var parentWire = diagram.getWireById(wireAndIndex[0]);
 
-                                var parentWire = diagram.getWireById(wireAndIndex[0]);
+                            if (!completelyChangedWiresById[parentWire.getId()]) {
 
-                                if (!completelyChangedWiresById[parentWire.getId()]) {
+                                parentWire.translateSegmentEndCorner(wireAndIndex[1], translation);
 
-                                    parentWire.translateSegmentEndCorner(wireAndIndex[1], translation);
-         
-                                }
+                            }
 
-                            });
+                        });
 
-                            diagram.afterWireChange(dragTargetsDescriptor.affectedWires);
-                        }
+                        diagram.afterWireChange(dragTargetsDescriptor.affectedWires);
+
                     }
 
                 };
@@ -182,7 +180,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                             angular.forEach(diagramComponents, function(diagramComponent) {
 
                                 if (!invalidMove && diagramComponent.id !== draggedComponent.id) {
-                                    invalidMove = doComponentsIntersect(draggedComponentBoundBox, 
+                                    invalidMove = doComponentsIntersect(draggedComponentBoundBox,
                                                                         diagramComponent.getGridBoundingBox()
                                                                         );
                                 }
@@ -195,7 +193,7 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
                     if (!invalidMove) {
 
                         affectedWires = dragTargetsDescriptor.affectedWires;
-                        
+
                         if (wiringService.selectedRouter.id !== 'autoRouter') {
 
                             angular.forEach(dragTargetsDescriptor.affectedWires, function(wire) {
@@ -236,18 +234,16 @@ angular.module('mms.designVisualization.operations.moveComponents', [])
 
                         if (wiringService.selectedRouter.id === 'autoRouter') {
 
+                            wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
+
                             operationsManager.commitOperation(
                             type,
                             {
                                 diagramId: diagram.id,
                                 components: components,
-                                wires: affectedWires,
+                                wires: diagram.getWires(),
                                 message: message,
                                 primaryTarget: dragTargetsDescriptor.primaryTarget
-                            }).then(function() {
-                                $timeout(function() {
-                                    wiringService.autoRoute(diagram, wiringService.selectedRouter.type);
-                                });
                             });
                         }
 

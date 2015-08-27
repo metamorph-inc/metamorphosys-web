@@ -42,7 +42,7 @@ WireSegment.prototype.translateEnd2 = function(translation) {
 
     this._parameters.x2 += translation.x;
     this._parameters.y2 += translation.y;
-    
+
 };
 
 WireSegment.prototype.selectEndCorner = function() {
@@ -105,7 +105,7 @@ WireSegment.prototype.isEndCornerInViewport = function(viewPort, padding) {
 
     var result = false;
 
-    if (this._parameters.x2 >= (viewPort.left + padding.x) && 
+    if (this._parameters.x2 >= (viewPort.left + padding.x) &&
         this._parameters.x2 <= (viewPort.right - padding.x) &&
         this._parameters.y2 >= (viewPort.top + padding.y) &&
         this._parameters.y2 <= (viewPort.bottom - padding.y) ) {

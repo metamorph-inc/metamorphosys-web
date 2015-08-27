@@ -330,7 +330,7 @@ define([
                 }
 
                 admXml = zipFile.file(/\.adm$/).filter(function (entry) {
-                    return entry.name.indexOf('__MACOSX') !== 0;
+                    return entry.name.indexOf('__MACOSX') !== 0 && entry.name.indexOf('/') === -1;
                 });
                 self.resourceFiles = zipFile.file(/./).filter(function (entry) {
                     return entry.name.indexOf('__MACOSX') !== 0 && !/\.adm$/.exec(entry.name);
@@ -339,7 +339,7 @@ define([
                 if (admXml.length === 1) {
                     return self.innerMain(admXml[0].asText(), callback, finnishPlugin);
                 } else {
-                    self.createMessage(null, 'zip must contain exactly one .adm file, not ' + admXml.length, 'error');
+                    self.createMessage(null, 'zip must contain exactly one .adm file in the root of the archive, not ' + admXml.length, 'error');
                     return callback(null, self.result);
                 }
             } else {
