@@ -46,9 +46,9 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                     downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash;
 
                 openerController.resultsOpener = function () {
-                        ga('send', 'event', 'testbench', 'result', ctrl.result.id);
-                        window.location = downloadUrl;
-                    };
+                    ga('send', 'event', 'testbench', 'result', ctrl.result.id);
+                    window.location = downloadUrl;
+                };
             }
         };
 
@@ -56,30 +56,105 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
     .directive('analogElectronicSimulationResultDetails', function ($rootScope) {
 
-        function ResultDetailsController() {
+        function ResultDetailsController($log, $q, $http, projectHandling, nodeService) {
 
             this.noInspectedMessage = "View the SPICE simulation results for a signal by selecting its wire in the diagram.";
-            this.inspectedWire = null;
 
-            var wireDetails;
+            var self = this,
+                wireDetails,
+                parentContext = projectHandling.getContainerLayoutContext(),
+                context;
 
-            this.getWireDetails = function() {
-                var wireEnds = this.inspectedWire.getEnds();
-
-                wireDetails = { componentA: wireEnds.end1.component.label || "Unnamed",
-                                portA: wireEnds.end1.port.portSymbol.label || "Unnamed",
-                                componentB: wireEnds.end2.component.label || "Unnamed",
-                                portB: wireEnds.end2.port.portSymbol.label || "Unnamed"
-                              };
+            this.cleanup = function () {
+                if (context) {
+                    nodeService.cleanUpRegion(context.db, context.regionId);
+                    context = undefined;
+                }
+                self.ports = undefined;
             };
 
-            this.getDetailDescription = function() {
+            this.setInspectedWire = function (wire) {
+                this.cleanup();
+                if (!wire) {
+                    return;
+                }
+                var regionId = parentContext.regionId + '_spice_result_' + Date.now();
+                context = {
+                    db: parentContext.db,
+                    regionId: regionId
+                };
+
+                var siginfo = $http.get('/rest/blob/view/' + this.result.resultHash + '/results/siginfo.json');
+
+                this.inspectedWire = wire;
+                nodeService.getMetaNodes(context)
+                    .then(function (meta) {
+                        return nodeService.loadNode(context, wire.getEnd1().port.id)
+                            .then(function (connector) {
+                                return $q.all([connector.loadChildren(), connector.getParentNode()])
+                                    .then(function (args) {
+                                        var gmePorts = args[0],
+                                            connectorParent = args[1];
+                                        return siginfo.then(function (siginfo) {
+                                            siginfo = siginfo.data;
+                                            var getSigInfoId = function (port) {
+                                                var id;
+                                                if (connectorParent.getMetaTypeName(meta) === 'AVMComponentModel') {
+                                                    var ids = connectorParent.getId().split('/');
+                                                    ids.pop();
+                                                    id = 'id' + (ids.join('/')).substr(projectHandling.getSelectedDesignId().length).replace('/', '.');
+                                                    id = id + '/' + connectorParent.getAttribute('InstanceID');
+                                                } else {
+                                                    id = 'id' + connectorParent.getId().substr(projectHandling.getSelectedDesignId().length).replace('/', '.');
+                                                }
+                                                id = id + '/' + (connector.getAttribute('ID') || connector.getGuid());
+                                                id = id + '/' + (port.getAttribute('ID') || port.getGuid());
+                                                return id;
+                                            };
+                                            self.ports = gmePorts.map(function (port) {
+                                                var net = siginfo.objectToNetId[getSigInfoId(port)];
+                                                if (net == null) {
+                                                    return undefined;
+                                                }
+                                                return {
+                                                    visualUrl: '/rest/blob/view/' + self.result.resultHash + '/results/net' + net + '.png',
+                                                    name: port.getAttribute('name')
+                                                };
+                                            }).filter(function (port) {
+                                                return port;
+                                            });
+                                            self.ports.sort(function (a, b) {
+                                                return a.name.localeCompare(b.name);
+                                            });
+                                            $log.info(self.ports);
+                                        });
+
+                                    });
+                            });
+                    })
+                    .catch(function (err) {
+                        $log.error(err);
+                    });
+            };
+
+            this.getWireDetails = function () {
+                var wireEnds = this.inspectedWire.getEnds();
+
+                wireDetails = {
+                    componentA: wireEnds.end1.component.label || "Unnamed",
+                    portA: wireEnds.end1.port.portSymbol.label || "Unnamed",
+                    componentB: wireEnds.end2.component.label || "Unnamed",
+                    portB: wireEnds.end2.port.portSymbol.label || "Unnamed"
+                };
+            };
+
+            this.getDetailDescription = function () {
 
                 this.getWireDetails();
 
                 return ["Results of SPICE simulation for wire connecting port " + wireDetails.portA + " of ",
-                        "component " + wireDetails.componentA + " and port " + wireDetails.portB,
-                        " of component " + wireDetails.componentB + "."].join('');
+                    "component " + wireDetails.componentA + " and port " + wireDetails.portB,
+                    " of component " + wireDetails.componentB + "."].join('');
             };
 
         }
@@ -100,23 +175,25 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                 var ctrl = controllers[0],
                     designEditorController = controllers[1],
-                    downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash;
-
+                    downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash,
+                    off;
 
                 var visualUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/spice-plot.png';
 
                 ctrl.visualUrl = '/images/spice_plot_example.png';
 
-                ctrl.inspectedWire = designEditorController.inspectableWire;
+                ctrl.setInspectedWire(designEditorController.inspectableWire);
 
                 designEditorController.viewingWireResult = true;
 
-                $rootScope.$on("inspectableWireHasChanged", function($event, wire) {
-                    ctrl.inspectedWire = wire;
+                off = $rootScope.$on("inspectableWireHasChanged", function ($event, wire) {
+                    ctrl.setInspectedWire(wire);
                 });
 
-                scope.$on('$destroy', function() {
+                scope.$on('$destroy', function () {
                     designEditorController.viewingWireResult = false;
+                    off();
+                    ctrl.cleanup();
                 });
 
             }

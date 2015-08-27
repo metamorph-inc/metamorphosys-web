@@ -15,9 +15,9 @@ angular.module('mms.subcircuitDocumentation', ['cyphy.services'])
                 regionId: regionId
             };
 
-            return nodeService.loadNode(parentContext, containerId)
+            return nodeService.loadNode(context, containerId)
                 .then(function () {
-                    return gmeMapService.mapGmeNode(parentContext, containerId, {
+                    return gmeMapService.mapGmeNode(context, containerId, {
                         'Container': {
                             attributes: {name: 'name', Description: 'description'}
                         },

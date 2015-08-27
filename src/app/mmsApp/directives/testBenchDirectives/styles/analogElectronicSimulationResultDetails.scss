@@ -10,7 +10,7 @@
     .details-container {
 
         &.ng-enter
-        { 
+        {
             -webkit-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
             -moz-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
             -ms-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
@@ -18,7 +18,7 @@
             transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
             position: relative;
             display: block;
-        } 
+        }
 
         &.ng-enter.ng-enter-active {
             opacity: 1;
@@ -38,23 +38,14 @@
             margin-top: 2px;
         }
 
-        .result-metrics-wrapper {
-            display: inline-block;
+        th, td {
             vertical-align: top;
-            margin: 5px 5px 0 0;
-            padding-left: 15px;
-            width: 18%;
-
-            .result-metric {
-                display: block;
-            }
+            padding: 5px;
         }
 
         .result-visual-container {
-            display: inline-block;
             margin: 5px 5px 10px 0;
             text-align: center;
-            width: 78%;
         }
 
     }
