@@ -373,7 +373,7 @@ angular.module('mms.designEditor', [
                         nodeService.loadNode(layoutContext, component.id)
                         .then(function(componentNode) {
 
-                            componentNode.setAttribute("Icon", "");
+                            componentNode.setAttribute("Icon", null);
 
                             });
 
@@ -437,6 +437,7 @@ angular.module('mms.designEditor', [
 
                                     wire.setId(node.id);
                                     diagram.addWire(wire);
+                                    justCreatedWires.push(wire.getId());
 
                                     connectorService.updateConnectorDefinition(wire, layoutContext);
 
@@ -866,7 +867,7 @@ angular.module('mms.designEditor', [
 
                                             diagram = diagramService.getDiagram(selectedContainerId);
 
-                                            if (diagram && wiringService.selectedRouter.id !== 'autoRouter') {
+                                            if (diagram) {
 
                                                 diagram.updateWireSegments(
                                                     designStructureUpdateObject.id,
@@ -945,6 +946,18 @@ angular.module('mms.designEditor', [
                                                 component = diagram.getComponentById(designStructureUpdateObject.id);
 
                                                 if (component) {
+
+                                                    if (component.icon && !designStructureUpdateObject.data.icon) {
+                                                        component.symbol.height -= component.symbol.iconPadding;
+                                                        component.symbol.boxHeight -= component.symbol.iconPadding;
+
+                                                    }
+                                                    else {
+                                                        component.symbol.height += component.symbol.iconPadding;
+                                                        component.symbol.boxHeight += component.symbol.iconPadding;
+
+                                                    }
+
                                                     component.setIcon(designStructureUpdateObject.data.icon);
 
                                                     $rootScope.$emit('iconWasChanged', projectHandling.getSelectedContainer());

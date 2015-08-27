@@ -73,9 +73,10 @@ var OrthogonalRouter = function ($mdToast, $injector) {
             currentPorts = diagram.getPorts(),
             currentComponentPositions = [],
             currentPortPositions = [],
+            currentIcons = [],
             i;
 
-        if ( cachedRouterData.visibilityGraph ) { 
+        if ( cachedRouterData.visibilityGraph ) {
 
             if (currentComponents.length !== cachedRouterData.componentPositions.length ||
                 Object.keys(currentPorts).length !== cachedRouterData.portPositions.length) {
@@ -84,10 +85,15 @@ var OrthogonalRouter = function ($mdToast, $injector) {
             else {
                 currentComponents.forEach(function(component) {
                     currentComponentPositions.push(component.getGridPosition());
+                    currentIcons.push(component.icon !== null && component.icon !== undefined);
                 });
 
                 rerouteNeeded = !angular.equals(currentComponentPositions, cachedRouterData.componentPositions);
 
+            }
+
+            if ( !rerouteNeeded ) {
+                rerouteNeeded = !angular.equals(currentIcons, cachedRouterData.icons);
             }
 
             if ( !rerouteNeeded ) {
@@ -137,14 +143,10 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
                 segment = nudgedConnections[w][i];
 
-                //console.log(segment.toString());
-
                 segment.setFipped(true, true);
                 wire.appendSegmentFromParameters(segment);
 
             }
-
-            //console.log(wire.getSegments());
 
         }
 
@@ -184,10 +186,12 @@ var OrthogonalRouter = function ($mdToast, $injector) {
             diagram.afterWireChange();
 
             var componentPositions = [],
-                portPositions = [];
+                portPositions = [],
+                icons = [];
 
             angular.forEach(diagram.getComponents(), function(component) {
                 componentPositions.push(component.getGridPosition());
+                icons.push(component.icon !== null && component.icon !== undefined);
             });
 
             angular.forEach(diagram.getPorts(), function(port) {
@@ -198,13 +202,18 @@ var OrthogonalRouter = function ($mdToast, $injector) {
                     visibilityGraph: visibilityGraph,
                     points: points,
                     componentPositions: componentPositions,
-                    portPositions: portPositions
+                    portPositions: portPositions,
+                    icons: icons
                 };
 
             if (debugRouter) {
                 cachedRouterData.debugHelper = debugHelper;
             }
 
+        }
+        else {
+            // We conditionally added the empty wire prior to the autoRoute, need to delete it.
+            diagram.getWires().splice(-1, 1);
         }
     };
 
@@ -221,7 +230,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
      */
     this.getBBAndPortPointsFromComponent = function ( component, points, visibilityGraph ) {
         var boundBox = component.getGridBoundingBox();
-        
+
         // Nodes from bounding box
         points.push( new Point( boundBox.x - 10, boundBox.y - 10 ) );
         points.push( new Point( boundBox.x - 10, boundBox.y + boundBox.height + 10 ) );
@@ -732,19 +741,19 @@ var OrthogonalRouter = function ($mdToast, $injector) {
             if ( firstOrLast !== "first" ) {
 
                 newSegment = new OrthogonalGridSegment(
-                    segment[segmentX], 
+                    segment[segmentX],
                     edge[segmentY],
-                    segment[segmentX] + edgeSeparation, 
+                    segment[segmentX] + edgeSeparation,
                     edge[segmentY],
                     "horizontal");
 
             } else {
 
                 newSegment = new OrthogonalGridSegment(
-                    segment[segmentX] + edgeSeparation, 
+                    segment[segmentX] + edgeSeparation,
                     edge[segmentY],
-                    segment[segmentX], 
-                    edge[segmentY],                    
+                    segment[segmentX],
+                    edge[segmentY],
                     "horizontal");
 
             }
@@ -760,19 +769,19 @@ var OrthogonalRouter = function ($mdToast, $injector) {
             if ( firstOrLast !== "first" ) {
 
                 newSegment = new OrthogonalGridSegment(
-                    edge[segmentX], 
+                    edge[segmentX],
                     edge[segmentY],
-                    edge[segmentX], 
+                    edge[segmentX],
                     segment[segmentY] + edgeSeparation,
                     "vertical");
 
             } else {
 
                 newSegment = new OrthogonalGridSegment(
-                    edge[segmentX], 
+                    edge[segmentX],
                     segment[segmentY] + edgeSeparation,
-                    edge[segmentX], 
-                    edge[segmentY],                    
+                    edge[segmentX],
+                    edge[segmentY],
                     "vertical");
 
             }
@@ -863,7 +872,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
     /**
      * Check that no components are off of the grid or overlapping one another, prior to executing router.
      *
-     * 7/28/15 - No longer pad bounding boxes. This issue should be resolved by improving the nudging 
+     * 7/28/15 - No longer pad bounding boxes. This issue should be resolved by improving the nudging
      *           algorithm.
      */
     this.validDiagramForAutoRoute = function ( components, gridHeight, gridWidth ) {
@@ -877,6 +886,12 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
         for ( i = 0; i < components.length; i++ ) {
             boundBox = components[i].getGridBoundingBox();
+
+            // GridBoundingBox gets boundBox of box symbol, it does not include the rectangle's padding.
+            boundBox.x -= 10;
+            boundBox.y -= 10;
+            boundBox.width += 20;
+            boundBox.height += 20;
 
             invalidConditions = [ boundBox.x <= 0,
                                   boundBox.y <= 0,
@@ -907,13 +922,13 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
                 if ( j != i ) {
 
-                    overlap = ( (boundBox.x <= (boundBoxes[j].x + boundBoxes[j].width) &&
-                    (boundBox.x + boundBox.width) >= boundBoxes[j].x) &&
-                    ((boundBox.y <= (boundBoxes[j].y + boundBoxes[j].height)) &&
-                    ((boundBox.y + boundBox.height) >= boundBoxes[j].y)) );
+                    overlap = ( (boundBox.x < (boundBoxes[j].x + boundBoxes[j].width) &&
+                    (boundBox.x + boundBox.width) > boundBoxes[j].x) &&
+                    ((boundBox.y < (boundBoxes[j].y + boundBoxes[j].height)) &&
+                    ((boundBox.y + boundBox.height) > boundBoxes[j].y)) );
 
                     if (overlap) {
-                        message = "The (padded) bounding boxes for components " + components[i].label + " and " +
+                        message = "The bounding boxes for components " + components[i].label + " and " +
                                   components[j].label + " are overlapping or share a border. " +
                                   "Adjust components to auto-route.";
                         svgDiagramToast.showToast(message);

@@ -62,7 +62,7 @@ angular.module(
 
         $scope.getIconStartY = function() {
             if ($scope.component.icon) {
-                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 30;
+                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - $scope.maxIconHeight - 2.5;
             }
             else {
                 return $scope.getBoxStartY();

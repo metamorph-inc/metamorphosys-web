@@ -18,7 +18,7 @@ angular.module(
             var toX = 0,
                 toY = 0,
                 portWireLength,
-                width, height; 
+                width, height;
 
             portWireLength = $scope.component.symbol.portWireLength;
             width = $scope.component.symbol.width;
@@ -62,7 +62,7 @@ angular.module(
 
         $scope.getIconStartY = function() {
             if ($scope.component.icon) {
-                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - 30;
+                return $scope.getBoxStartY() + $scope.component.symbol.boxHeight - $scope.maxIconHeight - 2.5;
             }
             else {
                 return $scope.getBoxStartY();

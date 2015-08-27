@@ -11,7 +11,7 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
         var self = this,
             SimpleRouter = require('./classes/SimpleRouter.js'),
             ElbowRouter = require('./classes/ElbowRouter.js'),
-            OrthogonalRouter = require('./classes/OrthogonalRouter.js'),            
+            OrthogonalRouter = require('./classes/OrthogonalRouter.js'),
             routers = {
 
                 SimpleRouter: new SimpleRouter(),
@@ -25,7 +25,7 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                 params: null
             };
 
-        this.selectedRouter = 
+        this.selectedRouter =
             {
                 id: 'autoRouter',
                 label: 'Auto Router',
@@ -212,13 +212,13 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                 pos;
 
             if (Array.isArray(segments) && segments.length > 1) {
-                
+
                 // If this wire has more than one segments
 
                 // Creating new begining for wire
 
                 firstSegmentParams = segments[0].getParameters();
-                router = firstSegmentParams.router || DEFAULT_ROUTER;                
+                router = firstSegmentParams.router || DEFAULT_ROUTER;
 
                 if (router && router.type === 'ElbowRouter') {
 
@@ -244,8 +244,8 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                     {
                         end1: endPositions.end1,
                         end2: pos
-                    }, 
-                    router.type, 
+                    },
+                    router.type,
                     router.params
                 );
 
@@ -260,9 +260,9 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
 
                 // Creating new end for wire
-                
+
                 lastSegmentParams = segments[segments.length - 1].getParameters();
-                router = lastSegmentParams.router || DEFAULT_ROUTER;                
+                router = lastSegmentParams.router || DEFAULT_ROUTER;
 
                 if (router && router.type === 'ElbowRouter') {
 
@@ -275,7 +275,7 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
 
                 } else {
 
-                    // Use SimpleRouter                    
+                    // Use SimpleRouter
 
                     pos = {
                         x: lastSegmentParams.x1,
@@ -288,8 +288,8 @@ wiringServicesModule.service('wiringService', ['$mdToast', '$log', '$rootScope',
                     {
                         end1: pos,
                         end2: endPositions.end2
-                    }, 
-                    router.type, 
+                    },
+                    router.type,
                     router.params
                 );
 
