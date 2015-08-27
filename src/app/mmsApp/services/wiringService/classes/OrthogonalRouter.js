@@ -41,7 +41,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
             if ( haveDiagramComponentsChanged ) {
                 console.log('Something in diagram has changed, will have to re-routing entire diagram');
-                self.routeDiagram(diagram);
+                self.routeDiagram(diagram, specificWireToRoute);
             }
             else {
                 console.log('Diagram is consistent with previous wiring, able to use cached visibility graph');
@@ -154,7 +154,7 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
     };
 
-    this.routeDiagram = function( diagram ) {
+    this.routeDiagram = function( diagram, specificWireToRoute ) {
         // Step 1: generateVisibilityGraph
         // Step 2: AutoRouteWithGraph
         // Step 3: nudgeRoutes
@@ -212,8 +212,10 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
         }
         else {
-            // We conditionally added the empty wire prior to the autoRoute, need to delete it.
-            diagram.getWires().splice(-1, 1);
+            if (specificWireToRoute) {
+                // We conditionally added the empty wire prior to the autoRoute, need to delete it.
+                diagram.getWires().splice(-1, 1);
+            }
         }
     };
 
@@ -922,10 +924,10 @@ var OrthogonalRouter = function ($mdToast, $injector) {
 
                 if ( j != i ) {
 
-                    overlap = ( (boundBox.x < (boundBoxes[j].x + boundBoxes[j].width) &&
-                    (boundBox.x + boundBox.width) > boundBoxes[j].x) &&
-                    ((boundBox.y < (boundBoxes[j].y + boundBoxes[j].height)) &&
-                    ((boundBox.y + boundBox.height) > boundBoxes[j].y)) );
+                    overlap = ( (boundBox.x <= (boundBoxes[j].x + boundBoxes[j].width) &&
+                    (boundBox.x + boundBox.width) >= boundBoxes[j].x) &&
+                    ((boundBox.y <= (boundBoxes[j].y + boundBoxes[j].height)) &&
+                    ((boundBox.y + boundBox.height) >= boundBoxes[j].y)) );
 
                     if (overlap) {
                         message = "The bounding boxes for components " + components[i].label + " and " +
