@@ -2,8 +2,7 @@
 
     .no-inspectable-message {
         text-align: center;
-        height: 50px;
-        padding-top: 15px;
+        padding-bottom: 15px;
         font-style: italic;
     }
 
@@ -38,14 +37,70 @@
             margin-top: 2px;
         }
 
-        th, td {
+        .signal-table-container {
+
+            display: inline-block;
             vertical-align: top;
-            padding: 5px;
+            margin-left: 12px;
+
+            .inspected-signal-row {
+
+                .remove-inspected-container {
+                    width: 50px;
+                    visibility: hidden;
+                }
+
+                &:hover {
+
+                    .remove-inspected-container {
+                        visibility: visible;
+                        background-color: rgb(69, 81, 96);
+
+                        .remove-inspected-button {
+
+                            transition: background-color 500ms;
+
+                            .icon-remove-sign {
+                                color: #FFFFEE;
+                                transition: color 500ms;
+                                position: relative;
+                                top: -0.2ex;
+                            }
+
+                            &:hover {
+                                background-color: #525B67;
+
+                                .icon-remove-sign {
+                                    color: #45A3FF;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        .result-visual-container {
-            margin: 5px 5px 10px 0;
-            text-align: center;
+        th {
+            padding: 5px;
+            border-bottom: white solid 1px;
+
+            &.placeholder {
+                border-bottom: none;
+            }
+        }
+
+        td {
+            padding: 5px;
+            text-align: right;
+        }
+
+        .signal-viewer {
+            display: inline-block;
+            margin-left: 25px;
+
+            .result-visual-container {
+                margin: 5px 5px 10px 0;
+            }
         }
 
     }

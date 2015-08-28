@@ -61,9 +61,12 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
             this.noInspectedMessage = "View the SPICE simulation results for a signal by selecting its wire in the diagram.";
 
             var self = this,
-                wireDetails,
                 parentContext = projectHandling.getContainerLayoutContext(),
                 context;
+
+            this.removeSignal = function(context, index) {
+                context.$parent.$parent.ctrl.ports.splice(index, 1);
+            };
 
             this.cleanup = function () {
                 if (context) {
@@ -74,11 +77,14 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
             };
 
             this.setInspectedWire = function (wire) {
+
                 this.cleanup();
+
                 if (!wire) {
                     return;
                 }
                 var regionId = parentContext.regionId + '_spice_result_' + Date.now();
+
                 context = {
                     db: parentContext.db,
                     regionId: regionId
@@ -87,6 +93,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                 var siginfo = $http.get('/rest/blob/view/' + this.result.resultHash + '/results/siginfo.json');
 
                 this.inspectedWire = wire;
+
                 nodeService.getMetaNodes(context)
                     .then(function (meta) {
                         return nodeService.loadNode(context, wire.getEnd1().port.id)
@@ -137,26 +144,6 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                     });
             };
 
-            this.getWireDetails = function () {
-                var wireEnds = this.inspectedWire.getEnds();
-
-                wireDetails = {
-                    componentA: wireEnds.end1.component.label || "Unnamed",
-                    portA: wireEnds.end1.port.portSymbol.label || "Unnamed",
-                    componentB: wireEnds.end2.component.label || "Unnamed",
-                    portB: wireEnds.end2.port.portSymbol.label || "Unnamed"
-                };
-            };
-
-            this.getDetailDescription = function () {
-
-                this.getWireDetails();
-
-                return ["Results of SPICE simulation for wire connecting port " + wireDetails.portA + " of ",
-                    "component " + wireDetails.componentA + " and port " + wireDetails.portB,
-                    " of component " + wireDetails.componentB + "."].join('');
-            };
-
         }
 
         return {
@@ -177,10 +164,6 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                     designEditorController = controllers[1],
                     downloadUrl = '/rest/blob/download/' + ctrl.result.resultHash,
                     off;
-
-                var visualUrl = '/rest/blob/view/' + ctrl.result.resultHash + '/results/spice-plot.png';
-
-                ctrl.visualUrl = '/images/spice_plot_example.png';
 
                 ctrl.setInspectedWire(designEditorController.inspectableWire);
 
