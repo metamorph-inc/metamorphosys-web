@@ -560,21 +560,23 @@ define([
     //<editor-fold desc="=========================== Creation of ADM objects ==========================">
     AdmImporter.prototype.createAdmDesign = function (admFolder) {
         var self = this;
-        return Q.all(self.createContainersPass1(self.admData.RootContainer, admFolder, 0))
-            .then(function () {
-                self.createContainersPass2(self.admData.RootContainer, admFolder, 0);
-            }).then(function () {
-                var config = self.getCurrentConfig(),
-                    root = self.designID2Node[self.admData.RootContainer['@ID']];
-                if (config.position) {
-                    self.core.setRegistry(root, 'position', {
-                        x: config.position.x,
-                        y: config.position.y
-                    });
-                }
-                self.createMessage(root, 'Added ADM', 'debug');
-                return root;
-            });
+        return Q(0).then(function () {
+            return Q.all(self.createContainersPass1(self.admData.RootContainer, admFolder, 0))
+                .then(function () {
+                    self.createContainersPass2(self.admData.RootContainer, admFolder, 0);
+                }).then(function () {
+                    var config = self.getCurrentConfig(),
+                        root = self.designID2Node[self.admData.RootContainer['@ID']];
+                    if (config.position) {
+                        self.core.setRegistry(root, 'position', {
+                            x: config.position.x,
+                            y: config.position.y
+                        });
+                    }
+                    self.createMessage(root, 'Added ADM', 'debug');
+                    return root;
+                });
+        });
     };
 
     AdmImporter.prototype.createContainersPass1 = function (containerData, parentNode, depth) {
