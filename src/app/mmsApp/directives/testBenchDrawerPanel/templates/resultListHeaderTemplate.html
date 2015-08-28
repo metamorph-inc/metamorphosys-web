@@ -1,5 +1,9 @@
 <div class="result-list-header list-header">
-    <h4><span class="item-title">{{ item.title }}</span>
+    <div class="result-expander" ng-if="item.result.testBench.directives.resultDetails" ng-switch on="item.expanded">
+            <a ng-switch-when="false" ng-click="::config.toggleDetailsExpander(item);"><i class="glyphicon glyphicon-chevron-right result-expander-icon"></i></a>
+            <a ng-switch-when="true" ng-click="::config.toggleDetailsExpander(item);"><i class="glyphicon glyphicon-chevron-down result-expander-icon"></i></a>
+        </div>
+    <h4><span class="item-title" ng-click="::config.toggleDetailsExpander(item);">{{ item.title }}</span>
     </h4>
     <test-bench-result-and-time
         class="horizontal navigable"
@@ -7,4 +11,11 @@
         result="item.result"
         navigable
         ></test-bench-result-and-time>
+    <test-bench-result-details
+        class="detailed-results"
+        ng-if="item.expanded && item.result.status === 'Succeeded'"
+        result="item.result"
+        navigable
+        ></test-bench-result-details>
+
 </div>

@@ -1,0 +1,241 @@
+{
+  "boardWidth": 21.0,
+  "boardHeight": 36.0,
+  "numLayers": 2,
+  "boardTemplate": null,
+  "designRules": null,
+  "omitBoundary": null,
+  "packages": [
+    {
+      "name": "R1",
+      "package": "R_0402",
+      "pkg_idx": 0,
+      "ComponentID": "{c6f14d88-c8c3-434f-8968-7e0821639537}{b4188b17-5229-46a5-adfd-01e29348c6b6}",
+      "RelComponentID": null,
+      "width": 1.7,
+      "height": 0.5,
+      "koWidth": 1.7,
+      "koHeight": 0.5,
+      "originX": 0.0,
+      "originY": 0.0,
+      "x": 15.75,
+      "y": 4.25,
+      "rotation": 0,
+      "layer": 0,
+      "constraints": null,
+      "multiLayer": null,
+      "doNotPlace": null
+    },
+    {
+      "name": "R2",
+      "package": "R_0402",
+      "pkg_idx": 1,
+      "ComponentID": "{c6f14d88-c8c3-434f-8968-7e0821639537}{47c4b9b1-4383-4804-a4ce-87fbd1321251}",
+      "RelComponentID": null,
+      "width": 1.7,
+      "height": 0.5,
+      "koWidth": 1.7,
+      "koHeight": 0.5,
+      "originX": 0.0,
+      "originY": 0.0,
+      "x": 15.75,
+      "y": 1.75,
+      "rotation": 0,
+      "layer": 0,
+      "constraints": null,
+      "multiLayer": null,
+      "doNotPlace": null
+    },
+    {
+      "name": "JP2",
+      "package": "0.1INCH-1X12HEADER",
+      "pkg_idx": 2,
+      "ComponentID": "{e6de61f6-b240-4201-ad83-ac05f2c4a2ad}{d450a6fe-3370-4921-ab87-635b216dc111}{15582080-60c6-4448-afad-7a25eb123b77}",
+      "RelComponentID": null,
+      "width": 2.54,
+      "height": 30.48,
+      "koWidth": 2.54,
+      "koHeight": 30.48,
+      "originX": 0.0,
+      "originY": 0.0,
+      "x": 17.93,
+      "y": 0.16,
+      "rotation": 2,
+      "layer": 0,
+      "constraints": null,
+      "multiLayer": null,
+      "doNotPlace": null
+    },
+    {
+      "name": "JP1",
+      "package": "0.1INCH-1X12HEADER",
+      "pkg_idx": 3,
+      "ComponentID": "{e6de61f6-b240-4201-ad83-ac05f2c4a2ad}{d450a6fe-3370-4921-ab87-635b216dc111}{c1a1d1d0-9c32-4d08-a0a4-95ff4d5ad709}",
+      "RelComponentID": null,
+      "width": 2.54,
+      "height": 30.48,
+      "koWidth": 2.54,
+      "koHeight": 30.48,
+      "originX": 0.0,
+      "originY": 0.0,
+      "x": 0.13,
+      "y": 0.16,
+      "rotation": 0,
+      "layer": 0,
+      "constraints": null,
+      "multiLayer": null,
+      "doNotPlace": null
+    }
+  ],
+  "signals": [
+    {
+      "name": "N$0",
+      "length": 27.568693623721202,
+      "bends": 1,
+      "RelComponentID": null,
+      "pins": [
+        {
+          "name": "1",
+          "gate": "G$1",
+          "pad": "P$1",
+          "package": "R1"
+        },
+        {
+          "name": "1",
+          "gate": "G$1",
+          "pad": "P$1",
+          "package": "R2"
+        },
+        {
+          "name": "12",
+          "gate": "G$1",
+          "pad": "P$12",
+          "package": "JP2"
+        }
+      ],
+      "wires": [
+        {
+          "x1": 16.05,
+          "y1": 4.5,
+          "x2": 19.2,
+          "y2": 29.37,
+          "width": 0.0,
+          "layer": 19,
+          "curve": 0.0
+        },
+        {
+          "x1": 16.05,
+          "y1": 2.0,
+          "x2": 16.05,
+          "y2": 4.5,
+          "width": 0.0,
+          "layer": 19,
+          "curve": 0.0
+        }
+      ],
+      "vias": [],
+      "polygons": []
+    },
+    {
+      "name": "N$1",
+      "length": 2.1174040710265962,
+      "bends": 0,
+      "RelComponentID": null,
+      "pins": [
+        {
+          "name": "2",
+          "gate": "G$1",
+          "pad": "P$2",
+          "package": "R1"
+        },
+        {
+          "name": "2",
+          "gate": "G$1",
+          "pad": "P$2",
+          "package": "JP2"
+        }
+      ],
+      "wires": [
+        {
+          "x1": 17.15,
+          "y1": 4.5,
+          "x2": 19.2,
+          "y2": 3.97,
+          "width": 0.0,
+          "layer": 19,
+          "curve": 0.0
+        }
+      ],
+      "vias": [],
+      "polygons": []
+    },
+    {
+      "name": "N$2",
+      "length": 2.1277687844312418,
+      "bends": 0,
+      "RelComponentID": null,
+      "pins": [
+        {
+          "name": "2",
+          "gate": "G$1",
+          "pad": "P$2",
+          "package": "R2"
+        },
+        {
+          "name": "1",
+          "gate": "G$1",
+          "pad": "P$1",
+          "package": "JP2"
+        }
+      ],
+      "wires": [
+        {
+          "x1": 17.15,
+          "y1": 2.0,
+          "x2": 19.2,
+          "y2": 1.43,
+          "width": 0.0,
+          "layer": 19,
+          "curve": 0.0
+        }
+      ],
+      "vias": [],
+      "polygons": []
+    },
+    {
+      "name": "N$3",
+      "length": 18.510710413163512,
+      "bends": 0,
+      "RelComponentID": null,
+      "pins": [
+        {
+          "name": "9",
+          "gate": "G$1",
+          "pad": "P$9",
+          "package": "JP2"
+        },
+        {
+          "name": "2",
+          "gate": "G$1",
+          "pad": "P$2",
+          "package": "JP1"
+        }
+      ],
+      "wires": [
+        {
+          "x1": 1.4,
+          "y1": 26.83,
+          "x2": 19.2,
+          "y2": 21.75,
+          "width": 0.0,
+          "layer": 19,
+          "curve": 0.0
+        }
+      ],
+      "vias": [],
+      "polygons": []
+    }
+  ],
+  "constraints": null,
+  "border": null
+}

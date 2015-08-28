@@ -1,0 +1,108 @@
+.analog-electronic-simulation-result-details {
+
+    .no-inspectable-message {
+        text-align: center;
+        padding-bottom: 15px;
+        font-style: italic;
+    }
+
+    .details-container {
+
+        &.ng-enter
+        {
+            -webkit-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+            -moz-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+            -ms-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+            -o-transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+            transition: 450ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+            position: relative;
+            display: block;
+        }
+
+        &.ng-enter.ng-enter-active {
+            opacity: 1;
+            top: 0;
+            height: auto;
+        }
+
+        &.ng-enter {
+            opacity: 0;
+            top: -50px;
+            height: 0px;
+        }
+
+        .result-detail-description {
+            display: block;
+            padding-left: 15px;
+            margin-top: 2px;
+        }
+
+        .signal-table-container {
+
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 12px;
+
+            .inspected-signal-row {
+
+                .remove-inspected-container {
+                    width: 50px;
+                    visibility: hidden;
+                }
+
+                &:hover {
+
+                    .remove-inspected-container {
+                        visibility: visible;
+                        background-color: rgb(69, 81, 96);
+
+                        .remove-inspected-button {
+
+                            transition: background-color 500ms;
+
+                            .icon-remove-sign {
+                                color: #FFFFEE;
+                                transition: color 500ms;
+                                position: relative;
+                                top: -0.2ex;
+                            }
+
+                            &:hover {
+                                background-color: #525B67;
+
+                                .icon-remove-sign {
+                                    color: #45A3FF;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        th {
+            padding: 5px;
+            border-bottom: white solid 1px;
+
+            &.placeholder {
+                border-bottom: none;
+            }
+        }
+
+        td {
+            padding: 5px;
+            text-align: right;
+        }
+
+        .signal-viewer {
+            display: inline-block;
+            margin-left: 25px;
+
+            .result-visual-container {
+                margin: 5px 5px 10px 0;
+            }
+        }
+
+    }
+
+}

@@ -181,10 +181,19 @@ define(['plugin/PluginConfig',
                 return AdmImporter.prototype.runPlugin.call(self, AcmImporter, config, {activeNode: self.acmFolder});
             });
         }).then(function () {
+            return Q.ninvoke(self.core, 'loadChildren', self.admFolder);
+        }).then(function (designs) {
             var adms = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
-                    return (filename.lastIndexOf('.adp') === filename.length - 4);
+                    return filename.length >= 4 && (filename.lastIndexOf('.adp') === filename.length - 4);
                 });
+
+            var oldDesigns = designs.filter(function (design) {
+                return adms.indexOf(self.core.getAttribute(design, 'name') + '.adp') !== -1;
+            });
+            oldDesigns.forEach(function (design) {
+                self.core.deleteNode(design);
+            });
 
             return throttle(adms, function (adm) {
                 var config = {
@@ -194,7 +203,8 @@ define(['plugin/PluginConfig',
                 return AdmImporter.prototype.runPlugin.call(self, AdmImporter, config, {activeNode: self.admFolder});
             });
         }).then(function () {
-
+            return Q.ninvoke(self.core, 'loadChildren', self.atmFolder);
+        }).then(function (atmFolders) {
             var testbenches_zip = Object.getOwnPropertyNames(self.artifact.descriptor.content)
                 .filter(function (filename) {
                     return filename === 'testbenches.zip';
@@ -233,6 +243,14 @@ define(['plugin/PluginConfig',
                                 parent: self.atmFolder
                             });
                             self.core.setAttribute(atmFolder, 'name', testBenches[tb].name);
+
+                            var oldFolders = atmFolders.filter(function (atm) {
+                                return self.core.getAttribute(atm, 'name') === testBenches[tb].name;
+                            });
+                            oldFolders.forEach(function (atm) {
+                                self.core.setAttribute(atm, 'name', testBenches[tb].name + '_old');
+                            });
+
                         }
 
                         var tbModel = self.core.createNode({

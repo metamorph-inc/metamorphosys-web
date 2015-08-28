@@ -71,6 +71,7 @@ angular.module('mms.designEditor', [
 
             self.inspectableComponent = null;
             self.inspectableWire = null;
+            self.viewingWireResult = null;
 
             self._drawerHeight = 0;
             self._element = null;
@@ -102,7 +103,10 @@ angular.module('mms.designEditor', [
                     self.inspectableWire = self.diagram.getWireById(selectedWireIds[0]);
 
                     $log.debug('inspectableWire', self.inspectableWire);
-                    shouldSelectInspector = true;
+
+                    if (!self.viewingWireResult) {
+                        shouldSelectInspector = true;
+                    }
 
                 }
 
@@ -1052,6 +1056,12 @@ angular.module('mms.designEditor', [
                     initForContainer(newVal);
 
                 }
+
+            });
+
+            $scope.$watch('designEditorCtrl.inspectableWire', function() {
+
+                $rootScope.$emit('inspectableWireHasChanged', self.inspectableWire);
 
             });
 
