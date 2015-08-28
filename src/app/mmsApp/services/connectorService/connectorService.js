@@ -72,9 +72,18 @@ angular.module('mms.connectorService', [
                 var port1Node,
                     port2Node,
                     port1Component = wire.getEnd1().port,
-                    port2Component = wire.getEnd2().port;
+                    port2Component = wire.getEnd2().port,
+                    port1ParentType,
+                    port2ParentType,
+                    meta;
 
-                return nodeService.loadNode(layoutContext, port1Component.id)
+                return nodeService.getMetaNodes(layoutContext)
+                    .then(function(meta_) {
+                        meta = meta_
+                    })
+                    .then(function() {
+                        return nodeService.loadNode(layoutContext, port1Component.id);
+                    })
                     .then(function (port1_) {
                         port1Node = port1_;
 
@@ -83,6 +92,18 @@ angular.module('mms.connectorService', [
                     .then(function (port2_) {
                         port2Node = port2_;
 
+                        return port1Node.getParentNode();
+                    })
+                    .then(function(port1ParentNode) {
+                        port1ParentType = port1ParentNode.getMetaTypeName(meta);
+
+                        return port2Node.getParentNode();
+                    })
+                    .then(function(port2ParentNode) {
+                        port2ParentType = port2ParentNode.getMetaTypeName(meta);
+                    })
+                    .then(function () {
+
                         var port1Def = port1Node.getAttribute('Definition');
                         var port2Def = port2Node.getAttribute('Definition');
                         var port1IsTyped = port1Def !== '';
@@ -90,15 +111,18 @@ angular.module('mms.connectorService', [
 
                         // Logic block for handling connection based on definitions
                         if (port1IsTyped === false && port2IsTyped === true) {
-                            // Transfer port2's type to port1
-                            updatePortDecorator(port1Component, port2Component.portSymbol.portDecorator);
-
-                            return cloneConnector(port2Node, port1Node, layoutContext);
+                            // Transfer port2's type to port1 only if port1's parent is container or connector adapter
+                            if (port1ParentType === 'Container' || port1ParentType === 'ConnectorAdapter') {
+                                updatePortDecorator(port1Component, port2Component.portSymbol.portDecorator);
+                                return cloneConnector(port2Node, port1Node, layoutContext);
+                            }
                         }
                         else if (port1IsTyped === true && port2IsTyped === false) {
-                            // Transfer port1's type to port2
-                            updatePortDecorator(port2Component, port1Component.portSymbol.portDecorator);
-                            return cloneConnector(port1Node, port2Node, layoutContext);
+                            // Transfer port1's type to port2 only if port2's parent is container or connector adapter
+                            if (port2ParentType === 'Container' || port2ParentType === 'ConnectorAdapter') {
+                                updatePortDecorator(port2Component, port1Component.portSymbol.portDecorator);
+                                return cloneConnector(port1Node, port2Node, layoutContext);
+                            }
                         }
                         else if (port1IsTyped === true && port2IsTyped === true) {
                             $log.debug('Both', port1Node.getAttribute('name'),
@@ -113,6 +137,7 @@ angular.module('mms.connectorService', [
                                 port1Node.getAttribute('name'), 'and', port2Node.getAttribute('name'));
                         }
                     });
+
 
             };
 
