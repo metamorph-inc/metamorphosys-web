@@ -9,7 +9,7 @@ angular.module(
 
     .directive(
     'decoratedPort',
-    function ($timeout) {
+    function ($timeout, $compile) {
         return {
             scope: true,
             controller: function ($scope) {
@@ -66,31 +66,63 @@ angular.module(
             templateUrl: '/mmsApp/templates/decoratedPort.html',
             link: function (scope, element, attributes, controllers) {
 
-                var diagramContainerController = controllers[1];
+                var diagramContainerController = controllers[1],
+                    addPortDecorator,
+                    removePortDecorator;
 
-                if (scope.portInstance.portSymbol.portDecorator) {
+                removePortDecorator = function() {
 
-                    scope.decoratorColor = scope.portInstance.portSymbol.portDecorator.color;
-                    scope.decoratorBGColor = scope.portInstance.portSymbol.portDecorator.bgColor;
+                    if (scope.decoratorDirective) {
 
-                    scope.decoratorLabel = scope.portInstance.portSymbol.portDecorator.label;
-                    scope.decoratorDirective = scope.portInstance.portSymbol.portDecorator.directive;
+                        var compiledSymbol,
+                            decoratedPortEl;
 
-                    if (scope.portInstance.portSymbol.portDecorator.directive) {
+                        scope.decoratorColor = '#fff';
+                        scope.decoratorBGColor = '#747f8d';
+                        scope.decoratorLabel = null;
+                        scope.decoratorDirective = null;
+                        scope.portType = "";
 
-                        diagramContainerController.replaceWithDirective(
-                            element[0].querySelector('.decoration-placeholder'),
-                            scope.portInstance.portSymbol.portDecorator.directive,
-                            scope
-                        );
+                        compiledSymbol = $compile('<decorated-port></decorated-port>');
 
+                        compiledSymbol(scope, function (clonedElement) {
+
+                            element[0].parentNode.replaceChild(
+                                clonedElement[0],
+                                element[0]
+                            );
+
+                        });
                     }
 
                 }
 
-                scope.decoratorBGColor = scope.decoratorBGColor || '#747f8d';
-                scope.decoratorColor = scope.decoratorColor || '#fff';
-                scope.portType = scope.portInstance.portSymbol.type;
+                addPortDecorator = function() {
+
+                    if (scope.portInstance.portSymbol.portDecorator) {
+                        scope.decoratorColor = scope.portInstance.portSymbol.portDecorator.color;
+                        scope.decoratorBGColor = scope.portInstance.portSymbol.portDecorator.bgColor;
+
+                        scope.decoratorLabel = scope.portInstance.portSymbol.portDecorator.label;
+                        scope.decoratorDirective = scope.portInstance.portSymbol.portDecorator.directive;
+
+                        if (scope.portInstance.portSymbol.portDecorator.directive) {
+
+                            diagramContainerController.replaceWithDirective(
+                                element[0].querySelector('.decoration-placeholder'),
+                                scope.portInstance.portSymbol.portDecorator.directive,
+                                scope
+                            );
+
+                        }
+                    }
+
+                    scope.decoratorBGColor = scope.decoratorBGColor || '#747f8d';
+                    scope.decoratorColor = scope.decoratorColor || '#fff';
+                    scope.portType = scope.portInstance.portSymbol.type;
+                }
+
+                addPortDecorator();
 
                 if (scope.portType) {
                     if (scope.portType === 'GPIO') {
@@ -132,6 +164,15 @@ angular.module(
                         }, 0);
                     });
                 }
+
+                scope.$watch('portInstance.portSymbol.portDecorator', function() {
+                    if (scope.portInstance.portSymbol.portDecorator) {
+                        addPortDecorator();
+                    }
+                    else {
+                        removePortDecorator();
+                    }
+                });
             }
 
         };

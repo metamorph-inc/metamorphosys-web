@@ -9,7 +9,8 @@ angular.module('mms.connectorService', [
         function($log, $compile, nodeService ) {
 
             var cloneConnector,
-                isNodeConnected;
+                isNodeConnected,
+                updatePortDecorator;
 
             /**
              * Modifies targetConnector to have the same Description and children as srcConnector
@@ -18,7 +19,7 @@ angular.module('mms.connectorService', [
              * @returns {*}
              */
             cloneConnector = function (srcConnector, targetConnector, layoutContext) {
-                
+
                 var definition = srcConnector.getAttribute('Definition');
                 targetConnector.setAttribute('Definition', definition);
 
@@ -59,46 +60,57 @@ angular.module('mms.connectorService', [
                 }
             };
 
+            updatePortDecorator = function(port, decorator) {
+
+                port.portSymbol.portDecorator = decorator;
+
+            }
+
 
             this.updateConnectorDefinition = function(wire, layoutContext) {
 
-                var port1,
-                    port2;
+                var port1Node,
+                    port2Node,
+                    port1Component = wire.getEnd1().port,
+                    port2Component = wire.getEnd2().port;
 
-                return nodeService.loadNode(layoutContext, wire.getEnd1().port.id)
+                return nodeService.loadNode(layoutContext, port1Component.id)
                     .then(function (port1_) {
-                        port1 = port1_;
+                        port1Node = port1_;
 
-                        return nodeService.loadNode(layoutContext, wire.getEnd2().port.id);
+                        return nodeService.loadNode(layoutContext, port2Component.id);
                     })
                     .then(function (port2_) {
-                        port2 = port2_;
+                        port2Node = port2_;
 
-                        var port1Def = port1.getAttribute('Definition');
-                        var port2Def = port2.getAttribute('Definition');
+                        var port1Def = port1Node.getAttribute('Definition');
+                        var port2Def = port2Node.getAttribute('Definition');
                         var port1IsTyped = port1Def !== '';
                         var port2IsTyped = port2Def !== '';
 
                         // Logic block for handling connection based on definitions
                         if (port1IsTyped === false && port2IsTyped === true) {
                             // Transfer port2's type to port1
-                            return cloneConnector(port2, port1, layoutContext);
+                            updatePortDecorator(port1Component, port2Component.portSymbol.portDecorator);
+
+                            return cloneConnector(port2Node, port1Node, layoutContext);
                         }
                         else if (port1IsTyped === true && port2IsTyped === false) {
                             // Transfer port1's type to port2
-                            return cloneConnector(port1, port2, layoutContext);
+                            updatePortDecorator(port2Component, port1Component.portSymbol.portDecorator);
+                            return cloneConnector(port1Node, port2Node, layoutContext);
                         }
                         else if (port1IsTyped === true && port2IsTyped === true) {
-                            $log.debug('Both', port1.getAttribute('name'),
-                                'and', port2.getAttribute('name'), 'are typed');
+                            $log.debug('Both', port1Node.getAttribute('name'),
+                                'and', port2Node.getAttribute('name'), 'are typed');
                         }
                         else if (port1IsTyped === false && port2IsTyped === false) {
-                            $log.debug('Neither', port1.getAttribute('name'),
-                                'nor', port2.getAttribute('name'), 'are typed');
+                            $log.debug('Neither', port1Node.getAttribute('name'),
+                                'nor', port2Node.getAttribute('name'), 'are typed');
                         }
                         else {
                             $log.error('Failure in type detection logic when considering',
-                                port1.getAttribute('name'), 'and', port2.getAttribute('name'));
+                                port1Node.getAttribute('name'), 'and', port2Node.getAttribute('name'));
                         }
                     });
 
@@ -111,7 +123,7 @@ angular.module('mms.connectorService', [
              * @param connector
              * @returns {*}
              */
-            this.testConnectorForInferredTypeRemoval = function(connector, layoutContext) {
+            this.testConnectorForInferredTypeRemoval = function(connector, layoutContext, port) {
                 // Does this guy (or his ports) have any connections?
                 // If not, and his parent is a Container, then strip his Connector typing info.
 
@@ -134,6 +146,8 @@ angular.module('mms.connectorService', [
                                         if (children.filter(isNodeConnected).length === 0) {
                                             $log.debug(connector.getAttribute('name'), 'will be de-typed');
                                             connector.setAttribute('Definition', '');
+
+                                            updatePortDecorator(port, null);
 
                                             children.forEach(function (child) {
                                                 child.destroy();
@@ -159,7 +173,7 @@ angular.module('mms.connectorService', [
                     port.setPortType(connectorData.type,
                                      connectorData.description,
                                      connectorData.decorator);
-        
+
                 }
 
             };

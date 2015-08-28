@@ -688,14 +688,14 @@ angular.module('mms.designEditor', [
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, srcId)
                                             .then(function (srcConnector) {
-                                                return connectorService.testConnectorForInferredTypeRemoval(srcConnector, layoutContext);
+                                                return connectorService.testConnectorForInferredTypeRemoval(srcConnector, layoutContext, aWire._end1.port);
                                             })
                                     );
 
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, dstId)
                                             .then(function (dstConnector) {
-                                                return connectorService.testConnectorForInferredTypeRemoval(dstConnector, layoutContext);
+                                                return connectorService.testConnectorForInferredTypeRemoval(dstConnector, layoutContext, aWire._end2.port);
                                             })
                                     );
 
@@ -897,6 +897,10 @@ angular.module('mms.designEditor', [
                                         }
 
                                         if (designStructureUpdateObject.updateType === 'typeChange') {
+
+                                            // This is only hit when the type of a component has changed (eg, connector).
+                                            // There are not watchers on ports, so when the type of a connector that is a level below,
+                                            // (eg, port on subcircuit), the typeChange event is not hit.
 
                                             diagram = diagramService.getDiagram(selectedContainerId);
 
