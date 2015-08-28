@@ -10,10 +10,10 @@
             <tr class="inspected-signal-row" ng-repeat="port in ctrl.ports">
                 <td>{{port.name}}</td>
                 <td class="result-metrics-wrapper">
-                    {{1}}V
+                    {{port.minVoltage}}V
                 </td>
                 <td class="result-metrics-wrapper">
-                    {{2}}V
+                    {{port.maxVoltage}}V
                 </td>
                 <td class="remove-inspected-container">
                     <md-button class="remove-inspected-button"
