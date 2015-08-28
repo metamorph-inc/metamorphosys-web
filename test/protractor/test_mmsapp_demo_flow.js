@@ -56,6 +56,9 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 res.on('end', function() {
                     done();
                 });
+            }).on('error', function(err) {
+                console.log("Error calling copyproject: " + err.message);
+                done(err);
             });
         }
 
