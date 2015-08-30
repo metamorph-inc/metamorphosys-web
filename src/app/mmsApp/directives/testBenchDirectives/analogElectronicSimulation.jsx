@@ -68,6 +68,24 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                 context.$parent.$parent.ctrl.ports.splice(index, 1);
             };
 
+            this.pinSignal = function(context, index) {
+
+                var pinEl = document.getElementById(index);
+
+                if (pinEl) {
+                    if (pinEl.classList.contains('pinned')) {
+                        pinEl.classList.remove('pinned');
+                    }
+                    else {
+                        pinEl.classList.add('pinned');
+                    }
+                }
+            };
+
+            this.toggleHideSignal = function(context) {
+                context.port.showSignal = !context.port.showSignal;
+            };
+
             this.cleanup = function () {
                 if (context) {
                     nodeService.cleanUpRegion(context.db, context.regionId);
@@ -125,7 +143,8 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                                                 }
                                                 return {
                                                     visualUrl: '/rest/blob/view/' + self.result.resultHash + '/results/net' + net + '.png',
-                                                    name: port.getAttribute('name')
+                                                    name: port.getAttribute('name'),
+                                                    showSignal: true
                                                 };
                                             }).filter(function (port) {
                                                 return port;

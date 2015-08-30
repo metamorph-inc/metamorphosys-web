@@ -5,9 +5,18 @@
         </span> -->
         <div class="signal-table-container">
             <table class="signal-table">
-                <thead><tr><th>Name</th><th>Min voltage</th><th>Max Voltage</th><th class="placeholder"></th></tr>
+                <thead><tr>
+                    <th>Display</th>
+                    <th>Name</th>
+                    <th>Min Voltage</th>
+                    <th>Max Voltage</th>
+                    <th class="placeholder"></th></tr>
                 </thead>
             <tr class="inspected-signal-row" ng-repeat="port in ctrl.ports">
+                <td class="display-cell">
+                    <md-checkbox class="hide-show-signal-box" aria-label=""
+                                 ng-model="port.showSignal"/>
+                </td>
                 <td>{{port.name}}</td>
                 <td class="result-metrics-wrapper">
                     {{1}}V
@@ -15,12 +24,13 @@
                 <td class="result-metrics-wrapper">
                     {{2}}V
                 </td>
-                <td class="remove-inspected-container">
-                    <md-button class="remove-inspected-button"
-                               aria-label=""
-                               ng-click="ctrl.removeSignal(this, $index)"
-                               title="Remove">
-                        <i class="fa fa-times icon-remove-sign"></i>
+                <td class="pin-signal-container">
+                    <md-button class="pin-signal-button"
+                       id="{{$index}}"
+                       aria-label=""
+                       ng-click="ctrl.pinSignal(this, $index)"
+                       title="Pin signal">
+                        <i class="fa fa-thumb-tack icon-pin-signal"></i>
                     </md-button>
                 </td>
             </tr>
@@ -28,7 +38,7 @@
         </div>
         <div class="signal-viewer">
         <!--This ng-repeat should be temporary. Eventually there will only be one plot for all signals. -->
-            <div class="result-visual-container" ng-repeat="port in ctrl.ports">
+            <div class="result-visual-container" ng-repeat="port in ctrl.ports" ng-if="port.showSignal">
                 <img class="result-visual" ng-src="{{port.visualUrl}}"/>
             </div>
         </div>

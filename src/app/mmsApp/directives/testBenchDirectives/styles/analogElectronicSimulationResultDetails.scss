@@ -42,37 +42,58 @@
             display: inline-block;
             vertical-align: top;
             margin-left: 12px;
+            font-size: 12px;
 
             .inspected-signal-row {
 
-                .remove-inspected-container {
-                    width: 50px;
-                    visibility: hidden;
+                .display-cell {
+                    text-align: center;
                 }
 
-                &:hover {
+                .hide-show-signal-box {
 
-                    .remove-inspected-container {
-                        visibility: visible;
-                        background-color: rgb(69, 81, 96);
+                    margin: 0;
 
-                        .remove-inspected-button {
+                    .md-icon {
+                        /*background-color: #0d47a1;*/
+                        background-color: transparent;
+                    }
 
+                    .md-label {
+                        display: none;
+                    }
+
+                }
+
+                .pin-signal-container {
+
+                    text-align: center;
+                    position: relative;
+                    top: 0.2ex;
+
+                    .pin-signal-button {
+
+                        padding: 8px;
+                        cursor: pointer;
+
+                        .icon-pin-signal {
+                            color: #FFFFEE;
+                            transition: color 500ms;
+                        }
+
+                        &:hover {
                             transition: background-color 500ms;
+                            background-color: #525B67;
+                            border-radius: 5px;
+                        }
 
-                            .icon-remove-sign {
-                                color: #FFFFEE;
-                                transition: color 500ms;
-                                position: relative;
-                                top: -0.2ex;
-                            }
+                        &:focus {
+                            background-color: transparent;
+                        }
 
-                            &:hover {
-                                background-color: #525B67;
-
-                                .icon-remove-sign {
-                                    color: #45A3FF;
-                                }
+                        &.pinned {
+                            .icon-pin-signal {
+                                color: #45A3FF;
                             }
                         }
                     }
@@ -85,7 +106,7 @@
             border-bottom: white solid 1px;
 
             &.placeholder {
-                border-bottom: none;
+                /*border-bottom: none;*/
             }
         }
 
@@ -96,10 +117,14 @@
 
         .signal-viewer {
             display: inline-block;
-            margin-left: 25px;
+            margin-left: 10px;
 
             .result-visual-container {
-                margin: 5px 5px 10px 0;
+                margin: 10px;
+
+                .result-visual {
+                    max-width: 900px;
+                }
             }
         }
 
