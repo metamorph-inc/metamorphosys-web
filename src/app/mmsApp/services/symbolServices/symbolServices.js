@@ -178,8 +178,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
         }
         else {
             height = Math.max(
-                parameters.portSpacing * ( left.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
-                parameters.portSpacing * ( right.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding,
+                parameters.portSpacing * ( left.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding + parameters.iconPadding * parameters.hasIcon,
+                parameters.portSpacing * ( right.length + 2) + parameters.topPortPadding + parameters.bottomPortPadding + parameters.iconPadding * parameters.hasIcon,
                 parameters.minHeight
             );
         }
@@ -236,7 +236,9 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
             hasTopPort: portDescriptors.top.length > 0,
             hasBottomPort: portDescriptors.bottom.length > 0,
             hasLeftPort: portDescriptors.left.length > 0,
-            hasRightPort: portDescriptors.right.length > 0
+            hasRightPort: portDescriptors.right.length > 0,
+            iconPadding: 20,
+            hasIcon: false
 
         }, givenParameters || {});
 
@@ -274,7 +276,8 @@ symbolServicesModule.provider( 'symbolManager', function SymbolManagerProvider()
                     hasTopPort: portDescriptors.top.length > 0,
                     hasBottomPort: portDescriptors.bottom.length > 0,
                     hasLeftPort: portDescriptors.left.length > 0,
-                    hasRightPort: portDescriptors.right.length > 0
+                    hasRightPort: portDescriptors.right.length > 0,
+                    iconPadding: parameters.iconPadding
                 });
 
 

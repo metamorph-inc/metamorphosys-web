@@ -377,7 +377,7 @@ angular.module('mms.designEditor', [
                         nodeService.loadNode(layoutContext, component.id)
                         .then(function(componentNode) {
 
-                            componentNode.setAttribute("Icon", "");
+                            componentNode.setAttribute("Icon", null);
 
                             });
 
@@ -441,6 +441,7 @@ angular.module('mms.designEditor', [
 
                                     wire.setId(node.id);
                                     diagram.addWire(wire);
+                                    justCreatedWires.push(wire.getId());
 
                                     connectorService.updateConnectorDefinition(wire, layoutContext);
 
@@ -691,14 +692,14 @@ angular.module('mms.designEditor', [
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, srcId)
                                             .then(function (srcConnector) {
-                                                return connectorService.testConnectorForInferredTypeRemoval(srcConnector, layoutContext);
+                                                return connectorService.testConnectorForInferredTypeRemoval(srcConnector, layoutContext, aWire._end1.port);
                                             })
                                     );
 
                                     gmeUpdatePromises.push(
                                         nodeService.loadNode(layoutContext, dstId)
                                             .then(function (dstConnector) {
-                                                return connectorService.testConnectorForInferredTypeRemoval(dstConnector, layoutContext);
+                                                return connectorService.testConnectorForInferredTypeRemoval(dstConnector, layoutContext, aWire._end2.port);
                                             })
                                     );
 
@@ -870,7 +871,7 @@ angular.module('mms.designEditor', [
 
                                             diagram = diagramService.getDiagram(selectedContainerId);
 
-                                            if (diagram && wiringService.selectedRouter.id !== 'autoRouter') {
+                                            if (diagram) {
 
                                                 diagram.updateWireSegments(
                                                     designStructureUpdateObject.id,
@@ -900,6 +901,10 @@ angular.module('mms.designEditor', [
                                         }
 
                                         if (designStructureUpdateObject.updateType === 'typeChange') {
+
+                                            // This is only hit when the type of a component has changed (eg, connector).
+                                            // There are not watchers on ports, so when the type of a connector that is a level below,
+                                            // (eg, port on subcircuit), the typeChange event is not hit.
 
                                             diagram = diagramService.getDiagram(selectedContainerId);
 
@@ -949,6 +954,18 @@ angular.module('mms.designEditor', [
                                                 component = diagram.getComponentById(designStructureUpdateObject.id);
 
                                                 if (component) {
+
+                                                    if (component.icon && !designStructureUpdateObject.data.icon) {
+                                                        component.symbol.height -= component.symbol.iconPadding;
+                                                        component.symbol.boxHeight -= component.symbol.iconPadding;
+
+                                                    }
+                                                    else {
+                                                        component.symbol.height += component.symbol.iconPadding;
+                                                        component.symbol.boxHeight += component.symbol.iconPadding;
+
+                                                    }
+
                                                     component.setIcon(designStructureUpdateObject.data.icon);
 
                                                     $rootScope.$emit('iconWasChanged', projectHandling.getSelectedContainer());

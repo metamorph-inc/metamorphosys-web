@@ -92,7 +92,7 @@ angular.module(
     .directive(
     'port',
 
-    function () {
+    function ($timeout) {
 
         var TYPE_ELEMENT_SPACING = 6;
 
@@ -143,12 +143,33 @@ angular.module(
                     svgDiagramController.registerPortElement(scope.portInstance.portSymbol.type, element[0]);
                 }
 
+
+                // Having rotation set by class name doesn't reliably rotate svg elements how we expect.
+                // Watch the component rotation and apply style using Jquery instead.
                 scope.isComponentUpsideDown = false;
 
                 scope.$watch('portInstance.parentComponent.rotation', function() {
+                    var rotate = 0;
+
                     if (scope.portInstance.parentComponent.rotation % 360 === 180) {
                         scope.isComponentUpsideDown = true;
+
+                        rotate = 180;
                     }
+
+                    $timeout(function() {
+                        var wrapperEl = $(element).find('.port-label-wrapper');
+
+                        if (wrapperEl.length) {
+                            if (!!window.chrome && !!window.chrome.webstore) {
+                                wrapperEl.css({ WebkitTransform: 'rotate(' + rotate + 'deg)'});
+                            }
+                            wrapperEl.css({ msTransform: 'rotate(' + rotate + 'deg)'});
+                            // wrapperEl.css({ MozTransform: 'rotate(' + rotate + 'deg)'});
+                        }
+
+                        scope.$apply();
+                    }, 0);
                 });
 
                 scope.$on('$destroy', function() {

@@ -161,6 +161,30 @@ angular.module('mms.diagramContainer', [
 
                 }
 
+            };
+
+            this.replaceWithTemplateString = function(placeHolderEl, templateStr, scope) {
+
+                var compiledSymbol,
+                    template;
+
+                if (placeHolderEl) {
+
+                    template = angular.element(templateStr);
+
+                    compiledSymbol = $compile(template);
+
+                    compiledSymbol(scope, function (clonedElement) {
+
+                        placeHolderEl.parentNode.replaceChild(
+                            clonedElement[0],
+                            placeHolderEl
+                        );
+
+                    });
+
+                }
+
             }
 
 

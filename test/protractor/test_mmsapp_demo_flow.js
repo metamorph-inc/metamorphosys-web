@@ -7,6 +7,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
         dragAndDropHelper = require('./lib/drag_and_drop_helper.js'),
         hasClass = require('./lib/has_class.js'),
 
+        projectCopyTimeLimit = 5 * 60 * 1000,
         gmeEventTimeLimit = 8000,
         uiEventTimeLimit = 200,
         componentLibraryQueryTimeLimit = 2000,
@@ -41,7 +42,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
     beforeAll(function loadTestProject(done) {
         if (false) {
             // FIXME: copyproject takes many seconds. For faster turnaround, use a pre-created project
-            projectName = 'Test_79838';
+            projectName = 'Template_Module_1x2';
             done();
         } else {
             require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function(res) {
@@ -61,8 +62,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 done(err);
             });
         }
-
-    });
+    }, projectCopyTimeLimit);
 
     afterAll(function(done) {
         // Calling quit will remove the browser.

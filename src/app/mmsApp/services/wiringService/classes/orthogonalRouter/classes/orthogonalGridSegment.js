@@ -131,17 +131,17 @@ OrthogonalGridSegment.prototype.getSharedEndPoint = function ( segment2 ) {
 
 
 OrthogonalGridSegment.prototype.getIntersection = function( segment ) {
-    
-    var dx12 = this.x2 - this.x1, 
+
+    var dx12 = this.x2 - this.x1,
         dx34 = segment.x2 - segment.x1,
-        dy12 = this.y2 - this.y1, 
+        dy12 = this.y2 - this.y1,
         dy34 = segment.y2 - segment.y1,
         denominator = dy34 * dx12 - dx34 * dy12;
 
-    if (denominator === 0) { 
-        return null; 
+    if (denominator === 0) {
+        return null;
     }
-    var dx31 = this.x1 - segment.x1, 
+    var dx31 = this.x1 - segment.x1,
         dy31 = this.y1 - segment.y1,
         numa = dx34 * dy31 - dy34 * dx31,
         a = numa / denominator,
@@ -229,11 +229,11 @@ OrthogonalGridSegment.prototype.flipY = function() {
     var tmpy = this.y2;
     this.y2 = this.y1;
     this.y1 = tmpy;
-    this._yFlipped = !this._yFlipped; 
+    this._yFlipped = !this._yFlipped;
 };
 
 OrthogonalGridSegment.prototype.resetDirection = function() {
-    
+
     if (this._xFlipped) {
         this.flipX();
     }
@@ -260,7 +260,7 @@ OrthogonalGridSegment.prototype.toString = function() {
 };
 
 OrthogonalGridSegment.prototype.setFipped = function(flipX, flipY) {
-    
+
     if (flipX === true) {
 
         if (!this._xFlipped) {

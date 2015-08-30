@@ -216,7 +216,7 @@ VisibilityGraph.prototype.getGrid = function (sortedXpoints, sortedYpoints, grid
 
     }
 
-    // Get segment intersections 
+    // Get segment intersections
     for ( var s = 0; s < vlines.length; s++ ) {
         this.getSegmentIntersections(vlines[s], hlines, gridHeight);
     }
@@ -239,9 +239,30 @@ VisibilityGraph.prototype.getSegmentIntersections = function ( segment, segmentS
 
     for ( var i = 0; i < totalSegments; i++ ) {
 
-        var intersection;
+        var intersection,
+            segmentMagnitude,
+            segmentCompareMagnitude;
 
-        intersection = segment.getIntersection(segmentSet[i]);
+        segmentMagnitude = segment.getMagnitude();
+        segmentCompareMagnitude = segmentSet[i].getMagnitude();
+
+        if (segmentMagnitude === 0 || segmentCompareMagnitude === 0) {
+            if ( (segmentMagnitude === 0 && segmentCompareMagnitude > 0)
+              && segmentSet[i].isPointOnLine({x: segment.x1, y: segment.y1}) ) {
+                intersection = new Point(segment.x1, segment.y1);
+            }
+            else if ( (segmentCompareMagnitude === 0 && segmentMagnitude > 0)
+              && segment.isPointOnLine({x: segmentSet[i].x1, y: segmentSet[i].y1}) ) {
+                intersection = new Point(segmentSet[i].x1, segmentSet[i].y1);
+            }
+            else if (segment.doesSegmentMatch(segmentSet[i])) {
+                intersection = new Point(segment.x1, segment.y1);
+            }
+        }
+        else {
+
+            intersection = segment.getIntersection(segmentSet[i]);
+        }
 
         if ( intersection ) {
 
