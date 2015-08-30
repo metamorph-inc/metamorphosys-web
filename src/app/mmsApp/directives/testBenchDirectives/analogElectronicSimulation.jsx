@@ -56,6 +56,33 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
     .directive('analogElectronicSimulationResultDetails', function ($rootScope) {
 
+        function getSIPrefix(number) {
+            var ranges = [
+                { divider: 1e18, suffix: 'P' },
+                { divider: 1e15, suffix: 'E' },
+                { divider: 1e12, suffix: 'T' },
+                { divider: 1e9, suffix: 'G' },
+                { divider: 1e6, suffix: 'M' },
+                { divider: 1e3, suffix: 'k' },
+                { divider: 1, suffix: '' },
+                { divider: 1e-3, suffix: 'm' },
+                { divider: 1e-6, suffix: 'μ' },
+                { divider: 1e-9, suffix: 'n' },
+                { divider: 1e-12, suffix: 'p' },
+                { divider: 1e-15, suffix: 'f' }
+            ];
+
+            function formatNumber(n) {
+                for (var i = 0; i < ranges.length; i++) {
+                    if (n >= ranges[i].divider) {
+                        return (n / ranges[i].divider).toFixed(2).toString() + ranges[i].suffix;
+                    }
+                }
+                return n.toString();
+            }
+            return formatNumber(number);
+        }
+
         function ResultDetailsController($log, $q, $http, projectHandling, nodeService) {
 
             this.noInspectedMessage = "View the SPICE simulation results for a signal by selecting its wire in the diagram.";
@@ -109,6 +136,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                 };
 
                 var siginfo = $http.get('/rest/blob/view/' + this.result.resultHash + '/results/siginfo.json');
+                var netdata = $http.get('/rest/blob/view/' + this.result.resultHash + '/results/netdata.json');
 
                 this.inspectedWire = wire;
 
@@ -120,8 +148,9 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                                     .then(function (args) {
                                         var gmePorts = args[0],
                                             connectorParent = args[1];
-                                        return siginfo.then(function (siginfo) {
-                                            siginfo = siginfo.data;
+                                        return $q.all([siginfo, netdata]).then(function (args) {
+                                            var siginfo = args[0].data;
+                                            var netdata = args[1].data;
                                             var getSigInfoId = function (port) {
                                                 var id;
                                                 if (connectorParent.getMetaTypeName(meta) === 'AVMComponentModel') {
@@ -144,7 +173,9 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                                                 return {
                                                     visualUrl: '/rest/blob/view/' + self.result.resultHash + '/results/net' + net + '.png',
                                                     name: port.getAttribute('name'),
-                                                    showSignal: true
+                                                    showSignal: true,
+                                                    minVoltage: getSIPrefix(netdata[net].min),
+                                                    maxVoltage: getSIPrefix(netdata[net].max)
                                                 };
                                             }).filter(function (port) {
                                                 return port;
