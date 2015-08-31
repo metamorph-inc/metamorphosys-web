@@ -46,7 +46,7 @@ CyPhyApp.controller('PerfController', function ($q, $scope, $timeout, $http, $st
         branchId,
         iterations = $stateParams['iterations'] || 10;
 
-    $scope.logs = ['init'];
+    $scope.logs = [new Date() + ' init'];
 
     log = function (message) {
         $scope.logs.push(new Date() + ' ' + message);
@@ -100,7 +100,7 @@ CyPhyApp.controller('PerfController', function ($q, $scope, $timeout, $http, $st
                             deferred.resolve(projectService.selectProject(databaseId, projectId));
                         });
                         return deferred.promise;
-                    }).catch(fail);
+                    });
             }
             log('Project "' + projectName + '" does not exist. Create and import it using the <a href="' +
                 window.location.origin + '"> webgme interface</a>.');
