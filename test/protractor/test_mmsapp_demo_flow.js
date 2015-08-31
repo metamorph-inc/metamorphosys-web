@@ -47,7 +47,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
         } else {
             require('http').get(url.resolve(browser.baseUrl, '/rest/external/copyproject/noredirect'), function(res) {
                 if (res.statusCode > 399) {
-                    done(res.statusCode);
+                    done.fail(res.statusCode);
                 }
                 res.setEncoding('utf8');
                 projectName = '';
@@ -59,7 +59,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 });
             }).on('error', function(err) {
                 console.log("Error calling copyproject: " + err.message);
-                done(err);
+                done.fail(err);
             });
         }
     }, projectCopyTimeLimit);
@@ -133,7 +133,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
             });
         });
 
-    }, gmeEventTimeLimit);
+    }, gmeEventTimeLimit * 5);
 
     it('Should have about dialog open', function() {
 
