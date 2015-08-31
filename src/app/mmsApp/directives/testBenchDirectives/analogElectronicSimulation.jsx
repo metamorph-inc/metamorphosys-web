@@ -73,9 +73,14 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
             ];
 
             function formatNumber(n) {
+                var sign = '';
+                if (n < 0) {
+                    n = -n;
+                    sign = '-';
+                }
                 for (var i = 0; i < ranges.length; i++) {
                     if (n >= ranges[i].divider) {
-                        return (n / ranges[i].divider).toFixed(2).toString() + ranges[i].suffix;
+                        return sign + (n / ranges[i].divider).toFixed(2).toString() + ranges[i].suffix;
                     }
                 }
                 return n.toString();
@@ -183,7 +188,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                                             self.ports.sort(function (a, b) {
                                                 return a.name.localeCompare(b.name);
                                             });
-                                            $log.info(self.ports);
+                                            // $log.info(self.ports);
                                         });
 
                                     });
