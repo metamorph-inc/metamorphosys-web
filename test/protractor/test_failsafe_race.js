@@ -9,7 +9,7 @@ describe('perfTest', function() {
     for (var i = 40; i <= 40 * iterations; i += 40) {
         (function (i) {
             browser.wait(function(){
-                return element(by.id('progress_'+i)).isPresent();
+                return element(by.id('result')).isPresent() || element(by.id('progress_'+i)).isPresent();
             }, 5000);
         })(i);
     }
