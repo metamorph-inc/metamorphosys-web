@@ -150,40 +150,134 @@ describe('Metamorphosys Tech Demo Flow', function() {
                 'aboutDialog not found'
             )
             .then(function() {
-
-                browser.sleep(1000); // wait for busy-cover to go away
+                var el = element(by.css('div.busy-cover'));
+                return browser.driver.wait(protractor.until.elementIsNotVisible(el), 2000, 'busy-cover did not go away');
+            })
+            .then(function () {
                 expect(browser.isElementPresent(aboutDialog)).toEqual(true);
                 expect(closeButton.isDisplayed()).toBeTruthy();
                 closeButton.click();
-
             });
 
     }, gmeEventTimeLimit);
 
     it('Should be able to drag-pan', function () {
 
-       var diagramContainer;
+        var diagramContainer;
 
-       diagramContainer = browser.element(by.css('div.diagram-container'));
+        diagramContainer = browser.element(by.css('div.diagram-container'));
 
-       browser.actions()
-           .mouseMove({x: 100, y: 150})
-           .mouseDown()
-           .perform();
+        browser.actions()
+            .mouseMove({x: 100, y: 150})
+            .mouseDown()
+            .perform();
 
+        browser.sleep(uiEventTimeLimit);
 
-       browser.sleep(uiEventTimeLimit);
+        browser.actions().mouseMove({x: 250, y: 250}).perform();
 
-       browser.actions().mouseMove({x: 250, y: 250}).perform();
+        browser.sleep(uiEventTimeLimit);
 
-       browser.sleep(uiEventTimeLimit);
+        browser.actions().mouseUp().perform();
 
-       browser.actions().mouseUp().perform();
+        browser.sleep(uiEventTimeLimit);
 
-       browser.sleep(5000);
+        browser.element(by.css('div.jspPane')).getAttribute('style').then(function (style) {
+            console.log('FIXME simulated pan is not working: ' + style);
+        });
 
     });
 
+
+    it('Should have subcircuit browser', openSubcircuitBrowser)
+
+    function openSubcircuitBrowser() {
+
+        var contentButton,
+            subcircuitsButton,
+            subcircuitsBrowser;
+
+        contentButton = element(by.css('div.footer-drawer > header > ul > li:nth-child(2) > button'));
+
+        expect(contentButton.getText()).toEqual("CONTENT");
+
+        contentButton.click();
+
+        subcircuitsButton = element(by.css('div.footer-drawer > ul.drawer-sub-navigator > li:nth-child(2) > button'));
+
+        expect(subcircuitsButton.getText()).toEqual("Subcircuits");
+
+        subcircuitsButton.click();
+
+        //browser.sleep(componentLibraryQueryTimeLimit);
+        browser.wait(function () {
+            subcircuitsBrowser = element(by.css('.subcircuit-browser'));
+            return subcircuitsBrowser.isPresent();
+        }, componentLibraryQueryTimeLimit, '.subcircuit-browser not found');
+    }
+
+
+    it('Should be able to create subcircuit instance by dragging', function () {
+
+        browser.driver.executeScript(dragAndDropHelper).then(function () {
+            return browser.driver.executeScript(function () {
+                return Array.prototype.map.call($('div.subcircuit-browser div.main-container-panel ul.list-group > li header h4 span.item-title'), function (el) {
+                    return el.textContent;
+                });
+                return $('div.subcircuit-browser div.main-container-panel ul.list-group > li header h4').length;
+            })
+                .then(function (subcircuits) {
+
+                    return createAndDeleteSubcircuit(0);
+
+                    function createAndDeleteSubcircuit(i) {
+                        if (i > 0 || i === subcircuits.length) {
+                            return;
+                        }
+                        var subcircuitLabel = subcircuits[i];
+                        console.log(subcircuitLabel);
+
+                        return browser.driver.executeScript(function (i) {
+
+                            $('div.subcircuit-browser div.main-container-panel ul.list-group > li:nth-child(' + (i + 1).toString() + ') header h4').simulateDragDrop({
+                                // TODO: $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
+                                dropTarget: $('.svg-diagram')
+                            });
+
+                        }, i).then(function () {
+                            var componentBox = element(by.diagramComponentLabel(subcircuitLabel));
+
+                            return browser.wait(function () {
+                                    return componentBox.isPresent();
+                                },
+                                gmeEventTimeLimit * 5,
+                                'New ' + subcircuitLabel + 'subcircuit not created'
+                            ).then(function () {
+                                    componentBox.click();
+                                })
+                            .then(function () {
+                                    return componentBox.sendKeys(protractor.Key.DELETE);
+                                })
+                            .then(function () {
+                                    //return browser.driver.wait(protractor.until.elementIsNotVisible(componentBox), gmeEventTimeLimit, 'busy-cover did not go away');
+                                    return browser.wait(function () {
+                                        //return element(by.diagramComponentLabel(subcircuitLabel)).isPresent() === false;
+                                        return componentBox.isPresent().then(function(present) {
+                                            return !present;
+                                        });
+
+                                    }, gmeEventTimeLimit * 40, 'could not delete ' + subcircuitLabel);
+                                })
+                            .then(function () {
+                                return openSubcircuitBrowser();
+                            }).then(function () {
+                                return createAndDeleteSubcircuit(i + 1);
+                            });
+                        });
+                    }
+                });
+        });
+    }, 80 * 2 * gmeEventTimeLimit);
 
     it('Should have component browser', function() {
 
@@ -204,10 +298,10 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         componentsButton.click();
 
-        browser.sleep(componentLibraryQueryTimeLimit);
-
-        componentBrowser = element(by.css('.component-browser'));
-        expect(browser.isElementPresent(componentBrowser)).toEqual(true);
+        browser.wait(function () {
+            componentBrowser = element(by.css('.component-browser'));
+            return componentBrowser.isPresent();
+        }, componentLibraryQueryTimeLimit, '.component-browser not found');
 
         componentSearchInput = element(by.css('div.component-search > input'));
         expect(browser.isElementPresent(componentSearchInput)).toEqual(true);
@@ -267,12 +361,14 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     // });
 
-    it('Shoud display ' + categoryToUnfold + ' category', function () {
+    it('Should display ' + categoryToUnfold + ' category', function () {
 
         var sensorCategoryItem;
 
-        sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\']'));
-        expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
+        browser.wait(function () {
+            sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\']'));
+            return sensorCategoryItem.isPresent();
+        }, componentLibraryQueryTimeLimit, 'category ' + categoryToUnfold + ' not shown');
 
     });
 
@@ -284,15 +380,21 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         categoryExpander = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] .node-expander'));
 
-        categoryExpander.click()
+        browser.executeScript('arguments[0].scrollIntoView(false)', categoryExpander.getWebElement())
+            .then(function () {
+                return browser.sleep(10 * 1000);
+            })
+            .then(function () {
+                return categoryExpander.click();
+            })
             .then(function () {
 
-                browser.sleep(componentLibraryQueryTimeLimit);
+                //browser.sleep(componentLibraryQueryTimeLimit);
 
                 childrenList = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] > .node-list'));
 
                 browser.wait(function () {
-                        return childrenList.isDisplayed();
+                        return childrenList.isPresent();
                     },
                     3000,
                     'no items in category')
@@ -311,7 +413,10 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         sensorCategoryItem = element(by.css('div.footer-drawer component-categories li[title=\'' + categoryToUnfold + '\'] > .node-list li[title=\'' + subCategoryToUnfold + '\'] > div'));
         expect(sensorCategoryItem.isDisplayed()).toBeTruthy();
-        sensorCategoryItem.click();
+        browser.executeScript('arguments[0].scrollIntoView(false)', sensorCategoryItem.getWebElement())
+            .then(function () {
+                return sensorCategoryItem.click();
+            });
 
     });
 
@@ -324,7 +429,10 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         categoryExpander = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] .node-expander'));
 
-        categoryExpander.click()
+        browser.executeScript('arguments[0].scrollIntoView(false)', categoryExpander.getWebElement())
+            .then(function () {
+                return categoryExpander.click();
+            })
             .then(function () {
 
                 browser.sleep(componentLibraryQueryTimeLimit);

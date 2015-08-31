@@ -18,6 +18,6 @@ by.addLocator('diagramComponentLabel',
 
             label = box.querySelector('.component-label');
 
-            return label && label.textContent === labelText;
+            return label && label.textContent.substr(0, 20) === labelText.substr(0, 20); // componentSymbol may truncate the label...
         });
     });
