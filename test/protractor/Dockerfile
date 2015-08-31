@@ -8,7 +8,7 @@ RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl w
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 
-RUN npm install -g npm@2.9.1 && npm install -g protractor@2.0.0
+RUN npm install -g npm@2.14.1 && npm install -g protractor@2.2.0
 RUN webdriver-manager update --standalone
 
 RUN echo Xvfb :99 -ac -screen 0 1024x768x24 \& > /etc/init.d/xvfb
