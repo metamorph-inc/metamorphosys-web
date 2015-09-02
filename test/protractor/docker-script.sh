@@ -6,6 +6,7 @@ set -v
 # npm install -g protractor
 # webdriver-manager update --standalone
 
+date
 which firefox
 which webdriver-manager
 which node
