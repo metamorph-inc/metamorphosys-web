@@ -219,12 +219,45 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
     it('Should be able to create subcircuit instance by dragging', function () {
 
+        var categories;
+
         browser.driver.executeScript(dragAndDropHelper).then(function () {
+            return element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
+                .then(function (categories_) {
+                    categories = categories_;
+                    expect(categories.length > 1).toBe(true);
+                }).then(function () {
+                    return selectCategory(0);
+
+                    function selectCategory(j) {
+                        if (j === categories.length) {
+                            return;
+                        }
+                        element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
+                            .then(function (categories_) {
+                                categories = categories_; // avoid stale elements, since the inspector popped up when deleting the last subcircuit
+                            }).then(function () {
+                                return browser.executeScript('arguments[0].scrollIntoView(false)', categories[j].getWebElement());
+                            }).then(function () {
+                                return categories[j].click();
+                            }).then(function () {
+                                // https://github.com/vu-isis/isis-ui-components/pull/11 workaround
+                                browser.sleep(400);
+                                return browser.waitForAngular();
+                            })
+                            .then(createAndDeleteSubcircuits)
+                            .then(function () {
+                                selectCategory(j + 1);
+                            });
+                    }
+                });
+        });
+
+        function createAndDeleteSubcircuits() {
             return browser.driver.executeScript(function () {
-                return Array.prototype.map.call($('div.subcircuit-browser div.main-container-panel ul.list-group > li header h4 span.item-title'), function (el) {
+                return Array.prototype.map.call($('div.subcircuit-browser div.main-container-panel ul li header h4 span.item-title'), function (el) {
                     return el.textContent;
                 });
-                return $('div.subcircuit-browser div.main-container-panel ul.list-group > li header h4').length;
             })
                 .then(function (subcircuits) {
 
@@ -235,7 +268,6 @@ describe('Metamorphosys Tech Demo Flow', function() {
                             return;
                         }
                         var subcircuitLabel = subcircuits[i];
-                        console.log(subcircuitLabel);
 
                         return browser.driver.executeScript(function (i) {
 
@@ -253,30 +285,32 @@ describe('Metamorphosys Tech Demo Flow', function() {
                                 gmeEventTimeLimit * 5,
                                 'New ' + subcircuitLabel + 'subcircuit not created'
                             ).then(function () {
-                                    componentBox.click();
+                                    return componentBox.click();
                                 })
-                            .then(function () {
+                                .then(function () {
                                     return componentBox.sendKeys(protractor.Key.DELETE);
                                 })
-                            .then(function () {
+                                .then(function () {
                                     //return browser.driver.wait(protractor.until.elementIsNotVisible(componentBox), gmeEventTimeLimit, 'busy-cover did not go away');
                                     return browser.wait(function () {
                                         //return element(by.diagramComponentLabel(subcircuitLabel)).isPresent() === false;
-                                        return componentBox.isPresent().then(function(present) {
+                                        return componentBox.isPresent().then(function (present) {
                                             return !present;
                                         });
 
                                     }, gmeEventTimeLimit * 40, 'could not delete ' + subcircuitLabel);
                                 })
-                            .then(function () {
-                                return openSubcircuitBrowser();
-                            }).then(function () {
-                                return createAndDeleteSubcircuit(i + 1);
-                            });
+                                .then(function () {
+                                    return openSubcircuitBrowser();
+                                }).then(function () {
+                                    return createAndDeleteSubcircuit(i + 1);
+                                });
                         });
+
                     }
                 });
-        });
+        }
+
     }, 80 * 2 * gmeEventTimeLimit);
 
     it('Should have component browser', function() {
@@ -382,7 +416,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
 
         browser.executeScript('arguments[0].scrollIntoView(false)', categoryExpander.getWebElement())
             .then(function () {
-                return browser.sleep(10 * 1000);
+                //return browser.sleep(10 * 1000);
             })
             .then(function () {
                 return categoryExpander.click();
@@ -435,7 +469,7 @@ describe('Metamorphosys Tech Demo Flow', function() {
             })
             .then(function () {
 
-                browser.sleep(componentLibraryQueryTimeLimit);
+                //browser.sleep(componentLibraryQueryTimeLimit);
                 childrenList = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] > .node-list'));
 
                 browser.wait(function () {
