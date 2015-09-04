@@ -118,6 +118,7 @@
         .signal-viewer {
             display: inline-block;
             margin-left: 10px;
+            margin-top: 10px;
 
             .result-visual-container {
                 margin: 10px;
@@ -128,6 +129,62 @@
             }
         }
 
+    }
+
+    .data {
+        fill: lightgrey;
+        stroke-width: 0px;
+    }
+
+    .chart, .navigator {
+        background-color: #000000;
+    }
+
+    .navigator {
+        position: relative;
+        top: -6px;
+    }
+
+    .navline {
+        fill: #F5F5F5;
+
+        &.flatline {
+            stroke: #F5F5F5;
+        }
+    }
+
+    .line {
+        fill: none;
+        stroke-width: 1px;
+    }
+
+    .axis {
+        path, line {
+            fill: none;
+            stroke: #FFFFEE;
+            opacity: 0.5;
+        }
+
+        text {
+            fill: #FFFFEE;
+        }
+    }
+
+    .axislabel {
+        fill: #FFFFEE;
+    }
+
+    .overlay {
+        stroke-width: 0px;
+        fill-opacity: 0;
+    }
+
+    .viewport {
+        .extent {
+            stroke: #F5F5F5;
+            fill: #FFFFEE;
+            fill-opacity: 0.3;
+        }
     }
 
 }
