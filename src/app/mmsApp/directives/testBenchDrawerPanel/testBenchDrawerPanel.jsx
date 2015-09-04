@@ -6,7 +6,7 @@ require('./testBenchResultAndTime.jsx');
 require('./testBenchResultDetails.js');
 require('./testBenchConfig.js');
 
-angular.module('mms.testBenchDirectives', []);
+angular.module('mms.testBenchDirectives', ['ngAnimate']);
 
 require('../testBenchDirectives/costEstimation.jsx');
 require('../testBenchDirectives/placeAndRoute.jsx');

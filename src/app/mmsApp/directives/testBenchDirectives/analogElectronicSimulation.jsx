@@ -2,7 +2,7 @@
 
 'use strict';
 
-angular.module('mms.testBenchDirectives', ['ngAnimate'])
+angular.module('mms.testBenchDirectives')
     .run(function (testBenchService) {
 
         testBenchService.registerTestBenchDirectives(
