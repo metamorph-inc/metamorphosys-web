@@ -339,18 +339,6 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                         if (newVal !== undefined) {
                             visualizer.updateVisualizer(newVal);
-
-                            // // TOOD: Is there a better way than this timeout?
-                            // $timeout(function() {
-                            //     angular.forEach(document.getElementsByClassName('navline'), function(navline) {
-                            //         if (navline.getBoundingClientRect().height === 0) {
-                            //             navline.classList.add('flatline');
-                            //         }
-                            //         else if (navline.classList.contains('flatline')) {
-                            //             navline.classList.remove('flatline');
-                            //         }
-                            //     });
-                            // });
                         }
 
                     }
@@ -359,21 +347,24 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                 visualizer.updateVisualizer = function(ports) {
                     visualizer.updateScales(ports);
-                    visualizer.updateZoomFromChart();
                     visualizer.reapplyOverlay();
                     visualizer.redrawChart();
                     visualizer.redrawNavigator();
+                    visualizer.updateZoomFromChart();
                     visualizer.updateViewportFromChart();
 
-                    // TOOD: Is there a better way than this timeout?
+                    // TOOD: Is there a better way than this timeout? The dom elements exist prior to this,
+                    //       but until the paths are rendered they have 0 width/height.
                     $timeout(function() {
                         angular.forEach(document.getElementsByClassName('navline'), function(navline) {
-                            if (navline.getBoundingClientRect().height === 0) {
+                            // This needs to be removed first in order to check what the path bounding box size is.
+                            navline.classList.remove('flatline');
+
+                            if (navline.getBoundingClientRect().height <= 0.1) {
                                 navline.classList.add('flatline');
+                                console.log('flatline: ' + navline.classList);
                             }
-                            else if (navline.classList.contains('flatline')) {
-                                navline.classList.remove('flatline');
-                            }
+
                         });
                     });
                 };
