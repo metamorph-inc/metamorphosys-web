@@ -63,8 +63,6 @@ angular.module('mms.testBenchDrawerPanel.testBenchResultDetails', [
                     element.replaceChild(clonedElement[0], placeHolderEl);
                 });
 
-            } else {
-                throw new Error('No detailed result directive specified for testbench [' + ctrl.testBench.name + ']');
             }
 
         }
