@@ -115,14 +115,15 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                 navLine: null,
                 zoom: null,
                 redrawChart: null,
-                defaultDomainX: [0, 10000],
+                defaultDomainX: [0.0, 1.0],
                 defaultDomainY: [-12, 12],
-                domainX: [0, 10000],
+                domainX: [0.0, 1.0],
                 domainY: [-12, 12],
                 colorPalette: d3.scale.category20(),
                 reapplyOverlay: null,
-                updateVisualizer: null
-            }
+                updateVisualizer: null,
+                updateViewportFromChart: null
+            };
 
             var self = this,
                 parentContext = projectHandling.getContainerLayoutContext(),
@@ -155,6 +156,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                 // context.showSignal = !context.showSignal;
 
                 self.visualizer.chartHandle.select('.line.' + port.name).classed('hidden', !port.showSignal);
+                self.visualizer.navChartHandle.select('.navline.' + port.name).classed('hidden', !port.showSignal);
 
                 self.visualizer.updateVisualizer(self.ports);
             };
@@ -172,6 +174,12 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                     .attr('class', 'line ' + label)
                     .attr('d', self.visualizer.line(data))
                     .attr('stroke', function() { return self.visualizer.colorPalette(index); });
+            };
+
+            this.addNavigatorSeries = function(data, label) {
+                return self.visualizer.navChartHandle.append('path')
+                     .attr('class', 'navline ' + label)
+                     .attr('d', self.visualizer.navLine(data));
             };
 
             this.removeSeries = function (data, label) {
@@ -214,7 +222,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                 this.inspectedWire = wire;
 
-                return nodeService.getMetaNodes(context)
+                nodeService.getMetaNodes(context)
                     .then(function (meta) {
                         return nodeService.loadNode(context, wire.getEnd1().port.id)
                             .then(function (connector) {
@@ -259,7 +267,8 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                                                             minVoltage: netdata[net].min,
                                                             maxVoltage: netdata[net].max,
                                                             netData: netSignal.data,
-                                                            plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index)
+                                                            plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index),
+                                                            navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel)
                                                         };
                                                     });
                                             }))
@@ -330,6 +339,18 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                         if (newVal !== undefined) {
                             visualizer.updateVisualizer(newVal);
+
+                            // // TOOD: Is there a better way than this timeout?
+                            // $timeout(function() {
+                            //     angular.forEach(document.getElementsByClassName('navline'), function(navline) {
+                            //         if (navline.getBoundingClientRect().height === 0) {
+                            //             navline.classList.add('flatline');
+                            //         }
+                            //         else if (navline.classList.contains('flatline')) {
+                            //             navline.classList.remove('flatline');
+                            //         }
+                            //     });
+                            // });
                         }
 
                     }
@@ -342,6 +363,19 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                     visualizer.reapplyOverlay();
                     visualizer.redrawChart();
                     visualizer.redrawNavigator();
+                    visualizer.updateViewportFromChart();
+
+                    // TOOD: Is there a better way than this timeout?
+                    $timeout(function() {
+                        angular.forEach(document.getElementsByClassName('navline'), function(navline) {
+                            if (navline.getBoundingClientRect().height === 0) {
+                                navline.classList.add('flatline');
+                            }
+                            else if (navline.classList.contains('flatline')) {
+                                navline.classList.remove('flatline');
+                            }
+                        });
+                    });
                 };
 
                 function initializeVisualizer() {
@@ -534,11 +568,18 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                             });
                         }
 
-                        xPadding = (maxX - minX) > 0 ? 0 : maxX * 0.05;
-                        yPadding = (maxY - minY) > 0 ? (maxY - minY) * 0.05 : maxY * 0.05;
+                        if ( !(minX === 1E20 && maxX === -1E20 && minY === 1E20 && maxY === -1E20) ) {
+                            xPadding = (maxX - minX) > 0 ? 0 : maxX * 0.05;
+                            yPadding = (maxY - minY) > 0 ? (maxY - minY) * 0.05 : maxY * 0.05;
 
-                        visualizer.domainX = [minX - xPadding, maxX + xPadding];
-                        visualizer.domainY = [minY - yPadding, maxY + yPadding];
+                            visualizer.domainX = [minX - xPadding, maxX + xPadding];
+                            visualizer.domainY = [minY - yPadding, maxY + yPadding];
+                        }
+                        else {
+                            // All signals are hidden
+                            visualizer.domainX = visualizer.defaultDomainX;
+                            visualizer.domainY = visualizer.defaultDomainY;
+                        }
 
                         visualizer.xScale.domain(visualizer.domainX);
                         visualizer.yScale.domain(visualizer.domainY);
@@ -599,11 +640,11 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                         angular.forEach(ctrl.ports, function(port) {
                             if (port.showSignal) {
-                                var flatline = port.maxVoltage === port.minVoltage ? 'flatline' : '';
 
-                                visualizer.navChartHandle.append('path')
-                                 .attr('class', 'navline ' + port.name + ' ' + flatline)
-                                 .attr('d', visualizer.navLine(port.netData));
+                                port.navigatorSeriesHandle.attr('d', visualizer.navLine(port.netData));
+                                // visualizer.navChartHandle.append('path')
+                                //  .attr('class', 'navline ' + port.name)
+                                //  .attr('d', visualizer.navLine(port.netData));
                              }
                         });
 
@@ -611,7 +652,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
 
                     }
 
-                    function updateViewportFromChart() {
+                    visualizer.updateViewportFromChart = function() {
 
                         if ((visualizer.xScale.domain()[0] <= visualizer.domainX[0]) && (visualizer.xScale.domain()[1] >= visualizer.domainX[1])) {
 
@@ -664,7 +705,7 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                             //         visualizer.zoom.translate([0, y]);
                             // }
                             visualizer.redrawChart();
-                            updateViewportFromChart();
+                            visualizer.updateViewportFromChart();
                         });
 
                     visualizer.overlay = d3.svg.area()
@@ -676,6 +717,8 @@ angular.module('mms.testBenchDirectives', ['ngAnimate'])
                         // ([[0, 0], [visualizer.width, 0], [visualizer.width, visualizer.height], [0, visualizer.height]]);
 
                     visualizer.reapplyOverlay = function() {
+                            visualizer.plotAreaHandle.selectAll('path.overlay').remove();
+
                         if (ctrl.ports && ctrl.ports.length) {
                             visualizer.plotAreaHandle.append('path')
                                 .attr('class', 'overlay')
