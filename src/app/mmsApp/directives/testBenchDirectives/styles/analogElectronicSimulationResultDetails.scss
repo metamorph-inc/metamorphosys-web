@@ -146,6 +146,7 @@
     }
 
     .navline {
+        pointer-events: none;
         fill: #F5F5F5;
 
         &.flatline {
