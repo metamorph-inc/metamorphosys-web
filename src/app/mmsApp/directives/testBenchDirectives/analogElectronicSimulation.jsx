@@ -362,7 +362,6 @@ angular.module('mms.testBenchDirectives')
 
                             if (navline.getBoundingClientRect().height <= 0.1) {
                                 navline.classList.add('flatline');
-                                console.log('flatline: ' + navline.classList);
                             }
 
                         });
@@ -721,8 +720,10 @@ angular.module('mms.testBenchDirectives')
                                         var ix = d3.interpolate(visualizer.xScale.domain(), visualizer.domainX),
                                             iy = d3.interpolate(visualizer.yScale.domain(), visualizer.domainY);
                                         return function(t) {
-                                          visualizer.zoom.x(visualizer.xScale.domain(ix(t))).y(visualizer.yScale.domain(iy(t)));
-                                          visualizer.redrawChart();
+                                            visualizer.zoom.x(visualizer.xScale.domain(ix(t))); // .y(visualizer.yScale.domain(iy(t)));
+                                            visualizer.redrawChart();
+                                            visualizer.updateZoomFromChart();
+                                            visualizer.updateViewportFromChart();
                                         };
                                     });
                                 });
