@@ -188,4 +188,16 @@
         }
     }
 
+
+    .tooltip-box {
+        stroke: #FFFFEE;
+        stroke-width: 2;
+    }
+
+    .tooltip-guide {
+        stroke: #FFFFEE;
+        stroke-width: 2;
+        pointer-events: none;
+    }
+
 }

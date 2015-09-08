@@ -122,7 +122,8 @@ angular.module('mms.testBenchDirectives')
                 colorPalette: d3.scale.category20(),
                 reapplyOverlay: null,
                 updateVisualizer: null,
-                updateViewportFromChart: null
+                updateViewportFromChart: null,
+                tooltipGuide: null
             };
 
             var self = this,
@@ -167,6 +168,34 @@ angular.module('mms.testBenchDirectives')
                     context = undefined;
                 }
                 self.ports = undefined;
+            };
+
+            this.createSeriesTooltip = function(chartId, seriesLabel, fillColor) {
+                var chart = d3.select('.' + chartId),
+                    tooltip;
+
+                if (chart) {
+                    tooltip = chart.append('g')
+                        .attr('class', 'tooltip ' + seriesLabel)
+                        .style('opacity', 0);
+
+                    tooltip.append('rect')
+                        .attr('class', 'tooltip-box')
+                        .attr('x', 0).attr('y', 0)
+                        .attr('rx', 4)
+                        .attr('width', 35)
+                        .attr('height', 20)
+                        .attr('fill', fillColor);
+
+                    tooltip.append('text')
+                        .attr('class', 'tooltip-text')
+                        .attr('x', 3).attr('y', 14);
+
+                    return tooltip;
+                }
+                else {
+                    return null;
+                }
             };
 
             this.addSeries = function (data, label, index) {
@@ -268,7 +297,8 @@ angular.module('mms.testBenchDirectives')
                                                             maxVoltage: netdata[net].max,
                                                             netData: netSignal.data,
                                                             plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index),
-                                                            navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel)
+                                                            navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel),
+                                                            tooltipHandle: self.createSeriesTooltip('chart', sigLabel, self.visualizer.colorPalette(index))
                                                         };
                                                     });
                                             }))
@@ -370,7 +400,7 @@ angular.module('mms.testBenchDirectives')
 
                 function initializeVisualizer() {
 
-                    visualizer.margin = {top: 20, right: 20, bottom: 40, left: 60};
+                    visualizer.margin = {top: 20, right: 40, bottom: 40, left: 60};
                     visualizer.width = 800 - visualizer.margin.left - visualizer.margin.right;
                     visualizer.height = 400 - visualizer.margin.top - visualizer.margin.bottom;
 
@@ -383,7 +413,8 @@ angular.module('mms.testBenchDirectives')
                         .attr('transform', 'translate(' + visualizer.margin.left + ',' + visualizer.margin.top + ')');
 
                     visualizer.plotAreaHandle = visualizer.chartHandle.append('g')
-                        .attr('clip-path', 'url(#plotAreaClip)');
+                        .attr('clip-path', 'url(#plotAreaClip)')
+                        .attr('id', 'plotAreaClip');
 
                     visualizer.plotAreaHandle.append('clipPath')
                         .attr('id', 'plotAreaClip')
@@ -434,6 +465,12 @@ angular.module('mms.testBenchDirectives')
                         .attr('class', 'axislabel')
                         .style("text-anchor", "middle")
                         .text("Voltage (V)");
+
+                    visualizer.tooltipGuide = visualizer.chartHandle.append('line')
+                        .attr('class', 'tooltip-guide')
+                        .attr('x1', 0).attr('x2', 0)
+                        .attr('y1', 0).attr('y2', visualizer.height)
+                        .style('opacity', 0);
 
                     var isPointInDomain = function(point, minX, maxX, minY, maxY) {
                         return point[0] >= minX && point[0] <= maxX && point[1] > minY && point[1] <= maxY;
@@ -742,13 +779,66 @@ angular.module('mms.testBenchDirectives')
                             maxScale = minScale * 40;
 
                         visualizer.zoom.scaleExtent([minScale, maxScale]);
-                    }
+                    };
 
                     visualizer.viewport.on("brushend", function () {
                         visualizer.updateZoomFromChart();
                     });
 
                     visualizer.updateZoomFromChart();
+
+                    visualizer.bisectXScale = d3.bisector( function(d) { return d[0]; }).left;
+
+                    // Tooltip section
+                    visualizer.chartHandle.on("mousemove", function() {
+
+                        if (ctrl.ports) {
+                            var x0 = visualizer.xScale.invert(d3.mouse(this)[0]),
+                                i = visualizer.bisectXScale(ctrl.ports[0].netData, x0, 1),
+                                d0 = ctrl.ports[0].netData[i - 1],
+                                d1 = ctrl.ports[0].netData[i],
+                                idx = x0 - d0[1] > d1[1] - x0 ? i : i - 1,
+                                portTooltipText,
+                                x,
+                                y;
+
+                            angular.forEach(ctrl.ports, function(port) {
+
+                                x = port.netData[idx][0];
+                                y = port.netData[idx][1];
+
+                                port.tooltipHandle.attr("transform", "translate(" + (visualizer.xScale(x) + visualizer.margin.left) + "," + (visualizer.yScale(y) + 10) + ")")
+                                                  .style('opacity', 1);
+                                portTooltipText = port.tooltipHandle.select('.tooltip-text');
+
+                                if (portTooltipText) {
+                                    portTooltipText.text(d3.round(y, 3));
+
+                                    // Adjust tooltip box to fix the text. PortTooltip will be an array of an array w/ 1 element each.
+                                    port.tooltipHandle.select('.tooltip-box')
+                                        .attr('width', portTooltipText[0][0].getBBox().width + 5);
+                                }
+                                else {
+                                    console.warn("Port tooltip wasn't selected!");
+                                }
+
+                            });
+
+                            visualizer.tooltipGuide.style('opacity', 1)
+                                .attr('x1', visualizer.xScale(x)).attr('x2', visualizer.xScale(x));
+                        }
+
+                    })
+                    .on("mouseleave", function() {
+                        if (ctrl.ports) {
+                            angular.forEach(ctrl.ports, function(port) {
+                                port.tooltipHandle.style("opacity", 0);
+                            });
+                        }
+
+                        visualizer.tooltipGuide.style("opacity", 0);
+                    });
+
 
                 }
 
