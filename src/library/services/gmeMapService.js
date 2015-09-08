@@ -37,19 +37,20 @@ angular.module('cyphy.services')
                 // TODO does this work
                 nodeService.cleanUpRegion(parentContext.db, this.regionId);
             };
+            GmeMapping.prototype._setGmeAttributes = function GmeMapping_SetGmeAttributes(node, data) {
+                var self = this,
+                    attrs = (self.map[node.getMetaTypeName(self.meta)] || {}).attributes;
+                for (var attr in attrs || {}) {
+                    // data.name = node.getAttribute('name');
+                    if (node.getAttribute(attr) !== data[attrs[attr]] && data[attrs[attr]]) {
+                        // TODO inherit from meta if data[attrs[attr]]===undefined
+                        node.setAttribute(attr, data[attrs[attr]]);
+                    }
+                }
+            };
             GmeMapping.prototype.update = function GmeMappingUpdate() {
                 // TODO: start tx
-                var self = this,
-                    setNodeAttributes = function (node, data) {
-                        var attrs = (self.map[node.getMetaTypeName(self.meta)] || {}).attributes;
-                        for (var attr in attrs || {}) {
-                            // data.name = node.getAttribute('name');
-                            if (node.getAttribute(attr) !== data[attrs[attr]]) {
-                                // TODO inherit from meta if data[attrs[attr]]===undefined
-                                node.setAttribute(attr, data[attrs[attr]]);
-                            }
-                        }
-                    };
+                var self = this;
 
                 for (var nodeId in self.nodes) {
                     var node = self.nodes[nodeId];
@@ -58,28 +59,46 @@ angular.module('cyphy.services')
                         // TODO: delete in gme
                         continue;
                     }
-                    setNodeAttributes(node, data);
+                    self._setGmeAttributes(node, data);
                 }
                 (function addNewGmeNodes() {
-                    var q = [[self.data, undefined]],
-                        getEnqueueFn = function (kind) {
+                    var q = [[self.data, undefined, self.nodes[self.rootId]]],
+                        getEnqueueFn = function (kind, parent) {
                             return function (childData) {
-                                q.push([childData, kind]);
+                                q.push([childData, kind, parent]);
                             };
                         };
                     while (q.length) {
                         var popped = q.pop(),
                             data = popped[0],
-                            kind = popped[1];
+                            kind = popped[1],
+                            parent = popped[2],
+                            recurse = function(data) {
+                                for (var attr in data) {
+                                    if (angular.isArray(data[attr])) {
+                                        data[attr].forEach(getEnqueueFn(attr, self.nodes[data._id]));
+                                    }
+                                }
+                            };
                         if (!data._id) {
-                            var newNode = nodeService.createNode(self.context, data._id, self.meta.byName[kind]);
-                            data._id = newNode.getId();
-                            setNodeAttributes(newNode, data);
-                        }
-                        for (var attr in data) {
-                            if (angular.isArray(data[attr])) {
-                                data[attr].forEach(getEnqueueFn(attr));
-                            }
+                            data._id = nodeService.createChild(self.context,
+                                {
+                                    parentId: parent.getId(),
+                                    baseId: self.meta.byName[kind].getId()
+                                });
+                            nodeService.loadNode(self.context, data._id)
+                                .then(function () {
+                                    self._setGmeAttributes(node, data);
+                                    recurse(data);
+                                });
+                            //delete data.__promise;
+                            //setNodeAttributes(node, data);
+                            //recurse(data);
+                            // self.nodes[data._id] = data;
+                            //data._id = newNode.getId();
+                            //self.nodes[data._id] = newNode;
+                        } else {
+                            recurse(data);
                         }
                     }
                 })();
@@ -152,6 +171,7 @@ angular.module('cyphy.services')
                 self.nodes[node.getId()] = node;
                 data = this._getNodeData(node, true);
                 data._id = node.getId();
+                self._setGmeAttributes(node, data);  // if created thru GmeMapping, data may already have attributes
                 self._setNodeAttributes(node, data);
                 node.onNewChildLoaded(function (newChild) {
                     if (self.map[newChild.getMetaTypeName(self.meta)]) {

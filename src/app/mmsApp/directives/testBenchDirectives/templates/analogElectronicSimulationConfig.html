@@ -1,0 +1,35 @@
+<div class="test-bench-properties-wrapper" ng-class="{'editable': !ctrl.readOnly}">
+    <div
+        ng-if="::ctrl.testBench.config.properties.length"
+        class="test-bench-config-properties">
+        <form name="propertiesForm" ng-if="::!ctrl.readOnly">
+            <ul>
+                <li ng-repeat="prop in ctrl.testBench.config.properties">
+                    <div ng-if="prop.label !== 'Spice Analysis Type'">
+                        <label>{{::prop.label}}:</label>
+                        <input ng-model="prop.value"/>
+                    </div>
+                </li>
+            </ul>
+            <div class="save-button-container">
+                <button
+                    ng-disabled="propertiesForm.$pristine"
+                    class="md-raised md-button save-button" ng-click="::ctrl.testBench.config.save(); propertiesForm.$setPristine();">
+                    Update
+                </button>
+            </div>
+        </form>
+        <div ng-if="ctrl.readOnly">
+            <ul>
+                <li ng-repeat="prop in ctrl.testBench.config.properties">
+                    <label>{{::prop.label}}:</label>
+                    <span>{{::prop.value}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div
+        ng-if="::!ctrl.testBench.config.properties.length">
+        No properties.
+    </div>
+</div>

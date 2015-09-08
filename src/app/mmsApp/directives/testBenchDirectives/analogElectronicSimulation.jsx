@@ -8,7 +8,7 @@ angular.module('mms.testBenchDirectives')
         testBenchService.registerTestBenchDirectives(
             'Analog Electronic Simulation',
             {
-                config: 'cost-estimation-config', // TODO: do we need a new config directive?
+                config: 'analog-electronic-simulation-config',
                 resultCompact: 'analog-electronic-simulation-result-compact',
                 resultDetails: 'analog-electronic-simulation-result-details'
             }
@@ -755,4 +755,42 @@ angular.module('mms.testBenchDirectives')
             }
         };
 
+    })
+.directive('analogElectronicSimulationConfig', function() {
+
+        function TestBenchConfigController() {
+            // add configuration properties if they are not there
+            var self = this,
+                configDefaults = {
+                'Spice Step Size': '0.0001',
+                'Spice End Time': '1',
+                'Spice Analysis Type': 'Transient Analysis'
+            };
+            Object.keys(configDefaults).forEach(function (propertyLabel) {
+                var property = self.testBench.config.properties.filter(function (prop) {
+                    return prop.label === propertyLabel;
+                })[0];
+                if (!property) {
+                    self.testBench.config.properties.push({
+                        label: propertyLabel,
+                        value: configDefaults[propertyLabel]
+                    });
+                }
+            });
+            this.testBench.config.save();
+        }
+
+        return {
+            restrict: 'E',
+            controller: TestBenchConfigController,
+            controllerAs: 'ctrl',
+            bindToController: true,
+            replace: true,
+            transclude: false,
+            scope: {
+                testBench: '='
+            },
+            templateUrl: '/mmsApp/templates/analogElectronicSimulationConfig.html'
+        }
     });
+
