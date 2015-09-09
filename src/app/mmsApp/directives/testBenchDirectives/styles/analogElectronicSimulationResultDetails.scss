@@ -189,6 +189,10 @@
     }
 
 
+    .tooltip {
+        pointer-events: none;
+    }
+
     .tooltip-box {
         stroke: #FFFFEE;
         stroke-width: 2;
@@ -196,8 +200,20 @@
 
     .tooltip-guide {
         stroke: #FFFFEE;
-        stroke-width: 2;
+        stroke-width: 1;
         pointer-events: none;
+    }
+
+    .chart-options-menu {
+        background-color: #000000;
+
+        #toggle-tooltip-button {
+            border: 1px solid rgba(158, 158, 158, 0.6);
+            background-color: rgba(0, 0, 0, 0.38);
+            box-shadow: 0 2px 5px 0 rgba(255, 255, 255, .26);
+            font-size: 11px;
+            margin: 5px;
+        }
     }
 
 }

@@ -37,10 +37,11 @@
             </table>
         </div>
         <div class="signal-viewer">
-        <!--This ng-repeat should be temporary. Eventually there will only be one plot for all signals. -->
-            <!-- <div class="result-visual-container" ng-repeat="port in ctrl.ports" ng-if="port.showSignal">
-                <img class="result-visual" ng-src="{{port.visualUrl}}"/>
-            </div> -->
+            <div class="chart-options-menu">
+                <md-button class="md-raised" id="toggle-tooltip-button" ng-click="ctrl.visualizer.toggleTooltipDisplay()">
+                    {{"Tooltip: " + ctrl.visualizer.tooltipStatus}}
+                </md-button>
+            </div>
             <div id="spice-visualizer" class="spice-plot-placeholder" style="width:800px; height:500px;"></div>
         </div>
     </div>

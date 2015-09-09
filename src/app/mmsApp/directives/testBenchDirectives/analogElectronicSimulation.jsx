@@ -170,32 +170,24 @@ angular.module('mms.testBenchDirectives')
                 self.ports = undefined;
             };
 
-            this.createSeriesTooltip = function(chartId, seriesLabel, fillColor) {
-                var chart = d3.select('.' + chartId),
-                    tooltip;
+            this.createSeriesTooltip = function(chartHandle, seriesLabel, fillColor) {
+                var tooltip;
 
-                if (chart) {
-                    tooltip = chart.append('g')
-                        .attr('class', 'tooltip ' + seriesLabel)
-                        .style('opacity', 0);
+                tooltip = chartHandle.append('g')
+                    .attr('class', 'tooltip ' + seriesLabel)
+                    .style('opacity', 0);
 
-                    tooltip.append('rect')
-                        .attr('class', 'tooltip-box')
-                        .attr('x', 0).attr('y', 0)
-                        .attr('rx', 4)
-                        .attr('width', 35)
-                        .attr('height', 20)
-                        .attr('fill', fillColor);
+                tooltip.append('path')
+                    .attr('class', 'tooltip-box')
+                    .attr('d', 'm0,10l5,-10l35,0l0,20l-35,0l-5,-10z')
+                    .attr('fill', fillColor);
 
-                    tooltip.append('text')
-                        .attr('class', 'tooltip-text')
-                        .attr('x', 3).attr('y', 14);
+                tooltip.append('text')
+                    .attr('class', 'tooltip-text')
+                    .attr('x', 5).attr('y', 14);
 
-                    return tooltip;
-                }
-                else {
-                    return null;
-                }
+                return tooltip;
+
             };
 
             this.addSeries = function (data, label, index) {
@@ -215,6 +207,7 @@ angular.module('mms.testBenchDirectives')
                 if (label) {
                     self.visualizer.plotAreaHandle.selectAll('path.line.' + label).remove();
                     self.visualizer.navChartHandle.selectAll('path.navline.' + label).remove();
+                    self.visualizer.chartHandle.select('.tooltip.' + label).remove();
                 }
             };
 
@@ -298,7 +291,7 @@ angular.module('mms.testBenchDirectives')
                                                             netData: netSignal.data,
                                                             plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index),
                                                             navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel),
-                                                            tooltipHandle: self.createSeriesTooltip('chart', sigLabel, self.visualizer.colorPalette(index))
+                                                            tooltipHandle: self.createSeriesTooltip(self.visualizer.chartHandle, sigLabel, self.visualizer.colorPalette(index))
                                                         };
                                                     });
                                             }))
@@ -400,7 +393,7 @@ angular.module('mms.testBenchDirectives')
 
                 function initializeVisualizer() {
 
-                    visualizer.margin = {top: 20, right: 40, bottom: 40, left: 60};
+                    visualizer.margin = {top: 5, right: 40, bottom: 40, left: 60};
                     visualizer.width = 800 - visualizer.margin.left - visualizer.margin.right;
                     visualizer.height = 400 - visualizer.margin.top - visualizer.margin.bottom;
 
@@ -414,7 +407,7 @@ angular.module('mms.testBenchDirectives')
 
                     visualizer.plotAreaHandle = visualizer.chartHandle.append('g')
                         .attr('clip-path', 'url(#plotAreaClip)')
-                        .attr('id', 'plotAreaClip');
+                        .attr('id', 'plotArea');
 
                     visualizer.plotAreaHandle.append('clipPath')
                         .attr('id', 'plotAreaClip')
@@ -789,56 +782,93 @@ angular.module('mms.testBenchDirectives')
 
                     visualizer.bisectXScale = d3.bisector( function(d) { return d[0]; }).left;
 
-                    // Tooltip section
-                    visualizer.chartHandle.on("mousemove", function() {
+                    visualizer.toggleTooltipDisplay = function() {
+                        if (visualizer.tooltipStatus === "ON") {
+                            visualizer.disableTooltip();
+                        }
+                        else {
+                            visualizer.enableTooltip();
+                        }
+                    };
 
+                    visualizer.disableTooltip = function() {
+                        visualizer.tooltipStatus = "OFF";
+
+                        visualizer.chartHandle.on("mousemove", null);
+                    };
+
+                    visualizer.enableTooltip = function() {
+
+                        visualizer.tooltipStatus = "ON";
+
+                        visualizer.chartHandle.on("mousemove", function() {
+                            if (ctrl.ports) {
+                                var x0 = visualizer.xScale.invert(d3.mouse(this)[0]),
+                                    i = visualizer.bisectXScale(ctrl.ports[0].netData, x0, 1),
+                                    d0 = ctrl.ports[0].netData[i - 1],
+                                    d1 = ctrl.ports[0].netData[i],
+                                    idx = d1 !== undefined ? (x0 - d0[1] > d1[1] - x0 ? i : i - 1) : i - 1,
+                                    portTooltipText,
+                                    x,
+                                    y;
+
+                                angular.forEach(ctrl.ports, function(port) {
+
+                                    if (port.showSignal) {
+                                        x = port.netData[idx][0];
+                                        y = port.netData[idx][1];
+
+                                        visualizer.transformElement(port.tooltipHandle, visualizer.xScale(x), visualizer.yScale(y) - 10);
+                                        visualizer.showElement(port.tooltipHandle);
+
+                                        portTooltipText = port.tooltipHandle.select('.tooltip-text');
+
+                                        if (portTooltipText) {
+                                            portTooltipText.text(d3.round(y, 3));
+
+                                            // Adjust tooltip box to fix the text. PortTooltip will be an array of an array w/ 1 element each.
+                                            // port.tooltipHandle.select('.tooltip-box')
+                                            //     .attr('width', portTooltipText[0][0].getBBox().width + 5);
+                                        }
+                                        else {
+                                            console.warn("Port tooltip wasn't selected!");
+                                        }
+                                    }
+
+                                });
+
+                                visualizer.tooltipGuide.style('opacity', 1)
+                                    .attr('x1', visualizer.xScale(x)).attr('x2', visualizer.xScale(x));
+                            }
+                        })
+                        .on("mouseleave", function() {
+                            visualizer.hideTooltips();
+                        });
+                    };
+
+                    visualizer.hideTooltips = function() {
                         if (ctrl.ports) {
-                            var x0 = visualizer.xScale.invert(d3.mouse(this)[0]),
-                                i = visualizer.bisectXScale(ctrl.ports[0].netData, x0, 1),
-                                d0 = ctrl.ports[0].netData[i - 1],
-                                d1 = ctrl.ports[0].netData[i],
-                                idx = x0 - d0[1] > d1[1] - x0 ? i : i - 1,
-                                portTooltipText,
-                                x,
-                                y;
-
                             angular.forEach(ctrl.ports, function(port) {
-
-                                x = port.netData[idx][0];
-                                y = port.netData[idx][1];
-
-                                port.tooltipHandle.attr("transform", "translate(" + (visualizer.xScale(x) + visualizer.margin.left) + "," + (visualizer.yScale(y) + 10) + ")")
-                                                  .style('opacity', 1);
-                                portTooltipText = port.tooltipHandle.select('.tooltip-text');
-
-                                if (portTooltipText) {
-                                    portTooltipText.text(d3.round(y, 3));
-
-                                    // Adjust tooltip box to fix the text. PortTooltip will be an array of an array w/ 1 element each.
-                                    port.tooltipHandle.select('.tooltip-box')
-                                        .attr('width', portTooltipText[0][0].getBBox().width + 5);
-                                }
-                                else {
-                                    console.warn("Port tooltip wasn't selected!");
-                                }
-
+                                visualizer.hideElement(port.tooltipHandle);
                             });
-
-                            visualizer.tooltipGuide.style('opacity', 1)
-                                .attr('x1', visualizer.xScale(x)).attr('x2', visualizer.xScale(x));
                         }
 
-                    })
-                    .on("mouseleave", function() {
-                        if (ctrl.ports) {
-                            angular.forEach(ctrl.ports, function(port) {
-                                port.tooltipHandle.style("opacity", 0);
-                            });
-                        }
+                        visualizer.hideElement(visualizer.tooltipGuide);
+                    };
 
-                        visualizer.tooltipGuide.style("opacity", 0);
-                    });
+                    visualizer.hideElement = function(element) {
+                        element.style("opacity", 0);
+                    };
 
+                    visualizer.showElement = function(element) {
+                        element.style("opacity", 1);
+                    };
+
+                    visualizer.transformElement = function(element, x, y) {
+                        element.attr("transform", "translate(" + x + "," + y + ")");
+                    };
+
+                    visualizer.enableTooltip();
 
                 }
 
