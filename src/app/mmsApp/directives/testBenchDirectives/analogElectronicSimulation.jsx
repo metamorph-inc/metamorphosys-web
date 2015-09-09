@@ -191,10 +191,18 @@ angular.module('mms.testBenchDirectives')
             };
 
             this.addSeries = function (data, label, index) {
-                return self.visualizer.plotAreaHandle.append('path')
-                    .attr('class', 'line ' + label)
-                    .attr('d', self.visualizer.line(data))
-                    .attr('stroke', function() { return self.visualizer.colorPalette(index); });
+                if (data.length <= 1) {
+                    console.warn(["Spice data set for signal " + label + " does not have at least two points!",
+                        " This signal will not be added to the plot."].join(""));
+
+                    return null;
+                }
+                else {
+                    return self.visualizer.plotAreaHandle.append('path')
+                        .attr('class', 'line ' + label)
+                        .attr('d', self.visualizer.line(data))
+                        .attr('stroke', function() { return self.visualizer.colorPalette(index); });
+                }
             };
 
             this.addNavigatorSeries = function(data, label) {
@@ -289,6 +297,7 @@ angular.module('mms.testBenchDirectives')
                                                             minVoltage: netdata[net].min,
                                                             maxVoltage: netdata[net].max,
                                                             netData: netSignal.data,
+                                                            index: index,
                                                             plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index),
                                                             navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel),
                                                             tooltipHandle: self.createSeriesTooltip(self.visualizer.chartHandle, sigLabel, self.visualizer.colorPalette(index))
@@ -394,14 +403,17 @@ angular.module('mms.testBenchDirectives')
                 function initializeVisualizer() {
 
                     visualizer.margin = {top: 5, right: 40, bottom: 40, left: 60};
-                    visualizer.width = 800 - visualizer.margin.left - visualizer.margin.right;
-                    visualizer.height = 400 - visualizer.margin.top - visualizer.margin.bottom;
 
-                    visualizer.chartHandle = d3.select('#spice-visualizer').classed('spice-visualizer', true).append('svg')
+                    var topLevelPlotEl = d3.select('#spice-visualizer').classed('spice-visualizer', true);
+
+                    visualizer.width = parseFloat(topLevelPlotEl.style("width")) - visualizer.margin.left - visualizer.margin.right;
+                    visualizer.height = 0.5 * parseFloat(topLevelPlotEl.style("width")) - visualizer.margin.top - visualizer.margin.bottom;
+
+                    visualizer.chartHandle = topLevelPlotEl.append('svg')
                         .attr('class', 'chart')
-                        .attr('width', visualizer.width + visualizer.margin.left + visualizer.margin.right)
-                        .attr('height', visualizer.height + visualizer.margin.top + visualizer.margin.bottom)
-                        .attr('shape-rendering', 'crispEdges')
+                        .attr("preserveAspectRatio", "xMinYMin meet")
+                        .attr("viewBox", "0 0 " + (visualizer.width + visualizer.margin.left + visualizer.margin.right) + " " + (visualizer.height + visualizer.margin.top + visualizer.margin.bottom))
+                        .classed("svg-content-responsive", true)
                         .append('g')
                         .attr('transform', 'translate(' + visualizer.margin.left + ',' + visualizer.margin.top + ')');
 
@@ -415,11 +427,11 @@ angular.module('mms.testBenchDirectives')
                         .attr({ width: visualizer.width, height: visualizer.height });
 
                     visualizer.xScale = d3.scale.linear()
-                        .domain(visualizer.defaultDomainX)
+                        .domain(visualizer.domainX)
                         .range([0, visualizer.width]);
 
                     visualizer.yScale = d3.scale.linear()
-                        .domain(visualizer.defaultDomainY).nice()
+                        .domain(visualizer.domainY).nice()
                         .range([visualizer.height, 0]);
 
                     visualizer.xAxis = d3.svg.axis()
@@ -453,7 +465,7 @@ angular.module('mms.testBenchDirectives')
                     visualizer.chartHandle.append("text")
                         .attr("transform", "rotate(-90)")
                         .attr("y", 0 - visualizer.margin.left)
-                        .attr("x",0 - (visualizer.height / 2))
+                        .attr("x", 0 - (visualizer.height / 2))
                         .attr("dy", "1em")
                         .attr('class', 'axislabel')
                         .style("text-anchor", "middle")
@@ -614,20 +626,21 @@ angular.module('mms.testBenchDirectives')
                         .y(function(data) { return visualizer.yScale(data[1]); });
 
                     visualizer.navWidth = visualizer.width;
-                    visualizer.navHeight = 100 - visualizer.margin.top - visualizer.margin.bottom;
+                    visualizer.navHeight = 0.2 * visualizer.height - visualizer.margin.top - visualizer.margin.bottom;
 
                     visualizer.navChartHandle = d3.select('#spice-visualizer').classed('spice-visualizer', true).append('svg')
                         .classed('navigator', true)
-                        .attr('width', visualizer.navWidth + visualizer.margin.left + visualizer.margin.right)
-                        .attr('height', visualizer.navHeight + visualizer.margin.top + visualizer.margin.bottom)
+                        .attr("preserveAspectRatio", "xMinYMin meet")
+                        .attr("viewBox", "0 0 " + (visualizer.navWidth + visualizer.margin.left + visualizer.margin.right) + " " + (visualizer.navHeight + visualizer.margin.top + visualizer.margin.bottom))
+                        .attr("svg-content-response", true)
                         .append('g')
                         .attr('transform', 'translate(' + visualizer.margin.left + ',' + visualizer.margin.top + ')');
 
                     visualizer.navXScale = d3.scale.linear()
-                            .domain(visualizer.defaultDomainX)
+                            .domain(visualizer.domainX)
                             .range([0, visualizer.navWidth]);
                     visualizer.navYScale = d3.scale.linear()
-                        .domain(visualizer.defaultDomainY)
+                        .domain(visualizer.domainY)
                         .range([visualizer.navHeight, 0]);
 
                     visualizer.navXAxis = d3.svg.axis()
@@ -654,23 +667,19 @@ angular.module('mms.testBenchDirectives')
 
                         visualizer.chartHandle.select('.x.axis').call(visualizer.xAxis);
                         visualizer.chartHandle.select('.y.axis').call(visualizer.yAxis);
-                    }
+                    };
 
                     visualizer.redrawNavigator = function() {
 
                         angular.forEach(ctrl.ports, function(port) {
                             if (port.showSignal) {
-
                                 port.navigatorSeriesHandle.attr('d', visualizer.navLine(port.netData));
-                                // visualizer.navChartHandle.append('path')
-                                //  .attr('class', 'navline ' + port.name)
-                                //  .attr('d', visualizer.navLine(port.netData));
                              }
                         });
 
                         visualizer.navChartHandle.select('.x.axis').call(visualizer.navXAxis);
 
-                    }
+                    };
 
                     visualizer.updateViewportFromChart = function() {
 
@@ -684,7 +693,7 @@ angular.module('mms.testBenchDirectives')
                         }
 
                         visualizer.navChartHandle.select('.viewport').call(visualizer.viewport);
-                    }
+                    };
 
                     visualizer.navLine = d3.svg.line()
                         .x(function (data) { return visualizer.navXScale(data[0]); })
@@ -782,6 +791,8 @@ angular.module('mms.testBenchDirectives')
 
                     visualizer.bisectXScale = d3.bisector( function(d) { return d[0]; }).left;
 
+
+                    // Tooltip Methods
                     visualizer.toggleTooltipDisplay = function() {
                         if (visualizer.tooltipStatus === "ON") {
                             visualizer.disableTooltip();
@@ -795,11 +806,15 @@ angular.module('mms.testBenchDirectives')
                         visualizer.tooltipStatus = "OFF";
 
                         visualizer.chartHandle.on("mousemove", null);
+
+                        document.querySelector("#toggle-tooltip-button").classList.remove("on");
                     };
 
                     visualizer.enableTooltip = function() {
 
                         visualizer.tooltipStatus = "ON";
+
+                        document.querySelector("#toggle-tooltip-button").classList.add("on");
 
                         visualizer.chartHandle.on("mousemove", function() {
                             if (ctrl.ports) {
@@ -825,10 +840,6 @@ angular.module('mms.testBenchDirectives')
 
                                         if (portTooltipText) {
                                             portTooltipText.text(d3.round(y, 3));
-
-                                            // Adjust tooltip box to fix the text. PortTooltip will be an array of an array w/ 1 element each.
-                                            // port.tooltipHandle.select('.tooltip-box')
-                                            //     .attr('width', portTooltipText[0][0].getBBox().width + 5);
                                         }
                                         else {
                                             console.warn("Port tooltip wasn't selected!");
@@ -868,9 +879,39 @@ angular.module('mms.testBenchDirectives')
                         element.attr("transform", "translate(" + x + "," + y + ")");
                     };
 
+                    // Zoom Methods
+                    visualizer.zoomMenuButtons = {
+                        x: document.querySelector("#zoom-button.x-zoom"),
+                        y: document.querySelector("#zoom-button.y-zoom")
+                    };
+                    visualizer.setZoomMethod = function(method) {
+                        angular.forEach(visualizer.zoomMenuButtons, function(value, key) {
+                            if (key === method) {
+                                value.classList.add("selected");
+                            }
+                            else {
+                                value.classList.remove("selected");
+                            }
+                        });
+                    };
+
+                    // Default settings
+                    visualizer.setZoomMethod('x');
                     visualizer.enableTooltip();
 
                 }
+
+                var resizeVisualizer = function() {
+                    // updateVisualizer is not called here as the scales do not need to be updated.
+                    // This allows the charts to be redrawn to the resized width, then adjusted to
+                    // show the pre-resizing zoom level and viewport.
+                    visualizer.redrawChart();
+                    visualizer.redrawNavigator();
+                    visualizer.updateZoomFromChart();
+                    visualizer.updateViewportFromChart();
+                };
+
+                window.onresize = resizeVisualizer;
 
                 initializeVisualizer();
             }

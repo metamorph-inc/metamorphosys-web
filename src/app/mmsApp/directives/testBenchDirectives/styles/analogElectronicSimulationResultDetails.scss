@@ -119,6 +119,7 @@
             display: inline-block;
             margin-left: 10px;
             margin-top: 10px;
+            width: 70%;
 
             .result-visual-container {
                 margin: 10px;
@@ -126,6 +127,10 @@
                 .result-visual {
                     max-width: 900px;
                 }
+            }
+
+            .spice-plot-placeholder {
+                width: 100%;
             }
         }
 
@@ -148,6 +153,7 @@
     .navline {
         pointer-events: none;
         fill: #F5F5F5;
+        stroke-width: 1px;
 
         &.flatline {
             stroke: #F5F5F5;
@@ -163,6 +169,7 @@
         path, line {
             fill: none;
             stroke: #FFFFEE;
+            stroke-width: 1px;
             opacity: 0.5;
         }
 
@@ -200,19 +207,46 @@
 
     .tooltip-guide {
         stroke: #FFFFEE;
-        stroke-width: 1;
+        stroke-width: 1.5;
         pointer-events: none;
     }
 
     .chart-options-menu {
         background-color: #000000;
+        width: 100%;
 
-        #toggle-tooltip-button {
+        .plot-menu-button {
             border: 1px solid rgba(158, 158, 158, 0.6);
             background-color: rgba(0, 0, 0, 0.38);
             box-shadow: 0 2px 5px 0 rgba(255, 255, 255, .26);
             font-size: 11px;
-            margin: 5px;
+            margin: 5px 0;
+        }
+
+        #toggle-tooltip-button {
+            margin-left: 5px;
+
+            &.on {
+                background-color: rgb(113, 113, 113) !important;
+            }
+
+            &:hover {
+                background-color: rgba(125, 179, 231, 0.75) !important;
+            }
+        }
+
+        #zoom-button {
+            width: 25px;
+            padding-left: 3px;
+
+            &.selected {
+                background-color: rgb(113, 113, 113) !important;
+            }
+
+            &:hover {
+                background-color: rgba(125, 179, 231, 0.75) !important;
+            }
+
         }
     }
 
