@@ -119,6 +119,8 @@ angular.module('mms.testBenchDirectives')
                 defaultDomainY: [-12, 12],
                 domainX: [0.0, 1.0],
                 domainY: [-12, 12],
+                xlimits: [0.0, 1.0],
+                ylimits: [-12, 12],
                 colorPalette: d3.scale.category20(),
                 reapplyOverlay: null,
                 updateVisualizer: null,
@@ -379,14 +381,13 @@ angular.module('mms.testBenchDirectives')
 
                 visualizer.updateVisualizer = function(ports) {
                     visualizer.updateScales(ports);
+                    visualizer.setZoomBehavior();
                     visualizer.reapplyOverlay();
                     visualizer.redrawChart();
                     visualizer.redrawNavigator();
                     visualizer.updateZoomFromChart();
                     visualizer.updateViewportFromChart();
 
-                    // TOOD: Is there a better way than this timeout? The dom elements exist prior to this,
-                    //       but until the paths are rendered they have 0 width/height.
                     $timeout(function() {
                         angular.forEach(document.getElementsByClassName('navline'), function(navline) {
                             // This needs to be removed first in order to check what the path bounding box size is.
@@ -619,6 +620,9 @@ angular.module('mms.testBenchDirectives')
                         visualizer.navXScale.domain(visualizer.domainX);
                         visualizer.navYScale.domain(visualizer.domainY);
 
+                        visualizer.xlimits = visualizer.domainX;
+                        visualizer.ylimits = visualizer.domainY;
+
                     };
 
                     visualizer.line = d3.svg.line()
@@ -699,14 +703,31 @@ angular.module('mms.testBenchDirectives')
                         .x(function (data) { return visualizer.navXScale(data[0]); })
                         .y(function (data) { return visualizer.navYScale(data[1]); });
 
-                    visualizer.viewport = d3.svg.brush()
+                    visualizer.zoomMethods = {
+                        active: 'x',
+                        x: { active: true, brush: null, zoomBehavior: null },
+                        box: { active: false, brush: null, zoomBehavior: null }
+                    };
+
+                    visualizer.zoomMethods.x.brush = d3.svg.brush()
                         .x(visualizer.navXScale)
-                        // .y(visualizer.navYScale)
                         .on("brush", function () {
                             visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
-                            // visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : visualizer.viewport.extent());
                             visualizer.redrawChart();
                         });
+
+                    visualizer.zoomMethods.box.brush = d3.svg.brush()
+                        .x(visualizer.navXScale)
+                        .y(visualizer.navYScale)
+                        .on("brush", function () {
+                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
+                            visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : visualizer.viewport.extent());
+                            visualizer.redrawChart();
+                        });
+
+
+                    // Set initial viewport brush
+                    visualizer.viewport = visualizer.zoomMethods.x.active ? visualizer.zoomMethods.x.brush : visualizer.zoomMethods.box.brush;
 
                     visualizer.navChartHandle.append("g")
                         .attr("class", "viewport")
@@ -714,36 +735,67 @@ angular.module('mms.testBenchDirectives')
                         .selectAll("rect")
                         .attr("height", visualizer.navHeight);
 
-                    visualizer.zoom = d3.behavior.zoom()
-                        .x(visualizer.xScale)
-                        // .y(visualizer.yScale)
-                        .on('zoom', function() {
-                            if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
-                                var x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0];
-                                    visualizer.zoom.translate([x, 0]);
-                            }
-                            else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
-                                var x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1];
-                                    visualizer.zoom.translate([x, 0]);
-                            }
-                            // else if (visualizer.yScale.domain()[0] < -12) {
-                            //     var y = visualizer.zoom.translate()[1] - visualizer.yScale(-12) + visualizer.yScale.range()[0];
+                    visualizer.zoomMethods.x.zoomBehavior = function() {
+                        // var x;
+                        // if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+                        //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0];
+                        //         visualizer.zoom.translate([x, 0]);
+                        // }
+                        // else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+                        //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1];
+                        //         visualizer.zoom.translate([x, 0]);
+                        // }
+                        var e = d3.event,
+                            tx = Math.min(0, Math.max(e.translate[0], visualizer.width - visualizer.width * e.scale));
+
+                        visualizer.zoom.translate([tx, 0]);
+                        visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
+
+                        visualizer.redrawChart();
+                        visualizer.updateViewportFromChart();
+                    };
+
+                    visualizer.zoomMethods.box.zoomBehavior = function() {
+                            // var x, y;
+                            // if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+                            //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0];
+                            //         visualizer.zoom.translate([x, 0]);
+                            // }
+                            // else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+                            //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1];
+                            //         visualizer.zoom.translate([x, 0]);
+                            // }
+                            // if (visualizer.yScale.domain()[0] < visualizer.domainY[0]) {
+                            //     y = visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[0]) + visualizer.yScale.range()[0];
                             //         visualizer.zoom.translate([0, y]);
-                            // } else if (visualizer.yScale.domain()[1] > 12) {
-                            //     var y = visualizer.zoom.translate()[1] - visualizer.yScale(12) + visualizer.yScale.range()[1];
+                            // } else if (visualizer.yScale.domain()[1] > visualizer.domainY[1]) {
+                            //     y = visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[1]) + visualizer.yScale.range()[1];
                             //         visualizer.zoom.translate([0, y]);
                             // }
+                            var e = d3.event,
+                                tx = Math.min(0, Math.max(e.translate[0], visualizer.width - visualizer.width * e.scale)),
+                                ty = Math.min(0, Math.max(e.translate[1], visualizer.height - visualizer.height * e.scale));
+
+                            visualizer.zoom.translate([tx, ty]);
+                            visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
+                            visualizer.yScale.domain([Math.max(visualizer.yScale.domain()[0], visualizer.ylimits[0]), Math.min(visualizer.yScale.domain()[1], visualizer.ylimits[1])]);
+
                             visualizer.redrawChart();
                             visualizer.updateViewportFromChart();
+                    };
+
+                    // Initial zoom behavior
+                    visualizer.zoom = d3.behavior.zoom()
+                        .x(visualizer.xScale)
+                        .on('zoom', function() {
+                            visualizer.zoomMethods.x.zoomBehavior();
                         });
+
 
                     visualizer.overlay = d3.svg.area()
                         .x(function (data) { return visualizer.xScale(data[0]); })
-                        // .x0(0)
-                        // .x1(visualizer.width)
                         .y0(0)
                         .y1(visualizer.height);
-                        // ([[0, 0], [visualizer.width, 0], [visualizer.width, visualizer.height], [0, visualizer.height]]);
 
                     visualizer.reapplyOverlay = function() {
                             visualizer.plotAreaHandle.selectAll('path.overlay').remove();
@@ -751,7 +803,6 @@ angular.module('mms.testBenchDirectives')
                         if (ctrl.ports && ctrl.ports.length) {
                             visualizer.plotAreaHandle.append('path')
                                 .attr('class', 'overlay')
-                                // .attr('d', visualizer.overlay([[0, 0], [visualizer.width, 0], [visualizer.width, visualizer.height], [0, visualizer.height]]))
                                 .attr('d', visualizer.overlay(ctrl.ports[0].netData))
                                 .call(visualizer.zoom)
                                 .on("dblclick.zoom", function() {
@@ -882,17 +933,61 @@ angular.module('mms.testBenchDirectives')
                     // Zoom Methods
                     visualizer.zoomMenuButtons = {
                         x: document.querySelector("#zoom-button.x-zoom"),
-                        y: document.querySelector("#zoom-button.y-zoom")
+                        box: document.querySelector("#zoom-button.box-zoom")
                     };
+
+                    visualizer.setViewportBrush = function(brush) {
+                        if (brush) {
+                           visualizer.viewport = brush;
+
+                        }
+                        else {
+                            console.warn("Attempted to set visualizer viewport brush to null! Sticking with previous behavior.");
+                        }
+                    };
+
+                    // visualizer.setZoomBehavior = function(behavior) {
+                    //     if (behavior) {
+                    //         visualizer.zoom = behavior;
+                    //     }
+                    //     else {
+                    //         console.warn("Attempted to set visualizer zoom behavior to null! Sticking with previous behavior.");
+                    //     }
+                    // };
+
                     visualizer.setZoomMethod = function(method) {
                         angular.forEach(visualizer.zoomMenuButtons, function(value, key) {
                             if (key === method) {
                                 value.classList.add("selected");
+                                visualizer.zoomMethods.active = key;
+                                visualizer.zoomMethods[key].active = true;
+                                visualizer.setViewportBrush(visualizer.zoomMethods[key].brush);
+                                visualizer.setZoomBehavior();
+                                visualizer.reapplyOverlay();
                             }
                             else {
                                 value.classList.remove("selected");
+                                visualizer.zoomMethods[key].active = false;
                             }
                         });
+                    };
+
+                    visualizer.setZoomBehavior = function() {
+                        if (visualizer.zoomMethods.x.active) {
+                            visualizer.zoom = d3.behavior.zoom()
+                                .x(visualizer.xScale)
+                                .on('zoom', function() {
+                                    visualizer.zoomMethods.x.zoomBehavior();
+                                });
+                        }
+                        else {
+                            visualizer.zoom = d3.behavior.zoom()
+                                .x(visualizer.xScale)
+                                .y(visualizer.yScale)
+                                .on('zoom', function() {
+                                    visualizer.zoomMethods.box.zoomBehavior();
+                                });
+                        }
                     };
 
                     // Default settings

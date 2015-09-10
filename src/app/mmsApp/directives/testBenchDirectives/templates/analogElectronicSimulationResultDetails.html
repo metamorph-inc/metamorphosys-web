@@ -42,10 +42,12 @@
                     {{"Tooltip: " + ctrl.visualizer.tooltipStatus}}
                 </md-button>
                 <md-button class="plot-menu-button x-zoom" id="zoom-button" ng-click="ctrl.visualizer.setZoomMethod('x')">
-                    <i class="fa fa-search-plus"></i>X
+                    <i class="fa fa-search-plus"></i>
+                    <span class="subscript">X</span>
                 </md-button>
-                <md-button class="plot-menu-button y-zoom" id="zoom-button" ng-click="ctrl.visualizer.setZoomMethod('y')">
-                    <i class="fa fa-search-plus"></i>Y
+                <md-button class="plot-menu-button box-zoom" id="zoom-button" ng-click="ctrl.visualizer.setZoomMethod('box')">
+                    <i class="fa fa-search-plus"></i>
+                    <i class="fa fa-square-o subscript"></i>
                 </md-button>
             </div>
             <div id="spice-visualizer" class="spice-plot-placeholder"></div>
