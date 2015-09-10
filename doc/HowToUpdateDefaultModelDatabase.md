@@ -19,7 +19,7 @@ Only if you're importing platform from desktop model
     Delete Components folder
 
     Move each testbench into a folder named after the design
-    Rename each testbench based on type: ["Analog Electronic Simulation", "Place and Route", "Cost Estimation"]
+    Rename each testbench based on type: ["Analog Electronic Simulation", "Place and Route", "Cost Estimation", "CAD PCB"]
 
 Lay out your stuff: localhost:8855/#/editor/Template_Module_1x2/master
 
