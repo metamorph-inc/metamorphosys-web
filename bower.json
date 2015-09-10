@@ -19,7 +19,8 @@
     "angular-material": "0.8.3",
     "angular-xeditable": "~0.1.9",
     "react": "~0.13.1",
-    "mms-content-server-apps": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
+    "mms-content-server-apps": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
+    "cad.js": "https://github.com/metamorph-inc/cad.js.git#v0.0.2"
   },
   "resolutions": {
     "angular": ">=1.0.0 <1.4.0",

@@ -62,7 +62,7 @@ angular.module('mms.testBenchDirectives')
 
                 var ctrl = controllers[0],
                     openerController = controllers[1],
-                    cadJsUrl = '/extlib/node_modules/cad.js/public/index.html' +
+                    cadJsUrl = '/extlib/bower_components/cad.js/public/index.html' +
                         '?resource_url=/rest/blob/download/' + ctrl.result.resultHash + '/results/StepXMLs/index.xml';
 
                 function showResults() {
