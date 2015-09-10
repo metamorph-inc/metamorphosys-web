@@ -606,6 +606,8 @@ define(['plugin/PluginConfig',
                         'results/net*.png',
                         // Cost Estimation
                         'results/BomTable.html', // 'results/Something.json',
+                        // CyPhy2CADPCB
+                        'results/StepXMLs/*',
                         'results/*json', 'log/**', 'results/log/*', '_FAILED.txt']
                 }, {
                     name: 'testBenchManifest',
