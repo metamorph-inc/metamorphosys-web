@@ -690,10 +690,20 @@ angular.module('mms.testBenchDirectives')
                         if ((visualizer.xScale.domain()[0] <= visualizer.domainX[0]) && (visualizer.xScale.domain()[1] >= visualizer.domainX[1])) {
 
                             visualizer.viewport.clear();
+                            console.log('viewport cleared');
                         }
                         else {
 
-                            visualizer.viewport.extent(visualizer.xScale.domain());
+                            if (visualizer.zoomMethods.x.active) {
+                                visualizer.viewport.extent(visualizer.xScale.domain());
+                            }
+                            else {
+                                var xd = visualizer.xScale.domain(),
+                                    yd = visualizer.xScale.domain();
+
+                                visualizer.viewport.extent([[xd[0], yd[0]], [xd[1], yd[1]]]);
+                            }
+                            console.log('viewport extent: ' + visualizer.viewport.extent());
                         }
 
                         visualizer.navChartHandle.select('.viewport').call(visualizer.viewport);
@@ -709,25 +719,14 @@ angular.module('mms.testBenchDirectives')
                         box: { active: false, brush: null, zoomBehavior: null }
                     };
 
-                    visualizer.zoomMethods.x.brush = d3.svg.brush()
-                        .x(visualizer.navXScale)
-                        .on("brush", function () {
-                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
-                            visualizer.redrawChart();
-                        });
-
-                    visualizer.zoomMethods.box.brush = d3.svg.brush()
-                        .x(visualizer.navXScale)
-                        .y(visualizer.navYScale)
-                        .on("brush", function () {
-                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
-                            visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : visualizer.viewport.extent());
-                            visualizer.redrawChart();
-                        });
-
-
                     // Set initial viewport brush
-                    visualizer.viewport = visualizer.zoomMethods.x.active ? visualizer.zoomMethods.x.brush : visualizer.zoomMethods.box.brush;
+                    // visualizer.viewport = visualizer.zoomMethods.x.active ? visualizer.zoomMethods.x.brush : visualizer.zoomMethods.box.brush;
+                    visualizer.viewport = d3.svg.brush()
+                        .x(visualizer.navXScale)
+                        .on("brush", function () {
+                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
+                            visualizer.redrawChart();
+                        });
 
                     visualizer.navChartHandle.append("g")
                         .attr("class", "viewport")
@@ -736,49 +735,35 @@ angular.module('mms.testBenchDirectives')
                         .attr("height", visualizer.navHeight);
 
                     visualizer.zoomMethods.x.zoomBehavior = function() {
-                        // var x;
-                        // if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
-                        //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0];
-                        //         visualizer.zoom.translate([x, 0]);
-                        // }
-                        // else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
-                        //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1];
-                        //         visualizer.zoom.translate([x, 0]);
-                        // }
-                        var e = d3.event,
-                            tx = Math.min(0, Math.max(e.translate[0], visualizer.width - visualizer.width * e.scale));
 
-                        visualizer.zoom.translate([tx, 0]);
-                        visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
+                        if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], 0]);
+                        } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], 0]);
+                        }
+
+                        // visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
 
                         visualizer.redrawChart();
                         visualizer.updateViewportFromChart();
                     };
 
                     visualizer.zoomMethods.box.zoomBehavior = function() {
-                            // var x, y;
-                            // if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
-                            //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0];
-                            //         visualizer.zoom.translate([x, 0]);
-                            // }
-                            // else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
-                            //     x = visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1];
-                            //         visualizer.zoom.translate([x, 0]);
-                            // }
-                            // if (visualizer.yScale.domain()[0] < visualizer.domainY[0]) {
-                            //     y = visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[0]) + visualizer.yScale.range()[0];
-                            //         visualizer.zoom.translate([0, y]);
-                            // } else if (visualizer.yScale.domain()[1] > visualizer.domainY[1]) {
-                            //     y = visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[1]) + visualizer.yScale.range()[1];
-                            //         visualizer.zoom.translate([0, y]);
-                            // }
-                            var e = d3.event,
-                                tx = Math.min(0, Math.max(e.translate[0], visualizer.width - visualizer.width * e.scale)),
-                                ty = Math.min(0, Math.max(e.translate[1], visualizer.height - visualizer.height * e.scale));
 
-                            visualizer.zoom.translate([tx, ty]);
+                            if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+                                visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], 0]);
+                            } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+                                visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], 0]);
+                            }
+                            if (visualizer.yScale.domain()[0] < visualizer.domainY[0]) {
+                                visualizer.zoom.translate([0, visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[0]) + visualizer.yScale.range()[0]]);
+                            } else if (visualizer.yScale.domain()[1] > visualizer.domainY[1]) {
+                                visualizer.zoom.translate([0, visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[1]) + visualizer.yScale.range()[1]]);
+                            }
+
                             visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
                             visualizer.yScale.domain([Math.max(visualizer.yScale.domain()[0], visualizer.ylimits[0]), Math.min(visualizer.yScale.domain()[1], visualizer.ylimits[1])]);
+
 
                             visualizer.redrawChart();
                             visualizer.updateViewportFromChart();
@@ -814,6 +799,10 @@ angular.module('mms.testBenchDirectives')
                                             visualizer.redrawChart();
                                             visualizer.updateZoomFromChart();
                                             visualizer.updateViewportFromChart();
+
+                                            if (visualizer.zoomMethods.box.active) {
+                                                visualizer.zoom.y(visualizer.yScale.domain(iy(t)));
+                                            }
                                         };
                                     });
                                 });
@@ -823,7 +812,10 @@ angular.module('mms.testBenchDirectives')
                     visualizer.updateZoomFromChart = function() {
 
                         visualizer.zoom.x(visualizer.xScale);
-                        // visualizer.zoom.y(visualizer.yScale);
+
+                        if (visualizer.zoomMethods.box.active) {
+                            visualizer.zoom.y(visualizer.yScale);
+                        }
 
                         var fullDomain = visualizer.domainX[1],
                             currentDomain = visualizer.xScale.domain()[1] - visualizer.xScale.domain()[0];
@@ -834,9 +826,7 @@ angular.module('mms.testBenchDirectives')
                         visualizer.zoom.scaleExtent([minScale, maxScale]);
                     };
 
-                    visualizer.viewport.on("brushend", function () {
-                        visualizer.updateZoomFromChart();
-                    });
+
 
                     visualizer.updateZoomFromChart();
 
@@ -936,32 +926,13 @@ angular.module('mms.testBenchDirectives')
                         box: document.querySelector("#zoom-button.box-zoom")
                     };
 
-                    visualizer.setViewportBrush = function(brush) {
-                        if (brush) {
-                           visualizer.viewport = brush;
-
-                        }
-                        else {
-                            console.warn("Attempted to set visualizer viewport brush to null! Sticking with previous behavior.");
-                        }
-                    };
-
-                    // visualizer.setZoomBehavior = function(behavior) {
-                    //     if (behavior) {
-                    //         visualizer.zoom = behavior;
-                    //     }
-                    //     else {
-                    //         console.warn("Attempted to set visualizer zoom behavior to null! Sticking with previous behavior.");
-                    //     }
-                    // };
-
                     visualizer.setZoomMethod = function(method) {
                         angular.forEach(visualizer.zoomMenuButtons, function(value, key) {
                             if (key === method) {
                                 value.classList.add("selected");
                                 visualizer.zoomMethods.active = key;
                                 visualizer.zoomMethods[key].active = true;
-                                visualizer.setViewportBrush(visualizer.zoomMethods[key].brush);
+                                visualizer.setViewportBrush();
                                 visualizer.setZoomBehavior();
                                 visualizer.reapplyOverlay();
                             }
@@ -988,6 +959,32 @@ angular.module('mms.testBenchDirectives')
                                     visualizer.zoomMethods.box.zoomBehavior();
                                 });
                         }
+                    };
+
+                    visualizer.setViewportBrush = function() {
+                        if (visualizer.zoomMethods.x.active) {
+                            visualizer.viewport = d3.svg.brush()
+                                .x(visualizer.navXScale)
+                                .on("brush", function () {
+                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
+                                    visualizer.redrawChart();
+                                });
+                        }
+                        else {
+                            visualizer.viewport = d3.svg.brush()
+                                .x(visualizer.navXScale)
+                                .y(visualizer.navYScale)
+                                .on("brush", function () {
+                                    var extent = visualizer.viewport.extent();
+                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : [extent[0][0], extent[1][0]]);
+                                    visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : [extent[0][1], extent[1][1]]);
+                                    visualizer.redrawChart();
+                                });
+                        }
+
+                        visualizer.viewport.on("brushend", function () {
+                            visualizer.updateZoomFromChart();
+                        });
                     };
 
                     // Default settings
