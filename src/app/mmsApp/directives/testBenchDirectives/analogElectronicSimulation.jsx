@@ -133,30 +133,34 @@ angular.module('mms.testBenchDirectives')
                 context,
                 line;
 
+            this.pinnedSignals = [];
+            this.outputUnit = "V";
+
             this.getSIPrefixMetric = function(metric) {
                 return getSIPrefix(metric);
             };
 
-            this.removeSignal = function(context, index) {
-                context.$parent.$parent.ctrl.ports.splice(index, 1);
-            };
+            this.toggleSignalPin = function(context) {
 
-            this.pinSignal = function(context, index) {
+                if (context.port.pinned) {
+                    var pinnedSignalIndex = self.pinnedSignals.map(function(s) {
+                            return s.id;
+                        }).indexOf(context.port.id);
 
-                var pinEl = document.getElementById(index);
+                    self.pinnedSignals.splice(pinnedSignalIndex, 1);
 
-                if (pinEl) {
-                    if (pinEl.classList.contains('pinned')) {
-                        pinEl.classList.remove('pinned');
-                    }
-                    else {
-                        pinEl.classList.add('pinned');
-                    }
+                    context.port.pinned = false;
+
+                }
+                else {
+
+                    context.port.pinned = true;
+                    this.pinnedSignals.push(context.port);
+
                 }
             };
 
             this.updateVisualizer = function(port) {
-                // context.showSignal = !context.showSignal;
 
                 self.visualizer.chartHandle.select('.line.' + port.name).classed('hidden', !port.showSignal);
                 self.visualizer.navChartHandle.select('.navline.' + port.name).classed('hidden', !port.showSignal);
@@ -172,7 +176,7 @@ angular.module('mms.testBenchDirectives')
                 self.ports = undefined;
             };
 
-            this.createSeriesTooltip = function(chartHandle, seriesLabel, fillColor) {
+            this.createSeriesTooltip = function(chartHandle, seriesLabel) {
                 var tooltip;
 
                 tooltip = chartHandle.append('g')
@@ -181,8 +185,7 @@ angular.module('mms.testBenchDirectives')
 
                 tooltip.append('path')
                     .attr('class', 'tooltip-box')
-                    .attr('d', 'm0,10l5,-10l35,0l0,20l-35,0l-5,-10z')
-                    .attr('fill', fillColor);
+                    .attr('d', 'm0,10l5,-10l85,0l0,20l-85,0l-5,-10z');
 
                 tooltip.append('text')
                     .attr('class', 'tooltip-text')
@@ -192,7 +195,7 @@ angular.module('mms.testBenchDirectives')
 
             };
 
-            this.addSeries = function (data, label, index) {
+            this.addSeries = function (data, label) {
                 if (data.length <= 1) {
                     console.warn(["Spice data set for signal " + label + " does not have at least two points!",
                         " This signal will not be added to the plot."].join(""));
@@ -202,8 +205,7 @@ angular.module('mms.testBenchDirectives')
                 else {
                     return self.visualizer.plotAreaHandle.append('path')
                         .attr('class', 'line ' + label)
-                        .attr('d', self.visualizer.line(data))
-                        .attr('stroke', function() { return self.visualizer.colorPalette(index); });
+                        .attr('d', self.visualizer.line(data));
                 }
             };
 
@@ -228,7 +230,9 @@ angular.module('mms.testBenchDirectives')
             this.removeUnpinnedSeries = function() {
 
                 angular.forEach(self.ports, function(port) {
-                    self.removeSeries(port.plotSeriesHandle, port.name);
+                    if (self.pinnedSignals.indexOf(port) === -1) {
+                        self.removeSeries(port.plotSeriesHandle, port.name);
+                    }
                 });
 
                 self.visualizer.plotAreaHandle.selectAll('path.overlay').remove();
@@ -280,7 +284,7 @@ angular.module('mms.testBenchDirectives')
                                                 return id;
                                             };
 
-                                            $q.all(gmePorts.map(function (port, index) {
+                                            $q.all(gmePorts.map(function (port) {
                                                 var net = siginfo.objectToNetId[getSigInfoId(port)];
 
                                                  if (net == null) {
@@ -290,20 +294,30 @@ angular.module('mms.testBenchDirectives')
                                                 return $http.get('/rest/blob/view/' + self.result.resultHash + '/results/net' + net + '.json')
                                                     .then(function(netSignal) {
 
-                                                        var sigLabel = port.getAttribute('name');
+                                                        var sigLabel = port.getAttribute('name'),
+
+                                                            match = self.pinnedSignals.filter(function(signal) {
+                                                                return signal.id === port.id;
+                                                            });
+
+                                                        if (match.length) {
+                                                            return undefined;
+                                                        }
 
                                                         return {
+                                                            id: port.id,
                                                             visualUrl: '/rest/blob/view/' + self.result.resultHash + '/results/net' + net + '.png',
                                                             name: sigLabel,
                                                             showSignal: true,
                                                             minVoltage: netdata[net].min,
                                                             maxVoltage: netdata[net].max,
                                                             netData: netSignal.data,
-                                                            index: index,
-                                                            plotSeriesHandle: self.addSeries(netSignal.data, sigLabel, index),
+                                                            plotSeriesHandle: self.addSeries(netSignal.data, sigLabel),
                                                             navigatorSeriesHandle: self.addNavigatorSeries(netSignal.data, sigLabel),
-                                                            tooltipHandle: self.createSeriesTooltip(self.visualizer.chartHandle, sigLabel, self.visualizer.colorPalette(index))
+                                                            tooltipHandle: self.createSeriesTooltip(self.visualizer.chartHandle, sigLabel)
                                                         };
+
+
                                                     });
                                             }))
                                             .then(function(ports) {
@@ -313,8 +327,19 @@ angular.module('mms.testBenchDirectives')
                                                 self.ports.sort(function (a, b) {
                                                     return a.name.localeCompare(b.name);
                                                 });
+
+                                                // Ensure port indexing stays the same when clicking between wires with pinned signals.
+                                                angular.forEach(self.ports, function(port, idx) {
+                                                    port.index = idx + self.pinnedSignals.length;
+
+                                                    // Colorize signals
+                                                    port.plotSeriesHandle.attr('stroke', function() { return self.visualizer.colorPalette(port.index); });
+                                                    port.tooltipHandle.attr('fill', self.visualizer.colorPalette(port.index));
+                                                });
+
+                                                self.ports = self.pinnedSignals.concat(self.ports);
                                             });
-                                            // $log.info(self.ports);
+
                                         });
 
                                     });
@@ -412,7 +437,7 @@ angular.module('mms.testBenchDirectives')
                     visualizer.topLevelPlotEl = d3.select('#spice-visualizer').classed('spice-visualizer', true);
 
                     visualizer.width = parseFloat(visualizer.topLevelPlotEl.style("width")) - visualizer.margin.left - visualizer.margin.right;
-                    visualizer.height = 0.5 * parseFloat(visualizer.topLevelPlotEl.style("width")) - visualizer.margin.top - visualizer.margin.bottom;
+                    visualizer.height = 0.25 * parseFloat(visualizer.topLevelPlotEl.style("width")) - visualizer.margin.top - visualizer.margin.bottom;
 
                     // PreserveAspectRatio and svg-content-responsive allow for chart to be adjusted after window resizing.
                     visualizer.chartHandle = visualizer.topLevelPlotEl.append('svg')
@@ -505,7 +530,7 @@ angular.module('mms.testBenchDirectives')
                     // Drawing area setup
 
                     visualizer.navWidth = visualizer.width;
-                    visualizer.navHeight = 0.2 * visualizer.height - visualizer.margin.top - visualizer.margin.bottom;
+                    visualizer.navHeight = 100 - visualizer.margin.top - visualizer.margin.bottom;
 
                     visualizer.navChartHandle = d3.select('#spice-visualizer').classed('spice-visualizer', true).append('svg')
                         .classed('navigator', true)
@@ -837,7 +862,7 @@ angular.module('mms.testBenchDirectives')
                                         portTooltipText = port.tooltipHandle.select('.tooltip-text');
 
                                         if (portTooltipText) {
-                                            portTooltipText.text(d3.round(y, 3));
+                                            portTooltipText.text(port.name + ": " + getSIPrefix(y) + ctrl.outputUnit);
                                         }
                                         else {
                                             console.warn("Port tooltip wasn't selected!");

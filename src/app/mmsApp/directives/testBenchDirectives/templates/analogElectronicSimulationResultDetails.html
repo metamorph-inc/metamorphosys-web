@@ -12,7 +12,7 @@
                     <th>Max Voltage</th>
                     <th class="placeholder"></th></tr>
                 </thead>
-            <tr class="inspected-signal-row" ng-repeat="port in ctrl.ports">
+            <tr class="inspected-signal-row" ng-repeat="port in ctrl.ports track by port.index">
                 <td class="display-cell">
                     <md-checkbox class="hide-show-signal-box" aria-label=""
                                  ng-model="port.showSignal" ng-change="ctrl.updateVisualizer(port)"/>
@@ -28,7 +28,8 @@
                     <md-button class="pin-signal-button"
                        id="{{$index}}"
                        aria-label=""
-                       ng-click="ctrl.pinSignal(this, $index)"
+                       ng-class="{ 'pinned': port.pinned }"
+                       ng-click="ctrl.toggleSignalPin(this)"
                        title="Pin signal">
                         <i class="fa fa-thumb-tack icon-pin-signal" ng-style="{color: ctrl.getSeriesColor(port)}"></i>
                     </md-button>
@@ -38,14 +39,14 @@
         </div>
         <div class="signal-viewer">
             <div class="chart-options-menu">
-                <md-button class="plot-menu-button" id="toggle-tooltip-button" ng-click="ctrl.visualizer.toggleTooltipDisplay()">
-                    {{"Tooltip: " + ctrl.visualizer.tooltipStatus}}
+                <md-button class="plot-menu-button" id="toggle-tooltip-button" title="Display series data on chart hover" ng-click="ctrl.visualizer.toggleTooltipDisplay()">
+                    {{"Data Hover: " + ctrl.visualizer.tooltipStatus}}
                 </md-button>
-                <md-button class="plot-menu-button x-zoom" id="zoom-button" ng-click="ctrl.visualizer.setZoomMethod('x')">
+                <md-button class="plot-menu-button x-zoom" id="zoom-button" title="Zoom in X" ng-click="ctrl.visualizer.setZoomMethod('x')">
                     <i class="fa fa-search-plus"></i>
                     <span class="subscript">X</span>
                 </md-button>
-                <md-button class="plot-menu-button box-zoom" id="zoom-button" ng-click="ctrl.visualizer.setZoomMethod('box')">
+                <md-button class="plot-menu-button box-zoom" id="zoom-button" title="Zoom in X & Y" ng-click="ctrl.visualizer.setZoomMethod('box')">
                     <i class="fa fa-search-plus"></i>
                     <span class="subscript">XY</span>
                     <!-- <i class="fa fa-square-o subscript"></i> -->
@@ -54,5 +55,5 @@
             <div id="spice-visualizer" class="spice-plot-placeholder"></div>
         </div>
     </div>
-    <div ng-show="!ctrl.ports || ctrl.ports.length === 0" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
+    <div ng-show="(!ctrl.ports || ctrl.ports.length === 0) && ctrl.pinnedSignals.length === 0" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
 </div>

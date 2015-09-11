@@ -93,7 +93,7 @@
 
                         &.pinned {
                             .icon-pin-signal {
-                                color: #45A3FF;
+                                transform: rotate(90deg);
                             }
                         }
                     }
@@ -203,6 +203,10 @@
     .tooltip-box {
         stroke: #FFFFEE;
         stroke-width: 2;
+    }
+
+    .tooltip-text {
+        fill: black;
     }
 
     .tooltip-guide {
