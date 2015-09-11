@@ -3,6 +3,11 @@ The **Metamorphosys** tools are used for electronics design and analysis.
 
 Development of the web interface is still in progress; we recommend accessing the [*live technology demo*](http://mmsapp.metamorphsoftware.com/dispatch/mmsapp) to take the prototype for a spin.
 
+# Live Technology Demo #
+[*Click here to launch the demo*](http://mmsapp.metamorphsoftware.com/dispatch/mmsapp)
+
+Starting from a 1x2 [Ara Module](http://www.projectara.com) template, the technology demo allows you to easily add components to your design and automatically generate a printed circuit board (PCB), with automatic PCB component placement and signal routing.
+
 # Deploying from Scratch #
 If you want to get the web server running your own machine, follow the instructions below.
 
