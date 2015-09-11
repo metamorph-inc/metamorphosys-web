@@ -24,7 +24,10 @@
 
         "./bower_components/angular-ui-grid/ui-grid.min.js",
         "./bower_components/numeral/numeral.js",
-        "./bower_components/moment/moment.js"
+        "./bower_components/moment/moment.js",
+
+        "./bower_components/d3/d3.min.js"
+
     ],
     "styles": [
         "./bower_components/jquery-ui/themes/black-tie/jquery-ui.css",

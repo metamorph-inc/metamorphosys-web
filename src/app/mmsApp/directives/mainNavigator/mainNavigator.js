@@ -46,16 +46,6 @@ angular.module(
 
                 };
 
-                $scope.showLabelButton = function(context) {
-                    if (!context.editorVisible) {
-                        context.labelHovered = true;
-                    }
-                };
-
-                $scope.hideLabelButton = function(context) {
-                    context.labelHovered = false;
-                };
-
                 $scope.showLabelEditor = function(context, index) {
                     context.$parent.editorVisible = true;
 
@@ -232,4 +222,22 @@ angular.module(
             link: function() {}
         };
     }
-);
+)
+
+.directive('showEditButtonOnHover',
+
+function () {
+    return {
+        link: function (scope, element, attrs) {
+
+            element.bind('mouseenter', function () {
+                element.find('button').first().show();
+            });
+            element.bind('mouseleave', function () {
+                element.find('button').first().hide();
+
+            });
+
+        }
+    };
+});

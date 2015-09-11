@@ -7,7 +7,7 @@
                           ng-if="!editorVisible"
                           data-ng-click="!item.disabled && item.action(item.actionData, $event)">{{item.label}}</span>
                 </div>
-                <div class="label-container" ng-if="!$first" ng-mouseenter="showLabelButton(this)" ng-mouseleave="hideLabelButton(this)">
+                <div class="label-container" ng-if="!$first" show-edit-button-on-hover>
                     <span class="item-label"
                           ng-if="!editorVisible"
                           data-ng-click="!item.disabled && item.action(item.actionData, $event)">{{item.label}}</span>
@@ -19,9 +19,8 @@
                        oncancel="cancel(this);">{{item.label}}</a>
                     <md-button class="edit-label-button"
                                aria-label=""
-                               ng-if="labelHovered && !editorVisible"
                                ng-click="showLabelEditor(this, $index)"
-                               title="Edit name"> 
+                               title="Edit name">
                         <i class="fa fa-pencil-square-o edit-label-icon"></i>
                     </md-button>
                 </div>

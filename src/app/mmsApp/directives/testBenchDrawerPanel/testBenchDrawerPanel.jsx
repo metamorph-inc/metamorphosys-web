@@ -6,11 +6,12 @@ require('./testBenchResultAndTime.jsx');
 require('./testBenchResultDetails.js');
 require('./testBenchConfig.js');
 
-angular.module('mms.testBenchDirectives', []);
+angular.module('mms.testBenchDirectives', ['ngAnimate']);
 
 require('../testBenchDirectives/costEstimation.jsx');
 require('../testBenchDirectives/placeAndRoute.jsx');
 require('../testBenchDirectives/analogElectronicSimulation.jsx');
+require('../testBenchDirectives/cadPcb.jsx');
 
 var compiledDirectives = {};
 
@@ -251,7 +252,11 @@ angular.module('mms.testBenchDrawerPanel', [
 
         var self = this;
 
-        this.resultsOpener = null;
+        this.resultsOpener = function () {
+            var downloadUrl = '/rest/blob/download/' + self.result.resultHash;
+            ga('send', 'event', 'testbench', 'result', self.result.id);
+            window.open(downloadUrl, '_blank');
+        };
 
         this.openResults = function() {
 

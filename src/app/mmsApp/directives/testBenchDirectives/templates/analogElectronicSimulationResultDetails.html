@@ -1,5 +1,5 @@
 <div class="analog-electronic-simulation-result-details">
-    <div class="details-container" ng-if="ctrl.ports && ctrl.ports.length">
+    <div class="details-container" ng-show="ctrl.ports && ctrl.ports.length">
         <!-- <span class="result-detail-description">
         Results of SPICE simulation. Select wires and/or ports to display a plot of its signal data.
         </span> -->
@@ -15,14 +15,14 @@
             <tr class="inspected-signal-row" ng-repeat="port in ctrl.ports">
                 <td class="display-cell">
                     <md-checkbox class="hide-show-signal-box" aria-label=""
-                                 ng-model="port.showSignal"/>
+                                 ng-model="port.showSignal" ng-change="ctrl.updateVisualizer(port)"/>
                 </td>
                 <td>{{port.name}}</td>
                 <td class="result-metrics-wrapper">
-                    {{port.minVoltage}}V
+                    {{ctrl.getSIPrefixMetric(port.minVoltage)}}V
                 </td>
                 <td class="result-metrics-wrapper">
-                    {{port.maxVoltage}}V
+                    {{ctrl.getSIPrefixMetric(port.maxVoltage)}}V
                 </td>
                 <td class="pin-signal-container">
                     <md-button class="pin-signal-button"
@@ -30,7 +30,7 @@
                        aria-label=""
                        ng-click="ctrl.pinSignal(this, $index)"
                        title="Pin signal">
-                        <i class="fa fa-thumb-tack icon-pin-signal"></i>
+                        <i class="fa fa-thumb-tack icon-pin-signal" ng-style="{color: ctrl.getSeriesColor(port)}"></i>
                     </md-button>
                 </td>
             </tr>
@@ -38,10 +38,11 @@
         </div>
         <div class="signal-viewer">
         <!--This ng-repeat should be temporary. Eventually there will only be one plot for all signals. -->
-            <div class="result-visual-container" ng-repeat="port in ctrl.ports" ng-if="port.showSignal">
+            <!-- <div class="result-visual-container" ng-repeat="port in ctrl.ports" ng-if="port.showSignal">
                 <img class="result-visual" ng-src="{{port.visualUrl}}"/>
-            </div>
+            </div> -->
+            <div id="spice-visualizer" class="spice-plot-placeholder" style="width:800px; height:500px;"></div>
         </div>
     </div>
-    <div ng-if="!ctrl.ports || ctrl.ports.length === 0" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
+    <div ng-show="!ctrl.ports || ctrl.ports.length === 0" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
 </div>

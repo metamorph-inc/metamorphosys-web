@@ -360,6 +360,8 @@ def run_execution_jobs():
             f_out.write(str(failed_jobs) + ' of ' + str(nbr_of_jobs) +' jobs failed! See log/execute.log.')
     for filename in glob.glob('results/*/*'):
         shutil.move(filename, os.path.join('results', *filename.split(os.path.sep)[2:]))
+    for filename in glob.glob('results/StepXMLs_*'):
+        shutil.move(filename, os.path.join('results', 'StepXMLs'))
     if os.path.isfile('results/schema.brd'):
         shutil.move('results/schema.brd', 'results/eagle-board.brd')
     for (pattern, dest) in (('results/schema.png', 'eagle-board.png'),):

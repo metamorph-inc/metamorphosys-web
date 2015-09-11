@@ -88,7 +88,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
     this.removeResult = function(result) {
 
-        var i;        
+        var i;
 
         testBenchResults = testBenchResults.slice();
 
@@ -108,7 +108,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                 if (testBench.id === result.testBenchId) {
 
                     testBench.results = testBench.results.slice();
-                    
+
                     for (i = 0; i < testBench.results.length; i++ ) {
 
                         if (testBench.results[i].id === result.id) {
@@ -214,6 +214,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
 
                                 var name = testBench.getAttribute('name');
 
+                                properties.data.Property = properties.data.Property || [];
                                 return {
                                     id: testBench.getId(),
                                     name: name,
@@ -221,7 +222,7 @@ var TestBenchService = function ($q, $timeout, $http, dataStoreService, nodeServ
                                     gmeContext: context,
                                     description: testBenchDescriptions[name],
                                     config: {
-                                        properties: properties.data.Property || [],
+                                        properties: properties.data.Property,
                                         save: properties.update.bind(properties)
                                     },
                                     results: [],
