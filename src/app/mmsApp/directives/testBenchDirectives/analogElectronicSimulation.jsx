@@ -403,14 +403,19 @@ angular.module('mms.testBenchDirectives')
 
                 function initializeVisualizer() {
 
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// The main chart
+
+                    // Set up chart area
+
                     visualizer.margin = {top: 5, right: 40, bottom: 40, left: 60};
+                    visualizer.topLevelPlotEl = d3.select('#spice-visualizer').classed('spice-visualizer', true);
 
-                    var topLevelPlotEl = d3.select('#spice-visualizer').classed('spice-visualizer', true);
+                    visualizer.width = parseFloat(visualizer.topLevelPlotEl.style("width")) - visualizer.margin.left - visualizer.margin.right;
+                    visualizer.height = 0.5 * parseFloat(visualizer.topLevelPlotEl.style("width")) - visualizer.margin.top - visualizer.margin.bottom;
 
-                    visualizer.width = parseFloat(topLevelPlotEl.style("width")) - visualizer.margin.left - visualizer.margin.right;
-                    visualizer.height = 0.5 * parseFloat(topLevelPlotEl.style("width")) - visualizer.margin.top - visualizer.margin.bottom;
-
-                    visualizer.chartHandle = topLevelPlotEl.append('svg')
+                    // PreserveAspectRatio and svg-content-responsive allow for chart to be adjusted after window resizing.
+                    visualizer.chartHandle = visualizer.topLevelPlotEl.append('svg')
                         .attr('class', 'chart')
                         .attr("preserveAspectRatio", "xMinYMin meet")
                         .attr("viewBox", "0 0 " + (visualizer.width + visualizer.margin.left + visualizer.margin.right) + " " + (visualizer.height + visualizer.margin.top + visualizer.margin.bottom))
@@ -427,6 +432,8 @@ angular.module('mms.testBenchDirectives')
                         .append('rect')
                         .attr({ width: visualizer.width, height: visualizer.height });
 
+                    // Scales. Scales have both a domain and a range.
+
                     visualizer.xScale = d3.scale.linear()
                         .domain(visualizer.domainX)
                         .range([0, visualizer.width]);
@@ -434,6 +441,8 @@ angular.module('mms.testBenchDirectives')
                     visualizer.yScale = d3.scale.linear()
                         .domain(visualizer.domainY).nice()
                         .range([visualizer.height, 0]);
+
+                    // Axes. tickSize set up so lines are drawn across entire plot dimensions.
 
                     visualizer.xAxis = d3.svg.axis()
                         .scale(visualizer.xScale)
@@ -457,6 +466,8 @@ angular.module('mms.testBenchDirectives')
                         .attr('class', 'y axis')
                         .call(visualizer.yAxis);
 
+                    // Axis labels
+
                     visualizer.chartHandle.append("text")
                         .attr("transform", "translate(" + (visualizer.width / 2) + " ," + (visualizer.height + visualizer.margin.bottom - 5) + ")")
                         .attr('class', 'axislabel')
@@ -472,11 +483,403 @@ angular.module('mms.testBenchDirectives')
                         .style("text-anchor", "middle")
                         .text("Voltage (V)");
 
+                    // Tooltip guide - Vertical line that is drawn from the mouse x-position to show each series' y-value at that position.
+
                     visualizer.tooltipGuide = visualizer.chartHandle.append('line')
                         .attr('class', 'tooltip-guide')
                         .attr('x1', 0).attr('x2', 0)
                         .attr('y1', 0).attr('y2', visualizer.height)
                         .style('opacity', 0);
+
+                    // Line function that generates a line from a set of [X, Y] data points.
+
+                    visualizer.line = d3.svg.line()
+                        .x(function(data) { return visualizer.xScale(data[0]); })
+                        .y(function(data) { return visualizer.yScale(data[1]); });
+
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// Navigation Chart
+
+                    // Drawing area setup
+
+                    visualizer.navWidth = visualizer.width;
+                    visualizer.navHeight = 0.2 * visualizer.height - visualizer.margin.top - visualizer.margin.bottom;
+
+                    visualizer.navChartHandle = d3.select('#spice-visualizer').classed('spice-visualizer', true).append('svg')
+                        .classed('navigator', true)
+                        .attr("preserveAspectRatio", "xMinYMin meet")
+                        .attr("viewBox", "0 0 " + (visualizer.navWidth + visualizer.margin.left + visualizer.margin.right) + " " + (visualizer.navHeight + visualizer.margin.top + visualizer.margin.bottom))
+                        .attr("svg-content-response", true)
+                        .append('g')
+                        .attr('transform', 'translate(' + visualizer.margin.left + ',' + visualizer.margin.top + ')');
+
+                    // Scales
+
+                    visualizer.navXScale = d3.scale.linear()
+                            .domain(visualizer.domainX)
+                            .range([0, visualizer.navWidth]);
+                    visualizer.navYScale = d3.scale.linear()
+                        .domain(visualizer.domainY)
+                        .range([visualizer.navHeight, 0]);
+
+                    // Axis. Only care to show X-axis for this mini-chart.
+
+                    visualizer.navXAxis = d3.svg.axis()
+                        .scale(visualizer.navXScale)
+                        .orient('bottom');
+
+                    visualizer.navChartHandle.append('g')
+                        .attr('class', 'x axis')
+                        .attr('transform', 'translate(0,' + visualizer.navHeight + ')')
+                        .call(visualizer.navXAxis);
+
+                    // Line function that generates a line from a set of [X, Y] data points.
+                    visualizer.navLine = d3.svg.line()
+                        .x(function (data) { return visualizer.navXScale(data[0]); })
+                        .y(function (data) { return visualizer.navYScale(data[1]); });
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// Viewport
+
+                    // Set initial viewport brush
+                    visualizer.viewport = d3.svg.brush()
+                        .x(visualizer.navXScale)
+                        .on("brush", function () {
+                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
+                            visualizer.redrawChart();
+                        });
+
+                    visualizer.navChartHandle.append("g")
+                        .attr("class", "viewport")
+                        .call(visualizer.viewport)
+                        .selectAll("rect")
+                        .attr("height", visualizer.navHeight);
+
+                    visualizer.setViewportBrush = function() {
+                        if (visualizer.zoomMethods.x.active) {
+                            visualizer.viewport.clear();
+                            visualizer.viewport = d3.svg.brush()
+                                .x(visualizer.navXScale)
+                                .on("brush", function () {
+                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
+                                    visualizer.redrawChart();
+                                });
+                        }
+                        else {
+                            visualizer.viewport = d3.svg.brush()
+                                .x(visualizer.navXScale)
+                                .y(visualizer.navYScale)
+                                .on("brush", function () {
+                                    var extent = visualizer.viewport.extent();
+                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : [extent[0][0], extent[1][0]]);
+                                    visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : [extent[0][1], extent[1][1]]);
+                                    visualizer.redrawChart();
+                                });
+                        }
+
+                        visualizer.viewport.on("brushend", function () {
+                            visualizer.updateZoomFromChart();
+                        });
+                    };
+
+                    // Update viewport from zoom/pan actions in main chart
+                    visualizer.updateViewportFromChart = function() {
+
+                        var pastXDomain = (visualizer.xScale.domain()[0] <= visualizer.domainX[0]) && (visualizer.xScale.domain()[1] >= visualizer.domainX[1]),
+                            pastYDomain = (visualizer.yScale.domain()[0] <= visualizer.domainY[0]) && (visualizer.yScale.domain()[1] >= visualizer.domainY[1]);
+
+                        if (visualizer.zoomMethods.x.active) {
+                            if (pastXDomain) {
+                                visualizer.viewport.clear();
+                            }
+                            else {
+                                visualizer.viewport.extent(visualizer.xScale.domain());
+                            }
+                        }
+                        else {
+
+                            if (pastXDomain && pastYDomain) {
+
+                                visualizer.viewport.clear();
+
+                            }
+                            else {
+
+                                var xd = visualizer.xScale.domain(),
+                                    yd = visualizer.yScale.domain();
+
+                                visualizer.viewport.extent([[xd[0], yd[0]], [xd[1], yd[1]]]);
+
+                            }
+                        }
+
+                        visualizer.navChartHandle.select('.viewport').call(visualizer.viewport);
+                    };
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// Zooming and Panning
+
+                    visualizer.zoomMethods = {
+                        x: { active: true, brush: null, zoomBehavior: null },
+                        box: { active: false, brush: null, zoomBehavior: null }
+                    };
+
+                    visualizer.zoomMethods.x.zoomBehavior = function() {
+
+                        if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+
+                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], 0]);
+
+                        } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+
+                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], 0]);
+                        }
+
+                        visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
+
+                        visualizer.redrawChart();
+                        visualizer.updateViewportFromChart();
+                    };
+
+                    visualizer.zoomMethods.box.zoomBehavior = function() {
+
+                        var tx = visualizer.zoom.translate()[0],
+                            ty = visualizer.zoom.translate()[1];
+
+                        if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
+
+                            visualizer.zoom.translate([tx - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], ty]);
+
+                        } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
+
+                            visualizer.zoom.translate([tx - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], ty]);
+                        }
+
+                        if (visualizer.yScale.domain()[0] < visualizer.domainY[0]) {
+
+                            visualizer.zoom.translate([tx, ty - visualizer.yScale(visualizer.domainY[0]) + visualizer.yScale.range()[0]]);
+
+                        } else if (visualizer.yScale.domain()[1] > visualizer.domainY[1]) {
+
+                            visualizer.zoom.translate([tx, ty - visualizer.yScale(visualizer.domainY[1]) + visualizer.yScale.range()[1]]);
+
+                        }
+
+                        visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
+                        visualizer.yScale.domain([Math.max(visualizer.yScale.domain()[0], visualizer.ylimits[0]), Math.min(visualizer.yScale.domain()[1], visualizer.ylimits[1])]);
+
+                        visualizer.redrawChart();
+                        visualizer.updateViewportFromChart();
+                    };
+
+                    // Redefines what happens when user zooms/pans. Scales also need to be reset as one uses the y-axis.
+                    visualizer.setZoomBehavior = function() {
+                        if (visualizer.zoomMethods.x.active) {
+                            visualizer.zoom = d3.behavior.zoom()
+                                .x(visualizer.xScale)
+                                .on('zoom', function() {
+                                    visualizer.zoomMethods.x.zoomBehavior();
+                                });
+                        }
+                        else {
+                            visualizer.zoom = d3.behavior.zoom()
+                                .x(visualizer.xScale)
+                                .y(visualizer.yScale)
+                                .on('zoom', function() {
+                                    visualizer.zoomMethods.box.zoomBehavior();
+                                });
+                        }
+                    };
+
+                    // Menu buttons that toggle the zoom method
+                    visualizer.zoomMenuButtons = {
+                        x: document.querySelector("#zoom-button.x-zoom"),
+                        box: document.querySelector("#zoom-button.box-zoom")
+                    };
+
+                    // Initial zoom behavior
+                    visualizer.zoom = d3.behavior.zoom()
+                        .x(visualizer.xScale)
+                        .on('zoom', function() {
+                            visualizer.zoomMethods.x.zoomBehavior();
+                        });
+
+                    // Invisible 'blanket' div that mouse actions are applied too. Otherwise zoom/pan would only work when exactly on data points.
+                    visualizer.overlay = d3.svg.area()
+                        .x(function (data) { return visualizer.xScale(data[0]); })
+                        .y0(0)
+                        .y1(visualizer.height);
+
+                    // Overlay needs to be reapplied when the chart size changes
+                    visualizer.reapplyOverlay = function() {
+                        visualizer.plotAreaHandle.selectAll('path.overlay').remove();
+
+                        if (ctrl.ports && ctrl.ports.length) {
+                            visualizer.plotAreaHandle.append('path')
+                                .attr('class', 'overlay')
+                                .attr('d', visualizer.overlay(ctrl.ports[0].netData))
+                                .call(visualizer.zoom)
+                                .on("dblclick.zoom", function() {
+                                    d3.transition().duration(750).tween("zoom", function() {
+                                        var ix = d3.interpolate(visualizer.xScale.domain(), visualizer.domainX),
+                                            iy = d3.interpolate(visualizer.yScale.domain(), visualizer.domainY);
+                                        return function(t) {
+                                            visualizer.zoom.x(visualizer.xScale.domain(ix(t)))
+                                                           .y(visualizer.yScale.domain(iy(t)));
+                                            visualizer.redrawChart();
+                                            visualizer.updateZoomFromChart();
+                                            visualizer.updateViewportFromChart();
+
+                                            // We just applied a function for zooming in y, need to reset the zoom.
+                                            if (visualizer.zoomMethods.x.active) {
+                                                visualizer.setZoomBehavior();
+                                                visualizer.reapplyOverlay();
+                                            }
+                                        };
+                                    });
+                                });
+                            }
+                    };
+
+                    // Update main chart from brush actions on navigator
+                    visualizer.updateZoomFromChart = function() {
+
+                        visualizer.zoom.x(visualizer.xScale);
+
+                        if (visualizer.zoomMethods.box.active) {
+                            visualizer.zoom.y(visualizer.yScale);
+                        }
+
+                        var fullDomain = visualizer.domainX[1],
+                            currentDomain = visualizer.xScale.domain()[1] - visualizer.xScale.domain()[0];
+
+                        var minScale = currentDomain / fullDomain,
+                            maxScale = minScale * 40;
+
+                        visualizer.zoom.scaleExtent([minScale, maxScale]);
+                    };
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// Helper Methods
+
+                    ////////////////////
+                    // Redraw Methods
+                    visualizer.redrawChart = function() {
+
+                        var xMin = visualizer.xScale.domain()[0],
+                            xMax = visualizer.xScale.domain()[1],
+                            yMin = visualizer.yScale.domain()[0],
+                            yMax = visualizer.yScale.domain()[1];
+
+                        angular.forEach(ctrl.ports, function(port) {
+                            if (port.showSignal) {
+                                port.plotSeriesHandle.attr('d', getLine(port.netData, xMin, xMax, yMin, yMax));
+                            }
+                        });
+
+                        visualizer.chartHandle.select('.x.axis').call(visualizer.xAxis);
+                        visualizer.chartHandle.select('.y.axis').call(visualizer.yAxis);
+                    };
+
+                    visualizer.redrawNavigator = function() {
+
+                        angular.forEach(ctrl.ports, function(port) {
+                            if (port.showSignal) {
+                                port.navigatorSeriesHandle.attr('d', visualizer.navLine(port.netData));
+                             }
+                        });
+
+                        visualizer.navChartHandle.select('.x.axis').call(visualizer.navXAxis);
+
+                    };
+
+                    ////////////////////
+                    // Tooltip Methods
+                    visualizer.disableTooltip = function() {
+                        visualizer.tooltipStatus = "OFF";
+
+                        visualizer.chartHandle.on("mousemove", null);
+
+                        document.querySelector("#toggle-tooltip-button").classList.remove("on");
+                    };
+
+                    visualizer.enableTooltip = function() {
+
+                        visualizer.tooltipStatus = "ON";
+
+                        document.querySelector("#toggle-tooltip-button").classList.add("on");
+
+                        visualizer.chartHandle.on("mousemove", function() {
+                            if (ctrl.ports) {
+                                var x0 = visualizer.xScale.invert(d3.mouse(this)[0]),
+                                    i = visualizer.bisectXScale(ctrl.ports[0].netData, x0, 1),
+                                    d0 = ctrl.ports[0].netData[i - 1],
+                                    d1 = ctrl.ports[0].netData[i],
+                                    idx = d1 !== undefined ? (x0 - d0[1] > d1[1] - x0 ? i : i - 1) : i - 1,
+                                    portTooltipText,
+                                    x,
+                                    y;
+
+                                angular.forEach(ctrl.ports, function(port) {
+
+                                    if (port.showSignal) {
+                                        x = port.netData[idx][0];
+                                        y = port.netData[idx][1];
+
+                                        visualizer.transformElement(port.tooltipHandle, visualizer.xScale(x), visualizer.yScale(y) - 10);
+                                        visualizer.showElement(port.tooltipHandle);
+
+                                        portTooltipText = port.tooltipHandle.select('.tooltip-text');
+
+                                        if (portTooltipText) {
+                                            portTooltipText.text(d3.round(y, 3));
+                                        }
+                                        else {
+                                            console.warn("Port tooltip wasn't selected!");
+                                        }
+                                    }
+
+                                });
+
+                                visualizer.tooltipGuide.style('opacity', 1)
+                                    .attr('x1', visualizer.xScale(x)).attr('x2', visualizer.xScale(x));
+                            }
+                        })
+                        .on("mouseleave", function() {
+                            visualizer.hideTooltips();
+                        });
+                    };
+
+                    visualizer.hideTooltips = function() {
+                        if (ctrl.ports) {
+                            angular.forEach(ctrl.ports, function(port) {
+                                visualizer.hideElement(port.tooltipHandle);
+                            });
+                        }
+
+                        visualizer.hideElement(visualizer.tooltipGuide);
+                    };
+
+                    ////////////////////
+                    // General Methods
+                    visualizer.hideElement = function(element) {
+                        element.style("opacity", 0);
+                    };
+
+                    visualizer.showElement = function(element) {
+                        element.style("opacity", 1);
+                    };
+
+                    visualizer.transformElement = function(element, x, y) {
+                        element.attr("transform", "translate(" + x + "," + y + ")");
+                    };
+
+                    visualizer.bisectXScale = d3.bisector( function(d) { return d[0]; }).left;
 
                     var isPointInDomain = function(point, minX, maxX, minY, maxY) {
                         return point[0] >= minX && point[0] <= maxX && point[1] > minY && point[1] <= maxY;
@@ -537,7 +940,6 @@ angular.module('mms.testBenchDirectives')
                         }
 
                         if (match.length < 2) {
-                            console.warn('Error filtering points');
 
                             match.push(data[minXId]);
                             match.push(data[maxXId]);
@@ -625,215 +1027,11 @@ angular.module('mms.testBenchDirectives')
 
                     };
 
-                    visualizer.line = d3.svg.line()
-                        .x(function(data) { return visualizer.xScale(data[0]); })
-                        .y(function(data) { return visualizer.yScale(data[1]); });
 
-                    visualizer.navWidth = visualizer.width;
-                    visualizer.navHeight = 0.2 * visualizer.height - visualizer.margin.top - visualizer.margin.bottom;
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /// Menu buttons
 
-                    visualizer.navChartHandle = d3.select('#spice-visualizer').classed('spice-visualizer', true).append('svg')
-                        .classed('navigator', true)
-                        .attr("preserveAspectRatio", "xMinYMin meet")
-                        .attr("viewBox", "0 0 " + (visualizer.navWidth + visualizer.margin.left + visualizer.margin.right) + " " + (visualizer.navHeight + visualizer.margin.top + visualizer.margin.bottom))
-                        .attr("svg-content-response", true)
-                        .append('g')
-                        .attr('transform', 'translate(' + visualizer.margin.left + ',' + visualizer.margin.top + ')');
-
-                    visualizer.navXScale = d3.scale.linear()
-                            .domain(visualizer.domainX)
-                            .range([0, visualizer.navWidth]);
-                    visualizer.navYScale = d3.scale.linear()
-                        .domain(visualizer.domainY)
-                        .range([visualizer.navHeight, 0]);
-
-                    visualizer.navXAxis = d3.svg.axis()
-                        .scale(visualizer.navXScale)
-                        .orient('bottom');
-
-                    visualizer.navChartHandle.append('g')
-                        .attr('class', 'x axis')
-                        .attr('transform', 'translate(0,' + visualizer.navHeight + ')')
-                        .call(visualizer.navXAxis);
-
-                    visualizer.redrawChart = function() {
-
-                        var xMin = visualizer.xScale.domain()[0],
-                            xMax = visualizer.xScale.domain()[1],
-                            yMin = visualizer.yScale.domain()[0],
-                            yMax = visualizer.yScale.domain()[1];
-
-                        angular.forEach(ctrl.ports, function(port) {
-                            if (port.showSignal) {
-                                port.plotSeriesHandle.attr('d', getLine(port.netData, xMin, xMax, yMin, yMax));
-                            }
-                        });
-
-                        visualizer.chartHandle.select('.x.axis').call(visualizer.xAxis);
-                        visualizer.chartHandle.select('.y.axis').call(visualizer.yAxis);
-                    };
-
-                    visualizer.redrawNavigator = function() {
-
-                        angular.forEach(ctrl.ports, function(port) {
-                            if (port.showSignal) {
-                                port.navigatorSeriesHandle.attr('d', visualizer.navLine(port.netData));
-                             }
-                        });
-
-                        visualizer.navChartHandle.select('.x.axis').call(visualizer.navXAxis);
-
-                    };
-
-                    visualizer.updateViewportFromChart = function() {
-
-                        if ((visualizer.xScale.domain()[0] <= visualizer.domainX[0]) && (visualizer.xScale.domain()[1] >= visualizer.domainX[1])) {
-
-                            visualizer.viewport.clear();
-                            console.log('viewport cleared');
-                        }
-                        else {
-
-                            if (visualizer.zoomMethods.x.active) {
-                                visualizer.viewport.extent(visualizer.xScale.domain());
-                            }
-                            else {
-                                var xd = visualizer.xScale.domain(),
-                                    yd = visualizer.xScale.domain();
-
-                                visualizer.viewport.extent([[xd[0], yd[0]], [xd[1], yd[1]]]);
-                            }
-                            console.log('viewport extent: ' + visualizer.viewport.extent());
-                        }
-
-                        visualizer.navChartHandle.select('.viewport').call(visualizer.viewport);
-                    };
-
-                    visualizer.navLine = d3.svg.line()
-                        .x(function (data) { return visualizer.navXScale(data[0]); })
-                        .y(function (data) { return visualizer.navYScale(data[1]); });
-
-                    visualizer.zoomMethods = {
-                        active: 'x',
-                        x: { active: true, brush: null, zoomBehavior: null },
-                        box: { active: false, brush: null, zoomBehavior: null }
-                    };
-
-                    // Set initial viewport brush
-                    // visualizer.viewport = visualizer.zoomMethods.x.active ? visualizer.zoomMethods.x.brush : visualizer.zoomMethods.box.brush;
-                    visualizer.viewport = d3.svg.brush()
-                        .x(visualizer.navXScale)
-                        .on("brush", function () {
-                            visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
-                            visualizer.redrawChart();
-                        });
-
-                    visualizer.navChartHandle.append("g")
-                        .attr("class", "viewport")
-                        .call(visualizer.viewport)
-                        .selectAll("rect")
-                        .attr("height", visualizer.navHeight);
-
-                    visualizer.zoomMethods.x.zoomBehavior = function() {
-
-                        if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
-                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], 0]);
-                        } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
-                            visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], 0]);
-                        }
-
-                        // visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
-
-                        visualizer.redrawChart();
-                        visualizer.updateViewportFromChart();
-                    };
-
-                    visualizer.zoomMethods.box.zoomBehavior = function() {
-
-                            if (visualizer.xScale.domain()[0] < visualizer.domainX[0]) {
-                                visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[0]) + visualizer.xScale.range()[0], 0]);
-                            } else if (visualizer.xScale.domain()[1] > visualizer.domainX[1]) {
-                                visualizer.zoom.translate([visualizer.zoom.translate()[0] - visualizer.xScale(visualizer.domainX[1]) + visualizer.xScale.range()[1], 0]);
-                            }
-                            if (visualizer.yScale.domain()[0] < visualizer.domainY[0]) {
-                                visualizer.zoom.translate([0, visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[0]) + visualizer.yScale.range()[0]]);
-                            } else if (visualizer.yScale.domain()[1] > visualizer.domainY[1]) {
-                                visualizer.zoom.translate([0, visualizer.zoom.translate()[1] - visualizer.yScale(visualizer.domainY[1]) + visualizer.yScale.range()[1]]);
-                            }
-
-                            visualizer.xScale.domain([Math.max(visualizer.xScale.domain()[0], visualizer.xlimits[0]), Math.min(visualizer.xScale.domain()[1], visualizer.xlimits[1])]);
-                            visualizer.yScale.domain([Math.max(visualizer.yScale.domain()[0], visualizer.ylimits[0]), Math.min(visualizer.yScale.domain()[1], visualizer.ylimits[1])]);
-
-
-                            visualizer.redrawChart();
-                            visualizer.updateViewportFromChart();
-                    };
-
-                    // Initial zoom behavior
-                    visualizer.zoom = d3.behavior.zoom()
-                        .x(visualizer.xScale)
-                        .on('zoom', function() {
-                            visualizer.zoomMethods.x.zoomBehavior();
-                        });
-
-
-                    visualizer.overlay = d3.svg.area()
-                        .x(function (data) { return visualizer.xScale(data[0]); })
-                        .y0(0)
-                        .y1(visualizer.height);
-
-                    visualizer.reapplyOverlay = function() {
-                            visualizer.plotAreaHandle.selectAll('path.overlay').remove();
-
-                        if (ctrl.ports && ctrl.ports.length) {
-                            visualizer.plotAreaHandle.append('path')
-                                .attr('class', 'overlay')
-                                .attr('d', visualizer.overlay(ctrl.ports[0].netData))
-                                .call(visualizer.zoom)
-                                .on("dblclick.zoom", function() {
-                                    d3.transition().duration(750).tween("zoom", function() {
-                                        var ix = d3.interpolate(visualizer.xScale.domain(), visualizer.domainX),
-                                            iy = d3.interpolate(visualizer.yScale.domain(), visualizer.domainY);
-                                        return function(t) {
-                                            visualizer.zoom.x(visualizer.xScale.domain(ix(t))); // .y(visualizer.yScale.domain(iy(t)));
-                                            visualizer.redrawChart();
-                                            visualizer.updateZoomFromChart();
-                                            visualizer.updateViewportFromChart();
-
-                                            if (visualizer.zoomMethods.box.active) {
-                                                visualizer.zoom.y(visualizer.yScale.domain(iy(t)));
-                                            }
-                                        };
-                                    });
-                                });
-                            }
-                    };
-
-                    visualizer.updateZoomFromChart = function() {
-
-                        visualizer.zoom.x(visualizer.xScale);
-
-                        if (visualizer.zoomMethods.box.active) {
-                            visualizer.zoom.y(visualizer.yScale);
-                        }
-
-                        var fullDomain = visualizer.domainX[1],
-                            currentDomain = visualizer.xScale.domain()[1] - visualizer.xScale.domain()[0];
-
-                        var minScale = currentDomain / fullDomain,
-                            maxScale = minScale * 40;
-
-                        visualizer.zoom.scaleExtent([minScale, maxScale]);
-                    };
-
-
-
-                    visualizer.updateZoomFromChart();
-
-                    visualizer.bisectXScale = d3.bisector( function(d) { return d[0]; }).left;
-
-
-                    // Tooltip Methods
+                    // Tooltip
                     visualizer.toggleTooltipDisplay = function() {
                         if (visualizer.tooltipStatus === "ON") {
                             visualizer.disableTooltip();
@@ -843,98 +1041,25 @@ angular.module('mms.testBenchDirectives')
                         }
                     };
 
-                    visualizer.disableTooltip = function() {
-                        visualizer.tooltipStatus = "OFF";
+                    // Zoom
+                    visualizer.setZoomMethod = function(method) {
 
-                        visualizer.chartHandle.on("mousemove", null);
-
-                        document.querySelector("#toggle-tooltip-button").classList.remove("on");
-                    };
-
-                    visualizer.enableTooltip = function() {
-
-                        visualizer.tooltipStatus = "ON";
-
-                        document.querySelector("#toggle-tooltip-button").classList.add("on");
-
-                        visualizer.chartHandle.on("mousemove", function() {
-                            if (ctrl.ports) {
-                                var x0 = visualizer.xScale.invert(d3.mouse(this)[0]),
-                                    i = visualizer.bisectXScale(ctrl.ports[0].netData, x0, 1),
-                                    d0 = ctrl.ports[0].netData[i - 1],
-                                    d1 = ctrl.ports[0].netData[i],
-                                    idx = d1 !== undefined ? (x0 - d0[1] > d1[1] - x0 ? i : i - 1) : i - 1,
-                                    portTooltipText,
-                                    x,
-                                    y;
-
-                                angular.forEach(ctrl.ports, function(port) {
-
-                                    if (port.showSignal) {
-                                        x = port.netData[idx][0];
-                                        y = port.netData[idx][1];
-
-                                        visualizer.transformElement(port.tooltipHandle, visualizer.xScale(x), visualizer.yScale(y) - 10);
-                                        visualizer.showElement(port.tooltipHandle);
-
-                                        portTooltipText = port.tooltipHandle.select('.tooltip-text');
-
-                                        if (portTooltipText) {
-                                            portTooltipText.text(d3.round(y, 3));
-                                        }
-                                        else {
-                                            console.warn("Port tooltip wasn't selected!");
-                                        }
-                                    }
-
-                                });
-
-                                visualizer.tooltipGuide.style('opacity', 1)
-                                    .attr('x1', visualizer.xScale(x)).attr('x2', visualizer.xScale(x));
-                            }
-                        })
-                        .on("mouseleave", function() {
-                            visualizer.hideTooltips();
-                        });
-                    };
-
-                    visualizer.hideTooltips = function() {
-                        if (ctrl.ports) {
-                            angular.forEach(ctrl.ports, function(port) {
-                                visualizer.hideElement(port.tooltipHandle);
-                            });
+                        if (visualizer.zoomMethods.box.active) {
+                            visualizer.yScale.domain(visualizer.domainY);
+                            visualizer.redrawChart();
+                            visualizer.updateViewportFromChart();
                         }
 
-                        visualizer.hideElement(visualizer.tooltipGuide);
-                    };
-
-                    visualizer.hideElement = function(element) {
-                        element.style("opacity", 0);
-                    };
-
-                    visualizer.showElement = function(element) {
-                        element.style("opacity", 1);
-                    };
-
-                    visualizer.transformElement = function(element, x, y) {
-                        element.attr("transform", "translate(" + x + "," + y + ")");
-                    };
-
-                    // Zoom Methods
-                    visualizer.zoomMenuButtons = {
-                        x: document.querySelector("#zoom-button.x-zoom"),
-                        box: document.querySelector("#zoom-button.box-zoom")
-                    };
-
-                    visualizer.setZoomMethod = function(method) {
                         angular.forEach(visualizer.zoomMenuButtons, function(value, key) {
                             if (key === method) {
+
                                 value.classList.add("selected");
-                                visualizer.zoomMethods.active = key;
                                 visualizer.zoomMethods[key].active = true;
-                                visualizer.setViewportBrush();
                                 visualizer.setZoomBehavior();
                                 visualizer.reapplyOverlay();
+                                visualizer.setViewportBrush();
+                                visualizer.updateViewportFromChart();
+
                             }
                             else {
                                 value.classList.remove("selected");
@@ -943,51 +1068,10 @@ angular.module('mms.testBenchDirectives')
                         });
                     };
 
-                    visualizer.setZoomBehavior = function() {
-                        if (visualizer.zoomMethods.x.active) {
-                            visualizer.zoom = d3.behavior.zoom()
-                                .x(visualizer.xScale)
-                                .on('zoom', function() {
-                                    visualizer.zoomMethods.x.zoomBehavior();
-                                });
-                        }
-                        else {
-                            visualizer.zoom = d3.behavior.zoom()
-                                .x(visualizer.xScale)
-                                .y(visualizer.yScale)
-                                .on('zoom', function() {
-                                    visualizer.zoomMethods.box.zoomBehavior();
-                                });
-                        }
-                    };
 
-                    visualizer.setViewportBrush = function() {
-                        if (visualizer.zoomMethods.x.active) {
-                            visualizer.viewport = d3.svg.brush()
-                                .x(visualizer.navXScale)
-                                .on("brush", function () {
-                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : visualizer.viewport.extent());
-                                    visualizer.redrawChart();
-                                });
-                        }
-                        else {
-                            visualizer.viewport = d3.svg.brush()
-                                .x(visualizer.navXScale)
-                                .y(visualizer.navYScale)
-                                .on("brush", function () {
-                                    var extent = visualizer.viewport.extent();
-                                    visualizer.xScale.domain(visualizer.viewport.empty() ? visualizer.navXScale.domain() : [extent[0][0], extent[1][0]]);
-                                    visualizer.yScale.domain(visualizer.viewport.empty() ? visualizer.navYScale.domain() : [extent[0][1], extent[1][1]]);
-                                    visualizer.redrawChart();
-                                });
-                        }
-
-                        visualizer.viewport.on("brushend", function () {
-                            visualizer.updateZoomFromChart();
-                        });
-                    };
-
-                    // Default settings
+                    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    // Apply default settings
+                    visualizer.updateZoomFromChart();
                     visualizer.setZoomMethod('x');
                     visualizer.enableTooltip();
 

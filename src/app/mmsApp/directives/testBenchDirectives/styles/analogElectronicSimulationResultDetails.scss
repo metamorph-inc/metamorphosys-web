@@ -239,6 +239,10 @@
             width: 25px;
             padding-left: 3px;
 
+            &.box-zoom {
+                width: 30px;
+            }
+
             &.selected {
                 background-color: rgb(113, 113, 113) !important;
             }
