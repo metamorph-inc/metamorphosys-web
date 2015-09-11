@@ -1,0 +1,46 @@
+{
+    "name": "Place and Route",
+    "path": "/Testing/Place and Route",
+    "properties": {
+        "boardEdgeSpace": {
+            "name": "boardEdgeSpace",
+            "Value": "0.5",
+            "Default": "",
+            "Unit": "",
+            "Minimum": "-inf",
+            "Maximum": "inf"
+        },
+        "boardWidth": {
+            "name": "boardWidth",
+            "Value": "22",
+            "Default": "",
+            "Unit": "",
+            "Minimum": "-inf",
+            "Maximum": "inf"
+        },
+        "boardHeight": {
+            "name": "boardHeight",
+            "Value": "37",
+            "Default": "",
+            "Unit": "",
+            "Minimum": "-inf",
+            "Maximum": "inf"
+        },
+        "interChipSpace": {
+            "name": "interChipSpace",
+            "Value": "0.2",
+            "Default": "",
+            "Unit": "",
+            "Minimum": "-inf",
+            "Maximum": "inf"
+        },
+        "designRules": {
+            "name": "designRules",
+            "Value": "MacroFab_2_Layer.dru",
+            "Default": "",
+            "Unit": "",
+            "Minimum": "-inf",
+            "Maximum": "inf"
+        }
+    }
+}
