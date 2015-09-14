@@ -88,7 +88,7 @@ angular.module('mms.testBenchDirectives')
             return formatNumber(number);
         }
 
-        function ResultDetailsController($log, $q, $http, projectHandling, nodeService) {
+        function ResultDetailsController($log, $q, $http, projectHandling, nodeService, $mdDialog) {
 
             this.noInspectedMessage = "View the SPICE simulation results for a signal by selecting its wire in the diagram.";
 
@@ -126,6 +126,31 @@ angular.module('mms.testBenchDirectives')
                 updateVisualizer: null,
                 updateViewportFromChart: null,
                 tooltipGuide: null
+            };
+
+            this.visualizer.openHelpDialog = function (ev) {
+
+                function DialogController($scope) {
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    };
+                    $scope.close = function () {
+                        $mdDialog.hide();
+                    };
+
+                    $scope.keyboardMap = require('./visualizerControlsRegistry.js');
+                }
+
+                ga('send', 'event', 'spiceVisualizerHelpDialog', 'open');
+
+                $mdDialog.show({
+                    controller: DialogController,
+                    templateUrl: '/mmsApp/templates/visualizerHelpDialog.html',
+                    targetEvent: ev
+                })
+                    .then(function () {
+                    });
             };
 
             var self = this,
@@ -328,13 +353,28 @@ angular.module('mms.testBenchDirectives')
                                                     return a.name.localeCompare(b.name);
                                                 });
 
-                                                // Ensure port indexing stays the same when clicking between wires with pinned signals.
-                                                angular.forEach(self.ports, function(port, idx) {
-                                                    port.index = idx + self.pinnedSignals.length;
+                                                // Ensure no duplicate port indices when clicking between wires with pinned signals.
+                                                var trueIndex = 0,
+                                                    getNextTrueIndex = function(idx) {
+                                                        if (self.pinnedSignals.filter(function(s) { return s.index === idx; }).length) {
+                                                            idx += 1;
+                                                            return getNextTrueIndex(idx);
+                                                        }
+                                                        else {
+                                                            return idx;
+                                                        }
+                                                    };
+                                                angular.forEach(self.ports, function(port) {
+
+                                                    trueIndex = getNextTrueIndex(trueIndex);
+
+                                                    port.index = trueIndex;
 
                                                     // Colorize signals
                                                     port.plotSeriesHandle.attr('stroke', function() { return self.visualizer.colorPalette(port.index); });
                                                     port.tooltipHandle.attr('fill', self.visualizer.colorPalette(port.index));
+
+                                                    trueIndex++;
                                                 });
 
                                                 self.ports = self.pinnedSignals.concat(self.ports);
@@ -374,12 +414,15 @@ angular.module('mms.testBenchDirectives')
                     visualizer = ctrl.visualizer;
 
                 ctrl.setInspectedWire(designEditorController.inspectableWire);
+                ctrl.displayNoInspectedMessage = designEditorController.inspectableWire === null ? true : false;
 
                 designEditorController.viewingWireResult = true;
 
                 off = $rootScope.$on("inspectableWireHasChanged", function ($event, wire) {
                     ctrl.removeUnpinnedSeries();
                     ctrl.setInspectedWire(wire);
+
+                    ctrl.displayNoInspectedMessage = wire === null ? true : false;
                 });
 
                 scope.$on('$destroy', function () {

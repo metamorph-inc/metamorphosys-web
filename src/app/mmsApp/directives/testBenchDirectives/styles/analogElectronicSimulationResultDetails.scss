@@ -257,6 +257,11 @@
 
         }
 
+        .help-button {
+            width: 25px;
+            padding-left: 8px;
+        }
+
         .subscript {
             position: relative;
             top: 4px;
@@ -264,4 +269,12 @@
         }
     }
 
+}
+
+.visualizer-about {
+    margin: 0;
+
+    p {
+        font-size: 1em;
+    }
 }

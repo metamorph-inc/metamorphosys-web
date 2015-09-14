@@ -39,7 +39,7 @@
         </div>
         <div class="signal-viewer">
             <div class="chart-options-menu">
-                <md-button class="plot-menu-button" id="toggle-tooltip-button" title="Display series data on chart hover" ng-click="ctrl.visualizer.toggleTooltipDisplay()">
+                <md-button class="plot-menu-button" id="toggle-tooltip-button" title="Display series data on chart hover"ng-click="ctrl.visualizer.toggleTooltipDisplay()">
                     {{"Data Hover: " + ctrl.visualizer.tooltipStatus}}
                 </md-button>
                 <md-button class="plot-menu-button x-zoom" id="zoom-button" title="Zoom in X" ng-click="ctrl.visualizer.setZoomMethod('x')">
@@ -51,9 +51,10 @@
                     <span class="subscript">XY</span>
                     <!-- <i class="fa fa-square-o subscript"></i> -->
                 </md-button>
+                <md-button ng-click="ctrl.visualizer.openHelpDialog($event)" class="plot-menu-button help-button"><i class="fa fa-question"></i></md-button>
             </div>
             <div id="spice-visualizer" class="spice-plot-placeholder"></div>
         </div>
     </div>
-    <div ng-show="(!ctrl.ports || ctrl.ports.length === 0) && ctrl.pinnedSignals.length === 0" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
+    <div ng-show="((!ctrl.ports || ctrl.ports.length === 0) && ctrl.pinnedSignals.length === 0) || ctrl.displayNoInspectedMessage" class="no-inspectable-message">{{::ctrl.noInspectedMessage}}</div>
 </div>

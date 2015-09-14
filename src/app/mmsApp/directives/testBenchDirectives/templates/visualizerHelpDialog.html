@@ -1,0 +1,34 @@
+<md-dialog class="keyboard-map-dialog">
+    <h1 class="md-sticky-no-effect"> Visualizer Help</h1>
+    <md-list>
+        <md-item>
+            <md-item-content>
+                <div class="md-tile-content">
+                    <div class="visualizer-about">
+                        <p>
+                        This plotting widget contains two charts. The main chart shows a signal in its current view box depending on your zoom level, while the lower navigational chart shows you where you are in the main chart relative to the rest of the data set. The main chart allows for panning and zooming, while the navigator chart allows for panning. Click and drag a region of interest in the navigator chart to zoom into that area. The created box in the navigator chart can then be increased/decreased in size, and even dragged to a different part of the signal.
+                        <br><br>
+                        Signals can be hidden be deselecting the checkbox in the data table to the left. If you would like to compare signals across different schematic wires, pin the desired signals using the pushpin button in the table prior to selecting another wire. Unpin the signal by pressing the pushpin button again. Unpinned signals will not persist across wire selections.
+                        </p>
+                    </div>
+                </div>
+            </md-item-content>
+        </md-item>
+        <md-item ng-repeat="category in keyboardMap.categories">
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3>{{category.title}} <span class="sub-title" ng-if="category.subTitle"> - {{category.subTitle}}</span></h3>
+
+                    <div class="keyboard-actions">
+                        <div ng-repeat="action in category.actions" class="keyboard-action">
+                            <div class="keyboard-action-name">{{action.name}}</div>
+                            <div class="keyboard-action-key">{{action.key}}</div>
+                        </div>
+                    </div>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+
+</md-dialog>
