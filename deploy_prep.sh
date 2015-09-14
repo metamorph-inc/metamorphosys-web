@@ -12,6 +12,7 @@ npm shrinkwrap
 # node munge_shrinkwrap.js || exit /b !ERRORLEVEL!
 # cat npm-shrinkwrap_munge.json > npm-shrinkwrap.json
 npm install
+bower --allow-root install
 gulp compile-all
-git add --all -f public src/app/mmsApp/config.client.json
+git add --all -f bower_components public src/app/mmsApp/config.client.json
 echo git commit and push

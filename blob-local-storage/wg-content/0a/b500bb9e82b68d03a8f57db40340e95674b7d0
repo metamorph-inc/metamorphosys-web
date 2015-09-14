@@ -1,0 +1,42 @@
+{
+    "cmd": "run_execution.cmd",
+    "resultArtifacts": [
+        {
+            "name": "logs",
+            "resultPatterns": [
+                "log/**",
+                "_FAILED.txt"
+            ]
+        },
+        {
+            "name": "all",
+            "resultPatterns": [
+                "results/*brd",
+                "results/*png",
+                "results/*.sch",
+                "results/*.cir",
+                "results/LaunchSpiceViewer.bat",
+                "results/runspice.bat",
+                "results/net*.png",
+                "results/BomTable.html",
+                "results/StepXMLs/*",
+                "results/*json",
+                "log/**",
+                "results/log/*",
+                "_FAILED.txt"
+            ]
+        },
+        {
+            "name": "testBenchManifest",
+            "resultPatterns": [
+                "results/*/testbench_manifest.json"
+            ]
+        },
+        {
+            "name": "cfgAdm",
+            "resultPatterns": [
+                "designs/**"
+            ]
+        }
+    ]
+}
