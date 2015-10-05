@@ -24,10 +24,10 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         searchTerm = '12',
         searchTermX = 'xy',
-        categoryToUnfold = 'Ara',
-        subCategoryToUnfold = 'Semiconductors and actives',
-        componentToDrag = 'TEA10201V15A0',
-        targetComponentLabel = 'TEA10201V15A0',
+        categoryToUnfold = 'Connectors and adapters',
+        subCategoryToUnfold = 'Connectors',
+        componentToDrag = '1-535541-0',
+        targetComponentLabel = '1-535541-0',
 
         targetContainerLabel = "Arduino Interface",
         mainContainerLabel = "Arduino DUE Shield Basic",
@@ -469,7 +469,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
             })
             .then(function () {
 
-                //browser.sleep(componentLibraryQueryTimeLimit);
+                browser.sleep(componentLibraryQueryTimeLimit);
                 childrenList = element(by.css('div.footer-drawer component-categories li[title=\'' + subCategoryToUnfold + '\'] > .node-list'));
 
                 browser.wait(function () {
