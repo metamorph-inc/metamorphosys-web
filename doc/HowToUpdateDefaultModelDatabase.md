@@ -1,4 +1,7 @@
-set PATH=%PATH%;c:\Program Files\MongoDB 2.6 Standard\bin\
+Updating mms-webcyphy
+---------------------
+
+`set PATH=%PATH%;c:\Program Files\MongoDB 2.6 Standard\bin\`
 
 Step 1: Clean repo and restore default database.
     
@@ -52,3 +55,11 @@ mongorestore --drop --db CyPhy --collection Template_Module_1x2 dump/CyPhy/Templ
 ^^^ if you have to go back and fix anything
 
 commit mms-webcyphy changes
+
+Updating production
+-------------------
+
+(Update mmsapp via salt)
+cd /nodeapp
+mongorestore
+node utils/update_branch_from_bson.js
