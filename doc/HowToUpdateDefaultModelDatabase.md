@@ -59,7 +59,7 @@ commit mms-webcyphy changes
 Updating production
 -------------------
 
-(Update mmsapp via salt)
-cd /nodeapp
-mongorestore
-node utils/update_branch_from_bson.js
+    (Update mmsapp via salt)
+    cd /nodeapp
+    mongorestore
+    node utils/update_branch_from_bson.js
