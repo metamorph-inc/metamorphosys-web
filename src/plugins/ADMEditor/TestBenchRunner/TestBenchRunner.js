@@ -368,7 +368,7 @@ define(['plugin/PluginConfig',
             testBenchInfo.tlsut = tlsut;
 
             // For single test-benches check the reference for the test-bench and its parent folder.
-            if (self.core.hasPointer(testBenchNode, 'TopLevelSystemUnderTest')) {
+            if (self.core.getPointerNames(testBenchNode).indexOf('TopLevelSystemUnderTest') !== -1) {
                 self.logger.info('Test-bench has TopLevelSystemUnderTest ref set.');
                 self.core.loadPointer(testBenchNode, 'TopLevelSystemUnderTest', function (err, design) {
                     if (err) {

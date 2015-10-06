@@ -148,7 +148,7 @@ define( [ 'plugin/PluginConfig', 'plugin/PluginBase', 'plugin/GeneratePluginTest
         var self = this,
             testName = self.core.getAttribute( node, 'name' ),
             msg;
-        if ( self.core.hasPointer( node, 'TestPoint' ) ) {
+        if ( self.core.getPointerNames(node).indexOf('TestPoint') !== -1 ) {
             self.core.loadPointer( node, 'TestPoint', function ( err, testPoint ) {
                 var pluginNames, i;
                 if ( err ) {

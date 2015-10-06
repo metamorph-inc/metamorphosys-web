@@ -15,7 +15,7 @@
 
     <title>perfTest</title>
 </head>
-<body>
+<body on-gme-init="angular.bootstrap(document, ['CyPhyApp'])">
 
 <div growl></div>
 <div ui-view></div>
@@ -30,60 +30,13 @@
 
 <!-- Include WebGME libraries -->
 <!--  client -->
-<script src="/extlib/node_modules/webgme/dist/webgme.classes.build.js"></script>
+<script data-main="/extlib/node_modules/webgme/dist/webgme.classes.build.js" src="/extlib/node_modules/webgme/src/client/lib/require/require.min.js"></script>
 <!--  angular module services-->
 <!--<script src="/extlib/node_modules/webgme/src/client/js/services/gme-services.js"></script>-->
 <script src="/extlib/node_modules/ng-gme/dist/ng-gme.js"></script>
 
 <!-- Include application -->
 <script src="/extlib/src/app/perfTest/app.js"></script>
-
-<!-- Start the main application -->
-<script type="text/javascript">
-    var clientLoaded,
-            timeout = 5000,
-            waitCounter = 0,
-            i,
-            success,
-            usedClasses = ["Client"],
-            interval = 200,
-            waitForLoadId = setInterval(function () {
-                if (window.GME &&
-                    window.GME.classes) {
-                    // TODO: check for all classes that we use
-                    clearInterval(waitForLoadId);
-                    success = true;
-
-                    for (i = 0; i < usedClasses.length; i += 1) {
-                        if (window.GME.classes.hasOwnProperty(usedClasses[i])) {
-                            console.log('WebGME ' + usedClasses[i] + ' is available.');
-                        } else {
-                            console.error('WebGME ' + usedClasses[i] + ' was not found.');
-                            success = false;
-                        }
-                    }
-
-                    if (success) {
-                        console.log('WebGME client library is ready to use.');
-                        clientLoaded();
-                    }
-                } else {
-                    console.log('Waiting for WebGME client library to load.');
-                    waitCounter += 1;
-                    if (waitCounter >= timeout / interval) {
-                        clearInterval(waitForLoadId);
-                        console.error('WebGME client library was not loaded within a reasonable time. (' + (timeout / 1000) + ' s)');
-                    }
-                }
-            }, interval);
-
-    clientLoaded = function () {
-        // main entry point of the app.js
-        // once the webgme Client is loaded and ready we can use it.
-
-        angular.bootstrap(document, ['CyPhyApp']);
-    };
-</script>
 
 </body>
 </html>

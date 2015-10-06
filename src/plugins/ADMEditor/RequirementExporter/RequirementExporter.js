@@ -142,7 +142,7 @@ define( [ 'plugin/PluginConfig', 'plugin/PluginBase', 'plugin/RequirementExporte
             function = self.core.getAttribute( node, 'function' );
             req.unit = '';
             reqCategory.children.push( req );
-            if ( self.core.hasPointer( node, 'Metric' ) ) {
+            if ( self.core.getPointerNames(node).indexOf('Metric') !== -1 ) {
                 self.core.loadPointer( node, 'Metric', function ( err, metricNode ) {
                     var tbNode;
                     if ( err ) {

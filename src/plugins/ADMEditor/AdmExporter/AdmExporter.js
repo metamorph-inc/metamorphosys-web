@@ -624,7 +624,7 @@ define([
      */
     AdmExporter.prototype.getConnectedPortID = function (connectionNode, pointerName, callback) {
         var self = this,
-            hasPointer = self.core.hasPointer(connectionNode, pointerName);
+            hasPointer = self.core.getPointerNames(connectionNode).indexOf(pointerName) !== -1;
 
         if (hasPointer) {
             self.core.loadPointer(connectionNode, pointerName, function (err, connectedPort) {
@@ -777,7 +777,7 @@ define([
                 return callback(err);
             }
             if (type === 'RelativeLayoutConstraint' || type === 'RelativeRangeLayoutConstraint') {
-                if (!self.core.hasPointer(node, 'Origin')) {
+                if (self.core.getPointerNames(node).indexOf('Origin') === -1) {
                     return callback('Constraint \'' + self.core.getPath(node) + '\' has no Origin');
                 }
                 self.core.loadPointer(node, 'Origin', function (err, o) {
@@ -1156,7 +1156,7 @@ define([
                     return;
                 }
                 for (i = 0; i < valueFlows.length; i += 1) {
-                    if (self.core.hasPointer(valueFlows[i], 'src')) {
+                    if (self.core.getPointerNames(valueFlows[i]).indexOf('src') !== -1) {
                         self.core.loadPointer(valueFlows[i], 'src', counterCallback(valueFlows[i]));
                     } else {
                         self.createMessage(valueFlows[i],
@@ -1214,7 +1214,7 @@ define([
             return;
         }
         for (i = 0; i < valueFlows.length; i += 1) {
-            if (self.core.hasPointer(valueFlows[i], 'src')) {
+            if (self.core.getPointerNames(valueFlows[i]).indexOf('src') !== -1) {
                 self.core.loadPointer(valueFlows[i], 'src', counterCallback);
             } else {
                 self.createMessage(valueFlows[i], 'ValueFlow Connection with no src exists in design.', 'error');
@@ -1233,7 +1233,7 @@ define([
             atValueFlowNode = function (valueFlow) {
                 var srcId;
                 //counter -= 1;
-                if (!self.core.hasPointer(valueFlow, 'src')) {
+                if (self.core.getPointerNames(valueFlow).indexOf('src') === -1) {
                     self.createMessage(valueFlow, 'ValueFlow Connection with no src exists in design.', 'error');
                     error += 'A valueFlow with only one direction pointer exists in model.';
                     counter -= 1;

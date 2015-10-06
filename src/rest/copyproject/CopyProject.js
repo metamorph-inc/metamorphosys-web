@@ -80,13 +80,11 @@ function copy(req, res, callback) {
                 seedCommit: master, // "#a79d96bbae12d1e44809f396dd38cd6bea6be272",
                 command: 'seedProject'
             };
-            workerManager.request(parameters, function (err, id) {
+            workerManager.request(parameters, function (err, result) {
                 if (err) {
                     return callback(err);
                 }
-                workerManager.result(id, function (err) {
-                    callback(err, parameters.userId + '+' + projectName);
-                });
+                callback(err, parameters.userId + '+' + projectName);
             });
         });
     });

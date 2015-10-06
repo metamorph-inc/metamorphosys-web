@@ -19,7 +19,7 @@
         jszip: './node_modules/webgme/src/client/lib/jszip/jszip',
         ejs: './node_modules/webgme/src/common/util/ejs',
         q: './node_modules/q/q',
-        superagent: './node_modules/webgme/src/client/lib/superagent/superagent-1.2.0',
+        superagent: './node_modules/webgme/src/client/lib/superagent/superagent',
         'plugin/AdmExporter': './src/plugins/ADMEditor',
         'plugin/TestBenchRunner': './src/plugins/ADMEditor',
         'plugin/AtmExporter': './src/plugins/ADMEditor',
@@ -34,9 +34,9 @@
     optimize: 'none',
     generateSourceMaps: true,
     insertRequire: ['webcyphy.plugins'],
-    include: ['./node_modules/requirejs/require'],
+    include: ['./node_modules/requirejs/require', './node_modules/webgme/dist/webgme.classes.build'],
     wrap: {
-        start: 'var GME = GME || {}, WebGMEGlobal = {} ;(function(){',
-        end: '}());'
+        start: 'var WebGMEGlobal = {}; (function(){',
+        end: 'window.GME = GME; }());'
     }
 })

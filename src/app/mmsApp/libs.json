@@ -9,7 +9,6 @@
         "./node_modules/ng-gme/dist/ng-gme.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components.js",
         "./bower_components/isis-ui-components/dist/isis-ui-components-templates.js",
-        "./node_modules/webgme/dist/webgme.classes.build.js",
         "./public/gme_plugins_for_cyphy/webcyphy.plugins.build.js",
         "./public/cyphy-library/cyphy-components.js",
         "./public/cyphy-library/cyphy-components-templates.js",
