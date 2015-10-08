@@ -288,7 +288,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                                     return componentBox.click();
                                 })
                                 .then(function () {
-                                    return componentBox.sendKeys(protractor.Key.DELETE);
+                                    return browser.actions().sendKeys(protractor.Key.DELETE).perform();
                                 })
                                 .then(function () {
                                     //return browser.driver.wait(protractor.until.elementIsNotVisible(componentBox), gmeEventTimeLimit, 'busy-cover did not go away');
@@ -501,6 +501,10 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
         });
 
+        browser2.driver.manage().window().getSize().then(function (size) {
+            browser2.driver.manage().window().setSize(Math.max(1024, size.width), Math.max(768, size.height));
+        });
+
         diagramContainer = browser2.element(by.css('div.diagram-container'));
 
         expect(browser2.getTitle()).toEqual('Metamorphosys');
@@ -631,9 +635,11 @@ describe('Metamorphosys Tech Demo Flow', function () {
             otherComponentBox,
             moveBy;
 
+        // n.b. careful: it must not overlap anything, or the move will be rejected
+        // n.b. should be a multiple of the grid size
         moveBy = {
-            x: 500,
-            y: 0
+            x: 600,
+            y: 10
         };
 
         componentBox = element(by.diagramComponentLabel(targetComponentLabel));
@@ -658,15 +664,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
             browser.sleep(uiEventTimeLimit);
 
             browser.actions().mouseMove({
-                x: originalPosition.x + 1,
-                y: 0
-            }).perform();
-
-            browser.sleep(uiEventTimeLimit);
-
-            browser.actions().mouseMove({
-                x: originalPosition.x + moveBy.x,
-                y: originalPosition.y + moveBy.y
+                x: moveBy.x,
+                y: moveBy.y
             }).perform();
 
             browser.sleep(uiEventTimeLimit);
@@ -688,6 +687,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
             }, targetComponentLabel).then(function (newPosition1) {
 
+                expect(newPosition1.x).toEqual(originalPosition.x + moveBy.x);
+                expect(newPosition1.y).toEqual(originalPosition.y + moveBy.y);
 
                 browser2.driver.executeScript(function (componentLabel) {
 
