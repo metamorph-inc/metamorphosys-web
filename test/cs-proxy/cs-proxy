@@ -1,0 +1,22 @@
+upstream components {
+    server components.metamorphsoftware.com; # resolve;
+}
+
+server {
+	listen 3000 default_server;
+
+	root /usr/share/nginx/html;
+	index index.html;
+
+	# Make site accessible from http://localhost/
+	server_name localhost;
+
+    location / {
+        proxy_pass http://components;
+        proxy_http_version 1.1;
+
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Accept-Encoding identity;
+    }
+
+}
