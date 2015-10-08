@@ -67,21 +67,29 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
 
                 var classNames = element.getAttribute('class');
 
-                if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
-                    element.setAttribute('class', classNames + ' drag-entered');
-                }
+                if (!(!e.dataTransfer || (e.dataTransfer && e.dataTransfer.items.length && e.dataTransfer.items[0].kind === "string"
+                    && dropTarget.targetElement.tagName === "g"))) {
 
-                self._onDragOverEnterLeave(e);
+                    if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
+                        element.setAttribute('class', classNames + ' drag-entered');
+                    }
+
+                    self._onDragOverEnterLeave(e);
+                }
             },
             onDragenter: function(e) {
 
                 var classNames = element.getAttribute('class');
 
-                if (classNames && classNames.indexOf('drag-enter') === -1) {
-                    element.setAttribute('class', classNames + ' drag-entered');
-                }
+                if (!(!e.dataTransfer || (e.dataTransfer && e.dataTransfer.items.length && e.dataTransfer.items[0].kind === "string"
+                    && dropTarget.targetElement.tagName === "g"))) {
 
-                self._onDragOverEnterLeave(e);
+                    if (classNames && classNames.indexOf('drag-enter') === -1) {
+                        element.setAttribute('class', classNames + ' drag-entered');
+                    }
+
+                    self._onDragOverEnterLeave(e);
+                }
             },
             onDragleave: function(e) {
 
@@ -104,7 +112,7 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             element.addEventListener('dragleave', dropTarget.onDragleave, false);
         }
         else {
-        
+
             $(element).dragster({
                 enter: function(dragsterEvent, e) {
                     dropTarget.onDragenter(e);
