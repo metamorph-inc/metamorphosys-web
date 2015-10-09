@@ -1,5 +1,7 @@
 {
     "port": 3000,
     "componentPath": "/component-server/components/",
+    "subCircuitPath": "/component-server/subcircuits/",
+    "autoRescan": true,
     "elasticSearchURI": "localhost:9200"
 }
