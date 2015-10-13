@@ -210,7 +210,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
         subcircuitsButton.click();
 
         //browser.sleep(componentLibraryQueryTimeLimit);
-        browser.wait(function () {
+        return browser.wait(function () {
             subcircuitsBrowser = element(by.css('.subcircuit-browser'));
             return subcircuitsBrowser.isPresent();
         }, componentLibraryQueryTimeLimit, '.subcircuit-browser not found');
@@ -219,72 +219,100 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
     it('Should be able to create subcircuit instance by dragging', function () {
 
-        var categories;
-
         browser.driver.executeScript(dragAndDropHelper).then(function () {
             return element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
-                .then(function (categories_) {
-                    categories = categories_;
+                .then(function (categories) {
                     expect(categories.length > 1).toBe(true);
-                }).then(function () {
-                    return selectCategory(0);
+                    return importAll(0);
 
-                    function selectCategory(j) {
+                    function importAll(j) {
                         if (j === categories.length) {
                             return;
                         }
-                        element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
-                            .then(function (categories_) {
-                                categories = categories_; // avoid stale elements, since the inspector popped up when deleting the last subcircuit
-                            }).then(function () {
-                                return browser.executeScript('arguments[0].scrollIntoView(false)', categories[j].getWebElement());
-                            }).then(function () {
-                                return categories[j].click();
-                            }).then(function () {
-                                // https://github.com/vu-isis/isis-ui-components/pull/11 workaround
-                                browser.sleep(400);
-                                return browser.waitForAngular();
-                            })
-                            .then(createAndDeleteSubcircuits)
+                        return createAndDeleteSubcircuits(j)
                             .then(function () {
-                                selectCategory(j + 1);
+                                importAll(j + 1);
                             });
                     }
                 });
         });
 
-        function createAndDeleteSubcircuits() {
-            return browser.driver.executeScript(function () {
-                return Array.prototype.map.call($('div.subcircuit-browser div.main-container-panel ul li header h4 span.item-title'), function (el) {
-                    return el.textContent;
+        function selectCategory(j) {
+            return openSubcircuitBrowser()
+                .then(function () {
+                    return element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
+                }).then(function (categories) {
+                    return browser.executeScript('arguments[0].scrollIntoView(false)', categories[j].getWebElement())
+                        .then(function () {
+                            return categories[j].click();
+                        });
+                }).then(function () {
+                    // FIXME: rest of this function is needed to synchronize. not sure why...
+                    return element.all(by.css('div.subcircuit-browser div.left-panel subcircuit-categories ul li > div'))
+                }).then(function () {
+                    return browser.sleep(5)
+                        .then(function () {
+                            return browser.waitForAngular();
+                        });
                 });
-            })
+        }
+    
+        function createAndDeleteSubcircuits(categoryNumber) {
+            return selectCategory(categoryNumber)
+                .then(function () {
+                    return browser.driver.executeScript(function () {
+                        return Array.prototype.map.call($('div.subcircuit-browser div.main-container-panel ul li header h4 span.item-title'), function (el) {
+                            return el.textContent;
+                        });
+                    })
+                })
                 .then(function (subcircuits) {
+                    console.dir(subcircuits)
 
                     return createAndDeleteSubcircuit(0);
 
                     function createAndDeleteSubcircuit(i) {
-                        if (i > 0 || i === subcircuits.length) {
+                        if (i === 1) {
+                            // uncomment this to test all the subcircuits
+                            return;
+                        }
+                        if (i === subcircuits.length) {
                             return;
                         }
                         var subcircuitLabel = subcircuits[i];
 
-                        return browser.driver.executeScript(function (i) {
+                        return selectCategory(categoryNumber)
+                        .then(function () {
+                            var el = $('div.subcircuit-browser div.main-container-panel ul.list-group > li:nth-child(' + (i + 1).toString() + ') header h4');
+                            return browser.executeScript('arguments[0].scrollIntoView(false)', el.getWebElement())
+                        }).then(function () {
+                            return browser.driver.executeScript(function (i) {
 
-                            $('div.subcircuit-browser div.main-container-panel ul.list-group > li:nth-child(' + (i + 1).toString() + ') header h4').simulateDragDrop({
-                                // TODO: $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
-                                dropTarget: $('.svg-diagram')
-                            });
-
-                        }, i).then(function () {
+                                console.log('dragging ' + i);
+                                var el = $('div.subcircuit-browser div.main-container-panel ul.list-group > li:nth-child(' + (i + 1).toString() + ') header h4');
+                                el.simulateDragDrop({
+                                    // TODO: $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
+                                    dropTarget: $('.svg-diagram')
+                                });
+                            }, i)
+                        }).then(function () {
                             var componentBox = element(by.diagramComponentLabel(subcircuitLabel));
 
                             return browser.wait(function () {
                                     return componentBox.isPresent();
                                 },
                                 gmeEventTimeLimit * 5,
-                                'New ' + subcircuitLabel + 'subcircuit not created'
+                                'New ' + subcircuitLabel + ' subcircuit not created'
                             ).then(function () {
+                                return browser.manage().logs().get('browser').then(function(browserLog) {
+                                    var failedMsg = 'import failed';
+                                    for (var i = 0; i < browserLog.length; i++) {
+                                        var log = browserLog[i].message;
+                                        if (log.length >= failedMsg.length && log.indexOf(failedMsg) > -1) {
+                                            fail('Importing ' + subcircuitLabel + ' failed: ' + log);
+                                        }
+                                    }
+                                }).then(function () {
                                     return componentBox.click();
                                 })
                                 .then(function () {
@@ -299,12 +327,10 @@ describe('Metamorphosys Tech Demo Flow', function () {
                                         });
 
                                     }, gmeEventTimeLimit * 40, 'could not delete ' + subcircuitLabel);
-                                })
-                                .then(function () {
-                                    return openSubcircuitBrowser();
                                 }).then(function () {
                                     return createAndDeleteSubcircuit(i + 1);
                                 });
+                            });
                         });
 
                     }

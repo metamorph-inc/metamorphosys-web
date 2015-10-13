@@ -26,7 +26,7 @@
     "tests"
   ],
   "dependencies": {
-    "isis-ui-components": "0.2.15",
+    "isis-ui-components": "0.2.16",
     "jquery-ui": "~1.11.2",
     "ng-grid": "~2.0.14",
     "angular": "1.3.15",
@@ -38,8 +38,7 @@
     "angular-aria": "~1.4.0"
   },
   "resolutions": {
-    "angular": "~1.3.13",
-    "isis-ui-components": "0.2.15"
+    "angular": "~1.3.13"
   },
   "description": "Metamorph Content Server Apps",
   "main": [
@@ -56,14 +55,13 @@
     "JS",
     "Metamorph"
   ],
-  "_release": "197d296acb",
+  "_release": "3d2389023e",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "197d296acb715e2086ea83517276404d32b81bb0"
+    "commit": "3d2389023e97ed9c39dfc65020916a1c1ff9f2e3"
   },
   "_source": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
   "_target": "*",
-  "_originalSource": "git@bitbucket.org:metamorphsoftwareinc/content-server.git",
-  "_direct": true
+  "_originalSource": "git@bitbucket.org:metamorphsoftwareinc/content-server.git"
 }

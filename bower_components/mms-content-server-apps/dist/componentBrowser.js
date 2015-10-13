@@ -1,4 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*globals angular*/
+/**
+ * Created by blake on 2/9/15.
+ */
+
 "use strict";
 
 require("./directives/componentBrowser/componentBrowser");
@@ -20,10 +25,6 @@ angular.module("mms.componentBrowserApp", ["mms.componentBrowser", "mms.componen
         console.log("Finish dragging", e, item);
     };
 });
-/*globals angular*/
-/**
- * Created by blake on 2/9/15.
- */
 
 },{"./appConfig":3,"./directives/componentBrowser/componentBrowser":5,"./services/componentLibrary.js":20}],2:[function(require,module,exports){
 "use strict";
@@ -213,12 +214,15 @@ module.exports = function ($scope, contentLibraryService) {
 };
 
 },{"../componentBrowser/services/componentLibrary.js":20,"../subcircuitBrowser/services/subcircuitLibrary.js":22}],3:[function(require,module,exports){
+/*globals angular*/
+/*eslint-disable */
 "use strict";
 
-/*globals angular*/
-angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "http://localhost:3000");
+angular.module("mms.componentBrowser.config", []).constant("componentServerUrl", "");
 
 },{}],4:[function(require,module,exports){
+/*global angular*/
+
 "use strict";
 
 angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("categoryResizer", function ($cookies, $timeout) {
@@ -387,9 +391,10 @@ angular.module("mms.contentBrowser.categoryResizer", ["ngCookies"]).directive("c
         }
     };
 });
-/*global angular*/
 
 },{}],5:[function(require,module,exports){
+/*global angular*/
+
 "use strict";
 
 require("../componentCategories/componentCategories.js");
@@ -709,9 +714,14 @@ angular.module("mms.componentBrowser", ["mms.componentBrowser.templates", "mms.c
         }
     };
 });
-/*global angular*/
 
 },{"../../services/componentLibrary.js":20,"../categoryResizer/categoryResizer.js":4,"../componentCategories/componentCategories.js":6,"../componentListing/componentListing.js":9,"../componentSearch/componentSearch.js":10}],6:[function(require,module,exports){
+/*global angular*/
+
+/**
+ * Created by Blake McBride on 2/9/15.
+ */
+
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -898,11 +908,6 @@ angular.module("mms.componentBrowser.componentCategories", ["isis.ui.treeNavigat
         }
     };
 });
-/*global angular*/
-
-/**
- * Created by Blake McBride on 2/9/15.
- */
 
 },{"../../services/componentLibrary.js":20}],7:[function(require,module,exports){
 "use strict";
@@ -960,7 +965,7 @@ angular.module("mms.componentDetails.react", []).directive("componentDetails", f
                 }
             });
 
-            scope.$on("$destroy", cleanup());
+            scope.$on("$destroy", cleanup);
         }
     };
 });
@@ -986,7 +991,7 @@ var ComponentDetailsGrid = (function (_React$Component) {
                     icon = React.createElement(
                         "div",
                         { className: "component-icon-container" },
-                        React.createElement("img", { className: "component-icon", src: this.props.details.icon })
+                        React.createElement("img", { className: "component-icon", src: encodeURI(this.props.details.icon) })
                     );
                 }
 
@@ -1005,6 +1010,12 @@ var ComponentDetailsGrid = (function (_React$Component) {
 })(React.Component);
 
 },{"../../../subcircuitBrowser/directives/subcircuitDetails/ConnectorsDescription.jsx":21,"../propertyTable/propertyTable.jsx":16}],8:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/16/15.
+ */
+
+/*global angular*/
+
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -1123,16 +1134,17 @@ angular.module("mms.componentBrowser.componentListView", ["isis.ui.itemList", "m
         }
     };
 });
-/**
- * Created by Blake McBride on 2/16/15.
- */
-
-/*global angular*/
 
 // console.log($scope);
 //debugger;
 
 },{"../../../common/listViewBase.js":2,"../../../componentBrowser/directives/showLessButton/showLessButton.js":17,"../../../componentBrowser/directives/showMoreButton/showMoreButton.js":18,"../../services/componentLibrary.js":20,"../componentDetails/componentDetails.jsx":7,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],9:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/23/15.
+ */
+
+/*global angular, alert*/
+
 "use strict";
 
 require("../componentListView/componentListView.js");
@@ -1191,13 +1203,14 @@ angular.module("mms.componentBrowser.componentListing", ["mms.componentBrowser.c
         templateUrl: "/componentBrowser/templates/componentListing.html"
     };
 });
+
+},{"../../services/componentLibrary.js":20,"../componentListView/componentListView.js":8,"../countDisplay/countDisplay.js":11,"../gridView/gridView.js":13,"../paging/paging.js":15,"../viewSelection/viewSelection.js":19}],10:[function(require,module,exports){
 /**
  * Created by Blake McBride on 2/23/15.
  */
 
 /*global angular, alert*/
 
-},{"../../services/componentLibrary.js":20,"../componentListView/componentListView.js":8,"../countDisplay/countDisplay.js":11,"../gridView/gridView.js":13,"../paging/paging.js":15,"../viewSelection/viewSelection.js":19}],10:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.componentSearch", []).directive("componentSearch", function () {
@@ -1229,13 +1242,10 @@ angular.module("mms.componentBrowser.componentSearch", []).directive("componentS
         }
     };
 });
-/**
- * Created by Blake McBride on 2/23/15.
- */
-
-/*global angular, alert*/
 
 },{}],11:[function(require,module,exports){
+/*global angular,numeral*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay", function () {
@@ -1267,11 +1277,12 @@ angular.module("mms.componentBrowser.countDisplay", []).directive("countDisplay"
         templateUrl: "/componentBrowser/templates/countDisplay.html"
     };
 });
-/*global angular, alert, numeral*/
 
 },{}],12:[function(require,module,exports){
-"use strict";
 
+/*global angular*/
+
+"use strict";
 angular.module("mms.componentBrowser.downloadButton", []).directive("downloadButton", function () {
 
     return {
@@ -1283,9 +1294,13 @@ angular.module("mms.componentBrowser.downloadButton", []).directive("downloadBut
     };
 });
 
+},{}],13:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
+
 /*global angular*/
 
-},{}],13:[function(require,module,exports){
 "use strict";
 
 require("../../services/componentLibrary.js");
@@ -1647,15 +1662,15 @@ angular.module("mms.componentBrowser.gridView", ["ui.grid", "ui.grid.resizeColum
         }
     };
 });
+
+},{"../../services/componentLibrary.js":20,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],14:[function(require,module,exports){
 /**
- * Created by Blake McBride on 2/26/15.
+ * Created by Blake McBride on 3/27/15.
  */
 
 /*global angular*/
 
-},{"../../services/componentLibrary.js":20,"../downloadButton/downloadButton.js":12,"../infoButton/infoButton.js":14}],14:[function(require,module,exports){
 "use strict";
-
 angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", function () {
 
     return {
@@ -1669,13 +1684,14 @@ angular.module("mms.componentBrowser.infoButton", []).directive("infoButton", fu
         templateUrl: "/componentBrowser/templates/infoButton.html"
     };
 });
+
+},{}],15:[function(require,module,exports){
 /**
- * Created by Blake McBride on 3/27/15.
+ * Created by Blake McBride on 2/24/15.
  */
 
 /*global angular*/
 
-},{}],15:[function(require,module,exports){
 "use strict";
 
 angular.module("mms.componentBrowser.paging", []).directive("paging", function () {
@@ -1736,11 +1752,6 @@ angular.module("mms.componentBrowser.paging", []).directive("paging", function (
         }
     };
 });
-/**
- * Created by Blake McBride on 2/24/15.
- */
-
-/*global angular*/
 
 },{}],16:[function(require,module,exports){
 "use strict";
@@ -1885,8 +1896,9 @@ var PropertyTableItem = (function (_React$Component2) {
 module.exports = PropertyTable;
 
 },{}],17:[function(require,module,exports){
-"use strict";
+/*global angular*/
 
+"use strict";
 angular.module("mms.componentBrowser.showLessButton", []).directive("showLessButton", function () {
 
     return {
@@ -1897,11 +1909,11 @@ angular.module("mms.componentBrowser.showLessButton", []).directive("showLessBut
         templateUrl: "/componentBrowser/templates/showLessButton.html"
     };
 });
-/*global angular*/
 
 },{}],18:[function(require,module,exports){
-"use strict";
+/*global angular*/
 
+"use strict";
 angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreButton", function () {
 
     return {
@@ -1912,9 +1924,14 @@ angular.module("mms.componentBrowser.showMoreButton", []).directive("showMoreBut
         templateUrl: "/componentBrowser/templates/showMoreButton.html"
     };
 });
-/*global angular*/
 
 },{}],19:[function(require,module,exports){
+/**
+ * Created by Blake McBride on 2/26/15.
+ */
+
+/*global angular*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelection", function () {
@@ -1948,13 +1965,10 @@ angular.module("mms.componentBrowser.viewSelection", []).directive("viewSelectio
         templateUrl: "/componentBrowser/templates/viewSelection.html"
     };
 });
-/**
- * Created by Blake McBride on 2/26/15.
- */
-
-/*global angular*/
 
 },{}],20:[function(require,module,exports){
+/*globals angular*/
+
 "use strict";
 
 angular.module("mms.componentBrowser.componentLibrary", []).provider("componentLibrary", function ComponentLibraryProvider() {
@@ -2108,10 +2122,7 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
                 $log.debug("Download handler");
 
-                $http.get(serverUrl + "/subcircuit/getsubcircuit/f/" + id).success(function (filename) {
-
-                    downloadURL(serverUrl + "/" + filename);
-                });
+                downloadURL(serverUrl + "/subcircuit/getsubcircuit/download/" + id);
             };
 
             this.getGrandTotal = function () {
@@ -2181,7 +2192,8 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
 
             this.getDetails = function (id) {
 
-                var path = serverUrl + "/components/overview/" + id,
+                var self = this,
+                    path = serverUrl + "/components/overview/" + id,
                     deferred = $q.defer();
 
                 $http.get(path).then(function (json) {
@@ -2193,7 +2205,7 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
                     };
 
                     if (json.data.iconFileName) {
-                        documentation.icon = "/component_files/" + json.data.iconFileName;
+                        documentation.icon = self.getServerUrl() + "/component_files/" + json.data.iconFileName;
                     }
 
                     deferred.resolve(documentation);
@@ -2206,7 +2218,6 @@ angular.module("mms.componentBrowser.componentLibrary", []).provider("componentL
         return new ComponentLibrary();
     }];
 });
-/*globals angular*/
 
 },{}],21:[function(require,module,exports){
 "use strict";
@@ -2294,6 +2305,8 @@ var ConnectorDescription = React.createClass({
 module.exports = ConnectorsDescription;
 
 },{}],22:[function(require,module,exports){
+/*globals angular*/
+
 "use strict";
 
 angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircuitLibrary", function SubcircuitLibraryProvider() {
@@ -2362,7 +2375,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
                 return deferred.promise;
             };
 
-            var downloadURL = function downloadURL(url) {
+            var downloadUrl = function downloadUrl(url) {
                 var hiddenIFrameID = "hiddenDownloader",
                     iframe = document.getElementById(hiddenIFrameID);
                 if (iframe === null) {
@@ -2378,10 +2391,7 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
 
                 $log.debug("Download handler");
 
-                $http.get(serverUrl + "/subcircuit/getsubcircuit/f/" + id).success(function (filename) {
-
-                    downloadURL(serverUrl + "/" + filename);
-                });
+                downloadUrl(serverUrl + "/subcircuit/getsubcircuit/download/" + id);
             };
 
             this.getSubcircuitGrandTotal = function () {
@@ -2442,7 +2452,6 @@ angular.module("mms.subcircuitBrowser.subcircuitLibrary", []).provider("subcircu
         return new SubcircuitLibrary();
     }];
 });
-/*globals angular*/
 
 },{}]},{},[1])
 

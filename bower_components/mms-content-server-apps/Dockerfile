@@ -1,27 +1,25 @@
 FROM ubuntu:14.04
 MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 
-ENV ES_PKG_NAME elasticsearch-1.4.4
-
 RUN apt-get -qq update && apt-get install -y --no-install-recommends apt-transport-https ca-certificates
 RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/sources.list.d/nodesource-trusty.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68576280
 
-RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential openjdk-7-jdk git-core nodejs python
+RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl curl unzip build-essential openjdk-7-jdk git-core nodejs python
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 
 # RUN ln -s /usr/bin/nodejs /usr/bin/node
 # RUN echo -e '#!/bin/sh\nnode /usr/local/lib/node_modules/npm/bin/npm-cli.js "$@"' > /usr/bin/npm && chmod ugo+x /usr/bin/npm
 
-RUN npm install -g npm@2.5.0
+RUN npm install -g npm@2.14.1
 
 
 # Install Elasticsearch.
+ENV ES_PKG_NAME elasticsearch-1.7.1
+
 RUN \
   cd / && \
-  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz && \
-  tar xvzf $ES_PKG_NAME.tar.gz && \
-  rm -f $ES_PKG_NAME.tar.gz && \
+  curl -f -s -S https://download.elasticsearch.org/elasticsearch/elasticsearch/$ES_PKG_NAME.tar.gz | tar xvz && \
   mv /$ES_PKG_NAME /elasticsearch
 
 #   - 9200: elastic HTTP
@@ -57,6 +55,6 @@ VOLUME ["/component-server/components/"]
 CMD ["bash", "-xe", "/root/run.sh"]
 
 # docker build -t component-server component-server
-# docker kill component-server ; docker rm component-server
-# docker run --rm --name component-server -v `pwd`/tonkalib/components:/component-server/components/ -p 3000:3000 -t component-server
+# docker kill component-server ; docker rm -v component-server
+# docker run --rm --name component-server -v `pwd`/morph-components:/component-server/components/  -p 3000:3000 -t component-server
 # interactive for debugging: docker run -it --rm --name component-server -v `pwd`/tonkalib/components:/component-server/components/ -p 3000:3000 -t component-server bash
