@@ -211,6 +211,10 @@ angular.module(
                     renderNavigator(container);
                 });
 
+                $rootScope.$on('updateMainNavigator', function($e, container) {
+                    renderNavigator(container);
+                });
+
                 $scope.$watch(function() {
                     return projectHandling.getSelectedContainer();
                 }, renderNavigator);

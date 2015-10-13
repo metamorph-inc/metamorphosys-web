@@ -438,6 +438,20 @@ angular.module('mms.projectHandling', [])
 
                     }
                 }
+                else {
+                    if (designStructureUpdateObject.type === "unload") {
+                        if (designStructureUpdateObject.id in availableContainers) {
+                            delete availableContainers[designStructureUpdateObject.id];
+                        }
+                        if (designStructureUpdateObject.id in watchedContainers) {
+                            delete watchedContainers[designStructureUpdateObject.id];
+                        }
+                        if (angular.isObject(collector) && designStructureUpdateObject.id in collector) {
+                            delete collector[designStructureUpdateObject.id];
+                        }
+
+                    }
+                }
 
             };
         };

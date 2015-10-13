@@ -657,9 +657,9 @@ angular.module('mms.svgDiagram', [
                     }
 
                 };
-                
+
                 this.focusConnectedPortsAndWires = function(diagram) {
-                    
+
                     self.findConnectedPortsAndWires(this._focusedPort, diagram.getWires(), 0);
 
                 };
@@ -682,22 +682,22 @@ angular.module('mms.svgDiagram', [
                         wireEnds = wire.getEnds();
 
                         if (wireEnds.end1.port.id === port.id) {
-                            
+
                             matchingPort = wireEnds.end2.port;
 
                         }
                         else if (wireEnds.end2.port.id === port.id) {
-                            
+
                             matchingPort = wireEnds.end1.port;
 
                         }
 
-                        
+
                         if (matchingPort) {
 
-                            if (level !== 0 && (this._connectedPorts.indexOf(matchingPort.id) !== -1 
+                            if (level !== 0 && (this._connectedPorts.indexOf(matchingPort.id) !== -1
                                                 || matchingPort.id === this._focusedPort.id)) {
-                                
+
                                 matchingPort = null;
                                 continue;
 
@@ -723,7 +723,7 @@ angular.module('mms.svgDiagram', [
 
                             self.findConnectedPortsAndWires(matchingPort, wires, level);
                             matchingPort = null;
-                            
+
                             level --;
                         }
 

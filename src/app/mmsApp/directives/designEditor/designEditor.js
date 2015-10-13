@@ -812,6 +812,8 @@ angular.module('mms.designEditor', [
                                                 }
 
                                                 gridService.invalidateVisibleDiagramComponents(selectedContainerId);
+
+                                                $rootScope.$emit('updateMainNavigator', projectHandling.getSelectedContainer());
                                             }
                                         });
 
@@ -823,6 +825,8 @@ angular.module('mms.designEditor', [
                                             designStructureUpdateObject.id);
 
                                         gridService.invalidateVisibleDiagramComponents(selectedContainerId, true);
+
+                                        $rootScope.$emit('updateMainNavigator', projectHandling.getSelectedContainer());
 
                                         break;
 
