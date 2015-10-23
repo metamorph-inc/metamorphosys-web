@@ -22,11 +22,26 @@ exports.config = {
                     if (result.status === 'failed') {
                         for (var i = 0; i < result.failedExpectations.length; i++) {
                             var failureMessage = result.failedExpectations[i].message;
-                            console.log(failureMessage);
-                            browser.pause();
-                            debugger;
-                            browser.debugger();
+                            console.log(result.description + ': ' + failureMessage);
+                            //browser.pause();
+                            //debugger;
+                            //browser.debugger();
                         }
+                        console.dir(result);
+
+                        var screenshot = browser.takeScreenshot().then(function (png) {
+                            return writeScreenShot(png, 'exception' + result.id + '.png');
+                        });
+                        var consoleLog = browser.manage().logs().get('browser').then(function(browserLog) {
+                            var filename = 'exception' + result.id + 'console.log';
+                            var stream = require('fs').createWriteStream(filename);
+                            stream.write(require('util').inspect(browserLog));
+                            stream.end();
+                            return getWriteStreamPromise(stream);
+                        });
+                        protractor.promise.all([screenshot, consoleLog]).thenFinally(function () {
+                            // process.exit(1);
+                        });
                     }
                 }
             });
@@ -40,3 +55,21 @@ exports.config = {
     rootElement: 'body',
     baseUrl: 'http://localhost:8855'
 };
+
+function writeScreenShot(data, filename, callback) {
+    var stream = require('fs').createWriteStream(filename);
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+    return getWriteStreamPromise(stream);
+}
+
+function getWriteStreamPromise(stream) {
+    var deferred = protractor.promise.defer();
+    stream.on('finish', function () {
+        deferred.fulfill();
+    });
+    stream.on('error', function () {
+        deferred.reject();
+    });
+    return deferred.promise;
+}
