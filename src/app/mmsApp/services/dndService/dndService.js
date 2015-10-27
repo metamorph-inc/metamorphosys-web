@@ -65,9 +65,15 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragOver: function(e) {
 
-                var classNames = element.getAttribute('class');
+                var classNames = element.getAttribute('class'),
+                    dndItems;
 
-                if (!(!e.dataTransfer || (e.dataTransfer && e.dataTransfer.items.length && e.dataTransfer.items[0].kind === "string"
+                if (e.dataTransfer) {
+                    // Only Chrome supports "items", but it is the newer interface and should be supported.
+                    dndItems = e.dataTransfer.items === undefined ? e.dataTransfer.files : e.dataTransfer.items;
+                }
+
+                if (!(!e.dataTransfer || (e.dataTransfer && dndItems && dndItems.length && dndItems[0].kind === "string"
                     && dropTarget.targetElement.tagName === "g"))) {
 
                     if (e.target === element && classNames && classNames.indexOf('drag-enter') === -1) {
@@ -79,9 +85,14 @@ DnDService.prototype.registerDropTarget = function(element, channelStr, dropHand
             },
             onDragenter: function(e) {
 
-                var classNames = element.getAttribute('class');
+                var classNames = element.getAttribute('class'),
+                    dndItems;
 
-                if (!(!e.dataTransfer || (e.dataTransfer && e.dataTransfer.items.length && e.dataTransfer.items[0].kind === "string"
+                if (e.dataTransfer) {
+                    dndItems = e.dataTransfer.items === undefined ? e.dataTransfer.files : e.dataTransfer.items;
+                }
+
+                if (!(!e.dataTransfer || (e.dataTransfer && dndItems && dndItems.length && dndItems[0].kind === "string"
                     && dropTarget.targetElement.tagName === "g"))) {
 
                     if (classNames && classNames.indexOf('drag-enter') === -1) {
