@@ -4,7 +4,8 @@ MAINTAINER Kevin Smyth <kevin.m.smyth@gmail.com>
 RUN apt-get -qq update && apt-get install -y --no-install-recommends apt-transport-https ca-certificates
 RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/sources.list.d/nodesource-trusty.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68576280
 
-RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential git-core nodejs mongodb-server python moreutils ca-certificates
+# libkrb5-dev needed by mongoose/mongodb/mongodb-core/kerberos/build/Release/obj.target/kerberos/lib/kerberos.o
+RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential git-core nodejs mongodb-server python moreutils ca-certificates libkrb5-dev
 
 RUN npm install -g npm@2.12.1
 
@@ -36,6 +37,6 @@ CMD ["bash", "-xe", "/root/run.sh"]
 
 # docker build -t mms-webcyphy mms-webcyphy
 # docker kill mms-webcyphy ; docker rm mms-webcyphy
-# docker run --rm --name mms-webcyphy -p 8855:8855 --link component-server:component-server -t mms-webcyphy
-# docker exec mms-webcyphy mongorestore
+# docker run -d --name mms-webcyphy -p 8855:8855 --link component-server:component-server -t mms-webcyphy
+# sleep 5 ; docker exec mms-webcyphy mongorestore --drop
 

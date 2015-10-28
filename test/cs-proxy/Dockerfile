@@ -14,4 +14,4 @@ CMD ["nginx", "-g", "daemon off;"]
 
 # docker build -t cs-proxy cs-proxy
 # docker kill cs-proxy ; docker rm -v cs-proxy
-# docker run --rm --name component-server -t cs-proxy
+# docker run -d --name component-server -t cs-proxy

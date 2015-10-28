@@ -5,6 +5,7 @@ RUN apt-get -qq update && apt-get install -y --no-install-recommends apt-transpo
 RUN printf 'deb https://deb.nodesource.com/node_0.12/ trusty main\n' > /etc/apt/sources.list.d/nodesource-trusty.list && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 68576280
 
 RUN apt-get -qq update && sudo apt-get install -y --no-install-recommends curl wget unzip build-essential openjdk-7-jdk git-core nodejs xvfb firefox python moreutils ca-certificates
+RUN apt-get install -y x11vnc
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64/
 
@@ -24,5 +25,5 @@ WORKDIR /mms-webcyphy
 
 # docker build -t mms-webcyphy-protractor protractor
 # docker kill mms-webcyphy-protractor ; docker rm mms-webcyphy-protractor
-# docker run --rm --name mms-webcyphy-protractor --volumes-from mms-webcyphy --link mms-webcyphy:mms-webcyphy --link component-server:component-server -t mms-webcyphy-protractor bash test/protractor/docker-script.sh
+# docker run --rm -p 5900:5900 --name mms-webcyphy-protractor --volumes-from mms-webcyphy --link mms-webcyphy:mms-webcyphy --link component-server:component-server -t mms-webcyphy-protractor bash test/protractor/docker-script.sh --vnc
 
