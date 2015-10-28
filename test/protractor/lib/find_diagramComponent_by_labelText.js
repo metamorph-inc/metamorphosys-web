@@ -20,6 +20,6 @@ by.addLocator('diagramComponentLabel',
 
              // n.b. componentSymbol may truncate the label
              // n.b. component browser may uppercase first letter
-            return label && label.textContent.substr(0, 20).toLowerCase() === labelText.substr(0, 20).toLowerCase();
+            return label && label.getAttribute('full-label').toLowerCase() === labelText.toLowerCase();
         });
     });
