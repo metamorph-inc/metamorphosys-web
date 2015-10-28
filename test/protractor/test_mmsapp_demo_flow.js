@@ -256,7 +256,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
                         });
                 });
         }
-    
+
         function createAndDeleteSubcircuits(categoryNumber) {
             return selectCategory(categoryNumber)
                 .then(function () {
@@ -539,7 +539,7 @@ describe('Metamorphosys Tech Demo Flow', function () {
 
                 return diagramContainer.isPresent();
             },
-            5000,
+            15000,
             'diagramContainer not found'
         ).then(function () {
 
@@ -867,6 +867,8 @@ describe('Metamorphosys Tech Demo Flow', function () {
         mainLevel = element(by.getHierarchyByVisibleDropdownLabel(mainContainerLabel));
 
         browser.actions().mouseMove(mainLevel).perform();
+
+        browser.sleep(1000);
 
         secondLevel = element(by.getHierarchyByHiddenDropdownLabel(targetContainerLabel));
 
