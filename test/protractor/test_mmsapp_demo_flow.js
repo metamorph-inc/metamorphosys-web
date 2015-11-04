@@ -569,8 +569,9 @@ describe('Metamorphosys Tech Demo Flow', function () {
             .then(function () {
                 browser.driver.executeScript(function (componentTitle) {
 
-                    $('div.footer-drawer div.main-container-panel div.component-listing div.listing-views > div > div > div > div > ul > li:nth-child(1)').simulateDragDrop({
-                        // TODO: $('li[title="' + componentTitle + '"] .label-and-extra-info').simulateDragDrop({
+                    var component = Array.prototype.filter.call($('div.footer-drawer div.main-container-panel div.component-listing div.listing-views ' +
+                        '> div > div > div > div > ul > li > header > div > header > h4 > span'), function (el) { return componentTitle === el.textContent; })[0];
+                    $(component).simulateDragDrop({
                         dropTarget: $('.svg-diagram')
                     });
 
