@@ -12,7 +12,7 @@ Run mms-webcyphy
 
 Only if you're importing platform from desktop model
 
-    Run tonkalib/utils/export_for_web.py on your .mga file
+    Run tonkalib/utils/export_for_web.py on your .mga file. The .mga is stored in [tonkalib](https://bitbucket.org/metamorphsoftwareinc/tonkalib)
 
     Open Template_Module_1x2 at http://localhost:8855/extlib/node_modules/webgme/src/client/
     If you're replacing stuff, delete the stuff you're going to be replacing
